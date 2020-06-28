@@ -1,11 +1,18 @@
 import { AccountManager } from "../api/accountManager";
-import { PlaylistItem } from "../constant/type";
+import {
+  PlaylistContent,
+  PlaylistItem,
+  songsItem,
+  trackIdsItem,
+} from "../constant/type";
 
 const {
   daily_signin,
   login_refresh,
   login_status,
   logout,
+  playlist_detail,
+  song_detail,
   user_playlist,
 } = require("NeteaseCloudMusicApi");
 
@@ -95,5 +102,51 @@ export async function API_userPlaylist(): Promise<PlaylistItem[]> {
     return ret;
   } catch {
     return [];
+  }
+}
+
+export async function API_playlistDetail(id: number): Promise<number[]> {
+  try {
+    const { status, body } = await playlist_detail({
+      id: id,
+      cookie: user.cookie,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { playlist } = body;
+    const { trackIds } = playlist;
+    return trackIds.map((trackId: trackIdsItem) => {
+      return trackId.id;
+    });
+  } catch {
+    return [];
+  }
+}
+
+export async function API_songDetail(
+  trackIds: number[]
+): Promise<PlaylistContent[]> {
+  let ret: PlaylistContent[] = [];
+  try {
+    for (let i = 0; i < trackIds.length; i += 64) {
+      const { status, body } = await song_detail({
+        ids: trackIds.slice(i, i + 64).join(","),
+        cookie: user.cookie,
+      });
+      if (status !== 200) {
+        continue;
+      }
+      const { songs } = body;
+      ret = ret.concat(
+        songs.map((song: songsItem) => {
+          const { name, id, alia, ar } = song;
+          return { name, id, alia: alia ? alia[0] : "", arName: ar[0].name };
+        })
+      );
+    }
+    return ret;
+  } catch {
+    return ret;
   }
 }
