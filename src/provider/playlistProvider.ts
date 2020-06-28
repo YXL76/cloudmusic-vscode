@@ -41,12 +41,12 @@ export class PlaylistProvider
     return element;
   }
 
-  getChildren(
+  async getChildren(
     element?: PlaylistItemTreeItem | PlaylistContentTreeItem
-  ): Thenable<PlaylistItemTreeItem[] | PlaylistContentTreeItem[]> {
+  ): Promise<PlaylistItemTreeItem[] | PlaylistContentTreeItem[]> {
     return element
-      ? Promise.resolve(this.getPlaylistContent(element.item.id))
-      : Promise.resolve(this.getPlaylistItem());
+      ? await this.getPlaylistContent(element.item.id)
+      : await this.getPlaylistItem();
   }
 
   private async getPlaylistContent(
@@ -55,7 +55,7 @@ export class PlaylistProvider
     const songs = await this.playlistManager.tracks(id);
     return songs.map((song) => {
       return new PlaylistContentTreeItem(
-        song.name,
+        `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
         song,
         TreeItemCollapsibleState.None
       );
@@ -78,8 +78,7 @@ export class PlaylistItemTreeItem extends TreeItem {
   constructor(
     public readonly label: string,
     public readonly item: PlaylistItem,
-    public readonly collapsibleState: TreeItemCollapsibleState,
-    public readonly command?: Command
+    public readonly collapsibleState: TreeItemCollapsibleState
   ) {
     super(label, collapsibleState);
   }
@@ -97,18 +96,21 @@ export class PlaylistItemTreeItem extends TreeItem {
   contextValue = "PlaylistItemTreeItem";
 }
 
-class PlaylistContentTreeItem extends TreeItem {
+export class PlaylistContentTreeItem extends TreeItem {
   constructor(
     public readonly label: string,
     public readonly item: PlaylistContent,
-    public readonly collapsibleState: TreeItemCollapsibleState,
-    public readonly command?: Command
+    public readonly collapsibleState: TreeItemCollapsibleState
   ) {
     super(label, collapsibleState);
   }
 
   get tooltip(): string {
     return ``;
+  }
+
+  get description(): string {
+    return this.item.arName;
   }
 
   contextValue = "PlaylistContentTreeItem";
