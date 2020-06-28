@@ -50,4 +50,27 @@ export class QueueProvider
     this.songs = new Map(unsortInplace([...this.songs]));
     this.refresh();
   }
+
+  shift(index: number) {
+    const previous = [...this.songs];
+    const current = previous.slice(index).concat(previous.slice(0, index));
+    this.songs = new Map(current);
+    this.refresh();
+  }
+
+  add(element: PlaylistContentTreeItem) {
+    this.songs.set(element.item.id, element);
+    this.refresh();
+  }
+
+  adds(elements: PlaylistContentTreeItem[]) {
+    for (const i of elements) {
+      this.songs.set(i.item.id, i);
+    }
+    this.refresh();
+  }
+
+  play(element: PlaylistContentTreeItem) {
+    this.shift([...this.songs.keys()].indexOf(element.item.id));
+  }
 }

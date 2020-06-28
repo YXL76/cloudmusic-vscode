@@ -87,6 +87,22 @@
           "light": "resources/light/shuffle.svg",
           "dark": "resources/dark/shuffle.svg"
         }
+      },
+      {
+        "command": "cloudmusic.addSong",
+        "title": "Add",
+        "icon": {
+          "light": "resources/light/plus-circle.svg",
+          "dark": "resources/dark/plus-circle.svg"
+        }
+      },
+      {
+        "command": "cloudmusic.playSong",
+        "title": "Play",
+        "icon": {
+          "light": "resources/light/play-circle.svg",
+          "dark": "resources/dark/play-circle.svg"
+        }
       }
     ],
     "menus": {
@@ -121,6 +137,16 @@
         {
           "command": "cloudmusic.addPlaylist",
           "when": "view == playlist && viewItem == PlaylistItemTreeItem",
+          "group": "inline"
+        },
+        {
+          "command": "cloudmusic.addSong",
+          "when": "view == playlist && viewItem == PlaylistContentTreeItem",
+          "group": "inline"
+        },
+        {
+          "command": "cloudmusic.playSong",
+          "when": "view == queue && viewItem == PlaylistContentTreeItem",
           "group": "inline"
         }
       ]

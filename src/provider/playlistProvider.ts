@@ -57,11 +57,7 @@ export class PlaylistProvider
   }
 
   async addPlaylist(element: PlaylistItemTreeItem) {
-    const list = await this.getPlaylistContent(element.item.id);
-    for (const i of list) {
-      this.queueProvider.songs.set(i.item.id, i);
-    }
-    this.queueProvider.refresh();
+    this.queueProvider.adds(await this.getPlaylistContent(element.item.id));
   }
 
   private async getPlaylistContent(
@@ -86,6 +82,10 @@ export class PlaylistProvider
         TreeItemCollapsibleState.Collapsed
       );
     });
+  }
+
+  addSong(element: PlaylistContentTreeItem) {
+    this.queueProvider.add(element);
   }
 }
 
