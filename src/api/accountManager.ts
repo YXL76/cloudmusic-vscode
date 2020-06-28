@@ -85,20 +85,20 @@ export class AccountManager {
   }
 
   async loginRefresh() {
-    await API_loginRefresh();
+    await API_loginRefresh(this.cookie);
   }
 
   async loginStatus() {
-    await API_loginStatus();
+    await API_loginStatus(this.cookie);
   }
 
   async logout() {
-    if (await API_logout()) {
+    if (await API_logout(this.cookie)) {
       this.loggedIn = false;
     }
   }
 
   async playlist(): Promise<PlaylistItem[]> {
-    return await API_userPlaylist();
+    return await API_userPlaylist(this.uid, this.cookie);
   }
 }

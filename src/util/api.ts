@@ -1,4 +1,3 @@
-import { AccountManager } from "../api/accountManager";
 import {
   PlaylistContent,
   PlaylistItem,
@@ -16,8 +15,6 @@ const {
   user_playlist,
 } = require("NeteaseCloudMusicApi");
 
-const user = AccountManager.getInstance();
-
 export async function API_dailySignin(): Promise<number> {
   try {
     const { status, body } = await daily_signin();
@@ -31,9 +28,9 @@ export async function API_dailySignin(): Promise<number> {
   }
 }
 
-export async function API_loginRefresh(): Promise<boolean> {
+export async function API_loginRefresh(cookie: string): Promise<boolean> {
   try {
-    const { status } = await login_refresh({ cookie: user.cookie });
+    const { status } = await login_refresh({ cookie: cookie });
     if (status !== 200) {
       return false;
     }
@@ -43,10 +40,10 @@ export async function API_loginRefresh(): Promise<boolean> {
   }
 }
 
-export async function API_loginStatus(): Promise<boolean> {
+export async function API_loginStatus(cookie: string): Promise<boolean> {
   try {
     const { status } = await login_status({
-      cookie: user.cookie,
+      cookie: cookie,
     });
     if (status !== 200) {
       return false;
@@ -57,10 +54,10 @@ export async function API_loginStatus(): Promise<boolean> {
   }
 }
 
-export async function API_logout(): Promise<boolean> {
+export async function API_logout(cookie: string): Promise<boolean> {
   try {
     const { status } = await logout({
-      cookie: user.cookie,
+      cookie: cookie,
     });
     if (status !== 200) {
       return false;
@@ -71,11 +68,14 @@ export async function API_logout(): Promise<boolean> {
   }
 }
 
-export async function API_playlistDetail(id: number): Promise<number[]> {
+export async function API_playlistDetail(
+  id: number,
+  cookie: string
+): Promise<number[]> {
   try {
     const { status, body } = await playlist_detail({
       id: id,
-      cookie: user.cookie,
+      cookie: cookie,
     });
     if (status !== 200) {
       return [];
@@ -91,14 +91,15 @@ export async function API_playlistDetail(id: number): Promise<number[]> {
 }
 
 export async function API_songDetail(
-  trackIds: number[]
+  trackIds: number[],
+  cookie: string
 ): Promise<PlaylistContent[]> {
   let ret: PlaylistContent[] = [];
   try {
     for (let i = 0; i < trackIds.length; i += 64) {
       const { status, body } = await song_detail({
         ids: trackIds.slice(i, i + 64).join(","),
-        cookie: user.cookie,
+        cookie: cookie,
       });
       if (status !== 200) {
         continue;
@@ -107,7 +108,12 @@ export async function API_songDetail(
       ret = ret.concat(
         songs.map((song: songsItem) => {
           const { name, id, alia, ar } = song;
-          return { name, id, alia: alia ? alia[0] : "", arName: ar[0].name };
+          return {
+            name,
+            id,
+            alia: alia ? alia[0] : "",
+            arName: ar[0].name,
+          };
         })
       );
     }
@@ -117,12 +123,15 @@ export async function API_songDetail(
   }
 }
 
-export async function API_userPlaylist(): Promise<PlaylistItem[]> {
+export async function API_userPlaylist(
+  uid: number,
+  cookie: string
+): Promise<PlaylistItem[]> {
   try {
     let ret: PlaylistItem[] = [];
     const { status, body } = await user_playlist({
-      uid: user.uid,
-      cookie: user.cookie,
+      uid: uid,
+      cookie: cookie,
     });
     if (status !== 200) {
       return ret;
