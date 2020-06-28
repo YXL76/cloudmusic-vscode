@@ -71,40 +71,6 @@ export async function API_logout(): Promise<boolean> {
   }
 }
 
-export async function API_userPlaylist(): Promise<PlaylistItem[]> {
-  try {
-    let ret: PlaylistItem[] = [];
-    const { status, body } = await user_playlist({
-      uid: user.uid,
-      cookie: user.cookie,
-    });
-    if (status !== 200) {
-      return ret;
-    }
-    const { playlist } = body;
-    for (const {
-      description,
-      id,
-      name,
-      playCount,
-      subscribedCount,
-      trackCount,
-    } of playlist) {
-      ret.push({
-        description,
-        id,
-        name,
-        playCount,
-        subscribedCount,
-        trackCount,
-      });
-    }
-    return ret;
-  } catch {
-    return [];
-  }
-}
-
 export async function API_playlistDetail(id: number): Promise<number[]> {
   try {
     const { status, body } = await playlist_detail({
@@ -148,5 +114,39 @@ export async function API_songDetail(
     return ret;
   } catch {
     return ret;
+  }
+}
+
+export async function API_userPlaylist(): Promise<PlaylistItem[]> {
+  try {
+    let ret: PlaylistItem[] = [];
+    const { status, body } = await user_playlist({
+      uid: user.uid,
+      cookie: user.cookie,
+    });
+    if (status !== 200) {
+      return ret;
+    }
+    const { playlist } = body;
+    for (const {
+      description,
+      id,
+      name,
+      playCount,
+      subscribedCount,
+      trackCount,
+    } of playlist) {
+      ret.push({
+        description,
+        id,
+        name,
+        playCount,
+        subscribedCount,
+        trackCount,
+      });
+    }
+    return ret;
+  } catch {
+    return [];
   }
 }
