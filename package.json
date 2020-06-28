@@ -19,7 +19,7 @@
         {
           "id": "cloudmusic",
           "title": "cloudmusic",
-          "icon": "media/library_music-white-48dp.svg"
+          "icon": "media/disc.svg"
         }
       ]
     },
@@ -44,48 +44,48 @@
         "command": "cloudmusic.refreshPlaylist",
         "title": "Refresh",
         "icon": {
-          "light": "resources/light/refresh-black-48dp.svg",
-          "dark": "resources/dark/refresh-white-48dp.svg"
+          "light": "resources/light/refresh-ccw.svg",
+          "dark": "resources/dark/refresh-ccw.svg"
         }
       },
       {
         "command": "cloudmusic.refreshPlaylistContent",
         "title": "Refresh",
         "icon": {
-          "light": "resources/light/refresh-black-48dp.svg",
-          "dark": "resources/dark/refresh-white-48dp.svg"
+          "light": "resources/light/refresh-ccw.svg",
+          "dark": "resources/dark/refresh-ccw.svg"
         }
       },
       {
         "command": "cloudmusic.playPlaylist",
         "title": "Play",
         "icon": {
-          "light": "resources/light/playlist_play-black-48dp.svg",
-          "dark": "resources/dark/playlist_play-white-48dp.svg"
+          "light": "resources/light/play-circle.svg",
+          "dark": "resources/dark/play-circle.svg"
         }
       },
       {
         "command": "cloudmusic.addPlaylist",
-        "title": "Play",
+        "title": "Add",
         "icon": {
-          "light": "resources/light/playlist_add-black-48dp.svg",
-          "dark": "resources/dark/playlist_add-white-48dp.svg"
+          "light": "resources/light/plus-circle.svg",
+          "dark": "resources/dark/plus-circle.svg"
         }
       },
       {
         "command": "cloudmusic.clearQueue",
-        "title": "Play",
+        "title": "Clear",
         "icon": {
-          "light": "resources/light/delete-black-48dp.svg",
-          "dark": "resources/dark/delete-white-48dp.svg"
+          "light": "resources/light/trash-2.svg",
+          "dark": "resources/dark/trash-2.svg"
         }
       },
       {
         "command": "cloudmusic.randomQueue",
-        "title": "Play",
+        "title": "Shuffle",
         "icon": {
-          "light": "resources/light/shuffle-black-48dp.svg",
-          "dark": "resources/dark/shuffle-white-48dp.svg"
+          "light": "resources/light/shuffle.svg",
+          "dark": "resources/dark/shuffle.svg"
         }
       }
     ],
