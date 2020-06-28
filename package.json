@@ -97,11 +97,27 @@
         }
       },
       {
+        "command": "cloudmusic.playSongWithPlaylist",
+        "title": "Play",
+        "icon": {
+          "light": "resources/light/play-circle.svg",
+          "dark": "resources/dark/play-circle.svg"
+        }
+      },
+      {
         "command": "cloudmusic.playSong",
         "title": "Play",
         "icon": {
           "light": "resources/light/play-circle.svg",
           "dark": "resources/dark/play-circle.svg"
+        }
+      },
+      {
+        "command": "cloudmusic.deleteSong",
+        "title": "Play",
+        "icon": {
+          "light": "resources/light/x-circle.svg",
+          "dark": "resources/dark/x-circle.svg"
         }
       }
     ],
@@ -145,8 +161,18 @@
           "group": "inline"
         },
         {
+          "command": "cloudmusic.playSongWithPlaylist",
+          "when": "view == playlist && viewItem == PlaylistContentTreeItem",
+          "group": "inline"
+        },
+        {
           "command": "cloudmusic.playSong",
-          "when": "view == queue && viewItem == PlaylistContentTreeItem",
+          "when": "view == queue && viewItem == QueueTreeItem",
+          "group": "inline"
+        },
+        {
+          "command": "cloudmusic.deleteSong",
+          "when": "view == queue && viewItem == QueueTreeItem",
           "group": "inline"
         }
       ]

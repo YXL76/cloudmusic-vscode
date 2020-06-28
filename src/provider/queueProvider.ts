@@ -1,23 +1,26 @@
-import { Event, EventEmitter, TreeDataProvider, TreeItem } from "vscode";
+import {
+  Event,
+  EventEmitter,
+  TreeDataProvider,
+  TreeItem,
+  TreeItemCollapsibleState,
+} from "vscode";
+import { join } from "path";
 import { PlaylistContentTreeItem } from "./playlistProvider";
+import { PlaylistContent } from "../constant/type";
 const { unsortInplace } = require("array-unsort");
 
-export class QueueProvider
-  implements TreeDataProvider<PlaylistContentTreeItem> {
+export class QueueProvider implements TreeDataProvider<QueueTreeItem> {
   private static instance: QueueProvider;
 
   private _onDidChangeTreeData: EventEmitter<
-    PlaylistContentTreeItem | undefined | void
-  > = new EventEmitter<PlaylistContentTreeItem | undefined | void>();
+    QueueTreeItem | undefined | void
+  > = new EventEmitter<QueueTreeItem | undefined | void>();
 
-  readonly onDidChangeTreeData: Event<
-    PlaylistContentTreeItem | undefined | void
-  > = this._onDidChangeTreeData.event;
+  readonly onDidChangeTreeData: Event<QueueTreeItem | undefined | void> = this
+    ._onDidChangeTreeData.event;
 
-  public songs: Map<number, PlaylistContentTreeItem> = new Map<
-    number,
-    PlaylistContentTreeItem
-  >();
+  public songs: Map<number, QueueTreeItem> = new Map<number, QueueTreeItem>();
 
   constructor() {}
 
@@ -31,46 +34,67 @@ export class QueueProvider
     this._onDidChangeTreeData.fire();
   }
 
-  getTreeItem(element: PlaylistContentTreeItem): TreeItem {
+  getTreeItem(element: QueueTreeItem): TreeItem {
     return element;
   }
 
-  async getChildren(
-    _element?: PlaylistContentTreeItem
-  ): Promise<PlaylistContentTreeItem[]> {
+  async getChildren(_element?: QueueTreeItem): Promise<QueueTreeItem[]> {
     return [...this.songs.values()];
   }
 
   clear() {
     this.songs.clear();
-    this.refresh();
   }
 
   random() {
     this.songs = new Map(unsortInplace([...this.songs]));
-    this.refresh();
   }
 
-  shift(index: number) {
-    const previous = [...this.songs];
-    const current = previous.slice(index).concat(previous.slice(0, index));
-    this.songs = new Map(current);
-    this.refresh();
-  }
-
-  add(element: PlaylistContentTreeItem) {
-    this.songs.set(element.item.id, element);
-    this.refresh();
-  }
-
-  adds(elements: PlaylistContentTreeItem[]) {
-    for (const i of elements) {
-      this.songs.set(i.item.id, i);
+  shift(element: QueueTreeItem) {
+    const index = [...this.songs.keys()].indexOf(element.item.id);
+    if (index !== 0) {
+      const previous = [...this.songs];
+      const current = previous.slice(index).concat(previous.slice(0, index));
+      this.songs = new Map(current);
     }
-    this.refresh();
   }
 
-  play(element: PlaylistContentTreeItem) {
-    this.shift([...this.songs.keys()].indexOf(element.item.id));
+  add(elements: PlaylistContentTreeItem[]) {
+    for (const i of elements) {
+      this.songs.set(i.item.id, i.toQueueTreeItem());
+    }
   }
+
+  delete(id: number) {
+    this.songs.delete(id);
+  }
+
+  play(element: QueueTreeItem) {
+    this.shift(element);
+  }
+}
+
+export class QueueTreeItem extends TreeItem {
+  constructor(
+    public readonly label: string,
+    public readonly item: PlaylistContent,
+    public readonly collapsibleState: TreeItemCollapsibleState
+  ) {
+    super(label, collapsibleState);
+  }
+
+  get tooltip(): string {
+    return ``;
+  }
+
+  get description(): string {
+    return this.item.arName;
+  }
+
+  iconPath = {
+    light: join(__filename, "../../..", "resources", "light", "music.svg"),
+    dark: join(__filename, "../../..", "resources", "dark", "music.svg"),
+  };
+
+  contextValue = "QueueTreeItem";
 }

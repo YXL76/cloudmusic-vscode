@@ -6,7 +6,7 @@ import {
   TreeItemCollapsibleState,
 } from "vscode";
 import { join } from "path";
-import { QueueProvider } from "./queueProvider";
+import { QueueProvider, QueueTreeItem } from "./queueProvider";
 import { PlaylistContent, PlaylistItem } from "../constant/type";
 import { AccountManager } from "../api/accountManager";
 import { PlaylistManager } from "../api/playlistManager";
@@ -26,6 +26,11 @@ export class PlaylistProvider
   private accountManager: AccountManager = AccountManager.getInstance();
   private playlistManager: PlaylistManager = PlaylistManager.getInstance();
   private queueProvider: QueueProvider = QueueProvider.getInstance();
+
+  private treeView: Map<number, PlaylistContentTreeItem[]> = new Map<
+    number,
+    PlaylistContentTreeItem[]
+  >();
 
   constructor() {}
 
@@ -51,26 +56,44 @@ export class PlaylistProvider
       : await this.getPlaylistItem();
   }
 
-  async playPlaylist(element: PlaylistItemTreeItem) {
+  async playPlaylist(id: number, index?: PlaylistContentTreeItem) {
     this.queueProvider.clear();
-    this.addPlaylist(element);
+    const items = this.treeView.get(id);
+    if (items) {
+      this.queueProvider.add(items);
+    } else {
+      this.queueProvider.add(await this.getPlaylistContent(id));
+    }
+    if (index) {
+      this.queueProvider.shift(index.toQueueTreeItem());
+    }
+    this.queueProvider.refresh();
   }
 
-  async addPlaylist(element: PlaylistItemTreeItem) {
-    this.queueProvider.adds(await this.getPlaylistContent(element.item.id));
+  async addPlaylist(id: number) {
+    const items = this.treeView.get(id);
+    if (items) {
+      this.queueProvider.add(items);
+    } else {
+      this.queueProvider.add(await this.getPlaylistContent(id));
+    }
+    this.queueProvider.refresh();
   }
 
   private async getPlaylistContent(
     id: number
   ): Promise<PlaylistContentTreeItem[]> {
     const songs = await this.playlistManager.tracks(id);
-    return songs.map((song) => {
+    const ret = songs.map((song) => {
       return new PlaylistContentTreeItem(
         `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
         song,
+        id,
         TreeItemCollapsibleState.None
       );
     });
+    this.treeView.set(id, ret);
+    return ret;
   }
 
   private async getPlaylistItem(): Promise<PlaylistItemTreeItem[]> {
@@ -85,7 +108,13 @@ export class PlaylistProvider
   }
 
   addSong(element: PlaylistContentTreeItem) {
-    this.queueProvider.add(element);
+    this.queueProvider.add([element]);
+    this.queueProvider.refresh();
+  }
+
+  playSongWithPlaylist(element: PlaylistContentTreeItem) {
+    this.queueProvider.clear();
+    this.playPlaylist(element.pid, element);
   }
 }
 
@@ -120,6 +149,7 @@ export class PlaylistContentTreeItem extends TreeItem {
   constructor(
     public readonly label: string,
     public readonly item: PlaylistContent,
+    public readonly pid: number,
     public readonly collapsibleState: TreeItemCollapsibleState
   ) {
     super(label, collapsibleState);
@@ -131,6 +161,10 @@ export class PlaylistContentTreeItem extends TreeItem {
 
   get description(): string {
     return this.item.arName;
+  }
+
+  toQueueTreeItem(): QueueTreeItem {
+    return new QueueTreeItem(this.label, this.item, this.collapsibleState);
   }
 
   iconPath = {
