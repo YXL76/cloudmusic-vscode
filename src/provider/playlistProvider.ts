@@ -1,5 +1,4 @@
 import {
-  Command,
   Event,
   EventEmitter,
   TreeDataProvider,
