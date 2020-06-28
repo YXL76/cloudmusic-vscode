@@ -5,6 +5,7 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
+import { join } from "path";
 import { QueueProvider } from "./queueProvider";
 import { PlaylistContent, PlaylistItem } from "../constant/type";
 import { AccountManager } from "../api/accountManager";
@@ -107,6 +108,11 @@ export class PlaylistItemTreeItem extends TreeItem {
     `;
   }
 
+  iconPath = {
+    light: join(__filename, "../../..", "resources", "light", "list.svg"),
+    dark: join(__filename, "../../..", "resources", "dark", "list.svg"),
+  };
+
   contextValue = "PlaylistItemTreeItem";
 }
 
@@ -126,6 +132,11 @@ export class PlaylistContentTreeItem extends TreeItem {
   get description(): string {
     return this.item.arName;
   }
+
+  iconPath = {
+    light: join(__filename, "../../..", "resources", "light", "music.svg"),
+    dark: join(__filename, "../../..", "resources", "dark", "music.svg"),
+  };
 
   contextValue = "PlaylistContentTreeItem";
 }
