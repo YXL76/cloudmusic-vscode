@@ -5,6 +5,7 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
+import { QueueProvider } from "./queueProvider";
 import { PlaylistContent, PlaylistItem } from "../constant/type";
 import { AccountManager } from "../api/accountManager";
 import { PlaylistManager } from "../api/playlistManager";
@@ -23,6 +24,7 @@ export class PlaylistProvider
 
   private accountManager: AccountManager = AccountManager.getInstance();
   private playlistManager: PlaylistManager = PlaylistManager.getInstance();
+  private queueProvider: QueueProvider = QueueProvider.getInstance();
 
   constructor() {}
 
@@ -46,6 +48,19 @@ export class PlaylistProvider
     return element
       ? await this.getPlaylistContent(element.item.id)
       : await this.getPlaylistItem();
+  }
+
+  async playPlaylist(element: PlaylistItemTreeItem) {
+    this.queueProvider.clear();
+    this.addPlaylist(element);
+  }
+
+  async addPlaylist(element: PlaylistItemTreeItem) {
+    const list = await this.getPlaylistContent(element.item.id);
+    for (const i of list) {
+      this.queueProvider.songs.set(i.item.id, i);
+    }
+    this.queueProvider.refresh();
   }
 
   private async getPlaylistContent(

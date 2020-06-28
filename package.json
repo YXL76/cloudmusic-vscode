@@ -19,7 +19,7 @@
         {
           "id": "cloudmusic",
           "title": "cloudmusic",
-          "icon": "media/queue_music-white-48dp.svg"
+          "icon": "media/library_music-white-48dp.svg"
         }
       ]
     },
@@ -55,6 +55,38 @@
           "light": "resources/light/refresh-black-48dp.svg",
           "dark": "resources/dark/refresh-white-48dp.svg"
         }
+      },
+      {
+        "command": "cloudmusic.playPlaylist",
+        "title": "Play",
+        "icon": {
+          "light": "resources/light/playlist_play-black-48dp.svg",
+          "dark": "resources/dark/playlist_play-white-48dp.svg"
+        }
+      },
+      {
+        "command": "cloudmusic.addPlaylist",
+        "title": "Play",
+        "icon": {
+          "light": "resources/light/playlist_add-black-48dp.svg",
+          "dark": "resources/dark/playlist_add-white-48dp.svg"
+        }
+      },
+      {
+        "command": "cloudmusic.clearQueue",
+        "title": "Play",
+        "icon": {
+          "light": "resources/light/delete-black-48dp.svg",
+          "dark": "resources/dark/delete-white-48dp.svg"
+        }
+      },
+      {
+        "command": "cloudmusic.randomQueue",
+        "title": "Play",
+        "icon": {
+          "light": "resources/light/shuffle-black-48dp.svg",
+          "dark": "resources/dark/shuffle-white-48dp.svg"
+        }
       }
     ],
     "menus": {
@@ -63,11 +95,31 @@
           "command": "cloudmusic.refreshPlaylist",
           "when": "view == playlist",
           "group": "navigation"
+        },
+        {
+          "command": "cloudmusic.clearQueue",
+          "when": "view == queue",
+          "group": "navigation"
+        },
+        {
+          "command": "cloudmusic.randomQueue",
+          "when": "view == queue",
+          "group": "navigation"
         }
       ],
       "view/item/context": [
         {
           "command": "cloudmusic.refreshPlaylistContent",
+          "when": "view == playlist && viewItem == PlaylistItemTreeItem",
+          "group": "inline"
+        },
+        {
+          "command": "cloudmusic.playPlaylist",
+          "when": "view == playlist && viewItem == PlaylistItemTreeItem",
+          "group": "inline"
+        },
+        {
+          "command": "cloudmusic.addPlaylist",
           "when": "view == playlist && viewItem == PlaylistItemTreeItem",
           "group": "inline"
         }
@@ -96,6 +148,7 @@
     "vscode-test": "^1.3.0"
   },
   "dependencies": {
-    "NeteaseCloudMusicApi": "^3.34.0"
+    "NeteaseCloudMusicApi": "^3.34.0",
+    "array-unsort": "^1.1.5"
   }
 }
