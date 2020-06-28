@@ -27,8 +27,12 @@ export class PlaylistProvider
 
   constructor() {}
 
-  refresh(): void {
-    this._onDidChangeTreeData.fire();
+  refresh(element?: PlaylistItemTreeItem): void {
+    if (element) {
+      this._onDidChangeTreeData.fire(element);
+    } else {
+      this._onDidChangeTreeData.fire();
+    }
   }
 
   getTreeItem(
@@ -70,7 +74,7 @@ export class PlaylistProvider
   }
 }
 
-class PlaylistItemTreeItem extends TreeItem {
+export class PlaylistItemTreeItem extends TreeItem {
   constructor(
     public readonly label: string,
     public readonly item: PlaylistItem,
@@ -89,6 +93,8 @@ class PlaylistItemTreeItem extends TreeItem {
     ${subscribedCount}
     `;
   }
+
+  contextValue = "PlaylistItemTreeItem";
 }
 
 class PlaylistContentTreeItem extends TreeItem {
@@ -104,4 +110,6 @@ class PlaylistContentTreeItem extends TreeItem {
   get tooltip(): string {
     return ``;
   }
+
+  contextValue = "PlaylistContentTreeItem";
 }

@@ -10,7 +10,7 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:cloudmusic.helloWorld"
+    "*"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -41,10 +41,38 @@
     },
     "commands": [
       {
-        "command": "cloudmusic.helloWorld",
-        "title": "Hello World"
+        "command": "cloudmusic.refreshPlaylist",
+        "title": "Refresh",
+        "icon": {
+          "light": "resources/light/refresh-black-48dp.svg",
+          "dark": "resources/dark/refresh-white-48dp.svg"
+        }
+      },
+      {
+        "command": "cloudmusic.refreshPlaylistContent",
+        "title": "Refresh",
+        "icon": {
+          "light": "resources/light/refresh-black-48dp.svg",
+          "dark": "resources/dark/refresh-white-48dp.svg"
+        }
       }
-    ]
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "cloudmusic.refreshPlaylist",
+          "when": "view == playlist",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "cloudmusic.refreshPlaylistContent",
+          "when": "view == playlist && viewItem == PlaylistItemTreeItem",
+          "group": "inline"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run compile",
