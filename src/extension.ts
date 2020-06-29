@@ -1,14 +1,22 @@
 import { commands, ExtensionContext, window } from "vscode";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  unlinkSync,
+  writeFileSync,
+} from "fs";
 import { ACCOUNT_FILE, SETTING_DIR } from "./constant/setting";
 import { AccountManager } from "./manager/accountManager";
-import { ButtonManager } from "./manager/buttonManager";
+import { ButtonLabel, ButtonManager } from "./manager/buttonManager";
 import {
   PlaylistItemTreeItem,
   PlaylistProvider,
   PlaylistContentTreeItem,
 } from "./provider/playlistProvider";
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
+import { mpv } from "./util/player";
+import { PlaylistManager } from "./manager/playlistManager";
 
 async function initAccount() {
   if (!existsSync(SETTING_DIR)) {
@@ -19,10 +27,10 @@ async function initAccount() {
       const { phone, account, password } = JSON.parse(
         readFileSync(ACCOUNT_FILE, "utf8")
       );
-      const accountManager = AccountManager.getInstance();
-      if (await accountManager.login(phone, account, password)) {
+      if (await AccountManager.login(phone, account, password)) {
         initPlaylistProvider();
         initQueueProvider();
+        initButtonManager();
       }
     } catch {}
   }
@@ -81,16 +89,19 @@ async function initQueueProvider() {
   commands.registerCommand("cloudmusic.clearQueue", () => {
     p.clear();
     p.refresh();
+    mpv.stop();
   });
   commands.registerCommand("cloudmusic.randomQueue", () => {
     p.random();
     p.refresh();
+    mpv.stop();
   });
   commands.registerCommand(
     "cloudmusic.playSong",
-    (element: QueueItemTreeItem) => {
-      p.play(element);
+    async (element: QueueItemTreeItem) => {
+      p.top(element);
       p.refresh();
+      mpv.load(await PlaylistManager.trackUrl(element.item.id));
     }
   );
   commands.registerCommand(
@@ -100,6 +111,17 @@ async function initQueueProvider() {
       p.refresh();
     }
   );
+}
+
+function initButtonManager() {
+  const buttonManager = ButtonManager.getInstance();
+  buttonManager.updateButton(
+    ButtonLabel.Account,
+    "$(account)",
+    AccountManager.nickname,
+    "cloudmusic.signout"
+  );
+  buttonManager.show();
 }
 
 export function activate(context: ExtensionContext) {
@@ -133,8 +155,7 @@ export function activate(context: ExtensionContext) {
           password: true,
         });
         if (password) {
-          const accountManager = AccountManager.getInstance();
-          if (await accountManager.login(method.phone, account, password)) {
+          if (await AccountManager.login(method.phone, account, password)) {
             writeFileSync(
               ACCOUNT_FILE,
               JSON.stringify({
@@ -145,6 +166,7 @@ export function activate(context: ExtensionContext) {
             );
             initPlaylistProvider();
             initQueueProvider();
+            initButtonManager();
           }
         }
       }
@@ -153,19 +175,71 @@ export function activate(context: ExtensionContext) {
 
   context.subscriptions.push(signin);
 
-  const singout = commands.registerCommand("cloudmusic.singout", async () => {
-    const accountManager = AccountManager.getInstance();
-    await accountManager.logout();
+  const signout = commands.registerCommand("cloudmusic.signout", async () => {
+    if (AccountManager.loggedIn) {
+      const method = await window.showQuickPick([
+        {
+          label: AccountManager.nickname,
+          description: "current user",
+        },
+        {
+          label: "Sign out",
+          description: "",
+        },
+      ]);
+      if (method && method.label === "Sign out") {
+        mpv.stop();
+        await AccountManager.logout();
+        try {
+          unlinkSync(ACCOUNT_FILE);
+        } catch {}
+
+        const buttonManager = ButtonManager.getInstance();
+        buttonManager.updateButton(
+          ButtonLabel.Account,
+          "$(account)",
+          "Account",
+          "cloudmusic.signin"
+        );
+        buttonManager.hide();
+
+        const playlistProvider = PlaylistProvider.getInstance();
+        playlistProvider.refresh();
+        const queueProvider = QueueProvider.getInstance();
+        queueProvider.clear();
+        queueProvider.refresh();
+      }
+    }
   });
 
-  context.subscriptions.push(singout);
+  context.subscriptions.push(signout);
 
-  const previous = commands.registerCommand(
-    "cloudmusic.previous",
-    async () => {}
-  );
-  const next = commands.registerCommand("cloudmusic.next", async () => {});
-  const play = commands.registerCommand("cloudmusic.play", async () => {});
+  const previous = commands.registerCommand("cloudmusic.previous", async () => {
+    const p = QueueProvider.getInstance();
+    p.shift(-1, async (elements: [number, QueueItemTreeItem][]) => {
+      mpv.load(await PlaylistManager.trackUrl(elements[0][1].item.id));
+    });
+    p.refresh();
+  });
+
+  const next = commands.registerCommand("cloudmusic.next", async () => {
+    const p = QueueProvider.getInstance();
+    p.shift(1, async (elements: [number, QueueItemTreeItem][]) => {
+      mpv.load(await PlaylistManager.trackUrl(elements[0][1].item.id));
+    });
+    p.refresh();
+  });
+
+  const play = commands.registerCommand("cloudmusic.play", async () => {
+    const buttonManager = ButtonManager.getInstance();
+    mpv.togglePause();
+    if (await mpv.isPaused()) {
+      buttonManager.updateButton(ButtonLabel.Play, "$(debug-pause)", "Pause");
+    } else {
+      buttonManager.updateButton(ButtonLabel.Play, "$(play)", "Play");
+    }
+  });
+
   const like = commands.registerCommand("cloudmusic.like", async () => {});
 
   context.subscriptions.push(previous);
@@ -174,6 +248,10 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(like);
 
   ButtonManager.getInstance();
+
+  mpv.start();
 }
 
-export function deactivate() {}
+export function deactivate() {
+  mpv.quit();
+}

@@ -20,14 +20,12 @@ export class ButtonManager {
   ];
 
   constructor() {
-    this.updateButton(0, "$(account)", "Account");
+    this.updateButton(0, "$(account)", "Account", "cloudmusic.signin");
     this.updateButton(1, "$(chevron-left)", "Previous", "cloudmusic.previous");
     this.updateButton(2, "$(play)", "Play", "cloudmusic.play");
     this.updateButton(3, "$(chevron-right)", "Next", "cloudmusic.next");
     this.updateButton(4, "$(star)", "star", "cloudmusic.like");
-    for (const button of this.buttons) {
-      button.show();
-    }
+    this.buttons[0].show();
   }
 
   static getInstance(): ButtonManager {
@@ -46,6 +44,22 @@ export class ButtonManager {
     this.buttons[index].tooltip = tooltip;
     if (command) {
       this.buttons[index].command = command;
+    }
+  }
+
+  clearButtonCommand(index: number) {
+    this.buttons[index].command = undefined;
+  }
+
+  show() {
+    for (let i = 1; i < this.buttons.length; ++i) {
+      this.buttons[i].show();
+    }
+  }
+
+  hide() {
+    for (let i = 1; i < this.buttons.length; ++i) {
+      this.buttons[i].hide();
     }
   }
 }
