@@ -8,6 +8,7 @@ import {
 import { solveSongItem } from "./util";
 
 const {
+  check_music,
   daily_signin,
   login_refresh,
   login_status,
@@ -18,6 +19,22 @@ const {
   song_url,
   user_playlist,
 } = require("NeteaseCloudMusicApi");
+
+export async function API_checkMusic(
+  id: number,
+  cookie: string
+): Promise<boolean> {
+  try {
+    const { status, body } = await check_music({ id, cookie });
+    if (status !== 200) {
+      return false;
+    }
+    const { success } = body;
+    return success;
+  } catch {
+    return false;
+  }
+}
 
 export async function API_dailySignin(): Promise<number> {
   try {
@@ -145,8 +162,8 @@ export async function API_songUrl(
   trackIds: number[],
   cookie: string,
   br?: number
-): Promise<string[]> {
-  let ret: string[] = [];
+): Promise<Map<number, string>> {
+  let ret: Map<number, string> = new Map<number, string>();
   try {
     for (let i = 0; i < trackIds.length; i += 64) {
       const { status, body } = await song_url({
@@ -158,7 +175,10 @@ export async function API_songUrl(
         continue;
       }
       const { data } = body;
-      ret = ret.concat(data.map((song: { url: string }) => song.url));
+      for (const song of data) {
+        const { id, url } = song;
+        ret.set(id, url);
+      }
     }
     return ret;
   } catch {

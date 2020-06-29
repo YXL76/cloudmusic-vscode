@@ -24,11 +24,7 @@ export class PlaylistManager {
     return await API_playmodeIntelligenceList(id, pid, AccountManager.cookie);
   }
 
-  static async trackUrl(id: number): Promise<string> {
-    return (await API_songUrl([id], AccountManager.cookie))[0];
-  }
-
-  static async trackUrls(id: number[]): Promise<string[]> {
+  static async trackUrls(id: number[]): Promise<Map<number, string>> {
     return await API_songUrl(id, AccountManager.cookie);
   }
 }

@@ -1,5 +1,4 @@
 import { QueueItem, songsItem } from "../constant/type";
-import { PlaylistManager } from "../manager/playlistManager";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 import { Player } from "./player";
 
@@ -19,5 +18,5 @@ export function solveSongItem(item: songsItem): QueueItem {
 }
 
 export async function playCallback(elements: [number, QueueItemTreeItem][]) {
-  Player.load(await PlaylistManager.trackUrl(elements[0][1].item.id));
+  Player.load(elements[0][1].url);
 }

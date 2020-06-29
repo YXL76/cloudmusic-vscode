@@ -64,6 +64,30 @@ export class PlaylistProvider
       : await this.getPlaylistItem();
   }
 
+  private async QueueItem2PlaylistContentTreeItem(
+    id: number,
+    songs: QueueItem[]
+  ): Promise<PlaylistContentTreeItem[]> {
+    const ids: number[] = songs.map((song) => song.id);
+    const urls = await PlaylistManager.trackUrls(ids);
+    let ret: PlaylistContentTreeItem[] = [];
+    for (const song of songs) {
+      const url = urls.get(song.id);
+      if (url) {
+        ret.push(
+          new PlaylistContentTreeItem(
+            `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
+            song,
+            url,
+            id,
+            TreeItemCollapsibleState.None
+          )
+        );
+      }
+    }
+    return ret;
+  }
+
   private async getPlaylistContent(
     id: number
   ): Promise<PlaylistContentTreeItem[]> {
@@ -72,14 +96,7 @@ export class PlaylistProvider
       return items;
     } else {
       const songs = await PlaylistManager.tracks(id);
-      const ret = songs.map((song) => {
-        return new PlaylistContentTreeItem(
-          `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
-          song,
-          id,
-          TreeItemCollapsibleState.None
-        );
-      });
+      const ret = await this.QueueItem2PlaylistContentTreeItem(id, songs);
       this.treeView.set(id, ret);
       return ret;
     }
@@ -101,14 +118,7 @@ export class PlaylistProvider
     pid: number
   ): Promise<PlaylistContentTreeItem[]> {
     const songs = await PlaylistManager.tracksIntelligence(id, pid);
-    return songs.map((song) => {
-      return new PlaylistContentTreeItem(
-        `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
-        song,
-        id,
-        TreeItemCollapsibleState.None
-      );
-    });
+    return await this.QueueItem2PlaylistContentTreeItem(id, songs);
   }
 
   async playPlaylist(
@@ -175,14 +185,20 @@ export class PlaylistContentTreeItem extends QueueItemTreeItem {
   constructor(
     public readonly label: string,
     public readonly item: QueueItem,
+    public readonly url: string,
     public readonly pid: number,
     public readonly collapsibleState: TreeItemCollapsibleState
   ) {
-    super(label, item, collapsibleState);
+    super(label, item, url, collapsibleState);
   }
 
   toQueueTreeItem(): QueueItemTreeItem {
-    return new QueueItemTreeItem(this.label, this.item, this.collapsibleState);
+    return new QueueItemTreeItem(
+      this.label,
+      this.item,
+      this.url,
+      this.collapsibleState
+    );
   }
 
   contextValue = "PlaylistContentTreeItem";

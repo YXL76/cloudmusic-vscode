@@ -100,7 +100,7 @@ async function initQueueProvider() {
     async (element: QueueItemTreeItem) => {
       p.top(element);
       p.refresh();
-      Player.load(await PlaylistManager.trackUrl(element.item.id));
+      Player.load(element.url);
     }
   );
   commands.registerCommand(
