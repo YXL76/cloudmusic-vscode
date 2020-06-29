@@ -150,7 +150,7 @@ export async function API_songUrl(
   try {
     for (let i = 0; i < trackIds.length; i += 64) {
       const { status, body } = await song_url({
-        ids: trackIds.slice(i, i + 64).join(","),
+        id: trackIds.slice(i, i + 64).join(","),
         br,
         cookie,
       });
