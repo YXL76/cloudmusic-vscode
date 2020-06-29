@@ -1,8 +1,8 @@
 import { commands, ExtensionContext, window } from "vscode";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { ACCOUNT_FILE, SETTING_DIR } from "./constant/setting";
-import { AccountManager } from "./api/accountManager";
-import { ButtonManager } from "./api/buttonManager";
+import { AccountManager } from "./manager/accountManager";
+import { ButtonManager } from "./manager/buttonManager";
 import {
   PlaylistItemTreeItem,
   PlaylistProvider,

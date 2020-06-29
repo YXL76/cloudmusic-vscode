@@ -8,8 +8,8 @@ import {
 import { join } from "path";
 import { QueueProvider, QueueItemTreeItem } from "./queueProvider";
 import { QueueItem, PlaylistItem } from "../constant/type";
-import { AccountManager } from "../api/accountManager";
-import { PlaylistManager } from "../api/playlistManager";
+import { AccountManager } from "../manager/accountManager";
+import { PlaylistManager } from "../manager/playlistManager";
 
 export class PlaylistProvider
   implements TreeDataProvider<PlaylistItemTreeItem | PlaylistContentTreeItem> {
