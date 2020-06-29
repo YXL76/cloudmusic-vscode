@@ -15,7 +15,7 @@ import {
   PlaylistContentTreeItem,
 } from "./provider/playlistProvider";
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
-import { mpv } from "./util/player";
+import { Player } from "./util/player";
 import { playCallback } from "./util/util";
 import { PlaylistManager } from "./manager/playlistManager";
 
@@ -88,19 +88,19 @@ async function initQueueProvider() {
   commands.registerCommand("cloudmusic.clearQueue", async () => {
     p.clear();
     p.refresh();
-    mpv.stop();
+    Player.stop();
   });
   commands.registerCommand("cloudmusic.randomQueue", async () => {
     p.random();
     p.refresh();
-    mpv.stop();
+    Player.stop();
   });
   commands.registerCommand(
     "cloudmusic.playSong",
     async (element: QueueItemTreeItem) => {
       p.top(element);
       p.refresh();
-      mpv.load(await PlaylistManager.trackUrl(element.item.id));
+      Player.load(await PlaylistManager.trackUrl(element.item.id));
     }
   );
   commands.registerCommand(
@@ -124,6 +124,8 @@ function initButtonManager() {
 }
 
 export function activate(context: ExtensionContext) {
+  Player.start();
+
   initAccount();
 
   const signin = commands.registerCommand("cloudmusic.signin", async () => {
@@ -187,7 +189,7 @@ export function activate(context: ExtensionContext) {
         },
       ]);
       if (method && method.label === "Sign out") {
-        mpv.stop();
+        Player.stop();
         await AccountManager.logout();
         try {
           unlinkSync(ACCOUNT_FILE);
@@ -226,13 +228,7 @@ export function activate(context: ExtensionContext) {
   });
 
   const play = commands.registerCommand("cloudmusic.play", async () => {
-    const buttonManager = ButtonManager.getInstance();
-    mpv.togglePause();
-    if (await mpv.isPaused()) {
-      buttonManager.updateButton(ButtonLabel.Play, "$(debug-pause)", "Pause");
-    } else {
-      buttonManager.updateButton(ButtonLabel.Play, "$(play)", "Play");
-    }
+    Player.togglePause();
   });
 
   const like = commands.registerCommand("cloudmusic.like", async () => {});
@@ -241,7 +237,7 @@ export function activate(context: ExtensionContext) {
       placeHolder: "Please enter volume between 0 and 100.",
     });
     if (volume && /^\d+$/.exec(volume)) {
-      mpv.volume(Number(volume));
+      Player.volume(Number(volume));
     }
   });
 
@@ -250,12 +246,8 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(play);
   context.subscriptions.push(like);
   context.subscriptions.push(volume);
-
-  ButtonManager.getInstance();
-
-  mpv.start();
 }
 
 export function deactivate() {
-  mpv.quit();
+  Player.quit();
 }
