@@ -15,6 +15,7 @@ const {
   playlist_detail,
   playmode_intelligence_list,
   song_detail,
+  song_url,
   user_playlist,
 } = require("NeteaseCloudMusicApi");
 
@@ -133,6 +134,31 @@ export async function API_songDetail(
       }
       const { songs } = body;
       ret = ret.concat(songs.map((song: songsItem) => solveSongItem(song)));
+    }
+    return ret;
+  } catch {
+    return ret;
+  }
+}
+
+export async function API_songUrl(
+  trackIds: number[],
+  cookie: string,
+  br?: number
+): Promise<string[]> {
+  let ret: string[] = [];
+  try {
+    for (let i = 0; i < trackIds.length; i += 64) {
+      const { status, body } = await song_url({
+        ids: trackIds.slice(i, i + 64).join(","),
+        br,
+        cookie,
+      });
+      if (status !== 200) {
+        continue;
+      }
+      const { data } = body;
+      ret = ret.concat(data.map((song: { url: string }) => song.url));
     }
     return ret;
   } catch {
