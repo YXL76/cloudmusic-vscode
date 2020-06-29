@@ -25,8 +25,6 @@ export class PlaylistProvider
     PlaylistItemTreeItem | PlaylistContentTreeItem | undefined | void
   > = this._onDidChangeTreeData.event;
 
-  private accountManager: AccountManager = AccountManager.getInstance();
-  private playlistManager: PlaylistManager = PlaylistManager.getInstance();
   private queueProvider: QueueProvider = QueueProvider.getInstance();
 
   private treeView: Map<number, PlaylistContentTreeItem[]> = new Map<
@@ -73,7 +71,7 @@ export class PlaylistProvider
     if (items) {
       return items;
     } else {
-      const songs = await this.playlistManager.tracks(id);
+      const songs = await PlaylistManager.tracks(id);
       const ret = songs.map((song) => {
         return new PlaylistContentTreeItem(
           `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
@@ -88,7 +86,7 @@ export class PlaylistProvider
   }
 
   private async getPlaylistItem(): Promise<PlaylistItemTreeItem[]> {
-    const playlists = await this.accountManager.playlist();
+    const playlists = await AccountManager.playlist();
     return playlists.map((playlist) => {
       return new PlaylistItemTreeItem(
         playlist.name,
@@ -102,7 +100,7 @@ export class PlaylistProvider
     id: number,
     pid: number
   ): Promise<PlaylistContentTreeItem[]> {
-    const songs = await this.playlistManager.tracksIntelligence(id, pid);
+    const songs = await PlaylistManager.tracksIntelligence(id, pid);
     return songs.map((song) => {
       return new PlaylistContentTreeItem(
         `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
@@ -117,7 +115,7 @@ export class PlaylistProvider
     this.queueProvider.clear();
     this.queueProvider.add(await this.getPlaylistContent(id));
     if (index) {
-      this.queueProvider.shift(index.toQueueTreeItem());
+      this.queueProvider.top(index.toQueueTreeItem());
     }
     this.queueProvider.refresh();
   }

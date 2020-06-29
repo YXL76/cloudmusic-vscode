@@ -21,7 +21,7 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     QueueItemTreeItem | undefined | void
   > = this._onDidChangeTreeData.event;
 
-  public songs: Map<number, QueueItemTreeItem> = new Map<
+  private songs: Map<number, QueueItemTreeItem> = new Map<
     number,
     QueueItemTreeItem
   >();
@@ -42,9 +42,7 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     return element;
   }
 
-  async getChildren(
-    _element?: QueueItemTreeItem
-  ): Promise<QueueItemTreeItem[]> {
+  getChildren(_element?: QueueItemTreeItem): QueueItemTreeItem[] {
     return [...this.songs.values()];
   }
 
@@ -56,12 +54,21 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     this.songs = new Map(unsortInplace([...this.songs]));
   }
 
-  shift(element: QueueItemTreeItem) {
-    const index = [...this.songs.keys()].indexOf(element.item.id);
+  top(element: QueueItemTreeItem) {
+    this.shift([...this.songs.keys()].indexOf(element.item.id));
+  }
+
+  shift(index: number, callback?: Function) {
     if (index !== 0) {
       const previous = [...this.songs];
+      while (index < 0) {
+        index += previous.length;
+      }
       const current = previous.slice(index).concat(previous.slice(0, index));
       this.songs = new Map(current);
+      if (callback) {
+        callback(current);
+      }
     }
   }
 
@@ -73,10 +80,6 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
 
   delete(id: number) {
     this.songs.delete(id);
-  }
-
-  play(element: QueueItemTreeItem) {
-    this.shift(element);
   }
 }
 
