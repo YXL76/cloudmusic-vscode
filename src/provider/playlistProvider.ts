@@ -36,8 +36,10 @@ export class PlaylistProvider
 
   refresh(element?: PlaylistItemTreeItem): void {
     if (element) {
+      this.treeView.delete(element.item.id);
       this._onDidChangeTreeData.fire(element);
     } else {
+      this.treeView.clear();
       this._onDidChangeTreeData.fire();
     }
   }
@@ -58,12 +60,7 @@ export class PlaylistProvider
 
   async playPlaylist(id: number, index?: PlaylistContentTreeItem) {
     this.queueProvider.clear();
-    const items = this.treeView.get(id);
-    if (items) {
-      this.queueProvider.add(items);
-    } else {
-      this.queueProvider.add(await this.getPlaylistContent(id));
-    }
+    this.queueProvider.add(await this.getPlaylistContent(id));
     if (index) {
       this.queueProvider.shift(index.toQueueTreeItem());
     }
@@ -71,29 +68,29 @@ export class PlaylistProvider
   }
 
   async addPlaylist(id: number) {
-    const items = this.treeView.get(id);
-    if (items) {
-      this.queueProvider.add(items);
-    } else {
-      this.queueProvider.add(await this.getPlaylistContent(id));
-    }
+    this.queueProvider.add(await this.getPlaylistContent(id));
     this.queueProvider.refresh();
   }
 
   private async getPlaylistContent(
     id: number
   ): Promise<PlaylistContentTreeItem[]> {
-    const songs = await this.playlistManager.tracks(id);
-    const ret = songs.map((song) => {
-      return new PlaylistContentTreeItem(
-        `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
-        song,
-        id,
-        TreeItemCollapsibleState.None
-      );
-    });
-    this.treeView.set(id, ret);
-    return ret;
+    const items = this.treeView.get(id);
+    if (items) {
+      return items;
+    } else {
+      const songs = await this.playlistManager.tracks(id);
+      const ret = songs.map((song) => {
+        return new PlaylistContentTreeItem(
+          `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
+          song,
+          id,
+          TreeItemCollapsibleState.None
+        );
+      });
+      this.treeView.set(id, ret);
+      return ret;
+    }
   }
 
   private async getPlaylistItem(): Promise<PlaylistItemTreeItem[]> {
@@ -145,32 +142,19 @@ export class PlaylistItemTreeItem extends TreeItem {
   contextValue = "PlaylistItemTreeItem";
 }
 
-export class PlaylistContentTreeItem extends TreeItem {
+export class PlaylistContentTreeItem extends QueueTreeItem {
   constructor(
     public readonly label: string,
     public readonly item: PlaylistContent,
     public readonly pid: number,
     public readonly collapsibleState: TreeItemCollapsibleState
   ) {
-    super(label, collapsibleState);
-  }
-
-  get tooltip(): string {
-    return ``;
-  }
-
-  get description(): string {
-    return this.item.arName;
+    super(label, item, collapsibleState);
   }
 
   toQueueTreeItem(): QueueTreeItem {
     return new QueueTreeItem(this.label, this.item, this.collapsibleState);
   }
-
-  iconPath = {
-    light: join(__filename, "../../..", "resources", "light", "music.svg"),
-    dark: join(__filename, "../../..", "resources", "dark", "music.svg"),
-  };
 
   contextValue = "PlaylistContentTreeItem";
 }
