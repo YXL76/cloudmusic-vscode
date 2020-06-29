@@ -17,7 +17,6 @@ import {
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
 import { Player } from "./util/player";
 import { playCallback } from "./util/util";
-import { PlaylistManager } from "./manager/playlistManager";
 
 async function initAccount() {
   if (!existsSync(SETTING_DIR)) {

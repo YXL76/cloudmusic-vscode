@@ -73,15 +73,15 @@ export class AccountManager {
   }
 
   static async loginRefresh() {
-    await API_loginRefresh(this.cookie);
+    await API_loginRefresh();
   }
 
   static async loginStatus() {
-    await API_loginStatus(this.cookie);
+    await API_loginStatus();
   }
 
   static async logout() {
-    if (await API_logout(this.cookie)) {
+    if (await API_logout()) {
       this.loggedIn = true;
       this.cookie = "";
       this.uid = 0;
@@ -90,6 +90,6 @@ export class AccountManager {
   }
 
   static async playlist(): Promise<PlaylistItem[]> {
-    return await API_userPlaylist(this.uid, this.cookie);
+    return await API_userPlaylist();
   }
 }
