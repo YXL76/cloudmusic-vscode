@@ -58,20 +58,6 @@ export class PlaylistProvider
       : await this.getPlaylistItem();
   }
 
-  async playPlaylist(id: number, index?: PlaylistContentTreeItem) {
-    this.queueProvider.clear();
-    this.queueProvider.add(await this.getPlaylistContent(id));
-    if (index) {
-      this.queueProvider.shift(index.toQueueTreeItem());
-    }
-    this.queueProvider.refresh();
-  }
-
-  async addPlaylist(id: number) {
-    this.queueProvider.add(await this.getPlaylistContent(id));
-    this.queueProvider.refresh();
-  }
-
   private async getPlaylistContent(
     id: number
   ): Promise<PlaylistContentTreeItem[]> {
@@ -102,6 +88,44 @@ export class PlaylistProvider
         TreeItemCollapsibleState.Collapsed
       );
     });
+  }
+
+  private async getPlaylistContentIntelligence(
+    id: number,
+    pid: number
+  ): Promise<PlaylistContentTreeItem[]> {
+    const songs = await this.playlistManager.tracksIntelligence(id, pid);
+    return songs.map((song) => {
+      return new PlaylistContentTreeItem(
+        `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
+        song,
+        id,
+        TreeItemCollapsibleState.None
+      );
+    });
+  }
+
+  async playPlaylist(id: number, index?: PlaylistContentTreeItem) {
+    this.queueProvider.clear();
+    this.queueProvider.add(await this.getPlaylistContent(id));
+    if (index) {
+      this.queueProvider.shift(index.toQueueTreeItem());
+    }
+    this.queueProvider.refresh();
+  }
+
+  async addPlaylist(id: number) {
+    this.queueProvider.add(await this.getPlaylistContent(id));
+    this.queueProvider.refresh();
+  }
+
+  async intelligence(element: PlaylistContentTreeItem) {
+    this.queueProvider.clear();
+    this.queueProvider.add([element]);
+    this.queueProvider.add(
+      await this.getPlaylistContentIntelligence(element.item.id, element.pid)
+    );
+    this.queueProvider.refresh();
   }
 
   addSong(element: PlaylistContentTreeItem) {

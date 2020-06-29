@@ -89,6 +89,14 @@
         }
       },
       {
+        "command": "cloudmusic.intelligence",
+        "title": "Intelligence",
+        "icon": {
+          "light": "resources/light/activity.svg",
+          "dark": "resources/dark/activity.svg"
+        }
+      },
+      {
         "command": "cloudmusic.addSong",
         "title": "Add",
         "icon": {
@@ -157,6 +165,11 @@
         },
         {
           "command": "cloudmusic.addSong",
+          "when": "view == playlist && viewItem == PlaylistContentTreeItem",
+          "group": "inline"
+        },
+        {
+          "command": "cloudmusic.intelligence",
           "when": "view == playlist && viewItem == PlaylistContentTreeItem",
           "group": "inline"
         },

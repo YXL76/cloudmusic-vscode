@@ -1,6 +1,10 @@
 import { AccountManager } from "./accountManager";
 import { QueueItem } from "../constant/type";
-import { API_playlistDetail, API_songDetail } from "../util/api";
+import {
+  API_playlistDetail,
+  API_playmodeIntelligenceList,
+  API_songDetail,
+} from "../util/api";
 
 export class PlaylistManager {
   private static instance: PlaylistManager;
@@ -17,6 +21,14 @@ export class PlaylistManager {
   async tracks(id: number): Promise<QueueItem[]> {
     return await API_songDetail(
       await API_playlistDetail(id, this.accountManager.cookie),
+      this.accountManager.cookie
+    );
+  }
+
+  async tracksIntelligence(id: number, pid: number): Promise<QueueItem[]> {
+    return await API_playmodeIntelligenceList(
+      id,
+      pid,
       this.accountManager.cookie
     );
   }
