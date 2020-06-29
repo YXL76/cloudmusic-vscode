@@ -479,6 +479,11 @@ cross-spawn@^6.0.5:
     shebang-command "^1.2.0"
     which "^1.2.9"
 
+cuid@^2.1.1:
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/cuid/-/cuid-2.1.8.tgz#cbb88f954171e0d5747606c0139fb65c5101eac0"
+  integrity sha512-xiEMER6E7TlTPnDxrM4eRiC6TRgjNX9xzEZ5U/Se2YJKr7Mq4pJn/2XEHjl3STcSh96GmkHPcBXLES8M29wyyg==
+
 dashdash@^1.12.0:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/dashdash/-/dashdash-1.14.1.tgz#853cfa0f7cbe2fed5de20326b8dd581035f6e2f0"
@@ -1516,6 +1521,13 @@ node-environment-flags@1.0.6:
   dependencies:
     object.getownpropertydescriptors "^2.0.3"
     semver "^5.7.0"
+
+node-mpv-km@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/node-mpv-km/-/node-mpv-km-2.0.2.tgz#f031d8b4c24d71928cca3621edded23b7c3240b0"
+  integrity sha512-octgV2BJ/4fG/+mdE36u+8jDq5ZTFOo6SNraP6na4UZD1mkEDuuaVVp5tJ98EDmBB1Tg4x7oThOYZXF/tus9Rw==
+  dependencies:
+    cuid "^2.1.1"
 
 normalize-path@^3.0.0, normalize-path@~3.0.0:
   version "3.0.0"
