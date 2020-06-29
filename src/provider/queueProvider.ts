@@ -59,16 +59,14 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   }
 
   shift(index: number, callback?: Function) {
-    if (index !== 0) {
-      const previous = [...this.songs];
-      while (index < 0) {
-        index += previous.length;
-      }
-      const current = previous.slice(index).concat(previous.slice(0, index));
-      this.songs = new Map(current);
-      if (callback) {
-        callback(current);
-      }
+    const previous = [...this.songs];
+    while (index < 0) {
+      index += previous.length;
+    }
+    const current = previous.slice(index).concat(previous.slice(0, index));
+    this.songs = new Map(current);
+    if (callback) {
+      callback(current);
     }
   }
 

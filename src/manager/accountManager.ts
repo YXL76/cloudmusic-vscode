@@ -11,7 +11,7 @@ const { login, login_cellphone } = require("NeteaseCloudMusicApi");
 
 export class AccountManager {
   public static loggedIn: boolean = false;
-  public static cookie: string[] = [];
+  public static cookie: string = "";
   public static uid: number = 0;
   public static nickname: string = "";
 
@@ -46,7 +46,7 @@ export class AccountManager {
       return true;
     }
     try {
-      const { status, body, cookie } = phone
+      const { status, body } = phone
         ? await login_cellphone({
             phone: account,
             password: encodeURIComponent(password),
@@ -57,7 +57,7 @@ export class AccountManager {
           });
 
       if (status === 200) {
-        const { profile } = body;
+        const { cookie, profile } = body;
         const { userId, nickname } = profile;
         this.loggedIn = true;
         this.cookie = cookie;
@@ -83,7 +83,7 @@ export class AccountManager {
   static async logout() {
     if (await API_logout()) {
       this.loggedIn = true;
-      this.cookie = [];
+      this.cookie = "";
       this.uid = 0;
       this.nickname = "";
     }
