@@ -49,6 +49,22 @@
         "title": "Cloudmusic: Daily sign in"
       },
       {
+        "command": "cloudmusic.previous",
+        "title": "Cloudmusic: Previous"
+      },
+      {
+        "command": "cloudmusic.next",
+        "title": "Cloudmusic: Next"
+      },
+      {
+        "command": "cloudmusic.play",
+        "title": "Cloudmusic: Play"
+      },
+      {
+        "command": "cloudmusic.like",
+        "title": "Cloudmusic: Like"
+      },
+      {
         "command": "cloudmusic.refreshPlaylist",
         "title": "Refresh",
         "icon": {

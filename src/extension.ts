@@ -2,6 +2,7 @@ import { commands, ExtensionContext, window } from "vscode";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import { ACCOUNT_FILE, SETTING_DIR } from "./constant/setting";
 import { AccountManager } from "./api/accountManager";
+import { ButtonManager } from "./api/buttonManager";
 import {
   PlaylistItemTreeItem,
   PlaylistProvider,
@@ -20,8 +21,8 @@ async function initAccount() {
       );
       const accountManager = AccountManager.getInstance();
       if (await accountManager.login(phone, account, password)) {
-        await initPlaylistProvider();
-        await initQueueProvider();
+        initPlaylistProvider();
+        initQueueProvider();
       }
     } catch {}
   }
@@ -142,8 +143,8 @@ export function activate(context: ExtensionContext) {
                 password,
               })
             );
-            await initPlaylistProvider();
-            await initQueueProvider();
+            initPlaylistProvider();
+            initQueueProvider();
           }
         }
       }
@@ -158,6 +159,21 @@ export function activate(context: ExtensionContext) {
   });
 
   context.subscriptions.push(singout);
+
+  const previous = commands.registerCommand(
+    "cloudmusic.previous",
+    async () => {}
+  );
+  const next = commands.registerCommand("cloudmusic.next", async () => {});
+  const play = commands.registerCommand("cloudmusic.play", async () => {});
+  const like = commands.registerCommand("cloudmusic.like", async () => {});
+
+  context.subscriptions.push(previous);
+  context.subscriptions.push(next);
+  context.subscriptions.push(play);
+  context.subscriptions.push(like);
+
+  ButtonManager.getInstance();
 }
 
 export function deactivate() {}
