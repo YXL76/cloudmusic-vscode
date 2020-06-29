@@ -88,16 +88,16 @@
         "command": "cloudmusic.playPlaylist",
         "title": "Play",
         "icon": {
-          "light": "resources/light/play-circle.svg",
-          "dark": "resources/dark/play-circle.svg"
+          "light": "resources/light/play.svg",
+          "dark": "resources/dark/play.svg"
         }
       },
       {
         "command": "cloudmusic.addPlaylist",
         "title": "Add",
         "icon": {
-          "light": "resources/light/plus-circle.svg",
-          "dark": "resources/dark/plus-circle.svg"
+          "light": "resources/light/plus.svg",
+          "dark": "resources/dark/plus.svg"
         }
       },
       {
@@ -128,32 +128,32 @@
         "command": "cloudmusic.addSong",
         "title": "Add",
         "icon": {
-          "light": "resources/light/plus-circle.svg",
-          "dark": "resources/dark/plus-circle.svg"
+          "light": "resources/light/plus.svg",
+          "dark": "resources/dark/plus.svg"
         }
       },
       {
         "command": "cloudmusic.playSongWithPlaylist",
         "title": "Play",
         "icon": {
-          "light": "resources/light/play-circle.svg",
-          "dark": "resources/dark/play-circle.svg"
+          "light": "resources/light/play.svg",
+          "dark": "resources/dark/play.svg"
         }
       },
       {
         "command": "cloudmusic.playSong",
         "title": "Play",
         "icon": {
-          "light": "resources/light/play-circle.svg",
-          "dark": "resources/dark/play-circle.svg"
+          "light": "resources/light/play.svg",
+          "dark": "resources/dark/play.svg"
         }
       },
       {
         "command": "cloudmusic.deleteSong",
-        "title": "Play",
+        "title": "Delete",
         "icon": {
-          "light": "resources/light/x-circle.svg",
-          "dark": "resources/dark/x-circle.svg"
+          "light": "resources/light/minus.svg",
+          "dark": "resources/dark/minus.svg"
         }
       }
     ],
