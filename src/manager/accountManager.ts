@@ -10,22 +10,14 @@ import {
 const { login, login_cellphone } = require("NeteaseCloudMusicApi");
 
 export class AccountManager {
-  private static instance: AccountManager;
-
-  public loggedIn: boolean = false;
-  public cookie: string = "";
-  public uid: number = 0;
-  public nickname: string = "";
+  public static loggedIn: boolean = false;
+  public static cookie: string = "";
+  public static uid: number = 0;
+  public static nickname: string = "";
 
   constructor() {}
 
-  static getInstance(): AccountManager {
-    return this.instance
-      ? this.instance
-      : (this.instance = new AccountManager());
-  }
-
-  async dailySignin() {
+  static async dailySignin() {
     if (this.loggedIn) {
       const code = await API_dailySignin();
       switch (code) {
@@ -44,7 +36,7 @@ export class AccountManager {
     }
   }
 
-  async login(
+  static async login(
     phone: boolean,
     account: string,
     password: string
@@ -80,21 +72,21 @@ export class AccountManager {
     }
   }
 
-  async loginRefresh() {
+  static async loginRefresh() {
     await API_loginRefresh(this.cookie);
   }
 
-  async loginStatus() {
+  static async loginStatus() {
     await API_loginStatus(this.cookie);
   }
 
-  async logout() {
+  static async logout() {
     if (await API_logout(this.cookie)) {
       this.loggedIn = false;
     }
   }
 
-  async playlist(): Promise<PlaylistItem[]> {
+  static async playlist(): Promise<PlaylistItem[]> {
     return await API_userPlaylist(this.uid, this.cookie);
   }
 }
