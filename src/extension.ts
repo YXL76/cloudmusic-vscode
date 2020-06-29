@@ -17,6 +17,7 @@ import {
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
 import { mpv } from "./util/player";
 import { PlaylistManager } from "./manager/playlistManager";
+import { isNumber } from "util";
 
 async function initAccount() {
   if (!existsSync(SETTING_DIR)) {
@@ -241,11 +242,20 @@ export function activate(context: ExtensionContext) {
   });
 
   const like = commands.registerCommand("cloudmusic.like", async () => {});
+  const volume = commands.registerCommand("cloudmusic.volume", async () => {
+    const volume = await window.showInputBox({
+      placeHolder: "Please enter volume between 0 and 100.",
+    });
+    if (volume && /^\d+$/.exec(volume)) {
+      mpv.volume(Number(volume));
+    }
+  });
 
   context.subscriptions.push(previous);
   context.subscriptions.push(next);
   context.subscriptions.push(play);
   context.subscriptions.push(like);
+  context.subscriptions.push(volume);
 
   ButtonManager.getInstance();
 

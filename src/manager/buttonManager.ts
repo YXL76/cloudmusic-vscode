@@ -6,6 +6,7 @@ export enum ButtonLabel {
   Play,
   Next,
   Like,
+  Volume,
 }
 
 export class ButtonManager {
@@ -17,6 +18,7 @@ export class ButtonManager {
     window.createStatusBarItem(StatusBarAlignment.Left, 510),
     window.createStatusBarItem(StatusBarAlignment.Left, 509),
     window.createStatusBarItem(StatusBarAlignment.Left, 508),
+    window.createStatusBarItem(StatusBarAlignment.Left, 507),
   ];
 
   constructor() {
@@ -24,7 +26,8 @@ export class ButtonManager {
     this.updateButton(1, "$(chevron-left)", "Previous", "cloudmusic.previous");
     this.updateButton(2, "$(play)", "Play", "cloudmusic.play");
     this.updateButton(3, "$(chevron-right)", "Next", "cloudmusic.next");
-    this.updateButton(4, "$(star)", "star", "cloudmusic.like");
+    this.updateButton(4, "$(star)", "Star", "cloudmusic.like");
+    this.updateButton(5, "$(unmute)", "Volume", "cloudmusic.volume");
     this.buttons[0].show();
   }
 

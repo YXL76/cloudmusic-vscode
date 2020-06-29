@@ -65,6 +65,10 @@
         "title": "Cloudmusic: Like"
       },
       {
+        "command": "cloudmusic.volume",
+        "title": "Cloudmusic: Volume"
+      },
+      {
         "command": "cloudmusic.refreshPlaylist",
         "title": "Refresh",
         "icon": {
