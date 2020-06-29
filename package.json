@@ -26,10 +26,6 @@
     "views": {
       "cloudmusic": [
         {
-          "id": "account",
-          "name": "account"
-        },
-        {
           "id": "playlist",
           "name": "playlist"
         },
@@ -40,6 +36,18 @@
       ]
     },
     "commands": [
+      {
+        "command": "cloudmusic.signin",
+        "title": "Cloudmusic: Sign in"
+      },
+      {
+        "command": "cloudmusic.signout",
+        "title": "Cloudmusic: Sign Out"
+      },
+      {
+        "command": "cloudmusic.dailySignin",
+        "title": "Cloudmusic: Daily sign in"
+      },
       {
         "command": "cloudmusic.refreshPlaylist",
         "title": "Refresh",

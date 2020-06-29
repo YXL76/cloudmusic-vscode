@@ -13,6 +13,8 @@ import { PlaylistManager } from "../api/playlistManager";
 
 export class PlaylistProvider
   implements TreeDataProvider<PlaylistItemTreeItem | PlaylistContentTreeItem> {
+  private static instance: PlaylistProvider;
+
   private _onDidChangeTreeData: EventEmitter<
     PlaylistItemTreeItem | PlaylistContentTreeItem | undefined | void
   > = new EventEmitter<
@@ -33,6 +35,12 @@ export class PlaylistProvider
   >();
 
   constructor() {}
+
+  static getInstance(): PlaylistProvider {
+    return this.instance
+      ? this.instance
+      : (this.instance = new PlaylistProvider());
+  }
 
   refresh(element?: PlaylistItemTreeItem): void {
     if (element) {
@@ -133,9 +141,9 @@ export class PlaylistProvider
     this.queueProvider.refresh();
   }
 
-  playSongWithPlaylist(element: PlaylistContentTreeItem) {
+  async playSongWithPlaylist(element: PlaylistContentTreeItem) {
     this.queueProvider.clear();
-    this.playPlaylist(element.pid, element);
+    await this.playPlaylist(element.pid, element);
   }
 }
 

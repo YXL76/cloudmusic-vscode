@@ -12,10 +12,6 @@ const { login, login_cellphone } = require("NeteaseCloudMusicApi");
 export class AccountManager {
   private static instance: AccountManager;
 
-  private phone: boolean = false;
-  private account: string = "";
-  private password: string = "";
-
   public loggedIn: boolean = false;
   public cookie: string = "";
   public uid: number = 0;
@@ -27,12 +23,6 @@ export class AccountManager {
     return this.instance
       ? this.instance
       : (this.instance = new AccountManager());
-  }
-
-  update(phone: boolean, account: string, password: string) {
-    this.phone = phone;
-    this.account = account;
-    this.password = password;
   }
 
   async dailySignin() {
@@ -54,19 +44,24 @@ export class AccountManager {
     }
   }
 
-  async login(): Promise<boolean> {
+  async login(
+    phone: boolean,
+    account: string,
+    password: string
+  ): Promise<boolean> {
     if (this.loggedIn) {
+      window.showInformationMessage("已登录");
       return true;
     }
     try {
-      const { status, body } = this.phone
+      const { status, body } = phone
         ? await login_cellphone({
-            phone: this.account,
-            password: this.password,
+            phone: account,
+            password: encodeURIComponent(password),
           })
         : await login({
-            username: this.account,
-            password: this.password,
+            username: account,
+            password: encodeURIComponent(password),
           });
 
       if (status === 200) {
@@ -76,6 +71,7 @@ export class AccountManager {
         this.cookie = cookie;
         this.uid = userId;
         this.nickname = nickname;
+        window.showInformationMessage("登录成功");
         return true;
       }
       return false;
