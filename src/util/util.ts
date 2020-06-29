@@ -1,4 +1,7 @@
 import { QueueItem, songsItem } from "../constant/type";
+import { PlaylistManager } from "../manager/playlistManager";
+import { QueueItemTreeItem } from "../provider/queueProvider";
+import { mpv } from "./player";
 
 export function solveSongItem(item: songsItem): QueueItem {
   const { name, id, alia, ar } = item;
@@ -13,4 +16,8 @@ export function solveSongItem(item: songsItem): QueueItem {
     alia: alia ? alia[0] : "",
     arName,
   };
+}
+
+export async function playCallback(elements: [number, QueueItemTreeItem][]) {
+  mpv.load(await PlaylistManager.trackUrl(elements[0][1].item.id));
 }

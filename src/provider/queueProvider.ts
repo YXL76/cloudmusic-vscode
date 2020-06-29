@@ -54,8 +54,8 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     this.songs = new Map(unsortInplace([...this.songs]));
   }
 
-  top(element: QueueItemTreeItem) {
-    this.shift([...this.songs.keys()].indexOf(element.item.id));
+  top(element: QueueItemTreeItem, callback?: Function) {
+    this.shift([...this.songs.keys()].indexOf(element.item.id), callback);
   }
 
   shift(index: number, callback?: Function) {

@@ -16,8 +16,8 @@ import {
 } from "./provider/playlistProvider";
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
 import { mpv } from "./util/player";
+import { playCallback } from "./util/util";
 import { PlaylistManager } from "./manager/playlistManager";
-import { isNumber } from "util";
 
 async function initAccount() {
   if (!existsSync(SETTING_DIR)) {
@@ -54,17 +54,15 @@ async function initPlaylistProvider() {
   );
   commands.registerCommand(
     "cloudmusic.playPlaylist",
-    async (element: PlaylistItemTreeItem) =>
-      await p.playPlaylist(element.item.id)
+    (element: PlaylistItemTreeItem) => p.playPlaylist(element.item.id)
   );
   commands.registerCommand(
     "cloudmusic.addPlaylist",
-    async (element: PlaylistItemTreeItem) =>
-      await p.addPlaylist(element.item.id)
+    (element: PlaylistItemTreeItem) => p.addPlaylist(element.item.id)
   );
   commands.registerCommand(
     "cloudmusic.intelligence",
-    async (element: PlaylistContentTreeItem) => await p.intelligence(element)
+    (element: PlaylistContentTreeItem) => p.intelligence(element)
   );
   commands.registerCommand(
     "cloudmusic.addSong",
@@ -72,8 +70,8 @@ async function initPlaylistProvider() {
   );
   commands.registerCommand(
     "cloudmusic.playSongWithPlaylist",
-    async (element: PlaylistContentTreeItem) =>
-      await p.playSongWithPlaylist(element)
+    (element: PlaylistContentTreeItem) =>
+      p.playPlaylist(element.pid, element, playCallback)
   );
 }
 
@@ -87,12 +85,12 @@ async function initQueueProvider() {
 
   const p = QueueProvider.getInstance();
   window.registerTreeDataProvider("queue", p);
-  commands.registerCommand("cloudmusic.clearQueue", () => {
+  commands.registerCommand("cloudmusic.clearQueue", async () => {
     p.clear();
     p.refresh();
     mpv.stop();
   });
-  commands.registerCommand("cloudmusic.randomQueue", () => {
+  commands.registerCommand("cloudmusic.randomQueue", async () => {
     p.random();
     p.refresh();
     mpv.stop();
@@ -217,17 +215,13 @@ export function activate(context: ExtensionContext) {
 
   const previous = commands.registerCommand("cloudmusic.previous", async () => {
     const p = QueueProvider.getInstance();
-    p.shift(-1, async (elements: [number, QueueItemTreeItem][]) => {
-      mpv.load(await PlaylistManager.trackUrl(elements[0][1].item.id));
-    });
+    p.shift(-1, playCallback);
     p.refresh();
   });
 
   const next = commands.registerCommand("cloudmusic.next", async () => {
     const p = QueueProvider.getInstance();
-    p.shift(1, async (elements: [number, QueueItemTreeItem][]) => {
-      mpv.load(await PlaylistManager.trackUrl(elements[0][1].item.id));
-    });
+    p.shift(1, playCallback);
     p.refresh();
   });
 

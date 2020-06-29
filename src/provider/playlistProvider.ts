@@ -111,11 +111,15 @@ export class PlaylistProvider
     });
   }
 
-  async playPlaylist(id: number, index?: PlaylistContentTreeItem) {
+  async playPlaylist(
+    id: number,
+    index?: PlaylistContentTreeItem,
+    callback?: Function
+  ) {
     this.queueProvider.clear();
     this.queueProvider.add(await this.getPlaylistContent(id));
     if (index) {
-      this.queueProvider.top(index.toQueueTreeItem());
+      this.queueProvider.top(index.toQueueTreeItem(), callback);
     }
     this.queueProvider.refresh();
   }
@@ -137,11 +141,6 @@ export class PlaylistProvider
   addSong(element: PlaylistContentTreeItem) {
     this.queueProvider.add([element]);
     this.queueProvider.refresh();
-  }
-
-  async playSongWithPlaylist(element: PlaylistContentTreeItem) {
-    this.queueProvider.clear();
-    await this.playPlaylist(element.pid, element);
   }
 }
 
