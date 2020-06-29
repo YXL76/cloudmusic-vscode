@@ -167,12 +167,12 @@
         },
         {
           "command": "cloudmusic.playSong",
-          "when": "view == queue && viewItem == QueueTreeItem",
+          "when": "view == queue && viewItem == QueueItemTreeItem",
           "group": "inline"
         },
         {
           "command": "cloudmusic.deleteSong",
-          "when": "view == queue && viewItem == QueueTreeItem",
+          "when": "view == queue && viewItem == QueueItemTreeItem",
           "group": "inline"
         }
       ]

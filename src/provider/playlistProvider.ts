@@ -6,8 +6,8 @@ import {
   TreeItemCollapsibleState,
 } from "vscode";
 import { join } from "path";
-import { QueueProvider, QueueTreeItem } from "./queueProvider";
-import { PlaylistContent, PlaylistItem } from "../constant/type";
+import { QueueProvider, QueueItemTreeItem } from "./queueProvider";
+import { QueueItem, PlaylistItem } from "../constant/type";
 import { AccountManager } from "../api/accountManager";
 import { PlaylistManager } from "../api/playlistManager";
 
@@ -142,18 +142,18 @@ export class PlaylistItemTreeItem extends TreeItem {
   contextValue = "PlaylistItemTreeItem";
 }
 
-export class PlaylistContentTreeItem extends QueueTreeItem {
+export class PlaylistContentTreeItem extends QueueItemTreeItem {
   constructor(
     public readonly label: string,
-    public readonly item: PlaylistContent,
+    public readonly item: QueueItem,
     public readonly pid: number,
     public readonly collapsibleState: TreeItemCollapsibleState
   ) {
     super(label, item, collapsibleState);
   }
 
-  toQueueTreeItem(): QueueTreeItem {
-    return new QueueTreeItem(this.label, this.item, this.collapsibleState);
+  toQueueTreeItem(): QueueItemTreeItem {
+    return new QueueItemTreeItem(this.label, this.item, this.collapsibleState);
   }
 
   contextValue = "PlaylistContentTreeItem";

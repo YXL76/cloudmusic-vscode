@@ -7,20 +7,24 @@ import {
 } from "vscode";
 import { join } from "path";
 import { PlaylistContentTreeItem } from "./playlistProvider";
-import { PlaylistContent } from "../constant/type";
+import { QueueItem } from "../constant/type";
 const { unsortInplace } = require("array-unsort");
 
-export class QueueProvider implements TreeDataProvider<QueueTreeItem> {
+export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   private static instance: QueueProvider;
 
   private _onDidChangeTreeData: EventEmitter<
-    QueueTreeItem | undefined | void
-  > = new EventEmitter<QueueTreeItem | undefined | void>();
+    QueueItemTreeItem | undefined | void
+  > = new EventEmitter<QueueItemTreeItem | undefined | void>();
 
-  readonly onDidChangeTreeData: Event<QueueTreeItem | undefined | void> = this
-    ._onDidChangeTreeData.event;
+  readonly onDidChangeTreeData: Event<
+    QueueItemTreeItem | undefined | void
+  > = this._onDidChangeTreeData.event;
 
-  public songs: Map<number, QueueTreeItem> = new Map<number, QueueTreeItem>();
+  public songs: Map<number, QueueItemTreeItem> = new Map<
+    number,
+    QueueItemTreeItem
+  >();
 
   constructor() {}
 
@@ -34,11 +38,13 @@ export class QueueProvider implements TreeDataProvider<QueueTreeItem> {
     this._onDidChangeTreeData.fire();
   }
 
-  getTreeItem(element: QueueTreeItem): TreeItem {
+  getTreeItem(element: QueueItemTreeItem): TreeItem {
     return element;
   }
 
-  async getChildren(_element?: QueueTreeItem): Promise<QueueTreeItem[]> {
+  async getChildren(
+    _element?: QueueItemTreeItem
+  ): Promise<QueueItemTreeItem[]> {
     return [...this.songs.values()];
   }
 
@@ -50,7 +56,7 @@ export class QueueProvider implements TreeDataProvider<QueueTreeItem> {
     this.songs = new Map(unsortInplace([...this.songs]));
   }
 
-  shift(element: QueueTreeItem) {
+  shift(element: QueueItemTreeItem) {
     const index = [...this.songs.keys()].indexOf(element.item.id);
     if (index !== 0) {
       const previous = [...this.songs];
@@ -69,15 +75,15 @@ export class QueueProvider implements TreeDataProvider<QueueTreeItem> {
     this.songs.delete(id);
   }
 
-  play(element: QueueTreeItem) {
+  play(element: QueueItemTreeItem) {
     this.shift(element);
   }
 }
 
-export class QueueTreeItem extends TreeItem {
+export class QueueItemTreeItem extends TreeItem {
   constructor(
     public readonly label: string,
-    public readonly item: PlaylistContent,
+    public readonly item: QueueItem,
     public readonly collapsibleState: TreeItemCollapsibleState
   ) {
     super(label, collapsibleState);
@@ -96,5 +102,5 @@ export class QueueTreeItem extends TreeItem {
     dark: join(__filename, "../../..", "resources", "dark", "music.svg"),
   };
 
-  contextValue = "QueueTreeItem";
+  contextValue = "QueueItemTreeItem";
 }

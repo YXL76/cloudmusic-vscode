@@ -1,5 +1,5 @@
 import { AccountManager } from "./accountManager";
-import { PlaylistContent } from "../constant/type";
+import { QueueItem } from "../constant/type";
 import { API_playlistDetail, API_songDetail } from "../util/api";
 
 export class PlaylistManager {
@@ -14,7 +14,7 @@ export class PlaylistManager {
       : (this.instance = new PlaylistManager());
   }
 
-  async tracks(id: number): Promise<PlaylistContent[]> {
+  async tracks(id: number): Promise<QueueItem[]> {
     return await API_songDetail(
       await API_playlistDetail(id, this.accountManager.cookie),
       this.accountManager.cookie

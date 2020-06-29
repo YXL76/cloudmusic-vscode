@@ -1,10 +1,3 @@
-export type PlaylistContent = {
-  name: string;
-  id: number;
-  alia: string;
-  arName: string;
-};
-
 export type PlaylistItem = {
   description: string;
   id: number;
@@ -12,6 +5,13 @@ export type PlaylistItem = {
   playCount: string;
   subscribedCount: string;
   trackCount: number;
+};
+
+export type QueueItem = {
+  name: string;
+  id: number;
+  alia: string;
+  arName: string;
 };
 
 export type songsItem = {
