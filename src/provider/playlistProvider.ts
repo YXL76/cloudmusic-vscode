@@ -1,11 +1,11 @@
 import {
   Event,
   EventEmitter,
+  ThemeIcon,
   TreeDataProvider,
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import { join } from "path";
 import { QueueProvider, QueueItemTreeItem } from "./queueProvider";
 import { QueueItem, PlaylistItem } from "../constant/type";
 import { AccountManager } from "../manager/accountManager";
@@ -173,10 +173,7 @@ export class PlaylistItemTreeItem extends TreeItem {
     `;
   }
 
-  iconPath = {
-    light: join(__filename, "../../..", "resources", "light", "list.svg"),
-    dark: join(__filename, "../../..", "resources", "dark", "list.svg"),
-  };
+  iconPath = new ThemeIcon("selection");
 
   contextValue = "PlaylistItemTreeItem";
 }

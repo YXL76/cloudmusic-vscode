@@ -1,11 +1,11 @@
 import {
   Event,
   EventEmitter,
+  ThemeIcon,
   TreeDataProvider,
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import { join } from "path";
 import { PlaylistContentTreeItem } from "./playlistProvider";
 import { QueueItem } from "../constant/type";
 const { unsortInplace } = require("array-unsort");
@@ -99,10 +99,7 @@ export class QueueItemTreeItem extends TreeItem {
     return this.item.arName;
   }
 
-  iconPath = {
-    light: join(__filename, "../../..", "resources", "light", "music.svg"),
-    dark: join(__filename, "../../..", "resources", "dark", "music.svg"),
-  };
+  iconPath = new ThemeIcon("zap");
 
   contextValue = "QueueItemTreeItem";
 }
