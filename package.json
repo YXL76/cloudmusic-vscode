@@ -1,17 +1,33 @@
 {
   "name": "cloudmusic",
   "displayName": "cloudmusic",
-  "description": "",
-  "version": "0.0.1",
+  "description": "网易云音乐插件",
+  "version": "1.0.0",
+  "publisher": "YXL",
   "engines": {
     "vscode": "^1.46.0"
   },
+  "license": "SEE LICENSE IN LICENSE",
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "*"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YXL76/cloudmusic-vscode"
+  },
+  "keywords": [
+    "网易云",
+    "网易云音乐",
+    "music",
+    "cloudmusic",
+    "Netease Music"
   ],
+  "preview": true,
+  "activationEvents": [
+    "onView:playlist",
+    "onView:queue"
+  ],
+  "icon": "media/icon.png",
   "main": "./dist/extension.js",
   "contributes": {
     "viewsContainers": {
