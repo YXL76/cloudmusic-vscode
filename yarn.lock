@@ -1078,11 +1078,6 @@ crypto-browserify@^3.11.0:
     randombytes "^2.0.0"
     randomfill "^1.0.3"
 
-cuid@^2.1.1:
-  version "2.1.8"
-  resolved "https://registry.yarnpkg.com/cuid/-/cuid-2.1.8.tgz#cbb88f954171e0d5747606c0139fb65c5101eac0"
-  integrity sha512-xiEMER6E7TlTPnDxrM4eRiC6TRgjNX9xzEZ5U/Se2YJKr7Mq4pJn/2XEHjl3STcSh96GmkHPcBXLES8M29wyyg==
-
 cyclist@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/cyclist/-/cyclist-1.0.1.tgz#596e9698fd0c80e12038c2b82d6eb1b35b6224d9"
@@ -2894,12 +2889,10 @@ node-libs-browser@^2.2.1:
     util "^0.11.0"
     vm-browserify "^1.0.1"
 
-node-mpv-km@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/node-mpv-km/-/node-mpv-km-2.0.2.tgz#f031d8b4c24d71928cca3621edded23b7c3240b0"
-  integrity sha512-octgV2BJ/4fG/+mdE36u+8jDq5ZTFOo6SNraP6na4UZD1mkEDuuaVVp5tJ98EDmBB1Tg4x7oThOYZXF/tus9Rw==
-  dependencies:
-    cuid "^2.1.1"
+node-mpv@^2.0.0-beta.0:
+  version "2.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/node-mpv/-/node-mpv-2.0.0-beta.0.tgz#24f4b6de4eb76ac8cf355c6249da9afe39327122"
+  integrity sha512-EjPBcG1jVKLsH28Wk/fzlqG4v1RyQ4i75PRVwqJO82yYCPj8S2HWMOvztOXfV23cFrdUBUNJ+3W49xVRFRKrHw==
 
 normalize-path@^2.1.1:
   version "2.1.1"
