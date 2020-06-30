@@ -10,6 +10,5 @@ vsc-extension-quickstart.md
 **/*.ts
 yarn-error.log
 node_modules
-!node_modules/NeteaseCloudMusicApi
 yarn.lock
 webpack.config.js

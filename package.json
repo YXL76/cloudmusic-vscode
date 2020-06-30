@@ -203,9 +203,9 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "webpack --mode production",
-    "webpack": "webpack --mode development",
-    "webpack-dev": "webpack --mode development --watch",
+    "vscode:prepublish": "node pre-webpack.js && webpack --mode production",
+    "webpack": "node pre-webpack.js && webpack --mode development",
+    "webpack-dev": "node pre-webpack.js && webpack --mode development --watch",
     "test-compile": "tsc -p ./",
     "lint": "eslint . --ext .ts,.tsx"
   },
