@@ -6,4 +6,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.0.0] - 2020-06-30
+
 - Initial release
+
+[unreleased]: https://github.com/YXL76/cloudmusic-vscode
