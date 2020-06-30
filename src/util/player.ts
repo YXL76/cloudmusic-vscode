@@ -1,16 +1,20 @@
 import { commands } from "vscode";
+import { MPV_BINARY } from "../constant/setting";
 import { ButtonLabel, ButtonManager } from "../manager/buttonManager";
-const mpvAPI = require("node-mpv-km");
+const mpvAPI = require("node-mpv");
 
-const mpv = new mpvAPI({
-  audio_only: true,
-  auto_restart: true,
-  // binary: null,
-  debug: false,
-  ipcCommand: null,
-  time_update: 1,
-  verbose: false,
-});
+const mpv = new mpvAPI(
+  {
+    audio_only: true,
+    auto_restart: true,
+    binary: MPV_BINARY ? MPV_BINARY : null,
+    debug: false,
+    ipcCommand: null,
+    time_update: 1,
+    verbose: false,
+  },
+  ["--no-config", "--load-scripts=no"]
+);
 
 mpv.on("stopped", () => {
   commands.executeCommand("cloudmusic.next");

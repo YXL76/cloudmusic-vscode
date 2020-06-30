@@ -200,7 +200,20 @@
           "group": "inline"
         }
       ]
-    }
+    },
+    "configuration": [
+      {
+        "title": "Cloudmusic",
+        "properties": {
+          "cloudmusic.player.mpvPath": {
+            "type": "string",
+            "default": "",
+            "markdownDescription": "Provied path to a mpv binary instead of using the one found in `$PATH`",
+            "scope": "window"
+          }
+        }
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "node pre-webpack.js && webpack --mode production",
