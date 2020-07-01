@@ -73,7 +73,11 @@ class VlcPlayer implements Player {
       this.vlc.on("playback-ended", () => {
         commands.executeCommand("cloudmusic.next");
       });
-      this.vlc.launch();
+      this.vlc.launch((err: any) => {
+        if (err) {
+          commands.executeCommand("cloudmusic.next");
+        }
+      });
       this.playing = true;
       buttonPause();
     } catch {}

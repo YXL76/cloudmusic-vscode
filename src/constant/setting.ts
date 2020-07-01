@@ -49,6 +49,7 @@ const VLC_ARGS = [
     "--no-sout-video",
     "--no-plugins-scan",
     "--qt-notification=0",
+    "--no-qt-error-dialogs",
   ],
   ...(system === "win32" ? ["--high-priority", "--no-qt-updates-notif"] : [""]),
   ...(conf.get("cloudmusic.player.vlcDummy")
