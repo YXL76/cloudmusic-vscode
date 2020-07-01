@@ -56,7 +56,6 @@ class MpvPlayer implements Player {
 class VlcPlayer implements Player {
   private vlc = new vlcAPI({ ...VLC_API_OPTIONS });
   private playing: boolean = false;
-  private volumn: number = 85;
   private static timer: NodeJS.Timer = setTimeout(() => {}, 0);
 
   private static resetTimer() {
@@ -77,9 +76,9 @@ class VlcPlayer implements Player {
   async load(url: string) {
     this.quit();
     try {
+      delete this.vlc;
       this.vlc = new vlcAPI({ ...VLC_API_OPTIONS, ...{ media: url } });
       this.vlc.launch(() => {
-        this.volume(this.volumn);
         this.vlc.on("playback", VlcPlayer.resetTimer);
       });
       this.playing = true;
@@ -103,12 +102,7 @@ class VlcPlayer implements Player {
     } catch {}
   }
 
-  async volume(volumeLevel: number) {
-    try {
-      this.vlc.setVolume(volumeLevel);
-      this.volumn = volumeLevel;
-    } catch {}
-  }
+  async volume(volumeLevel: number) {}
 }
 
 export const player = PLAYER === "vlc" ? new VlcPlayer() : new MpvPlayer();

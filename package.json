@@ -258,6 +258,18 @@
             "default": "",
             "markdownDescription": "",
             "scope": "window"
+          },
+          "cloudmusic.player.vlcDummy": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "Enable vlc interface dummy mode",
+            "scope": "window"
+          },
+          "cloudmusic.player.vlcIgnoreConfig": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "Open vlc without config",
+            "scope": "window"
           }
         }
       }
