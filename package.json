@@ -226,7 +226,7 @@
             "type": "string",
             "default": "vlc",
             "enum": [
-              "vle",
+              "vlc",
               "mpv"
             ],
             "enumDescriptions": [
