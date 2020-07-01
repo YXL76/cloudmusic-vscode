@@ -8,6 +8,10 @@ const system = platform();
 export const SETTING_DIR = join(homedir(), ".cloudmusic");
 export const ACCOUNT_FILE = join(SETTING_DIR, ".account");
 
+export const PROXY = conf.get("cloudmusic.music.proxy")
+  ? conf.get("cloudmusic.music.proxy")
+  : undefined;
+
 export const MUSIC_QUALITY = conf.get("cloudmusic.player.musicQuality");
 
 export const PLAYER = conf.get("cloudmusic.player.player");

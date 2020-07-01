@@ -4,7 +4,7 @@ import {
   songsItem,
   trackIdsItem,
 } from "../constant/type";
-import { MUSIC_QUALITY } from "../constant/setting";
+import { PROXY, MUSIC_QUALITY } from "../constant/setting";
 import { solveSongItem } from "./util";
 import { AccountManager } from "../manager/accountManager";
 
@@ -26,6 +26,7 @@ export async function API_checkMusic(id: number): Promise<boolean> {
     const { status, body } = await check_music({
       id,
       cookie: AccountManager.cookie,
+      proxy: PROXY,
     });
     if (status !== 200) {
       return false;
@@ -39,7 +40,10 @@ export async function API_checkMusic(id: number): Promise<boolean> {
 
 export async function API_dailySignin(): Promise<number> {
   try {
-    const { status, body } = await daily_signin();
+    const { status, body } = await daily_signin({
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+    });
     if (status !== 200) {
       return 0;
     }
@@ -52,7 +56,10 @@ export async function API_dailySignin(): Promise<number> {
 
 export async function API_loginRefresh(): Promise<boolean> {
   try {
-    const { status } = await login_refresh({ cookie: AccountManager.cookie });
+    const { status } = await login_refresh({
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+    });
     if (status !== 200) {
       return false;
     }
@@ -66,6 +73,7 @@ export async function API_loginStatus(): Promise<boolean> {
   try {
     const { status } = await login_status({
       cookie: AccountManager.cookie,
+      proxy: PROXY,
     });
     if (status !== 200) {
       return false;
@@ -80,6 +88,7 @@ export async function API_logout(): Promise<boolean> {
   try {
     const { status } = await logout({
       cookie: AccountManager.cookie,
+      proxy: PROXY,
     });
     if (status !== 200) {
       return false;
@@ -95,6 +104,7 @@ export async function API_playlistDetail(id: number): Promise<number[]> {
     const { status, body } = await playlist_detail({
       id,
       cookie: AccountManager.cookie,
+      proxy: PROXY,
     });
     if (status !== 200) {
       return [];
@@ -119,6 +129,7 @@ export async function API_playmodeIntelligenceList(
       id,
       pid,
       cookie: AccountManager.cookie,
+      proxy: PROXY,
     });
     if (status !== 200) {
       return ret;
@@ -139,6 +150,7 @@ export async function API_songDetail(trackIds: number[]): Promise<QueueItem[]> {
       const { status, body } = await song_detail({
         ids: trackIds.slice(i, i + 64).join(","),
         cookie: AccountManager.cookie,
+        proxy: PROXY,
       });
       if (status !== 200) {
         continue;
@@ -162,6 +174,7 @@ export async function API_songUrl(
         id: trackIds.slice(i, i + 64).join(","),
         br: MUSIC_QUALITY,
         cookie: AccountManager.cookie,
+        proxy: PROXY,
       });
       if (status !== 200) {
         continue;
@@ -184,6 +197,7 @@ export async function API_userPlaylist(): Promise<PlaylistItem[]> {
     const { status, body } = await user_playlist({
       uid: AccountManager.uid,
       cookie: AccountManager.cookie,
+      proxy: PROXY,
     });
     if (status !== 200) {
       return ret;
