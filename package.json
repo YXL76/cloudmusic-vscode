@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "cloudmusic",
   "description": "网易云音乐插件",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "publisher": "YXL",
   "engines": {
     "vscode": "^1.46.0"
@@ -205,6 +205,12 @@
       {
         "title": "Cloudmusic",
         "properties": {
+          "cloudmusic.music.proxy": {
+            "type": "string",
+            "default": "",
+            "markdownDescription": "See [可以使用代理](https://binaryify.github.io/NeteaseCloudMusicApi/#/?id=%e5%8f%af%e4%bb%a5%e4%bd%bf%e7%94%a8%e4%bb%a3%e7%90%86)`",
+            "scope": "window"
+          },
           "cloudmusic.music.musicQuality": {
             "type": "number",
             "default": 192000,
@@ -279,7 +285,7 @@
     "vscode:prepublish": "node pre-webpack.js && webpack --mode production",
     "webpack": "node pre-webpack.js && webpack --mode development",
     "webpack-dev": "node pre-webpack.js && webpack --mode development --watch",
-    "test-compile": "tsc -p ./",
+    "test": "tsc -p ./",
     "lint": "eslint . --ext .ts,.tsx"
   },
   "devDependencies": {
