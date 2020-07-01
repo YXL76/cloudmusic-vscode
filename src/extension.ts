@@ -15,7 +15,7 @@ import {
   PlaylistContentTreeItem,
 } from "./provider/playlistProvider";
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
-import { Player } from "./util/player";
+import { player } from "./util/player";
 import { playCallback } from "./util/util";
 
 async function initAccount() {
@@ -87,19 +87,19 @@ async function initQueueProvider() {
   commands.registerCommand("cloudmusic.clearQueue", async () => {
     p.clear();
     p.refresh();
-    Player.stop();
+    player.stop();
   });
   commands.registerCommand("cloudmusic.randomQueue", async () => {
     p.random();
     p.refresh();
-    Player.stop();
+    player.stop();
   });
   commands.registerCommand(
     "cloudmusic.playSong",
     async (element: QueueItemTreeItem) => {
       p.top(element);
       p.refresh();
-      Player.load(element.url);
+      player.load(element.url);
     }
   );
   commands.registerCommand(
@@ -123,7 +123,8 @@ function initButtonManager() {
 }
 
 export function activate(context: ExtensionContext) {
-  Player.start();
+  player.start();
+  player.volume(85);
 
   initAccount();
 
@@ -188,7 +189,7 @@ export function activate(context: ExtensionContext) {
         },
       ]);
       if (method && method.label === "Sign out") {
-        Player.stop();
+        player.stop();
         await AccountManager.logout();
         try {
           unlinkSync(ACCOUNT_FILE);
@@ -227,7 +228,7 @@ export function activate(context: ExtensionContext) {
   });
 
   const play = commands.registerCommand("cloudmusic.play", async () => {
-    Player.togglePause();
+    player.togglePause();
   });
 
   const like = commands.registerCommand("cloudmusic.like", async () => {});
@@ -236,7 +237,7 @@ export function activate(context: ExtensionContext) {
       placeHolder: "Please enter volume between 0 and 100.",
     });
     if (volume && /^\d+$/.exec(volume)) {
-      Player.volume(Number(volume));
+      player.volume(Number(volume));
     }
   });
 
@@ -248,5 +249,5 @@ export function activate(context: ExtensionContext) {
 }
 
 export function deactivate() {
-  Player.quit();
+  player.quit();
 }

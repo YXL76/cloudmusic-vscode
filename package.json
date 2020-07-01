@@ -205,10 +205,41 @@
       {
         "title": "Cloudmusic",
         "properties": {
+          "cloudmusic.player.player": {
+            "type": "string",
+            "default": "vlc",
+            "enum": [
+              "vle",
+              "mpv"
+            ],
+            "enumDescriptions": [
+              "",
+              ""
+            ],
+            "scope": "window"
+          },
           "cloudmusic.player.mpvPath": {
             "type": "string",
             "default": "",
             "markdownDescription": "Provied path to a mpv binary instead of using the one found in `$PATH`",
+            "scope": "window"
+          },
+          "cloudmusic.player.vlcPath": {
+            "type": "string",
+            "default": "",
+            "markdownDescription": "Provied path to a vlc binary instead of using the one found in `$PATH`",
+            "scope": "window"
+          },
+          "cloudmusic.player.vlcHttpPort": {
+            "type": "number",
+            "default": 9280,
+            "markdownDescription": "",
+            "scope": "window"
+          },
+          "cloudmusic.player.vlcHttpPass": {
+            "type": "string",
+            "default": "",
+            "markdownDescription": "",
             "scope": "window"
           }
         }

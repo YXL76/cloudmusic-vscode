@@ -1,69 +1,109 @@
 import { commands } from "vscode";
-import { MPV_BINARY } from "../constant/setting";
-import { ButtonLabel, ButtonManager } from "../manager/buttonManager";
+import {
+  PLAYER,
+  MPV_API_OPTIONS,
+  MPV_ARGS,
+  VLC_API_OPTIONS,
+} from "../constant/setting";
+import { Player } from "../constant/type";
+import { buttonPlay, buttonPause } from "./util";
 const mpvAPI = require("node-mpv");
+const vlcAPI = require("vlc-player-controller");
 
-const mpv = new mpvAPI(
-  {
-    audio_only: true,
-    auto_restart: true,
-    binary: MPV_BINARY ? MPV_BINARY : null,
-    debug: false,
-    ipcCommand: null,
-    time_update: 1,
-    verbose: false,
-  },
-  ["--no-config", "--load-scripts=no"]
-);
+class MpvPlayer implements Player {
+  private mpv = new mpvAPI(MPV_API_OPTIONS, MPV_ARGS);
 
-mpv.on("stopped", () => {
-  commands.executeCommand("cloudmusic.next");
-});
-
-export class Player {
-  static player = mpv;
-  static buttonManager: ButtonManager = ButtonManager.getInstance();
-
-  static async start() {
-    mpv.start();
+  async start() {
+    this.mpv.start();
+    this.mpv.on("stopped", () => {
+      commands.executeCommand("cloudmusic.next");
+    });
+  }
+  async quit() {
+    this.mpv.quit();
   }
 
-  static async quit() {
-    mpv.quit();
+  async load(url: string) {
+    try {
+      await this.mpv.load(url);
+      buttonPause();
+    } catch {}
   }
 
-  private static buttonPlay() {
-    Player.buttonManager.updateButton(ButtonLabel.Play, "$(play)", "PLay");
+  async stop() {
+    try {
+      await this.mpv.stop();
+      buttonPlay();
+    } catch {}
   }
 
-  private static buttonPause() {
-    Player.buttonManager.updateButton(
-      ButtonLabel.Play,
-      "$(debug-pause)",
-      "Pause"
-    );
+  async togglePause() {
+    try {
+      await this.mpv.togglePause();
+      if (await this.mpv.isPaused()) {
+        buttonPause();
+      } else {
+        buttonPlay();
+      }
+    } catch {}
   }
 
-  static async load(url: string) {
-    mpv.load(url);
-    Player.buttonPause();
-  }
-
-  static async stop() {
-    mpv.stop();
-    Player.buttonPlay();
-  }
-
-  static async togglePause() {
-    mpv.togglePause();
-    if (await mpv.isPaused()) {
-      Player.buttonPause();
-    } else {
-      Player.buttonPlay();
-    }
-  }
-
-  static async volume(volumeLevel: number) {
-    mpv.volume(volumeLevel);
+  async volume(volumeLevel: number) {
+    this.mpv.volume(volumeLevel);
   }
 }
+
+class VlcPlayer implements Player {
+  private vlc = new vlcAPI({ ...VLC_API_OPTIONS });
+  private playing: boolean = false;
+  private volumn: number = 85;
+
+  async start() {}
+
+  async quit() {
+    try {
+      this.vlc.quit();
+      this.vlc.removeListener("app-exit");
+    } catch {}
+  }
+
+  async load(url: string) {
+    this.quit();
+    try {
+      this.vlc = new vlcAPI({ ...VLC_API_OPTIONS, ...{ media: url } });
+      this.vlc.launch(() => {
+        this.volume(this.volumn);
+        this.vlc.on("app-exit", () => {
+          commands.executeCommand("cloudmusic.next");
+        });
+      });
+      this.playing = true;
+      buttonPause();
+    } catch {}
+  }
+
+  async stop() {
+    this.quit();
+  }
+
+  async togglePause() {
+    try {
+      this.vlc.cyclePause();
+      this.playing = !this.playing;
+      if (this.playing) {
+        buttonPause();
+      } else {
+        buttonPlay();
+      }
+    } catch {}
+  }
+
+  async volume(volumeLevel: number) {
+    try {
+      this.vlc.setVolume(volumeLevel);
+      this.volumn = volumeLevel;
+    } catch {}
+  }
+}
+
+export const player = PLAYER === "vlc" ? new VlcPlayer() : new MpvPlayer();

@@ -1,6 +1,7 @@
 import { QueueItem, songsItem } from "../constant/type";
 import { QueueItemTreeItem } from "../provider/queueProvider";
-import { Player } from "./player";
+import { ButtonLabel, ButtonManager } from "../manager/buttonManager";
+import { player } from "./player";
 
 export function solveSongItem(item: songsItem): QueueItem {
   const { name, id, alia, ar } = item;
@@ -18,5 +19,15 @@ export function solveSongItem(item: songsItem): QueueItem {
 }
 
 export async function playCallback(elements: [number, QueueItemTreeItem][]) {
-  Player.load(elements[0][1].url);
+  player.load(elements[0][1].url);
+}
+
+const buttonManager = ButtonManager.getInstance();
+
+export function buttonPlay() {
+  buttonManager.updateButton(ButtonLabel.Play, "$(play)", "PLay");
+}
+
+export function buttonPause() {
+  buttonManager.updateButton(ButtonLabel.Play, "$(debug-pause)", "Pause");
 }

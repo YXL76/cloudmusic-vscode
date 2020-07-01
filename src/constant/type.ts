@@ -29,3 +29,12 @@ export type trackIdsItem = {
   v: number;
   at: number;
 };
+
+export interface Player {
+  start(): Promise<void>;
+  quit(): Promise<void>;
+  load(url: string): Promise<void>;
+  stop(): Promise<void>;
+  togglePause(): Promise<void>;
+  volume(volumeLevel: number): Promise<void>;
+}
