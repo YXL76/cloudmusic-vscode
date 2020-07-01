@@ -215,10 +215,10 @@
               999000
             ],
             "enumDescriptions": [
-              "",
-              "",
-              "",
-              ""
+              "Low Quality",
+              "Medium Quality",
+              "High Quality",
+              "Lossless Quality"
             ],
             "scope": "window"
           },
@@ -230,8 +230,8 @@
               "mpv"
             ],
             "enumDescriptions": [
-              "",
-              ""
+              "vlc player",
+              "mpv player"
             ],
             "scope": "window"
           },
