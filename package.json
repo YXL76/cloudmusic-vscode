@@ -205,6 +205,23 @@
       {
         "title": "Cloudmusic",
         "properties": {
+          "cloudmusic.player.musicQuality": {
+            "type": "number",
+            "default": 192000,
+            "enum": [
+              128000,
+              192000,
+              320000,
+              999000
+            ],
+            "enumDescriptions": [
+              "",
+              "",
+              "",
+              ""
+            ],
+            "scope": "window"
+          },
           "cloudmusic.player.player": {
             "type": "string",
             "default": "vlc",

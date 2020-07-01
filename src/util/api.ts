@@ -4,6 +4,7 @@ import {
   songsItem,
   trackIdsItem,
 } from "../constant/type";
+import { MUSIC_QUALITY } from "../constant/setting";
 import { solveSongItem } from "./util";
 import { AccountManager } from "../manager/accountManager";
 
@@ -152,15 +153,14 @@ export async function API_songDetail(trackIds: number[]): Promise<QueueItem[]> {
 }
 
 export async function API_songUrl(
-  trackIds: number[],
-  br?: number
+  trackIds: number[]
 ): Promise<Map<number, string>> {
   let ret: Map<number, string> = new Map<number, string>();
   try {
     for (let i = 0; i < trackIds.length; i += 64) {
       const { status, body } = await song_url({
         id: trackIds.slice(i, i + 64).join(","),
-        br,
+        br: MUSIC_QUALITY,
         cookie: AccountManager.cookie,
       });
       if (status !== 200) {

@@ -7,6 +7,8 @@ const conf = workspace.getConfiguration();
 export const SETTING_DIR = join(homedir(), ".cloudmusic");
 export const ACCOUNT_FILE = join(SETTING_DIR, ".account");
 
+export const MUSIC_QUALITY = conf.get("cloudmusic.player.musicQuality");
+
 export const PLAYER = conf.get("cloudmusic.player.player");
 
 const MPV_BINARY = conf.get("cloudmusic.player.mpvPath");
