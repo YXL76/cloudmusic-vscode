@@ -8,10 +8,11 @@ import {
   API_userPlaylist,
 } from "../util/api";
 const { login, login_cellphone } = require("NeteaseCloudMusicApi");
+const { cookieToJson } = require("NeteaseCloudMusicApi/util/index");
 
 export class AccountManager {
   public static loggedIn: boolean = false;
-  public static cookie: string = "";
+  public static cookie: object = {};
   public static uid: number = 0;
   public static nickname: string = "";
 
@@ -60,7 +61,7 @@ export class AccountManager {
         const { cookie, profile } = body;
         const { userId, nickname } = profile;
         this.loggedIn = true;
-        this.cookie = cookie;
+        this.cookie = cookieToJson(cookie);
         this.uid = userId;
         this.nickname = nickname;
         window.showInformationMessage("登录成功");
@@ -83,7 +84,7 @@ export class AccountManager {
   static async logout() {
     if (await API_logout()) {
       this.loggedIn = true;
-      this.cookie = "";
+      this.cookie = {};
       this.uid = 0;
       this.nickname = "";
     }

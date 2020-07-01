@@ -15,9 +15,6 @@ fs.readdirSync(path.join(dir, "module"))
     data.push(`
     let ${name} = require("./module/${name}")
     obj["${name}"] = function (data) {
-      if (typeof data.cookie === "string") {
-        data.cookie = cookieToJson(data.cookie);
-      }
       return ${name}(
         {
           ...data,
@@ -31,8 +28,6 @@ fs.readdirSync(path.join(dir, "module"))
 fs.writeFileSync(
   path.join(dir, "main.js"),
   `
-  const fs = require('fs')
-  const path = require('path')
   const request = require('./util/request')
   const { cookieToJson } = require('./util/index')
 
