@@ -12,7 +12,7 @@ export const PROXY = conf.get("cloudmusic.music.proxy")
   ? conf.get("cloudmusic.music.proxy")
   : undefined;
 
-export const MUSIC_QUALITY = conf.get("cloudmusic.player.musicQuality");
+export const MUSIC_QUALITY = conf.get("cloudmusic.music.musicQuality");
 
 export const PLAYER = conf.get("cloudmusic.player.player");
 
