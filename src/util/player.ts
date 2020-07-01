@@ -57,13 +57,20 @@ class VlcPlayer implements Player {
   private vlc = new vlcAPI({ ...VLC_API_OPTIONS });
   private playing: boolean = false;
   private volumn: number = 85;
+  private static timer: NodeJS.Timer = setTimeout(() => {}, 0);
+
+  private static resetTimer() {
+    clearTimeout(VlcPlayer.timer);
+    VlcPlayer.timer = setTimeout(() => {
+      commands.executeCommand("cloudmusic.next");
+    }, 2000);
+  }
 
   async start() {}
 
   async quit() {
     try {
       this.vlc.quit();
-      this.vlc.removeListener("app-exit");
     } catch {}
   }
 
@@ -73,9 +80,7 @@ class VlcPlayer implements Player {
       this.vlc = new vlcAPI({ ...VLC_API_OPTIONS, ...{ media: url } });
       this.vlc.launch(() => {
         this.volume(this.volumn);
-        this.vlc.on("app-exit", () => {
-          commands.executeCommand("cloudmusic.next");
-        });
+        this.vlc.on("playback", VlcPlayer.resetTimer);
       });
       this.playing = true;
       buttonPause();
