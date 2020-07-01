@@ -56,14 +56,6 @@ class MpvPlayer implements Player {
 class VlcPlayer implements Player {
   private vlc = new vlcAPI({ ...VLC_API_OPTIONS });
   private playing: boolean = false;
-  private static timer: NodeJS.Timer = setTimeout(() => {}, 0);
-
-  private static resetTimer() {
-    clearTimeout(VlcPlayer.timer);
-    VlcPlayer.timer = setTimeout(() => {
-      commands.executeCommand("cloudmusic.next");
-    }, 2000);
-  }
 
   async start() {}
 
@@ -78,9 +70,10 @@ class VlcPlayer implements Player {
     try {
       delete this.vlc;
       this.vlc = new vlcAPI({ ...VLC_API_OPTIONS, ...{ media: url } });
-      this.vlc.launch(() => {
-        this.vlc.on("playback", VlcPlayer.resetTimer);
+      this.vlc.on("playback-ended", () => {
+        commands.executeCommand("cloudmusic.next");
       });
+      this.vlc.launch();
       this.playing = true;
       buttonPause();
     } catch {}
