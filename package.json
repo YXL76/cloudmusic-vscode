@@ -308,6 +308,6 @@
     "NeteaseCloudMusicApi": "^3.34.0",
     "array-unsort": "^1.1.5",
     "node-mpv": "^2.0.0-beta.0",
-    "vlc-player-controller": "^0.0.1"
+    "vlc-player-controller": "^0.0.2"
   }
 }
