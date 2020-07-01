@@ -6,15 +6,28 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.2.0] - 2020-07-01
+
+### Added
+
+- Add `VLC Player` as a replacement for `MPV Player`
+
+  - `cloudmusic.player.player` configuration to choose default player
+  - `cloudmusic.player.vlcPath`, `cloudmusic.player.vlcHttpPort`, `cloudmusic.player.vlcHttpPass`, `cloudmusic.player.vlcDummy`, `cloudmusic.player.vlcIgnoreConfig` configuration
+
+### Changed
+
+- Improve network request speed
+
 ## [1.1.0] - 2020-06-30
 
 ### Added
 
-- `cloudmusic.player.mpvPath` configuration
+- Add `cloudmusic.player.mpvPath` configuration
 
 ### Fixed
 
-- use `node-mpv` instead of `node-mpv-km`, because `node-mpv-km` cannot work in Windows
+- Use `node-mpv` instead of `node-mpv-km`, because `node-mpv-km` cannot work in Windows
 
 ## [1.0.1] - 2020-06-30
 

@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "cloudmusic",
   "description": "网易云音乐插件",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "publisher": "YXL",
   "engines": {
     "vscode": "^1.46.0"
@@ -205,7 +205,7 @@
       {
         "title": "Cloudmusic",
         "properties": {
-          "cloudmusic.player.musicQuality": {
+          "cloudmusic.music.musicQuality": {
             "type": "number",
             "default": 192000,
             "enum": [
