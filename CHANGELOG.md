@@ -6,6 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.2.2] - 2020-07-02
+
+### Added
+
+- `VLC Player` error handle
+- `VLC Player` will no longer show system notification
+
+### Fixed
+
+- `cloudmusic.music.musicQuality` can work correctly
+
 ## [1.2.1] - 2020-07-01
 
 ### Added
