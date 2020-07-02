@@ -56,6 +56,7 @@ class MpvPlayer implements Player {
 class VlcPlayer implements Player {
   private vlc = new vlcAPI({ ...VLC_API_OPTIONS });
   private playing: boolean = false;
+  private volumeLevel: number = 0.0;
 
   async start() {}
 
@@ -76,6 +77,8 @@ class VlcPlayer implements Player {
       this.vlc.launch((err: any) => {
         if (err) {
           commands.executeCommand("cloudmusic.next");
+        } else {
+          this.vlc.setVolume(this.volumeLevel);
         }
       });
       this.playing = true;
@@ -99,7 +102,12 @@ class VlcPlayer implements Player {
     } catch {}
   }
 
-  async volume(volumeLevel: number) {}
+  async volume(volumeLevel: number) {
+    try {
+      this.vlc.setVolume(volumeLevel / 100.0);
+      this.volumeLevel = volumeLevel;
+    } catch {}
+  }
 }
 
 export const player = PLAYER === "vlc" ? new VlcPlayer() : new MpvPlayer();
