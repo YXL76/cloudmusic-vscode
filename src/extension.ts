@@ -12,7 +12,11 @@ import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
 import { player } from "./util/player";
 import { playCallback } from "./util/util";
 
-async function initAccount() {
+async function initAccount(
+  playlistProvider: PlaylistProvider,
+  queueProvider: QueueProvider,
+  buttonManager: ButtonManager
+) {
   if (!existsSync(SETTING_DIR)) {
     mkdirSync(SETTING_DIR);
   }
@@ -22,9 +26,9 @@ async function initAccount() {
         readFileSync(ACCOUNT_FILE, "utf8")
       );
       if (await AccountManager.login(phone, account, password)) {
-        initPlaylistProvider();
-        initQueueProvider();
-        initButtonManager();
+        initPlaylistProvider(playlistProvider);
+        initQueueProvider(queueProvider);
+        initButtonManager(buttonManager);
       }
     } catch {}
   }
@@ -32,13 +36,12 @@ async function initAccount() {
 
 let initPlaylistProviderFlag = false;
 
-async function initPlaylistProvider() {
+async function initPlaylistProvider(p: PlaylistProvider) {
   if (initPlaylistProviderFlag) {
     return;
   }
   initPlaylistProviderFlag = true;
 
-  const p = PlaylistProvider.getInstance();
   window.registerTreeDataProvider("playlist", p);
   commands.registerCommand("cloudmusic.refreshPlaylist", () => p.refresh());
   commands.registerCommand(
@@ -70,13 +73,12 @@ async function initPlaylistProvider() {
 
 let initQueueProviderFlag = false;
 
-async function initQueueProvider() {
+async function initQueueProvider(p: QueueProvider) {
   if (initQueueProviderFlag) {
     return;
   }
   initQueueProviderFlag = true;
 
-  const p = QueueProvider.getInstance();
   window.registerTreeDataProvider("queue", p);
   commands.registerCommand("cloudmusic.clearQueue", async () => {
     p.clear();
@@ -105,8 +107,7 @@ async function initQueueProvider() {
   );
 }
 
-function initButtonManager() {
-  const buttonManager = ButtonManager.getInstance();
+function initButtonManager(buttonManager: ButtonManager) {
   buttonManager.updateButton(
     ButtonLabel.Account,
     "$(account)",
@@ -120,7 +121,11 @@ export function activate(context: ExtensionContext) {
   player.start();
   player.volume(85);
 
-  initAccount();
+  const playlistProvider = PlaylistProvider.getInstance();
+  const queueProvider = QueueProvider.getInstance();
+  const buttonManager = ButtonManager.getInstance();
+
+  initAccount(playlistProvider, queueProvider, buttonManager);
 
   const signin = commands.registerCommand("cloudmusic.signin", async () => {
     const method = await window.showQuickPick(
@@ -160,9 +165,9 @@ export function activate(context: ExtensionContext) {
               }),
               () => {}
             );
-            initPlaylistProvider();
-            initQueueProvider();
-            initButtonManager();
+            initPlaylistProvider(playlistProvider);
+            initQueueProvider(queueProvider);
+            initButtonManager(buttonManager);
           }
         }
       }
