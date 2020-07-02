@@ -104,8 +104,8 @@ class VlcPlayer implements Player {
 
   async volume(volumeLevel: number) {
     try {
-      this.vlc.setVolume(volumeLevel / 100.0);
-      this.volumeLevel = volumeLevel;
+      this.volumeLevel = volumeLevel / 100.0;
+      this.vlc.setVolume(this.volumeLevel);
     } catch {}
   }
 }
