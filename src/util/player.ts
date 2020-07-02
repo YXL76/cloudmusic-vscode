@@ -6,12 +6,17 @@ import {
   VLC_API_OPTIONS,
 } from "../constant/setting";
 import { Player } from "../constant/type";
+import { API_scrobble, API_songUrl } from "./api";
 import { buttonPlay, buttonPause } from "./util";
+import { QueueItemTreeItem } from "../provider/queueProvider";
 const mpvAPI = require("node-mpv");
 const vlcAPI = require("vlc-player-controller");
 
 class MpvPlayer implements Player {
   private mpv = new mpvAPI(MPV_API_OPTIONS, MPV_ARGS);
+
+  id = 0;
+  pid = 0;
 
   async start() {
     this.mpv.start();
@@ -23,9 +28,20 @@ class MpvPlayer implements Player {
     this.mpv.quit();
   }
 
-  async load(url: string) {
+  async load(element: QueueItemTreeItem) {
     try {
+      const url = (await API_songUrl([element.item.id]))[0];
       await this.mpv.load(url);
+      this.id = element.item.id;
+      this.pid = element.pid;
+      if (element.item.bt > 60) {
+        const delay = Math.floor(Math.random() * element.item.bt + 60);
+        setTimeout(() => {
+          if (this.id === element.item.id) {
+            API_scrobble(this.id, this.pid, delay);
+          }
+        }, delay);
+      }
       buttonPause();
     } catch {}
   }
@@ -56,7 +72,10 @@ class MpvPlayer implements Player {
 class VlcPlayer implements Player {
   private vlc = new vlcAPI({ ...VLC_API_OPTIONS });
   private playing: boolean = false;
-  private volumeLevel: number = 0.0;
+  private volumeLevel: number = 0.85;
+
+  id = 0;
+  pid = 0;
 
   async start() {}
 
@@ -66,10 +85,11 @@ class VlcPlayer implements Player {
     } catch {}
   }
 
-  async load(url: string) {
+  async load(element: QueueItemTreeItem) {
     this.quit();
     try {
       delete this.vlc;
+      const url = (await API_songUrl([element.item.id]))[0];
       this.vlc = new vlcAPI({ ...VLC_API_OPTIONS, ...{ media: url } });
       this.vlc.on("playback-ended", () => {
         commands.executeCommand("cloudmusic.next");
@@ -82,6 +102,16 @@ class VlcPlayer implements Player {
         }
       });
       this.playing = true;
+      this.id = element.item.id;
+      this.pid = element.pid;
+      if (element.item.bt > 60) {
+        const delay = Math.floor(Math.random() * element.item.bt + 60);
+        setTimeout(() => {
+          if (this.id === element.item.id) {
+            API_scrobble(this.id, this.pid, delay);
+          }
+        }, delay);
+      }
       buttonPause();
     } catch {}
   }
@@ -104,6 +134,11 @@ class VlcPlayer implements Player {
 
   async volume(volumeLevel: number) {
     try {
+      if (volumeLevel > 100) {
+        volumeLevel = 100;
+      } else if (volumeLevel < 0) {
+        volumeLevel = 0;
+      }
       this.volumeLevel = volumeLevel / 100.0;
       this.vlc.setVolume(this.volumeLevel);
     } catch {}

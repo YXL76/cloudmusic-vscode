@@ -1,3 +1,5 @@
+import { QueueItemTreeItem } from "../provider/queueProvider";
+
 export type PlaylistItem = {
   description: string;
   id: number;
@@ -10,6 +12,7 @@ export type PlaylistItem = {
 export type QueueItem = {
   name: string;
   id: number;
+  bt: number;
   alia: string;
   arName: string;
 };
@@ -17,6 +20,7 @@ export type QueueItem = {
 export type songsItem = {
   name: string;
   id: number;
+  bt: number;
   alia: string[];
   ar: {
     id: number;
@@ -31,9 +35,11 @@ export type trackIdsItem = {
 };
 
 export interface Player {
+  id: number;
+  pid: number;
   start(): Promise<void>;
   quit(): Promise<void>;
-  load(url: string): Promise<void>;
+  load(element: QueueItemTreeItem): Promise<void>;
   stop(): Promise<void>;
   togglePause(): Promise<void>;
   volume(volumeLevel: number): Promise<void>;

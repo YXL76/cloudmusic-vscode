@@ -176,17 +176,17 @@
         },
         {
           "command": "cloudmusic.addSong",
-          "when": "view == playlist && viewItem == PlaylistContentTreeItem",
+          "when": "view == playlist && viewItem == QueueItemTreeItem",
           "group": "inline"
         },
         {
           "command": "cloudmusic.intelligence",
-          "when": "view == playlist && viewItem == PlaylistContentTreeItem",
+          "when": "view == playlist && viewItem == QueueItemTreeItem",
           "group": "inline"
         },
         {
           "command": "cloudmusic.playSongWithPlaylist",
-          "when": "view == playlist && viewItem == PlaylistContentTreeItem",
+          "when": "view == playlist && viewItem == QueueItemTreeItem",
           "group": "inline"
         },
         {

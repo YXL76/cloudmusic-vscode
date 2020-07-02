@@ -6,12 +6,10 @@ import { ButtonLabel, ButtonManager } from "./manager/buttonManager";
 import {
   PlaylistItemTreeItem,
   PlaylistProvider,
-  PlaylistContentTreeItem,
 } from "./provider/playlistProvider";
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
 import { player } from "./util/player";
 import { playCallback } from "./util/util";
-import { API_songUrl } from "./util/api";
 
 async function initAccount(
   playlistProvider: PlaylistProvider,
@@ -59,15 +57,14 @@ async function initPlaylistProvider(p: PlaylistProvider) {
   );
   commands.registerCommand(
     "cloudmusic.intelligence",
-    (element: PlaylistContentTreeItem) => p.intelligence(element)
+    (element: QueueItemTreeItem) => p.intelligence(element)
   );
-  commands.registerCommand(
-    "cloudmusic.addSong",
-    (element: PlaylistContentTreeItem) => p.addSong(element)
+  commands.registerCommand("cloudmusic.addSong", (element: QueueItemTreeItem) =>
+    p.addSong(element)
   );
   commands.registerCommand(
     "cloudmusic.playSongWithPlaylist",
-    (element: PlaylistContentTreeItem) =>
+    (element: QueueItemTreeItem) =>
       p.playPlaylist(element.pid, element, playCallback)
   );
 }
@@ -96,7 +93,7 @@ async function initQueueProvider(p: QueueProvider) {
     async (element: QueueItemTreeItem) => {
       p.top(element);
       p.refresh();
-      player.load((await API_songUrl([element.item.id]))[0]);
+      player.load(element);
     }
   );
   commands.registerCommand(

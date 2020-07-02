@@ -6,7 +6,6 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import { PlaylistContentTreeItem } from "./playlistProvider";
 import { QueueItem } from "../constant/type";
 const { unsortInplace } = require("array-unsort");
 
@@ -68,9 +67,9 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     }
   }
 
-  add(elements: PlaylistContentTreeItem[]) {
+  add(elements: QueueItemTreeItem[]) {
     for (const i of elements) {
-      this.songs.set(i.item.id, i.toQueueTreeItem());
+      this.songs.set(i.item.id, i);
     }
   }
 
@@ -83,6 +82,7 @@ export class QueueItemTreeItem extends TreeItem {
   constructor(
     public readonly label: string,
     public readonly item: QueueItem,
+    public readonly pid: number,
     public readonly collapsibleState: TreeItemCollapsibleState
   ) {
     super(label, collapsibleState);

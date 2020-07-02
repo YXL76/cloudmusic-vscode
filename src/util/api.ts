@@ -16,6 +16,7 @@ const {
   logout,
   playlist_detail,
   playmode_intelligence_list,
+  scrobble,
   song_detail,
   song_url,
   user_playlist,
@@ -141,6 +142,16 @@ export async function API_playmodeIntelligenceList(
     });
   } catch {}
   return ret;
+}
+
+export async function API_scrobble(id: number, sourceid: number, time: number) {
+  await scrobble({
+    id,
+    sourceid,
+    time,
+    cookie: AccountManager.cookie,
+    proxy: PROXY,
+  });
 }
 
 export async function API_songDetail(trackIds: number[]): Promise<QueueItem[]> {

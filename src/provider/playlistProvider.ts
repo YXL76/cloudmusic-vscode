@@ -12,24 +12,24 @@ import { AccountManager } from "../manager/accountManager";
 import { PlaylistManager } from "../manager/playlistManager";
 
 export class PlaylistProvider
-  implements TreeDataProvider<PlaylistItemTreeItem | PlaylistContentTreeItem> {
+  implements TreeDataProvider<PlaylistItemTreeItem | QueueItemTreeItem> {
   private static instance: PlaylistProvider;
 
   private _onDidChangeTreeData: EventEmitter<
-    PlaylistItemTreeItem | PlaylistContentTreeItem | undefined | void
+    PlaylistItemTreeItem | QueueItemTreeItem | undefined | void
   > = new EventEmitter<
-    PlaylistItemTreeItem | PlaylistContentTreeItem | undefined | void
+    PlaylistItemTreeItem | QueueItemTreeItem | undefined | void
   >();
 
   readonly onDidChangeTreeData: Event<
-    PlaylistItemTreeItem | PlaylistContentTreeItem | undefined | void
+    PlaylistItemTreeItem | QueueItemTreeItem | undefined | void
   > = this._onDidChangeTreeData.event;
 
   private queueProvider: QueueProvider = QueueProvider.getInstance();
 
-  private treeView: Map<number, PlaylistContentTreeItem[]> = new Map<
+  private treeView: Map<number, QueueItemTreeItem[]> = new Map<
     number,
-    PlaylistContentTreeItem[]
+    QueueItemTreeItem[]
   >();
 
   constructor() {}
@@ -48,15 +48,13 @@ export class PlaylistProvider
     }
   }
 
-  getTreeItem(
-    element: PlaylistItemTreeItem | PlaylistContentTreeItem
-  ): TreeItem {
+  getTreeItem(element: PlaylistItemTreeItem | QueueItemTreeItem): TreeItem {
     return element;
   }
 
   async getChildren(
-    element?: PlaylistItemTreeItem | PlaylistContentTreeItem
-  ): Promise<PlaylistItemTreeItem[] | PlaylistContentTreeItem[]> {
+    element?: PlaylistItemTreeItem | QueueItemTreeItem
+  ): Promise<PlaylistItemTreeItem[] | QueueItemTreeItem[]> {
     return element
       ? await this.getPlaylistContent(element.item.id)
       : await this.getPlaylistItem();
@@ -65,15 +63,15 @@ export class PlaylistProvider
   private async QueueItem2PlaylistContentTreeItem(
     id: number,
     songs: QueueItem[]
-  ): Promise<PlaylistContentTreeItem[]> {
+  ): Promise<QueueItemTreeItem[]> {
     const ids: number[] = songs.map((song) => song.id);
     const urls = await PlaylistManager.trackUrls(ids);
-    let ret: PlaylistContentTreeItem[] = [];
+    let ret: QueueItemTreeItem[] = [];
     for (let i = 0; i < songs.length; ++i) {
       const song = songs[i];
       if (urls[i]) {
         ret.push(
-          new PlaylistContentTreeItem(
+          new QueueItemTreeItem(
             `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
             song,
             id,
@@ -85,9 +83,7 @@ export class PlaylistProvider
     return ret;
   }
 
-  private async getPlaylistContent(
-    id: number
-  ): Promise<PlaylistContentTreeItem[]> {
+  private async getPlaylistContent(id: number): Promise<QueueItemTreeItem[]> {
     const items = this.treeView.get(id);
     if (items) {
       return items;
@@ -113,20 +109,20 @@ export class PlaylistProvider
   private async getPlaylistContentIntelligence(
     id: number,
     pid: number
-  ): Promise<PlaylistContentTreeItem[]> {
+  ): Promise<QueueItemTreeItem[]> {
     const songs = await PlaylistManager.tracksIntelligence(id, pid);
     return await this.QueueItem2PlaylistContentTreeItem(id, songs);
   }
 
   async playPlaylist(
     id: number,
-    index?: PlaylistContentTreeItem,
+    index?: QueueItemTreeItem,
     callback?: Function
   ) {
     this.queueProvider.clear();
     this.queueProvider.add(await this.getPlaylistContent(id));
     if (index) {
-      this.queueProvider.top(index.toQueueTreeItem(), callback);
+      this.queueProvider.top(index, callback);
     }
     this.queueProvider.refresh();
   }
@@ -136,7 +132,7 @@ export class PlaylistProvider
     this.queueProvider.refresh();
   }
 
-  async intelligence(element: PlaylistContentTreeItem) {
+  async intelligence(element: QueueItemTreeItem) {
     this.queueProvider.clear();
     this.queueProvider.add([element]);
     this.queueProvider.add(
@@ -145,7 +141,7 @@ export class PlaylistProvider
     this.queueProvider.refresh();
   }
 
-  addSong(element: PlaylistContentTreeItem) {
+  addSong(element: QueueItemTreeItem) {
     this.queueProvider.add([element]);
     this.queueProvider.refresh();
   }
@@ -173,21 +169,4 @@ export class PlaylistItemTreeItem extends TreeItem {
   iconPath = new ThemeIcon("selection");
 
   contextValue = "PlaylistItemTreeItem";
-}
-
-export class PlaylistContentTreeItem extends QueueItemTreeItem {
-  constructor(
-    public readonly label: string,
-    public readonly item: QueueItem,
-    public readonly pid: number,
-    public readonly collapsibleState: TreeItemCollapsibleState
-  ) {
-    super(label, item, collapsibleState);
-  }
-
-  toQueueTreeItem(): QueueItemTreeItem {
-    return new QueueItemTreeItem(this.label, this.item, this.collapsibleState);
-  }
-
-  contextValue = "PlaylistContentTreeItem";
 }

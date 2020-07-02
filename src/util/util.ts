@@ -2,10 +2,9 @@ import { QueueItem, songsItem } from "../constant/type";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 import { ButtonLabel, ButtonManager } from "../manager/buttonManager";
 import { player } from "./player";
-import { API_songUrl } from "./api";
 
 export function solveSongItem(item: songsItem): QueueItem {
-  const { name, id, alia, ar } = item;
+  const { name, id, bt, alia, ar } = item;
   let arNames = [];
   for (const i of ar) {
     arNames.push(i.name);
@@ -14,13 +13,14 @@ export function solveSongItem(item: songsItem): QueueItem {
   return {
     name,
     id,
+    bt: bt / 1000,
     alia: alia ? alia[0] : "",
     arName,
   };
 }
 
 export async function playCallback(elements: [number, QueueItemTreeItem][]) {
-  player.load((await API_songUrl([elements[0][1].item.id]))[0]);
+  player.load(elements[0][1]);
 }
 
 const buttonManager = ButtonManager.getInstance();
