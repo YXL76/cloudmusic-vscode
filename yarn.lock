@@ -4293,10 +4293,10 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vlc-player-controller@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/vlc-player-controller/-/vlc-player-controller-0.0.2.tgz#c42de79116ad0abe97578987ea796f656531fffd"
-  integrity sha512-oZj+zxFouOsQnKm+8j3SPVkx5EAKG6sQZEeVkaE/naIhauYMn2vIbk5+Vje+/MriF48QljCFStFh3VU/mZvSBQ==
+vlc-player-controller@^0.0.3:
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/vlc-player-controller/-/vlc-player-controller-0.0.3.tgz#2bfa991a7469ec28101b48586bf39f48b1c1f218"
+  integrity sha512-nvZe4P1jjmFHx1LfnTCyC+Q6E7IeDGUmiv3LVTCbXghEmdOSvRNSpd0YiLLWpNUkAEbm/K77b7Qc3RLl44Nxmw==
   dependencies:
     debug "^4.1.1"
     xml2js "^0.4.23"
