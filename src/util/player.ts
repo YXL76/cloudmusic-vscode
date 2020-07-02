@@ -86,34 +86,38 @@ class VlcPlayer implements Player {
   }
 
   async load(element: QueueItemTreeItem) {
-    this.quit();
-    try {
-      delete this.vlc;
-      const url = (await apiSongUrl([element.item.id]))[0];
-      this.vlc = new vlcAPI({ ...VLC_API_OPTIONS, ...{ media: url } });
-      this.vlc.on("playback-ended", () => {
-        commands.executeCommand("cloudmusic.next");
-      });
-      this.vlc.launch((err: any) => {
-        if (err) {
+    const url = (await apiSongUrl([element.item.id]))[0];
+    if (/.flac$/.exec(url)) {
+      commands.executeCommand("cloudmusic.next");
+    } else {
+      this.quit();
+      try {
+        delete this.vlc;
+        this.vlc = new vlcAPI({ ...VLC_API_OPTIONS, ...{ media: url } });
+        this.vlc.on("playback-ended", () => {
           commands.executeCommand("cloudmusic.next");
-        } else {
-          this.vlc.setVolume(this.volumeLevel);
-        }
-      });
-      this.playing = true;
-      this.id = element.item.id;
-      this.pid = element.pid;
-      if (element.item.bt > 60) {
-        const delay = Math.floor(Math.random() * element.item.bt + 60);
-        setTimeout(() => {
-          if (this.id === element.item.id) {
-            apiScrobble(this.id, this.pid, delay);
+        });
+        this.vlc.launch((err: any) => {
+          if (err) {
+            commands.executeCommand("cloudmusic.next");
+          } else {
+            this.vlc.setVolume(this.volumeLevel);
           }
-        }, delay);
-      }
-      buttonPause();
-    } catch {}
+        });
+        this.playing = true;
+        this.id = element.item.id;
+        this.pid = element.pid;
+        if (element.item.bt > 60) {
+          const delay = Math.floor(Math.random() * element.item.bt + 60);
+          setTimeout(() => {
+            if (this.id === element.item.id) {
+              apiScrobble(this.id, this.pid, delay);
+            }
+          }, delay);
+        }
+        buttonPause();
+      } catch {}
+    }
   }
 
   async stop() {
