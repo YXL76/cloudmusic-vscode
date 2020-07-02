@@ -211,7 +211,7 @@
             "markdownDescription": "See [可以使用代理](https://binaryify.github.io/NeteaseCloudMusicApi/#/?id=%e5%8f%af%e4%bb%a5%e4%bd%bf%e7%94%a8%e4%bb%a3%e7%90%86)`",
             "scope": "window"
           },
-          "cloudmusic.music.musicQuality": {
+          "cloudmusic.music.quality": {
             "type": "number",
             "default": 192000,
             "enum": [
@@ -241,37 +241,37 @@
             ],
             "scope": "window"
           },
-          "cloudmusic.player.mpvPath": {
+          "cloudmusic.player.mpv.path": {
             "type": "string",
             "default": "",
             "markdownDescription": "Provied path to a mpv binary instead of using the one found in `$PATH`",
             "scope": "window"
           },
-          "cloudmusic.player.vlcPath": {
+          "cloudmusic.player.vlc.path": {
             "type": "string",
             "default": "",
             "markdownDescription": "Provied path to a vlc binary instead of using the one found in `$PATH`",
             "scope": "window"
           },
-          "cloudmusic.player.vlcHttpPort": {
+          "cloudmusic.player.vlc.httpPort": {
             "type": "number",
             "default": 9280,
             "markdownDescription": "",
             "scope": "window"
           },
-          "cloudmusic.player.vlcHttpPass": {
+          "cloudmusic.player.vlc.httpPass": {
             "type": "string",
             "default": "",
             "markdownDescription": "",
             "scope": "window"
           },
-          "cloudmusic.player.vlcDummy": {
+          "cloudmusic.player.vlc.dummy": {
             "type": "boolean",
-            "default": false,
+            "default": true,
             "markdownDescription": "Enable vlc interface dummy mode",
             "scope": "window"
           },
-          "cloudmusic.player.vlcIgnoreConfig": {
+          "cloudmusic.player.vlc.ignoreConfig": {
             "type": "boolean",
             "default": false,
             "markdownDescription": "Open vlc without config",

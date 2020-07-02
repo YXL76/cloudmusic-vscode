@@ -19,8 +19,8 @@
 
 ## Extension Settings
 
-- `cloudmusic.player.mpvPath`: 指定`MPV Player`的二进制文件路径
-- `cloudmusic.player.vlcPath`: 指定`VLC Player`的二进制文件路径
+- `cloudmusic.player.mpv.path`: 指定`MPV Player`的二进制文件路径
+- `cloudmusic.player.vlc.path`: 指定`VLC Player`的二进制文件路径
 
 ## Known Issues
 

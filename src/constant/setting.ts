@@ -12,11 +12,11 @@ export const PROXY = conf.get("cloudmusic.music.proxy")
   ? conf.get("cloudmusic.music.proxy")
   : undefined;
 
-export const MUSIC_QUALITY = conf.get("cloudmusic.music.musicQuality");
+export const MUSIC_QUALITY = conf.get("cloudmusic.music.quality");
 
 export const PLAYER = conf.get("cloudmusic.player.player");
 
-const MPV_BINARY = conf.get("cloudmusic.player.mpvPath");
+const MPV_BINARY = conf.get("cloudmusic.player.mpv.path");
 
 export const MPV_API_OPTIONS = {
   audio_only: true,
@@ -30,9 +30,9 @@ export const MPV_API_OPTIONS = {
 
 export const MPV_ARGS = ["--no-config", "--load-scripts=no", "--no-ytdl"];
 
-const VLC_BINARY = conf.get("cloudmusic.player.vlcPath");
-const VLC_HTTP_PORT = conf.get("cloudmusic.player.vlcHttpPort");
-const VLC_HTTP_PASS = conf.get("cloudmusic.player.vlcHttpPass");
+const VLC_BINARY = conf.get("cloudmusic.player.vlc.path");
+const VLC_HTTP_PORT = conf.get("cloudmusic.player.vlc.httpPort");
+const VLC_HTTP_PASS = conf.get("cloudmusic.player.vlc.httpPass");
 
 const VLC_ARGS = [
   ...[
@@ -52,10 +52,10 @@ const VLC_ARGS = [
     "--no-qt-error-dialogs",
   ],
   ...(system === "win32" ? ["--high-priority", "--no-qt-updates-notif"] : [""]),
-  ...(conf.get("cloudmusic.player.vlcDummy")
+  ...(conf.get("cloudmusic.player.vlc.dummy")
     ? ["--intf=dummy", system === "win32" ? "--dummy-quiet" : ""]
     : [""]),
-  ...(conf.get("cloudmusic.player.vlcIgnoreConfig")
+  ...(conf.get("cloudmusic.player.vlc.ignoreConfig")
     ? ["--ignore-config"]
     : [""]),
 ].filter((item) => item !== "");
