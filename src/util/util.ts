@@ -1,10 +1,10 @@
 import { TreeItemCollapsibleState } from "vscode";
-import { QueueItem, songsItem } from "../constant/type";
+import { QueueItem, SongsItem } from "../constant/type";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 import { PlaylistManager } from "../manager/playlistManager";
 import { ButtonLabel, ButtonManager } from "../manager/buttonManager";
 
-export async function QueueItem2TreeItem(
+export async function queueItem2TreeItem(
   id: number,
   songs: QueueItem[]
 ): Promise<QueueItemTreeItem[]> {
@@ -23,12 +23,12 @@ export async function getPlaylistContentIntelligence(
   pid: number
 ): Promise<QueueItemTreeItem[]> {
   const songs = await PlaylistManager.tracksIntelligence(id, pid);
-  return await QueueItem2TreeItem(id, songs);
+  return await queueItem2TreeItem(id, songs);
 }
 
-export function solveSongItem(item: songsItem): QueueItem {
+export function solveSongItem(item: SongsItem): QueueItem {
   const { name, id, bt, alia, ar } = item;
-  let arNames = [];
+  const arNames: string[] = [];
   for (const i of ar) {
     arNames.push(i.name);
   }
@@ -44,17 +44,17 @@ export function solveSongItem(item: songsItem): QueueItem {
 
 const buttonManager = ButtonManager.getInstance();
 
-export function buttonPlay() {
-  buttonManager.updateButton(ButtonLabel.Play, "$(play)", "PLay");
+export function buttonPlay(): void {
+  buttonManager.updateButton(ButtonLabel.play, "$(play)", "PLay");
 }
 
-export function buttonPause() {
-  buttonManager.updateButton(ButtonLabel.Play, "$(debug-pause)", "Pause");
+export function buttonPause(): void {
+  buttonManager.updateButton(ButtonLabel.play, "$(debug-pause)", "Pause");
 }
 
-export function buttonLike(islike: boolean) {
+export function buttonLike(islike: boolean): void {
   buttonManager.updateButton(
-    ButtonLabel.Like,
+    ButtonLabel.like,
     islike ? "$(star-full)" : "$(star)",
     "Like"
   );

@@ -1,26 +1,35 @@
 import {
   QueueItem,
   PlaylistItem,
-  songsItem,
-  trackIdsItem,
+  SongsItem,
+  TrackIdsItem,
 } from "../constant/type";
 import { PROXY, MUSIC_QUALITY } from "../constant/setting";
 import { solveSongItem } from "./util";
 import { AccountManager } from "../manager/accountManager";
 
 const {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   check_music,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   daily_signin,
   like,
   likelist,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   login_refresh,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   login_status,
   logout,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   playlist_detail,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   playmode_intelligence_list,
   scrobble,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   song_detail,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   song_url,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   user_playlist,
 } = require("NeteaseCloudMusicApi");
 
@@ -148,7 +157,7 @@ export async function apiPlaylistDetail(id: number): Promise<number[]> {
     }
     const { playlist } = body;
     const { trackIds } = playlist;
-    return trackIds.map((trackId: trackIdsItem) => {
+    return trackIds.map((trackId: TrackIdsItem) => {
       return trackId.id;
     });
   } catch {
@@ -172,7 +181,7 @@ export async function apiPlaymodeIntelligenceList(
       return ret;
     }
     const { data } = body;
-    ret = data.map((song: { songInfo: songsItem }) => {
+    ret = data.map((song: { songInfo: SongsItem }) => {
       const { songInfo } = song;
       return solveSongItem(songInfo);
     });
@@ -180,7 +189,11 @@ export async function apiPlaymodeIntelligenceList(
   return ret;
 }
 
-export async function apiScrobble(id: number, sourceid: number, time: number) {
+export async function apiScrobble(
+  id: number,
+  sourceid: number,
+  time: number
+): Promise<void> {
   await scrobble({
     id,
     sourceid,
@@ -203,7 +216,7 @@ export async function apiSongDetail(trackIds: number[]): Promise<QueueItem[]> {
         continue;
       }
       const { songs } = body;
-      ret = ret.concat(songs.map((song: songsItem) => solveSongItem(song)));
+      ret = ret.concat(songs.map((song: SongsItem) => solveSongItem(song)));
     }
     return ret;
   } catch {
@@ -240,7 +253,7 @@ export async function apiSongUrl(trackIds: number[]): Promise<string[]> {
 
 export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
   try {
-    let ret: PlaylistItem[] = [];
+    const ret: PlaylistItem[] = [];
     const { status, body } = await user_playlist({
       uid: AccountManager.uid,
       cookie: AccountManager.cookie,

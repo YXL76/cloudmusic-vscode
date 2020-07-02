@@ -19,11 +19,14 @@ export const PLAYER = conf.get("cloudmusic.player.player");
 const MPV_BINARY = conf.get("cloudmusic.player.mpv.path");
 
 export const MPV_API_OPTIONS = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   audio_only: true,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   auto_restart: true,
   binary: MPV_BINARY ? MPV_BINARY : null,
   debug: false,
   ipcCommand: null,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   time_update: 1,
   verbose: false,
 };

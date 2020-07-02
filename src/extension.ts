@@ -144,7 +144,7 @@ async function initQueueProvider(p: QueueProvider) {
 
 function initButtonManager(buttonManager: ButtonManager) {
   buttonManager.updateButton(
-    ButtonLabel.Account,
+    ButtonLabel.account,
     "$(account)",
     AccountManager.nickname,
     "cloudmusic.signout"
@@ -152,7 +152,7 @@ function initButtonManager(buttonManager: ButtonManager) {
   buttonManager.show();
 }
 
-export function activate(context: ExtensionContext) {
+export function activate(context: ExtensionContext): void {
   player.start();
   player.volume(85);
 
@@ -204,7 +204,9 @@ export function activate(context: ExtensionContext) {
                 account,
                 password,
               }),
-              () => {}
+              () => {
+                //
+              }
             );
             initPlaylistProvider(
               userPlaylistProvider,
@@ -245,11 +247,13 @@ export function activate(context: ExtensionContext) {
         player.stop();
         if (await AccountManager.logout()) {
           try {
-            unlink(ACCOUNT_FILE, () => {});
+            unlink(ACCOUNT_FILE, () => {
+              //
+            });
           } catch {}
 
           buttonManager.updateButton(
-            ButtonLabel.Account,
+            ButtonLabel.account,
             "$(account)",
             "Account",
             "cloudmusic.signin"
@@ -322,6 +326,6 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(volume);
 }
 
-export function deactivate() {
+export function deactivate(): void {
   player.quit();
 }

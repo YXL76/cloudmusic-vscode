@@ -1,12 +1,12 @@
 import { Command, StatusBarAlignment, StatusBarItem, window } from "vscode";
 
 export enum ButtonLabel {
-  Account,
-  Previous,
-  Play,
-  Next,
-  Like,
-  Volume,
+  account,
+  previous,
+  play,
+  next,
+  like,
+  volume,
 }
 
 export class ButtonManager {
@@ -40,7 +40,7 @@ export class ButtonManager {
     text: string,
     tooltip: string,
     command?: string | Command
-  ) {
+  ): void {
     this.buttons[index].text = text;
     this.buttons[index].tooltip = tooltip;
     if (command) {
@@ -48,17 +48,17 @@ export class ButtonManager {
     }
   }
 
-  clearButtonCommand(index: number) {
+  clearButtonCommand(index: number): void {
     this.buttons[index].command = undefined;
   }
 
-  show() {
+  show(): void {
     for (let i = 1; i < this.buttons.length; ++i) {
       this.buttons[i].show();
     }
   }
 
-  hide() {
+  hide(): void {
     for (let i = 1; i < this.buttons.length; ++i) {
       this.buttons[i].hide();
     }

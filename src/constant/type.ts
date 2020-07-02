@@ -18,7 +18,7 @@ export type QueueItem = {
   arName: string;
 };
 
-export type songsItem = {
+export type SongsItem = {
   name: string;
   id: number;
   bt: number;
@@ -29,7 +29,7 @@ export type songsItem = {
   }[];
 };
 
-export type trackIdsItem = {
+export type TrackIdsItem = {
   id: number;
   v: number;
   at: number;

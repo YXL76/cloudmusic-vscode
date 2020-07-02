@@ -7,8 +7,6 @@ import {
 } from "../util/api";
 
 export class PlaylistManager {
-  constructor() {}
-
   static async tracks(id: number): Promise<QueueItem[]> {
     return await apiSongDetail(await apiPlaylistDetail(id));
   }

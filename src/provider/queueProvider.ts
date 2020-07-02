@@ -20,7 +20,7 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     0,
     TreeItemCollapsibleState.None
   );
-  islike: boolean = false;
+  islike = false;
 
   private _onDidChangeTreeData: EventEmitter<
     QueueItemTreeItem | undefined | void
@@ -35,8 +35,6 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     QueueItemTreeItem
   >();
 
-  constructor() {}
-
   static getInstance(): QueueProvider {
     return this.instance || (this.instance = new QueueProvider());
   }
@@ -49,23 +47,23 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     return element;
   }
 
-  getChildren(_element?: QueueItemTreeItem): QueueItemTreeItem[] {
+  getChildren(): QueueItemTreeItem[] {
     return [...this.songs.values()];
   }
 
-  clear() {
+  clear(): void {
     this.songs.clear();
   }
 
-  random() {
+  random(): void {
     this.songs = new Map(unsortInplace([...this.songs]));
   }
 
-  top(element: QueueItemTreeItem) {
+  top(element: QueueItemTreeItem): void {
     this.shift([...this.songs.keys()].indexOf(element.item.id));
   }
 
-  shift(index: number) {
+  shift(index: number): void {
     const previous = [...this.songs];
     while (index < 0) {
       index += previous.length;
@@ -77,13 +75,13 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     buttonLike(this.islike);
   }
 
-  add(elements: QueueItemTreeItem[]) {
+  add(elements: QueueItemTreeItem[]): void {
     for (const i of elements) {
       this.songs.set(i.item.id, i);
     }
   }
 
-  delete(id: number) {
+  delete(id: number): void {
     this.songs.delete(id);
   }
 }

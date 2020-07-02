@@ -8,19 +8,18 @@ import {
   apiLogout,
   apiUserPlaylist,
 } from "../util/api";
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const { login, login_cellphone } = require("NeteaseCloudMusicApi");
 const { cookieToJson } = require("NeteaseCloudMusicApi/util/index");
 
 export class AccountManager {
-  static loggedIn: boolean = false;
-  static cookie: object = {};
-  static uid: number = 0;
-  static nickname: string = "";
+  static loggedIn = false;
+  static cookie = {};
+  static uid = 0;
+  static nickname = "";
   static likelist: Set<number> = new Set<number>();
 
-  constructor() {}
-
-  static async dailySignin() {
+  static async dailySignin(): Promise<void> {
     if (this.loggedIn) {
       const code = await apiDailySignin();
       switch (code) {
@@ -77,11 +76,11 @@ export class AccountManager {
     }
   }
 
-  static async loginRefresh() {
+  static async loginRefresh(): Promise<void> {
     await apiLoginRefresh();
   }
 
-  static async loginStatus() {
+  static async loginStatus(): Promise<void> {
     await apiLoginStatus();
   }
 

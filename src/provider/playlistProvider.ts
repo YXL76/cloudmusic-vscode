@@ -11,7 +11,7 @@ import { PlaylistItem } from "../constant/type";
 import { AccountManager } from "../manager/accountManager";
 import { PlaylistManager } from "../manager/playlistManager";
 import {
-  QueueItem2TreeItem,
+  queueItem2TreeItem,
   getPlaylistContentIntelligence,
 } from "../util/util";
 const queueProvider = QueueProvider.getInstance();
@@ -96,7 +96,7 @@ export class PlaylistProvider
       return items;
     } else {
       const songs = await PlaylistManager.tracks(id);
-      const ret = await QueueItem2TreeItem(id, songs);
+      const ret = await queueItem2TreeItem(id, songs);
       this.treeView.set(id, ret);
       return ret;
     }
@@ -123,7 +123,10 @@ export class PlaylistProvider
     });
   }
 
-  static async playPlaylist(id: number, index?: QueueItemTreeItem) {
+  static async playPlaylist(
+    id: number,
+    index?: QueueItemTreeItem
+  ): Promise<void> {
     queueProvider.clear();
     queueProvider.add(await this.getPlaylistContent(id));
     if (index) {
@@ -132,12 +135,12 @@ export class PlaylistProvider
     queueProvider.refresh();
   }
 
-  static async addPlaylist(id: number) {
+  static async addPlaylist(id: number): Promise<void> {
     queueProvider.add(await this.getPlaylistContent(id));
     queueProvider.refresh();
   }
 
-  static async intelligence(element: QueueItemTreeItem) {
+  static async intelligence(element: QueueItemTreeItem): Promise<void> {
     queueProvider.clear();
     queueProvider.add([element]);
     queueProvider.add(
@@ -146,7 +149,7 @@ export class PlaylistProvider
     queueProvider.refresh();
   }
 
-  static addSong(element: QueueItemTreeItem) {
+  static addSong(element: QueueItemTreeItem): void {
     queueProvider.add([element]);
     queueProvider.refresh();
   }
