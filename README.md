@@ -11,6 +11,8 @@
 - [MPV Player](https://mpv.io/installation/)
 - [VLC Player](https://www.videolan.org/vlc/)
 
+  - 因为`VLC Player`不能处理`flac`流，所以音质设置不要选无损，如果遇到`flac`流将直接跳过当前歌曲
+
 - 对于`Windows`用户，推荐使用`VLC Player`，`MPV Player`在某些情况下可能无法正常工作。如果播放器的路径不位于环境变量中，可以在设置中指定二进制文件的路径
 - 对于`Linux`用户，可以依照自身喜好选择
 - 对于`MAC OS`用户，因为开发者没有相关环境，所以无法测试
@@ -203,7 +205,7 @@
 |         recommend_songs          |      每日推荐歌曲      |        |
 |        register_cellphone        |        注册账号        |   ❌   |
 |          resource_like           |   点赞与取消点赞资源   |        |
-|             scrobble             |        听歌打卡        |        |
+|             scrobble             |        听歌打卡        |   ✔️   |
 |          send_playlist           |        私信歌单        |        |
 |            send_text             |          私信          |        |
 |             setting              |          设置          |        |
