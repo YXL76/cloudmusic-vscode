@@ -1,3 +1,4 @@
+import { throttle } from "lodash";
 import { commands, ExtensionContext, window } from "vscode";
 import { existsSync, mkdirSync, readFileSync, unlink, writeFile } from "fs";
 import { ACCOUNT_FILE, SETTING_DIR } from "./constant/setting";
@@ -48,39 +49,54 @@ async function initPlaylistProvider(
 
   window.registerTreeDataProvider("userPlaylist", up);
   window.registerTreeDataProvider("favoritePlaylist", fp);
-  commands.registerCommand("cloudmusic.refreshPlaylist", () =>
-    PlaylistProvider.refresh()
+
+  commands.registerCommand(
+    "cloudmusic.refreshPlaylist",
+    throttle(PlaylistProvider.refresh, 2048)
   );
   commands.registerCommand(
     "cloudmusic.refreshPlaylistContent",
-    (element: PlaylistItemTreeItem) => PlaylistProvider.refresh(element)
+    throttle(
+      (element: PlaylistItemTreeItem) => PlaylistProvider.refresh(element),
+      2048
+    )
   );
   commands.registerCommand(
     "cloudmusic.playPlaylist",
-    (element: PlaylistItemTreeItem) =>
-      PlaylistProvider.playPlaylist(element.item.id)
+    throttle(
+      (element: PlaylistItemTreeItem) =>
+        PlaylistProvider.playPlaylist(element.item.id),
+      1024
+    )
   );
   commands.registerCommand(
     "cloudmusic.addPlaylist",
-    (element: PlaylistItemTreeItem) =>
-      PlaylistProvider.addPlaylist(element.item.id)
+    throttle(
+      (element: PlaylistItemTreeItem) =>
+        PlaylistProvider.addPlaylist(element.item.id),
+      1024
+    )
   );
   commands.registerCommand(
     "cloudmusic.intelligence",
-    (element: QueueItemTreeItem) => {
+    throttle((element: QueueItemTreeItem) => {
       PlaylistProvider.intelligence(element);
       player.load(element);
-    }
+    }, 1024)
   );
-  commands.registerCommand("cloudmusic.addSong", (element: QueueItemTreeItem) =>
-    PlaylistProvider.addSong(element)
+  commands.registerCommand(
+    "cloudmusic.addSong",
+    throttle(
+      (element: QueueItemTreeItem) => PlaylistProvider.addSong(element),
+      512
+    )
   );
   commands.registerCommand(
     "cloudmusic.playSongWithPlaylist",
-    (element: QueueItemTreeItem) => {
+    throttle((element: QueueItemTreeItem) => {
       PlaylistProvider.playPlaylist(element.pid, element);
       player.load(element);
-    }
+    }, 1024)
   );
 }
 
@@ -93,30 +109,36 @@ async function initQueueProvider(p: QueueProvider) {
   initQueueProviderFlag = true;
 
   window.registerTreeDataProvider("queue", p);
-  commands.registerCommand("cloudmusic.clearQueue", async () => {
-    p.clear();
-    p.refresh();
-    player.stop();
-  });
-  commands.registerCommand("cloudmusic.randomQueue", async () => {
-    p.random();
-    p.refresh();
-    player.stop();
-  });
+  commands.registerCommand(
+    "cloudmusic.clearQueue",
+    throttle(async () => {
+      p.clear();
+      p.refresh();
+      player.stop();
+    }, 2048)
+  );
+  commands.registerCommand(
+    "cloudmusic.randomQueue",
+    throttle(async () => {
+      p.random();
+      p.refresh();
+      player.stop();
+    }, 512)
+  );
   commands.registerCommand(
     "cloudmusic.playSong",
-    async (element: QueueItemTreeItem) => {
+    throttle(async (element: QueueItemTreeItem) => {
       p.top(element);
       p.refresh();
       player.load(element);
-    }
+    }, 512)
   );
   commands.registerCommand(
     "cloudmusic.deleteSong",
-    (element: QueueItemTreeItem) => {
+    throttle((element: QueueItemTreeItem) => {
       p.delete(element.item.id);
       p.refresh();
-    }
+    }, 512)
   );
 }
 
@@ -244,33 +266,45 @@ export function activate(context: ExtensionContext) {
 
   context.subscriptions.push(signout);
 
-  const previous = commands.registerCommand("cloudmusic.previous", async () => {
-    queueProvider.shift(-1);
-    player.load(queueProvider.head);
-    queueProvider.refresh();
-  });
+  const previous = commands.registerCommand(
+    "cloudmusic.previous",
+    throttle(async () => {
+      queueProvider.shift(-1);
+      player.load(queueProvider.head);
+      queueProvider.refresh();
+    }, 256)
+  );
 
-  const next = commands.registerCommand("cloudmusic.next", async () => {
-    queueProvider.shift(1);
-    player.load(queueProvider.head);
-    queueProvider.refresh();
-  });
+  const next = commands.registerCommand(
+    "cloudmusic.next",
+    throttle(async () => {
+      queueProvider.shift(1);
+      player.load(queueProvider.head);
+      queueProvider.refresh();
+    }, 256)
+  );
 
-  const play = commands.registerCommand("cloudmusic.play", async () => {
-    player.togglePause();
-  });
+  const play = commands.registerCommand(
+    "cloudmusic.play",
+    throttle(async () => {
+      player.togglePause();
+    }, 256)
+  );
 
-  const like = commands.registerCommand("cloudmusic.like", async () => {
-    const islike = !queueProvider.islike;
-    const id = queueProvider.head.item.id;
-    if (await apiLike(id, islike ? "" : "false")) {
-      queueProvider.islike = islike;
-      buttonLike(islike);
-      islike
-        ? AccountManager.likelist.add(id)
-        : AccountManager.likelist.delete(id);
-    }
-  });
+  const like = commands.registerCommand(
+    "cloudmusic.like",
+    throttle(async () => {
+      const islike = !queueProvider.islike;
+      const id = queueProvider.head.item.id;
+      if (await apiLike(id, islike ? "" : "false")) {
+        queueProvider.islike = islike;
+        buttonLike(islike);
+        islike
+          ? AccountManager.likelist.add(id)
+          : AccountManager.likelist.delete(id);
+      }
+    }, 512)
+  );
 
   const volume = commands.registerCommand("cloudmusic.volume", async () => {
     const volume = await window.showInputBox({
