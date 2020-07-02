@@ -76,7 +76,7 @@ class MpvPlayer implements Player {
 class VlcPlayer implements Player {
   private vlc = new vlcAPI({ ...VLC_API_OPTIONS });
   private playing = false;
-  private volumeLevel = 0.85;
+  private volumeLevel = 85;
 
   id = 0;
   pid = 0;
@@ -144,12 +144,7 @@ class VlcPlayer implements Player {
 
   async volume(volumeLevel: number) {
     try {
-      if (volumeLevel > 100) {
-        volumeLevel = 100;
-      } else if (volumeLevel < 0) {
-        volumeLevel = 0;
-      }
-      this.volumeLevel = volumeLevel / 100.0;
+      this.volumeLevel = volumeLevel;
       this.vlc.setVolume(this.volumeLevel);
     } catch {}
   }
