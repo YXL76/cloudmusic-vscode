@@ -69,14 +69,13 @@ export class PlaylistProvider
     const ids: number[] = songs.map((song) => song.id);
     const urls = await PlaylistManager.trackUrls(ids);
     let ret: PlaylistContentTreeItem[] = [];
-    for (const song of songs) {
-      const url = urls.get(song.id);
-      if (url) {
+    for (let i = 0; i < songs.length; ++i) {
+      const song = songs[i];
+      if (urls[i]) {
         ret.push(
           new PlaylistContentTreeItem(
             `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
             song,
-            url,
             id,
             TreeItemCollapsibleState.None
           )
@@ -180,20 +179,14 @@ export class PlaylistContentTreeItem extends QueueItemTreeItem {
   constructor(
     public readonly label: string,
     public readonly item: QueueItem,
-    public readonly url: string,
     public readonly pid: number,
     public readonly collapsibleState: TreeItemCollapsibleState
   ) {
-    super(label, item, url, collapsibleState);
+    super(label, item, collapsibleState);
   }
 
   toQueueTreeItem(): QueueItemTreeItem {
-    return new QueueItemTreeItem(
-      this.label,
-      this.item,
-      this.url,
-      this.collapsibleState
-    );
+    return new QueueItemTreeItem(this.label, this.item, this.collapsibleState);
   }
 
   contextValue = "PlaylistContentTreeItem";

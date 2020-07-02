@@ -146,9 +146,9 @@ export async function API_playmodeIntelligenceList(
 export async function API_songDetail(trackIds: number[]): Promise<QueueItem[]> {
   let ret: QueueItem[] = [];
   try {
-    for (let i = 0; i < trackIds.length; i += 64) {
+    for (let i = 0; i < trackIds.length; i += 512) {
       const { status, body } = await song_detail({
-        ids: trackIds.slice(i, i + 64).join(","),
+        ids: trackIds.slice(i, i + 512).join(","),
         cookie: AccountManager.cookie,
         proxy: PROXY,
       });
@@ -164,14 +164,12 @@ export async function API_songDetail(trackIds: number[]): Promise<QueueItem[]> {
   }
 }
 
-export async function API_songUrl(
-  trackIds: number[]
-): Promise<Map<number, string>> {
-  let ret: Map<number, string> = new Map<number, string>();
+export async function API_songUrl(trackIds: number[]): Promise<string[]> {
+  let ret: string[] = [];
   try {
-    for (let i = 0; i < trackIds.length; i += 64) {
+    for (let i = 0; i < trackIds.length; i += 512) {
       const { status, body } = await song_url({
-        id: trackIds.slice(i, i + 64).join(","),
+        id: trackIds.slice(i, i + 512).join(","),
         br: MUSIC_QUALITY,
         cookie: AccountManager.cookie,
         proxy: PROXY,
@@ -180,10 +178,12 @@ export async function API_songUrl(
         continue;
       }
       const { data } = body;
-      for (const song of data) {
-        const { id, url } = song;
-        ret.set(id, url);
-      }
+      ret = ret.concat(
+        data.reduce((result: string[], song: { id: number; url: string }) => {
+          result[trackIds.indexOf(song.id)] = song.url;
+          return result;
+        }, [])
+      );
     }
     return ret;
   } catch {

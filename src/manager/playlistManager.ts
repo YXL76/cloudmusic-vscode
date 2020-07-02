@@ -20,7 +20,7 @@ export class PlaylistManager {
     return await API_playmodeIntelligenceList(id, pid);
   }
 
-  static async trackUrls(id: number[]): Promise<Map<number, string>> {
+  static async trackUrls(id: number[]): Promise<string[]> {
     return await API_songUrl(id);
   }
 }

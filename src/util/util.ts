@@ -2,6 +2,7 @@ import { QueueItem, songsItem } from "../constant/type";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 import { ButtonLabel, ButtonManager } from "../manager/buttonManager";
 import { player } from "./player";
+import { API_songUrl } from "./api";
 
 export function solveSongItem(item: songsItem): QueueItem {
   const { name, id, alia, ar } = item;
@@ -19,7 +20,7 @@ export function solveSongItem(item: songsItem): QueueItem {
 }
 
 export async function playCallback(elements: [number, QueueItemTreeItem][]) {
-  player.load(elements[0][1].url);
+  player.load((await API_songUrl([elements[0][1].item.id]))[0]);
 }
 
 const buttonManager = ButtonManager.getInstance();

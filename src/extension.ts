@@ -11,6 +11,7 @@ import {
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
 import { player } from "./util/player";
 import { playCallback } from "./util/util";
+import { API_songUrl } from "./util/api";
 
 async function initAccount(
   playlistProvider: PlaylistProvider,
@@ -95,7 +96,7 @@ async function initQueueProvider(p: QueueProvider) {
     async (element: QueueItemTreeItem) => {
       p.top(element);
       p.refresh();
-      player.load(element.url);
+      player.load((await API_songUrl([element.item.id]))[0]);
     }
   );
   commands.registerCommand(

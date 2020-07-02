@@ -83,7 +83,6 @@ export class QueueItemTreeItem extends TreeItem {
   constructor(
     public readonly label: string,
     public readonly item: QueueItem,
-    public readonly url: string,
     public readonly collapsibleState: TreeItemCollapsibleState
   ) {
     super(label, collapsibleState);
