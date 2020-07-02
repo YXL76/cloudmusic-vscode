@@ -18,7 +18,7 @@ fs.readdirSync(path.join(dir, "module"))
       return ${name}(
         {
           ...data,
-          cookie: data.cookie ? data.cookie : {},
+          cookie: data.cookie || {},
         },
         request
       );

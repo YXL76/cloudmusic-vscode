@@ -83,7 +83,7 @@ export class AccountManager {
 
   static async logout() {
     if (await API_logout()) {
-      this.loggedIn = true;
+      this.loggedIn = false;
       this.cookie = {};
       this.uid = 0;
       this.nickname = "";

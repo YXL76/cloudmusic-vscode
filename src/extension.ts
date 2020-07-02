@@ -1,11 +1,5 @@
 import { commands, ExtensionContext, window } from "vscode";
-import {
-  existsSync,
-  mkdirSync,
-  readFileSync,
-  unlinkSync,
-  writeFileSync,
-} from "fs";
+import { existsSync, mkdirSync, readFileSync, unlink, writeFile } from "fs";
 import { ACCOUNT_FILE, SETTING_DIR } from "./constant/setting";
 import { AccountManager } from "./manager/accountManager";
 import { ButtonLabel, ButtonManager } from "./manager/buttonManager";
@@ -157,13 +151,14 @@ export function activate(context: ExtensionContext) {
         });
         if (password) {
           if (await AccountManager.login(method.phone, account, password)) {
-            writeFileSync(
+            writeFile(
               ACCOUNT_FILE,
               JSON.stringify({
                 phone: method.phone,
                 account,
                 password,
-              })
+              }),
+              () => {}
             );
             initPlaylistProvider();
             initQueueProvider();
@@ -192,7 +187,7 @@ export function activate(context: ExtensionContext) {
         player.stop();
         await AccountManager.logout();
         try {
-          unlinkSync(ACCOUNT_FILE);
+          unlink(ACCOUNT_FILE, () => {});
         } catch {}
 
         const buttonManager = ButtonManager.getInstance();

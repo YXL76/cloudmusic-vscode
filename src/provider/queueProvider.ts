@@ -29,9 +29,7 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   constructor() {}
 
   static getInstance(): QueueProvider {
-    return this.instance
-      ? this.instance
-      : (this.instance = new QueueProvider());
+    return this.instance || (this.instance = new QueueProvider());
   }
 
   refresh(): void {

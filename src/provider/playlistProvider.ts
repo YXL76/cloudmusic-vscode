@@ -35,9 +35,7 @@ export class PlaylistProvider
   constructor() {}
 
   static getInstance(): PlaylistProvider {
-    return this.instance
-      ? this.instance
-      : (this.instance = new PlaylistProvider());
+    return this.instance || (this.instance = new PlaylistProvider());
   }
 
   refresh(element?: PlaylistItemTreeItem): void {
@@ -166,7 +164,7 @@ export class PlaylistItemTreeItem extends TreeItem {
   get tooltip(): string {
     const { description, playCount, subscribedCount, trackCount } = this.item;
     return `
-    ${description ? description : ""}
+    ${description || ""}
     ${trackCount}
     ${playCount}
     ${subscribedCount}

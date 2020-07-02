@@ -32,9 +32,7 @@ export class ButtonManager {
   }
 
   static getInstance(): ButtonManager {
-    return this.instance
-      ? this.instance
-      : (this.instance = new ButtonManager());
+    return this.instance || (this.instance = new ButtonManager());
   }
 
   updateButton(
