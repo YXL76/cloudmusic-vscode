@@ -7,6 +7,7 @@ export type PlaylistItem = {
   playCount: string;
   subscribedCount: string;
   trackCount: number;
+  userId: number;
 };
 
 export type QueueItem = {

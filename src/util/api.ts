@@ -221,6 +221,7 @@ export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
       playCount,
       subscribedCount,
       trackCount,
+      creator,
     } of playlist) {
       ret.push({
         description,
@@ -229,6 +230,7 @@ export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
         playCount,
         subscribedCount,
         trackCount,
+        userId: creator.userId,
       });
     }
     return ret;

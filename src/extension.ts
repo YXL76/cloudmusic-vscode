@@ -12,7 +12,8 @@ import { player } from "./util/player";
 import { playCallback } from "./util/util";
 
 async function initAccount(
-  playlistProvider: PlaylistProvider,
+  userPlaylistProvider: PlaylistProvider,
+  favoritePlaylistProvider: PlaylistProvider,
   queueProvider: QueueProvider,
   buttonManager: ButtonManager
 ) {
@@ -25,7 +26,7 @@ async function initAccount(
         readFileSync(ACCOUNT_FILE, "utf8")
       );
       if (await AccountManager.login(phone, account, password)) {
-        initPlaylistProvider(playlistProvider);
+        initPlaylistProvider(userPlaylistProvider, favoritePlaylistProvider);
         initQueueProvider(queueProvider);
         initButtonManager(buttonManager);
       }
@@ -35,37 +36,45 @@ async function initAccount(
 
 let initPlaylistProviderFlag = false;
 
-async function initPlaylistProvider(p: PlaylistProvider) {
+async function initPlaylistProvider(
+  up: PlaylistProvider,
+  fp: PlaylistProvider
+) {
   if (initPlaylistProviderFlag) {
     return;
   }
   initPlaylistProviderFlag = true;
 
-  window.registerTreeDataProvider("playlist", p);
-  commands.registerCommand("cloudmusic.refreshPlaylist", () => p.refresh());
+  window.registerTreeDataProvider("userPlaylist", up);
+  window.registerTreeDataProvider("favoritePlaylist", fp);
+  commands.registerCommand("cloudmusic.refreshPlaylist", () =>
+    PlaylistProvider.refresh()
+  );
   commands.registerCommand(
     "cloudmusic.refreshPlaylistContent",
-    (element: PlaylistItemTreeItem) => p.refresh(element)
+    (element: PlaylistItemTreeItem) => PlaylistProvider.refresh(element)
   );
   commands.registerCommand(
     "cloudmusic.playPlaylist",
-    (element: PlaylistItemTreeItem) => p.playPlaylist(element.item.id)
+    (element: PlaylistItemTreeItem) =>
+      PlaylistProvider.playPlaylist(element.item.id)
   );
   commands.registerCommand(
     "cloudmusic.addPlaylist",
-    (element: PlaylistItemTreeItem) => p.addPlaylist(element.item.id)
+    (element: PlaylistItemTreeItem) =>
+      PlaylistProvider.addPlaylist(element.item.id)
   );
   commands.registerCommand(
     "cloudmusic.intelligence",
-    (element: QueueItemTreeItem) => p.intelligence(element)
+    (element: QueueItemTreeItem) => PlaylistProvider.intelligence(element)
   );
   commands.registerCommand("cloudmusic.addSong", (element: QueueItemTreeItem) =>
-    p.addSong(element)
+    PlaylistProvider.addSong(element)
   );
   commands.registerCommand(
     "cloudmusic.playSongWithPlaylist",
     (element: QueueItemTreeItem) =>
-      p.playPlaylist(element.pid, element, playCallback)
+      PlaylistProvider.playPlaylist(element.pid, element, playCallback)
   );
 }
 
@@ -119,11 +128,17 @@ export function activate(context: ExtensionContext) {
   player.start();
   player.volume(85);
 
-  const playlistProvider = PlaylistProvider.getInstance();
+  const userPlaylistProvider = PlaylistProvider.getUserInstance();
+  const favoritePlaylistProvider = PlaylistProvider.getFavoriteInstance();
   const queueProvider = QueueProvider.getInstance();
   const buttonManager = ButtonManager.getInstance();
 
-  initAccount(playlistProvider, queueProvider, buttonManager);
+  initAccount(
+    userPlaylistProvider,
+    favoritePlaylistProvider,
+    queueProvider,
+    buttonManager
+  );
 
   const signin = commands.registerCommand("cloudmusic.signin", async () => {
     const method = await window.showQuickPick(
@@ -163,7 +178,10 @@ export function activate(context: ExtensionContext) {
               }),
               () => {}
             );
-            initPlaylistProvider(playlistProvider);
+            initPlaylistProvider(
+              userPlaylistProvider,
+              favoritePlaylistProvider
+            );
             initQueueProvider(queueProvider);
             initButtonManager(buttonManager);
           }
@@ -173,6 +191,15 @@ export function activate(context: ExtensionContext) {
   });
 
   context.subscriptions.push(signin);
+
+  const dailySignin = commands.registerCommand(
+    "cloudmusic.dailySignin",
+    async () => {
+      AccountManager.dailySignin();
+    }
+  );
+
+  context.subscriptions.push(dailySignin);
 
   const signout = commands.registerCommand("cloudmusic.signout", async () => {
     if (AccountManager.loggedIn) {
@@ -202,8 +229,7 @@ export function activate(context: ExtensionContext) {
         );
         buttonManager.hide();
 
-        const playlistProvider = PlaylistProvider.getInstance();
-        playlistProvider.refresh();
+        PlaylistProvider.refresh();
         const queueProvider = QueueProvider.getInstance();
         queueProvider.clear();
         queueProvider.refresh();

@@ -29,21 +29,25 @@ class MpvPlayer implements Player {
   }
 
   async load(element: QueueItemTreeItem) {
-    try {
-      const url = (await apiSongUrl([element.item.id]))[0];
-      await this.mpv.load(url);
-      this.id = element.item.id;
-      this.pid = element.pid;
-      if (element.item.bt > 60) {
-        const delay = Math.floor(Math.random() * element.item.bt + 60);
-        setTimeout(() => {
-          if (this.id === element.item.id) {
-            apiScrobble(this.id, this.pid, delay);
-          }
-        }, delay);
-      }
-      buttonPause();
-    } catch {}
+    const url = (await apiSongUrl([element.item.id]))[0];
+    if (url === "") {
+      commands.executeCommand("cloudmusic.next");
+    } else {
+      try {
+        await this.mpv.load(url);
+        this.id = element.item.id;
+        this.pid = element.pid;
+        if (element.item.bt > 60) {
+          const delay = Math.floor(Math.random() * element.item.bt + 60);
+          setTimeout(() => {
+            if (this.id === element.item.id) {
+              apiScrobble(this.id, this.pid, delay);
+            }
+          }, delay);
+        }
+        buttonPause();
+      } catch {}
+    }
   }
 
   async stop() {
@@ -87,7 +91,7 @@ class VlcPlayer implements Player {
 
   async load(element: QueueItemTreeItem) {
     const url = (await apiSongUrl([element.item.id]))[0];
-    if (/.flac$/.exec(url)) {
+    if (url === "" || /.flac$/.exec(url)) {
       commands.executeCommand("cloudmusic.next");
     } else {
       this.quit();

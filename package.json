@@ -42,8 +42,12 @@
     "views": {
       "cloudmusic": [
         {
-          "id": "playlist",
-          "name": "playlist"
+          "id": "userPlaylist",
+          "name": "use playlist"
+        },
+        {
+          "id": "favoritePlaylist",
+          "name": "favorite playlist"
         },
         {
           "id": "queue",
@@ -144,7 +148,7 @@
       "view/title": [
         {
           "command": "cloudmusic.refreshPlaylist",
-          "when": "view == playlist",
+          "when": "view == userPlaylist || favoritePlaylist",
           "group": "navigation"
         },
         {
@@ -161,32 +165,32 @@
       "view/item/context": [
         {
           "command": "cloudmusic.refreshPlaylistContent",
-          "when": "view == playlist && viewItem == PlaylistItemTreeItem",
+          "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem || view == favoritePlaylist && viewItem == PlaylistItemTreeItem",
           "group": "inline"
         },
         {
           "command": "cloudmusic.playPlaylist",
-          "when": "view == playlist && viewItem == PlaylistItemTreeItem",
+          "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem || view == favoritePlaylist && viewItem == PlaylistItemTreeItem",
           "group": "inline"
         },
         {
           "command": "cloudmusic.addPlaylist",
-          "when": "view == playlist && viewItem == PlaylistItemTreeItem",
+          "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem || view == favoritePlaylist && viewItem == PlaylistItemTreeItem",
           "group": "inline"
         },
         {
           "command": "cloudmusic.addSong",
-          "when": "view == playlist && viewItem == QueueItemTreeItem",
+          "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem",
           "group": "inline"
         },
         {
           "command": "cloudmusic.intelligence",
-          "when": "view == playlist && viewItem == QueueItemTreeItem",
+          "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem",
           "group": "inline"
         },
         {
           "command": "cloudmusic.playSongWithPlaylist",
-          "when": "view == playlist && viewItem == QueueItemTreeItem",
+          "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem",
           "group": "inline"
         },
         {
