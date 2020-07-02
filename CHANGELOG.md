@@ -6,6 +6,26 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.3.0] - 2020-07-02
+
+### Added
+
+- `scrobble` api support
+- Divide playlist view into user and favorite
+
+### Deprecated
+
+- `cloudmusic.player.vlcIgnoreConfig` configuration
+
+### Fixed
+
+- `VLC Player` can set volume now
+- Handle `flac` stream which will cause `VLC Player` crash
+
+### Security
+
+- Requset music url for every play to prevent url out of date
+
 ## [1.2.2] - 2020-07-02
 
 ### Added
