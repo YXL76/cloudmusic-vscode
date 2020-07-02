@@ -6,7 +6,7 @@ import {
   VLC_API_OPTIONS,
 } from "../constant/setting";
 import { Player } from "../constant/type";
-import { API_scrobble, API_songUrl } from "./api";
+import { apiScrobble, apiSongUrl } from "./api";
 import { buttonPlay, buttonPause } from "./util";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 const mpvAPI = require("node-mpv");
@@ -30,7 +30,7 @@ class MpvPlayer implements Player {
 
   async load(element: QueueItemTreeItem) {
     try {
-      const url = (await API_songUrl([element.item.id]))[0];
+      const url = (await apiSongUrl([element.item.id]))[0];
       await this.mpv.load(url);
       this.id = element.item.id;
       this.pid = element.pid;
@@ -38,7 +38,7 @@ class MpvPlayer implements Player {
         const delay = Math.floor(Math.random() * element.item.bt + 60);
         setTimeout(() => {
           if (this.id === element.item.id) {
-            API_scrobble(this.id, this.pid, delay);
+            apiScrobble(this.id, this.pid, delay);
           }
         }, delay);
       }
@@ -89,7 +89,7 @@ class VlcPlayer implements Player {
     this.quit();
     try {
       delete this.vlc;
-      const url = (await API_songUrl([element.item.id]))[0];
+      const url = (await apiSongUrl([element.item.id]))[0];
       this.vlc = new vlcAPI({ ...VLC_API_OPTIONS, ...{ media: url } });
       this.vlc.on("playback-ended", () => {
         commands.executeCommand("cloudmusic.next");
@@ -108,7 +108,7 @@ class VlcPlayer implements Player {
         const delay = Math.floor(Math.random() * element.item.bt + 60);
         setTimeout(() => {
           if (this.id === element.item.id) {
-            API_scrobble(this.id, this.pid, delay);
+            apiScrobble(this.id, this.pid, delay);
           }
         }, delay);
       }

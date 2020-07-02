@@ -1,11 +1,11 @@
 import { window } from "vscode";
 import { PlaylistItem } from "../constant/type";
 import {
-  API_dailySignin,
-  API_loginRefresh,
-  API_loginStatus,
-  API_logout,
-  API_userPlaylist,
+  apiDailySignin,
+  apiLoginRefresh,
+  apiLoginStatus,
+  apiLogout,
+  apiUserPlaylist,
 } from "../util/api";
 const { login, login_cellphone } = require("NeteaseCloudMusicApi");
 const { cookieToJson } = require("NeteaseCloudMusicApi/util/index");
@@ -20,7 +20,7 @@ export class AccountManager {
 
   static async dailySignin() {
     if (this.loggedIn) {
-      const code = await API_dailySignin();
+      const code = await apiDailySignin();
       switch (code) {
         case 200:
           window.showInformationMessage("签到成功");
@@ -74,15 +74,15 @@ export class AccountManager {
   }
 
   static async loginRefresh() {
-    await API_loginRefresh();
+    await apiLoginRefresh();
   }
 
   static async loginStatus() {
-    await API_loginStatus();
+    await apiLoginStatus();
   }
 
   static async logout() {
-    if (await API_logout()) {
+    if (await apiLogout()) {
       this.loggedIn = false;
       this.cookie = {};
       this.uid = 0;
@@ -91,6 +91,6 @@ export class AccountManager {
   }
 
   static async playlist(): Promise<PlaylistItem[]> {
-    return await API_userPlaylist();
+    return await apiUserPlaylist();
   }
 }

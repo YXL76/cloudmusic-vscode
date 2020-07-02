@@ -22,7 +22,7 @@ const {
   user_playlist,
 } = require("NeteaseCloudMusicApi");
 
-export async function API_checkMusic(id: number): Promise<boolean> {
+export async function apiCheckMusic(id: number): Promise<boolean> {
   try {
     const { status, body } = await check_music({
       id,
@@ -39,7 +39,7 @@ export async function API_checkMusic(id: number): Promise<boolean> {
   }
 }
 
-export async function API_dailySignin(): Promise<number> {
+export async function apiDailySignin(): Promise<number> {
   try {
     const { status, body } = await daily_signin({
       cookie: AccountManager.cookie,
@@ -55,7 +55,7 @@ export async function API_dailySignin(): Promise<number> {
   }
 }
 
-export async function API_loginRefresh(): Promise<boolean> {
+export async function apiLoginRefresh(): Promise<boolean> {
   try {
     const { status } = await login_refresh({
       cookie: AccountManager.cookie,
@@ -70,7 +70,7 @@ export async function API_loginRefresh(): Promise<boolean> {
   }
 }
 
-export async function API_loginStatus(): Promise<boolean> {
+export async function apiLoginStatus(): Promise<boolean> {
   try {
     const { status } = await login_status({
       cookie: AccountManager.cookie,
@@ -85,7 +85,7 @@ export async function API_loginStatus(): Promise<boolean> {
   }
 }
 
-export async function API_logout(): Promise<boolean> {
+export async function apiLogout(): Promise<boolean> {
   try {
     const { status } = await logout({
       cookie: AccountManager.cookie,
@@ -100,7 +100,7 @@ export async function API_logout(): Promise<boolean> {
   }
 }
 
-export async function API_playlistDetail(id: number): Promise<number[]> {
+export async function apiPlaylistDetail(id: number): Promise<number[]> {
   try {
     const { status, body } = await playlist_detail({
       id,
@@ -120,7 +120,7 @@ export async function API_playlistDetail(id: number): Promise<number[]> {
   }
 }
 
-export async function API_playmodeIntelligenceList(
+export async function apiPlaymodeIntelligenceList(
   id: number,
   pid: number
 ): Promise<QueueItem[]> {
@@ -144,7 +144,7 @@ export async function API_playmodeIntelligenceList(
   return ret;
 }
 
-export async function API_scrobble(id: number, sourceid: number, time: number) {
+export async function apiScrobble(id: number, sourceid: number, time: number) {
   await scrobble({
     id,
     sourceid,
@@ -154,7 +154,7 @@ export async function API_scrobble(id: number, sourceid: number, time: number) {
   });
 }
 
-export async function API_songDetail(trackIds: number[]): Promise<QueueItem[]> {
+export async function apiSongDetail(trackIds: number[]): Promise<QueueItem[]> {
   let ret: QueueItem[] = [];
   try {
     for (let i = 0; i < trackIds.length; i += 512) {
@@ -175,7 +175,7 @@ export async function API_songDetail(trackIds: number[]): Promise<QueueItem[]> {
   }
 }
 
-export async function API_songUrl(trackIds: number[]): Promise<string[]> {
+export async function apiSongUrl(trackIds: number[]): Promise<string[]> {
   let ret: string[] = [];
   try {
     for (let i = 0; i < trackIds.length; i += 512) {
@@ -202,7 +202,7 @@ export async function API_songUrl(trackIds: number[]): Promise<string[]> {
   }
 }
 
-export async function API_userPlaylist(): Promise<PlaylistItem[]> {
+export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
   try {
     let ret: PlaylistItem[] = [];
     const { status, body } = await user_playlist({

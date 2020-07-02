@@ -1,26 +1,26 @@
 import { QueueItem } from "../constant/type";
 import {
-  API_playlistDetail,
-  API_playmodeIntelligenceList,
-  API_songDetail,
-  API_songUrl,
+  apiPlaylistDetail,
+  apiPlaymodeIntelligenceList,
+  apiSongDetail,
+  apiSongUrl,
 } from "../util/api";
 
 export class PlaylistManager {
   constructor() {}
 
   static async tracks(id: number): Promise<QueueItem[]> {
-    return await API_songDetail(await API_playlistDetail(id));
+    return await apiSongDetail(await apiPlaylistDetail(id));
   }
 
   static async tracksIntelligence(
     id: number,
     pid: number
   ): Promise<QueueItem[]> {
-    return await API_playmodeIntelligenceList(id, pid);
+    return await apiPlaymodeIntelligenceList(id, pid);
   }
 
   static async trackUrls(id: number[]): Promise<string[]> {
-    return await API_songUrl(id);
+    return await apiSongUrl(id);
   }
 }
