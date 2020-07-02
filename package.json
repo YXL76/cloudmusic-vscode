@@ -245,6 +245,12 @@
             ],
             "scope": "window"
           },
+          "cloudmusic.player.ignoreConfig": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "Open player without config",
+            "scope": "window"
+          },
           "cloudmusic.player.mpv.path": {
             "type": "string",
             "default": "",
@@ -273,12 +279,6 @@
             "type": "boolean",
             "default": true,
             "markdownDescription": "Enable vlc interface dummy mode",
-            "scope": "window"
-          },
-          "cloudmusic.player.vlc.ignoreConfig": {
-            "type": "boolean",
-            "default": false,
-            "markdownDescription": "Open vlc without config",
             "scope": "window"
           }
         }

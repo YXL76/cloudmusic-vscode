@@ -28,7 +28,10 @@ export const MPV_API_OPTIONS = {
   verbose: false,
 };
 
-export const MPV_ARGS = ["--no-config", "--load-scripts=no", "--no-ytdl"];
+export const MPV_ARGS = [
+  ...(conf.get("cloudmusic.player.ignoreConfig") ? ["--no-config"] : [""]),
+  ...["--load-scripts=no", "--no-ytdl"],
+].filter((item) => item !== "");
 
 const VLC_BINARY = conf.get("cloudmusic.player.vlc.path");
 const VLC_HTTP_PORT = conf.get("cloudmusic.player.vlc.httpPort");
@@ -55,9 +58,7 @@ const VLC_ARGS = [
   ...(conf.get("cloudmusic.player.vlc.dummy")
     ? ["--intf=dummy", system === "win32" ? "--dummy-quiet" : ""]
     : [""]),
-  ...(conf.get("cloudmusic.player.vlc.ignoreConfig")
-    ? ["--ignore-config"]
-    : [""]),
+  ...(conf.get("cloudmusic.player.ignoreConfig") ? ["--ignore-config"] : [""]),
 ].filter((item) => item !== "");
 
 export const VLC_API_OPTIONS = {
