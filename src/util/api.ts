@@ -11,6 +11,7 @@ import { AccountManager } from "../manager/accountManager";
 const {
   check_music,
   daily_signin,
+  like,
   likelist,
   login_refresh,
   login_status,
@@ -53,6 +54,23 @@ export async function apiDailySignin(): Promise<number> {
     return code;
   } catch {
     return 0;
+  }
+}
+
+export async function apiLike(id: number, islike?: string): Promise<boolean> {
+  try {
+    const { status } = await like({
+      id,
+      like: islike,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+    });
+    if (status !== 200) {
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
   }
 }
 

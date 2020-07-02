@@ -26,7 +26,7 @@ export class ButtonManager {
     this.updateButton(1, "$(chevron-left)", "Previous", "cloudmusic.previous");
     this.updateButton(2, "$(play)", "Play", "cloudmusic.play");
     this.updateButton(3, "$(chevron-right)", "Next", "cloudmusic.next");
-    this.updateButton(4, "$(star)", "Star", "cloudmusic.like");
+    this.updateButton(4, "$(star)", "Like", "cloudmusic.like");
     this.updateButton(5, "$(unmute)", "Volume", "cloudmusic.volume");
     this.buttons[0].show();
   }

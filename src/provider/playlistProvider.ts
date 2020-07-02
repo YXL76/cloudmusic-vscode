@@ -123,15 +123,11 @@ export class PlaylistProvider
     });
   }
 
-  static async playPlaylist(
-    id: number,
-    index?: QueueItemTreeItem,
-    callback?: Function
-  ) {
+  static async playPlaylist(id: number, index?: QueueItemTreeItem) {
     queueProvider.clear();
     queueProvider.add(await this.getPlaylistContent(id));
     if (index) {
-      queueProvider.top(index, callback);
+      queueProvider.top(index);
     }
     queueProvider.refresh();
   }

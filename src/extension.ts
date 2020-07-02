@@ -8,8 +8,9 @@ import {
   PlaylistProvider,
 } from "./provider/playlistProvider";
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
+import { apiLike } from "./util/api";
 import { player } from "./util/player";
-import { playCallback } from "./util/util";
+import { buttonLike } from "./util/util";
 
 async function initAccount(
   userPlaylistProvider: PlaylistProvider,
@@ -66,15 +67,20 @@ async function initPlaylistProvider(
   );
   commands.registerCommand(
     "cloudmusic.intelligence",
-    (element: QueueItemTreeItem) => PlaylistProvider.intelligence(element)
+    (element: QueueItemTreeItem) => {
+      PlaylistProvider.intelligence(element);
+      player.load(element);
+    }
   );
   commands.registerCommand("cloudmusic.addSong", (element: QueueItemTreeItem) =>
     PlaylistProvider.addSong(element)
   );
   commands.registerCommand(
     "cloudmusic.playSongWithPlaylist",
-    (element: QueueItemTreeItem) =>
-      PlaylistProvider.playPlaylist(element.pid, element, playCallback)
+    (element: QueueItemTreeItem) => {
+      PlaylistProvider.playPlaylist(element.pid, element);
+      player.load(element);
+    }
   );
 }
 
@@ -239,12 +245,14 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(signout);
 
   const previous = commands.registerCommand("cloudmusic.previous", async () => {
-    queueProvider.shift(-1, playCallback);
+    queueProvider.shift(-1);
+    player.load(queueProvider.head);
     queueProvider.refresh();
   });
 
   const next = commands.registerCommand("cloudmusic.next", async () => {
-    queueProvider.shift(1, playCallback);
+    queueProvider.shift(1);
+    player.load(queueProvider.head);
     queueProvider.refresh();
   });
 
@@ -252,7 +260,18 @@ export function activate(context: ExtensionContext) {
     player.togglePause();
   });
 
-  const like = commands.registerCommand("cloudmusic.like", async () => {});
+  const like = commands.registerCommand("cloudmusic.like", async () => {
+    const islike = !queueProvider.islike;
+    const id = queueProvider.head.item.id;
+    if (await apiLike(id, islike ? "" : "false")) {
+      queueProvider.islike = islike;
+      buttonLike(islike);
+      islike
+        ? AccountManager.likelist.add(id)
+        : AccountManager.likelist.delete(id);
+    }
+  });
+
   const volume = commands.registerCommand("cloudmusic.volume", async () => {
     const volume = await window.showInputBox({
       placeHolder: "Please enter volume between 0 and 100.",

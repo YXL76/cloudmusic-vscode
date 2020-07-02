@@ -6,11 +6,21 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
+import { buttonLike } from "../util/util";
 import { QueueItem } from "../constant/type";
+import { AccountManager } from "../manager/accountManager";
 const { unsortInplace } = require("array-unsort");
 
 export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   private static instance: QueueProvider;
+
+  head: QueueItemTreeItem = new QueueItemTreeItem(
+    "",
+    { name: "", id: 0, bt: 0, alia: "", arName: "" },
+    0,
+    TreeItemCollapsibleState.None
+  );
+  islike: boolean = false;
 
   private _onDidChangeTreeData: EventEmitter<
     QueueItemTreeItem | undefined | void
@@ -51,20 +61,20 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     this.songs = new Map(unsortInplace([...this.songs]));
   }
 
-  top(element: QueueItemTreeItem, callback?: Function) {
-    this.shift([...this.songs.keys()].indexOf(element.item.id), callback);
+  top(element: QueueItemTreeItem) {
+    this.shift([...this.songs.keys()].indexOf(element.item.id));
   }
 
-  shift(index: number, callback?: Function) {
+  shift(index: number) {
     const previous = [...this.songs];
     while (index < 0) {
       index += previous.length;
     }
     const current = previous.slice(index).concat(previous.slice(0, index));
     this.songs = new Map(current);
-    if (callback) {
-      callback(current);
-    }
+    this.head = current[0][1];
+    this.islike = AccountManager.likelist.has(this.head.item.id);
+    buttonLike(this.islike);
   }
 
   add(elements: QueueItemTreeItem[]) {

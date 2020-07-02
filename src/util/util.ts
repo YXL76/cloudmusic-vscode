@@ -3,7 +3,6 @@ import { QueueItem, songsItem } from "../constant/type";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 import { PlaylistManager } from "../manager/playlistManager";
 import { ButtonLabel, ButtonManager } from "../manager/buttonManager";
-import { player } from "./player";
 
 export async function QueueItem2TreeItem(
   id: number,
@@ -43,10 +42,6 @@ export function solveSongItem(item: songsItem): QueueItem {
   };
 }
 
-export async function playCallback(elements: [number, QueueItemTreeItem][]) {
-  player.load(elements[0][1]);
-}
-
 const buttonManager = ButtonManager.getInstance();
 
 export function buttonPlay() {
@@ -55,4 +50,12 @@ export function buttonPlay() {
 
 export function buttonPause() {
   buttonManager.updateButton(ButtonLabel.Play, "$(debug-pause)", "Pause");
+}
+
+export function buttonLike(islike: boolean) {
+  buttonManager.updateButton(
+    ButtonLabel.Like,
+    islike ? "$(star-full)" : "$(star)",
+    "Like"
+  );
 }
