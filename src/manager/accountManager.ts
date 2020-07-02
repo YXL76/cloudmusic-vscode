@@ -2,6 +2,7 @@ import { window } from "vscode";
 import { PlaylistItem } from "../constant/type";
 import {
   apiDailySignin,
+  apiLikelist,
   apiLoginRefresh,
   apiLoginStatus,
   apiLogout,
@@ -11,10 +12,11 @@ const { login, login_cellphone } = require("NeteaseCloudMusicApi");
 const { cookieToJson } = require("NeteaseCloudMusicApi/util/index");
 
 export class AccountManager {
-  public static loggedIn: boolean = false;
-  public static cookie: object = {};
-  public static uid: number = 0;
-  public static nickname: string = "";
+  static loggedIn: boolean = false;
+  static cookie: object = {};
+  static uid: number = 0;
+  static nickname: string = "";
+  static likelist: Set<number> = new Set<number>();
 
   constructor() {}
 
@@ -64,6 +66,8 @@ export class AccountManager {
         this.cookie = cookieToJson(cookie);
         this.uid = userId;
         this.nickname = nickname;
+        const ids = await apiLikelist();
+        ids.forEach((id) => this.likelist.add(id));
         window.showInformationMessage("登录成功");
         return true;
       }
@@ -81,13 +85,16 @@ export class AccountManager {
     await apiLoginStatus();
   }
 
-  static async logout() {
+  static async logout(): Promise<boolean> {
     if (await apiLogout()) {
       this.loggedIn = false;
       this.cookie = {};
       this.uid = 0;
       this.nickname = "";
+      this.likelist.clear();
+      return true;
     }
+    return false;
   }
 
   static async playlist(): Promise<PlaylistItem[]> {

@@ -215,24 +215,23 @@ export function activate(context: ExtensionContext) {
       ]);
       if (method && method.label === "Sign out") {
         player.stop();
-        await AccountManager.logout();
-        try {
-          unlink(ACCOUNT_FILE, () => {});
-        } catch {}
+        if (await AccountManager.logout()) {
+          try {
+            unlink(ACCOUNT_FILE, () => {});
+          } catch {}
 
-        const buttonManager = ButtonManager.getInstance();
-        buttonManager.updateButton(
-          ButtonLabel.Account,
-          "$(account)",
-          "Account",
-          "cloudmusic.signin"
-        );
-        buttonManager.hide();
+          buttonManager.updateButton(
+            ButtonLabel.Account,
+            "$(account)",
+            "Account",
+            "cloudmusic.signin"
+          );
+          buttonManager.hide();
 
-        PlaylistProvider.refresh();
-        const queueProvider = QueueProvider.getInstance();
-        queueProvider.clear();
-        queueProvider.refresh();
+          PlaylistProvider.refresh();
+          queueProvider.clear();
+          queueProvider.refresh();
+        }
       }
     }
   });
@@ -240,15 +239,13 @@ export function activate(context: ExtensionContext) {
   context.subscriptions.push(signout);
 
   const previous = commands.registerCommand("cloudmusic.previous", async () => {
-    const p = QueueProvider.getInstance();
-    p.shift(-1, playCallback);
-    p.refresh();
+    queueProvider.shift(-1, playCallback);
+    queueProvider.refresh();
   });
 
   const next = commands.registerCommand("cloudmusic.next", async () => {
-    const p = QueueProvider.getInstance();
-    p.shift(1, playCallback);
-    p.refresh();
+    queueProvider.shift(1, playCallback);
+    queueProvider.refresh();
   });
 
   const play = commands.registerCommand("cloudmusic.play", async () => {
