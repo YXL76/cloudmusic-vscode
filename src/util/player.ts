@@ -64,11 +64,7 @@ class MpvPlayer implements Player {
   async togglePlay() {
     try {
       await this.mpv.togglePause();
-      if (playing.get()) {
-        playing.set(false);
-      } else {
-        playing.set(true);
-      }
+      playing.set(!playing.get());
     } catch {}
   }
 
@@ -132,11 +128,7 @@ class VlcPlayer implements Player {
   async togglePlay() {
     try {
       await this.vlc.cyclePause();
-      if (playing.get()) {
-        playing.set(false);
-      } else {
-        playing.set(true);
-      }
+      playing.set(!playing.get());
     } catch {}
   }
 
