@@ -28,6 +28,7 @@ const config = {
   resolve: {
     // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
     extensions: [".ts", ".js"],
+    alias: { mobx: __dirname + "/node_modules/mobx/lib/mobx.es6.js" },
   },
   module: {
     rules: [
