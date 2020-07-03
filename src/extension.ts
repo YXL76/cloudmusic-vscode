@@ -32,7 +32,6 @@ export function activate(context: ExtensionContext): void {
     throttle(async () => {
       queueProvider.random();
       queueProvider.refresh();
-      player.quit();
     }, 512)
   );
   commands.registerCommand(

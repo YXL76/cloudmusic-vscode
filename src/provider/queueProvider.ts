@@ -56,7 +56,10 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   }
 
   random(): void {
-    this.songs = new Map(unsortInplace([...this.songs]));
+    const previous = [...this.songs];
+    this.songs = new Map(
+      [previous[0]].concat(unsortInplace(previous.slice(1)))
+    );
   }
 
   top(element: QueueItemTreeItem): void {
