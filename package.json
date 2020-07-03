@@ -144,6 +144,33 @@
         "icon": "$(remove)"
       }
     ],
+    "keybindings": [
+      {
+        "command": "cloudmusic.previous",
+        "key": "",
+        "mac": ""
+      },
+      {
+        "command": "cloudmusic.next",
+        "key": "",
+        "mac": ""
+      },
+      {
+        "command": "cloudmusic.play",
+        "key": "",
+        "mac": ""
+      },
+      {
+        "command": "cloudmusic.like",
+        "key": "",
+        "mac": ""
+      },
+      {
+        "command": "cloudmusic.volume",
+        "key": "",
+        "mac": ""
+      }
+    ],
     "menus": {
       "view/title": [
         {
