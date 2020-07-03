@@ -1,6 +1,6 @@
 import { Command, StatusBarAlignment, StatusBarItem, window } from "vscode";
 
-export enum ButtonLabel {
+enum ButtonLabel {
   account,
   previous,
   play,
@@ -10,9 +10,7 @@ export enum ButtonLabel {
 }
 
 export class ButtonManager {
-  private static instance: ButtonManager;
-
-  private buttons: StatusBarItem[] = [
+  private static buttons: StatusBarItem[] = [
     window.createStatusBarItem(StatusBarAlignment.Left, 512),
     window.createStatusBarItem(StatusBarAlignment.Left, 511),
     window.createStatusBarItem(StatusBarAlignment.Left, 510),
@@ -21,7 +19,7 @@ export class ButtonManager {
     window.createStatusBarItem(StatusBarAlignment.Left, 507),
   ];
 
-  constructor() {
+  static init(): void {
     this.updateButton(0, "$(account)", "Account", "cloudmusic.signin");
     this.updateButton(1, "$(chevron-left)", "Previous", "cloudmusic.previous");
     this.updateButton(2, "$(play)", "Play", "cloudmusic.play");
@@ -31,11 +29,7 @@ export class ButtonManager {
     this.buttons[0].show();
   }
 
-  static getInstance(): ButtonManager {
-    return this.instance || (this.instance = new ButtonManager());
-  }
-
-  updateButton(
+  private static updateButton(
     index: number,
     text: string,
     tooltip: string,
@@ -48,19 +42,43 @@ export class ButtonManager {
     }
   }
 
-  clearButtonCommand(index: number): void {
+  static clearButtonCommand(index: number): void {
     this.buttons[index].command = undefined;
   }
 
-  show(): void {
+  static show(): void {
     for (let i = 1; i < this.buttons.length; ++i) {
       this.buttons[i].show();
     }
   }
 
-  hide(): void {
+  static hide(): void {
     for (let i = 1; i < this.buttons.length; ++i) {
       this.buttons[i].hide();
     }
+  }
+
+  static buttonAccount(
+    text: string,
+    tooltip: string,
+    command?: string | Command
+  ): void {
+    this.updateButton(ButtonLabel.account, text, tooltip, command);
+  }
+
+  static buttonPlay(): void {
+    this.updateButton(ButtonLabel.play, "$(play)", "PLay");
+  }
+
+  static buttonPause(): void {
+    this.updateButton(ButtonLabel.play, "$(debug-pause)", "Pause");
+  }
+
+  static buttonLike(islike: boolean): void {
+    this.updateButton(
+      ButtonLabel.like,
+      islike ? "$(star-full)" : "$(star)",
+      "Like"
+    );
   }
 }

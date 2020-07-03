@@ -7,7 +7,7 @@ import {
 } from "../constant/setting";
 import { Player } from "../constant/type";
 import { apiScrobble, apiSongUrl } from "./api";
-import { buttonPlay, buttonPause } from "./util";
+import { ButtonManager } from "../manager/buttonManager";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 const mpvAPI = require("node-mpv");
 const vlcAPI = require("vlc-player-controller");
@@ -45,7 +45,7 @@ class MpvPlayer implements Player {
             }
           }, delay);
         }
-        buttonPause();
+        ButtonManager.buttonPause();
       } catch {}
     }
   }
@@ -53,7 +53,7 @@ class MpvPlayer implements Player {
   async stop() {
     try {
       await this.mpv.stop();
-      buttonPlay();
+      ButtonManager.buttonPlay();
     } catch {}
   }
 
@@ -61,9 +61,9 @@ class MpvPlayer implements Player {
     try {
       await this.mpv.togglePause();
       if (await this.mpv.isPaused()) {
-        buttonPause();
+        ButtonManager.buttonPause();
       } else {
-        buttonPlay();
+        ButtonManager.buttonPlay();
       }
     } catch {}
   }
@@ -121,7 +121,7 @@ class VlcPlayer implements Player {
             }
           }, delay);
         }
-        buttonPause();
+        ButtonManager.buttonPause();
       } catch {}
     }
   }
@@ -135,9 +135,9 @@ class VlcPlayer implements Player {
       this.vlc.cyclePause();
       this.playing = !this.playing;
       if (this.playing) {
-        buttonPause();
+        ButtonManager.buttonPause();
       } else {
-        buttonPlay();
+        ButtonManager.buttonPlay();
       }
     } catch {}
   }

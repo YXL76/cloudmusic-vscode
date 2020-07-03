@@ -3,7 +3,7 @@ import { commands, ExtensionContext, window } from "vscode";
 import { existsSync, mkdirSync, readFileSync, unlink, writeFile } from "fs";
 import { ACCOUNT_FILE, SETTING_DIR } from "./constant/setting";
 import { AccountManager } from "./manager/accountManager";
-import { ButtonLabel, ButtonManager } from "./manager/buttonManager";
+import { ButtonManager } from "./manager/buttonManager";
 import {
   PlaylistItemTreeItem,
   PlaylistProvider,
@@ -11,13 +11,11 @@ import {
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
 import { apiLike } from "./util/api";
 import { player } from "./util/player";
-import { buttonLike } from "./util/util";
 
 async function initAccount(
   userPlaylistProvider: PlaylistProvider,
   favoritePlaylistProvider: PlaylistProvider,
-  queueProvider: QueueProvider,
-  buttonManager: ButtonManager
+  queueProvider: QueueProvider
 ) {
   if (!existsSync(SETTING_DIR)) {
     mkdirSync(SETTING_DIR);
@@ -30,7 +28,7 @@ async function initAccount(
       if (await AccountManager.login(phone, account, password)) {
         initPlaylistProvider(userPlaylistProvider, favoritePlaylistProvider);
         initQueueProvider(queueProvider);
-        initButtonManager(buttonManager);
+        initButtonManager();
       }
     } catch {}
   }
@@ -142,14 +140,14 @@ async function initQueueProvider(p: QueueProvider) {
   );
 }
 
-function initButtonManager(buttonManager: ButtonManager) {
-  buttonManager.updateButton(
-    ButtonLabel.account,
+function initButtonManager() {
+  ButtonManager.init();
+  ButtonManager.buttonAccount(
     "$(account)",
     AccountManager.nickname,
     "cloudmusic.signout"
   );
-  buttonManager.show();
+  ButtonManager.show();
 }
 
 export function activate(context: ExtensionContext): void {
@@ -159,14 +157,8 @@ export function activate(context: ExtensionContext): void {
   const userPlaylistProvider = PlaylistProvider.getUserInstance();
   const favoritePlaylistProvider = PlaylistProvider.getFavoriteInstance();
   const queueProvider = QueueProvider.getInstance();
-  const buttonManager = ButtonManager.getInstance();
 
-  initAccount(
-    userPlaylistProvider,
-    favoritePlaylistProvider,
-    queueProvider,
-    buttonManager
-  );
+  initAccount(userPlaylistProvider, favoritePlaylistProvider, queueProvider);
 
   const signin = commands.registerCommand("cloudmusic.signin", async () => {
     const method = await window.showQuickPick(
@@ -213,7 +205,7 @@ export function activate(context: ExtensionContext): void {
               favoritePlaylistProvider
             );
             initQueueProvider(queueProvider);
-            initButtonManager(buttonManager);
+            initButtonManager();
           }
         }
       }
@@ -252,13 +244,12 @@ export function activate(context: ExtensionContext): void {
             });
           } catch {}
 
-          buttonManager.updateButton(
-            ButtonLabel.account,
+          ButtonManager.buttonAccount(
             "$(account)",
             "Account",
             "cloudmusic.signin"
           );
-          buttonManager.hide();
+          ButtonManager.hide();
 
           PlaylistProvider.refresh();
           queueProvider.clear();
@@ -302,7 +293,7 @@ export function activate(context: ExtensionContext): void {
       const id = queueProvider.head.item.id;
       if (await apiLike(id, islike ? "" : "false")) {
         queueProvider.islike = islike;
-        buttonLike(islike);
+        ButtonManager.buttonLike(islike);
         islike
           ? AccountManager.likelist.add(id)
           : AccountManager.likelist.delete(id);
