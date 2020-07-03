@@ -22,19 +22,11 @@ export class AccountManager {
   static async dailySignin(): Promise<void> {
     if (loggedIn.get()) {
       const code = await apiDailySignin();
-      switch (code) {
-        case 200:
-          window.showInformationMessage("签到成功");
-          break;
-        case -2:
-          window.showWarningMessage("重复签到");
-          break;
-        default:
-          window.showErrorMessage("签到失败");
-          break;
+      if (code === 200) {
+        window.showInformationMessage("Daily check success");
       }
     } else {
-      window.showErrorMessage("请登录帐号");
+      window.showErrorMessage("Please sign in");
     }
   }
 
@@ -44,7 +36,7 @@ export class AccountManager {
     password: string
   ): Promise<boolean> {
     if (loggedIn.get()) {
-      window.showInformationMessage("已登录");
+      window.showInformationMessage("Already sign in");
       return true;
     }
     try {
@@ -67,7 +59,6 @@ export class AccountManager {
         this.nickname = nickname;
         const ids = await apiLikelist();
         ids.forEach((id) => this.likelist.add(id));
-        window.showInformationMessage("登录成功");
         return true;
       }
       return false;

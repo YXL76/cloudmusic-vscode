@@ -1,7 +1,7 @@
 import { throttle } from "lodash";
 import { commands, ExtensionContext, window } from "vscode";
 import { existsSync, mkdirSync, readFileSync, unlink, writeFile } from "fs";
-import { ACCOUNT_FILE, SETTING_DIR } from "./constant/setting";
+import { AUTO_CHECK, ACCOUNT_FILE, SETTING_DIR } from "./constant/setting";
 import { AccountManager } from "./manager/accountManager";
 import { ButtonManager } from "./manager/buttonManager";
 import {
@@ -67,7 +67,11 @@ export function activate(context: ExtensionContext): void {
       const { phone, account, password } = JSON.parse(
         readFileSync(ACCOUNT_FILE, "utf8")
       );
-      AccountManager.login(phone, account, password);
+      AccountManager.login(phone, account, password).then(() => {
+        if (AUTO_CHECK) {
+          AccountManager.dailySignin();
+        }
+      });
     } catch {}
   }
 
@@ -125,11 +129,12 @@ export function activate(context: ExtensionContext): void {
           //
         }
       );
+      window.showInformationMessage("Sign in success");
     }
   });
 
   // daily sign in command
-  const dailySignin = commands.registerCommand("cloudmusic.dailySignin", () => {
+  const dailyCheck = commands.registerCommand("cloudmusic.dailyCheck", () => {
     AccountManager.dailySignin();
   });
 
@@ -155,6 +160,7 @@ export function activate(context: ExtensionContext): void {
           //
         });
       } catch {}
+      window.showInformationMessage("Sign out success");
     }
   });
 
@@ -212,7 +218,7 @@ export function activate(context: ExtensionContext): void {
   });
 
   context.subscriptions.push(signin);
-  context.subscriptions.push(dailySignin);
+  context.subscriptions.push(dailyCheck);
   context.subscriptions.push(signout);
   context.subscriptions.push(previous);
   context.subscriptions.push(next);

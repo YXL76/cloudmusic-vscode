@@ -65,8 +65,8 @@
         "title": "Cloudmusic: Sign Out"
       },
       {
-        "command": "cloudmusic.dailySignin",
-        "title": "Cloudmusic: Daily sign in"
+        "command": "cloudmusic.dailyCheck",
+        "title": "Cloudmusic: Daily check"
       },
       {
         "command": "cloudmusic.previous",
@@ -209,6 +209,12 @@
       {
         "title": "Cloudmusic",
         "properties": {
+          "cloudmusic.account.autoCheck": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "Auto check when extension is active",
+            "scope": "window"
+          },
           "cloudmusic.music.proxy": {
             "type": "string",
             "default": "",
@@ -218,6 +224,7 @@
           "cloudmusic.music.quality": {
             "type": "number",
             "default": 192000,
+            "markdownDescription": "Choose your prefer music quality",
             "enum": [
               128000,
               192000,
@@ -235,6 +242,7 @@
           "cloudmusic.player.player": {
             "type": "string",
             "default": "vlc",
+            "markdownDescription": "Choose your default player",
             "enum": [
               "vlc",
               "mpv"
@@ -278,7 +286,7 @@
           "cloudmusic.player.vlc.dummy": {
             "type": "boolean",
             "default": true,
-            "markdownDescription": "Enable vlc interface dummy mode",
+            "markdownDescription": "Enable vlc interface dummy mode. If disable it, vlc will open with interface",
             "scope": "window"
           }
         }
