@@ -26,25 +26,45 @@ async function initAccount(
         readFileSync(ACCOUNT_FILE, "utf8")
       );
       if (await AccountManager.login(phone, account, password)) {
-        initPlaylistProvider(userPlaylistProvider, favoritePlaylistProvider);
-        initQueueProvider(queueProvider);
-        initButtonManager();
+        firstLogin(
+          userPlaylistProvider,
+          favoritePlaylistProvider,
+          queueProvider
+        );
+        ButtonManager.buttonAccount(
+          "$(account)",
+          AccountManager.nickname,
+          "cloudmusic.signout"
+        );
+        ButtonManager.show();
       }
     } catch {}
   }
 }
 
-let initPlaylistProviderFlag = false;
+let loginFlag = false;
+
+async function firstLogin(
+  userPlaylistProvider: PlaylistProvider,
+  favoritePlaylistProvider: PlaylistProvider,
+  queueProvider: QueueProvider
+) {
+  player.start();
+  player.volume(85);
+
+  if (loginFlag) {
+    return;
+  }
+  loginFlag = true;
+
+  initPlaylistProvider(userPlaylistProvider, favoritePlaylistProvider);
+  initQueueProvider(queueProvider);
+}
 
 async function initPlaylistProvider(
   up: PlaylistProvider,
   fp: PlaylistProvider
 ) {
-  if (initPlaylistProviderFlag) {
-    return;
-  }
-  initPlaylistProviderFlag = true;
-
   window.registerTreeDataProvider("userPlaylist", up);
   window.registerTreeDataProvider("favoritePlaylist", fp);
 
@@ -98,21 +118,15 @@ async function initPlaylistProvider(
   );
 }
 
-let initQueueProviderFlag = false;
-
 async function initQueueProvider(p: QueueProvider) {
-  if (initQueueProviderFlag) {
-    return;
-  }
-  initQueueProviderFlag = true;
-
   window.registerTreeDataProvider("queue", p);
+
   commands.registerCommand(
     "cloudmusic.clearQueue",
     throttle(async () => {
       p.clear();
       p.refresh();
-      player.stop();
+      player.quit();
     }, 2048)
   );
   commands.registerCommand(
@@ -120,7 +134,7 @@ async function initQueueProvider(p: QueueProvider) {
     throttle(async () => {
       p.random();
       p.refresh();
-      player.stop();
+      player.quit();
     }, 512)
   );
   commands.registerCommand(
@@ -140,27 +154,18 @@ async function initQueueProvider(p: QueueProvider) {
   );
 }
 
-function initButtonManager() {
-  ButtonManager.init();
-  ButtonManager.buttonAccount(
-    "$(account)",
-    AccountManager.nickname,
-    "cloudmusic.signout"
-  );
-  ButtonManager.show();
-}
-
 export function activate(context: ExtensionContext): void {
-  player.start();
-  player.volume(85);
-
   const userPlaylistProvider = PlaylistProvider.getUserInstance();
   const favoritePlaylistProvider = PlaylistProvider.getFavoriteInstance();
   const queueProvider = QueueProvider.getInstance();
 
+  ButtonManager.init();
   initAccount(userPlaylistProvider, favoritePlaylistProvider, queueProvider);
 
   const signin = commands.registerCommand("cloudmusic.signin", async () => {
+    if (AccountManager.loggedIn) {
+      return;
+    }
     const method = await window.showQuickPick(
       [
         {
@@ -178,37 +183,41 @@ export function activate(context: ExtensionContext): void {
         placeHolder: "Select the method to sign in.",
       }
     );
-    if (method) {
-      const account = await window.showInputBox({
-        placeHolder: "Please enter your account.",
-      });
-      if (account) {
-        const password = await window.showInputBox({
-          placeHolder: "Please enter your password.",
-          password: true,
-        });
-        if (password) {
-          if (await AccountManager.login(method.phone, account, password)) {
-            writeFile(
-              ACCOUNT_FILE,
-              JSON.stringify({
-                phone: method.phone,
-                account,
-                password,
-              }),
-              () => {
-                //
-              }
-            );
-            initPlaylistProvider(
-              userPlaylistProvider,
-              favoritePlaylistProvider
-            );
-            initQueueProvider(queueProvider);
-            initButtonManager();
-          }
+    if (!method) {
+      return;
+    }
+    const account = await window.showInputBox({
+      placeHolder: "Please enter your account.",
+    });
+    if (!account) {
+      return;
+    }
+    const password = await window.showInputBox({
+      placeHolder: "Please enter your password.",
+      password: true,
+    });
+    if (!password) {
+      return;
+    }
+    if (await AccountManager.login(method.phone, account, password)) {
+      writeFile(
+        ACCOUNT_FILE,
+        JSON.stringify({
+          phone: method.phone,
+          account,
+          password,
+        }),
+        () => {
+          //
         }
-      }
+      );
+      firstLogin(userPlaylistProvider, favoritePlaylistProvider, queueProvider);
+      ButtonManager.buttonAccount(
+        "$(account)",
+        AccountManager.nickname,
+        "cloudmusic.signout"
+      );
+      ButtonManager.show();
     }
   });
 
@@ -224,37 +233,39 @@ export function activate(context: ExtensionContext): void {
   context.subscriptions.push(dailySignin);
 
   const signout = commands.registerCommand("cloudmusic.signout", async () => {
-    if (AccountManager.loggedIn) {
-      const method = await window.showQuickPick([
-        {
-          label: AccountManager.nickname,
-          description: "current user",
-        },
-        {
-          label: "Sign out",
-          description: "",
-        },
-      ]);
-      if (method && method.label === "Sign out") {
-        player.stop();
-        if (await AccountManager.logout()) {
-          try {
-            unlink(ACCOUNT_FILE, () => {
-              //
-            });
-          } catch {}
+    if (!AccountManager.loggedIn) {
+      return;
+    }
+    const method = await window.showQuickPick([
+      {
+        label: AccountManager.nickname,
+        description: "current user",
+      },
+      {
+        label: "Sign out",
+        description: "",
+      },
+    ]);
+    if (method && method.label === "Sign out") {
+      player.quit();
+      if (await AccountManager.logout()) {
+        try {
+          unlink(ACCOUNT_FILE, () => {
+            //
+          });
+        } catch {}
 
-          ButtonManager.buttonAccount(
-            "$(account)",
-            "Account",
-            "cloudmusic.signin"
-          );
-          ButtonManager.hide();
+        ButtonManager.buttonAccount(
+          "$(account)",
+          "Account",
+          "cloudmusic.signin"
+        );
+        ButtonManager.hide();
 
-          PlaylistProvider.refresh();
-          queueProvider.clear();
-          queueProvider.refresh();
-        }
+        PlaylistProvider.refresh();
+        queueProvider.clear();
+        queueProvider.refresh();
+        player.quit();
       }
     }
   });
@@ -282,7 +293,7 @@ export function activate(context: ExtensionContext): void {
   const play = commands.registerCommand(
     "cloudmusic.play",
     throttle(async () => {
-      player.togglePause();
+      player.play();
     }, 256)
   );
 

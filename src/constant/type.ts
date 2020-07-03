@@ -41,7 +41,7 @@ export interface Player {
   start(): Promise<void>;
   quit(): Promise<void>;
   load(element: QueueItemTreeItem): Promise<void>;
-  stop(): Promise<void>;
-  togglePause(): Promise<void>;
+  play(): Promise<void>;
+  pause(): Promise<void>;
   volume(volumeLevel: number): Promise<void>;
 }
