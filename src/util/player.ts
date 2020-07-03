@@ -113,7 +113,6 @@ class VlcPlayer implements Player {
           } else {
             playing.set(true);
             this.vlc.setVolume(this.volumeLevel);
-            this.vlc.play();
             this.id = element.item.id;
             this.pid = element.pid;
             if (element.item.bt > 60) {
