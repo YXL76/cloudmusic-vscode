@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "cloudmusic",
   "description": "网易云音乐插件",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "publisher": "YXL",
   "engines": {
     "vscode": "^1.46.0"
@@ -144,33 +144,6 @@
         "icon": "$(remove)"
       }
     ],
-    "keybindings": [
-      {
-        "command": "cloudmusic.previous",
-        "key": "",
-        "mac": ""
-      },
-      {
-        "command": "cloudmusic.next",
-        "key": "",
-        "mac": ""
-      },
-      {
-        "command": "cloudmusic.play",
-        "key": "",
-        "mac": ""
-      },
-      {
-        "command": "cloudmusic.like",
-        "key": "",
-        "mac": ""
-      },
-      {
-        "command": "cloudmusic.volume",
-        "key": "",
-        "mac": ""
-      }
-    ],
     "menus": {
       "view/title": [
         {
@@ -245,7 +218,7 @@
           "cloudmusic.music.proxy": {
             "type": "string",
             "default": "",
-            "markdownDescription": "See [可以使用代理](https://binaryify.github.io/NeteaseCloudMusicApi/#/?id=%e5%8f%af%e4%bb%a5%e4%bd%bf%e7%94%a8%e4%bb%a3%e7%90%86)`",
+            "markdownDescription": "See [可以使用代理](https://binaryify.github.io/NeteaseCloudMusicApi/#/?id=%e5%8f%af%e4%bb%a5%e4%bd%bf%e7%94%a8%e4%bb%a3%e7%90%86)",
             "scope": "window"
           },
           "cloudmusic.music.quality": {

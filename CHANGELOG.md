@@ -6,6 +6,24 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.4.0] - 2020-07-04
+
+### Added
+
+- configuration: `cloudmusic.account.autoCheck`
+
+### Changed
+
+- command: `playSong` and `playPlaylist` can auto play now
+
+### Fixed
+
+- `scrobble` api is usable now
+
+### Removed
+
+- command: `dailySignIn` to `dailyCheck`
+
 ## [1.3.1] - 2020-07-03
 
 ### Changed
