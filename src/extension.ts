@@ -11,6 +11,7 @@ import {
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
 import { apiLike } from "./util/api";
 import { player } from "./util/player";
+import { isLike } from "./state/like";
 import { loggedIn } from "./state/login";
 
 export function activate(context: ExtensionContext): void {
@@ -185,11 +186,10 @@ export function activate(context: ExtensionContext): void {
   const like = commands.registerCommand(
     "cloudmusic.like",
     throttle(async () => {
-      const islike = !queueProvider.islike;
+      const islike = !isLike.get();
       const id = queueProvider.head.item.id;
       if (await apiLike(id, islike ? "" : "false")) {
-        queueProvider.islike = islike;
-        ButtonManager.buttonLike(islike);
+        isLike.set(islike);
         islike
           ? AccountManager.likelist.add(id)
           : AccountManager.likelist.delete(id);

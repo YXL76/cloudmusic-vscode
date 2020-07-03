@@ -6,9 +6,9 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
+import { isLike } from "../state/like";
 import { QueueItem } from "../constant/type";
 import { AccountManager } from "../manager/accountManager";
-import { ButtonManager } from "../manager/buttonManager";
 const { unsortInplace } = require("array-unsort");
 
 export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
@@ -20,7 +20,6 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     0,
     TreeItemCollapsibleState.None
   );
-  islike = false;
 
   private _onDidChangeTreeData: EventEmitter<
     QueueItemTreeItem | undefined | void
@@ -74,8 +73,7 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     const current = previous.slice(index).concat(previous.slice(0, index));
     this.songs = new Map(current);
     this.head = current[0][1];
-    this.islike = AccountManager.likelist.has(this.head.item.id);
-    ButtonManager.buttonLike(this.islike);
+    isLike.set(AccountManager.likelist.has(this.head.item.id));
   }
 
   add(elements: QueueItemTreeItem[]): void {
