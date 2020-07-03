@@ -8,6 +8,7 @@ import {
 import { Player } from "../constant/type";
 import { apiScrobble, apiSongUrl } from "./api";
 import { playing } from "../state/play";
+import { volumeLevel } from "../state/volume";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 const mpvAPI = require("node-mpv");
 const vlcAPI = require("vlc-player-controller");
@@ -46,6 +47,7 @@ class MpvPlayer implements Player {
       try {
         await this.mpv.load(url);
         playing.set(true);
+        this.volume(volumeLevel.get());
         this.mpv.play();
         this.id = element.item.id;
         this.pid = element.pid;
@@ -68,14 +70,16 @@ class MpvPlayer implements Player {
     } catch {}
   }
 
-  async volume(volumeLevel: number) {
-    this.mpv.volume(volumeLevel);
+  async volume(level: number) {
+    try {
+      this.mpv.volume(level);
+      volumeLevel.set(level);
+    } catch {}
   }
 }
 
 class VlcPlayer implements Player {
   private vlc = new vlcAPI({ ...VLC_API_OPTIONS });
-  private volumeLevel = 85;
 
   id = 0;
   pid = 0;
@@ -108,7 +112,7 @@ class VlcPlayer implements Player {
             commands.executeCommand("cloudmusic.next");
           } else {
             playing.set(true);
-            this.vlc.setVolume(this.volumeLevel);
+            this.volume(volumeLevel.get());
             this.id = element.item.id;
             this.pid = element.pid;
             if (element.item.bt > 60) {
@@ -132,10 +136,10 @@ class VlcPlayer implements Player {
     } catch {}
   }
 
-  async volume(volumeLevel: number) {
+  async volume(level: number) {
     try {
-      this.volumeLevel = volumeLevel;
-      this.vlc.setVolume(this.volumeLevel);
+      this.vlc.setVolume(level);
+      volumeLevel.set(level);
     } catch {}
   }
 }
