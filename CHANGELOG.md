@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.3.1] - 2020-07-03
+
+### Changed
+
+- New `random` command which will no interrupt current playback
+- performance improvements
+
 ## [1.3.0] - 2020-07-02
 
 ### Added
