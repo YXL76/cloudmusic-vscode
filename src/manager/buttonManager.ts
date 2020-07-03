@@ -25,7 +25,7 @@ export class ButtonManager {
     this.updateButton(2, "$(play)", "Play", "cloudmusic.play");
     this.updateButton(3, "$(chevron-right)", "Next", "cloudmusic.next");
     this.updateButton(4, "$(star)", "Like", "cloudmusic.like");
-    this.updateButton(5, "$(unmute)", "Volume", "cloudmusic.volume");
+    this.updateButton(5, "$(unmute)", "Volume: 85", "cloudmusic.volume");
     this.buttons[0].show();
   }
 
@@ -66,19 +66,23 @@ export class ButtonManager {
     this.updateButton(ButtonLabel.account, text, tooltip, command);
   }
 
-  static buttonPlay(): void {
-    this.updateButton(ButtonLabel.play, "$(play)", "PLay");
-  }
-
-  static buttonPause(): void {
-    this.updateButton(ButtonLabel.play, "$(debug-pause)", "Pause");
+  static buttonPlay(playing: boolean): void {
+    this.updateButton(
+      ButtonLabel.play,
+      playing ? "$(debug-pause)" : "$(play)",
+      playing ? "Pause" : "PLay"
+    );
   }
 
   static buttonLike(islike: boolean): void {
     this.updateButton(
       ButtonLabel.like,
       islike ? "$(star-full)" : "$(star)",
-      "Like"
+      islike ? "Unlike" : "Like"
     );
+  }
+
+  static buttonVolume(level: number): void {
+    this.updateButton(ButtonLabel.volume, "$(unmute)", `Volume: ${level}`);
   }
 }
