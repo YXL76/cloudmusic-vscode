@@ -17,7 +17,6 @@ class MpvPlayer implements Player {
   private mpv = new mpvAPI(MPV_API_OPTIONS, MPV_ARGS);
 
   id = 0;
-  pid = 0;
 
   async start() {
     if (!(await this.mpv.isRunning())) {
@@ -50,12 +49,15 @@ class MpvPlayer implements Player {
         this.volume(volumeLevel.get());
         this.mpv.play();
         this.id = element.item.id;
-        this.pid = element.pid;
-        if (element.item.bt > 60) {
-          const delay = Math.floor(Math.random() * element.item.bt + 60);
+        if (element.item.dt > 60000) {
+          const delay = Math.floor(Math.random() * element.item.dt + 60000);
           setTimeout(() => {
             if (this.id === element.item.id) {
-              apiScrobble(this.id, this.pid, delay);
+              apiScrobble(
+                element.item.id,
+                element.pid,
+                Math.floor(delay / 1000)
+              );
             }
           }, delay);
         }
@@ -82,7 +84,6 @@ class VlcPlayer implements Player {
   private vlc = new vlcAPI({ ...VLC_API_OPTIONS });
 
   id = 0;
-  pid = 0;
 
   async start() {
     //
@@ -114,12 +115,15 @@ class VlcPlayer implements Player {
             playing.set(true);
             this.volume(volumeLevel.get());
             this.id = element.item.id;
-            this.pid = element.pid;
-            if (element.item.bt > 60) {
-              const delay = Math.floor(Math.random() * element.item.bt + 60);
+            if (element.item.dt > 60000) {
+              const delay = Math.floor(Math.random() * element.item.dt + 60000);
               setTimeout(() => {
                 if (this.id === element.item.id) {
-                  apiScrobble(this.id, this.pid, delay);
+                  apiScrobble(
+                    element.item.id,
+                    element.pid,
+                    Math.floor(delay / 1000)
+                  );
                 }
               }, delay);
             }

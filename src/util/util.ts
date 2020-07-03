@@ -26,7 +26,7 @@ export async function getPlaylistContentIntelligence(
 }
 
 export function solveSongItem(item: SongsItem): QueueItem {
-  const { name, id, bt, alia, ar } = item;
+  const { name, id, dt, alia, ar } = item;
   const arNames: string[] = [];
   for (const i of ar) {
     arNames.push(i.name);
@@ -35,7 +35,7 @@ export function solveSongItem(item: SongsItem): QueueItem {
   return {
     name,
     id,
-    bt: bt / 1000,
+    dt: dt,
     alia: alia ? alia[0] : "",
     arName,
   };

@@ -13,7 +13,7 @@ export type PlaylistItem = {
 export type QueueItem = {
   name: string;
   id: number;
-  bt: number;
+  dt: number;
   alia: string;
   arName: string;
 };
@@ -21,7 +21,7 @@ export type QueueItem = {
 export type SongsItem = {
   name: string;
   id: number;
-  bt: number;
+  dt: number;
   alia: string[];
   ar: {
     id: number;
@@ -37,7 +37,6 @@ export type TrackIdsItem = {
 
 export interface Player {
   id: number;
-  pid: number;
   start(): Promise<void>;
   quit(): Promise<void>;
   load(element: QueueItemTreeItem): Promise<void>;

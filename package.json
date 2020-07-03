@@ -175,7 +175,7 @@
       "view/title": [
         {
           "command": "cloudmusic.refreshPlaylist",
-          "when": "view == userPlaylist || favoritePlaylist",
+          "when": "view == userPlaylist || view == favoritePlaylist",
           "group": "navigation"
         },
         {

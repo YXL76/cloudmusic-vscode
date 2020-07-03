@@ -16,7 +16,7 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
 
   head: QueueItemTreeItem = new QueueItemTreeItem(
     "",
-    { name: "", id: 0, bt: 0, alia: "", arName: "" },
+    { name: "", id: 0, dt: 0, alia: "", arName: "" },
     0,
     TreeItemCollapsibleState.None
   );
@@ -66,14 +66,16 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   }
 
   shift(index: number): void {
-    const previous = [...this.songs];
-    while (index < 0) {
-      index += previous.length;
+    if (index) {
+      const previous = [...this.songs];
+      while (index < 0) {
+        index += previous.length;
+      }
+      const current = previous.slice(index).concat(previous.slice(0, index));
+      this.songs = new Map(current);
+      this.head = current[0][1];
+      isLike.set(AccountManager.likelist.has(this.head.item.id));
     }
-    const current = previous.slice(index).concat(previous.slice(0, index));
-    this.songs = new Map(current);
-    this.head = current[0][1];
-    isLike.set(AccountManager.likelist.has(this.head.item.id));
   }
 
   add(elements: QueueItemTreeItem[]): void {
