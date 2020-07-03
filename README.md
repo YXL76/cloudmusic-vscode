@@ -13,10 +13,6 @@
 
   - 因为`VLC Player`不能处理`flac`流，所以音质设置不要选无损，如果遇到`flac`流将直接跳过当前歌曲
 
-- 对于`Windows`用户，推荐使用`VLC Player`，`MPV Player`在某些情况下可能无法正常工作。如果播放器的路径不位于环境变量中，可以在设置中指定二进制文件的路径
-- 对于`Linux`用户，可以依照自身喜好选择
-- 对于`MAC OS`用户，因为开发者没有相关环境，所以无法测试
-
 如果有更好的方案可以提交`ISSUE`。
 
 ## Extension Settings
@@ -69,7 +65,7 @@
 |  simi_song  |      相似歌曲      |        |
 | song_detail |      歌曲详情      |   ✔️   |
 |  song_url   |      歌曲链接      |   ✔️   |
-|    like     | 红心与取消红心歌曲 |        |
+|    like     | 红心与取消红心歌曲 |   ✔️   |
 
 - 评论类
 
@@ -117,11 +113,11 @@
 
 |           module           |           function            | status |
 | :------------------------: | :---------------------------: | :----: |
-|          likelist          |       喜欢的歌曲(无序)        |        |
+|          likelist          |       喜欢的歌曲(无序)        |   ✔️   |
 |      playlist_catlist      |         全部歌单分类          |        |
 |      playlist_create       |           创建歌单            |        |
 |      playlist_delete       |           删除歌单            |        |
-|      playlist_detail       |           歌单详情            |        |
+|      playlist_detail       |           歌单详情            |   ✔️   |
 |    playlist_desc_update    |         更新歌单描述          |        |
 |        playlist_hot        |         热门歌单分类          |        |
 |    playlist_name_update    |          更新歌单名           |        |
@@ -131,7 +127,7 @@
 |    playlist_tags_update    |         更新歌单标签          |        |
 |      playlist_tracks       | 收藏单曲到歌单/从歌单删除歌曲 |        |
 |      playlist_update       |           编辑歌单            |        |
-| playmode_intelligence_list |           智能播放            |        |
+| playmode_intelligence_list |           智能播放            |   ✔️   |
 |      related_playlist      |           相关歌单            |        |
 |       simi_playlist        |           相似歌单            |        |
 |     song_order_update      |         更新歌曲顺序          |        |
@@ -180,7 +176,7 @@
 |            event_del             |        删除动态        |        |
 |          event_forward           |        转发动态        |        |
 |             fm_trash             |         垃圾桶         |        |
-|              follow              |   关注与取消关注用户   |        |
+|              follow              |   关注与取消关注用户   |   ❌   |
 |     history_recommend_songs      |    历史每日推荐歌曲    |        |
 |  history_recommend_songs_detail  |  历史每日推荐歌曲详情  |        |
 |              login               |        邮箱登录        |   ✔️   |
@@ -196,7 +192,7 @@
 |           personal_fm            |        私人 FM         |        |
 |           personalized           |        推荐歌单        |        |
 |      personalized_djprogram      |        推荐电台        |        |
-|         personalized_mv          |        推荐 MV         |        |
+|         personalized_mv          |        推荐 MV         |   ❌   |
 |       personalized_newsong       |        推荐新歌        |        |
 |   personalized_privatecontent    |        独家放送        |        |
 | personalized_privatecontent_list |      独家放送列表      |        |
@@ -208,7 +204,7 @@
 |             scrobble             |        听歌打卡        |   ✔️   |
 |          send_playlist           |        私信歌单        |        |
 |            send_text             |          私信          |        |
-|             setting              |          设置          |        |
+|             setting              |          设置          |   ❌   |
 |          share_resource          |     分享歌曲到动态     |        |
 |            simi_user             |        相似用户        |        |
 |            user_audio            |     用户创建的电台     |        |
