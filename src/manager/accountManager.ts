@@ -8,19 +8,19 @@ import {
   apiLogout,
   apiUserPlaylist,
 } from "../util/api";
+import { loggedIn } from "../state/login";
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { login, login_cellphone } = require("NeteaseCloudMusicApi");
 const { cookieToJson } = require("NeteaseCloudMusicApi/util/index");
 
 export class AccountManager {
-  static loggedIn = false;
   static cookie = {};
   static uid = 0;
   static nickname = "";
   static likelist: Set<number> = new Set<number>();
 
   static async dailySignin(): Promise<void> {
-    if (this.loggedIn) {
+    if (loggedIn.get()) {
       const code = await apiDailySignin();
       switch (code) {
         case 200:
@@ -43,7 +43,7 @@ export class AccountManager {
     account: string,
     password: string
   ): Promise<boolean> {
-    if (this.loggedIn) {
+    if (loggedIn.get()) {
       window.showInformationMessage("已登录");
       return true;
     }
@@ -61,7 +61,7 @@ export class AccountManager {
       if (status === 200) {
         const { cookie, profile } = body;
         const { userId, nickname } = profile;
-        this.loggedIn = true;
+        loggedIn.set(true);
         this.cookie = cookieToJson(cookie);
         this.uid = userId;
         this.nickname = nickname;
@@ -86,7 +86,7 @@ export class AccountManager {
 
   static async logout(): Promise<boolean> {
     if (await apiLogout()) {
-      this.loggedIn = false;
+      loggedIn.set(false);
       this.cookie = {};
       this.uid = 0;
       this.nickname = "";
