@@ -7,6 +7,7 @@ import {
 } from "../constant/setting";
 import { Player } from "../constant/type";
 import { apiScrobble, apiSongUrl } from "./api";
+import { playing } from "../state/play";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 const mpvAPI = require("node-mpv");
 const vlcAPI = require("vlc-player-controller");
@@ -27,7 +28,11 @@ class MpvPlayer implements Player {
   }
 
   async quit() {
-    this.mpv.quit();
+    playing.set(false);
+    try {
+      this.mpv.quit();
+      playing.set(false);
+    } catch {}
   }
 
   async load(element: QueueItemTreeItem) {
@@ -40,6 +45,8 @@ class MpvPlayer implements Player {
       }
       try {
         await this.mpv.load(url);
+        playing.set(true);
+        this.mpv.play();
         this.id = element.item.id;
         this.pid = element.pid;
         if (element.item.bt > 60) {
@@ -54,15 +61,14 @@ class MpvPlayer implements Player {
     }
   }
 
-  async play() {
+  async togglePlay() {
     try {
-      this.mpv.play();
-    } catch {}
-  }
-
-  async pause() {
-    try {
-      this.mpv.pause();
+      await this.mpv.togglePause();
+      if (playing.get()) {
+        playing.set(false);
+      } else {
+        playing.set(true);
+      }
     } catch {}
   }
 
@@ -84,7 +90,8 @@ class VlcPlayer implements Player {
 
   async quit() {
     try {
-      this.vlc.quit();
+      await this.vlc.quit();
+      playing.set(false);
     } catch {}
   }
 
@@ -104,7 +111,9 @@ class VlcPlayer implements Player {
           if (err) {
             commands.executeCommand("cloudmusic.next");
           } else {
+            playing.set(true);
             this.vlc.setVolume(this.volumeLevel);
+            this.vlc.play();
             this.id = element.item.id;
             this.pid = element.pid;
             if (element.item.bt > 60) {
@@ -121,15 +130,14 @@ class VlcPlayer implements Player {
     }
   }
 
-  async play() {
+  async togglePlay() {
     try {
-      this.play();
-    } catch {}
-  }
-
-  async pause() {
-    try {
-      this.vlc.pause();
+      await this.vlc.cyclePause();
+      if (playing.get()) {
+        playing.set(false);
+      } else {
+        playing.set(true);
+      }
     } catch {}
   }
 

@@ -293,7 +293,7 @@ export function activate(context: ExtensionContext): void {
   const play = commands.registerCommand(
     "cloudmusic.play",
     throttle(async () => {
-      player.play();
+      player.togglePlay();
     }, 256)
   );
 
