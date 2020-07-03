@@ -46,8 +46,12 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand(
     "cloudmusic.deleteSong",
     throttle((element: QueueItemTreeItem) => {
+      const head = queueProvider.head;
       queueProvider.delete(element.item.id);
       queueProvider.refresh();
+      if (head === element) {
+        player.load(queueProvider.head);
+      }
     }, 512)
   );
 
@@ -235,11 +239,10 @@ export function activate(context: ExtensionContext): void {
   );
   commands.registerCommand(
     "cloudmusic.playPlaylist",
-    throttle(
-      (element: PlaylistItemTreeItem) =>
-        PlaylistProvider.playPlaylist(element.item.id),
-      1024
-    )
+    throttle((element: PlaylistItemTreeItem) => {
+      PlaylistProvider.playPlaylist(element.item.id);
+      player.load(queueProvider.head);
+    }, 1024)
   );
   commands.registerCommand(
     "cloudmusic.addPlaylist",
