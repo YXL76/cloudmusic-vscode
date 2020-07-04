@@ -85,8 +85,7 @@ class MpvPlayer implements Player {
         await commands.executeCommand("cloudmusic.next");
         return;
       }
-      const ext = (/(\.\w+)$/.exec(url) || ["mp3"])[0];
-      const tmpFilePath = join(TMP_DIR, `${id}${ext}`);
+      const tmpFilePath = join(TMP_DIR, `${id}`);
       const tmpFile = createWriteStream(tmpFilePath);
 
       http
@@ -182,8 +181,7 @@ class VlcPlayer implements Player {
         await commands.executeCommand("cloudmusic.next");
         return;
       }
-      const ext = (/(\.\w+)$/.exec(url) || ["mp3"])[0];
-      const tmpFilePath = join(TMP_DIR, `${id}${ext}`);
+      const tmpFilePath = join(TMP_DIR, `${id}`);
       const tmpFile = createWriteStream(tmpFilePath);
 
       http
