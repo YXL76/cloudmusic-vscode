@@ -6,6 +6,28 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.5.0] - 2020-07-04
+
+### Added
+
+- Extension kind: change to `ui` which can work in remote workspace
+- Cache: now cloudmusic can use local cache. Thanks to it, `VLC Player` can play `flac` stream now
+- Configuration: add `cloudmusic.cache.size`
+- TreeView: content command `Delete from playlist` and `Add to playlist`
+
+### Changed
+
+- TreeView: better `tooltip`
+- Performance improvements
+
+### Fixed
+
+- `queue` view can sync with player now
+
+### Removed
+
+- command `throttle`
+
 ## [1.4.0] - 2020-07-04
 
 ### Added
