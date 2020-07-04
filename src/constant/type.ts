@@ -32,7 +32,7 @@ export type SongsItem = {
 export type SongDetail = {
   id: number;
   url: string;
-  md5: number;
+  md5: string;
 };
 
 export type TrackIdsItem = {
