@@ -19,6 +19,12 @@ export const MUSIC_QUALITY = conf.get("cloudmusic.music.quality");
 export const TMP_DIR = join(SETTING_DIR, "tmp");
 export const CACHE_DIR = join(SETTING_DIR, "cache", `${MUSIC_QUALITY}`);
 
+const cacheSize = conf.get("cloudmusic.cache.size");
+let finalSize = typeof cacheSize === "number" ? cacheSize : 1024;
+finalSize = finalSize > 10240 ? 10240 : finalSize;
+finalSize = finalSize < 128 ? 128 : finalSize;
+export const CACHE_SIZE = finalSize * 1024 * 1024;
+
 export const PLAYER = conf.get("cloudmusic.player.player");
 
 const MPV_BINARY = conf.get("cloudmusic.player.mpv.path");

@@ -1,13 +1,13 @@
 import { join } from "path";
 import { readFileSync } from "fs";
 import { LruCacheValue } from "../constant/type";
-import { CACHE_DIR } from "../constant/setting";
+import { CACHE_DIR, CACHE_SIZE } from "../constant/setting";
 const cacache = require("cacache");
 const LRU = require("lru-cache");
 
 export class Cache {
   static lruCache = new LRU({
-    max: 50 * 1024 * 1024,
+    max: CACHE_SIZE,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     length: (n: LruCacheValue, _key: string) => n.size,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

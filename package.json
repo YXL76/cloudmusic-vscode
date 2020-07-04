@@ -215,6 +215,12 @@
             "markdownDescription": "Auto check when extension is active",
             "scope": "window"
           },
+          "cloudmusic.cache.size": {
+            "type": "number",
+            "default": 1024,
+            "markdownDescription": "Set maximum cache size (`128 ~ 10240 MB`)",
+            "scope": "window"
+          },
           "cloudmusic.music.proxy": {
             "type": "string",
             "default": "",
