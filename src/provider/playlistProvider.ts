@@ -96,8 +96,9 @@ export class PlaylistProvider
     if (items) {
       return items;
     } else {
-      const songs = await apiSongDetail(await apiPlaylistDetail(id));
-      const ret = await queueItem2TreeItem(id, songs);
+      const ids = await apiPlaylistDetail(id);
+      const songs = await apiSongDetail(ids);
+      const ret = await queueItem2TreeItem(id, ids, songs);
       this.treeView.set(id, ret);
       return ret;
     }

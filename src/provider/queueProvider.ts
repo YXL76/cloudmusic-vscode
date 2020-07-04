@@ -18,6 +18,7 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     "",
     { name: "", id: 0, dt: 0, alia: "", arName: "" },
     0,
+    "",
     TreeItemCollapsibleState.None
   );
 
@@ -94,6 +95,7 @@ export class QueueItemTreeItem extends TreeItem {
     public readonly label: string,
     public readonly item: QueueItem,
     public readonly pid: number,
+    public readonly md5: string,
     public readonly collapsibleState: TreeItemCollapsibleState
   ) {
     super(label, collapsibleState);

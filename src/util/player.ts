@@ -56,22 +56,22 @@ class MpvPlayer implements Player {
   }
 
   async load(element: QueueItemTreeItem) {
-    const { url, md5 } = (await apiSongUrl([element.item.id]))[0];
-    if (!url) {
-      commands.executeCommand("cloudmusic.next");
-      return;
-    }
-
-    const { pid } = element;
+    const { pid, md5 } = element;
     const { id, dt } = element.item;
-    const ext = (/(\.\w+)$/.exec(url) || ["mp3"])[0];
     const path = await Cache.get(`${id}`, md5);
 
     if (path) {
       this.play(path, id, pid, dt);
     } else {
+      const { url } = (await apiSongUrl([element.item.id]))[0];
+      if (!url) {
+        commands.executeCommand("cloudmusic.next");
+        return;
+      }
+      const ext = (/(\.\w+)$/.exec(url) || ["mp3"])[0];
       const tmpFilePath = join(TMP_DIR, `${id}${ext}`);
       const tmpFile = createWriteStream(tmpFilePath);
+
       http
         .get(url, (res) => {
           res.pipe(tmpFile);
@@ -139,22 +139,22 @@ class VlcPlayer implements Player {
   }
 
   async load(element: QueueItemTreeItem) {
-    const { url, md5 } = (await apiSongUrl([element.item.id]))[0];
-    if (!url) {
-      commands.executeCommand("cloudmusic.next");
-      return;
-    }
-
-    const { pid } = element;
+    const { pid, md5 } = element;
     const { id, dt } = element.item;
-    const ext = (/(\.\w+)$/.exec(url) || ["mp3"])[0];
     const path = await Cache.get(`${id}`, md5);
 
     if (path) {
       this.play(path, id, pid, dt);
     } else {
+      const { url } = (await apiSongUrl([element.item.id]))[0];
+      if (!url) {
+        commands.executeCommand("cloudmusic.next");
+        return;
+      }
+      const ext = (/(\.\w+)$/.exec(url) || ["mp3"])[0];
       const tmpFilePath = join(TMP_DIR, `${id}${ext}`);
       const tmpFile = createWriteStream(tmpFilePath);
+
       http
         .get(url, (res) => {
           res.pipe(tmpFile);

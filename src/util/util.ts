@@ -1,21 +1,32 @@
 import { TreeItemCollapsibleState } from "vscode";
-import { apiScrobble, apiPlaymodeIntelligenceList } from "./api";
+import { apiPlaymodeIntelligenceList, apiScrobble, apiSongUrl } from "./api";
 import { player } from "../util/player";
 import { QueueItem, SongsItem } from "../constant/type";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 
 export async function queueItem2TreeItem(
   id: number,
+  ids: number[],
   songs: QueueItem[]
 ): Promise<QueueItemTreeItem[]> {
-  return songs.map((song) => {
-    return new QueueItemTreeItem(
-      `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
-      song,
-      id,
-      TreeItemCollapsibleState.None
-    );
-  });
+  const ret: QueueItemTreeItem[] = [];
+  const items = await apiSongUrl(ids);
+  for (let i = 0; i < items.length; ++i) {
+    const song = songs[i];
+    const { url, md5 } = items[i];
+    if (url) {
+      ret.push(
+        new QueueItemTreeItem(
+          `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
+          song,
+          id,
+          md5,
+          TreeItemCollapsibleState.None
+        )
+      );
+    }
+  }
+  return ret;
 }
 
 export async function getPlaylistContentIntelligence(
@@ -23,7 +34,8 @@ export async function getPlaylistContentIntelligence(
   pid: number
 ): Promise<QueueItemTreeItem[]> {
   const songs = await apiPlaymodeIntelligenceList(id, pid);
-  return await queueItem2TreeItem(id, songs);
+  const ids = songs.map((song) => song.id);
+  return await queueItem2TreeItem(id, ids, songs);
 }
 
 export function solveSongItem(item: SongsItem): QueueItem {
