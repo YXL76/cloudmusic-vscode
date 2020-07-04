@@ -90,4 +90,14 @@ export class AccountManager {
   static async playlist(): Promise<PlaylistItem[]> {
     return await apiUserPlaylist();
   }
+
+  static async userPlaylist(): Promise<PlaylistItem[]> {
+    const lists = await apiUserPlaylist();
+    return lists.filter((list) => list.userId === AccountManager.uid);
+  }
+
+  static async favoritePlaylist(): Promise<PlaylistItem[]> {
+    const lists = await apiUserPlaylist();
+    return lists.filter((list) => list.userId !== AccountManager.uid);
+  }
 }

@@ -24,6 +24,8 @@ const {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   playlist_detail,
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  playlist_tracks,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   playmode_intelligence_list,
   scrobble,
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -163,6 +165,28 @@ export async function apiPlaylistDetail(id: number): Promise<number[]> {
     });
   } catch {
     return [];
+  }
+}
+
+export async function apiPlaylistTracks(
+  op: string,
+  pid: number,
+  tracks: number[]
+): Promise<boolean> {
+  try {
+    const { status } = await playlist_tracks({
+      op,
+      pid,
+      tracks: tracks.join(","),
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+    });
+    if (status !== 200) {
+      return false;
+    }
+    return true;
+  } catch {
+    return false;
   }
 }
 

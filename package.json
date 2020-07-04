@@ -142,6 +142,14 @@
         "command": "cloudmusic.deleteSong",
         "title": "Delete",
         "icon": "$(remove)"
+      },
+      {
+        "command": "cloudmusic.deleteFromPlaylist",
+        "title": "Delete from playlist"
+      },
+      {
+        "command": "cloudmusic.addToPlaylist",
+        "title": "Add to playlist"
       }
     ],
     "menus": {
@@ -202,6 +210,14 @@
           "command": "cloudmusic.deleteSong",
           "when": "view == queue && viewItem == QueueItemTreeItem",
           "group": "inline"
+        },
+        {
+          "command": "cloudmusic.deleteFromPlaylist",
+          "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem"
+        },
+        {
+          "command": "cloudmusic.addToPlaylist",
+          "when": "viewItem == QueueItemTreeItem"
         }
       ]
     },

@@ -105,15 +105,11 @@ export class PlaylistProvider
   }
 
   private async getPlaylistItem(): Promise<PlaylistItemTreeItem[]> {
-    let playlists = await AccountManager.playlist();
+    let playlists: PlaylistItem[];
     if (this.type === 1) {
-      playlists = playlists.filter(
-        (playlist) => playlist.userId === AccountManager.uid
-      );
+      playlists = await AccountManager.userPlaylist();
     } else {
-      playlists = playlists.filter(
-        (playlist) => playlist.userId !== AccountManager.uid
-      );
+      playlists = await AccountManager.favoritePlaylist();
     }
     return playlists.map((playlist) => {
       PlaylistProvider.belongsTo.set(playlist.id, this.type);

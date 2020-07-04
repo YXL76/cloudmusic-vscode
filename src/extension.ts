@@ -16,7 +16,7 @@ import {
   PlaylistProvider,
 } from "./provider/playlistProvider";
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
-import { apiLike } from "./util/api";
+import { apiLike, apiPlaylistTracks } from "./util/api";
 import { Cache } from "./util/cache";
 import { lock, player } from "./util/player";
 import { isLike } from "./state/like";
@@ -274,6 +274,35 @@ export function activate(context: ExtensionContext): void {
       await PlaylistProvider.playPlaylist(element.pid, element);
       if (!lock.playerLoad) {
         player.load(element);
+      }
+    }
+  );
+
+  commands.registerCommand(
+    "cloudmusic.deleteFromPlaylist",
+    async (element: QueueItemTreeItem) => {
+      if (await apiPlaylistTracks("del", element.pid, [element.item.id])) {
+        PlaylistProvider.refresh();
+      }
+    }
+  );
+  commands.registerCommand(
+    "cloudmusic.addToPlaylist",
+    async (element: QueueItemTreeItem) => {
+      const lists = await AccountManager.userPlaylist();
+      const selection = await window.showQuickPick(
+        lists.map((list) => {
+          return {
+            label: list.name,
+            id: list.id,
+          };
+        })
+      );
+      if (!selection) {
+        return;
+      }
+      if (await apiPlaylistTracks("add", selection.id, [element.item.id])) {
+        PlaylistProvider.refresh();
       }
     }
   );
