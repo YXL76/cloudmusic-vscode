@@ -19,7 +19,7 @@ export async function queueItem2TreeItem(
           `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
           song,
           id,
-          md5,
+          `md5-${Buffer.from(md5, "hex").toString("base64")}`,
           TreeItemCollapsibleState.None
         )
       );

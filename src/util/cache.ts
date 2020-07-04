@@ -21,7 +21,7 @@ export class Cache {
   static async get(key: string, md5: string): Promise<string> {
     try {
       const { integrity, path } = await cacache.get.info(CACHE_DIR, key);
-      if (integrity === `md5-${Buffer.from(md5, "hex").toString("base64")}`) {
+      if (integrity === md5) {
         this.lruCache.get(key);
         return join(__dirname, path);
       }
