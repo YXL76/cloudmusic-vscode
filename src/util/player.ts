@@ -18,6 +18,10 @@ import { QueueItemTreeItem } from "../provider/queueProvider";
 const mpvAPI = require("node-mpv");
 const vlcAPI = require("vlc-player-controller");
 
+export const lock = {
+  playerLoad: false,
+};
+
 async function loadCache(
   element: QueueItemTreeItem,
   callback: {
@@ -33,6 +37,7 @@ async function loadCache(
   } else {
     const { url } = (await apiSongUrl([element.item.id]))[0];
     if (!url) {
+      lock.playerLoad = false;
       await commands.executeCommand("cloudmusic.next");
       return;
     }
@@ -97,7 +102,9 @@ class MpvPlayer implements Player {
       this.pid = pid;
       this.dt = dt;
       this.time = currentTime;
-    } catch {}
+    } finally {
+      lock.playerLoad = false;
+    }
   }
 
   async load(element: QueueItemTreeItem) {
@@ -163,10 +170,13 @@ class VlcPlayer implements Player {
           this.time = currentTime;
         }
       });
-    } catch {}
+    } finally {
+      lock.playerLoad = false;
+    }
   }
 
   async load(element: QueueItemTreeItem) {
+    lock.playerLoad = true;
     loadCache(element, this.play);
   }
 

@@ -9,6 +9,7 @@ import {
 import { QueueProvider, QueueItemTreeItem } from "./queueProvider";
 import { PlaylistItem } from "../constant/type";
 import { AccountManager } from "../manager/accountManager";
+import { lock } from "../state/lock";
 import {
   queueItem2TreeItem,
   getPlaylistContentIntelligence,
