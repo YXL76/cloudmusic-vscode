@@ -6,9 +6,10 @@ import {
   VLC_API_OPTIONS,
 } from "../constant/setting";
 import { Player } from "../constant/type";
-import { apiScrobble, apiSongUrl } from "./api";
+import { apiSongUrl } from "./api";
 import { playing } from "../state/play";
 import { volumeLevel } from "../state/volume";
+import { scrobbleEvent } from "../util/util";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 const mpvAPI = require("node-mpv");
 const vlcAPI = require("vlc-player-controller");
@@ -50,18 +51,7 @@ class MpvPlayer implements Player {
         this.volume(volumeLevel.get());
         this.mpv.play();
         this.id = element.item.id;
-        if (element.item.dt > 60000) {
-          const delay = Math.floor(Math.random() * element.item.dt + 60000);
-          setTimeout(() => {
-            if (this.id === element.item.id) {
-              apiScrobble(
-                element.item.id,
-                element.pid,
-                Math.floor(delay / 1000)
-              );
-            }
-          }, delay);
-        }
+        scrobbleEvent(element.item.id, element.pid, element.item.dt);
       } catch {}
     }
   }
@@ -117,18 +107,7 @@ class VlcPlayer implements Player {
             playing.set(true);
             this.volume(volumeLevel.get());
             this.id = element.item.id;
-            if (element.item.dt > 60000) {
-              const delay = Math.floor(Math.random() * element.item.dt + 60000);
-              setTimeout(() => {
-                if (this.id === element.item.id) {
-                  apiScrobble(
-                    element.item.id,
-                    element.pid,
-                    Math.floor(delay / 1000)
-                  );
-                }
-              }, delay);
-            }
+            scrobbleEvent(element.item.id, element.pid, element.item.dt);
           }
         });
       } catch {}
