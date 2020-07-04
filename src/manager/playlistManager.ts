@@ -19,6 +19,7 @@ export class PlaylistManager {
   }
 
   static async trackUrls(id: number[]): Promise<string[]> {
-    return await apiSongUrl(id);
+    const items = await apiSongUrl(id);
+    return items.map((item) => item.url);
   }
 }

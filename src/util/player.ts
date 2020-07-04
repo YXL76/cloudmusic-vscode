@@ -36,8 +36,9 @@ class MpvPlayer implements Player {
   }
 
   async load(element: QueueItemTreeItem) {
-    const url = (await apiSongUrl([element.item.id]))[0];
-    if (url === "") {
+    const song = (await apiSongUrl([element.item.id]))[0];
+    const { url } = song;
+    if (!url) {
       commands.executeCommand("cloudmusic.next");
     } else {
       if (!(await this.mpv.isRunning())) {
@@ -97,8 +98,9 @@ class VlcPlayer implements Player {
   }
 
   async load(element: QueueItemTreeItem) {
-    const url = (await apiSongUrl([element.item.id]))[0];
-    if (url === "" || /.flac$/.exec(url)) {
+    const song = (await apiSongUrl([element.item.id]))[0];
+    const { url } = song;
+    if (!url || /.flac$/.exec(url)) {
       commands.executeCommand("cloudmusic.next");
     } else {
       await this.quit();

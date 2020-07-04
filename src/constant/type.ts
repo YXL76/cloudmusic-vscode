@@ -29,6 +29,12 @@ export type SongsItem = {
   }[];
 };
 
+export type SongDetail = {
+  id: number;
+  url: string;
+  md5: number;
+};
+
 export type TrackIdsItem = {
   id: number;
   v: number;

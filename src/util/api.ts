@@ -3,6 +3,7 @@ import {
   PlaylistItem,
   SongsItem,
   TrackIdsItem,
+  SongDetail,
 } from "../constant/type";
 import { PROXY, MUSIC_QUALITY } from "../constant/setting";
 import { solveSongItem } from "./util";
@@ -224,8 +225,8 @@ export async function apiSongDetail(trackIds: number[]): Promise<QueueItem[]> {
   }
 }
 
-export async function apiSongUrl(trackIds: number[]): Promise<string[]> {
-  let ret: string[] = [];
+export async function apiSongUrl(trackIds: number[]): Promise<SongDetail[]> {
+  let ret: SongDetail[] = [];
   try {
     for (let i = 0; i < trackIds.length; i += 512) {
       const { status, body } = await song_url({
@@ -239,8 +240,9 @@ export async function apiSongUrl(trackIds: number[]): Promise<string[]> {
       }
       const { data } = body;
       ret = ret.concat(
-        data.reduce((result: string[], song: { id: number; url: string }) => {
-          result[trackIds.indexOf(song.id)] = song.url;
+        data.reduce((result: SongDetail[], song: SongDetail) => {
+          const { id, url, md5 } = song;
+          result[trackIds.indexOf(song.id)] = { id, url, md5 };
           return result;
         }, [])
       );
