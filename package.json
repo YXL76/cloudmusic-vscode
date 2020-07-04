@@ -11,6 +11,10 @@
   "categories": [
     "Other"
   ],
+  "extensionKind": [
+    "ui",
+    "workspace"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/YXL76/cloudmusic-vscode"
