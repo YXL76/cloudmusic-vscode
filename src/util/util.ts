@@ -1,6 +1,5 @@
 import { TreeItemCollapsibleState } from "vscode";
-import { apiPlaymodeIntelligenceList, apiScrobble, apiSongUrl } from "./api";
-import { player } from "../util/player";
+import { apiPlaymodeIntelligenceList, apiSongUrl } from "./api";
 import { QueueItem, SongsItem } from "../constant/type";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 
@@ -52,15 +51,4 @@ export function solveSongItem(item: SongsItem): QueueItem {
     alia: alia ? alia[0] : "",
     arName,
   };
-}
-
-export function scrobbleEvent(id: number, pid: number, dt: number): void {
-  if (dt > 60000) {
-    const delay = Math.floor(Math.random() * dt + 60000);
-    setTimeout(() => {
-      if (player.id === id) {
-        apiScrobble(id, pid, Math.floor(delay / 1000));
-      }
-    }, delay);
-  }
 }

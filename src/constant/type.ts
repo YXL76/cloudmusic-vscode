@@ -43,6 +43,9 @@ export type TrackIdsItem = {
 
 export interface Player {
   id: number;
+  pid: number;
+  dt: number;
+  time: number;
   start(): Promise<void>;
   quit(): Promise<void>;
   load(element: QueueItemTreeItem): Promise<void>;
