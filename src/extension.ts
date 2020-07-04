@@ -290,4 +290,5 @@ export function activate(context: ExtensionContext): void {
 export function deactivate(): void {
   player.quit();
   cacache.verify(CACHE_DIR);
+  del.sync([join(TMP_DIR, "**")]);
 }
