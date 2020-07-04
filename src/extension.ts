@@ -5,9 +5,11 @@ import { existsSync, mkdirSync, readFileSync, unlink, writeFile } from "fs";
 import {
   AUTO_CHECK,
   ACCOUNT_FILE,
+  CACHE_DIR,
   TMP_DIR,
   SETTING_DIR,
 } from "./constant/setting";
+import { LruCacheValue } from "./constant/type";
 import { AccountManager } from "./manager/accountManager";
 import { ButtonManager } from "./manager/buttonManager";
 import {
@@ -16,10 +18,12 @@ import {
 } from "./provider/playlistProvider";
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
 import { apiLike } from "./util/api";
+import { Cache } from "./util/cache";
 import { player } from "./util/player";
 import { isLike } from "./state/like";
 import { loggedIn } from "./state/login";
 const del = require("del");
+const cacache = require("cacache");
 
 export function activate(context: ExtensionContext): void {
   // read account info from local file
@@ -65,19 +69,19 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand(
     "cloudmusic.playSong",
     throttle(async (element: QueueItemTreeItem) => {
+      await player.load(element);
       queueProvider.top(element);
       queueProvider.refresh();
-      player.load(element);
     }, 512)
   );
   commands.registerCommand(
     "cloudmusic.deleteSong",
-    throttle((element: QueueItemTreeItem) => {
+    throttle(async (element: QueueItemTreeItem) => {
       const head = queueProvider.head;
       queueProvider.delete(element.item.id);
       queueProvider.refresh();
       if (head === element) {
-        player.load(queueProvider.head);
+        await player.load(queueProvider.head);
       }
     }, 512)
   );
@@ -178,8 +182,8 @@ export function activate(context: ExtensionContext): void {
   const previous = commands.registerCommand(
     "cloudmusic.previous",
     throttle(async () => {
+      await player.load(queueProvider.head);
       queueProvider.shift(-1);
-      player.load(queueProvider.head);
       queueProvider.refresh();
     }, 256)
   );
@@ -188,8 +192,8 @@ export function activate(context: ExtensionContext): void {
   const next = commands.registerCommand(
     "cloudmusic.next",
     throttle(async () => {
+      await player.load(queueProvider.head);
       queueProvider.shift(1);
-      player.load(queueProvider.head);
       queueProvider.refresh();
     }, 128)
   );
@@ -255,8 +259,8 @@ export function activate(context: ExtensionContext): void {
   );
   commands.registerCommand(
     "cloudmusic.playPlaylist",
-    throttle((element: PlaylistItemTreeItem) => {
-      PlaylistProvider.playPlaylist(element.item.id);
+    throttle(async (element: PlaylistItemTreeItem) => {
+      await PlaylistProvider.playPlaylist(element.item.id);
       player.load(queueProvider.head);
     }, 1024)
   );
@@ -270,8 +274,8 @@ export function activate(context: ExtensionContext): void {
   );
   commands.registerCommand(
     "cloudmusic.intelligence",
-    throttle((element: QueueItemTreeItem) => {
-      PlaylistProvider.intelligence(element);
+    throttle(async (element: QueueItemTreeItem) => {
+      await PlaylistProvider.intelligence(element);
       player.load(element);
     }, 1024)
   );
@@ -284,13 +288,22 @@ export function activate(context: ExtensionContext): void {
   );
   commands.registerCommand(
     "cloudmusic.playSongWithPlaylist",
-    throttle((element: QueueItemTreeItem) => {
-      PlaylistProvider.playPlaylist(element.pid, element);
+    throttle(async (element: QueueItemTreeItem) => {
+      await PlaylistProvider.playPlaylist(element.pid, element);
       player.load(element);
     }, 1024)
   );
+
+  // init cache index
+  cacache.ls(CACHE_DIR).then((res: { key: LruCacheValue }) => {
+    for (const item in res) {
+      const { key, integrity, size } = res[item];
+      Cache.lruCache.set(key, { integrity, size });
+    }
+  });
 }
 
 export function deactivate(): void {
   player.quit();
+  cacache.verify(CACHE_DIR);
 }

@@ -41,6 +41,11 @@ export type TrackIdsItem = {
   at: number;
 };
 
+export type LruCacheValue = {
+  integrity: string;
+  size: number;
+};
+
 export interface Player {
   id: number;
   pid: number;

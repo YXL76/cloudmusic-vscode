@@ -15,11 +15,9 @@ import { playing } from "../state/play";
 import { volumeLevel } from "../state/volume";
 import { Cache } from "../util/cache";
 import { QueueItemTreeItem } from "../provider/queueProvider";
-const del = require("del");
+import { setTimeout } from "timers";
 const mpvAPI = require("node-mpv");
 const vlcAPI = require("vlc-player-controller");
-
-const delPattern = [join(TMP_DIR, "**")];
 
 class MpvPlayer implements Player {
   private mpv = new mpvAPI(MPV_API_OPTIONS, MPV_ARGS);
@@ -166,14 +164,13 @@ class VlcPlayer implements Player {
     const path = await Cache.get(`${id}`, md5);
 
     if (path) {
-      this.play(path, id, pid, dt);
+      await this.play(path, id, pid, dt);
     } else {
       const { url } = (await apiSongUrl([element.item.id]))[0];
       if (!url) {
-        commands.executeCommand("cloudmusic.next");
+        await commands.executeCommand("cloudmusic.next");
         return;
       }
-      del.sync(delPattern);
       const ext = (/(\.\w+)$/.exec(url) || ["mp3"])[0];
       const tmpFilePath = join(TMP_DIR, `${id}${ext}`);
       const tmpFile = createWriteStream(tmpFilePath);
