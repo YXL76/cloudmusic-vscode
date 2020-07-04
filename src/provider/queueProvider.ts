@@ -88,10 +88,6 @@ export class QueueItemTreeItem extends TreeItem {
     return this.item.id;
   }
 
-  get tooltip(): string {
-    return ``;
-  }
-
   get description(): string {
     return this.item.arName;
   }

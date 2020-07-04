@@ -165,10 +165,10 @@ export class PlaylistItemTreeItem extends TreeItem {
   get tooltip(): string {
     const { description, playCount, subscribedCount, trackCount } = this.item;
     return `
-    ${description || ""}
-    ${trackCount}
-    ${playCount}
-    ${subscribedCount}
+Description: ${description || ""}
+Track: ${trackCount}
+Play count: ${playCount}
+Subscribed count: ${subscribedCount}
     `;
   }
 
