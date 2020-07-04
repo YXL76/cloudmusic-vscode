@@ -125,7 +125,7 @@
 |     playlist_subscribe     |      收藏与取消收藏歌单       |        |
 |    playlist_subscribers    |          歌单收藏者           |        |
 |    playlist_tags_update    |         更新歌单标签          |        |
-|      playlist_tracks       | 收藏单曲到歌单/从歌单删除歌曲 |        |
+|      playlist_tracks       | 收藏单曲到歌单/从歌单删除歌曲 |   ✔️   |
 |      playlist_update       |           编辑歌单            |        |
 | playmode_intelligence_list |           智能播放            |   ✔️   |
 |      related_playlist      |           相关歌单            |        |

@@ -252,6 +252,7 @@ export async function apiSongDetail(trackIds: number[]): Promise<QueueItem[]> {
 export async function apiSongUrl(trackIds: number[]): Promise<SongDetail[]> {
   let ret: SongDetail[] = [];
   try {
+    let songs: SongDetail[] = [];
     for (let i = 0; i < trackIds.length; i += 512) {
       const { status, body } = await song_url({
         id: trackIds.slice(i, i + 512).join(","),
@@ -263,14 +264,13 @@ export async function apiSongUrl(trackIds: number[]): Promise<SongDetail[]> {
         continue;
       }
       const { data } = body;
-      ret = ret.concat(
-        data.reduce((result: SongDetail[], song: SongDetail) => {
-          const { id, url, md5 } = song;
-          result[trackIds.indexOf(song.id)] = { id, url, md5 };
-          return result;
-        }, [])
-      );
+      songs = songs.concat(data);
     }
+    ret = songs.reduce((result: SongDetail[], song: SongDetail) => {
+      const { id, url, md5 } = song;
+      result[trackIds.indexOf(song.id)] = { id, url, md5 };
+      return result;
+    }, []);
     return ret;
   } catch {
     return ret;
