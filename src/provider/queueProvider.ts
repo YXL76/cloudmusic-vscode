@@ -14,14 +14,6 @@ const { unsortInplace } = require("array-unsort");
 export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   private static instance: QueueProvider;
 
-  head: QueueItemTreeItem = new QueueItemTreeItem(
-    "",
-    { name: "", id: 0, dt: 0, alia: "", arName: "" },
-    0,
-    "",
-    TreeItemCollapsibleState.None
-  );
-
   private _onDidChangeTreeData: EventEmitter<
     QueueItemTreeItem | undefined | void
   > = new EventEmitter<QueueItemTreeItem | undefined | void>();
@@ -30,10 +22,7 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     QueueItemTreeItem | undefined | void
   > = this._onDidChangeTreeData.event;
 
-  private songs: Map<number, QueueItemTreeItem> = new Map<
-    number,
-    QueueItemTreeItem
-  >();
+  songs: QueueItemTreeItem[] = [];
 
   static getInstance(): QueueProvider {
     return this.instance || (this.instance = new QueueProvider());
@@ -48,45 +37,39 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   }
 
   getChildren(): QueueItemTreeItem[] {
-    return [...this.songs.values()];
+    return this.songs;
   }
 
   clear(): void {
-    this.songs.clear();
+    this.songs = [];
   }
 
   random(): void {
-    const previous = [...this.songs];
-    this.songs = new Map(
-      [previous[0]].concat(unsortInplace(previous.slice(1)))
-    );
+    this.songs = [this.songs[0]].concat(unsortInplace(this.songs.slice(1)));
   }
 
   top(element: QueueItemTreeItem): void {
-    this.shift([...this.songs.keys()].indexOf(element.item.id));
+    this.shift(this.songs.indexOf(element));
   }
 
   shift(index: number): void {
     if (index) {
-      const previous = [...this.songs];
       while (index < 0) {
-        index += previous.length;
+        index += this.songs.length;
       }
-      const current = previous.slice(index).concat(previous.slice(0, index));
-      this.songs = new Map(current);
-      this.head = current[0][1];
-      isLike.set(AccountManager.likelist.has(this.head.item.id));
+      this.songs = this.songs.slice(index).concat(this.songs.slice(0, index));
+      isLike.set(AccountManager.likelist.has(this.songs[0].item.id));
     }
   }
 
   add(elements: QueueItemTreeItem[]): void {
-    for (const i of elements) {
-      this.songs.set(i.item.id, i);
-    }
+    const uniqueItems = new Set(this.songs.concat(elements));
+    this.songs = [...uniqueItems];
   }
 
-  delete(id: number): void {
-    this.songs.delete(id);
+  delete(element: QueueItemTreeItem): void {
+    const index = this.songs.indexOf(element);
+    this.songs = this.songs.slice(0, index).concat(this.songs.slice(index + 1));
   }
 }
 
@@ -99,6 +82,10 @@ export class QueueItemTreeItem extends TreeItem {
     public readonly collapsibleState: TreeItemCollapsibleState
   ) {
     super(label, collapsibleState);
+  }
+
+  valueOf(): number {
+    return this.item.id;
   }
 
   get tooltip(): string {

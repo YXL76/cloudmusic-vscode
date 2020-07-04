@@ -72,11 +72,11 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand(
     "cloudmusic.deleteSong",
     async (element: QueueItemTreeItem) => {
-      const head = queueProvider.head;
-      queueProvider.delete(element.item.id);
+      const head = queueProvider.songs[0];
+      queueProvider.delete(element);
       queueProvider.refresh();
       if (head === element && !lock.playerLoad) {
-        await player.load(queueProvider.head);
+        await player.load(queueProvider.songs[0]);
       }
     }
   );
@@ -175,8 +175,8 @@ export function activate(context: ExtensionContext): void {
 
   // previous command
   const previous = commands.registerCommand("cloudmusic.previous", async () => {
-    if (!lock.playerLoad) {
-      await player.load(queueProvider.head);
+    if (!lock.playerLoad && queueProvider.songs) {
+      await player.load(queueProvider.songs[-1]);
       queueProvider.shift(-1);
       queueProvider.refresh();
     }
@@ -184,8 +184,8 @@ export function activate(context: ExtensionContext): void {
 
   // next command
   const next = commands.registerCommand("cloudmusic.next", async () => {
-    if (!lock.playerLoad) {
-      await player.load(queueProvider.head);
+    if (!lock.playerLoad && queueProvider.songs) {
+      await player.load(queueProvider.songs[1]);
       queueProvider.shift(1);
       queueProvider.refresh();
     }
@@ -199,7 +199,7 @@ export function activate(context: ExtensionContext): void {
   // like command
   const like = commands.registerCommand("cloudmusic.like", async () => {
     const islike = !isLike.get();
-    const id = queueProvider.head.item.id;
+    const id = queueProvider.songs[0].item.id;
     if (await apiLike(id, islike ? "" : "false")) {
       isLike.set(islike);
       islike
@@ -247,7 +247,7 @@ export function activate(context: ExtensionContext): void {
     async (element: PlaylistItemTreeItem) => {
       await PlaylistProvider.playPlaylist(element.item.id);
       if (!lock.playerLoad) {
-        player.load(queueProvider.head);
+        player.load(queueProvider.songs[0]);
       }
     }
   );
