@@ -1,9 +1,8 @@
 import { TreeItemCollapsibleState } from "vscode";
-import { apiScrobble } from "./api";
+import { apiScrobble, apiPlaymodeIntelligenceList } from "./api";
 import { player } from "../util/player";
 import { QueueItem, SongsItem } from "../constant/type";
 import { QueueItemTreeItem } from "../provider/queueProvider";
-import { PlaylistManager } from "../manager/playlistManager";
 
 export async function queueItem2TreeItem(
   id: number,
@@ -23,7 +22,7 @@ export async function getPlaylistContentIntelligence(
   id: number,
   pid: number
 ): Promise<QueueItemTreeItem[]> {
-  const songs = await PlaylistManager.tracksIntelligence(id, pid);
+  const songs = await apiPlaymodeIntelligenceList(id, pid);
   return await queueItem2TreeItem(id, songs);
 }
 

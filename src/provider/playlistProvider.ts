@@ -9,11 +9,12 @@ import {
 import { QueueProvider, QueueItemTreeItem } from "./queueProvider";
 import { PlaylistItem } from "../constant/type";
 import { AccountManager } from "../manager/accountManager";
-import { PlaylistManager } from "../manager/playlistManager";
 import {
   queueItem2TreeItem,
   getPlaylistContentIntelligence,
 } from "../util/util";
+import { apiPlaylistDetail, apiSongDetail } from "../util/api";
+
 const queueProvider = QueueProvider.getInstance();
 
 export class PlaylistProvider
@@ -95,7 +96,7 @@ export class PlaylistProvider
     if (items) {
       return items;
     } else {
-      const songs = await PlaylistManager.tracks(id);
+      const songs = await apiSongDetail(await apiPlaylistDetail(id));
       const ret = await queueItem2TreeItem(id, songs);
       this.treeView.set(id, ret);
       return ret;
