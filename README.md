@@ -11,7 +11,7 @@
 - [MPV Player](https://mpv.io/installation/)
 - [VLC Player](https://www.videolan.org/vlc/)
 
-  - 因为`VLC Player`不能处理`flac`流，所以音质设置不要选无损，如果遇到`flac`流将直接跳过当前歌曲
+对于`Windows`用户，如果播放器的路径不位于环境变量中，可以在设置中指定二进制文件的路径
 
 如果有更好的方案可以提交`ISSUE`。
 
