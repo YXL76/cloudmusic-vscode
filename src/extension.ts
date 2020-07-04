@@ -1,3 +1,4 @@
+import { join } from "path";
 import { throttle } from "lodash";
 import { commands, ExtensionContext, window } from "vscode";
 import { existsSync, mkdirSync, readFileSync, unlink, writeFile } from "fs";
@@ -39,10 +40,7 @@ export function activate(context: ExtensionContext): void {
   }
 
   // init cache/tmp folder
-  if (existsSync(TMP_DIR)) {
-    del.sync([TMP_DIR]);
-  }
-  mkdirSync(TMP_DIR);
+  existsSync(TMP_DIR) ? del.sync([join(TMP_DIR, "**")]) : mkdirSync(TMP_DIR);
 
   // init queue provider
   const queueProvider = QueueProvider.getInstance();

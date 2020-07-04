@@ -1,5 +1,5 @@
 import { join } from "path";
-import { readFileSync, unlink } from "fs";
+import { readFileSync } from "fs";
 import { CACHE_DIR } from "../constant/setting";
 const cacache = require("cacache");
 
@@ -20,9 +20,6 @@ export class Cache {
   static async put(key: string, path: string): Promise<void> {
     await cacache.put(CACHE_DIR, key, readFileSync(path), {
       algorithms: ["md5"],
-    });
-    unlink(path, () => {
-      //
     });
   }
 }
