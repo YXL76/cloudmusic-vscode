@@ -15,9 +15,44 @@ import { playing } from "../state/play";
 import { volumeLevel } from "../state/volume";
 import { Cache } from "../util/cache";
 import { QueueItemTreeItem } from "../provider/queueProvider";
-import { setTimeout } from "timers";
 const mpvAPI = require("node-mpv");
 const vlcAPI = require("vlc-player-controller");
+
+async function loadCache(
+  element: QueueItemTreeItem,
+  callback: {
+    (url: string, id: number, pid: number, dt: number): Promise<void>;
+  }
+) {
+  const { pid, md5 } = element;
+  const { id, dt } = element.item;
+  const path = await Cache.get(`${id}`, md5);
+
+  if (path) {
+    callback(path, id, pid, dt);
+  } else {
+    const { url } = (await apiSongUrl([element.item.id]))[0];
+    if (!url) {
+      await commands.executeCommand("cloudmusic.next");
+      return;
+    }
+    const ext = (/(\.\w+)$/.exec(url) || ["mp3"])[0];
+    const tmpFilePath = join(TMP_DIR, `${id}${ext}`);
+    const tmpFile = createWriteStream(tmpFilePath);
+
+    http
+      .get(url, (res) => {
+        res.pipe(tmpFile);
+        tmpFile.on("finish", () => {
+          tmpFile.close();
+          Cache.put(`${id}`, tmpFilePath);
+        });
+      })
+      .on("response", () => {
+        callback(tmpFilePath, id, pid, dt);
+      });
+  }
+}
 
 class MpvPlayer implements Player {
   private mpv = new mpvAPI(MPV_API_OPTIONS, MPV_ARGS);
@@ -66,34 +101,7 @@ class MpvPlayer implements Player {
   }
 
   async load(element: QueueItemTreeItem) {
-    const { pid, md5 } = element;
-    const { id, dt } = element.item;
-    const path = await Cache.get(`${id}`, md5);
-
-    if (path) {
-      this.play(path, id, pid, dt);
-    } else {
-      const { url } = (await apiSongUrl([element.item.id]))[0];
-      if (!url) {
-        commands.executeCommand("cloudmusic.next");
-        return;
-      }
-      const ext = (/(\.\w+)$/.exec(url) || ["mp3"])[0];
-      const tmpFilePath = join(TMP_DIR, `${id}${ext}`);
-      const tmpFile = createWriteStream(tmpFilePath);
-
-      http
-        .get(url, (res) => {
-          res.pipe(tmpFile);
-          tmpFile.on("finish", () => {
-            tmpFile.close();
-            Cache.put(`${id}`, tmpFilePath);
-          });
-        })
-        .on("response", () => {
-          this.play(tmpFilePath, id, pid, dt);
-        });
-    }
+    loadCache(element, this.play);
   }
 
   async togglePlay() {
@@ -159,34 +167,7 @@ class VlcPlayer implements Player {
   }
 
   async load(element: QueueItemTreeItem) {
-    const { pid, md5 } = element;
-    const { id, dt } = element.item;
-    const path = await Cache.get(`${id}`, md5);
-
-    if (path) {
-      await this.play(path, id, pid, dt);
-    } else {
-      const { url } = (await apiSongUrl([element.item.id]))[0];
-      if (!url) {
-        await commands.executeCommand("cloudmusic.next");
-        return;
-      }
-      const ext = (/(\.\w+)$/.exec(url) || ["mp3"])[0];
-      const tmpFilePath = join(TMP_DIR, `${id}${ext}`);
-      const tmpFile = createWriteStream(tmpFilePath);
-
-      http
-        .get(url, (res) => {
-          res.pipe(tmpFile);
-          tmpFile.on("finish", () => {
-            tmpFile.close();
-            Cache.put(`${id}`, tmpFilePath);
-          });
-        })
-        .on("response", () => {
-          this.play(tmpFilePath, id, pid, dt);
-        });
-    }
+    loadCache(element, this.play);
   }
 
   async togglePlay() {
