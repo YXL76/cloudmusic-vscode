@@ -85,8 +85,9 @@ export function activate(context: ExtensionContext): void {
   ButtonManager.init();
 
   // init player
-  player.start();
-  player.volume(85);
+  player.start().then(() => {
+    player.volume(85);
+  });
 
   // sign in command
   const signin = commands.registerCommand("cloudmusic.signin", async () => {
