@@ -1,4 +1,3 @@
-import { join } from "path";
 import { readFileSync } from "fs";
 import { LruCacheValue } from "../constant/type";
 import { CACHE_DIR, CACHE_SIZE } from "../constant/setting";
@@ -23,7 +22,7 @@ export class Cache {
       const { integrity, path } = await cacache.get.info(CACHE_DIR, key);
       if (integrity === md5) {
         this.lruCache.get(key);
-        return join(__dirname, path);
+        return path;
       }
       this.lruCache.del(key);
       cacache.rm.entry(CACHE_DIR, key);
