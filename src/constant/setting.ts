@@ -16,6 +16,9 @@ export const PROXY = conf.get("cloudmusic.music.proxy")
 
 export const MUSIC_QUALITY = conf.get("cloudmusic.music.quality");
 
+export const TMP_DIR = join(SETTING_DIR, "tmp");
+export const CACHE_DIR = join(SETTING_DIR, "cache", `${MUSIC_QUALITY}`);
+
 export const PLAYER = conf.get("cloudmusic.player.player");
 
 const MPV_BINARY = conf.get("cloudmusic.player.mpv.path");

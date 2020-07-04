@@ -321,6 +321,7 @@
     "NeteaseCloudMusicApi": "^3.34.0",
     "array-unsort": "^1.1.5",
     "cacache": "^15.0.4",
+    "del": "^5.1.0",
     "mobx": "^5.15.4",
     "node-mpv": "^2.0.0-beta.0",
     "vlc-player-controller": "^0.0.3"

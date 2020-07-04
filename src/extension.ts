@@ -1,7 +1,12 @@
 import { throttle } from "lodash";
 import { commands, ExtensionContext, window } from "vscode";
 import { existsSync, mkdirSync, readFileSync, unlink, writeFile } from "fs";
-import { AUTO_CHECK, ACCOUNT_FILE, SETTING_DIR } from "./constant/setting";
+import {
+  AUTO_CHECK,
+  ACCOUNT_FILE,
+  TMP_DIR,
+  SETTING_DIR,
+} from "./constant/setting";
 import { AccountManager } from "./manager/accountManager";
 import { ButtonManager } from "./manager/buttonManager";
 import {
@@ -13,8 +18,32 @@ import { apiLike } from "./util/api";
 import { player } from "./util/player";
 import { isLike } from "./state/like";
 import { loggedIn } from "./state/login";
+const del = require("del");
 
 export function activate(context: ExtensionContext): void {
+  // read account info from local file
+  if (!existsSync(SETTING_DIR)) {
+    mkdirSync(SETTING_DIR);
+  }
+  if (existsSync(ACCOUNT_FILE)) {
+    try {
+      const { phone, account, password } = JSON.parse(
+        readFileSync(ACCOUNT_FILE, "utf8")
+      );
+      AccountManager.login(phone, account, password).then(() => {
+        if (AUTO_CHECK) {
+          AccountManager.dailySignin();
+        }
+      });
+    } catch {}
+  }
+
+  // init cache/tmp folder
+  if (existsSync(TMP_DIR)) {
+    del.sync([TMP_DIR]);
+  }
+  mkdirSync(TMP_DIR);
+
   // init queue provider
   const queueProvider = QueueProvider.getInstance();
 
@@ -57,23 +86,6 @@ export function activate(context: ExtensionContext): void {
 
   // init status bar button
   ButtonManager.init();
-
-  // read account info from local file
-  if (!existsSync(SETTING_DIR)) {
-    mkdirSync(SETTING_DIR);
-  }
-  if (existsSync(ACCOUNT_FILE)) {
-    try {
-      const { phone, account, password } = JSON.parse(
-        readFileSync(ACCOUNT_FILE, "utf8")
-      );
-      AccountManager.login(phone, account, password).then(() => {
-        if (AUTO_CHECK) {
-          AccountManager.dailySignin();
-        }
-      });
-    } catch {}
-  }
 
   // init player
   player.start();
@@ -181,7 +193,7 @@ export function activate(context: ExtensionContext): void {
       queueProvider.shift(1);
       player.load(queueProvider.head);
       queueProvider.refresh();
-    }, 256)
+    }, 128)
   );
 
   // play command
