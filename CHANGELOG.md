@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.5.1] - 2020-07-05
+
+### Fixed
+
+- Can set payler init volume without error
+- Cache item can return right path
+
 ## [1.5.0] - 2020-07-04
 
 ### Added
