@@ -53,17 +53,15 @@ export function activate(context: ExtensionContext): void {
   }
 
   // init tmp folder
-  if (existsSync(TMP_DIR)) {
-    del.sync([TMP_DIR], { force: true });
+  if (!existsSync(TMP_DIR)) {
+    mkdirSync(TMP_DIR);
   }
-  mkdirSync(TMP_DIR);
 
   // init cache folder
   try {
     const pf = join(SETTING_DIR, "cache");
     const cacheFolders = readdirSync(pf);
     for (const folder of cacheFolders) {
-      console.log(folder);
       if (folder !== `${MUSIC_QUALITY}`) {
         del.sync([join(pf, folder)], { force: true });
       }

@@ -9,6 +9,7 @@ import { TreeItemCollapsibleState } from "vscode";
 import { apiPlaymodeIntelligenceList, apiSongUrl } from "./api";
 import { QueueItem, SongsItem } from "../constant/type";
 import { QueueItemTreeItem } from "../provider/queueProvider";
+const del = require("del");
 
 export async function queueItem2TreeItem(
   id: number,
@@ -75,6 +76,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
       await commands.executeCommand("cloudmusic.next");
       return;
     }
+    del.sync([join(TMP_DIR, "**")], { force: true });
     const tmpFilePath = join(TMP_DIR, `${id}`);
     const tmpFile = createWriteStream(tmpFilePath);
 
