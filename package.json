@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "cloudmusic",
   "description": "网易云音乐插件",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "publisher": "YXL",
   "engines": {
     "vscode": "^1.46.0"

@@ -6,6 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.5.4] - 2020-07-06
+
+### Added
+
+- Add player check step which will notif user whether player is working well
+
+### Fixed
+
+- `MPV Player` will have fewer crashes
+- Command: `deleteSong` will no longer _add song_
+
 ## [1.5.3] - 2020-07-05
 
 ### Changed
