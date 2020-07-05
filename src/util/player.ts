@@ -88,17 +88,14 @@ class MpvPlayer implements Player {
       const tmpFilePath = join(TMP_DIR, `${id}`);
       const tmpFile = createWriteStream(tmpFilePath);
 
-      http
-        .get(url, (res) => {
-          res.pipe(tmpFile);
-          tmpFile.on("finish", () => {
-            tmpFile.close();
-            Cache.put(`${id}`, tmpFilePath);
-          });
-        })
-        .on("response", () => {
-          this.play(tmpFilePath, id, pid, dt);
+      http.get(url, (res) => {
+        res.pipe(tmpFile);
+        tmpFile.on("finish", () => {
+          tmpFile.close();
+          Cache.put(`${id}`, tmpFilePath);
         });
+      });
+      this.play(url, id, pid, dt);
     }
   }
 
@@ -184,17 +181,14 @@ class VlcPlayer implements Player {
       const tmpFilePath = join(TMP_DIR, `${id}`);
       const tmpFile = createWriteStream(tmpFilePath);
 
-      http
-        .get(url, (res) => {
-          res.pipe(tmpFile);
-          tmpFile.on("finish", () => {
-            tmpFile.close();
-            Cache.put(`${id}`, tmpFilePath);
-          });
-        })
-        .on("response", () => {
-          this.play(tmpFilePath, id, pid, dt);
+      http.get(url, (res) => {
+        res.pipe(tmpFile);
+        tmpFile.on("finish", () => {
+          tmpFile.close();
+          Cache.put(`${id}`, tmpFilePath);
         });
+      });
+      this.play(url, id, pid, dt);
     }
   }
 
