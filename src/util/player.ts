@@ -11,14 +11,11 @@ import {
 import { Player } from "../constant/type";
 import { apiScrobble } from "./api";
 import { delFileExcept } from "./util";
+import { lock } from "../state/lock";
 import { playing } from "../state/play";
 import { volumeLevel } from "../state/volume";
 const mpvAPI = require("node-mpv");
 const vlcAPI = require("vlc-player-controller");
-
-export const lock = {
-  playerLoad: false,
-};
 
 class EmptyPlayer implements Player {
   id = 0;

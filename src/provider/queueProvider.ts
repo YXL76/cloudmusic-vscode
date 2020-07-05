@@ -69,7 +69,9 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
 
   delete(element: QueueItemTreeItem): void {
     const index = this.songs.indexOf(element);
-    this.songs = this.songs.slice(0, index).concat(this.songs.slice(index + 1));
+    if (index >= 0) {
+      this.songs.splice(index, 1);
+    }
   }
 }
 

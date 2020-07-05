@@ -29,7 +29,8 @@ import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
 import { apiLike, apiPlaylistTracks } from "./util/api";
 import { load } from "./util/util";
 import { Cache } from "./util/cache";
-import { lock, player } from "./util/player";
+import { player } from "./util/player";
+import { lock } from "./state/lock";
 import { isLike } from "./state/like";
 import { loggedIn } from "./state/login";
 const del = require("del");
@@ -86,21 +87,23 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand(
     "cloudmusic.playSong",
     async (element: QueueItemTreeItem) => {
-      if (!lock.playerLoad) {
+      if (!lock.playerLoad && !lock.queue) {
+        lock.queue = true;
         await load(element);
         queueProvider.top(element);
         queueProvider.refresh();
+        lock.queue = false;
       }
     }
   );
   commands.registerCommand(
     "cloudmusic.deleteSong",
     async (element: QueueItemTreeItem) => {
-      const head = queueProvider.songs[0];
-      queueProvider.delete(element);
-      queueProvider.refresh();
-      if (head === element && !lock.playerLoad) {
-        await load(queueProvider.songs[0]);
+      if (!lock.queue) {
+        lock.queue = true;
+        queueProvider.delete(element);
+        queueProvider.refresh();
+        lock.queue = false;
       }
     }
   );
@@ -204,19 +207,23 @@ export function activate(context: ExtensionContext): void {
 
   // previous command
   const previous = commands.registerCommand("cloudmusic.previous", async () => {
-    if (!lock.playerLoad && queueProvider.songs) {
+    if (!lock.playerLoad && !lock.queue && queueProvider.songs) {
+      lock.queue = true;
       await load(queueProvider.songs[-1]);
       queueProvider.shift(-1);
       queueProvider.refresh();
+      lock.queue = false;
     }
   });
 
   // next command
   const next = commands.registerCommand("cloudmusic.next", async () => {
-    if (!lock.playerLoad && queueProvider.songs) {
+    if (!lock.playerLoad && !lock.queue && queueProvider.songs) {
+      lock.queue = true;
       await load(queueProvider.songs[1]);
       queueProvider.shift(1);
       queueProvider.refresh();
+      lock.queue = false;
     }
   });
 
@@ -274,9 +281,13 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand(
     "cloudmusic.playPlaylist",
     async (element: PlaylistItemTreeItem) => {
-      await PlaylistProvider.playPlaylist(element.item.id);
-      if (!lock.playerLoad) {
-        load(queueProvider.songs[0]);
+      if (!lock.queue) {
+        lock.queue = true;
+        await PlaylistProvider.playPlaylist(element.item.id);
+        if (!lock.playerLoad) {
+          load(queueProvider.songs[0]);
+        }
+        lock.queue = false;
       }
     }
   );
