@@ -61,6 +61,8 @@ export function solveSongItem(item: SongsItem): QueueItem {
   };
 }
 
+const pattern = join(TMP_DIR, "**");
+
 export async function load(element: QueueItemTreeItem): Promise<void> {
   lock.playerLoad = true;
   const { pid, md5 } = element;
@@ -76,7 +78,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
       await commands.executeCommand("cloudmusic.next");
       return;
     }
-    del.sync([join(TMP_DIR, "**")], { force: true });
+    del.sync([pattern], { force: true });
     const tmpFilePath = join(TMP_DIR, `${id}`);
     const tmpFile = createWriteStream(tmpFilePath);
 

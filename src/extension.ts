@@ -63,7 +63,8 @@ export function activate(context: ExtensionContext): void {
     const cacheFolders = readdirSync(pf);
     for (const folder of cacheFolders) {
       if (folder !== `${MUSIC_QUALITY}`) {
-        del.sync([join(pf, folder)], { force: true });
+        const pattern = join(pf, folder);
+        del.sync([pattern], { force: true });
       }
     }
   } catch {}
