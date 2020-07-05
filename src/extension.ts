@@ -1,11 +1,20 @@
+import { join } from "path";
 import { commands, ExtensionContext, window } from "vscode";
-import { existsSync, mkdirSync, readFileSync, unlink, writeFile } from "fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  unlink,
+  writeFile,
+} from "fs";
 import {
   AUTO_CHECK,
   ACCOUNT_FILE,
   CACHE_DIR,
   TMP_DIR,
   SETTING_DIR,
+  MUSIC_QUALITY,
 } from "./constant/setting";
 import { LruCacheValue } from "./constant/type";
 import { AccountManager } from "./manager/accountManager";
@@ -21,6 +30,7 @@ import { Cache } from "./util/cache";
 import { lock, player } from "./util/player";
 import { isLike } from "./state/like";
 import { loggedIn } from "./state/login";
+import console = require("console");
 const del = require("del");
 const cacache = require("cacache");
 
@@ -42,11 +52,23 @@ export function activate(context: ExtensionContext): void {
     } catch {}
   }
 
-  // init cache/tmp folder
+  // init tmp folder
   if (existsSync(TMP_DIR)) {
     del.sync([TMP_DIR], { force: true });
   }
   mkdirSync(TMP_DIR);
+
+  // init cache folder
+  try {
+    const pf = join(SETTING_DIR, "cache");
+    const cacheFolders = readdirSync(pf);
+    for (const folder of cacheFolders) {
+      console.log(folder);
+      if (folder !== `${MUSIC_QUALITY}`) {
+        del.sync([join(pf, folder)], { force: true });
+      }
+    }
+  } catch {}
 
   // init queue provider
   const queueProvider = QueueProvider.getInstance();
