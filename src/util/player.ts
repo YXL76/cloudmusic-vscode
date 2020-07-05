@@ -75,29 +75,33 @@ class MpvPlayer implements Player {
   }
 
   async load(url: string, id: number, pid: number, dt: number) {
-    if (!(await this.mpv.isRunning())) {
+    if (!this.mpv.isRunning()) {
       await this.mpv.start();
     }
-    try {
-      await this.mpv.load(url);
-      playing.set(true);
-      this.volume(volumeLevel.get());
-      this.mpv.play();
+    this.mpv
+      .load(url)
+      .then(() => {
+        playing.set(true);
+        this.volume(volumeLevel.get());
+        this.mpv.play();
 
-      delFileExcept(TMP_DIR, `${id}`);
-
-      const currentTime = Date.now();
-      const diff = (currentTime - this.time) / 1000;
-      if (diff > 60000 && this.dt > 60000) {
-        apiScrobble(id, pid, Math.floor(Math.min(diff + 1, dt - 1) / 1000));
-      }
-      this.id = id;
-      this.pid = pid;
-      this.dt = dt;
-      this.time = currentTime;
-    } finally {
-      lock.playerLoad = false;
-    }
+        const currentTime = Date.now();
+        const diff = (currentTime - this.time) / 1000;
+        if (diff > 60000 && this.dt > 60000) {
+          apiScrobble(id, pid, Math.floor(Math.min(diff + 1, dt - 1) / 1000));
+        }
+        this.id = id;
+        this.pid = pid;
+        this.dt = dt;
+        this.time = currentTime;
+      })
+      .catch(() => commands.executeCommand("cloudmusic.next"))
+      .finally(() => {
+        lock.playerLoad = false;
+        if (this.id === id) {
+          delFileExcept(TMP_DIR, `${id}`);
+        }
+      });
   }
 
   async togglePlay() {
@@ -143,8 +147,6 @@ class VlcPlayer implements Player {
         commands.executeCommand("cloudmusic.next");
       });
       this.vlc.launch((err: string) => {
-        delFileExcept(TMP_DIR, `${id}`);
-
         if (err) {
           commands.executeCommand("cloudmusic.next");
         } else {
@@ -163,6 +165,9 @@ class VlcPlayer implements Player {
       });
     } finally {
       lock.playerLoad = false;
+      if (this.id === id) {
+        delFileExcept(TMP_DIR, `${id}`);
+      }
     }
   }
 
