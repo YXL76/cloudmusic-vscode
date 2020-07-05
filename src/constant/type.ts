@@ -53,7 +53,7 @@ export interface Player {
   time: number;
   start(): Promise<void>;
   quit(): Promise<void>;
-  load(element: QueueItemTreeItem): Promise<void>;
+  load(url: string, id: number, pid: number, dt: number): Promise<void>;
   togglePlay(): Promise<void>;
   volume(level: number): Promise<void>;
 }

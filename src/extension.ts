@@ -17,6 +17,7 @@ import {
 } from "./provider/playlistProvider";
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
 import { apiLike, apiPlaylistTracks } from "./util/api";
+import { load } from "./util/util";
 import { Cache } from "./util/cache";
 import { lock, player } from "./util/player";
 import { isLike } from "./state/like";
@@ -63,7 +64,7 @@ export function activate(context: ExtensionContext): void {
     "cloudmusic.playSong",
     async (element: QueueItemTreeItem) => {
       if (!lock.playerLoad) {
-        await player.load(element);
+        await load(element);
         queueProvider.top(element);
         queueProvider.refresh();
       }
@@ -76,7 +77,7 @@ export function activate(context: ExtensionContext): void {
       queueProvider.delete(element);
       queueProvider.refresh();
       if (head === element && !lock.playerLoad) {
-        await player.load(queueProvider.songs[0]);
+        await load(queueProvider.songs[0]);
       }
     }
   );
@@ -177,7 +178,7 @@ export function activate(context: ExtensionContext): void {
   // previous command
   const previous = commands.registerCommand("cloudmusic.previous", async () => {
     if (!lock.playerLoad && queueProvider.songs) {
-      await player.load(queueProvider.songs[-1]);
+      await load(queueProvider.songs[-1]);
       queueProvider.shift(-1);
       queueProvider.refresh();
     }
@@ -186,7 +187,7 @@ export function activate(context: ExtensionContext): void {
   // next command
   const next = commands.registerCommand("cloudmusic.next", async () => {
     if (!lock.playerLoad && queueProvider.songs) {
-      await player.load(queueProvider.songs[1]);
+      await load(queueProvider.songs[1]);
       queueProvider.shift(1);
       queueProvider.refresh();
     }
@@ -248,7 +249,7 @@ export function activate(context: ExtensionContext): void {
     async (element: PlaylistItemTreeItem) => {
       await PlaylistProvider.playPlaylist(element.item.id);
       if (!lock.playerLoad) {
-        player.load(queueProvider.songs[0]);
+        load(queueProvider.songs[0]);
       }
     }
   );
@@ -262,7 +263,7 @@ export function activate(context: ExtensionContext): void {
     async (element: QueueItemTreeItem) => {
       await PlaylistProvider.intelligence(element);
       if (!lock.playerLoad) {
-        player.load(element);
+        load(element);
       }
     }
   );
@@ -274,7 +275,7 @@ export function activate(context: ExtensionContext): void {
     async (element: QueueItemTreeItem) => {
       await PlaylistProvider.playPlaylist(element.pid, element);
       if (!lock.playerLoad) {
-        player.load(element);
+        load(element);
       }
     }
   );

@@ -1,3 +1,10 @@
+import * as http from "http";
+import { join } from "path";
+import { createWriteStream } from "fs";
+import { commands } from "vscode";
+import { TMP_DIR } from "../constant/setting";
+import { Cache } from "../util/cache";
+import { lock, player } from "./player";
 import { TreeItemCollapsibleState } from "vscode";
 import { apiPlaymodeIntelligenceList, apiSongUrl } from "./api";
 import { QueueItem, SongsItem } from "../constant/type";
@@ -51,4 +58,33 @@ export function solveSongItem(item: SongsItem): QueueItem {
     alia: alia ? alia[0] : "",
     arName,
   };
+}
+
+export async function load(element: QueueItemTreeItem): Promise<void> {
+  lock.playerLoad = true;
+  const { pid, md5 } = element;
+  const { id, dt } = element.item;
+  const path = await Cache.get(`${id}`, md5);
+
+  if (path) {
+    player.load(path, id, pid, dt);
+  } else {
+    const { url } = (await apiSongUrl([id]))[0];
+    if (!url) {
+      lock.playerLoad = false;
+      await commands.executeCommand("cloudmusic.next");
+      return;
+    }
+    const tmpFilePath = join(TMP_DIR, `${id}`);
+    const tmpFile = createWriteStream(tmpFilePath);
+
+    http.get(url, (res) => {
+      res.pipe(tmpFile);
+      tmpFile.on("finish", () => {
+        tmpFile.close();
+        Cache.put(`${id}`, tmpFilePath);
+      });
+    });
+    player.load(url, id, pid, dt);
+  }
 }
