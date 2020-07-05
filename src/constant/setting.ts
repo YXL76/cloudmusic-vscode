@@ -1,6 +1,7 @@
 import { homedir, platform } from "os";
 import { join } from "path";
 import { workspace } from "vscode";
+const commandExistsSync = require("command-exists").sync;
 
 const conf = workspace.getConfiguration();
 const system = platform();
@@ -27,14 +28,14 @@ export const CACHE_SIZE = finalSize * 1024 * 1024;
 
 export const PLAYER = conf.get("cloudmusic.player.player");
 
-const MPV_BINARY = conf.get("cloudmusic.player.mpv.path");
+const mpvBinary = conf.get("cloudmusic.player.mpv.path");
 
 export const MPV_API_OPTIONS = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   audio_only: true,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   auto_restart: true,
-  binary: MPV_BINARY ? MPV_BINARY : null,
+  binary: mpvBinary ? mpvBinary : null,
   debug: false,
   ipcCommand: null,
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -47,9 +48,11 @@ export const MPV_ARGS = [
   ...["--load-scripts=no", "--no-ytdl"],
 ].filter((item) => item !== "");
 
-const VLC_BINARY = conf.get("cloudmusic.player.vlc.path");
-const VLC_HTTP_PORT = conf.get("cloudmusic.player.vlc.httpPort");
-const VLC_HTTP_PASS = conf.get("cloudmusic.player.vlc.httpPass");
+export const MPV_AVAILABLE = commandExistsSync(mpvBinary || "mpv");
+
+const vlcBinary = conf.get("cloudmusic.player.vlc.path");
+const vlcHttpPort = conf.get("cloudmusic.player.vlc.httpPort");
+const vlcHttpPass = conf.get("cloudmusic.player.vlc.httpPass");
 
 const VLC_ARGS = [
   ...[
@@ -76,10 +79,12 @@ const VLC_ARGS = [
 ].filter((item) => item !== "");
 
 export const VLC_API_OPTIONS = {
-  app: VLC_BINARY || "vlc",
+  app: vlcBinary || "vlc",
   args: VLC_ARGS,
   cwd: null,
-  httpPort: VLC_HTTP_PORT || 9280,
-  httpPass: VLC_HTTP_PASS ? VLC_HTTP_PASS : null,
+  httpPort: vlcHttpPort || 9280,
+  httpPass: vlcHttpPass ? vlcHttpPass : null,
   detached: true,
 };
+
+export const VLC_AVAILABLE = commandExistsSync(vlcBinary || "vlc");

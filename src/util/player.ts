@@ -3,7 +3,9 @@ import {
   PLAYER,
   MPV_API_OPTIONS,
   MPV_ARGS,
+  MPV_AVAILABLE,
   VLC_API_OPTIONS,
+  VLC_AVAILABLE,
 } from "../constant/setting";
 import { Player } from "../constant/type";
 import { apiScrobble } from "./api";
@@ -15,6 +17,35 @@ const vlcAPI = require("vlc-player-controller");
 export const lock = {
   playerLoad: false,
 };
+
+class EmptyPlayer implements Player {
+  id = 0;
+  pid = 0;
+  dt = 0;
+  time = 0;
+
+  async start() {
+    //
+  }
+
+  async quit() {
+    //
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async load(_url: string, _id: number, _pid: number, _dt: number) {
+    //
+  }
+
+  async togglePlay() {
+    //
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async volume(_level: number) {
+    //
+  }
+}
 
 class MpvPlayer implements Player {
   private mpv = new mpvAPI(MPV_API_OPTIONS, MPV_ARGS);
@@ -143,4 +174,9 @@ class VlcPlayer implements Player {
   }
 }
 
-export const player = PLAYER === "vlc" ? new VlcPlayer() : new MpvPlayer();
+export const player =
+  PLAYER === "vlc" && VLC_AVAILABLE
+    ? new VlcPlayer()
+    : MPV_AVAILABLE
+    ? new MpvPlayer()
+    : new EmptyPlayer();

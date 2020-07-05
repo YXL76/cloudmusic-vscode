@@ -15,6 +15,8 @@ import {
   TMP_DIR,
   SETTING_DIR,
   MUSIC_QUALITY,
+  MPV_AVAILABLE,
+  VLC_AVAILABLE,
 } from "./constant/setting";
 import { LruCacheValue } from "./constant/type";
 import { AccountManager } from "./manager/accountManager";
@@ -30,7 +32,6 @@ import { Cache } from "./util/cache";
 import { lock, player } from "./util/player";
 import { isLike } from "./state/like";
 import { loggedIn } from "./state/login";
-import console = require("console");
 const del = require("del");
 const cacache = require("cacache");
 
@@ -109,9 +110,13 @@ export function activate(context: ExtensionContext): void {
   ButtonManager.init();
 
   // init player
-  player.start().then(() => {
-    player.volume(85);
-  });
+  if (MPV_AVAILABLE || VLC_AVAILABLE) {
+    player.start().then(() => {
+      player.volume(85);
+    });
+  } else {
+    window.showErrorMessage("Player is unavailable");
+  }
 
   // sign in command
   const signin = commands.registerCommand("cloudmusic.signin", async () => {
