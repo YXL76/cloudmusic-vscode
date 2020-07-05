@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.5.2] - 2020-07-05
+
+### Remove
+
+- Double network request
+
 ## [1.5.1] - 2020-07-05
 
 ### Fixed
