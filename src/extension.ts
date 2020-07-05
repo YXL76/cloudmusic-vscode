@@ -1,4 +1,3 @@
-import { join } from "path";
 import { commands, ExtensionContext, window } from "vscode";
 import { existsSync, mkdirSync, readFileSync, unlink, writeFile } from "fs";
 import {
@@ -44,7 +43,10 @@ export function activate(context: ExtensionContext): void {
   }
 
   // init cache/tmp folder
-  existsSync(TMP_DIR) ? del.sync([join(TMP_DIR, "**")]) : mkdirSync(TMP_DIR);
+  if (existsSync(TMP_DIR)) {
+    del.sync([TMP_DIR]);
+  }
+  mkdirSync(TMP_DIR);
 
   // init queue provider
   const queueProvider = QueueProvider.getInstance();
@@ -321,5 +323,5 @@ export function activate(context: ExtensionContext): void {
 export function deactivate(): void {
   player.quit();
   cacache.verify(CACHE_DIR);
-  del.sync([join(TMP_DIR, "**")]);
+  del.sync([TMP_DIR]);
 }

@@ -78,13 +78,19 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
     const tmpFilePath = join(TMP_DIR, `${id}`);
     const tmpFile = createWriteStream(tmpFilePath);
 
-    http.get(url, (res) => {
-      res.pipe(tmpFile);
-      tmpFile.on("finish", () => {
-        tmpFile.close();
-        Cache.put(`${id}`, tmpFilePath);
+    http
+      .get(url, (res) => {
+        res.pipe(tmpFile);
+        tmpFile.on("finish", () => {
+          tmpFile.close();
+          Cache.put(`${id}`, tmpFilePath);
+        });
+      })
+      .on("response", () => {
+        player.load(tmpFilePath, id, pid, dt);
+      })
+      .on("error", () => {
+        player.load(url, id, pid, dt);
       });
-    });
-    player.load(url, id, pid, dt);
   }
 }
