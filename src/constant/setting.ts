@@ -1,13 +1,13 @@
 import { homedir, platform } from "os";
-import { join } from "path";
+import { posix } from "path";
 import { workspace } from "vscode";
 const commandExistsSync = require("command-exists").sync;
 
 const conf = workspace.getConfiguration();
 const system = platform();
 
-export const SETTING_DIR = join(homedir(), ".cloudmusic");
-export const ACCOUNT_FILE = join(SETTING_DIR, ".account");
+export const SETTING_DIR = posix.join(homedir(), ".cloudmusic");
+export const ACCOUNT_FILE = posix.join(SETTING_DIR, ".account");
 
 export const AUTO_CHECK = conf.get("cloudmusic.account.autoCheck");
 
@@ -17,8 +17,8 @@ export const PROXY = conf.get("cloudmusic.music.proxy")
 
 export const MUSIC_QUALITY = conf.get("cloudmusic.music.quality");
 
-export const TMP_DIR = join(SETTING_DIR, "tmp");
-export const CACHE_DIR = join(SETTING_DIR, "cache", `${MUSIC_QUALITY}`);
+export const TMP_DIR = posix.join(SETTING_DIR, "tmp");
+export const CACHE_DIR = posix.join(SETTING_DIR, "cache", `${MUSIC_QUALITY}`);
 
 const cacheSize = conf.get("cloudmusic.cache.size");
 let finalSize = typeof cacheSize === "number" ? cacheSize : 1024;

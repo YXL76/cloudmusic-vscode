@@ -1,4 +1,4 @@
-import { join } from "path";
+import { posix } from "path";
 import { commands, ExtensionContext, window } from "vscode";
 import {
   existsSync,
@@ -60,14 +60,13 @@ export function activate(context: ExtensionContext): void {
 
   // init cache folder
   try {
-    const pf = join(SETTING_DIR, "cache");
-    const cacheFolders = readdirSync(pf);
-    for (const folder of cacheFolders) {
+    const pf = posix.join(SETTING_DIR, "cache");
+    readdirSync(pf).forEach((folder) => {
       if (folder !== `${MUSIC_QUALITY}`) {
-        const pattern = join(pf, folder);
+        const pattern = posix.join(pf, folder);
         del.sync([pattern], { force: true });
       }
-    }
+    });
   } catch {}
 
   // init queue provider

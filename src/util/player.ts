@@ -1,5 +1,6 @@
 import { commands } from "vscode";
 import {
+  TMP_DIR,
   PLAYER,
   MPV_API_OPTIONS,
   MPV_ARGS,
@@ -9,6 +10,7 @@ import {
 } from "../constant/setting";
 import { Player } from "../constant/type";
 import { apiScrobble } from "./api";
+import { delFileExcept } from "./util";
 import { playing } from "../state/play";
 import { volumeLevel } from "../state/volume";
 const mpvAPI = require("node-mpv");
@@ -57,11 +59,11 @@ class MpvPlayer implements Player {
 
   async start() {
     if (!(await this.mpv.isRunning())) {
-      this.mpv.start();
+      await this.mpv.start();
+      this.mpv.on("stopped", () => {
+        commands.executeCommand("cloudmusic.next");
+      });
     }
-    this.mpv.on("stopped", () => {
-      commands.executeCommand("cloudmusic.next");
-    });
   }
 
   async quit() {
@@ -74,13 +76,16 @@ class MpvPlayer implements Player {
 
   async load(url: string, id: number, pid: number, dt: number) {
     if (!(await this.mpv.isRunning())) {
-      this.mpv.start();
+      await this.mpv.start();
     }
     try {
       await this.mpv.load(url);
       playing.set(true);
       this.volume(volumeLevel.get());
       this.mpv.play();
+
+      delFileExcept(TMP_DIR, `${id}`);
+
       const currentTime = Date.now();
       const diff = (currentTime - this.time) / 1000;
       if (diff > 60000 && this.dt > 60000) {
@@ -138,6 +143,8 @@ class VlcPlayer implements Player {
         commands.executeCommand("cloudmusic.next");
       });
       this.vlc.launch((err: string) => {
+        delFileExcept(TMP_DIR, `${id}`);
+
         if (err) {
           commands.executeCommand("cloudmusic.next");
         } else {

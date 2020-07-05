@@ -1,6 +1,6 @@
 import * as http from "http";
-import { join } from "path";
-import { createWriteStream } from "fs";
+import { posix } from "path";
+import { createWriteStream, readdirSync, unlinkSync } from "fs";
 import { commands } from "vscode";
 import { TMP_DIR } from "../constant/setting";
 import { Cache } from "../util/cache";
@@ -9,7 +9,16 @@ import { TreeItemCollapsibleState } from "vscode";
 import { apiPlaymodeIntelligenceList, apiSongUrl } from "./api";
 import { QueueItem, SongsItem } from "../constant/type";
 import { QueueItemTreeItem } from "../provider/queueProvider";
-const del = require("del");
+
+export function delFileExcept(path: string, filename: string): void {
+  readdirSync(path).forEach((file) => {
+    if (file !== filename) {
+      try {
+        unlinkSync(posix.join(path, file));
+      } catch {}
+    }
+  });
+}
 
 export async function queueItem2TreeItem(
   id: number,
@@ -61,8 +70,6 @@ export function solveSongItem(item: SongsItem): QueueItem {
   };
 }
 
-const pattern = join(TMP_DIR, "**");
-
 export async function load(element: QueueItemTreeItem): Promise<void> {
   lock.playerLoad = true;
   const { pid, md5 } = element;
@@ -78,8 +85,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
       await commands.executeCommand("cloudmusic.next");
       return;
     }
-    del.sync([pattern], { force: true });
-    const tmpFilePath = join(TMP_DIR, `${id}`);
+    const tmpFilePath = posix.join(TMP_DIR, `${id}`);
     const tmpFile = createWriteStream(tmpFilePath);
 
     http
