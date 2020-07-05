@@ -44,7 +44,7 @@ export function activate(context: ExtensionContext): void {
 
   // init cache/tmp folder
   if (existsSync(TMP_DIR)) {
-    del.sync([TMP_DIR]);
+    del.sync([TMP_DIR], { force: true });
   }
   mkdirSync(TMP_DIR);
 
@@ -323,5 +323,5 @@ export function activate(context: ExtensionContext): void {
 export function deactivate(): void {
   player.quit();
   cacache.verify(CACHE_DIR);
-  del.sync([TMP_DIR]);
+  del.sync([TMP_DIR], { force: true });
 }
