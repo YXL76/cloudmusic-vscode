@@ -351,6 +351,6 @@
     "lru-cache": "^5.1.1",
     "mobx": "^5.15.4",
     "node-mpv": "^2.0.0-beta.0",
-    "vlc-player-controller": "^0.0.3"
+    "vlc-player-controller": "^0.0.5"
   }
 }
