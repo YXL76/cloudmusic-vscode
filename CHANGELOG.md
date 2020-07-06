@@ -6,6 +6,24 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.6.0] - 2020-07-06
+
+### Added
+
+- Configuration: add `cloudmusic.player.interface`
+
+### Changed
+
+- Store `md5_password` instead of `password`
+
+### Fixed
+
+- Player load process
+
+### Removed
+
+- Configuration: remove `cloudmusic.player.vlc.dummy`
+
 ## [1.5.4] - 2020-07-06
 
 ### Added
