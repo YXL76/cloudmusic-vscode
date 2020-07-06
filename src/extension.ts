@@ -1,3 +1,4 @@
+import * as crypto from "crypto";
 import { posix } from "path";
 import { commands, ExtensionContext, window } from "vscode";
 import {
@@ -43,10 +44,11 @@ export function activate(context: ExtensionContext): void {
   }
   if (existsSync(ACCOUNT_FILE)) {
     try {
-      const { phone, account, password } = JSON.parse(
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const { phone, account, md5_password } = JSON.parse(
         readFileSync(ACCOUNT_FILE, "utf8")
       );
-      AccountManager.login(phone, account, password).then(() => {
+      AccountManager.login(phone, account, md5_password).then(() => {
         if (AUTO_CHECK) {
           AccountManager.dailySignin();
         }
@@ -163,13 +165,19 @@ export function activate(context: ExtensionContext): void {
     if (!password) {
       return;
     }
-    if (await AccountManager.login(method.phone, account, password)) {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const md5_password = crypto
+      .createHash("md5")
+      .update(password)
+      .digest("hex");
+    if (await AccountManager.login(method.phone, account, md5_password)) {
       writeFile(
         ACCOUNT_FILE,
         JSON.stringify({
           phone: method.phone,
           account,
-          password,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          md5_password,
         }),
         () => {
           //

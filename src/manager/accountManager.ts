@@ -33,7 +33,8 @@ export class AccountManager {
   static async login(
     phone: boolean,
     account: string,
-    password: string
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    md5_password: string
   ): Promise<boolean> {
     if (loggedIn.get()) {
       window.showInformationMessage("Already sign in");
@@ -43,11 +44,13 @@ export class AccountManager {
       const { status, body } = phone
         ? await login_cellphone({
             phone: account,
-            password: encodeURIComponent(password),
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            md5_password,
           })
         : await login({
             username: account,
-            password: encodeURIComponent(password),
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            md5_password,
           });
 
       if (status === 200) {
