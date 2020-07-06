@@ -309,10 +309,10 @@
   resolved "https://registry.yarnpkg.com/@xtuc/long/-/long-4.2.2.tgz#d291c6a4e97989b5c61d9acf396ae4fe133a718d"
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
-NeteaseCloudMusicApi@^3.34.0:
-  version "3.34.0"
-  resolved "https://registry.yarnpkg.com/NeteaseCloudMusicApi/-/NeteaseCloudMusicApi-3.34.0.tgz#17ae412792d20f3e93a8199a289656d9a9ea4e92"
-  integrity sha512-nanMZqKkMSLr/VjCo7XDy4UMgEQCRGq9GFIFmOv07iaYFniQUVR1jt5TqCtcah/zQhdce+/2h55U4iaOF+zE8g==
+NeteaseCloudMusicApi@^3.34.1:
+  version "3.34.1"
+  resolved "https://registry.yarnpkg.com/NeteaseCloudMusicApi/-/NeteaseCloudMusicApi-3.34.1.tgz#850ffef3490aac4fed31d3ffe69956d3a1db0b7f"
+  integrity sha512-hYqsushzJV9wACmd2aYlWnkAnLg1eTXW7iDjMkgCs33rvCJg+crELv3qvz0qaRkLiEajO8Ts3a1L6qcaAADgIA==
   dependencies:
     express "^4.17.1"
     pac-proxy-agent "^3.0.1"
