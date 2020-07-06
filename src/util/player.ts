@@ -1,3 +1,5 @@
+import { posix } from "path";
+import { unlinkSync } from "fs";
 import { commands } from "vscode";
 import {
   TMP_DIR,
@@ -10,12 +12,13 @@ import {
 } from "../constant/setting";
 import { Player } from "../constant/type";
 import { apiScrobble } from "./api";
-import { delFileExcept } from "./util";
 import { lock } from "../state/lock";
 import { playing } from "../state/play";
 import { volumeLevel } from "../state/volume";
 const mpvAPI = require("node-mpv");
 const vlcAPI = require("vlc-player-controller");
+
+const urlRe = new RegExp(`${TMP_DIR}`);
 
 class EmptyPlayer implements Player {
   id = 0;
@@ -75,30 +78,35 @@ class MpvPlayer implements Player {
     if (!this.mpv.isRunning()) {
       await this.mpv.start();
     }
+    const media = await this.mpv.getFilename();
     this.mpv
       .load(url)
       .then(() => {
+        try {
+          if (media.indexOf(TMP_DIR) !== -1) {
+            unlinkSync(media);
+          }
+        } catch {}
+        const pId = this.id;
+        const pPid = this.pid;
+        const pDt = this.dt;
+        const pTime = this.time;
+        this.id = id;
+        this.pid = pid;
+        this.dt = dt;
+        this.time = Date.now();
+
         playing.set(true);
         this.volume(volumeLevel.get());
         this.mpv.play();
 
-        const currentTime = Date.now();
-        const diff = (currentTime - this.time) / 1000;
-        if (diff > 60000 && this.dt > 60000) {
-          apiScrobble(id, pid, Math.floor(Math.min(diff + 1, dt - 1) / 1000));
+        const diff = this.time - pTime;
+        if (diff > 60000 && pDt > 60000) {
+          apiScrobble(pId, pPid, Math.floor(Math.min(diff, pDt) / 1000));
         }
-        this.id = id;
-        this.pid = pid;
-        this.dt = dt;
-        this.time = currentTime;
       })
       .catch(() => commands.executeCommand("cloudmusic.next"))
-      .finally(() => {
-        lock.playerLoad = false;
-        if (this.id === id) {
-          delFileExcept(TMP_DIR, `${id}`);
-        }
-      });
+      .finally(() => (lock.playerLoad = false));
   }
 
   async togglePlay() {
@@ -131,40 +139,49 @@ class VlcPlayer implements Player {
   async quit() {
     try {
       await this.vlc.quit();
-      delete this.vlc;
       playing.set(false);
     } catch {}
   }
 
   async load(url: string, id: number, pid: number, dt: number) {
     await this.quit();
+    const { media } = this.vlc;
+    delete this.vlc;
     try {
       this.vlc = new vlcAPI({ ...VLC_API_OPTIONS, ...{ media: url } });
       this.vlc.on("playback-ended", () => {
         commands.executeCommand("cloudmusic.next");
       });
       this.vlc.launch((err: string) => {
+        try {
+          if (media.indexOf(TMP_DIR) !== -1) {
+            unlinkSync(media);
+          }
+        } catch {}
         if (err) {
           commands.executeCommand("cloudmusic.next");
         } else {
-          playing.set(true);
-          this.volume(volumeLevel.get());
-          const currentTime = Date.now();
-          const diff = currentTime - this.time;
-          if (diff > 60000 && this.dt > 60000) {
-            apiScrobble(id, pid, Math.floor(Math.min(diff, dt) / 1000));
-          }
+          const pId = this.id;
+          const pPid = this.pid;
+          const pDt = this.dt;
+          const pTime = this.time;
           this.id = id;
           this.pid = pid;
           this.dt = dt;
-          this.time = currentTime;
+          this.time = Date.now();
+
+          playing.set(true);
+          this.volume(volumeLevel.get());
+
+          const diff = this.time - pTime;
+          if (diff > 60000 && pDt > 60000) {
+            apiScrobble(pId, pPid, Math.floor(Math.min(diff, pDt) / 1000));
+          }
         }
+        lock.playerLoad = false;
       });
-    } finally {
+    } catch {
       lock.playerLoad = false;
-      if (this.id === id) {
-        delFileExcept(TMP_DIR, `${id}`);
-      }
     }
   }
 

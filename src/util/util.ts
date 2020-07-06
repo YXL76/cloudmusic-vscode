@@ -1,6 +1,6 @@
 import * as http from "http";
 import { posix } from "path";
-import { createWriteStream, readdirSync, unlinkSync } from "fs";
+import { createWriteStream } from "fs";
 import { commands } from "vscode";
 import { TMP_DIR } from "../constant/setting";
 import { Cache } from "../util/cache";
@@ -10,16 +10,6 @@ import { TreeItemCollapsibleState } from "vscode";
 import { apiPlaymodeIntelligenceList, apiSongUrl } from "./api";
 import { QueueItem, SongsItem } from "../constant/type";
 import { QueueItemTreeItem } from "../provider/queueProvider";
-
-export function delFileExcept(path: string, filename: string): void {
-  readdirSync(path).forEach((file) => {
-    if (file !== filename) {
-      try {
-        unlinkSync(posix.join(path, file));
-      } catch {}
-    }
-  });
-}
 
 export async function queueItem2TreeItem(
   id: number,
