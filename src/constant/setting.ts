@@ -26,13 +26,14 @@ finalSize = finalSize > 10240 ? 10240 : finalSize;
 finalSize = finalSize < 128 ? 128 : finalSize;
 export const CACHE_SIZE = finalSize * 1024 * 1024;
 
+const gui = conf.get("cloudmusic.player.interface");
 export const PLAYER = conf.get("cloudmusic.player.player");
 
 const mpvBinary = conf.get("cloudmusic.player.mpv.path");
 
 export const MPV_API_OPTIONS = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  audio_only: true,
+  audio_only: !gui,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   auto_restart: true,
   binary: mpvBinary ? mpvBinary : null,
@@ -72,9 +73,7 @@ const VLC_ARGS = [
     "--no-qt-error-dialogs",
   ],
   ...(system === "win32" ? ["--high-priority", "--no-qt-updates-notif"] : [""]),
-  ...(conf.get("cloudmusic.player.vlc.dummy")
-    ? ["--intf=dummy", system === "win32" ? "--dummy-quiet" : ""]
-    : [""]),
+  ...(gui ? [""] : ["--intf=dummy", system === "win32" ? "--dummy-quiet" : ""]),
   ...(conf.get("cloudmusic.player.ignoreConfig") ? ["--ignore-config"] : [""]),
 ].filter((item) => item !== "");
 

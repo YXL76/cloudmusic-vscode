@@ -285,6 +285,12 @@
             "markdownDescription": "Open player without config",
             "scope": "window"
           },
+          "cloudmusic.player.interface": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "Choose whether player will show interface",
+            "scope": "window"
+          },
           "cloudmusic.player.mpv.path": {
             "type": "string",
             "default": "",
@@ -307,12 +313,6 @@
             "type": "string",
             "default": "",
             "markdownDescription": "",
-            "scope": "window"
-          },
-          "cloudmusic.player.vlc.dummy": {
-            "type": "boolean",
-            "default": true,
-            "markdownDescription": "Enable vlc interface dummy mode. If disable it, vlc will open with interface",
             "scope": "window"
           }
         }
