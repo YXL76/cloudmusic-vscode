@@ -78,6 +78,7 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand("cloudmusic.clearQueue", async () => {
     queueProvider.clear();
     queueProvider.refresh();
+    player.id = 0;
     player.quit();
   });
   commands.registerCommand("cloudmusic.randomQueue", () => {
@@ -112,10 +113,14 @@ export function activate(context: ExtensionContext): void {
   ButtonManager.init();
 
   // init player
+  lock.playerLoad = true;
   if (MPV_AVAILABLE || VLC_AVAILABLE) {
-    player.start().then(() => {
-      player.volume(85);
-    });
+    player
+      .start()
+      .then(() => {
+        player.volume(85);
+      })
+      .finally(() => (lock.playerLoad = false));
   } else {
     window.showErrorMessage("Player is unavailable");
   }

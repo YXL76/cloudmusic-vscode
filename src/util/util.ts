@@ -63,35 +63,40 @@ export function solveSongItem(item: SongsItem): QueueItem {
 
 export async function load(element: QueueItemTreeItem): Promise<void> {
   lock.playerLoad = true;
-  const { pid, md5 } = element;
-  const { id, dt } = element.item;
-  const path = await Cache.get(`${id}`, md5);
+  try {
+    const { pid, md5 } = element;
+    const { id, dt } = element.item;
+    const path = await Cache.get(`${id}`, md5);
 
-  if (path) {
-    player.load(path, id, pid, dt);
-  } else {
-    const { url } = (await apiSongUrl([id]))[0];
-    if (!url) {
-      lock.playerLoad = false;
-      await commands.executeCommand("cloudmusic.next");
-      return;
-    }
-    const tmpFilePath = posix.join(TMP_DIR, `${id}`);
-    const tmpFile = createWriteStream(tmpFilePath);
+    if (path) {
+      player.load(path, id, pid, dt);
+    } else {
+      const { url } = (await apiSongUrl([id]))[0];
+      if (!url) {
+        lock.playerLoad = false;
+        commands.executeCommand("cloudmusic.next");
+        return;
+      }
+      const tmpFilePath = posix.join(TMP_DIR, `${id}`);
+      const tmpFile = createWriteStream(tmpFilePath);
 
-    http
-      .get(url, (res) => {
-        res.pipe(tmpFile);
-        tmpFile.on("finish", () => {
-          tmpFile.close();
-          Cache.put(`${id}`, tmpFilePath);
+      http
+        .get(url, (res) => {
+          res.pipe(tmpFile);
+          tmpFile.on("finish", () => {
+            tmpFile.close();
+            Cache.put(`${id}`, tmpFilePath);
+          });
+        })
+        .on("response", () => {
+          player.load(tmpFilePath, id, pid, dt);
+        })
+        .on("error", () => {
+          player.load(url, id, pid, dt);
         });
-      })
-      .on("response", () => {
-        player.load(tmpFilePath, id, pid, dt);
-      })
-      .on("error", () => {
-        player.load(url, id, pid, dt);
-      });
+    }
+  } catch {
+    lock.playerLoad = false;
+    commands.executeCommand("cloudmusic.next");
   }
 }
