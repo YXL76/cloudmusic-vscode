@@ -32,6 +32,7 @@ import { load } from "./util/util";
 import { Cache } from "./util/cache";
 import { player } from "./util/player";
 import { lock } from "./state/lock";
+import { lyric } from "./state/play";
 import { isLike } from "./state/like";
 import { loggedIn } from "./state/login";
 const del = require("del");
@@ -365,6 +366,28 @@ export function activate(context: ExtensionContext): void {
     for (const item in res) {
       const { key, integrity, size } = res[item];
       Cache.lruCache.set(key, { integrity, size });
+    }
+  });
+
+  commands.registerCommand("cloudmusic.playDetail", async () => {
+    const pick = await window.showQuickPick([
+      {
+        label: "Lyric delay",
+        description: "Set lyric delay (defult: -1.5)",
+      },
+    ]);
+    if (!pick) {
+      return;
+    }
+    if (pick.label === "Lyric delay") {
+      const delay = await window.showInputBox({
+        value: `${lyric.delay}`,
+        placeHolder: "Please enter lyric delay.",
+      });
+      if (!delay || !/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay)) {
+        return;
+      }
+      lyric.delay = parseFloat(delay);
     }
   });
 }

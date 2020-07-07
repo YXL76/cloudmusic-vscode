@@ -154,6 +154,10 @@
       {
         "command": "cloudmusic.addToPlaylist",
         "title": "Add to playlist"
+      },
+      {
+        "command": "cloudmusic.playDetail",
+        "title": "Play detail"
       }
     ],
     "menus": {
