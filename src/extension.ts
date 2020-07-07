@@ -135,12 +135,12 @@ export function activate(context: ExtensionContext): void {
     const method = await window.showQuickPick(
       [
         {
-          label: "Email",
+          label: "📧Email",
           description: "use email to sign in",
           phone: false,
         },
         {
-          label: "Cellphone",
+          label: "📞Cellphone",
           description: "use cellphone to sign in",
           phone: true,
         },
