@@ -188,6 +188,9 @@ class VlcPlayer implements Player {
 
           playing.set(true);
           this.volume(volumeLevel.get());
+          try {
+            this.vlc.play();
+          } catch {}
 
           const diff = this.time - pTime;
           if (diff > 60000 && pDt > 60000) {
