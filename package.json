@@ -31,7 +31,7 @@
     "onView:playlist",
     "onView:queue"
   ],
-  "icon": "media/icon.png",
+  "icon": "media/icon-300.png",
   "main": "./dist/extension.js",
   "contributes": {
     "viewsContainers": {
