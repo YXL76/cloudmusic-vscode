@@ -61,7 +61,7 @@
 |   module    |      function      | status |
 | :---------: | :----------------: | :----: |
 | check_music |     歌曲可用性     |   ✔️   |
-|    lyric    |        歌词        |        |
+|    lyric    |        歌词        |   ✔️   |
 |  simi_song  |      相似歌曲      |        |
 | song_detail |      歌曲详情      |   ✔️   |
 |  song_url   |      歌曲链接      |   ✔️   |
@@ -118,12 +118,12 @@
 |      playlist_create       |           创建歌单            |        |
 |      playlist_delete       |           删除歌单            |        |
 |      playlist_detail       |           歌单详情            |   ✔️   |
-|    playlist_desc_update    |         更新歌单描述          |        |
+|    playlist_desc_update    |         更新歌单描述          |   ❌   |
 |        playlist_hot        |         热门歌单分类          |        |
 |    playlist_name_update    |          更新歌单名           |        |
 |   playlist_order_update    |         编辑歌单顺序          |        |
 |     playlist_subscribe     |      收藏与取消收藏歌单       |        |
-|    playlist_subscribers    |          歌单收藏者           |        |
+|    playlist_subscribers    |          歌单收藏者           |   ❌   |
 |    playlist_tags_update    |         更新歌单标签          |        |
 |      playlist_tracks       | 收藏单曲到歌单/从歌单删除歌曲 |   ✔️   |
 |      playlist_update       |           编辑歌单            |        |
