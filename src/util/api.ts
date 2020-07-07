@@ -21,6 +21,7 @@ const {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   login_status,
   logout,
+  lyric,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   playlist_detail,
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -145,6 +146,38 @@ export async function apiLogout(): Promise<boolean> {
     return true;
   } catch {
     return false;
+  }
+}
+
+export async function apiLyric(
+  id: number
+): Promise<{ time: number[]; text: string[] }> {
+  const time: number[] = [0];
+  const text: string[] = [""];
+  try {
+    const { status, body } = await lyric({
+      id,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+    });
+    if (status !== 200) {
+      return { time, text };
+    }
+    const lrc = body.lrc.lyric;
+    const lines = lrc.split("\n");
+    for (const line of lines) {
+      const r = /^\[(\d{2,}):(\d{2})(?:[\.\:](\d{2,3}))?](.*)$/g.exec(line);
+      if (r) {
+        const minute = parseInt(r[1]);
+        const second = parseInt(r[2]);
+        const txt = r[4];
+        time.push(minute * 60 + second);
+        text.push(txt);
+      }
+    }
+    return { time, text };
+  } catch {
+    return { time, text };
   }
 }
 
