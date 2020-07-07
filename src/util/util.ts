@@ -72,7 +72,6 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
 
     if (path) {
       player.load(path, id, pid, dt);
-      lyric.index = 0;
       lyric.time = time;
       lyric.text = text;
     } else {
@@ -100,7 +99,6 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
           player.load(url, id, pid, dt);
         });
 
-      lyric.index = 0;
       lyric.time = time;
       lyric.text = text;
     }
