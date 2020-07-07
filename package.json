@@ -1,7 +1,7 @@
 {
   "name": "cloudmusic",
   "displayName": "cloudmusic",
-  "description": "网易云音乐插件",
+  "description": "Netease Music for VS Code",
   "version": "1.6.1",
   "publisher": "YXL",
   "engines": {
