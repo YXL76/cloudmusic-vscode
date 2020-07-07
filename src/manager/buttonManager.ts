@@ -7,16 +7,18 @@ enum ButtonLabel {
   next,
   like,
   volume,
+  lyric,
 }
 
 export class ButtonManager {
   private static buttons: StatusBarItem[] = [
-    window.createStatusBarItem(StatusBarAlignment.Left, 512),
-    window.createStatusBarItem(StatusBarAlignment.Left, 511),
-    window.createStatusBarItem(StatusBarAlignment.Left, 510),
-    window.createStatusBarItem(StatusBarAlignment.Left, 509),
-    window.createStatusBarItem(StatusBarAlignment.Left, 508),
-    window.createStatusBarItem(StatusBarAlignment.Left, 507),
+    window.createStatusBarItem(StatusBarAlignment.Left, 0),
+    window.createStatusBarItem(StatusBarAlignment.Left, -1),
+    window.createStatusBarItem(StatusBarAlignment.Left, -2),
+    window.createStatusBarItem(StatusBarAlignment.Left, -3),
+    window.createStatusBarItem(StatusBarAlignment.Left, -4),
+    window.createStatusBarItem(StatusBarAlignment.Left, -5),
+    window.createStatusBarItem(StatusBarAlignment.Left, -6),
   ];
 
   static init(): void {
@@ -26,6 +28,7 @@ export class ButtonManager {
     this.updateButton(3, "$(chevron-right)", "Next", "cloudmusic.next");
     this.updateButton(4, "$(star)", "Like", "cloudmusic.like");
     this.updateButton(5, "$(unmute)", "Volume: 85", "cloudmusic.volume");
+    this.updateButton(6, "Lyric", "", "");
     this.buttons[0].show();
   }
 
@@ -84,5 +87,9 @@ export class ButtonManager {
 
   static buttonVolume(level: number): void {
     this.updateButton(ButtonLabel.volume, "$(unmute)", `Volume: ${level}`);
+  }
+
+  static buttonLyric(text: string): void {
+    this.updateButton(ButtonLabel.lyric, text, "");
   }
 }

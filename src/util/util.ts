@@ -6,8 +6,9 @@ import { TMP_DIR } from "../constant/setting";
 import { Cache } from "../util/cache";
 import { player } from "./player";
 import { lock } from "../state/lock";
+import { lyric } from "../state/play";
 import { TreeItemCollapsibleState } from "vscode";
-import { apiPlaymodeIntelligenceList, apiSongUrl } from "./api";
+import { apiLyric, apiPlaymodeIntelligenceList, apiSongUrl } from "./api";
 import { QueueItem, SongsItem } from "../constant/type";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 
@@ -67,9 +68,13 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
     const { pid, md5 } = element;
     const { id, dt } = element.item;
     const path = await Cache.get(`${id}`, md5);
+    const { time, text } = await apiLyric(id);
 
     if (path) {
       player.load(path, id, pid, dt);
+      lyric.index = 0;
+      lyric.time = time;
+      lyric.text = text;
     } else {
       const { url } = (await apiSongUrl([id]))[0];
       if (!url) {
@@ -94,6 +99,10 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
         .on("error", () => {
           player.load(url, id, pid, dt);
         });
+
+      lyric.index = 0;
+      lyric.time = time;
+      lyric.text = text;
     }
   } catch {
     lock.playerLoad = false;

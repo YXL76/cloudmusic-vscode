@@ -44,6 +44,12 @@ export type LruCacheValue = {
   size: number;
 };
 
+export type Lyric = {
+  index: number;
+  time: number[];
+  text: string[];
+};
+
 export interface Player {
   id: number;
   pid: number;

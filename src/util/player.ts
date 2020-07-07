@@ -13,7 +13,7 @@ import {
 import { Player } from "../constant/type";
 import { apiScrobble } from "./api";
 import { lock } from "../state/lock";
-import { playing } from "../state/play";
+import { playing, position } from "../state/play";
 import { volumeLevel } from "../state/volume";
 const mpvAPI = require("node-mpv");
 const vlcAPI = require("vlc-player-controller");
@@ -58,6 +58,9 @@ class MpvPlayer implements Player {
   async start() {
     this.mpv.on("stopped", () => {
       commands.executeCommand("cloudmusic.next");
+    });
+    this.mpv.on("timeposition", (res: number) => {
+      position.set(Math.floor(res));
     });
     return this.mpv.start();
   }
@@ -158,6 +161,12 @@ class VlcPlayer implements Player {
       this.vlc = new vlcAPI({ ...VLC_API_OPTIONS, ...{ media: url } });
       this.vlc.on("playback-ended", () => {
         commands.executeCommand("cloudmusic.next");
+      });
+      this.vlc.on("playback", (res: { name: string; value: number }) => {
+        const { name, value } = res;
+        if (name === "time-pos") {
+          position.set(value);
+        }
       });
       this.vlc.launch((err: string) => {
         try {

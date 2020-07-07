@@ -153,7 +153,7 @@ export async function apiLyric(
   id: number
 ): Promise<{ time: number[]; text: string[] }> {
   const time: number[] = [0];
-  const text: string[] = [""];
+  const text: string[] = ["Lyric"];
   try {
     const { status, body } = await lyric({
       id,
@@ -166,13 +166,15 @@ export async function apiLyric(
     const lrc = body.lrc.lyric;
     const lines = lrc.split("\n");
     for (const line of lines) {
-      const r = /^\[(\d{2,}):(\d{2})(?:[\.\:](\d{2,3}))?](.*)$/g.exec(line);
+      const r = /^\[(\d{2,}):(\d{2})(?:[\.\:](\d{2,3}))?](.*)$/g.exec(
+        line.trim()
+      );
       if (r) {
         const minute = parseInt(r[1]);
         const second = parseInt(r[2]);
         const txt = r[4];
         time.push(minute * 60 + second);
-        text.push(txt);
+        text.push(txt || "Lyric");
       }
     }
     return { time, text };
