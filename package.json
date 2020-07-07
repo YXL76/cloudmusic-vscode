@@ -343,6 +343,7 @@
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
+    "@thejellyfish/binary-search": "^1.0.4",
     "NeteaseCloudMusicApi": "^3.34.1",
     "array-unsort": "^1.1.5",
     "cacache": "^15.0.4",
