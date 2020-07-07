@@ -6,6 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [1.6.1] - 2020-07-07
+
+### Added
+
+- Status bar: lyric display
+
+### Changed
+
+- Icon: more beautiful icon
+
 ## [1.6.0] - 2020-07-06
 
 ### Added
