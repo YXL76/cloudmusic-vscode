@@ -53,13 +53,15 @@ class MpvPlayer implements Player {
   time = Date.now();
 
   async start() {
-    this.mpv.on("stopped", () => {
-      commands.executeCommand("cloudmusic.next");
-    });
-    this.mpv.on("timeposition", (res: number) => {
-      position.set(Math.floor(res));
-    });
-    return this.mpv.start();
+    if (!this.mpv.isRunning()) {
+      await this.mpv.start();
+      this.mpv.on("stopped", () => {
+        commands.executeCommand("cloudmusic.next");
+      });
+      this.mpv.on("timeposition", (res: number) => {
+        position.set(res);
+      });
+    }
   }
 
   async quit() {
@@ -69,46 +71,40 @@ class MpvPlayer implements Player {
     } catch {}
   }
 
-  private async noop(): Promise<void> {
-    //
-  }
-
   async load(url: string, id: number, pid: number, dt: number) {
-    const reload = this.mpv.isRunning() ? this.noop : this.mpv.start;
-    reload()
+    if (!this.mpv.isRunning()) {
+      await this.mpv.start();
+    }
+    this.mpv
+      .load(url)
       .then(() => {
-        setTimeout(async () => {
-          this.mpv
-            .load(url)
-            .then(async () => {
-              const pId = this.id;
-              const pPid = this.pid;
-              const pDt = this.dt;
-              const pTime = this.time;
-              this.id = id;
-              this.pid = pid;
-              this.dt = dt;
-              this.time = Date.now();
+        const pId = this.id;
+        const pPid = this.pid;
+        const pDt = this.dt;
+        const pTime = this.time;
+        this.id = id;
+        this.pid = pid;
+        this.dt = dt;
+        this.time = Date.now();
 
-              if (!playing.get()) {
-                playing.set(true);
-                await this.mpv.play();
-              }
-              try {
-                await this.volume(volumeLevel.get());
-              } catch {}
+        if (!playing.get()) {
+          playing.set(true);
+          try {
+            this.mpv.play();
+          } catch {}
+        }
 
-              lock.playerLoad = false;
+        const diff = this.time - pTime;
+        if (diff > 60000 && pDt > 60000) {
+          apiScrobble(pId, pPid, Math.floor(Math.min(diff, pDt) / 1000));
+        }
 
-              const diff = this.time - pTime;
-              if (diff > 60000 && pDt > 60000) {
-                apiScrobble(pId, pPid, Math.floor(Math.min(diff, pDt) / 1000));
-              }
-            })
-            .catch(() => (lock.playerLoad = false));
-        }, 128);
+        lock.playerLoad = false;
       })
-      .catch(() => (lock.playerLoad = false));
+      .catch(() => {
+        lock.playerLoad = false;
+        commands.executeCommand("cloudmusic.next");
+      });
   }
 
   async togglePlay() {

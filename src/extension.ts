@@ -122,8 +122,9 @@ export function activate(context: ExtensionContext): void {
       .start()
       .then(() => {
         player.volume(85);
+        lock.playerLoad = false;
       })
-      .finally(() => (lock.playerLoad = false));
+      .catch(() => window.showErrorMessage("Player is unavailable"));
   } else {
     window.showErrorMessage("Player is unavailable");
   }
@@ -223,7 +224,7 @@ export function activate(context: ExtensionContext): void {
 
   // previous command
   const previous = commands.registerCommand("cloudmusic.previous", async () => {
-    if (!lock.playerLoad && !lock.queue && queueProvider.songs) {
+    if (!lock.playerLoad && !lock.queue && queueProvider.songs.length > 1) {
       lock.queue = true;
       await load(queueProvider.songs[-1]);
       queueProvider.shift(-1);
@@ -234,7 +235,7 @@ export function activate(context: ExtensionContext): void {
 
   // next command
   const next = commands.registerCommand("cloudmusic.next", async () => {
-    if (!lock.playerLoad && !lock.queue && queueProvider.songs) {
+    if (!lock.playerLoad && !lock.queue && queueProvider.songs.length > 1) {
       lock.queue = true;
       await load(queueProvider.songs[1]);
       queueProvider.shift(1);
@@ -300,10 +301,10 @@ export function activate(context: ExtensionContext): void {
       if (!lock.queue) {
         lock.queue = true;
         await PlaylistProvider.playPlaylist(element.item.id);
+        lock.queue = false;
         if (!lock.playerLoad) {
           load(queueProvider.songs[0]);
         }
-        lock.queue = false;
       }
     }
   );

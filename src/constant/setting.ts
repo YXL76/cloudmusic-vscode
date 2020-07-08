@@ -38,7 +38,7 @@ export const MPV_API_OPTIONS = {
   auto_restart: true,
   binary: mpvBinary ? mpvBinary : null,
   debug: false,
-  ipcCommand: null,
+  ipcCommand: "--input-ipc-server",
   // eslint-disable-next-line @typescript-eslint/naming-convention
   time_update: 1,
   verbose: false,
@@ -46,7 +46,7 @@ export const MPV_API_OPTIONS = {
 
 export const MPV_ARGS = [
   ...(conf.get("cloudmusic.player.ignoreConfig") ? ["--no-config"] : [""]),
-  ...["--load-scripts=no", "--no-ytdl"],
+  ...["--load-scripts=no", "--no-ytdl", "--autoload-files=no"],
 ].filter((item) => item !== "");
 
 export const MPV_AVAILABLE = commandExistsSync(mpvBinary || "mpv");
