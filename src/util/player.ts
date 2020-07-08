@@ -1,8 +1,5 @@
-import { posix } from "path";
-import { unlinkSync } from "fs";
 import { commands } from "vscode";
 import {
-  TMP_DIR,
   PLAYER,
   MPV_API_OPTIONS,
   MPV_ARGS,
@@ -84,9 +81,6 @@ class MpvPlayer implements Player {
           this.mpv
             .load(url)
             .then(async () => {
-              try {
-                unlinkSync(posix.join(TMP_DIR, `${this.id}`));
-              } catch {}
               const pId = this.id;
               const pPid = this.pid;
               const pDt = this.dt;
@@ -155,7 +149,6 @@ class VlcPlayer implements Player {
 
   async load(url: string, id: number, pid: number, dt: number) {
     await this.quit();
-    const { media } = this.vlc;
     delete this.vlc;
     try {
       this.vlc = new vlcAPI({ ...VLC_API_OPTIONS, ...{ media: url } });
@@ -169,11 +162,6 @@ class VlcPlayer implements Player {
         }
       });
       this.vlc.launch((err: string) => {
-        try {
-          if (media.indexOf(TMP_DIR) !== -1) {
-            unlinkSync(media);
-          }
-        } catch {}
         if (err) {
           commands.executeCommand("cloudmusic.next");
         } else {
@@ -188,9 +176,7 @@ class VlcPlayer implements Player {
 
           playing.set(true);
           this.volume(volumeLevel.get());
-          try {
-            this.vlc.play();
-          } catch {}
+          setTimeout(() => this.vlc.command(["pl_play"]), 512);
 
           const diff = this.time - pTime;
           if (diff > 60000 && pDt > 60000) {
