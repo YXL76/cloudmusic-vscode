@@ -6,6 +6,18 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [2.0.0] - 2020-07-08
+
+🎉🎉🎉 First stable release
+
+### Added
+
+- Lyric: can set display delay
+
+### Changed
+
+- VLC Player: fix unexpected pause
+
 ## [1.6.1] - 2020-07-07
 
 ### Added
