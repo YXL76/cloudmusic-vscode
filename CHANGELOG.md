@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [2.0.1] - 2020-07-09
+
+### Fixed
+
+- MPV Player: stability
+
 ## [2.0.0] - 2020-07-08
 
 🎉🎉🎉 First stable release

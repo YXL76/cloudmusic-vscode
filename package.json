@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "cloudmusic",
   "description": "Netease Music for VS Code",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "publisher": "YXL",
   "engines": {
     "vscode": "^1.46.0"
@@ -26,7 +26,7 @@
     "cloudmusic",
     "Netease Music"
   ],
-  "preview": true,
+  "preview": false,
   "activationEvents": [
     "onView:playlist",
     "onView:queue"
