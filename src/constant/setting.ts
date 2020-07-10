@@ -3,33 +3,33 @@ import { posix } from "path";
 import { workspace } from "vscode";
 const commandExistsSync = require("command-exists").sync;
 
-const conf = workspace.getConfiguration();
+const conf = workspace.getConfiguration("cloudmusic");
 const system = platform();
 
 export const SETTING_DIR = posix.join(homedir(), ".cloudmusic");
 export const ACCOUNT_FILE = posix.join(SETTING_DIR, ".account");
 
-export const AUTO_CHECK = conf.get("cloudmusic.account.autoCheck");
+export const AUTO_CHECK = conf.get("account.autoCheck");
 
-export const PROXY = conf.get("cloudmusic.music.proxy")
-  ? conf.get("cloudmusic.music.proxy")
+export const PROXY = conf.get("music.proxy")
+  ? conf.get("music.proxy")
   : undefined;
 
-export const MUSIC_QUALITY = conf.get("cloudmusic.music.quality");
+export const MUSIC_QUALITY = conf.get("music.quality");
 
 export const TMP_DIR = posix.join(SETTING_DIR, "tmp");
 export const CACHE_DIR = posix.join(SETTING_DIR, "cache", `${MUSIC_QUALITY}`);
 
-const cacheSize = conf.get("cloudmusic.cache.size");
+const cacheSize = conf.get("cache.size");
 let finalSize = typeof cacheSize === "number" ? cacheSize : 1024;
 finalSize = finalSize > 10240 ? 10240 : finalSize;
 finalSize = finalSize < 128 ? 128 : finalSize;
 export const CACHE_SIZE = finalSize * 1024 * 1024;
 
-const gui = conf.get("cloudmusic.player.interface");
-export const PLAYER = conf.get("cloudmusic.player.player");
+const gui = conf.get("player.interface");
+export const PLAYER = conf.get("player.player");
 
-const mpvBinary = conf.get("cloudmusic.player.mpv.path");
+const mpvBinary = conf.get("player.mpv.path");
 
 export const MPV_API_OPTIONS = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -45,15 +45,15 @@ export const MPV_API_OPTIONS = {
 };
 
 export const MPV_ARGS = [
-  ...(conf.get("cloudmusic.player.ignoreConfig") ? ["--no-config"] : [""]),
+  ...(conf.get("player.ignoreConfig") ? ["--no-config"] : [""]),
   ...["--load-scripts=no", "--no-ytdl", "--autoload-files=no"],
 ].filter((item) => item !== "");
 
 export const MPV_AVAILABLE = commandExistsSync(mpvBinary || "mpv");
 
-const vlcBinary = conf.get("cloudmusic.player.vlc.path");
-const vlcHttpPort = conf.get("cloudmusic.player.vlc.httpPort");
-const vlcHttpPass = conf.get("cloudmusic.player.vlc.httpPass");
+const vlcBinary = conf.get("player.vlc.path");
+const vlcHttpPort = conf.get("player.vlc.httpPort");
+const vlcHttpPass = conf.get("player.vlc.httpPass");
 
 const VLC_ARGS = [
   ...[
@@ -74,7 +74,7 @@ const VLC_ARGS = [
   ],
   ...(system === "win32" ? ["--high-priority", "--no-qt-updates-notif"] : [""]),
   ...(gui ? [""] : ["--intf=dummy", system === "win32" ? "--dummy-quiet" : ""]),
-  ...(conf.get("cloudmusic.player.ignoreConfig") ? ["--ignore-config"] : [""]),
+  ...(conf.get("player.ignoreConfig") ? ["--ignore-config"] : [""]),
 ].filter((item) => item !== "");
 
 export const VLC_API_OPTIONS = {
