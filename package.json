@@ -159,6 +159,10 @@
       {
         "command": "cloudmusic.playDetail",
         "title": "Play detail"
+      },
+      {
+        "command": "cloudmusic.lyric",
+        "title": "Lyric"
       }
     ],
     "menus": {

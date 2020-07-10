@@ -28,7 +28,7 @@ import {
 } from "./provider/playlistProvider";
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
 import { apiLike, apiPlaylistTracks } from "./util/api";
-import { load } from "./util/util";
+import { load, songPick } from "./util/util";
 import { Cache } from "./util/cache";
 import { player } from "./util/player";
 import { lock } from "./state/lock";
@@ -343,26 +343,23 @@ export function activate(context: ExtensionContext): void {
       }
     }
   );
-  commands.registerCommand(
-    "cloudmusic.addToPlaylist",
-    async (element: QueueItemTreeItem) => {
-      const lists = await AccountManager.userPlaylist();
-      const selection = await window.showQuickPick(
-        lists.map((list) => {
-          return {
-            label: list.name,
-            id: list.id,
-          };
-        })
-      );
-      if (!selection) {
-        return;
-      }
-      if (await apiPlaylistTracks("add", selection.id, [element.item.id])) {
-        PlaylistProvider.refresh();
-      }
+  commands.registerCommand("cloudmusic.addToPlaylist", async ({ item }) => {
+    const lists = await AccountManager.userPlaylist();
+    const selection = await window.showQuickPick(
+      lists.map((list) => {
+        return {
+          label: list.name,
+          id: list.id,
+        };
+      })
+    );
+    if (!selection) {
+      return;
     }
-  );
+    if (await apiPlaylistTracks("add", selection.id, item.id)) {
+      PlaylistProvider.refresh();
+    }
+  });
 
   // init cache index
   cacache.ls(CACHE_DIR).then((res: { key: LruCacheValue }) => {
@@ -373,6 +370,11 @@ export function activate(context: ExtensionContext): void {
   });
 
   commands.registerCommand("cloudmusic.playDetail", async () => {
+    if (player.id) {
+      songPick(player.id);
+    }
+  });
+  commands.registerCommand("cloudmusic.lyric", async () => {
     const pick = await window.showQuickPick([
       {
         label: "Lyric delay",
