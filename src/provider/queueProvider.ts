@@ -91,7 +91,11 @@ export class QueueItemTreeItem extends TreeItem {
   }
 
   get description(): string {
-    return this.item.arName;
+    const arName: string[] = [];
+    for (const i of this.item.ar) {
+      arName.push(i.name);
+    }
+    return arName.join("/");
   }
 
   iconPath = new ThemeIcon("zap");

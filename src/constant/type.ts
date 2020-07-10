@@ -13,7 +13,14 @@ export type QueueItem = {
   id: number;
   dt: number;
   alia: string;
-  arName: string;
+  ar: {
+    id: number;
+    name: string;
+  }[];
+  al: {
+    id: number;
+    name: string;
+  };
 };
 
 export type SongsItem = {
@@ -25,6 +32,10 @@ export type SongsItem = {
     id: number;
     name: string;
   }[];
+  al: {
+    id: number;
+    name: string;
+  };
 };
 
 export type SongDetail = {

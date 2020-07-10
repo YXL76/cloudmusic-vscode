@@ -30,6 +30,8 @@ const {
   playmode_intelligence_list,
   scrobble,
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  simi_song,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   song_detail,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   song_url,
@@ -262,6 +264,42 @@ export async function apiScrobble(
     cookie: AccountManager.cookie,
     proxy: PROXY,
   });
+}
+
+export async function apiSimiSong(id: number): Promise<number[]> {
+  const ret: number[] = [];
+  try {
+    const { body, status } = await simi_song({
+      id,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+    });
+    if (status !== 200) {
+      return ret;
+    }
+    const { songs } = body;
+    /*for (const { name, id, duration, alias, artists, album } of songs) {
+      ret.push({
+        name,
+        id,
+        dt: duration,
+        alia: alias,
+        ar: artists.map((artist: { name: string; id: number }) => {
+          return { name: artist.name, id: artist.id };
+        }),
+        al: {
+          name: album.name,
+          id: album.id,
+        },
+      });
+    }*/
+    for (const { id } of songs) {
+      ret.push(id);
+    }
+    return ret;
+  } catch {
+    return ret;
+  }
 }
 
 export async function apiSongDetail(trackIds: number[]): Promise<QueueItem[]> {
