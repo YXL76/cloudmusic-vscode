@@ -10,6 +10,7 @@ import { solveSongItem } from "./util";
 import { AccountManager } from "../manager/accountManager";
 
 const {
+  album,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   check_music,
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -38,6 +39,24 @@ const {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   user_playlist,
 } = require("NeteaseCloudMusicApi");
+
+// TODO cache
+export async function apiAlbum(id: number): Promise<QueueItem[]> {
+  try {
+    const { status, body } = await album({
+      id,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { songs } = body;
+    return songs.map((song: SongsItem) => solveSongItem(song));
+  } catch {
+    return [];
+  }
+}
 
 export async function apiCheckMusic(id: number): Promise<boolean> {
   try {
@@ -186,6 +205,7 @@ export async function apiLyric(
   }
 }
 
+// TODO cache
 export async function apiPlaylistDetail(id: number): Promise<number[]> {
   try {
     const { status, body } = await playlist_detail({
@@ -266,6 +286,7 @@ export async function apiScrobble(
   });
 }
 
+// TODO cache
 export async function apiSimiSong(id: number): Promise<number[]> {
   const ret: number[] = [];
   try {
