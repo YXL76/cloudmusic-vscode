@@ -33,6 +33,7 @@
 
 - 每日签到
 - 歌曲播放，收藏，喜欢
+- 听歌打卡
 - 心动模式
 - 歌词显示
 - 缓存管理
@@ -104,7 +105,7 @@
 
 |         module         |      function      | status |
 | :--------------------: | :----------------: | :----: |
-|         album          |      专辑内容      |        |
+|         album          |      专辑内容      |   ✔️   |
 |  album_detail_dynamic  |    专辑动态信息    |        |
 |      album_newest      |      最新专辑      |        |
 |       album_sub        | 收藏与取消收藏专辑 |        |
@@ -123,7 +124,7 @@
 |   artist_sub    | 收藏与取消收藏歌手 |        |
 | artist_sublist  |    关注歌手列表    |        |
 | artist_top_song | 歌手热门 50 首歌曲 |        |
-|     artists     |      歌手单曲      |        |
+|     artists     |      歌手单曲      |   ✔️   |
 |   simi_artist   |      相似歌手      |        |
 
 - 歌曲类
@@ -132,7 +133,7 @@
 | :---------: | :----------------: | :----: |
 | check_music |     歌曲可用性     |   ✔️   |
 |    lyric    |        歌词        |   ✔️   |
-|  simi_song  |      相似歌曲      |        |
+|  simi_song  |      相似歌曲      |   ✔️   |
 | song_detail |      歌曲详情      |   ✔️   |
 |  song_url   |      歌曲链接      |   ✔️   |
 |    like     | 红心与取消红心歌曲 |   ✔️   |
