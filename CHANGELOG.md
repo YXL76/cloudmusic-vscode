@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [2.1.0] - 2020-07-10
+
+### Added
+
+- Quick Pick: song detail, album detail, artist detail
+- Button: a new button which will show playing song title
+
 ## [2.0.2] - 2020-07-09
 
 ### Fixed
