@@ -1,15 +1,25 @@
 import * as http from "http";
 import { posix } from "path";
 import { createWriteStream } from "fs";
-import { commands } from "vscode";
+import { commands, window } from "vscode";
 import { TMP_DIR } from "../constant/setting";
 import { Cache } from "../util/cache";
 import { player } from "./player";
 import { lock } from "../state/lock";
 import { lyric } from "../state/play";
 import { TreeItemCollapsibleState } from "vscode";
-import { apiLyric, apiPlaymodeIntelligenceList, apiSongUrl } from "./api";
+import {
+  apiAlbum,
+  apiArtists,
+  apiLike,
+  apiLyric,
+  apiPlaymodeIntelligenceList,
+  apiSimiSong,
+  apiSongDetail,
+  apiSongUrl,
+} from "./api";
 import { QueueItem, SongsItem } from "../constant/type";
+import { ButtonManager } from "../manager/buttonManager";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 
 export async function queueItem2TreeItem(
@@ -47,18 +57,14 @@ export async function getPlaylistContentIntelligence(
 }
 
 export function solveSongItem(item: SongsItem): QueueItem {
-  const { name, id, dt, alia, ar } = item;
-  const arNames: string[] = [];
-  for (const i of ar) {
-    arNames.push(i.name);
-  }
-  const arName = arNames.join("/");
+  const { name, id, dt, alia, ar, al } = item;
   return {
     name,
     id,
     dt: dt,
     alia: alia ? alia[0] : "",
-    arName,
+    ar,
+    al,
   };
 }
 
@@ -66,9 +72,10 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
   lock.playerLoad = true;
   try {
     const { pid, md5 } = element;
-    const { id, dt } = element.item;
+    const { id, dt, name, ar } = element.item;
     const path = await Cache.get(`${id}`, md5);
     const { time, text } = await apiLyric(id);
+    ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
 
     if (path) {
       player.load(path, id, pid, dt);
@@ -106,4 +113,138 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
     lock.playerLoad = false;
     commands.executeCommand("cloudmusic.next");
   }
+}
+
+export async function songPick(id: number): Promise<void> {
+  const { name, alia, ar, al } = (await apiSongDetail([id]))[0];
+  const pick = await window.showQuickPick([
+    {
+      label: name,
+      detail: alia,
+    },
+    ...ar.map((i) => {
+      return {
+        label: "$(account) Artist",
+        detail: i.name,
+        id: i.id,
+        type: 1,
+      };
+    }),
+    {
+      label: "$(circuit-board) Album",
+      detail: al.name,
+      id: al.id,
+      type: 2,
+    },
+    {
+      label: "$(heart) Like this song",
+      type: 3,
+    },
+    {
+      label: "$(add) Save to playlist",
+      type: 4,
+    },
+    {
+      label: "$(library) Similar songs",
+      type: 5,
+    },
+  ]);
+  if (!pick || !pick.type) {
+    return;
+  }
+  switch (pick.type) {
+    case 1:
+      //@ts-ignore
+      artistPick(pick.id);
+      break;
+    case 2:
+      //@ts-ignore
+      albumDetailPick(pick.id);
+      break;
+    case 3:
+      apiLike(id);
+      break;
+    case 4:
+      commands.executeCommand("cloudmusic.addToPlaylist", { item: { id } });
+      break;
+    case 5:
+      songsPick(await apiSimiSong(id));
+      break;
+  }
+}
+
+export async function songsPick(ids: number[]): Promise<void> {
+  const songs = await apiSongDetail(ids);
+  const pick = await window.showQuickPick(
+    songs.map((song) => {
+      return {
+        label: `$(link) ${song.name}`,
+        description: song.ar.map((i) => i.name).join("/"),
+        detail: song.alia,
+        id: song.id,
+      };
+    })
+  );
+  if (!pick) {
+    return;
+  }
+  //@ts-ignore
+  songPick(pick.id);
+}
+
+export async function artistPick(id: number): Promise<void> {
+  const { name, alias, briefDesc, hotSongs } = await apiArtists(id);
+  const pick = await window.showQuickPick([
+    {
+      label: name,
+      detail: alias.join("/"),
+    },
+    {
+      label: "$(markdown) Brief description",
+      detail: briefDesc,
+    },
+    {
+      label: "$(circuit-board) Albums",
+      type: 1,
+    },
+    ...hotSongs.map((song) => {
+      return {
+        label: `$(link) ${song.name}`,
+        description: song.ar.map((i) => i.name).join("/"),
+        detail: song.alia,
+        id: song.id,
+        type: 2,
+      };
+    }),
+  ]);
+  if (!pick) {
+    return;
+  }
+  switch (pick.type) {
+    case 1:
+      break;
+    case 2:
+      //@ts-ignore
+      songPick(pick.id);
+      break;
+  }
+}
+
+export async function albumDetailPick(id: number): Promise<void> {
+  const songs = await apiAlbum(id);
+  const pick = await window.showQuickPick(
+    songs.map((song) => {
+      return {
+        label: `$(link) ${song.name}`,
+        description: song.ar.map((i) => i.name).join("/"),
+        detail: song.alia,
+        id: song.id,
+      };
+    })
+  );
+  if (!pick) {
+    return;
+  }
+  //@ts-ignore
+  songPick(pick.id);
 }
