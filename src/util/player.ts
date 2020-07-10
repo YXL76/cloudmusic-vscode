@@ -66,6 +66,7 @@ class MpvPlayer implements Player {
 
   async quit() {
     playing.set(false);
+    position.set(0);
     try {
       await this.mpv.pause();
     } catch {}
@@ -140,6 +141,7 @@ class VlcPlayer implements Player {
     try {
       await this.vlc.quit();
       playing.set(false);
+      position.set(0);
     } catch {}
   }
 

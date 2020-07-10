@@ -8,6 +8,7 @@
   "plugins": ["@typescript-eslint"],
   "extends": ["plugin:@typescript-eslint/recommended"],
   "rules": {
+    "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/naming-convention": "warn",
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/semi": "warn",
