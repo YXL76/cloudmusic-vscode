@@ -157,8 +157,8 @@
         "title": "Add to playlist"
       },
       {
-        "command": "cloudmusic.playDetail",
-        "title": "Play detail"
+        "command": "cloudmusic.songDetail",
+        "title": "Song detail"
       },
       {
         "command": "cloudmusic.lyric",
@@ -230,6 +230,10 @@
         },
         {
           "command": "cloudmusic.addToPlaylist",
+          "when": "viewItem == QueueItemTreeItem"
+        },
+        {
+          "command": "cloudmusic.songDetail",
           "when": "viewItem == QueueItemTreeItem"
         }
       ]

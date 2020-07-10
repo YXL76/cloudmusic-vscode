@@ -30,7 +30,7 @@ export class ButtonManager {
     this.updateButton(3, "$(chevron-right)", "Next", "cloudmusic.next");
     this.updateButton(4, "$(star)", "Like", "cloudmusic.like");
     this.updateButton(5, "$(unmute)", "Volume: 85", "cloudmusic.volume");
-    this.updateButton(6, "Song", "", "cloudmusic.playDetail");
+    this.updateButton(6, "Song", "", "cloudmusic.songDetail");
     this.updateButton(7, "Lyric", "", "cloudmusic.lyric");
     this.buttons[0].show();
   }

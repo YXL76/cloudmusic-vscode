@@ -369,11 +369,15 @@ export function activate(context: ExtensionContext): void {
     }
   });
 
-  commands.registerCommand("cloudmusic.playDetail", async () => {
-    if (player.id) {
-      songPick(player.id);
+  commands.registerCommand(
+    "cloudmusic.songDetail",
+    async (element?: QueueItemTreeItem) => {
+      const id = element ? element.item.id : player.id;
+      if (id) {
+        songPick(id);
+      }
     }
-  });
+  );
   commands.registerCommand("cloudmusic.lyric", async () => {
     const pick = await window.showQuickPick([
       {
