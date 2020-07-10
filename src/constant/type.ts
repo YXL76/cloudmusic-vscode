@@ -23,6 +23,14 @@ export type QueueItem = {
   };
 };
 
+export type Artist = {
+  name: string;
+  id: number;
+  alias: string[];
+  briefDesc: string;
+  hotSongs: QueueItem[];
+};
+
 export type SongsItem = {
   name: string;
   id: number;

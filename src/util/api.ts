@@ -1,4 +1,5 @@
 import {
+  Artist,
   QueueItem,
   PlaylistItem,
   SongsItem,
@@ -11,6 +12,7 @@ import { AccountManager } from "../manager/accountManager";
 
 const {
   album,
+  artists,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   check_music,
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -55,6 +57,35 @@ export async function apiAlbum(id: number): Promise<QueueItem[]> {
     return songs.map((song: SongsItem) => solveSongItem(song));
   } catch {
     return [];
+  }
+}
+
+export async function apiArtists(id: number): Promise<Artist> {
+  const ret: Artist = {
+    name: "",
+    id: 0,
+    alias: [],
+    briefDesc: "",
+    hotSongs: [],
+  };
+  try {
+    const { status, body } = await artists({
+      id,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+    });
+    if (status !== 200) {
+      return ret;
+    }
+    const { artist, hotSongs } = body;
+    ret.name = artist.name;
+    ret.id = artist.id;
+    ret.alias = artist.alias;
+    ret.briefDesc = artist.briefDesc;
+    ret.hotSongs = hotSongs.map((song: SongsItem) => solveSongItem(song));
+    return ret;
+  } catch {
+    return ret;
   }
 }
 
