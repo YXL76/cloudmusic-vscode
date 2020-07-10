@@ -83,6 +83,7 @@ export function activate(context: ExtensionContext): void {
     queueProvider.refresh();
     player.id = 0;
     player.quit();
+    ButtonManager.buttonSong("Song", "");
   });
   commands.registerCommand("cloudmusic.randomQueue", () => {
     queueProvider.random();

@@ -19,6 +19,7 @@ loggedIn.observe((change) => {
     ButtonManager.show();
   } else {
     ButtonManager.buttonAccount("$(account)", "Account", "cloudmusic.signin");
+    ButtonManager.buttonSong("Song", "");
     ButtonManager.hide();
     player.quit();
   }

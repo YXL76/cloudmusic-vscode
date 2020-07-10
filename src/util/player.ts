@@ -12,7 +12,6 @@ import { apiScrobble } from "./api";
 import { lock } from "../state/lock";
 import { playing, position } from "../state/play";
 import { volumeLevel } from "../state/volume";
-import { ButtonManager } from "../manager/buttonManager";
 const mpvAPI = require("node-mpv");
 const vlcAPI = require("vlc-player-controller");
 
@@ -66,7 +65,6 @@ class MpvPlayer implements Player {
   }
 
   async quit() {
-    ButtonManager.buttonSong("Song", "");
     playing.set(false);
     position.set(0);
     try {
@@ -140,7 +138,6 @@ class VlcPlayer implements Player {
   }
 
   async quit() {
-    ButtonManager.buttonSong("Song", "");
     try {
       await this.vlc.quit();
       playing.set(false);

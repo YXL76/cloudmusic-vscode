@@ -96,7 +96,7 @@ export class ButtonManager {
     this.updateButton(
       ButtonLabel.song,
       name.length > 6 ? `${name.slice(0, 6)}...` : name,
-      `${name} - ${ar}`
+      ar ? `${name} - ${ar}` : ""
     );
   }
 
