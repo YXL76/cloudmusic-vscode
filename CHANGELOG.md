@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [2.1.1] - 2020-07-11
+
+### Added
+
+- Quick Pick: albums
+
 ## [2.1.0] - 2020-07-10
 
 ### Added
