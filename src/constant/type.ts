@@ -8,21 +8,6 @@ export type PlaylistItem = {
   userId: number;
 };
 
-export type QueueItem = {
-  name: string;
-  id: number;
-  dt: number;
-  alia: string;
-  ar: {
-    id: number;
-    name: string;
-  }[];
-  al: {
-    id: number;
-    name: string;
-  };
-};
-
 export type Artist = {
   name: string;
   id: number;

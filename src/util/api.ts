@@ -1,7 +1,6 @@
 import {
   Artist,
   AlbumsItem,
-  QueueItem,
   PlaylistItem,
   SongsItem,
   TrackIdsItem,
@@ -48,7 +47,7 @@ const {
 // TODO cache
 export async function apiAlbum(
   id: number
-): Promise<{ info: AlbumsItem; songs: QueueItem[] }> {
+): Promise<{ info: AlbumsItem; songs: SongsItem[] }> {
   let info: AlbumsItem = {
     artists: [],
     alias: [],
@@ -69,7 +68,10 @@ export async function apiAlbum(
     }
     const { songs } = body;
     info = solveAlbumsItem(body.album);
-    return { info, songs: songs.map((song: SongsItem) => solveSongItem(song)) };
+    return {
+      info,
+      songs: songs.map((song: SongsItem) => solveSongItem(song)),
+    };
   } catch {
     return { info, songs: [] };
   }
@@ -77,7 +79,7 @@ export async function apiAlbum(
 
 export async function apiArtists(
   id: number
-): Promise<{ info: Artist; songs: QueueItem[] }> {
+): Promise<{ info: Artist; songs: SongsItem[] }> {
   const info: Artist = {
     name: "",
     id: 0,
@@ -327,8 +329,8 @@ export async function apiPlaylistTracks(
 export async function apiPlaymodeIntelligenceList(
   id: number,
   pid: number
-): Promise<QueueItem[]> {
-  let ret: QueueItem[] = [];
+): Promise<SongsItem[]> {
+  let ret: SongsItem[] = [];
   try {
     const { body, status } = await playmode_intelligence_list({
       id,
@@ -399,8 +401,8 @@ export async function apiSimiSong(id: number): Promise<number[]> {
   }
 }
 
-export async function apiSongDetail(trackIds: number[]): Promise<QueueItem[]> {
-  let ret: QueueItem[] = [];
+export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
+  let ret: SongsItem[] = [];
   try {
     for (let i = 0; i < trackIds.length; i += 512) {
       const { status, body } = await song_detail({

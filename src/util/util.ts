@@ -19,14 +19,14 @@ import {
   apiSongDetail,
   apiSongUrl,
 } from "./api";
-import { Artist, AlbumsItem, QueueItem, SongsItem } from "../constant/type";
+import { Artist, AlbumsItem, SongsItem } from "../constant/type";
 import { ButtonManager } from "../manager/buttonManager";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 
-export async function queueItem2TreeItem(
+export async function songItem2TreeItem(
   id: number,
   ids: number[],
-  songs: QueueItem[]
+  songs: SongsItem[]
 ): Promise<QueueItemTreeItem[]> {
   const ret: QueueItemTreeItem[] = [];
   const items = await apiSongUrl(ids);
@@ -54,7 +54,7 @@ export async function getPlaylistContentIntelligence(
 ): Promise<QueueItemTreeItem[]> {
   const songs = await apiPlaymodeIntelligenceList(id, pid);
   const ids = songs.map((song) => song.id);
-  return await queueItem2TreeItem(id, ids, songs);
+  return await songItem2TreeItem(id, ids, songs);
 }
 
 export function solveArtist(item: Artist): Artist {
@@ -83,13 +83,13 @@ export function solveAlbumsItem(item: AlbumsItem): AlbumsItem {
   };
 }
 
-export function solveSongItem(item: SongsItem): QueueItem {
+export function solveSongItem(item: SongsItem): SongsItem {
   const { name, id, dt, alia, ar, al } = item;
   return {
     name,
     id,
     dt: dt,
-    alia: alia ? alia[0] : "",
+    alia,
     ar,
     al,
   };
@@ -147,7 +147,7 @@ export async function songPick(id: number): Promise<void> {
   const pick = await window.showQuickPick([
     {
       label: name,
-      detail: alia,
+      detail: alia.join("/"),
     },
     ...ar.map((i) => {
       return {
@@ -207,7 +207,7 @@ export async function songsPick(ids: number[]): Promise<void> {
       return {
         label: `$(link) ${song.name}`,
         description: song.ar.map((i) => i.name).join("/"),
-        detail: song.alia,
+        detail: song.alia.join("/"),
         id: song.id,
       };
     })
@@ -244,7 +244,7 @@ export async function artistPick(id: number): Promise<void> {
       return {
         label: `$(link) ${song.name}`,
         description: song.ar.map((i) => i.name).join("/"),
-        detail: song.alia,
+        detail: song.alia.join("/"),
         id: song.id,
         type: 2,
       };
@@ -293,7 +293,7 @@ export async function albumPick(id: number): Promise<void> {
       return {
         label: `$(link) ${song.name}`,
         description: song.ar.map((i) => i.name).join("/"),
-        detail: song.alia,
+        detail: song.alia.join("/"),
         id: song.id,
         type: 2,
       };

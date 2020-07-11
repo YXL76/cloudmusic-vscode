@@ -7,7 +7,7 @@ import {
   TreeItemCollapsibleState,
 } from "vscode";
 import { isLike } from "../state/like";
-import { QueueItem } from "../constant/type";
+import { SongsItem } from "../constant/type";
 import { AccountManager } from "../manager/accountManager";
 const { unsortInplace } = require("array-unsort");
 
@@ -78,7 +78,7 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
 export class QueueItemTreeItem extends TreeItem {
   constructor(
     public readonly label: string,
-    public readonly item: QueueItem,
+    public readonly item: SongsItem,
     public readonly pid: number,
     public readonly md5: string,
     public readonly collapsibleState: TreeItemCollapsibleState
