@@ -11,6 +11,7 @@ import { TreeItemCollapsibleState } from "vscode";
 import {
   apiAlbum,
   apiArtists,
+  apiArtistAlbum,
   apiLike,
   apiLyric,
   apiPlaymodeIntelligenceList,
@@ -159,7 +160,7 @@ export async function songPick(id: number): Promise<void> {
       break;
     case 2:
       //@ts-ignore
-      albumDetailPick(pick.id);
+      albumPick(pick.id);
       break;
     case 3:
       apiLike(id);
@@ -193,7 +194,8 @@ export async function songsPick(ids: number[]): Promise<void> {
 }
 
 export async function artistPick(id: number): Promise<void> {
-  const { name, alias, briefDesc, hotSongs } = await apiArtists(id);
+  const { info, songs } = await apiArtists(id);
+  const { name, alias, briefDesc, albumSize } = info;
   const pick = await window.showQuickPick([
     {
       label: name,
@@ -205,9 +207,14 @@ export async function artistPick(id: number): Promise<void> {
     },
     {
       label: "$(circuit-board) Albums",
+      detail: `${albumSize}`,
+      id,
       type: 1,
     },
-    ...hotSongs.map((song) => {
+    {
+      label: ">>>>> HOT SONGS <<<<<",
+    },
+    ...songs.map((song) => {
       return {
         label: `$(link) ${song.name}`,
         description: song.ar.map((i) => i.name).join("/"),
@@ -222,6 +229,8 @@ export async function artistPick(id: number): Promise<void> {
   }
   switch (pick.type) {
     case 1:
+      //@ts-ignore
+      albumsPick(pick.id);
       break;
     case 2:
       //@ts-ignore
@@ -230,15 +239,65 @@ export async function artistPick(id: number): Promise<void> {
   }
 }
 
-export async function albumDetailPick(id: number): Promise<void> {
-  const songs = await apiAlbum(id);
-  const pick = await window.showQuickPick(
-    songs.map((song) => {
+export async function albumPick(id: number): Promise<void> {
+  const { info, songs } = await apiAlbum(id);
+  const { artists, alias, company, description, subType, name } = info;
+  const pick = await window.showQuickPick([
+    {
+      label: name,
+      description: alias.join("/"),
+      detail: `${company} · ${subType}`,
+    },
+    {
+      label: "$(markdown) Description",
+      detail: description,
+    },
+    ...artists.map((i) => {
+      return {
+        label: "$(account) Artist",
+        detail: i.name,
+        id: i.id,
+        type: 1,
+      };
+    }),
+    {
+      label: ">>>>> CONTENTS <<<<<",
+    },
+    ...songs.map((song) => {
       return {
         label: `$(link) ${song.name}`,
         description: song.ar.map((i) => i.name).join("/"),
         detail: song.alia,
         id: song.id,
+        type: 2,
+      };
+    }),
+  ]);
+  if (!pick) {
+    return;
+  }
+  //@ts-ignore
+  switch (pick.type) {
+    case 1:
+      //@ts-ignore
+      artistPick(pick.id);
+      break;
+    case 2:
+      //@ts-ignore
+      songPick(pick.id);
+      break;
+  }
+}
+
+export async function albumsPick(id: number): Promise<void> {
+  const albums = await apiArtistAlbum(id);
+  const pick = await window.showQuickPick(
+    albums.map((album) => {
+      return {
+        label: `$(circuit-board) ${album.name}`,
+        description: album.alias.join("/"),
+        detail: album.artists.map((artist) => artist.name).join("/"),
+        id: album.id,
       };
     })
   );
@@ -246,5 +305,5 @@ export async function albumDetailPick(id: number): Promise<void> {
     return;
   }
   //@ts-ignore
-  songPick(pick.id);
+  albumPick(pick.id);
 }
