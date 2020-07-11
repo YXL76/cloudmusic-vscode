@@ -42,6 +42,8 @@ const {
   song_url,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   user_playlist,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  user_record,
 } = require("NeteaseCloudMusicApi");
 
 // TODO cache
@@ -342,10 +344,7 @@ export async function apiPlaymodeIntelligenceList(
       return ret;
     }
     const { data } = body;
-    ret = data.map((song: { songInfo: SongsItem }) => {
-      const { songInfo } = song;
-      return solveSongItem(songInfo);
-    });
+    ret = data.map(({ songInfo }) => solveSongItem(songInfo));
   } catch {}
   return ret;
 }
@@ -485,4 +484,21 @@ export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
   } catch {
     return [];
   }
+}
+
+export async function apiUserRecord(type: 0 | 1): Promise<SongsItem[]> {
+  try {
+    const { status, body } = await user_record({
+      uid: AccountManager.uid,
+      type,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { allData } = body;
+    return allData.map(({ song }) => solveSongItem(song));
+  } catch {}
+  return [];
 }
