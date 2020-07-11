@@ -1,5 +1,6 @@
 import {
   Artist,
+  AlbumsItem,
   QueueItem,
   PlaylistItem,
   SongsItem,
@@ -13,6 +14,8 @@ import { AccountManager } from "../manager/accountManager";
 const {
   album,
   artists,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  artist_album,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   check_music,
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -43,7 +46,18 @@ const {
 } = require("NeteaseCloudMusicApi");
 
 // TODO cache
-export async function apiAlbum(id: number): Promise<QueueItem[]> {
+export async function apiAlbum(
+  id: number
+): Promise<{ info: AlbumsItem; songs: QueueItem[] }> {
+  const info = {
+    artists: [],
+    alias: [],
+    company: "",
+    description: "",
+    subType: "",
+    name: "",
+    id: 0,
+  };
   try {
     const { status, body } = await album({
       id,
@@ -51,22 +65,40 @@ export async function apiAlbum(id: number): Promise<QueueItem[]> {
       proxy: PROXY,
     });
     if (status !== 200) {
-      return [];
+      return { info, songs: [] };
     }
     const { songs } = body;
-    return songs.map((song: SongsItem) => solveSongItem(song));
+    const albumInfo = body.album;
+    info.name = albumInfo.name;
+    info.id = albumInfo.id;
+    info.alias = albumInfo.alias;
+    info.company = albumInfo.company;
+    info.description = albumInfo.description;
+    info.subType = albumInfo.subType;
+    info.artists = albumInfo.artists.map((artist: Artist) => {
+      return {
+        name: artist.name,
+        id: artist.id,
+        alias: artist.alias,
+        briefDesc: artist.briefDesc,
+        albumSize: artist.albumSize,
+      };
+    });
+    return { info, songs: songs.map((song: SongsItem) => solveSongItem(song)) };
   } catch {
-    return [];
+    return { info, songs: [] };
   }
 }
 
-export async function apiArtists(id: number): Promise<Artist> {
-  const ret: Artist = {
+export async function apiArtists(
+  id: number
+): Promise<{ info: Artist; songs: QueueItem[] }> {
+  const info: Artist = {
     name: "",
     id: 0,
     alias: [],
     briefDesc: "",
-    hotSongs: [],
+    albumSize: 0,
   };
   try {
     const { status, body } = await artists({
@@ -75,18 +107,75 @@ export async function apiArtists(id: number): Promise<Artist> {
       proxy: PROXY,
     });
     if (status !== 200) {
-      return ret;
+      return { info, songs: [] };
     }
     const { artist, hotSongs } = body;
-    ret.name = artist.name;
-    ret.id = artist.id;
-    ret.alias = artist.alias;
-    ret.briefDesc = artist.briefDesc;
-    ret.hotSongs = hotSongs.map((song: SongsItem) => solveSongItem(song));
-    return ret;
+    info.name = artist.name;
+    info.id = artist.id;
+    info.alias = artist.alias;
+    info.briefDesc = artist.briefDesc;
+    info.albumSize = artist.albumSize;
+    return {
+      info,
+      songs: hotSongs.map((song: SongsItem) => solveSongItem(song)),
+    };
   } catch {
-    return ret;
+    return { info, songs: [] };
   }
+}
+
+export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
+  const ret: AlbumsItem[] = [];
+  const limit = 50;
+  let offset = 0;
+  try {
+    while (true) {
+      const { status, body } = await artist_album({
+        id,
+        limit,
+        offset,
+        cookie: AccountManager.cookie,
+        proxy: PROXY,
+      });
+      if (status !== 200) {
+        break;
+      }
+      const { hotAlbums, more } = body;
+      for (const {
+        artists,
+        alias,
+        company,
+        description,
+        subType,
+        name,
+        id,
+      } of hotAlbums) {
+        ret.push({
+          artists: artists.map((artist: Artist) => {
+            return {
+              name: artist.name,
+              id: artist.id,
+              alias: artist.alias,
+              briefDesc: artist.briefDesc,
+              albumSize: artist.albumSize,
+            };
+          }),
+          alias,
+          company,
+          description,
+          subType,
+          name,
+          id,
+        });
+      }
+      if (more) {
+        offset += limit;
+      } else {
+        break;
+      }
+    }
+  } catch {}
+  return ret;
 }
 
 export async function apiCheckMusic(id: number): Promise<boolean> {

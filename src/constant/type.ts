@@ -28,7 +28,7 @@ export type Artist = {
   id: number;
   alias: string[];
   briefDesc: string;
-  hotSongs: QueueItem[];
+  albumSize: number;
 };
 
 export type SongsItem = {
@@ -44,6 +44,16 @@ export type SongsItem = {
     id: number;
     name: string;
   };
+};
+
+export type AlbumsItem = {
+  artists: Artist[];
+  alias: string[];
+  company: string;
+  description: string;
+  subType: string;
+  name: string;
+  id: number;
 };
 
 export type SongDetail = {
