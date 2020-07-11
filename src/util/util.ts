@@ -19,7 +19,7 @@ import {
   apiSongDetail,
   apiSongUrl,
 } from "./api";
-import { QueueItem, SongsItem } from "../constant/type";
+import { Artist, AlbumsItem, QueueItem, SongsItem } from "../constant/type";
 import { ButtonManager } from "../manager/buttonManager";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 
@@ -55,6 +55,32 @@ export async function getPlaylistContentIntelligence(
   const songs = await apiPlaymodeIntelligenceList(id, pid);
   const ids = songs.map((song) => song.id);
   return await queueItem2TreeItem(id, ids, songs);
+}
+
+export function solveArtist(item: Artist): Artist {
+  const { name, id, alias, briefDesc, albumSize } = item;
+  return { name, id, alias, briefDesc, albumSize };
+}
+
+export function solveAlbumsItem(item: AlbumsItem): AlbumsItem {
+  const { artists, alias, company, description, subType, name, id } = item;
+  return {
+    artists: artists.map((artist: Artist) => {
+      return {
+        name: artist.name,
+        id: artist.id,
+        alias: artist.alias,
+        briefDesc: artist.briefDesc,
+        albumSize: artist.albumSize,
+      };
+    }),
+    alias,
+    company,
+    description,
+    subType,
+    name,
+    id,
+  };
 }
 
 export function solveSongItem(item: SongsItem): QueueItem {

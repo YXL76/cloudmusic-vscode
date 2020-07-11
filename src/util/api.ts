@@ -8,7 +8,7 @@ import {
   SongDetail,
 } from "../constant/type";
 import { PROXY, MUSIC_QUALITY } from "../constant/setting";
-import { solveSongItem } from "./util";
+import { solveArtist, solveAlbumsItem, solveSongItem } from "./util";
 import { AccountManager } from "../manager/accountManager";
 
 const {
@@ -49,7 +49,7 @@ const {
 export async function apiAlbum(
   id: number
 ): Promise<{ info: AlbumsItem; songs: QueueItem[] }> {
-  const info = {
+  let info: AlbumsItem = {
     artists: [],
     alias: [],
     company: "",
@@ -68,22 +68,7 @@ export async function apiAlbum(
       return { info, songs: [] };
     }
     const { songs } = body;
-    const albumInfo = body.album;
-    info.name = albumInfo.name;
-    info.id = albumInfo.id;
-    info.alias = albumInfo.alias;
-    info.company = albumInfo.company;
-    info.description = albumInfo.description;
-    info.subType = albumInfo.subType;
-    info.artists = albumInfo.artists.map((artist: Artist) => {
-      return {
-        name: artist.name,
-        id: artist.id,
-        alias: artist.alias,
-        briefDesc: artist.briefDesc,
-        albumSize: artist.albumSize,
-      };
-    });
+    info = solveAlbumsItem(body.album);
     return { info, songs: songs.map((song: SongsItem) => solveSongItem(song)) };
   } catch {
     return { info, songs: [] };
@@ -110,13 +95,8 @@ export async function apiArtists(
       return { info, songs: [] };
     }
     const { artist, hotSongs } = body;
-    info.name = artist.name;
-    info.id = artist.id;
-    info.alias = artist.alias;
-    info.briefDesc = artist.briefDesc;
-    info.albumSize = artist.albumSize;
     return {
-      info,
+      info: solveArtist(artist),
       songs: hotSongs.map((song: SongsItem) => solveSongItem(song)),
     };
   } catch {
@@ -125,7 +105,7 @@ export async function apiArtists(
 }
 
 export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
-  const ret: AlbumsItem[] = [];
+  let ret: AlbumsItem[] = [];
   const limit = 50;
   let offset = 0;
   try {
@@ -141,33 +121,9 @@ export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
         break;
       }
       const { hotAlbums, more } = body;
-      for (const {
-        artists,
-        alias,
-        company,
-        description,
-        subType,
-        name,
-        id,
-      } of hotAlbums) {
-        ret.push({
-          artists: artists.map((artist: Artist) => {
-            return {
-              name: artist.name,
-              id: artist.id,
-              alias: artist.alias,
-              briefDesc: artist.briefDesc,
-              albumSize: artist.albumSize,
-            };
-          }),
-          alias,
-          company,
-          description,
-          subType,
-          name,
-          id,
-        });
-      }
+      ret = ret.concat(
+        hotAlbums.map((hotAlbum: AlbumsItem) => solveAlbumsItem(hotAlbum))
+      );
       if (more) {
         offset += limit;
       } else {
