@@ -117,10 +117,10 @@
 
 |     module      |      function      | status |
 | :-------------: | :----------------: | :----: |
-|  artist_album   |    歌手专辑列表    |        |
+|  artist_album   |    歌手专辑列表    |   ✔️   |
 |   artist_desc   |      歌手介绍      |        |
 |   artist_list   |      歌手分类      |        |
-|    artist_mv    |    歌手相关 MV     |        |
+|    artist_mv    |    歌手相关 MV     |   ❌   |
 |   artist_sub    | 收藏与取消收藏歌手 |        |
 | artist_sublist  |    关注歌手列表    |        |
 | artist_top_song | 歌手热门 50 首歌曲 |        |
