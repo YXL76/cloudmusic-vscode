@@ -486,7 +486,9 @@ export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
   }
 }
 
-export async function apiUserRecord(type: 0 | 1): Promise<SongsItem[]> {
+export async function apiUserRecord(
+  type: 0 | 1
+): Promise<{ count: number; song: SongsItem }[]> {
   try {
     const { status, body } = await user_record({
       uid: AccountManager.uid,
@@ -497,8 +499,11 @@ export async function apiUserRecord(type: 0 | 1): Promise<SongsItem[]> {
     if (status !== 200) {
       return [];
     }
-    const { allData } = body;
-    return allData.map(({ song }) => solveSongItem(song));
+    const { weekData } = body;
+    return weekData.map(({ playCount, song }) => ({
+      count: playCount,
+      song: solveSongItem(song),
+    }));
   } catch {}
   return [];
 }

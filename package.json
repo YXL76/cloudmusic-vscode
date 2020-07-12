@@ -74,6 +74,10 @@
         "title": "Cloudmusic: Daily check"
       },
       {
+        "command": "cloudmusic.account",
+        "title": "Cloudmusic: Account"
+      },
+      {
         "command": "cloudmusic.previous",
         "title": "Cloudmusic: Previous"
       },

@@ -14,7 +14,7 @@ loggedIn.observe((change) => {
     ButtonManager.buttonAccount(
       "$(account)",
       AccountManager.nickname,
-      "cloudmusic.signout"
+      "cloudmusic.account"
     );
     ButtonManager.show();
   } else {

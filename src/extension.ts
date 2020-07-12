@@ -1,6 +1,6 @@
 import * as crypto from "crypto";
 import { posix } from "path";
-import { commands, ExtensionContext, window } from "vscode";
+import { commands, ExtensionContext, ViewColumn, window } from "vscode";
 import {
   existsSync,
   mkdirSync,
@@ -27,7 +27,7 @@ import {
   PlaylistProvider,
 } from "./provider/playlistProvider";
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
-import { apiLike, apiPlaylistTracks } from "./util/api";
+import { apiLike, apiPlaylistTracks, apiUserRecord } from "./util/api";
 import { load, songPick } from "./util/util";
 import { Cache } from "./util/cache";
 import { player } from "./util/player";
@@ -35,6 +35,7 @@ import { lock } from "./state/lock";
 import { lyric } from "./state/play";
 import { isLike } from "./state/like";
 import { loggedIn } from "./state/login";
+import { userMusicRanking } from "./page/page";
 const del = require("del");
 const cacache = require("cacache");
 
@@ -202,24 +203,79 @@ export function activate(context: ExtensionContext): void {
     if (!loggedIn.get()) {
       return;
     }
-    const method = await window.showQuickPick([
+    AccountManager.logout();
+    try {
+      unlink(ACCOUNT_FILE, () => {
+        //
+      });
+    } catch {}
+    window.showInformationMessage("Sign out success");
+  });
+
+  // account command
+  const account = commands.registerCommand("cloudmusic.account", async () => {
+    const pick = await window.showQuickPick([
       {
         label: AccountManager.nickname,
         description: "current user",
+        type: 0,
+      },
+      {
+        label: "User music ranking",
+        description: "Weekly",
+        type: 1,
+      },
+      {
+        label: "User music ranking",
+        description: "All Time",
+        type: 2,
       },
       {
         label: "Sign out",
-        description: "",
+        type: 3,
       },
     ]);
-    if (method && method.label === "Sign out") {
-      AccountManager.logout();
-      try {
-        unlink(ACCOUNT_FILE, () => {
-          //
-        });
-      } catch {}
-      window.showInformationMessage("Sign out success");
+    if (!pick) {
+      return;
+    }
+    switch (pick.type) {
+      case 1:
+        const userMusicRankingWeekly = window.createWebviewPanel(
+          "userMusicRankingWeekly",
+          "User music ranking (Weekly)",
+          ViewColumn.One,
+          {
+            enableScripts: true,
+            retainContextWhenHidden: true,
+            localResourceRoots: [context.extensionUri],
+          }
+        );
+        userMusicRankingWeekly.webview.html = userMusicRanking(
+          context,
+          userMusicRankingWeekly,
+          await apiUserRecord(1)
+        );
+        break;
+      case 2:
+        const userMusicRankingAllTime = window.createWebviewPanel(
+          "userMusicRankingAllTime",
+          "User music ranking (All Time)",
+          ViewColumn.One,
+          {
+            enableScripts: true,
+            retainContextWhenHidden: true,
+            localResourceRoots: [context.extensionUri],
+          }
+        );
+        userMusicRankingAllTime.webview.html = userMusicRanking(
+          context,
+          userMusicRankingAllTime,
+          await apiUserRecord(0)
+        );
+        break;
+      case 3:
+        commands.executeCommand("cloudmusic.signout");
+        break;
     }
   });
 
@@ -275,6 +331,7 @@ export function activate(context: ExtensionContext): void {
   context.subscriptions.push(signin);
   context.subscriptions.push(dailyCheck);
   context.subscriptions.push(signout);
+  context.subscriptions.push(account);
   context.subscriptions.push(previous);
   context.subscriptions.push(next);
   context.subscriptions.push(play);
