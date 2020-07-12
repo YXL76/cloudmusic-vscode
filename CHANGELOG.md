@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [2.1.2] - 2020-07-12
+
+### Fixed
+
+- Email login
+
 ## [2.1.1] - 2020-07-11
 
 ### Added
