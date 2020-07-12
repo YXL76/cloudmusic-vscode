@@ -48,7 +48,7 @@ export class AccountManager {
             md5_password,
           })
         : await login({
-            username: account,
+            email: account,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             md5_password,
           });
