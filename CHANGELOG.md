@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [2.1.3] - 2020-07-13
+
+### Added
+
+- Add `user music ranking` webview
+
 ## [2.1.2] - 2020-07-12
 
 ### Fixed
