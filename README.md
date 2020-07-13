@@ -82,7 +82,7 @@
 
 ### 2.x.x
 
-- [ ] 歌手/专辑/歌单详情
+- [x] 歌手/专辑/歌单详情
 - [ ] 搜索功能
 - [ ] 私人 FM
 - [ ] 歌曲评论
@@ -288,7 +288,7 @@
 |          user_followeds          |   关注 TA 的人(粉丝)   |        |
 |           user_follows           |   TA 关注的人(关注)    |        |
 |          user_playlist           |        用户歌单        |   ✔️   |
-|           user_record            |        听歌排行        |        |
+|           user_record            |        听歌排行        |   ✔️   |
 |          user_subcount           |        收藏计数        |        |
 |           user_update            |      编辑用户信息      |   ❌   |
 

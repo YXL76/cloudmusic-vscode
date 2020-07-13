@@ -82,7 +82,7 @@ Full list in `Feature Contributions`
 
 ### 2.x.x
 
-- [ ] Artist/Album/Playlist detail
+- [x] Artist/Album/Playlist detail
 - [ ] Search function
 - [ ] Personal FM
 - [ ] Song's comment
@@ -288,7 +288,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |          user_followeds          |   关注 TA 的人(粉丝)   |        |
 |           user_follows           |   TA 关注的人(关注)    |        |
 |          user_playlist           |        用户歌单        |   ✔️   |
-|           user_record            |        听歌排行        |        |
+|           user_record            |        听歌排行        |   ✔️   |
 |          user_subcount           |        收藏计数        |        |
 |           user_update            |      编辑用户信息      |   ❌   |
 
