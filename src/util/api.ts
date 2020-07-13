@@ -499,8 +499,8 @@ export async function apiUserRecord(
     if (status !== 200) {
       return [];
     }
-    const { weekData } = body;
-    return weekData.map(({ playCount, song }) => ({
+    const data = type ? body.weekData : body.allData;
+    return data.map(({ playCount, song }) => ({
       count: playCount,
       song: solveSongItem(song),
     }));

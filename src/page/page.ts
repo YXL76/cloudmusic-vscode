@@ -12,7 +12,7 @@ export function userMusicRanking(
       posix.join(
         context.extensionPath,
         "page",
-        "UserMusicRanking",
+        "userMusicRanking",
         "Chart.min.css"
       )
     )
@@ -23,7 +23,7 @@ export function userMusicRanking(
       posix.join(
         context.extensionPath,
         "page",
-        "UserMusicRanking",
+        "userMusicRanking",
         "Chart.bundle.min.js"
       )
     )
@@ -33,7 +33,7 @@ export function userMusicRanking(
     labels: songs.map(({ song }) => song.name),
     datasets: [
       {
-        label: "Dataset 1",
+        label: "Play Count",
         borderWidth: 1,
         data: songs.map(({ count }) => count),
       },

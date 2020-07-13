@@ -223,16 +223,20 @@ export function activate(context: ExtensionContext): void {
       {
         label: "User music ranking",
         description: "Weekly",
+        id: "userMusicRankingWeekly",
+        queryType: 1,
         type: 1,
       },
       {
         label: "User music ranking",
         description: "All Time",
-        type: 2,
+        id: "userMusicRankingAllTime",
+        queryType: 0,
+        type: 1,
       },
       {
         label: "Sign out",
-        type: 3,
+        type: 2,
       },
     ]);
     if (!pick) {
@@ -241,39 +245,22 @@ export function activate(context: ExtensionContext): void {
     switch (pick.type) {
       case 1:
         const userMusicRankingWeekly = window.createWebviewPanel(
-          "userMusicRankingWeekly",
-          "User music ranking (Weekly)",
+          `${pick.id}`,
+          `${pick.label} (${pick.description})`,
           ViewColumn.One,
           {
             enableScripts: true,
             retainContextWhenHidden: true,
-            localResourceRoots: [context.extensionUri],
           }
         );
         userMusicRankingWeekly.webview.html = userMusicRanking(
           context,
           userMusicRankingWeekly,
-          await apiUserRecord(1)
+          // @ts-ignore
+          await apiUserRecord(pick.queryType)
         );
         break;
       case 2:
-        const userMusicRankingAllTime = window.createWebviewPanel(
-          "userMusicRankingAllTime",
-          "User music ranking (All Time)",
-          ViewColumn.One,
-          {
-            enableScripts: true,
-            retainContextWhenHidden: true,
-            localResourceRoots: [context.extensionUri],
-          }
-        );
-        userMusicRankingAllTime.webview.html = userMusicRanking(
-          context,
-          userMusicRankingAllTime,
-          await apiUserRecord(0)
-        );
-        break;
-      case 3:
         commands.executeCommand("cloudmusic.signout");
         break;
     }
