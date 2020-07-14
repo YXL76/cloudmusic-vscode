@@ -36,7 +36,7 @@ export async function songItem2TreeItem(
     if (url) {
       ret.push(
         new QueueItemTreeItem(
-          `${song.name}${song.alia ? ` (${song.alia})` : ""}`,
+          `${song.name}${song.alia[0] ? ` (${song.alia[0]})` : ""}`,
           song,
           id,
           `md5-${Buffer.from(md5, "hex").toString("base64")}`,
