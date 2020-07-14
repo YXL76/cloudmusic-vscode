@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [2.1.4] - 2020-07-14
+
+### Fixed
+
+- Tree item: alias check
+- User music ranking: update `NeteaseCloudMusicApi` to fix [#848](https://github.com/Binaryify/NeteaseCloudMusicApi/issues/848)
+
 ## [2.1.3] - 2020-07-13
 
 ### Added
