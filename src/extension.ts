@@ -10,14 +10,13 @@ import {
   writeFile,
 } from "fs";
 import {
+  PLATFORM,
   AUTO_CHECK,
   ACCOUNT_FILE,
   CACHE_DIR,
   TMP_DIR,
   SETTING_DIR,
   MUSIC_QUALITY,
-  MPV_AVAILABLE,
-  VLC_AVAILABLE,
 } from "./constant/setting";
 import { LruCacheValue } from "./constant/type";
 import { AccountManager } from "./manager/accountManager";
@@ -30,7 +29,7 @@ import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
 import { apiLike, apiPlaylistTracks, apiUserRecord } from "./util/api";
 import { load, songPick } from "./util/util";
 import { Cache } from "./util/cache";
-import { player } from "./util/player";
+import { AudioPlayer } from "./util/player";
 import { lock } from "./state/lock";
 import { lyric } from "./state/play";
 import { isLike } from "./state/like";
@@ -40,6 +39,23 @@ const del = require("del");
 const cacache = require("cacache");
 
 export function activate(context: ExtensionContext): void {
+  // init player
+  let player: AudioPlayer;
+  lock.playerLoad = true;
+  if (PLATFORM === "win32" || "linux" || "darwin") {
+    player = AudioPlayer.getInstance(
+      posix.join(
+        context.extensionPath,
+        "player",
+        PLATFORM,
+        PLATFORM === "win32" ? "rs-player.exe" : "rs-player"
+      )
+    );
+    lock.playerLoad = false;
+  } else {
+    window.showErrorMessage("System is not supported");
+  }
+
   // read account info from local file
   if (!existsSync(SETTING_DIR)) {
     mkdirSync(SETTING_DIR);
@@ -83,7 +99,7 @@ export function activate(context: ExtensionContext): void {
     queueProvider.clear();
     queueProvider.refresh();
     player.id = 0;
-    player.quit();
+    player.stop();
     ButtonManager.buttonSong("Song", "");
   });
   commands.registerCommand("cloudmusic.randomQueue", () => {
@@ -116,20 +132,6 @@ export function activate(context: ExtensionContext): void {
 
   // init status bar button
   ButtonManager.init();
-
-  // init player
-  lock.playerLoad = true;
-  if (MPV_AVAILABLE || VLC_AVAILABLE) {
-    player
-      .start()
-      .then(() => {
-        player.volume(85);
-        lock.playerLoad = false;
-      })
-      .catch(() => window.showErrorMessage("Player is unavailable"));
-  } else {
-    window.showErrorMessage("Player is unavailable");
-  }
 
   // sign in command
   const signin = commands.registerCommand("cloudmusic.signin", async () => {
@@ -447,7 +449,7 @@ export function activate(context: ExtensionContext): void {
 }
 
 export function deactivate(): void {
-  player.quit();
+  AudioPlayer.getInstance().quit();
   cacache.verify(CACHE_DIR);
   del.sync([TMP_DIR], { force: true });
 }

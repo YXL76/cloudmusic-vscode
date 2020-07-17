@@ -1,5 +1,5 @@
 import { observable } from "mobx";
-import { player } from "../util/player";
+import { AudioPlayer } from "../util/player";
 import { AccountManager } from "../manager/accountManager";
 import { ButtonManager } from "../manager/buttonManager";
 import { PlaylistProvider } from "../provider/playlistProvider";
@@ -21,7 +21,7 @@ loggedIn.observe((change) => {
     ButtonManager.buttonAccount("$(account)", "Account", "cloudmusic.signin");
     ButtonManager.buttonSong("Song", "");
     ButtonManager.hide();
-    player.quit();
+    AudioPlayer.getInstance().stop();
   }
   PlaylistProvider.refresh();
   queueProvider.clear();

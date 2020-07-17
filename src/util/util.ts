@@ -4,7 +4,7 @@ import { createWriteStream } from "fs";
 import { commands, window } from "vscode";
 import { TMP_DIR } from "../constant/setting";
 import { Cache } from "../util/cache";
-import { player } from "./player";
+import { AudioPlayer } from "./player";
 import { lock } from "../state/lock";
 import { lyric } from "../state/play";
 import { TreeItemCollapsibleState } from "vscode";
@@ -105,7 +105,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
     ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
 
     if (path) {
-      player.load(path, id, pid, dt);
+      AudioPlayer.getInstance().load(path, id, pid, dt);
       lyric.time = time;
       lyric.text = text;
     } else {
@@ -127,10 +127,10 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
           });
         })
         .on("response", () => {
-          player.load(tmpFilePath, id, pid, dt);
+          AudioPlayer.getInstance().load(tmpFilePath, id, pid, dt);
         })
         .on("error", () => {
-          player.load(url, id, pid, dt);
+          window.showErrorMessage("Network Error");
         });
 
       lyric.time = time;
