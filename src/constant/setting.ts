@@ -1,10 +1,9 @@
 import { homedir, platform } from "os";
 import { posix } from "path";
 import { workspace } from "vscode";
-const commandExistsSync = require("command-exists").sync;
 
 const conf = workspace.getConfiguration("cloudmusic");
-const system = platform();
+export const PLATFORM = platform();
 
 export const SETTING_DIR = posix.join(homedir(), ".cloudmusic");
 export const ACCOUNT_FILE = posix.join(SETTING_DIR, ".account");
@@ -25,65 +24,3 @@ let finalSize = typeof cacheSize === "number" ? cacheSize : 1024;
 finalSize = finalSize > 10240 ? 10240 : finalSize;
 finalSize = finalSize < 128 ? 128 : finalSize;
 export const CACHE_SIZE = finalSize * 1024 * 1024;
-
-const gui = conf.get("player.interface");
-export const PLAYER = conf.get("player.player");
-
-const mpvBinary = conf.get("player.mpv.path");
-
-export const MPV_API_OPTIONS = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  audio_only: !gui,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  auto_restart: true,
-  binary: mpvBinary ? mpvBinary : null,
-  debug: false,
-  ipcCommand: "--input-ipc-server",
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  time_update: 1,
-  verbose: false,
-};
-
-export const MPV_ARGS = [
-  ...(conf.get("player.ignoreConfig") ? ["--no-config"] : [""]),
-  ...["--load-scripts=no", "--no-ytdl", "--autoload-files=no"],
-].filter((item) => item !== "");
-
-export const MPV_AVAILABLE = commandExistsSync(mpvBinary || "mpv");
-
-const vlcBinary = conf.get("player.vlc.path");
-const vlcHttpPort = conf.get("player.vlc.httpPort");
-const vlcHttpPass = conf.get("player.vlc.httpPass");
-
-const VLC_ARGS = [
-  ...[
-    "--no-video",
-    "--no-video-deco",
-    "--sout-transcode-venc=none",
-    "--sout-transcode-senc=none",
-    "--vout=none",
-    "--text-renderer=none",
-    "--qt-start-minimized",
-    "--no-qt-autoload-extensions",
-    "--no-keyboard-events",
-    "--no-sub-autodetect-file",
-    "--no-sout-video",
-    "--no-plugins-scan",
-    "--qt-notification=0",
-    "--no-qt-error-dialogs",
-  ],
-  ...(system === "win32" ? ["--high-priority", "--no-qt-updates-notif"] : [""]),
-  ...(gui ? [""] : ["--intf=dummy", system === "win32" ? "--dummy-quiet" : ""]),
-  ...(conf.get("player.ignoreConfig") ? ["--ignore-config"] : [""]),
-].filter((item) => item !== "");
-
-export const VLC_API_OPTIONS = {
-  app: vlcBinary || "vlc",
-  args: VLC_ARGS,
-  cwd: null,
-  httpPort: vlcHttpPort || 9280,
-  httpPass: vlcHttpPass ? vlcHttpPass : null,
-  detached: true,
-};
-
-export const VLC_AVAILABLE = commandExistsSync(vlcBinary || "vlc");

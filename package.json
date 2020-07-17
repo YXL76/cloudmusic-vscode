@@ -281,56 +281,6 @@
               "Lossless Quality"
             ],
             "scope": "window"
-          },
-          "cloudmusic.player.player": {
-            "type": "string",
-            "default": "vlc",
-            "markdownDescription": "Choose your default player",
-            "enum": [
-              "vlc",
-              "mpv"
-            ],
-            "enumDescriptions": [
-              "vlc player",
-              "mpv player"
-            ],
-            "scope": "window"
-          },
-          "cloudmusic.player.ignoreConfig": {
-            "type": "boolean",
-            "default": false,
-            "markdownDescription": "Open player without config",
-            "scope": "window"
-          },
-          "cloudmusic.player.interface": {
-            "type": "boolean",
-            "default": false,
-            "markdownDescription": "Choose whether player will show interface",
-            "scope": "window"
-          },
-          "cloudmusic.player.mpv.path": {
-            "type": "string",
-            "default": "",
-            "markdownDescription": "Provied path to a mpv binary instead of using the one found in `$PATH`",
-            "scope": "window"
-          },
-          "cloudmusic.player.vlc.path": {
-            "type": "string",
-            "default": "",
-            "markdownDescription": "Provied path to a vlc binary instead of using the one found in `$PATH`",
-            "scope": "window"
-          },
-          "cloudmusic.player.vlc.httpPort": {
-            "type": "number",
-            "default": 9280,
-            "markdownDescription": "",
-            "scope": "window"
-          },
-          "cloudmusic.player.vlc.httpPass": {
-            "type": "string",
-            "default": "",
-            "markdownDescription": "",
-            "scope": "window"
           }
         }
       }
