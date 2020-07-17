@@ -3,6 +3,7 @@ import { Player } from "../constant/type";
 import { apiScrobble } from "./api";
 import { lock } from "../state/lock";
 import { playing, position } from "../state/play";
+import { ButtonManager } from "../manager/buttonManager";
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const RsPlayer = require("rs-player");
 
@@ -31,10 +32,12 @@ export class AudioPlayer implements Player {
   }
 
   async quit(): Promise<void> {
+    playing.set(false);
     await this.player.quit();
   }
 
   async stop(): Promise<void> {
+    playing.set(false);
     await this.player.stop();
   }
 
@@ -75,6 +78,8 @@ export class AudioPlayer implements Player {
   }
 
   async volume(level: number): Promise<void> {
-    await this.player.setVolume(level);
+    if (await this.player.setVolume(level)) {
+      ButtonManager.buttonVolume(level);
+    }
   }
 }
