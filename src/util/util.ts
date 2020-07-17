@@ -130,6 +130,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
           AudioPlayer.getInstance().load(tmpFilePath, id, pid, dt);
         })
         .on("error", () => {
+          lock.playerLoad = false;
           window.showErrorMessage("Network Error");
         });
 
