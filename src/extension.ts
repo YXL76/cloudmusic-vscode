@@ -17,6 +17,7 @@ import {
   TMP_DIR,
   SETTING_DIR,
   MUSIC_QUALITY,
+  PLAYER_PORT,
 } from "./constant/setting";
 import { LruCacheValue } from "./constant/type";
 import { AccountManager } from "./manager/accountManager";
@@ -49,7 +50,8 @@ export function activate(context: ExtensionContext): void {
         "player",
         PLATFORM,
         PLATFORM === "win32" ? "rs-player.exe" : "rs-player"
-      )
+      ),
+      PLAYER_PORT
     );
     lock.playerLoad = false;
   } else {

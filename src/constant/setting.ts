@@ -24,3 +24,5 @@ let finalSize = typeof cacheSize === "number" ? cacheSize : 1024;
 finalSize = finalSize > 10240 ? 10240 : finalSize;
 finalSize = finalSize < 128 ? 128 : finalSize;
 export const CACHE_SIZE = finalSize * 1024 * 1024;
+
+export const PLAYER_PORT = parseInt(conf.get("player.port") || "19260");
