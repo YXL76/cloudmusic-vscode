@@ -1,5 +1,5 @@
 import * as crypto from "crypto";
-import { posix } from "path";
+import { posix, join } from "path";
 import { commands, ExtensionContext, ViewColumn, window } from "vscode";
 import {
   existsSync,
@@ -45,7 +45,7 @@ export function activate(context: ExtensionContext): void {
   lock.playerLoad = true;
   if (PLATFORM === "win32" || "linux" || "darwin") {
     player = AudioPlayer.getInstance(
-      posix.join(
+      join(
         context.extensionPath,
         "player",
         PLATFORM,
@@ -83,7 +83,7 @@ export function activate(context: ExtensionContext): void {
 
   // init cache folder
   try {
-    const pf = posix.join(SETTING_DIR, "cache");
+    const pf = join(SETTING_DIR, "cache");
     readdirSync(pf).forEach((folder) => {
       if (folder !== `${MUSIC_QUALITY}`) {
         const pattern = posix.join(pf, folder);

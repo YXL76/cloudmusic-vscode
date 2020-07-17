@@ -1,4 +1,4 @@
-import { posix } from "path";
+import { join } from "path";
 import { ExtensionContext, Uri, WebviewPanel } from "vscode";
 import { SongsItem } from "../constant/type";
 
@@ -9,7 +9,7 @@ export function userMusicRanking(
 ): string {
   const chartCss = panel.webview.asWebviewUri(
     Uri.file(
-      posix.join(
+      join(
         context.extensionPath,
         "page",
         "userMusicRanking",
@@ -20,7 +20,7 @@ export function userMusicRanking(
 
   const chartJs = panel.webview.asWebviewUri(
     Uri.file(
-      posix.join(
+      join(
         context.extensionPath,
         "page",
         "userMusicRanking",

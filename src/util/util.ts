@@ -1,5 +1,5 @@
 import * as http from "http";
-import { posix } from "path";
+import { join } from "path";
 import { createWriteStream } from "fs";
 import { commands, window } from "vscode";
 import { TMP_DIR } from "../constant/setting";
@@ -115,7 +115,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
         commands.executeCommand("cloudmusic.next");
         return;
       }
-      const tmpFilePath = posix.join(TMP_DIR, `${id}`);
+      const tmpFilePath = join(TMP_DIR, `${id}`);
       const tmpFile = createWriteStream(tmpFilePath);
 
       http

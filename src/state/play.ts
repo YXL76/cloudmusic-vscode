@@ -1,4 +1,4 @@
-import { posix } from "path";
+import { join } from "path";
 import { readdirSync, unlinkSync } from "fs";
 import { observable } from "mobx";
 import { lock } from "./lock";
@@ -29,7 +29,7 @@ position.observe((change) => {
     readdirSync(TMP_DIR).forEach((file) => {
       if (file !== `${AudioPlayer.getInstance().id}`) {
         try {
-          unlinkSync(posix.join(TMP_DIR, file));
+          unlinkSync(join(TMP_DIR, file));
         } catch {}
       }
     });
