@@ -43,24 +43,24 @@ export class AudioPlayer implements Player {
 
   async load(url: string, id: number, pid: number, dt: number): Promise<void> {
     if (await this.player.load(url)) {
-      const pId = this.id;
-      const pPid = this.pid;
-      const pDt = this.dt;
+      playing.set(true);
       const pTime = this.time;
+      this.time = Date.now();
+
+      const diff = this.time - pTime;
+      if (diff > 60000 && this.dt > 60000) {
+        apiScrobble(this.id, this.pid, Math.min(diff, this.dt) / 1000);
+      }
+
       this.id = id;
       this.pid = pid;
       this.dt = dt;
-      this.time = Date.now();
-      playing.set(true);
 
-      const diff = this.time - pTime;
-      if (diff > 60000 && pDt > 60000) {
-        apiScrobble(pId, pPid, Math.floor(Math.min(diff, pDt) / 1000));
-      }
+      lock.playerLoad = false;
     } else {
+      lock.playerLoad = false;
       commands.executeCommand("cloudmusic.next");
     }
-    lock.playerLoad = false;
   }
 
   async togglePlay(): Promise<void> {

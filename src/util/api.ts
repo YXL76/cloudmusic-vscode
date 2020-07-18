@@ -357,7 +357,7 @@ export async function apiScrobble(
   await scrobble({
     id,
     sourceid,
-    time,
+    time: Math.floor(time),
     cookie: AccountManager.cookie,
     proxy: PROXY,
   });
