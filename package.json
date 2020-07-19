@@ -306,7 +306,7 @@
     "@types/vscode": "^1.46.0",
     "@typescript-eslint/eslint-plugin": "^3.6.1",
     "@typescript-eslint/parser": "^3.6.1",
-    "eslint": "^7.4.0",
+    "eslint": "^7.5.0",
     "glob": "^7.1.6",
     "mocha": "^8.0.1",
     "ts-loader": "^8.0.1",
@@ -317,7 +317,7 @@
   },
   "dependencies": {
     "@thejellyfish/binary-search": "^1.0.4",
-    "NeteaseCloudMusicApi": "^3.34.2",
+    "NeteaseCloudMusicApi": "^3.35.0",
     "array-unsort": "^1.1.5",
     "cacache": "^15.0.5",
     "del": "^5.1.0",
