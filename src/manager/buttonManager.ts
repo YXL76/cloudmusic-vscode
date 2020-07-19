@@ -95,7 +95,7 @@ export class ButtonManager {
   static buttonSong(name: string, ar: string): void {
     this.updateButton(
       ButtonLabel.song,
-      name.length > 6 ? `${name.slice(0, 6)}...` : name,
+      name.length > 12 ? `${name.slice(0, 12)}...` : name,
       ar ? `${name} - ${ar}` : ""
     );
   }
