@@ -319,6 +319,7 @@
     "@thejellyfish/binary-search": "^1.0.4",
     "NeteaseCloudMusicApi": "^3.35.0",
     "array-unsort": "^1.1.5",
+    "bindings": "^1.5.0",
     "cacache": "^15.0.5",
     "del": "^5.1.0",
     "lru-cache": "^6.0.0",
