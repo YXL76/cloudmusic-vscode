@@ -8,25 +8,11 @@ export function userMusicRanking(
   songs: { count: number; song: SongsItem }[]
 ): string {
   const chartCss = panel.webview.asWebviewUri(
-    Uri.file(
-      join(
-        context.extensionPath,
-        "page",
-        "userMusicRanking",
-        "Chart.min.css"
-      )
-    )
+    Uri.file(join(context.extensionPath, "page", "css", "Chart.min.css"))
   );
 
   const chartJs = panel.webview.asWebviewUri(
-    Uri.file(
-      join(
-        context.extensionPath,
-        "page",
-        "userMusicRanking",
-        "Chart.bundle.min.js"
-      )
-    )
+    Uri.file(join(context.extensionPath, "page", "js", "Chart.bundle.min.js"))
   );
 
   const data = {
