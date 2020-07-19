@@ -43,6 +43,8 @@ export function activate(context: ExtensionContext): void {
   if (!PLAYER_AVAILABLE) {
     lock.playerLoad = true;
     window.showErrorMessage("System is not supported");
+  } else {
+    player.volume(85);
   }
 
   // read account info from local file
