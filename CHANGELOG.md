@@ -6,6 +6,23 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.0.0] - 2020-07-19
+
+### Added
+
+- Player: use native modules
+
+### Changed
+
+- Lyric: default delay changes to `-3.5`
+- Status bar: song name limit changes to `12`
+- Performance improvements
+
+### Removed
+
+- Player: no longer support `vlc` and `mpv`
+- Configuration: `cloudmusic.player.player`, `cloudmusic.player.ignoreConfig`, `cloudmusic.player.interface`, `cloudmusic.player.mpv.path`, `cloudmusic.player.vlc.path`, `cloudmusic.player.vlc.httpPort`, `cloudmusic.player.vlc.httpPass`
+
 ## [2.1.4] - 2020-07-14
 
 ### Fixed
