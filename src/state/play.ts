@@ -12,7 +12,7 @@ export const playing = observable.box(false);
 export const position = observable.box(0);
 
 export const lyric: Lyric = {
-  delay: -1.5,
+  delay: -3.5,
   time: [0],
   text: ["Lyric"],
 };
