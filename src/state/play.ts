@@ -4,7 +4,7 @@ import { observable } from "mobx";
 import { lock } from "./lock";
 import { TMP_DIR } from "../constant/setting";
 import { Lyric } from "../constant/type";
-import { AudioPlayer } from "../util/player";
+import { player } from "../util/player";
 import { ButtonManager } from "../manager/buttonManager";
 const { closestSearch } = require("@thejellyfish/binary-search");
 
@@ -27,7 +27,7 @@ position.observe((change) => {
   if (change.newValue > 100 && !lock.playerLoad) {
     lock.playerLoad = true;
     readdirSync(TMP_DIR).forEach((file) => {
-      if (file !== `${AudioPlayer.getInstance().id}`) {
+      if (file !== `${player.id}`) {
         try {
           unlinkSync(join(TMP_DIR, file));
         } catch {}

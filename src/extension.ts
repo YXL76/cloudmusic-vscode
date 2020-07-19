@@ -10,14 +10,13 @@ import {
   writeFile,
 } from "fs";
 import {
-  PLATFORM,
   AUTO_CHECK,
   ACCOUNT_FILE,
   CACHE_DIR,
   TMP_DIR,
   SETTING_DIR,
   MUSIC_QUALITY,
-  PLAYER_PORT,
+  PLAYER_AVAILABLE,
 } from "./constant/setting";
 import { LruCacheValue } from "./constant/type";
 import { AccountManager } from "./manager/accountManager";
@@ -30,7 +29,7 @@ import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
 import { apiLike, apiPlaylistTracks, apiUserRecord } from "./util/api";
 import { load, songPick } from "./util/util";
 import { Cache } from "./util/cache";
-import { AudioPlayer } from "./util/player";
+import { player } from "./util/player";
 import { lock } from "./state/lock";
 import { lyric } from "./state/play";
 import { isLike } from "./state/like";
@@ -41,20 +40,8 @@ const cacache = require("cacache");
 
 export function activate(context: ExtensionContext): void {
   // init player
-  let player: AudioPlayer;
-  lock.playerLoad = true;
-  if (PLATFORM === "win32" || "linux" || "darwin") {
-    player = AudioPlayer.getInstance(
-      join(
-        context.extensionPath,
-        "player",
-        PLATFORM,
-        PLATFORM === "win32" ? "rs-player.exe" : "rs-player"
-      ),
-      PLAYER_PORT
-    );
-    lock.playerLoad = false;
-  } else {
+  if (!PLAYER_AVAILABLE) {
+    lock.playerLoad = true;
     window.showErrorMessage("System is not supported");
   }
 
@@ -451,7 +438,6 @@ export function activate(context: ExtensionContext): void {
 }
 
 export function deactivate(): void {
-  AudioPlayer.getInstance().quit();
   cacache.verify(CACHE_DIR);
   del.sync([TMP_DIR], { force: true });
 }

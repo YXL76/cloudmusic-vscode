@@ -1,63 +1,97 @@
+import { join } from "path";
 import { commands } from "vscode";
 import { Player } from "../constant/type";
+import { PLATFORM, PLAYER_AVAILABLE } from "../constant/setting";
+import { sleep } from "./util";
 import { apiScrobble } from "./api";
 import { lock } from "../state/lock";
 import { playing, position } from "../state/play";
 import { ButtonManager } from "../manager/buttonManager";
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const RsPlayer = require("rs-player");
+const bindings = require("bindings");
 
-export class AudioPlayer implements Player {
-  private static instance: AudioPlayer;
-  private player: typeof RsPlayer;
+class NoPlayer implements Player {
+  id = 0;
+  pid = 0;
+  dt = 0;
+  time = Date.now();
+
+  async stop(): Promise<void> {
+    //
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async load(_a: string, _b: number, _c: number, _d: number): Promise<void> {
+    //
+  }
+
+  async togglePlay(): Promise<void> {
+    //
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async volume(_level: number): Promise<void> {
+    //
+  }
+}
+
+class AudioPlayer implements Player {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private player: any;
 
   id = 0;
   pid = 0;
   dt = 0;
   time = Date.now();
 
-  constructor(path?: string, port?: number) {
-    this.player = new RsPlayer({ path, port });
-    this.player.launch();
-    this.player.on("playback", (res: number) => {
-      position.set(res / 1000.0);
-    });
-    this.player.on("end", () => {
-      commands.executeCommand("cloudmusic.next");
-    });
-  }
-
-  static getInstance(path?: string, port?: number): AudioPlayer {
-    return this.instance || (this.instance = new AudioPlayer(path, port));
-  }
-
-  async quit(): Promise<void> {
-    playing.set(false);
-    await this.player.quit();
+  constructor() {
+    const nPlayer = bindings(join("player", `${PLATFORM}.node`)).Player;
+    this.player = new nPlayer();
+    setInterval(() => {
+      if (playing.get()) {
+        const pos = JSON.parse(this.player.state());
+        if (pos.playing) {
+          if (pos.empty) {
+            position.set(pos.position / 1000.0);
+          } else {
+            playing.set(false);
+            commands.executeCommand("cloudmusic.next");
+          }
+        } else {
+          playing.set(false);
+        }
+      }
+    }, 1000);
   }
 
   async stop(): Promise<void> {
     playing.set(false);
-    await this.player.stop();
+    this.player.stop();
   }
 
   async load(url: string, id: number, pid: number, dt: number): Promise<void> {
-    if (await this.player.load(url)) {
-      playing.set(true);
-      const pTime = this.time;
-      this.time = Date.now();
+    let i = 5;
+    while (i) {
+      if (this.player.load(url)) {
+        playing.set(true);
+        const pTime = this.time;
+        this.time = Date.now();
 
-      const diff = this.time - pTime;
-      if (diff > 60000 && this.dt > 60000) {
-        apiScrobble(this.id, this.pid, Math.min(diff, this.dt) / 1000);
+        const diff = this.time - pTime;
+        if (diff > 60000 && this.dt > 60000) {
+          apiScrobble(this.id, this.pid, Math.min(diff, this.dt) / 1000);
+        }
+
+        this.id = id;
+        this.pid = pid;
+        this.dt = dt;
+
+        lock.playerLoad = false;
+        break;
       }
-
-      this.id = id;
-      this.pid = pid;
-      this.dt = dt;
-
-      lock.playerLoad = false;
-    } else {
+      --i;
+      await sleep(256);
+    }
+    if (!i) {
       lock.playerLoad = false;
       commands.executeCommand("cloudmusic.next");
     }
@@ -66,11 +100,10 @@ export class AudioPlayer implements Player {
   async togglePlay(): Promise<void> {
     if (this.id) {
       if (playing.get()) {
-        if (await this.player.pause()) {
-          playing.set(false);
-        }
+        this.player.pause();
+        playing.set(false);
       } else {
-        if (await this.player.play()) {
+        if (this.player.play()) {
           playing.set(true);
         }
       }
@@ -78,8 +111,10 @@ export class AudioPlayer implements Player {
   }
 
   async volume(level: number): Promise<void> {
-    if (await this.player.setVolume(level)) {
+    if (this.player.setVolume(level)) {
       ButtonManager.buttonVolume(level);
     }
   }
 }
+
+export const player = PLAYER_AVAILABLE ? new AudioPlayer() : new NoPlayer();

@@ -4,7 +4,7 @@ import { createWriteStream } from "fs";
 import { commands, window } from "vscode";
 import { TMP_DIR } from "../constant/setting";
 import { Cache } from "../util/cache";
-import { AudioPlayer } from "./player";
+import { player } from "./player";
 import { lock } from "../state/lock";
 import { lyric } from "../state/play";
 import { TreeItemCollapsibleState } from "vscode";
@@ -22,6 +22,13 @@ import {
 import { Artist, AlbumsItem, SongsItem } from "../constant/type";
 import { ButtonManager } from "../manager/buttonManager";
 import { QueueItemTreeItem } from "../provider/queueProvider";
+import { setTimeout } from "timers";
+
+export function sleep(ms: number): Promise<unknown> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 export async function songItem2TreeItem(
   id: number,
@@ -105,7 +112,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
     ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
 
     if (path) {
-      AudioPlayer.getInstance().load(path, id, pid, dt);
+      player.load(path, id, pid, dt);
       lyric.time = time;
       lyric.text = text;
     } else {
@@ -127,7 +134,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
           });
         })
         .on("response", () => {
-          AudioPlayer.getInstance().load(tmpFilePath, id, pid, dt);
+          player.load(tmpFilePath, id, pid, dt);
         })
         .on("error", () => {
           lock.playerLoad = false;

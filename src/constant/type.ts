@@ -69,7 +69,6 @@ export interface Player {
   pid: number;
   dt: number;
   time: number;
-  quit(): Promise<void>;
   stop(): Promise<void>;
   load(url: string, id: number, pid: number, dt: number): Promise<void>;
   togglePlay(): Promise<void>;
