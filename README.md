@@ -17,19 +17,23 @@
 ## Table of contents
 
 - [Features](#Features)
-- [Requirements](#Requirements)
 - [Usage](#Usage)
 - [Contributions](#Contributions)
   - [Settings](#Settings)
   - [Commands](#Commands)
 - [Known Issues](#Known%20Issues)
-- [Roadmap](#Roadmap)
-  - [2.x.x](#2.x.x)
-  - [3.x.x](#3.x.x)
 - [Release Notes](#Release%20Notes)
 - [API](#API)
 
 ## Features
+
+本插件具有以下特点：
+
+- 简单：开箱即用，无需安装、修改任何文件
+- 快速：使用本机模块，资源占用低，速度快
+- 强大：借助网页 API，能实现所有常用功能
+
+已实现的功能：
 
 - 每日签到
 - 歌曲播放，收藏，喜欢
@@ -38,19 +42,9 @@
 - 歌词显示
 - 缓存管理
 - 可选无损音质
+- 更多功能等待发现
 
 软件产生的所有本地内容都位于`$HOME/.cloudmusic`文件夹中
-
-## Requirements
-
-需要安装以下至少一个播放器
-
-- [VLC Player](https://www.videolan.org/vlc/)（推荐）
-- [MPV Player](https://mpv.io/installation/)
-
-对于`Windows`用户，如果播放器的路径不位于环境变量中，可以在设置中指定二进制文件的路径
-
-对于使用梯子的用户，非透明代理的情况下，请务必设置`http.proxy`（不是`cloudmusic.music.proxy`），否则将导致缓存功能失效；`VLC`用户还会产生 flac 流错误
 
 ## Usage
 
@@ -67,8 +61,6 @@
 - `cloudmusic.account.autoCheck`: 登录后自动签到
 - `cloudmusic.cache.size`: 缓存大小限制
 - `cloudmusic.music.quality`: 音质选择
-- `cloudmusic.player.mpv.path`: 指定`MPV Player`的二进制文件路径
-- `cloudmusic.player.vlc.path`: 指定`VLC Player`的二进制文件路径
 
 ### Commands
 
@@ -77,21 +69,6 @@
 - `Cloudmusic: Daily check`: 每日签到
 
 ## Known Issues
-
-## Roadmap
-
-### 2.x.x
-
-- [x] 歌手/专辑/歌单详情
-- [ ] 搜索功能
-- [ ] 私人 FM
-- [ ] 歌曲评论
-- [ ] 私信管理
-- [ ] 热门榜单
-
-### 3.x.x
-
-- [ ] 建立本地代理服务器统一`mrl`，实现播放器原生控制
 
 ## Release Notes
 
