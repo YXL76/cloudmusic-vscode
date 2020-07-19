@@ -281,12 +281,6 @@
               "Lossless Quality"
             ],
             "scope": "window"
-          },
-          "cloudmusic.player.port": {
-            "type": "number",
-            "default": 19260,
-            "markdownDescription": "Set player listen port",
-            "scope": "window"
           }
         }
       }
