@@ -5,13 +5,12 @@ import { PLATFORM, PLAYER_AVAILABLE } from "../constant/setting";
 import { sleep } from "./util";
 import { apiScrobble } from "./api";
 import { lock } from "../state/lock";
-import { playing, position } from "../state/play";
+import { Playing, setPosition } from "../state/play";
 import { ButtonManager } from "../manager/buttonManager";
 // @ts-ignore
 const nPlayer = __non_webpack_require__(
   join("..", "build", "player", `${PLATFORM}.node`)
 ).Player;
-
 class NoPlayer implements Player {
   id = 0;
   pid = 0;
@@ -50,25 +49,26 @@ class AudioPlayer implements Player {
     setInterval(() => {
       if (!this.player.isPaused()) {
         if (this.player.empty()) {
-          playing.set(false);
+          Playing.set(false);
           commands.executeCommand("cloudmusic.next");
         } else {
-          position.set(this.player.position() / 1000.0);
+          setPosition(this.player.position() / 1000.0);
         }
       }
     }, 1000);
   }
 
   async stop(): Promise<void> {
-    playing.set(false);
+    Playing.set(false);
     this.player.stop();
   }
 
   async load(url: string, id: number, pid: number, dt: number): Promise<void> {
+    lock.deleteTmp = false;
     let i = 5;
     while (i) {
       if (this.player.load(url)) {
-        playing.set(true);
+        Playing.set(true);
         const pTime = this.time;
         this.time = Date.now();
 
@@ -95,12 +95,12 @@ class AudioPlayer implements Player {
 
   async togglePlay(): Promise<void> {
     if (this.id) {
-      if (playing.get()) {
+      if (Playing.get()) {
         this.player.pause();
-        playing.set(false);
+        Playing.set(false);
       } else {
         if (this.player.play()) {
-          playing.set(true);
+          Playing.set(true);
         }
       }
     }

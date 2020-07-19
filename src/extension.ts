@@ -32,8 +32,8 @@ import { Cache } from "./util/cache";
 import { player } from "./util/player";
 import { lock } from "./state/lock";
 import { lyric } from "./state/play";
-import { isLike } from "./state/like";
-import { loggedIn } from "./state/login";
+import { IsLike } from "./state/like";
+import { LoggedIn } from "./state/login";
 import { userMusicRanking } from "./page/page";
 const del = require("del");
 const cacache = require("cacache");
@@ -126,7 +126,7 @@ export function activate(context: ExtensionContext): void {
 
   // sign in command
   const signin = commands.registerCommand("cloudmusic.signin", async () => {
-    if (loggedIn.get()) {
+    if (LoggedIn.get()) {
       return;
     }
     const method = await window.showQuickPick(
@@ -193,7 +193,7 @@ export function activate(context: ExtensionContext): void {
 
   // sign out command
   const signout = commands.registerCommand("cloudmusic.signout", async () => {
-    if (!loggedIn.get()) {
+    if (!LoggedIn.get()) {
       return;
     }
     AccountManager.logout();
@@ -288,10 +288,10 @@ export function activate(context: ExtensionContext): void {
 
   // like command
   const like = commands.registerCommand("cloudmusic.like", async () => {
-    const islike = !isLike.get();
+    const islike = !IsLike.get();
     const id = queueProvider.songs[0].item.id;
     if (await apiLike(id, islike ? "" : "false")) {
-      isLike.set(islike);
+      IsLike.set(islike);
       islike
         ? AccountManager.likelist.add(id)
         : AccountManager.likelist.delete(id);

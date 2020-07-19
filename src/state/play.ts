@@ -1,6 +1,5 @@
 import { join } from "path";
 import { readdirSync, unlinkSync } from "fs";
-import { observable } from "mobx";
 import { lock } from "./lock";
 import { TMP_DIR } from "../constant/setting";
 import { Lyric } from "../constant/type";
@@ -8,8 +7,20 @@ import { player } from "../util/player";
 import { ButtonManager } from "../manager/buttonManager";
 const { closestSearch } = require("@thejellyfish/binary-search");
 
-export const playing = observable.box(false);
-export const position = observable.box(0);
+export class Playing {
+  private static state = false;
+
+  static get(): boolean {
+    return this.state;
+  }
+
+  static set(newValue: boolean): void {
+    if (newValue !== this.state) {
+      this.state = newValue;
+      ButtonManager.buttonPlay(newValue);
+    }
+  }
+}
 
 export const lyric: Lyric = {
   delay: -3.5,
@@ -17,14 +28,11 @@ export const lyric: Lyric = {
   text: ["Lyric"],
 };
 
-playing.observe((change) => {
-  ButtonManager.buttonPlay(change.newValue);
-});
-
-position.observe((change) => {
-  const index = closestSearch(lyric.time, change.newValue + lyric.delay);
+export function setPosition(newValue: number): void {
+  const index = closestSearch(lyric.time, newValue + lyric.delay);
   ButtonManager.buttonLyric(lyric.text[index]);
-  if (change.newValue > 100 && !lock.playerLoad) {
+  if (!lock.deleteTmp && newValue > 100 && !lock.playerLoad) {
+    lock.deleteTmp = true;
     lock.playerLoad = true;
     readdirSync(TMP_DIR).forEach((file) => {
       if (file !== `${player.id}`) {
@@ -35,4 +43,4 @@ position.observe((change) => {
     });
     lock.playerLoad = false;
   }
-});
+}

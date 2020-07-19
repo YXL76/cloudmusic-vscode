@@ -1,12 +1,20 @@
-import { observable } from "mobx";
 import { ButtonManager } from "../manager/buttonManager";
 
-export const isLike = observable.box(false);
+export class IsLike {
+  private static state = false;
 
-isLike.observe((change) => {
-  if (change.newValue) {
-    ButtonManager.buttonLike(true);
-  } else {
-    ButtonManager.buttonLike(false);
+  static get(): boolean {
+    return this.state;
   }
-});
+
+  static set(newValue: boolean): void {
+    if (newValue !== this.state) {
+      this.state = newValue;
+      if (newValue) {
+        ButtonManager.buttonLike(true);
+      } else {
+        ButtonManager.buttonLike(false);
+      }
+    }
+  }
+}

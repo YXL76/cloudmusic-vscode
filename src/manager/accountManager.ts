@@ -8,7 +8,7 @@ import {
   apiLogout,
   apiUserPlaylist,
 } from "../util/api";
-import { loggedIn } from "../state/login";
+import { LoggedIn } from "../state/login";
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { login, login_cellphone } = require("NeteaseCloudMusicApi");
 const { cookieToJson } = require("NeteaseCloudMusicApi/util/index");
@@ -20,7 +20,7 @@ export class AccountManager {
   static likelist: Set<number> = new Set<number>();
 
   static async dailySignin(): Promise<void> {
-    if (loggedIn.get()) {
+    if (LoggedIn.get()) {
       const code = await apiDailySignin();
       if (code === 200) {
         window.showInformationMessage("Daily check success");
@@ -36,7 +36,7 @@ export class AccountManager {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     md5_password: string
   ): Promise<boolean> {
-    if (loggedIn.get()) {
+    if (LoggedIn.get()) {
       window.showInformationMessage("Already sign in");
       return true;
     }
@@ -56,7 +56,7 @@ export class AccountManager {
       if (status === 200) {
         const { cookie, profile } = body;
         const { userId, nickname } = profile;
-        loggedIn.set(true);
+        LoggedIn.set(true);
         this.cookie = cookieToJson(cookie);
         this.uid = userId;
         this.nickname = nickname;
@@ -80,7 +80,7 @@ export class AccountManager {
 
   static async logout(): Promise<boolean> {
     if (await apiLogout()) {
-      loggedIn.set(false);
+      LoggedIn.set(false);
       this.cookie = {};
       this.uid = 0;
       this.nickname = "";
