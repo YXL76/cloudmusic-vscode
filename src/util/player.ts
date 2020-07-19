@@ -1,6 +1,6 @@
 import { join } from "path";
 import { commands } from "vscode";
-import { Player } from "../constant/type";
+import { Player, NativePlayer } from "../constant/type";
 import { PLATFORM, PLAYER_AVAILABLE } from "../constant/setting";
 import { sleep } from "./util";
 import { apiScrobble } from "./api";
@@ -35,8 +35,7 @@ class NoPlayer implements Player {
 }
 
 class AudioPlayer implements Player {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private player: any;
+  private player: NativePlayer;
 
   id = 0;
   pid = 0;
@@ -47,17 +46,12 @@ class AudioPlayer implements Player {
     const nPlayer = bindings(join("player", `${PLATFORM}.node`)).Player;
     this.player = new nPlayer();
     setInterval(() => {
-      if (playing.get()) {
-        const pos = JSON.parse(this.player.state());
-        if (pos.playing) {
-          if (pos.empty) {
-            position.set(pos.position / 1000.0);
-          } else {
-            playing.set(false);
-            commands.executeCommand("cloudmusic.next");
-          }
-        } else {
+      if (!this.player.isPaused()) {
+        if (this.player.empty()) {
           playing.set(false);
+          commands.executeCommand("cloudmusic.next");
+        } else {
+          position.set(this.player.position() / 1000.0);
         }
       }
     }, 1000);
@@ -111,9 +105,8 @@ class AudioPlayer implements Player {
   }
 
   async volume(level: number): Promise<void> {
-    if (this.player.setVolume(level)) {
-      ButtonManager.buttonVolume(level);
-    }
+    this.player.setVolume(level);
+    ButtonManager.buttonVolume(level);
   }
 }
 

@@ -64,6 +64,19 @@ export type Lyric = {
   text: string[];
 };
 
+export type NativePlayer = {
+  load(url: string): boolean;
+  play(): boolean;
+  pause(): void;
+  stop(): void;
+  volume(): number;
+  setVolume(level: number): void;
+  isPaused(): boolean;
+  empty(): boolean;
+  position(): number;
+  state(): string;
+};
+
 export interface Player {
   id: number;
   pid: number;
