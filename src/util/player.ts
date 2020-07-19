@@ -85,7 +85,7 @@ class AudioPlayer implements Player {
         break;
       }
       --i;
-      await sleep(256);
+      await sleep(128);
     }
     if (!i) {
       lock.playerLoad = false;
