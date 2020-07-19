@@ -7,7 +7,10 @@ import { apiScrobble } from "./api";
 import { lock } from "../state/lock";
 import { playing, position } from "../state/play";
 import { ButtonManager } from "../manager/buttonManager";
-const bindings = require("bindings");
+// @ts-ignore
+const nPlayer = __non_webpack_require__(
+  join("..", "build", "player", `${PLATFORM}.node`)
+).Player;
 
 class NoPlayer implements Player {
   id = 0;
@@ -43,7 +46,6 @@ class AudioPlayer implements Player {
   time = Date.now();
 
   constructor() {
-    const nPlayer = bindings(join("player", `${PLATFORM}.node`)).Player;
     this.player = new nPlayer();
     setInterval(() => {
       if (!this.player.isPaused()) {
