@@ -26,7 +26,12 @@ import {
   PlaylistProvider,
 } from "./provider/playlistProvider";
 import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
-import { apiLike, apiPlaylistTracks, apiUserRecord } from "./util/api";
+import {
+  apiFmTrash,
+  apiLike,
+  apiPlaylistTracks,
+  apiUserRecord,
+} from "./util/api";
 import { load, songPick } from "./util/util";
 import { Cache } from "./util/cache";
 import { player } from "./util/player";
@@ -449,6 +454,9 @@ export function activate(context: ExtensionContext): void {
       }
       lyric.delay = parseFloat(delay);
     }
+  });
+  commands.registerCommand("cloudmusic.fmTrash", () => {
+    apiFmTrash(player.id);
   });
 }
 

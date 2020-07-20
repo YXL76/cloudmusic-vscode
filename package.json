@@ -167,6 +167,10 @@
       {
         "command": "cloudmusic.lyric",
         "title": "Lyric"
+      },
+      {
+        "command": "cloudmusic.fmTrash",
+        "title": "Fm trash"
       }
     ],
     "menus": {
