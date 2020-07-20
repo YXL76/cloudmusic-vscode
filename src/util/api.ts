@@ -284,6 +284,7 @@ export async function apiLyric(
     }
     const lrc = body.lrc.lyric;
     const lines = lrc.split("\n");
+    let prev = 0;
     for (const line of lines) {
       const r = /^\[(\d{2,}):(\d{2})(?:[\.\:](\d{2,3}))?](.*)$/g.exec(
         line.trim()
@@ -293,8 +294,12 @@ export async function apiLyric(
         const second = parseInt(r[2]);
         const millisecond = parseInt(r[3]) * r[3].length === 2 ? 10 : 1;
         const txt = r[4];
-        time.push(minute * 60 + second + millisecond / 1000);
-        text.push(txt || "Lyric");
+        const current = minute * 60 + second + millisecond / 1000;
+        if (current >= prev) {
+          prev = current;
+          time.push(current);
+          text.push(txt || "Lyric");
+        }
       }
     }
     return { time, text };
