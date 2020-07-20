@@ -72,6 +72,22 @@ export class ButtonManager {
     this.updateButton(ButtonLabel.account, text, tooltip, command);
   }
 
+  static buttonPrevious(personalFm: boolean): void {
+    personalFm
+      ? this.updateButton(
+          ButtonLabel.previous,
+          "$(trash)",
+          "Trash",
+          "cloudmusic.fmTrash"
+        )
+      : this.updateButton(
+          ButtonLabel.previous,
+          "$(chevron-left)",
+          "Previous",
+          "cloudmusic.previous"
+        );
+  }
+
   static buttonPlay(playing: boolean): void {
     this.updateButton(
       ButtonLabel.play,

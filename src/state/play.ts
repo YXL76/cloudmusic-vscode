@@ -1,13 +1,14 @@
 import { join } from "path";
+import { commands } from "vscode";
 import { readdirSync, unlinkSync } from "fs";
 import { lock } from "./lock";
 import { TMP_DIR } from "../constant/setting";
 import { Lyric } from "../constant/type";
 import { player } from "../util/player";
 import { apiPersonalFm } from "../util/api";
-import { songsItem2TreeItem } from "../util/util";
+import { songsItem2TreeItem, load } from "../util/util";
 import { ButtonManager } from "../manager/buttonManager";
-import { QueueProvider, QueueItemTreeItem } from "../provider/queueProvider";
+import { QueueItemTreeItem } from "../provider/queueProvider";
 const { closestSearch } = require("@thejellyfish/binary-search");
 
 export class Playing {
@@ -56,18 +57,19 @@ export class PersonalFm {
     return this.state;
   }
 
-  static set(newValue: boolean): void {
+  static async set(newValue: boolean): Promise<void> {
     if (newValue !== this.state) {
       this.state = newValue;
+      commands.executeCommand("cloudmusic.clearQueue");
+      ButtonManager.buttonPrevious(newValue);
       if (newValue) {
-        QueueProvider.getInstance().clear();
-      } else {
+        load(await this.next());
       }
     }
   }
 
   static async next(): Promise<QueueItemTreeItem> {
-    if (!this.item.length) {
+    if (this.item.length === 0) {
       const songs = await apiPersonalFm();
       this.item = await songsItem2TreeItem(
         0,
@@ -75,6 +77,7 @@ export class PersonalFm {
         songs
       );
     }
-    return this.item.splice(1)[0];
+
+    return this.item.splice(0, 1)[0];
   }
 }

@@ -246,8 +246,7 @@ export function activate(context: ExtensionContext): void {
     }
     switch (pick.type) {
       case 1:
-        PersonalFm.set(true);
-        load(await PersonalFm.next());
+        PersonalFm.set(!PersonalFm.get());
         break;
       case 2:
         const userMusicRankingWeekly = window.createWebviewPanel(
