@@ -51,11 +51,6 @@
   dependencies:
     mkdirp "^1.0.4"
 
-"@thejellyfish/binary-search@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@thejellyfish/binary-search/-/binary-search-1.0.4.tgz#0659dca7b96f04997e97229d32e33fb5321a9438"
-  integrity sha512-KZuj/EHKyFShFb1I6/kqqJHb6Z+mqvykJGZoMvcs/FUZGV1ss/fU2neIQCf/3eaRZgJnchK27TM+TvjbY1D6bA==
-
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
