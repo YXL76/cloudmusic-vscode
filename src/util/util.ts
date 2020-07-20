@@ -30,7 +30,7 @@ export function sleep(ms: number): Promise<unknown> {
   });
 }
 
-export async function songItem2TreeItem(
+export async function songsItem2TreeItem(
   id: number,
   ids: number[],
   songs: SongsItem[]
@@ -61,7 +61,7 @@ export async function getPlaylistContentIntelligence(
 ): Promise<QueueItemTreeItem[]> {
   const songs = await apiPlaymodeIntelligenceList(id, pid);
   const ids = songs.map((song) => song.id);
-  return await songItem2TreeItem(id, ids, songs);
+  return await songsItem2TreeItem(id, ids, songs);
 }
 
 export function solveArtist(item: Artist): Artist {
