@@ -9,7 +9,6 @@ import { apiPersonalFm } from "../util/api";
 import { songsItem2TreeItem, load } from "../util/util";
 import { ButtonManager } from "../manager/buttonManager";
 import { QueueItemTreeItem } from "../provider/queueProvider";
-const { closestSearch } = require("@thejellyfish/binary-search");
 
 export class Playing {
   private static state = false;
@@ -32,8 +31,32 @@ export const lyric: Lyric = {
   text: ["Lyric"],
 };
 
+function binarySearch(newValue: number) {
+  const { time, delay } = lyric;
+  const needle = newValue + delay;
+
+  let start = 0;
+  let end = time.length - 1;
+
+  while (end - start > 1) {
+    const middle = Math.floor((start + end) / 2);
+    const result = needle - time[middle];
+
+    if (!result) {
+      return middle;
+    }
+    if (result > 0) {
+      start = middle;
+    } else {
+      end = middle;
+    }
+  }
+
+  return start;
+}
+
 export function setPosition(newValue: number): void {
-  const index = closestSearch(lyric.time, newValue + lyric.delay);
+  const index = binarySearch(newValue);
   ButtonManager.buttonLyric(lyric.text[index]);
   if (!lock.deleteTmp && newValue > 100 && !lock.playerLoad) {
     lock.deleteTmp = true;
