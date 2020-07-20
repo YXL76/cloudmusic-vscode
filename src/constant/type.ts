@@ -81,8 +81,8 @@ export interface Player {
   pid: number;
   dt: number;
   time: number;
-  stop(): Promise<void>;
-  load(url: string, id: number, pid: number, dt: number): Promise<void>;
-  togglePlay(): Promise<void>;
-  volume(level: number): Promise<void>;
+  stop(): void;
+  load(url: string, id: number, pid: number, dt: number): void;
+  togglePlay(): void;
+  volume(level: number): void;
 }

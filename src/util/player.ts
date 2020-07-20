@@ -17,7 +17,7 @@ class NoPlayer implements Player {
   dt = 0;
   time = Date.now();
 
-  async stop(): Promise<void> {
+  stop(): void {
     //
   }
 
@@ -26,12 +26,12 @@ class NoPlayer implements Player {
     //
   }
 
-  async togglePlay(): Promise<void> {
+  togglePlay(): void {
     //
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async volume(_level: number): Promise<void> {
+  volume(_level: number): void {
     //
   }
 }
@@ -58,7 +58,7 @@ class AudioPlayer implements Player {
     }, 1000);
   }
 
-  async stop(): Promise<void> {
+  stop(): void {
     Playing.set(false);
     this.player.stop();
   }
@@ -93,7 +93,7 @@ class AudioPlayer implements Player {
     }
   }
 
-  async togglePlay(): Promise<void> {
+  togglePlay(): void {
     if (this.id) {
       if (Playing.get()) {
         this.player.pause();
@@ -106,7 +106,7 @@ class AudioPlayer implements Player {
     }
   }
 
-  async volume(level: number): Promise<void> {
+  volume(level: number): void {
     this.player.setVolume(level);
     ButtonManager.buttonVolume(level);
   }
