@@ -63,6 +63,7 @@ export function activate(context: ExtensionContext): void {
         readFileSync(ACCOUNT_FILE, "utf8")
       );
       AccountManager.login(phone, account, md5_password).then(() => {
+        LoggedIn.set(true);
         if (AUTO_CHECK) {
           AccountManager.dailySignin();
         }
@@ -183,6 +184,7 @@ export function activate(context: ExtensionContext): void {
           //
         }
       );
+      LoggedIn.set(true);
       window.showInformationMessage("Sign in success");
     } else {
       window.showErrorMessage("Sign in fail");
@@ -195,7 +197,7 @@ export function activate(context: ExtensionContext): void {
   });
 
   // sign out command
-  const signout = commands.registerCommand("cloudmusic.signout", async () => {
+  const signout = commands.registerCommand("cloudmusic.signout", () => {
     if (!LoggedIn.get()) {
       return;
     }
@@ -205,6 +207,7 @@ export function activate(context: ExtensionContext): void {
         //
       });
     } catch {}
+    LoggedIn.set(false);
     window.showInformationMessage("Sign out success");
   });
 
