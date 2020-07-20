@@ -39,6 +39,7 @@ Realized functions:
 - Play, save, like songs
 - Listen check
 - Intelligent mode
+- Personal FM
 - Lyric display
 - Cache management
 - Optional lossless music
@@ -223,7 +224,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |              event               |          动态          |        |
 |            event_del             |        删除动态        |        |
 |          event_forward           |        转发动态        |        |
-|             fm_trash             |         垃圾桶         |        |
+|             fm_trash             |         垃圾桶         |   ✔️   |
 |              follow              |   关注与取消关注用户   |   ❌   |
 |     history_recommend_songs      |    历史每日推荐歌曲    |        |
 |  history_recommend_songs_detail  |  历史每日推荐歌曲详情  |        |
@@ -237,7 +238,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |           msg_notices            |          通知          |        |
 |           msg_private            |          私信          |        |
 |       msg_private_history        |        私信内容        |        |
-|           personal_fm            |        私人 FM         |        |
+|           personal_fm            |        私人 FM         |   ✔️   |
 |           personalized           |        推荐歌单        |        |
 |      personalized_djprogram      |        推荐电台        |        |
 |         personalized_mv          |        推荐 MV         |   ❌   |
