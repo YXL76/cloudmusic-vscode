@@ -74,7 +74,6 @@ export type NativePlayer = {
   isPaused(): boolean;
   empty(): boolean;
   position(): number;
-  state(): string;
 };
 
 export interface Player {
