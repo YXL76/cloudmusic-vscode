@@ -19,6 +19,8 @@ const {
   check_music,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   daily_signin,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  fm_trash,
   like,
   likelist,
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -169,6 +171,20 @@ export async function apiDailySignin(): Promise<number> {
   } catch {
     return 0;
   }
+}
+
+export async function apiFmTrash(id: number): Promise<boolean> {
+  try {
+    const { status } = await fm_trash({
+      id,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+    });
+    if (status === 200) {
+      return true;
+    }
+  } catch {}
+  return false;
 }
 
 export async function apiLike(id: number, islike?: string): Promise<boolean> {
