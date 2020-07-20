@@ -4,7 +4,10 @@ import { lock } from "./lock";
 import { TMP_DIR } from "../constant/setting";
 import { Lyric } from "../constant/type";
 import { player } from "../util/player";
+import { apiPersonalFm } from "../util/api";
+import { songsItem2TreeItem } from "../util/util";
 import { ButtonManager } from "../manager/buttonManager";
+import { QueueProvider, QueueItemTreeItem } from "../provider/queueProvider";
 const { closestSearch } = require("@thejellyfish/binary-search");
 
 export class Playing {
@@ -42,5 +45,36 @@ export function setPosition(newValue: number): void {
       }
     });
     lock.playerLoad = false;
+  }
+}
+
+export class PersonalFm {
+  private static state = false;
+  private static item: QueueItemTreeItem[] = [];
+
+  static get(): boolean {
+    return this.state;
+  }
+
+  static set(newValue: boolean): void {
+    if (newValue !== this.state) {
+      this.state = newValue;
+      if (newValue) {
+        QueueProvider.getInstance().clear();
+      } else {
+      }
+    }
+  }
+
+  static async next(): Promise<QueueItemTreeItem> {
+    if (!this.item.length) {
+      const songs = await apiPersonalFm();
+      this.item = await songsItem2TreeItem(
+        0,
+        songs.map(({ id }) => id),
+        songs
+      );
+    }
+    return this.item.splice(1)[0];
   }
 }

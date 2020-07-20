@@ -31,7 +31,7 @@ import { load, songPick } from "./util/util";
 import { Cache } from "./util/cache";
 import { player } from "./util/player";
 import { lock } from "./state/lock";
-import { lyric } from "./state/play";
+import { lyric, PersonalFm } from "./state/play";
 import { IsLike } from "./state/like";
 import { LoggedIn } from "./state/login";
 import { userMusicRanking } from "./page/page";
@@ -214,22 +214,26 @@ export function activate(context: ExtensionContext): void {
         type: 0,
       },
       {
+        label: "Personal FM",
+        type: 1,
+      },
+      {
         label: "User music ranking",
         description: "Weekly",
         id: "userMusicRankingWeekly",
         queryType: 1,
-        type: 1,
+        type: 2,
       },
       {
         label: "User music ranking",
         description: "All Time",
         id: "userMusicRankingAllTime",
         queryType: 0,
-        type: 1,
+        type: 2,
       },
       {
         label: "Sign out",
-        type: 2,
+        type: 3,
       },
     ]);
     if (!pick) {
@@ -237,6 +241,10 @@ export function activate(context: ExtensionContext): void {
     }
     switch (pick.type) {
       case 1:
+        PersonalFm.set(true);
+        load(await PersonalFm.next());
+        break;
+      case 2:
         const userMusicRankingWeekly = window.createWebviewPanel(
           `${pick.id}`,
           `${pick.label} (${pick.description})`,
@@ -253,7 +261,7 @@ export function activate(context: ExtensionContext): void {
           await apiUserRecord(pick.queryType)
         );
         break;
-      case 2:
+      case 3:
         commands.executeCommand("cloudmusic.signout");
         break;
     }
@@ -272,7 +280,12 @@ export function activate(context: ExtensionContext): void {
 
   // next command
   const next = commands.registerCommand("cloudmusic.next", async () => {
-    if (!lock.playerLoad && !lock.queue && queueProvider.songs.length > 1) {
+    if (lock.playerLoad) {
+      return;
+    }
+    if (PersonalFm.get()) {
+      load(await PersonalFm.next());
+    } else if (!lock.queue && queueProvider.songs.length > 1) {
       lock.queue = true;
       await load(queueProvider.songs[1]);
       queueProvider.shift(1);
