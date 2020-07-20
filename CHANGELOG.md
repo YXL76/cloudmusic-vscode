@@ -6,6 +6,23 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.1.0] - 2020-07-20
+
+### Added
+
+- Personal fm
+- Command: `cloudmusic.fmTrash`
+
+### Changed
+
+- Lyric: match more accurately. default delay is changed to `-1.0`
+
+### Fixed
+
+- Status bar: like button will be changed every load
+- Queue: lock every operation
+- The login status will be changed correctly
+
 ## [3.0.0] - 2020-07-19
 
 ### Added
