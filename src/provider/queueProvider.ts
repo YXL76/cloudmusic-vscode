@@ -6,9 +6,7 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import { IsLike } from "../state/like";
 import { SongsItem } from "../constant/type";
-import { AccountManager } from "../manager/accountManager";
 const { unsortInplace } = require("array-unsort");
 
 export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
@@ -58,7 +56,6 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
         index += this.songs.length;
       }
       this.songs = this.songs.slice(index).concat(this.songs.slice(0, index));
-      IsLike.set(AccountManager.likelist.has(this.songs[0].item.id));
     }
   }
 

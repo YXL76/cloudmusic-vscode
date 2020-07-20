@@ -7,6 +7,7 @@ import { Cache } from "../util/cache";
 import { player } from "./player";
 import { lock } from "../state/lock";
 import { lyric } from "../state/play";
+import { IsLike } from "../state/like";
 import { TreeItemCollapsibleState } from "vscode";
 import {
   apiAlbum,
@@ -20,6 +21,7 @@ import {
   apiSongUrl,
 } from "./api";
 import { Artist, AlbumsItem, SongsItem } from "../constant/type";
+import { AccountManager } from "../manager/accountManager";
 import { ButtonManager } from "../manager/buttonManager";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 import { setTimeout } from "timers";
@@ -117,6 +119,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
     const path = await Cache.get(`${id}`, md5);
     const { time, text } = await apiLyric(id);
     ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
+    IsLike.set(AccountManager.likelist.has(id));
 
     if (path) {
       player.load(path, id, pid, dt);

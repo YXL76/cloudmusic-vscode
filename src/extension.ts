@@ -316,7 +316,7 @@ export function activate(context: ExtensionContext): void {
   // like command
   const like = commands.registerCommand("cloudmusic.like", async () => {
     const islike = !IsLike.get();
-    const id = queueProvider.songs[0].item.id;
+    const { id } = player;
     if (await apiLike(id, islike ? "" : "false")) {
       IsLike.set(islike);
       islike
