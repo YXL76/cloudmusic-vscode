@@ -282,19 +282,21 @@
 
 - 杂项
 
-|      module       |     function     | status |
-| :---------------: | :--------------: | :----: |
-|      banner       |    首页轮播图    |   ❌   |
-|       batch       |   批量请求接口   |        |
-|     dj_banner     |   电台 banner    |   ❌   |
-|     hot_topic     |     热门话题     |        |
-| program_recommend |     推荐节目     |        |
-|     top_album     |     新碟上架     |        |
-|    top_artists    |     热门歌手     |        |
-|     top_list      |      排行榜      |        |
-|      top_mv       |    MV 排行榜     |        |
-|     top_song      |     新歌速递     |        |
-|      toplist      |   所有榜单介绍   |        |
-|  toplist_artist   |      歌手榜      |        |
-|  toplist_detail   | 所有榜单内容摘要 |        |
-|      weblog       |     操作记录     |        |
+|        module        |       function        | status |
+| :------------------: | :-------------------: | :----: |
+|        banner        |      首页轮播图       |   ❌   |
+|        batch         |     批量请求接口      |        |
+|      dj_banner       |      电台 banner      |   ❌   |
+| homepage_block_page  | 首页-发现 block page  |        |
+| homepage_dragon_ball | 首页-发现 dragon ball |        |
+|      hot_topic       |       热门话题        |        |
+|  program_recommend   |       推荐节目        |        |
+|      top_album       |       新碟上架        |        |
+|     top_artists      |       热门歌手        |        |
+|       top_list       |        排行榜         |        |
+|        top_mv        |       MV 排行榜       |        |
+|       top_song       |       新歌速递        |        |
+|       toplist        |     所有榜单介绍      |        |
+|    toplist_artist    |        歌手榜         |        |
+|    toplist_detail    |   所有榜单内容摘要    |        |
+|        weblog        |       操作记录        |        |
