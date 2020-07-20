@@ -30,6 +30,8 @@ const {
   logout,
   lyric,
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  personal_fm,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   playlist_detail,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   playlist_tracks,
@@ -298,6 +300,32 @@ export async function apiLyric(
     return { time, text };
   } catch {
     return { time, text };
+  }
+}
+
+export async function apiPersonalFm(): Promise<SongsItem[]> {
+  try {
+    const { status, body } = await personal_fm({
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { data } = body;
+    return data.map(({ name, id, duration, alias, artists, album }) => ({
+      name,
+      id,
+      dt: duration,
+      alia: alias,
+      ar: artists.map(({ id, name }) => ({ id, name })),
+      al: {
+        id: album.id,
+        name: album.name,
+      },
+    }));
+  } catch {
+    return [];
   }
 }
 
