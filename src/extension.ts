@@ -104,8 +104,8 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand(
     "cloudmusic.playSong",
     async (element: QueueItemTreeItem) => {
-      PersonalFm.set(false);
       if (!lock.playerLoad && !lock.queue) {
+        PersonalFm.set(false);
         lock.queue = true;
         await load(element);
         queueProvider.top(element);
@@ -355,8 +355,8 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand(
     "cloudmusic.playPlaylist",
     async (element: PlaylistItemTreeItem) => {
-      PersonalFm.set(false);
       if (!lock.queue) {
+        PersonalFm.set(false);
         lock.queue = true;
         await PlaylistProvider.playPlaylist(element.item.id);
         lock.queue = false;
