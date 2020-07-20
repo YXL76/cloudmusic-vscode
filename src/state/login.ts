@@ -1,10 +1,6 @@
-import { player } from "../util/player";
+import { commands } from "vscode";
 import { AccountManager } from "../manager/accountManager";
 import { ButtonManager } from "../manager/buttonManager";
-import { PlaylistProvider } from "../provider/playlistProvider";
-import { QueueProvider } from "../provider/queueProvider";
-
-const queueProvider = QueueProvider.getInstance();
 
 export class LoggedIn {
   private static state = false;
@@ -29,13 +25,9 @@ export class LoggedIn {
           "Account",
           "cloudmusic.signin"
         );
-        ButtonManager.buttonSong("Song", "");
         ButtonManager.hide();
-        player.stop();
       }
-      PlaylistProvider.refresh();
-      queueProvider.clear();
-      queueProvider.refresh();
+      commands.executeCommand("cloudmusic.clearQueue");
     }
   }
 }

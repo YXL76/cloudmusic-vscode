@@ -32,7 +32,7 @@ import {
   apiPlaylistTracks,
   apiUserRecord,
 } from "./util/api";
-import { load, songPick } from "./util/util";
+import { load, stop, songPick } from "./util/util";
 import { Cache } from "./util/cache";
 import { player } from "./util/player";
 import { lock } from "./state/lock";
@@ -92,11 +92,9 @@ export function activate(context: ExtensionContext): void {
   window.registerTreeDataProvider("queue", queueProvider);
 
   commands.registerCommand("cloudmusic.clearQueue", async () => {
+    stop();
     queueProvider.clear();
     queueProvider.refresh();
-    player.id = 0;
-    player.stop();
-    ButtonManager.buttonSong("Song", "");
   });
   commands.registerCommand("cloudmusic.randomQueue", () => {
     queueProvider.random();

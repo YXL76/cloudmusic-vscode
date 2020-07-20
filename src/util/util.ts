@@ -102,6 +102,13 @@ export function solveSongItem(item: SongsItem): SongsItem {
   };
 }
 
+export function stop(): void {
+  player.id = 0;
+  player.stop();
+  ButtonManager.buttonSong("Song", "");
+  ButtonManager.buttonLyric("Lyric");
+}
+
 export async function load(element: QueueItemTreeItem): Promise<void> {
   lock.playerLoad = true;
   try {
