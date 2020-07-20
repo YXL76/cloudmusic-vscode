@@ -71,6 +71,8 @@
 
 ## Known Issues
 
+- 对于使用代理软件的用户，如果播放出现网络错误，请设置`http.proxy`（不是`cloudmusic.music.proxy`）
+
 ## Release Notes
 
 [CHANGELOG](./CHANGELOG.md)
