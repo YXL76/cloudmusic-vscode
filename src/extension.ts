@@ -93,13 +93,21 @@ export function activate(context: ExtensionContext): void {
   window.registerTreeDataProvider("queue", queueProvider);
 
   commands.registerCommand("cloudmusic.clearQueue", async () => {
-    stop();
-    queueProvider.clear();
-    queueProvider.refresh();
+    if (!lock.queue) {
+      lock.queue = true;
+      stop();
+      queueProvider.clear();
+      queueProvider.refresh();
+      lock.queue = false;
+    }
   });
   commands.registerCommand("cloudmusic.randomQueue", () => {
-    queueProvider.random();
-    queueProvider.refresh();
+    if (!lock.queue) {
+      lock.queue = true;
+      queueProvider.random();
+      queueProvider.refresh();
+      lock.queue = false;
+    }
   });
   commands.registerCommand(
     "cloudmusic.playSong",
@@ -368,29 +376,49 @@ export function activate(context: ExtensionContext): void {
   );
   commands.registerCommand(
     "cloudmusic.addPlaylist",
-    (element: PlaylistItemTreeItem) =>
-      PlaylistProvider.addPlaylist(element.item.id)
+    (element: PlaylistItemTreeItem) => {
+      if (!lock.queue) {
+        lock.queue = true;
+        PlaylistProvider.addPlaylist(element.item.id);
+        lock.queue = false;
+      }
+    }
   );
   commands.registerCommand(
     "cloudmusic.intelligence",
     async (element: QueueItemTreeItem) => {
-      PersonalFm.set(false);
-      await PlaylistProvider.intelligence(element);
-      if (!lock.playerLoad) {
-        load(element);
+      if (!lock.queue) {
+        lock.queue = true;
+        PersonalFm.set(false);
+        await PlaylistProvider.intelligence(element);
+        if (!lock.playerLoad) {
+          load(element);
+        }
+        lock.queue = false;
       }
     }
   );
-  commands.registerCommand("cloudmusic.addSong", (element: QueueItemTreeItem) =>
-    PlaylistProvider.addSong(element)
+  commands.registerCommand(
+    "cloudmusic.addSong",
+    (element: QueueItemTreeItem) => {
+      if (!lock.queue) {
+        lock.queue = true;
+        PlaylistProvider.addSong(element);
+        lock.queue = false;
+      }
+    }
   );
   commands.registerCommand(
     "cloudmusic.playSongWithPlaylist",
     async (element: QueueItemTreeItem) => {
-      PersonalFm.set(false);
-      await PlaylistProvider.playPlaylist(element.pid, element);
-      if (!lock.playerLoad) {
-        load(element);
+      if (!lock.queue) {
+        PersonalFm.set(false);
+        lock.queue = true;
+        await PlaylistProvider.playPlaylist(element.pid, element);
+        lock.queue = false;
+        if (!lock.playerLoad) {
+          load(element);
+        }
       }
     }
   );
