@@ -442,7 +442,7 @@ export function activate(context: ExtensionContext): void {
     const pick = await window.showQuickPick([
       {
         label: "Lyric delay",
-        description: "Set lyric delay (defult: -3.5)",
+        description: "Set lyric delay (defult: -1.0)",
       },
     ]);
     if (!pick) {

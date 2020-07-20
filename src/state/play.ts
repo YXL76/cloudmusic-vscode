@@ -26,7 +26,7 @@ export class Playing {
 }
 
 export const lyric: Lyric = {
-  delay: -3.5,
+  delay: -1.0,
   time: [0],
   text: ["Lyric"],
 };
