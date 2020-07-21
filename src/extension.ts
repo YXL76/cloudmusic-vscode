@@ -277,9 +277,10 @@ export function activate(context: ExtensionContext): void {
 
   // previous command
   const previous = commands.registerCommand("cloudmusic.previous", async () => {
-    if (!lock.playerLoad && queueProvider.songs.length > 1) {
+    const len = queueProvider.songs.length - 1;
+    if (!lock.playerLoad && len > 1) {
       lockQueue(async () => {
-        await load(queueProvider.songs[-1]);
+        await load(queueProvider.songs[len]);
         queueProvider.shift(-1);
         queueProvider.refresh();
       });
