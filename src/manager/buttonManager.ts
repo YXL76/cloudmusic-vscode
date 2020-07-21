@@ -38,14 +38,14 @@ export class ButtonManager {
 
   private static buttonShow = getSetting();
   private static buttonName = [
-    "Account",
-    "Previous",
-    "Play",
-    "Next",
-    "Like",
-    "Volume",
-    "Song",
-    "Lyric",
+    "$(account)Account",
+    "$(chevron-left)Previous",
+    "$(play)Play",
+    "$(chevron-right)Next",
+    "$(star)Like",
+    "$(unmute)Volume",
+    "$(file-media)Song",
+    "$(text-size)Lyric",
   ];
 
   static init(): void {
@@ -74,7 +74,11 @@ export class ButtonManager {
   }
 
   static async toggle(): Promise<void> {
-    const pick: { label: string; description: string; id: number }[] = [];
+    const pick: {
+      label: string;
+      description: string;
+      id: number;
+    }[] = [];
     for (let id = 1; id < this.buttons.length; ++id) {
       pick.push({
         label: this.buttonName[id],
