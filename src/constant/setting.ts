@@ -9,6 +9,7 @@ export const PLAYER_AVAILABLE = PLATFORM === "win32" || "linux" || "darwin";
 
 export const SETTING_DIR = join(homedir(), ".cloudmusic");
 export const ACCOUNT_FILE = join(SETTING_DIR, ".account");
+export const BUTTON_FILE = join(SETTING_DIR, ".button");
 
 export const AUTO_CHECK = conf.get("account.autoCheck");
 

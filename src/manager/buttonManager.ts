@@ -1,4 +1,7 @@
+import { existsSync, readFileSync, writeFile } from "fs";
 import { Command, StatusBarAlignment, StatusBarItem, window } from "vscode";
+import { BUTTON_FILE } from "../constant/setting";
+import { LoggedIn } from "../state/login";
 
 enum ButtonLabel {
   account,
@@ -11,6 +14,16 @@ enum ButtonLabel {
   lyric,
 }
 
+function getSetting(): boolean[] {
+  try {
+    if (existsSync(BUTTON_FILE)) {
+      const { show } = JSON.parse(readFileSync(BUTTON_FILE, "utf8"));
+      return show;
+    }
+  } catch {}
+  return [true, true, true, true, true, true, true, false];
+}
+
 export class ButtonManager {
   private static buttons: StatusBarItem[] = [
     window.createStatusBarItem(StatusBarAlignment.Left, 0),
@@ -21,6 +34,18 @@ export class ButtonManager {
     window.createStatusBarItem(StatusBarAlignment.Left, -5),
     window.createStatusBarItem(StatusBarAlignment.Left, -6),
     window.createStatusBarItem(StatusBarAlignment.Left, -7),
+  ];
+
+  private static buttonShow = getSetting();
+  private static buttonName = [
+    "Account",
+    "Previous",
+    "Play",
+    "Next",
+    "Like",
+    "Volume",
+    "Song",
+    "Lyric",
   ];
 
   static init(): void {
@@ -48,13 +73,40 @@ export class ButtonManager {
     }
   }
 
+  static async toggle(): Promise<void> {
+    const pick: { label: string; description: string; id: number }[] = [];
+    for (let id = 1; id < this.buttons.length; ++id) {
+      pick.push({
+        label: this.buttonName[id],
+        description: this.buttonShow[id] ? "show" : "hide",
+        id,
+      });
+    }
+    const button = await window.showQuickPick(pick, {
+      placeHolder: "Set buton is showing or hidding",
+    });
+    if (!button) {
+      return;
+    }
+    const { id } = button;
+    this.buttonShow[id] = !this.buttonShow[id];
+    if (LoggedIn.get()) {
+      this.buttonShow[id] ? this.buttons[id].show() : this.buttons[id].hide();
+    }
+    writeFile(BUTTON_FILE, JSON.stringify({ show: this.buttonShow }), () => {
+      //
+    });
+  }
+
   static clearButtonCommand(index: number): void {
     this.buttons[index].command = undefined;
   }
 
   static show(): void {
     for (let i = 1; i < this.buttons.length; ++i) {
-      this.buttons[i].show();
+      if (this.buttonShow[i]) {
+        this.buttons[i].show();
+      }
     }
   }
 
