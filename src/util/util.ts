@@ -32,6 +32,14 @@ export function sleep(ms: number): Promise<unknown> {
   });
 }
 
+export async function lockQueue(callback: () => Promise<void>): Promise<void> {
+  if (!lock.queue) {
+    lock.queue = true;
+    await callback();
+    lock.queue = false;
+  }
+}
+
 export async function songsItem2TreeItem(
   id: number,
   ids: number[],
