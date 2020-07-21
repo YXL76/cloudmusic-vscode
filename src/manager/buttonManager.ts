@@ -26,14 +26,14 @@ function getSetting(): boolean[] {
 
 export class ButtonManager {
   private static buttons: StatusBarItem[] = [
-    window.createStatusBarItem(StatusBarAlignment.Left, 0),
-    window.createStatusBarItem(StatusBarAlignment.Left, -1),
-    window.createStatusBarItem(StatusBarAlignment.Left, -2),
-    window.createStatusBarItem(StatusBarAlignment.Left, -3),
-    window.createStatusBarItem(StatusBarAlignment.Left, -4),
-    window.createStatusBarItem(StatusBarAlignment.Left, -5),
-    window.createStatusBarItem(StatusBarAlignment.Left, -6),
-    window.createStatusBarItem(StatusBarAlignment.Left, -7),
+    window.createStatusBarItem(StatusBarAlignment.Left, -128),
+    window.createStatusBarItem(StatusBarAlignment.Left, -129),
+    window.createStatusBarItem(StatusBarAlignment.Left, -130),
+    window.createStatusBarItem(StatusBarAlignment.Left, -131),
+    window.createStatusBarItem(StatusBarAlignment.Left, -132),
+    window.createStatusBarItem(StatusBarAlignment.Left, -133),
+    window.createStatusBarItem(StatusBarAlignment.Left, -134),
+    window.createStatusBarItem(StatusBarAlignment.Left, -135),
   ];
 
   private static buttonShow = getSetting();
