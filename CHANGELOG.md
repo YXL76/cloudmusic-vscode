@@ -6,6 +6,20 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.2.0] - 2020-07-21
+
+### Added
+
+- Command: add `cloudmusic.toggleButton` which can control button visibility([#6](https://github.com/YXL76/cloudmusic-vscode/issues/6))
+
+### Changed
+
+- Player: playback will be stopped when network error occurs
+
+### Fixed
+
+- Command: `previoud` will no longer load undefined item
+
 ## [3.1.0] - 2020-07-20
 
 ### Added
