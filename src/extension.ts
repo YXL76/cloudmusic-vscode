@@ -330,6 +330,14 @@ export function activate(context: ExtensionContext): void {
     }
   });
 
+  // toggleButton command
+  const toggleButton = commands.registerCommand(
+    "cloudmusic.toggleButton",
+    () => {
+      ButtonManager.toggle();
+    }
+  );
+
   context.subscriptions.push(signin);
   context.subscriptions.push(dailyCheck);
   context.subscriptions.push(signout);
@@ -339,6 +347,7 @@ export function activate(context: ExtensionContext): void {
   context.subscriptions.push(play);
   context.subscriptions.push(like);
   context.subscriptions.push(volume);
+  context.subscriptions.push(toggleButton);
 
   // init playlist provider
   const userPlaylistProvider = PlaylistProvider.getUserInstance();

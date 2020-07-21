@@ -98,6 +98,10 @@
         "title": "Cloudmusic: Volume"
       },
       {
+        "command": "cloudmusic.toggleButton",
+        "title": "Cloudmusic: Toggle button"
+      },
+      {
         "command": "cloudmusic.refreshPlaylist",
         "title": "Refresh",
         "icon": "$(refresh)"
