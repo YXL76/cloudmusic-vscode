@@ -165,11 +165,7 @@ export class ButtonManager {
   }
 
   static buttonSong(name: string, ar: string): void {
-    this.updateButton(
-      ButtonLabel.song,
-      name.length > 12 ? `${name.slice(0, 12)}...` : name,
-      ar ? `${name} - ${ar}` : ""
-    );
+    this.updateButton(ButtonLabel.song, name, ar ? `${name} - ${ar}` : name);
   }
 
   static buttonLyric(text: string): void {
