@@ -67,6 +67,8 @@ class AudioPlayer implements Player {
     lock.deleteTmp = false;
     let i = 5;
     while (i) {
+      await sleep(128);
+
       if (this.player.load(url)) {
         Playing.set(true);
         const pTime = this.time;
@@ -85,7 +87,6 @@ class AudioPlayer implements Player {
         break;
       }
       --i;
-      await sleep(128);
     }
     if (!i) {
       lock.playerLoad = false;
