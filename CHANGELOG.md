@@ -6,6 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.2.1] - 2020-07-22
+
+### Changed
+
+- Status bar: change buttons' position
+
+### Fixed
+
+- Player: keep volume setting
+
 ## [3.2.0] - 2020-07-21
 
 ### Added
