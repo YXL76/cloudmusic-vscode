@@ -81,6 +81,7 @@ export interface Player {
   pid: number;
   dt: number;
   time: number;
+  level: number;
   stop(): void;
   load(url: string, id: number, pid: number, dt: number): void;
   togglePlay(): void;

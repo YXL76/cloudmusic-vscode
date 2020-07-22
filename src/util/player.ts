@@ -16,6 +16,7 @@ class NoPlayer implements Player {
   pid = 0;
   dt = 0;
   time = Date.now();
+  level = 85;
 
   stop(): void {
     //
@@ -43,6 +44,7 @@ class AudioPlayer implements Player {
   pid = 0;
   dt = 0;
   time = Date.now();
+  level = 85;
 
   constructor() {
     this.player = new nPlayer();
@@ -70,6 +72,7 @@ class AudioPlayer implements Player {
       await sleep(128);
 
       if (this.player.load(url)) {
+        this.player.setVolume(this.level);
         Playing.set(true);
         const pTime = this.time;
         this.time = Date.now();
@@ -108,6 +111,7 @@ class AudioPlayer implements Player {
   }
 
   volume(level: number): void {
+    this.level = level;
     this.player.setVolume(level);
     ButtonManager.buttonVolume(level);
   }
