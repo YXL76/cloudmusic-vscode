@@ -323,6 +323,7 @@
     "array-unsort": "^1.1.5",
     "cacache": "^15.0.5",
     "del": "^5.1.0",
-    "lru-cache": "^6.0.0"
+    "lru-cache": "^6.0.0",
+    "node-abi": "^2.18.0"
   }
 }
