@@ -7,10 +7,19 @@ import { apiScrobble } from "./api";
 import { lock } from "../state/lock";
 import { Playing, setPosition } from "../state/play";
 import { ButtonManager } from "../manager/buttonManager";
+const { getAbi } = require("node-abi");
+
 // @ts-ignore
 const nPlayer = __non_webpack_require__(
-  join("..", "build", "player", `${PLATFORM}.node`)
+  join(
+    "..",
+    "build",
+    "player",
+    // @ts-ignore
+    `${PLATFORM}-${getAbi(process.versions.electron, "electron")}.node`
+  )
 ).Player;
+
 class NoPlayer implements Player {
   id = 0;
   pid = 0;
