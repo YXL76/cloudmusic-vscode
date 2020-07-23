@@ -6,6 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.2.2] - 2020-07-23
+
+### Changed
+
+- Command: `cloudmusic.volume` inputbox will show current volume
+
+### Fixed
+
+- Player: build for different abi([#8](https://github.com/YXL76/cloudmusic-vscode/issues/8))
+
 ## [3.2.1] - 2020-07-22
 
 ### Changed
