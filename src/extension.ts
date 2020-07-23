@@ -323,6 +323,7 @@ export function activate(context: ExtensionContext): void {
   // volume command
   const volume = commands.registerCommand("cloudmusic.volume", async () => {
     const volume = await window.showInputBox({
+      value: `${player.level}`,
       placeHolder: "Please enter volume between 0 and 100.",
     });
     if (volume && /^\d+$/.exec(volume)) {
