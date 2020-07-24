@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.3.1] - 2020-07-24
+
+### Changed
+
+- Cache: music folder
+
 ## [3.3.0] - 2020-07-24
 
 ### Added
