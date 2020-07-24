@@ -1,6 +1,12 @@
 import * as crypto from "crypto";
 import { posix, join } from "path";
-import { commands, ExtensionContext, ViewColumn, window } from "vscode";
+import {
+  commands,
+  ExtensionContext,
+  QuickPickItem,
+  ViewColumn,
+  window,
+} from "vscode";
 import {
   existsSync,
   mkdirSync,
@@ -467,6 +473,9 @@ export function activate(context: ExtensionContext): void {
         label: "Lyric delay",
         description: "Set lyric delay (defult: -1.0)",
       },
+      {
+        label: "Show all lyric",
+      },
     ]);
     if (!pick) {
       return;
@@ -480,6 +489,20 @@ export function activate(context: ExtensionContext): void {
         return;
       }
       lyric.delay = parseFloat(delay);
+    } else {
+      const lyricItem: QuickPickItem[] = [];
+      for (let i = 0; i < lyric.text.length; ++i) {
+        lyricItem.push({
+          label: `[${lyric.time[i]}]`,
+          description: lyric.text[i],
+        });
+      }
+      const allLyric = await window.showQuickPick(lyricItem);
+      if (allLyric) {
+        await window.showInputBox({
+          value: allLyric.description,
+        });
+      }
     }
   });
   commands.registerCommand("cloudmusic.fmTrash", () => {
