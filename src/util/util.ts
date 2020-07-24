@@ -142,6 +142,9 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
       }
       const tmpFilePath = join(TMP_DIR, `${id}`);
       const tmpFile = createWriteStream(tmpFilePath);
+      tmpFile.on("pipe", () => {
+        player.load(tmpFilePath, id, pid, dt);
+      });
 
       http
         .get(url, (res) => {
@@ -150,9 +153,6 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
             tmpFile.close();
             Cache.put(`${id}`, tmpFilePath);
           });
-        })
-        .on("response", () => {
-          player.load(tmpFilePath, id, pid, dt);
         })
         .on("error", () => {
           lock.playerLoad = false;
