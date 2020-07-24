@@ -5,8 +5,10 @@ import {
   SongsItem,
   TrackIdsItem,
   SongDetail,
+  LyricData,
 } from "../constant/type";
 import { PROXY, MUSIC_QUALITY } from "../constant/setting";
+import { LyricCache } from "./cache";
 import { solveArtist, solveAlbumsItem, solveSongItem } from "./util";
 import { AccountManager } from "../manager/accountManager";
 
@@ -268,9 +270,11 @@ export async function apiLogout(): Promise<boolean> {
   }
 }
 
-export async function apiLyric(
-  id: number
-): Promise<{ time: number[]; text: string[] }> {
+export async function apiLyric(id: number): Promise<LyricData> {
+  const lyricCache = await LyricCache.get(`${id}`);
+  if (lyricCache) {
+    return lyricCache;
+  }
   const time: number[] = [0];
   const text: string[] = ["Lyric"];
   try {
@@ -302,10 +306,10 @@ export async function apiLyric(
         }
       }
     }
-    return { time, text };
-  } catch {
-    return { time, text };
-  }
+
+    LyricCache.put(`${id}`, { time, text });
+  } catch {}
+  return { time, text };
 }
 
 export async function apiPersonalFm(): Promise<SongsItem[]> {

@@ -65,6 +65,11 @@ export type Lyric = {
   text: string[];
 };
 
+export type LyricData = {
+  time: number[];
+  text: string[];
+};
+
 export type NativePlayer = {
   load(url: string): boolean;
   play(): boolean;

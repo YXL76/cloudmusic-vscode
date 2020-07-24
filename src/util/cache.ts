@@ -1,6 +1,10 @@
 import { readFileSync } from "fs";
-import { LruCacheValue } from "../constant/type";
-import { MUSIC_CACHE_DIR, MUSIC_CACHE_SIZE } from "../constant/setting";
+import { LruCacheValue, LyricData } from "../constant/type";
+import {
+  MUSIC_CACHE_DIR,
+  MUSIC_CACHE_SIZE,
+  LYRIC_CACHE_DIR,
+} from "../constant/setting";
 const cacache = require("cacache");
 const LRU = require("lru-cache");
 
@@ -41,10 +45,43 @@ export class MusicCache {
   }
 
   static async put(key: string, path: string, md5: string): Promise<void> {
-    await cacache.put(MUSIC_CACHE_DIR, key, readFileSync(path), {
-      integrity: md5,
-    });
-    const { integrity, size } = await cacache.get.info(MUSIC_CACHE_DIR, key);
-    MusicCache.lruCache.set(key, { integrity, size });
+    try {
+      await cacache.put(MUSIC_CACHE_DIR, key, readFileSync(path), {
+        integrity: md5,
+      });
+      const { integrity, size } = await cacache.get.info(MUSIC_CACHE_DIR, key);
+      this.lruCache.set(key, { integrity, size });
+    } catch {}
+  }
+}
+
+export class LyricCache {
+  static verify(): void {
+    cacache.verify(LYRIC_CACHE_DIR);
+  }
+
+  static clear(): void {
+    cacache.rm.all(LYRIC_CACHE_DIR);
+  }
+
+  static async get(key: string): Promise<LyricData | undefined> {
+    try {
+      const { path, time, integrity } = await cacache.get.info(
+        LYRIC_CACHE_DIR,
+        key
+      );
+      // 7 * 24 * 60 * 60 * 1000
+      if (Date.now() - time < 604800000) {
+        return JSON.parse(readFileSync(path, "utf8"));
+      } else {
+        cacache.rm.entry(LYRIC_CACHE_DIR, key);
+        cacache.rm.content(LYRIC_CACHE_DIR, integrity);
+      }
+    } catch {}
+    return undefined;
+  }
+
+  static put(key: string, data: LyricData): void {
+    cacache.put(LYRIC_CACHE_DIR, key, JSON.stringify(data));
   }
 }

@@ -37,7 +37,7 @@ import {
   apiUserRecord,
 } from "./util/api";
 import { lockQueue, load, stop, songPick } from "./util/util";
-import { MusicCache } from "./util/cache";
+import { MusicCache, LyricCache } from "./util/cache";
 import { player } from "./util/player";
 import { lock } from "./state/lock";
 import { lyric, PersonalFm } from "./state/play";
@@ -464,37 +464,49 @@ export function activate(context: ExtensionContext): void {
       {
         label: "Lyric delay",
         description: "Set lyric delay (defult: -1.0)",
+        type: 0,
       },
       {
-        label: "Show all lyric",
+        label: "Show full lyric",
+        type: 1,
+      },
+      {
+        label: "Clear lyric cache",
+        type: 2,
       },
     ]);
     if (!pick) {
       return;
     }
-    if (pick.label === "Lyric delay") {
-      const delay = await window.showInputBox({
-        value: `${lyric.delay}`,
-        placeHolder: "Please enter lyric delay.",
-      });
-      if (!delay || !/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay)) {
-        return;
-      }
-      lyric.delay = parseFloat(delay);
-    } else {
-      const lyricItem: QuickPickItem[] = [];
-      for (let i = 0; i < lyric.text.length; ++i) {
-        lyricItem.push({
-          label: `[${lyric.time[i]}]`,
-          description: lyric.text[i],
+    switch (pick.type) {
+      case 0:
+        const delay = await window.showInputBox({
+          value: `${lyric.delay}`,
+          placeHolder: "Please enter lyric delay.",
         });
-      }
-      const allLyric = await window.showQuickPick(lyricItem);
-      if (allLyric) {
-        await window.showInputBox({
-          value: allLyric.description,
-        });
-      }
+        if (!delay || !/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay)) {
+          return;
+        }
+        lyric.delay = parseFloat(delay);
+        break;
+      case 1:
+        const lyricItem: QuickPickItem[] = [];
+        for (let i = 0; i < lyric.text.length; ++i) {
+          lyricItem.push({
+            label: `[${lyric.time[i]}]`,
+            description: lyric.text[i],
+          });
+        }
+        const allLyric = await window.showQuickPick(lyricItem);
+        if (allLyric) {
+          await window.showInputBox({
+            value: allLyric.description,
+          });
+        }
+        break;
+      case 2:
+        LyricCache.clear();
+        break;
     }
   });
   commands.registerCommand("cloudmusic.fmTrash", () => {
@@ -504,5 +516,6 @@ export function activate(context: ExtensionContext): void {
 
 export function deactivate(): void {
   MusicCache.verify();
+  LyricCache.verify();
   del.sync([TMP_DIR], { force: true });
 }
