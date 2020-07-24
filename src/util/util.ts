@@ -3,7 +3,7 @@ import { join } from "path";
 import { createWriteStream } from "fs";
 import { commands, window } from "vscode";
 import { TMP_DIR } from "../constant/setting";
-import { Cache } from "../util/cache";
+import { MusicCache } from "../util/cache";
 import { player } from "./player";
 import { lock } from "../state/lock";
 import { lyric } from "../state/play";
@@ -124,7 +124,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
   try {
     const { pid, md5 } = element;
     const { id, dt, name, ar } = element.item;
-    const path = await Cache.get(`${id}`);
+    const path = await MusicCache.get(`${id}`);
     const { time, text } = await apiLyric(id);
     ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
     IsLike.set(AccountManager.likelist.has(id));
@@ -149,7 +149,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
           res.pipe(tmpFile);
           tmpFile.on("finish", () => {
             tmpFile.close();
-            Cache.put(`${id}`, tmpFilePath, md5);
+            MusicCache.put(`${id}`, tmpFilePath, md5);
           });
         })
         .on("error", () => {

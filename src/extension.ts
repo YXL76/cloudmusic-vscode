@@ -37,7 +37,7 @@ import {
   apiUserRecord,
 } from "./util/api";
 import { lockQueue, load, stop, songPick } from "./util/util";
-import { Cache } from "./util/cache";
+import { MusicCache } from "./util/cache";
 import { player } from "./util/player";
 import { lock } from "./state/lock";
 import { lyric, PersonalFm } from "./state/play";
@@ -448,7 +448,7 @@ export function activate(context: ExtensionContext): void {
   });
 
   // init cache index
-  Cache.init();
+  MusicCache.init();
 
   commands.registerCommand(
     "cloudmusic.songDetail",
@@ -503,6 +503,6 @@ export function activate(context: ExtensionContext): void {
 }
 
 export function deactivate(): void {
-  Cache.verify();
+  MusicCache.verify();
   del.sync([TMP_DIR], { force: true });
 }

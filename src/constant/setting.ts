@@ -20,10 +20,10 @@ export const PROXY = conf.get("music.proxy")
 export const MUSIC_QUALITY = conf.get("music.quality");
 
 export const TMP_DIR = join(SETTING_DIR, "tmp");
-export const CACHE_DIR = join(SETTING_DIR, "cache", `${MUSIC_QUALITY}`);
+export const MUSIC_CACHE_DIR = join(SETTING_DIR, "cache", `${MUSIC_QUALITY}`);
 
 const cacheSize = conf.get("cache.size");
 let finalSize = typeof cacheSize === "number" ? cacheSize : 1024;
 finalSize = finalSize > 10240 ? 10240 : finalSize;
 finalSize = finalSize < 128 ? 128 : finalSize;
-export const CACHE_SIZE = finalSize * 1024 * 1024;
+export const MUSIC_CACHE_SIZE = finalSize * 1024 * 1024;
