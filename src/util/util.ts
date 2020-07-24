@@ -124,7 +124,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
   try {
     const { pid, md5 } = element;
     const { id, dt, name, ar } = element.item;
-    const path = await Cache.get(`${id}`, md5);
+    const path = await Cache.get(`${id}`);
     const { time, text } = await apiLyric(id);
     ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
     IsLike.set(AccountManager.likelist.has(id));
@@ -149,7 +149,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
           res.pipe(tmpFile);
           tmpFile.on("finish", () => {
             tmpFile.close();
-            Cache.put(`${id}`, tmpFilePath);
+            Cache.put(`${id}`, tmpFilePath, md5);
           });
         })
         .on("error", () => {

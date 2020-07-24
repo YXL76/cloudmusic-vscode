@@ -17,25 +17,32 @@ export class Cache {
     noDisposeOnSet: true,
   });
 
-  static async get(key: string, md5: string): Promise<string> {
-    try {
-      const { integrity, path } = await cacache.get.info(CACHE_DIR, key);
-      if (integrity === md5) {
-        this.lruCache.get(key);
-        return path;
+  static init(): void {
+    cacache.ls(CACHE_DIR).then((res: { key: LruCacheValue }) => {
+      for (const item in res) {
+        const { key, integrity, size } = res[item];
+        this.lruCache.set(key, { integrity, size });
       }
-      this.lruCache.del(key);
-      cacache.rm.entry(CACHE_DIR, key);
-      cacache.rm.content(CACHE_DIR, integrity);
-      return "";
+    });
+  }
+
+  static verify(): void {
+    cacache.verify(CACHE_DIR);
+  }
+
+  static async get(key: string): Promise<string> {
+    try {
+      const { path } = await cacache.get.info(CACHE_DIR, key);
+      this.lruCache.get(key);
+      return path;
     } catch {
       return "";
     }
   }
 
-  static async put(key: string, path: string): Promise<void> {
+  static async put(key: string, path: string, md5: string): Promise<void> {
     await cacache.put(CACHE_DIR, key, readFileSync(path), {
-      algorithms: ["md5"],
+      integrity: md5,
     });
     const { integrity, size } = await cacache.get.info(CACHE_DIR, key);
     Cache.lruCache.set(key, { integrity, size });

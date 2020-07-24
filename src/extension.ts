@@ -18,13 +18,11 @@ import {
 import {
   AUTO_CHECK,
   ACCOUNT_FILE,
-  CACHE_DIR,
   TMP_DIR,
   SETTING_DIR,
   MUSIC_QUALITY,
   PLAYER_AVAILABLE,
 } from "./constant/setting";
-import { LruCacheValue } from "./constant/type";
 import { AccountManager } from "./manager/accountManager";
 import { ButtonManager } from "./manager/buttonManager";
 import {
@@ -47,7 +45,6 @@ import { IsLike } from "./state/like";
 import { LoggedIn } from "./state/login";
 import { userMusicRanking } from "./page/page";
 const del = require("del");
-const cacache = require("cacache");
 
 export function activate(context: ExtensionContext): void {
   // init player
@@ -451,12 +448,7 @@ export function activate(context: ExtensionContext): void {
   });
 
   // init cache index
-  cacache.ls(CACHE_DIR).then((res: { key: LruCacheValue }) => {
-    for (const item in res) {
-      const { key, integrity, size } = res[item];
-      Cache.lruCache.set(key, { integrity, size });
-    }
-  });
+  Cache.init();
 
   commands.registerCommand(
     "cloudmusic.songDetail",
@@ -511,6 +503,6 @@ export function activate(context: ExtensionContext): void {
 }
 
 export function deactivate(): void {
-  cacache.verify(CACHE_DIR);
+  Cache.verify();
   del.sync([TMP_DIR], { force: true });
 }
