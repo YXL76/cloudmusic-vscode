@@ -253,7 +253,7 @@ export function activate(context: ExtensionContext): void {
     }
     switch (pick.type) {
       case 1:
-        PersonalFm.set(!PersonalFm.get());
+        commands.executeCommand("cloudmusic.personalFM");
         break;
       case 2:
         const userMusicRankingWeekly = window.createWebviewPanel(
@@ -342,6 +342,11 @@ export function activate(context: ExtensionContext): void {
     }
   );
 
+  // personalFM command
+  const personalFM = commands.registerCommand("cloudmusic.personalFM", () => {
+    PersonalFm.set(!PersonalFm.get());
+  });
+
   context.subscriptions.push(signin);
   context.subscriptions.push(dailyCheck);
   context.subscriptions.push(signout);
@@ -352,6 +357,7 @@ export function activate(context: ExtensionContext): void {
   context.subscriptions.push(like);
   context.subscriptions.push(volume);
   context.subscriptions.push(toggleButton);
+  context.subscriptions.push(personalFM);
 
   // init playlist provider
   const userPlaylistProvider = PlaylistProvider.getUserInstance();

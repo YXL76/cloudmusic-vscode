@@ -102,6 +102,10 @@
         "title": "Cloudmusic: Toggle button"
       },
       {
+        "command": "cloudmusic.personalFM",
+        "title": "Cloudmusic: Personal FM"
+      },
+      {
         "command": "cloudmusic.refreshPlaylist",
         "title": "Refresh",
         "icon": "$(refresh)"
