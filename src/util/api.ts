@@ -292,7 +292,7 @@ export async function apiLyric(
       if (r) {
         const minute = parseInt(r[1]);
         const second = parseInt(r[2]);
-        const millisecond = parseInt(r[3]) * r[3].length === 2 ? 10 : 1;
+        const millisecond = parseInt(r[3]) * (r[3].length === 2 ? 10 : 1);
         const txt = r[4];
         const current = minute * 60 + second + millisecond / 1000;
         if (current >= prev) {
