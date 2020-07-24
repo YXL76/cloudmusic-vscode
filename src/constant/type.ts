@@ -59,6 +59,7 @@ export type LruCacheValue = {
 };
 
 export type Lyric = {
+  index: number;
   delay: number;
   time: number[];
   text: string[];

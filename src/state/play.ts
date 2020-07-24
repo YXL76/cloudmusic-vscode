@@ -26,12 +26,13 @@ export class Playing {
 }
 
 export const lyric: Lyric = {
+  index: 0,
   delay: -1.0,
   time: [0],
   text: ["Lyric"],
 };
 
-function binarySearch(newValue: number) {
+/* function binarySearch(newValue: number) {
   const { time, delay } = lyric;
   const needle = newValue + delay;
 
@@ -53,11 +54,15 @@ function binarySearch(newValue: number) {
   }
 
   return start;
-}
+} */
 
 export function setPosition(newValue: number): void {
-  const index = binarySearch(newValue);
-  ButtonManager.buttonLyric(lyric.text[index]);
+  // const index = binarySearch(newValue);
+  // ButtonManager.buttonLyric(lyric.text[index]);
+  while (lyric.time[lyric.index] <= newValue) {
+    ++lyric.index;
+  }
+  ButtonManager.buttonLyric(lyric.text[lyric.index - 1]);
   if (!lock.deleteTmp && newValue > 100 && !lock.playerLoad) {
     lock.deleteTmp = true;
     lock.playerLoad = true;

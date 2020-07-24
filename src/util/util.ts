@@ -131,8 +131,6 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
 
     if (path) {
       player.load(path, id, pid, dt);
-      lyric.time = time;
-      lyric.text = text;
     } else {
       const { url } = (await apiSongUrl([id]))[0];
       if (!url) {
@@ -159,10 +157,10 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
           player.stop();
           window.showErrorMessage("Network Error");
         });
-
-      lyric.time = time;
-      lyric.text = text;
     }
+    lyric.index = 0;
+    lyric.time = time;
+    lyric.text = text;
   } catch {
     lock.playerLoad = false;
     commands.executeCommand("cloudmusic.next");
