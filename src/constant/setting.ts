@@ -20,8 +20,9 @@ export const PROXY = conf.get("music.proxy")
 export const MUSIC_QUALITY = conf.get("music.quality");
 
 export const TMP_DIR = join(SETTING_DIR, "tmp");
-export const MUSIC_CACHE_DIR = join(SETTING_DIR, "cache", `${MUSIC_QUALITY}`);
-export const LYRIC_CACHE_DIR = join(SETTING_DIR, "cache", "lyric");
+export const CACHE_DIR = join(SETTING_DIR, "cache");
+export const MUSIC_CACHE_DIR = join(CACHE_DIR, "music", `${MUSIC_QUALITY}`);
+export const LYRIC_CACHE_DIR = join(CACHE_DIR, "lyric");
 
 const cacheSize = conf.get("cache.size");
 let finalSize = typeof cacheSize === "number" ? cacheSize : 1024;

@@ -1,5 +1,5 @@
 import * as crypto from "crypto";
-import { posix, join } from "path";
+import { join } from "path";
 import {
   commands,
   ExtensionContext,
@@ -20,6 +20,7 @@ import {
   ACCOUNT_FILE,
   TMP_DIR,
   SETTING_DIR,
+  CACHE_DIR,
   MUSIC_QUALITY,
   PLAYER_AVAILABLE,
 } from "./constant/setting";
@@ -81,10 +82,18 @@ export function activate(context: ExtensionContext): void {
 
   // init cache folder
   try {
-    const pf = join(SETTING_DIR, "cache");
+    readdirSync(CACHE_DIR).forEach((folder) => {
+      if (folder !== "music" && folder !== "lyric") {
+        const pattern = join(CACHE_DIR, folder);
+        del.sync([pattern], { force: true });
+      }
+    });
+  } catch {}
+  try {
+    const pf = join(CACHE_DIR, "music");
     readdirSync(pf).forEach((folder) => {
-      if (folder !== `${MUSIC_QUALITY}` && folder !== "lyric") {
-        const pattern = posix.join(pf, folder);
+      if (folder !== `${MUSIC_QUALITY}`) {
+        const pattern = join(pf, folder);
         del.sync([pattern], { force: true });
       }
     });
