@@ -83,7 +83,7 @@ export function activate(context: ExtensionContext): void {
   try {
     const pf = join(SETTING_DIR, "cache");
     readdirSync(pf).forEach((folder) => {
-      if (folder !== `${MUSIC_QUALITY}`) {
+      if (folder !== `${MUSIC_QUALITY}` && folder !== "lyric") {
         const pattern = posix.join(pf, folder);
         del.sync([pattern], { force: true });
       }
