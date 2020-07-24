@@ -6,6 +6,23 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.3.0] - 2020-07-24
+
+### Added
+
+- Command: `cloudmusic.personalFM`
+- Cache: cache lyric
+- Lyric: can show full lyric
+
+### Changed
+
+- Cache: check md5 when putting item in instead of when getting item
+
+### Fixed
+
+- Player: will not load file when network error occurs
+- Lyric: time parse
+
 ## [3.2.2] - 2020-07-23
 
 ### Changed
