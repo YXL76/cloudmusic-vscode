@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.4.0] - 2020-07-28
+
+### Added
+
+- Player: `miniaudio`
+- Configuration: `cloudmusic.player.defaultLibrary`
+
 ## [3.3.1] - 2020-07-24
 
 ### Changed
