@@ -1,17 +1,19 @@
 import { join } from "path";
 import { commands } from "vscode";
 import { Player, NativePlayer } from "../constant/type";
-import { PLATFORM, PLAYER_AVAILABLE } from "../constant/setting";
+import {
+  PLAYER_AVAILABLE,
+  PLAYER_STATIC,
+  DEFAULT_LIBRARY,
+  BACKUP_LIBRARY,
+} from "../constant/setting";
 import { sleep } from "./util";
 import { apiScrobble } from "./api";
 import { lock } from "../state/lock";
 import { Playing, setPosition } from "../state/play";
 import { ButtonManager } from "../manager/buttonManager";
-const { getAbi } = require("node-abi");
 
 const playerPath = join("..", "build", "player");
-// @ts-ignore
-const abi = getAbi(process.versions.electron, "electron");
 
 class NoPlayer implements Player {
   id = 0;
@@ -52,13 +54,13 @@ class AudioPlayer implements Player {
     try {
       // @ts-ignore
       const nPlayer = __non_webpack_require__(
-        join(playerPath, "rodio", `${PLATFORM}-${abi}.node`)
+        join(playerPath, DEFAULT_LIBRARY, PLAYER_STATIC)
       ).Player;
       this.player = new nPlayer();
     } catch {
       // @ts-ignore
       const nPlayer = __non_webpack_require__(
-        join(playerPath, "miniaudio", `${PLATFORM}-${abi}.node`)
+        join(playerPath, BACKUP_LIBRARY, PLAYER_STATIC)
       ).Player;
       this.player = new nPlayer();
     }

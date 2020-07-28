@@ -293,6 +293,16 @@
               "Lossless Quality"
             ],
             "scope": "window"
+          },
+          "cloudmusic.player.defaultLibrary": {
+            "type": "string",
+            "default": "rodio",
+            "markdownDescription": "",
+            "enum": [
+              "rodio",
+              "miniaudio"
+            ],
+            "scope": "window"
           }
         }
       }
