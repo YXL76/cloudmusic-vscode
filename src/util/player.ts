@@ -9,16 +9,9 @@ import { Playing, setPosition } from "../state/play";
 import { ButtonManager } from "../manager/buttonManager";
 const { getAbi } = require("node-abi");
 
+const playerPath = join("..", "build", "player");
 // @ts-ignore
-const nPlayer = __non_webpack_require__(
-  join(
-    "..",
-    "build",
-    "player",
-    // @ts-ignore
-    `${PLATFORM}-${getAbi(process.versions.electron, "electron")}.node`
-  )
-).Player;
+const abi = getAbi(process.versions.electron, "electron");
 
 class NoPlayer implements Player {
   id = 0;
@@ -56,7 +49,19 @@ class AudioPlayer implements Player {
   level = 85;
 
   constructor() {
-    this.player = new nPlayer();
+    try {
+      // @ts-ignore
+      const nPlayer = __non_webpack_require__(
+        join(playerPath, "rodio", `${PLATFORM}-${abi}.node`)
+      ).Player;
+      this.player = new nPlayer();
+    } catch {
+      // @ts-ignore
+      const nPlayer = __non_webpack_require__(
+        join(playerPath, "miniaudio", `${PLATFORM}-${abi}.node`)
+      ).Player;
+      this.player = new nPlayer();
+    }
     setInterval(() => {
       if (!this.player.isPaused()) {
         if (this.player.empty()) {
