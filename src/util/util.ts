@@ -184,8 +184,8 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
   }
 }
 
-export async function songPick(id: number): Promise<void> {
-  const { name, alia, ar, al } = (await apiSongDetail([id]))[0];
+export async function songPick(id: number, item?: SongsItem): Promise<void> {
+  const { name, alia, ar, al } = item || (await apiSongDetail([id]))[0];
   const pick = await window.showQuickPick([
     {
       label: name,
@@ -221,11 +221,11 @@ export async function songPick(id: number): Promise<void> {
   }
   switch (pick.type) {
     case 1:
-      //@ts-ignore
+      // @ts-ignore
       artistPick(pick.id);
       break;
     case 2:
-      //@ts-ignore
+      // @ts-ignore
       albumPick(pick.id);
       break;
     case 3:
@@ -235,7 +235,9 @@ export async function songPick(id: number): Promise<void> {
       }
       break;
     case 4:
-      commands.executeCommand("cloudmusic.addToPlaylist", { item: { id } });
+      commands.executeCommand("cloudmusic.addToPlaylist", {
+        item: { id },
+      });
       break;
     case 5:
       songsPick(await apiSimiSong(id));
@@ -244,29 +246,39 @@ export async function songPick(id: number): Promise<void> {
 }
 
 export async function songsPick(
-  ids: number[],
+  ids?: number[],
   songs?: SongsItem[]
 ): Promise<void> {
-  if (!songs) {
+  if (!songs && ids) {
     songs = await apiSongDetail(ids);
+  }
+  if (!songs) {
+    return;
   }
   const pick = await window.showQuickPick(
     songs.map((song) => ({
       label: `$(link) ${song.name}`,
       description: song.ar.map((i) => i.name).join("/"),
       detail: song.alia.join("/"),
-      id: song.id,
+      item: song,
     }))
   );
   if (!pick) {
     return;
   }
-  //@ts-ignore
-  songPick(pick.id);
+  songPick(pick.item.id, pick.item);
 }
 
-export async function artistPick(id: number): Promise<void> {
-  const { info, songs } = await apiArtists(id);
+export async function artistPick(
+  id: number,
+  info?: Artist,
+  songs?: SongsItem[]
+): Promise<void> {
+  if (!info || !songs) {
+    const item = await apiArtists(id);
+    info = item.info;
+    songs = item.songs;
+  }
   if (!info) {
     return;
   }
@@ -293,7 +305,7 @@ export async function artistPick(id: number): Promise<void> {
       label: `$(link) ${song.name}`,
       description: song.ar.map((i) => i.name).join("/"),
       detail: song.alia.join("/"),
-      id: song.id,
+      item: song,
       type: 2,
     })),
   ]);
@@ -302,18 +314,26 @@ export async function artistPick(id: number): Promise<void> {
   }
   switch (pick.type) {
     case 1:
-      //@ts-ignore
+      // @ts-ignore
       albumsPick(pick.id);
       break;
     case 2:
-      //@ts-ignore
-      songPick(pick.id);
+      // @ts-ignore
+      songPick(pick.item.id, pick.item);
       break;
   }
 }
 
-export async function albumPick(id: number): Promise<void> {
-  const { info, songs } = await apiAlbum(id);
+export async function albumPick(
+  id: number,
+  info?: AlbumsItem,
+  songs?: SongsItem[]
+): Promise<void> {
+  if (!info || !songs) {
+    const item = await apiAlbum(id);
+    info = item.info;
+    songs = item.songs;
+  }
   if (!info) {
     return;
   }
@@ -323,46 +343,53 @@ export async function albumPick(id: number): Promise<void> {
       label: name,
       description: alias.join("/"),
       detail: company,
+      type: 0,
     },
     {
       label: "$(markdown) Description",
       detail: description,
+      type: 0,
     },
     ...artists.map((i) => ({
       label: "$(account) Artist",
       detail: i.name,
-      id: i.id,
+      item: i,
       type: 1,
     })),
     {
       label: ">>>>> CONTENTS <<<<<",
+      type: 0,
     },
     ...songs.map((song) => ({
       label: `$(link) ${song.name}`,
       description: song.ar.map((i) => i.name).join("/"),
       detail: song.alia.join("/"),
-      id: song.id,
+      item: song,
       type: 2,
     })),
   ]);
-  if (!pick) {
+  if (!pick || pick.type === 0) {
     return;
   }
-  //@ts-ignore
   switch (pick.type) {
     case 1:
-      //@ts-ignore
-      artistPick(pick.id);
+      // @ts-ignore
+      artistPick(pick.item.id, pick.item);
       break;
     case 2:
-      //@ts-ignore
-      songPick(pick.id);
+      // @ts-ignore
+      songPick(pick.item.id, pick.item);
       break;
   }
 }
 
-export async function albumsPick(id: number): Promise<void> {
-  const albums = await apiArtistAlbum(id);
+export async function albumsPick(
+  id: number,
+  albums?: AlbumsItem[]
+): Promise<void> {
+  if (!albums) {
+    albums = await apiArtistAlbum(id);
+  }
   const pick = await window.showQuickPick(
     albums.map((album) => ({
       label: `$(circuit-board) ${album.name}`,
@@ -374,6 +401,6 @@ export async function albumsPick(id: number): Promise<void> {
   if (!pick) {
     return;
   }
-  //@ts-ignore
+  // @ts-ignore
   albumPick(pick.id);
 }
