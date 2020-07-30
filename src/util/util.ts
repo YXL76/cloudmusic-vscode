@@ -4,7 +4,7 @@ import { createWriteStream } from "fs";
 import { commands, window } from "vscode";
 import { TMP_DIR } from "../constant/setting";
 import { MusicCache } from "../util/cache";
-import { player, player } from "./player";
+import { player } from "./player";
 import { lock } from "../state/lock";
 import { lyric } from "../state/play";
 import { IsLike } from "../state/like";

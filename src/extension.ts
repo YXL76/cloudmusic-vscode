@@ -447,17 +447,17 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand("cloudmusic.addToPlaylist", async ({ item }) => {
     const lists = await AccountManager.userPlaylist();
     const selection = await window.showQuickPick(
-      lists.map((list) => {
+      lists.map(({ name, id }) => {
         return {
-          label: list.name,
-          id: list.id,
+          label: name,
+          id,
         };
       })
     );
     if (!selection) {
       return;
     }
-    if (await apiPlaylistTracks("add", selection.id, item.id)) {
+    if (await apiPlaylistTracks("add", selection.id, [item.id])) {
       PlaylistProvider.refresh();
     }
   });
