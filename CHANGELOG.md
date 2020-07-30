@@ -6,6 +6,20 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.5.0] - 2020-07-30
+
+### Added
+
+- Command: `cloudmusic.search`
+
+### Changed
+
+- Qiuckpick: reduce network request in order to improve performance
+
+### Fixed
+
+- Status bar: will check like status before changing button
+
 ## [3.4.1] - 2020-07-30
 
 ### Fixed
