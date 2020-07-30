@@ -41,6 +41,7 @@ Realized functions:
 - Intelligent mode
 - Personal FM
 - Lyric display
+- Search (hot/single/album/artist...)
 - Cache management
 - Optional lossless music
 - More features waiting to be discovered
@@ -277,12 +278,12 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 
 |      module       |    function    | status |
 | :---------------: | :------------: | :----: |
-|      search       |      搜索      |        |
-|  search_default   | 默认搜索关键词 |        |
-|    search_hot     |    热门搜索    |        |
-| search_hot_detail |    热搜列表    |        |
-| search_multimatch |   多类型搜索   |        |
-|  search_suggest   |    搜索建议    |        |
+|      search       |      搜索      |   ✔️   |
+|  search_default   | 默认搜索关键词 |   ❌   |
+|    search_hot     |    热门搜索    |   ❌   |
+| search_hot_detail |    热搜列表    |   ✔️   |
+| search_multimatch |   多类型搜索   |   ❌   |
+|  search_suggest   |    搜索建议    |   ❌   |
 
 - 杂项
 

@@ -41,6 +41,7 @@
 - 心动模式
 - 私人 FM
 - 歌词显示
+- 搜索（热搜/单曲/专辑/歌手...）
 - 缓存管理
 - 可选无损音质
 - 更多功能等待发现
@@ -277,12 +278,12 @@
 
 |      module       |    function    | status |
 | :---------------: | :------------: | :----: |
-|      search       |      搜索      |        |
-|  search_default   | 默认搜索关键词 |        |
-|    search_hot     |    热门搜索    |        |
-| search_hot_detail |    热搜列表    |        |
-| search_multimatch |   多类型搜索   |        |
-|  search_suggest   |    搜索建议    |        |
+|      search       |      搜索      |   ✔️   |
+|  search_default   | 默认搜索关键词 |   ❌   |
+|    search_hot     |    热门搜索    |   ❌   |
+| search_hot_detail |    热搜列表    |   ✔️   |
+| search_multimatch |   多类型搜索   |   ❌   |
+|  search_suggest   |    搜索建议    |   ❌   |
 
 - 杂项
 
