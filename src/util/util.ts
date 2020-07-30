@@ -243,8 +243,13 @@ export async function songPick(id: number): Promise<void> {
   }
 }
 
-export async function songsPick(ids: number[]): Promise<void> {
-  const songs = await apiSongDetail(ids);
+export async function songsPick(
+  ids: number[],
+  songs?: SongsItem[]
+): Promise<void> {
+  if (!songs) {
+    songs = await apiSongDetail(ids);
+  }
   const pick = await window.showQuickPick(
     songs.map((song) => ({
       label: `$(link) ${song.name}`,
@@ -262,6 +267,9 @@ export async function songsPick(ids: number[]): Promise<void> {
 
 export async function artistPick(id: number): Promise<void> {
   const { info, songs } = await apiArtists(id);
+  if (!info) {
+    return;
+  }
   const { name, alias, briefDesc, albumSize } = info;
   const pick = await window.showQuickPick([
     {

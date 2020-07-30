@@ -87,14 +87,7 @@ export async function apiAlbum(
 
 export async function apiArtists(
   id: number
-): Promise<{ info: Artist; songs: SongsItem[] }> {
-  const info: Artist = {
-    name: "",
-    id: 0,
-    alias: [],
-    briefDesc: "",
-    albumSize: 0,
-  };
+): Promise<{ info: Artist | undefined; songs: SongsItem[] }> {
   try {
     const { status, body } = await artists({
       id,
@@ -102,7 +95,7 @@ export async function apiArtists(
       proxy: PROXY,
     });
     if (status !== 200) {
-      return { info, songs: [] };
+      return { info: undefined, songs: [] };
     }
     const { artist, hotSongs } = body;
     return {
@@ -110,7 +103,7 @@ export async function apiArtists(
       songs: hotSongs.map((song: SongsItem) => solveSongItem(song)),
     };
   } catch {
-    return { info, songs: [] };
+    return { info: undefined, songs: [] };
   }
 }
 
