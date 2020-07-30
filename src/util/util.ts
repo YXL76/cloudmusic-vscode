@@ -20,7 +20,12 @@ import {
   apiSongDetail,
   apiSongUrl,
 } from "./api";
-import { Artist, AlbumsItem, SongsItem } from "../constant/type";
+import {
+  Artist,
+  AlbumsItem,
+  SongsItem,
+  AnotherSongItem,
+} from "../constant/type";
 import { AccountManager } from "../manager/accountManager";
 import { ButtonManager } from "../manager/buttonManager";
 import { QueueItemTreeItem } from "../provider/queueProvider";
@@ -109,6 +114,21 @@ export function solveSongItem(item: SongsItem): SongsItem {
     alia,
     ar,
     al,
+  };
+}
+
+export function solveAnotherSongItem(item: AnotherSongItem): SongsItem {
+  const { name, id, duration, alias, artists, album } = item;
+  return {
+    name,
+    id,
+    dt: duration,
+    alia: alias,
+    ar: artists.map(({ id, name }) => ({ id, name })),
+    al: {
+      id: album.id,
+      name: album.name,
+    },
   };
 }
 

@@ -31,6 +31,21 @@ export type SongsItem = {
   };
 };
 
+export type AnotherSongItem = {
+  name: string;
+  id: number;
+  duration: number;
+  alias: string[];
+  artists: {
+    id: number;
+    name: string;
+  }[];
+  album: {
+    id: number;
+    name: string;
+  };
+};
+
 export type AlbumsItem = {
   artists: Artist[];
   alias: string[];

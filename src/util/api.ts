@@ -3,13 +3,19 @@ import {
   AlbumsItem,
   PlaylistItem,
   SongsItem,
+  AnotherSongItem,
   TrackIdsItem,
   SongDetail,
   LyricData,
 } from "../constant/type";
 import { PROXY, MUSIC_QUALITY } from "../constant/setting";
 import { LyricCache } from "./cache";
-import { solveArtist, solveAlbumsItem, solveSongItem } from "./util";
+import {
+  solveArtist,
+  solveAlbumsItem,
+  solveSongItem,
+  solveAnotherSongItem,
+} from "./util";
 import { AccountManager } from "../manager/accountManager";
 
 const {
@@ -40,6 +46,7 @@ const {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   playmode_intelligence_list,
   scrobble,
+  search,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   simi_song,
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -322,17 +329,7 @@ export async function apiPersonalFm(): Promise<SongsItem[]> {
       return [];
     }
     const { data } = body;
-    return data.map(({ name, id, duration, alias, artists, album }) => ({
-      name,
-      id,
-      dt: duration,
-      alia: alias,
-      ar: artists.map(({ id, name }) => ({ id, name })),
-      al: {
-        id: album.id,
-        name: album.name,
-      },
-    }));
+    return data.map((song: AnotherSongItem) => solveAnotherSongItem(song));
   } catch {
     return [];
   }
@@ -414,6 +411,36 @@ export async function apiScrobble(
     cookie: AccountManager.cookie,
     proxy: PROXY,
   });
+}
+
+enum SearchType {
+  single = 1,
+  album = 10,
+  artist = 100,
+  mix = 1000,
+  user = 1002,
+  mv = 1004,
+  lyric = 1006,
+  dj = 1009,
+  video = 1014,
+}
+
+export async function apiSearchSingle(keywords: string): Promise<SongsItem[]> {
+  try {
+    const { body, status } = await search({
+      keywords,
+      type: SearchType.single,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { result } = body;
+    const { songs } = result;
+    return songs.map((song: AnotherSongItem) => solveAnotherSongItem(song));
+  } catch {}
+  return [];
 }
 
 // TODO cache
