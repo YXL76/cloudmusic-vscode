@@ -315,6 +315,9 @@ export async function artistPick(id: number): Promise<void> {
 
 export async function albumPick(id: number): Promise<void> {
   const { info, songs } = await apiAlbum(id);
+  if (!info) {
+    return;
+  }
   const { artists, alias, company, description, subType, name } = info;
   const pick = await window.showQuickPick([
     {

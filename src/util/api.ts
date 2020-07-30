@@ -62,16 +62,7 @@ const {
 // TODO cache
 export async function apiAlbum(
   id: number
-): Promise<{ info: AlbumsItem; songs: SongsItem[] }> {
-  let info: AlbumsItem = {
-    artists: [],
-    alias: [],
-    company: "",
-    description: "",
-    subType: "",
-    name: "",
-    id: 0,
-  };
+): Promise<{ info: AlbumsItem | undefined; songs: SongsItem[] }> {
   try {
     const { status, body } = await album({
       id,
@@ -79,16 +70,16 @@ export async function apiAlbum(
       proxy: PROXY,
     });
     if (status !== 200) {
-      return { info, songs: [] };
+      return { info: undefined, songs: [] };
     }
     const { songs } = body;
-    info = solveAlbumsItem(body.album);
+    const info = solveAlbumsItem(body.album);
     return {
       info,
       songs: songs.map((song: SongsItem) => solveSongItem(song)),
     };
   } catch {
-    return { info, songs: [] };
+    return { info: undefined, songs: [] };
   }
 }
 
@@ -439,6 +430,24 @@ export async function apiSearchSingle(keywords: string): Promise<SongsItem[]> {
     const { result } = body;
     const { songs } = result;
     return songs.map((song: AnotherSongItem) => solveAnotherSongItem(song));
+  } catch {}
+  return [];
+}
+
+export async function apiSearchAlbum(keywords: string): Promise<AlbumsItem[]> {
+  try {
+    const { body, status } = await search({
+      keywords,
+      type: SearchType.album,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { result } = body;
+    const { albums } = result;
+    return albums.map((album: ) => (song));
   } catch {}
   return [];
 }
