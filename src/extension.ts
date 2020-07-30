@@ -447,12 +447,10 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand("cloudmusic.addToPlaylist", async ({ item }) => {
     const lists = await AccountManager.userPlaylist();
     const selection = await window.showQuickPick(
-      lists.map(({ name, id }) => {
-        return {
-          label: name,
-          id,
-        };
-      })
+      lists.map(({ name, id }) => ({
+        label: name,
+        id,
+      }))
     );
     if (!selection) {
       return;

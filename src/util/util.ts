@@ -191,14 +191,12 @@ export async function songPick(id: number): Promise<void> {
       label: name,
       detail: alia.join("/"),
     },
-    ...ar.map((i) => {
-      return {
-        label: "$(account) Artist",
-        detail: i.name,
-        id: i.id,
-        type: 1,
-      };
-    }),
+    ...ar.map((i) => ({
+      label: "$(account) Artist",
+      detail: i.name,
+      id: i.id,
+      type: 1,
+    })),
     {
       label: "$(circuit-board) Album",
       detail: al.name,
@@ -248,14 +246,12 @@ export async function songPick(id: number): Promise<void> {
 export async function songsPick(ids: number[]): Promise<void> {
   const songs = await apiSongDetail(ids);
   const pick = await window.showQuickPick(
-    songs.map((song) => {
-      return {
-        label: `$(link) ${song.name}`,
-        description: song.ar.map((i) => i.name).join("/"),
-        detail: song.alia.join("/"),
-        id: song.id,
-      };
-    })
+    songs.map((song) => ({
+      label: `$(link) ${song.name}`,
+      description: song.ar.map((i) => i.name).join("/"),
+      detail: song.alia.join("/"),
+      id: song.id,
+    }))
   );
   if (!pick) {
     return;
@@ -285,15 +281,13 @@ export async function artistPick(id: number): Promise<void> {
     {
       label: ">>>>> HOT SONGS <<<<<",
     },
-    ...songs.map((song) => {
-      return {
-        label: `$(link) ${song.name}`,
-        description: song.ar.map((i) => i.name).join("/"),
-        detail: song.alia.join("/"),
-        id: song.id,
-        type: 2,
-      };
-    }),
+    ...songs.map((song) => ({
+      label: `$(link) ${song.name}`,
+      description: song.ar.map((i) => i.name).join("/"),
+      detail: song.alia.join("/"),
+      id: song.id,
+      type: 2,
+    })),
   ]);
   if (!pick) {
     return;
@@ -326,26 +320,22 @@ export async function albumPick(id: number): Promise<void> {
       label: "$(markdown) Description",
       detail: description,
     },
-    ...artists.map((i) => {
-      return {
-        label: "$(account) Artist",
-        detail: i.name,
-        id: i.id,
-        type: 1,
-      };
-    }),
+    ...artists.map((i) => ({
+      label: "$(account) Artist",
+      detail: i.name,
+      id: i.id,
+      type: 1,
+    })),
     {
       label: ">>>>> CONTENTS <<<<<",
     },
-    ...songs.map((song) => {
-      return {
-        label: `$(link) ${song.name}`,
-        description: song.ar.map((i) => i.name).join("/"),
-        detail: song.alia.join("/"),
-        id: song.id,
-        type: 2,
-      };
-    }),
+    ...songs.map((song) => ({
+      label: `$(link) ${song.name}`,
+      description: song.ar.map((i) => i.name).join("/"),
+      detail: song.alia.join("/"),
+      id: song.id,
+      type: 2,
+    })),
   ]);
   if (!pick) {
     return;
@@ -366,14 +356,12 @@ export async function albumPick(id: number): Promise<void> {
 export async function albumsPick(id: number): Promise<void> {
   const albums = await apiArtistAlbum(id);
   const pick = await window.showQuickPick(
-    albums.map((album) => {
-      return {
-        label: `$(circuit-board) ${album.name}`,
-        description: album.alias.join("/"),
-        detail: album.artists.map((artist) => artist.name).join("/"),
-        id: album.id,
-      };
-    })
+    albums.map((album) => ({
+      label: `$(circuit-board) ${album.name}`,
+      description: album.alias.join("/"),
+      detail: album.artists.map((artist) => artist.name).join("/"),
+      id: album.id,
+    }))
   );
   if (!pick) {
     return;
