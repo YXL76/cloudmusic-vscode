@@ -4,7 +4,7 @@ import { createWriteStream } from "fs";
 import { commands, window } from "vscode";
 import { TMP_DIR } from "../constant/setting";
 import { MusicCache } from "../util/cache";
-import { player } from "./player";
+import { player, player } from "./player";
 import { lock } from "../state/lock";
 import { lyric } from "../state/play";
 import { IsLike } from "../state/like";
@@ -215,6 +215,10 @@ export async function songPick(id: number): Promise<void> {
       break;
     case 3:
       apiLike(id);
+      if (id === player.id) {
+        IsLike.set(true);
+        AccountManager.likelist.add(id);
+      }
       break;
     case 4:
       commands.executeCommand("cloudmusic.addToPlaylist", { item: { id } });
