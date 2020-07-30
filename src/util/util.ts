@@ -85,7 +85,7 @@ export function solveArtist(item: Artist): Artist {
 }
 
 export function solveAlbumsItem(item: AlbumsItem): AlbumsItem {
-  const { artists, alias, company, description, subType, name, id } = item;
+  const { artists, alias, company, description, name, id } = item;
   return {
     artists: artists.map((artist: Artist) => {
       return {
@@ -99,7 +99,6 @@ export function solveAlbumsItem(item: AlbumsItem): AlbumsItem {
     alias,
     company,
     description,
-    subType,
     name,
     id,
   };
@@ -318,12 +317,12 @@ export async function albumPick(id: number): Promise<void> {
   if (!info) {
     return;
   }
-  const { artists, alias, company, description, subType, name } = info;
+  const { artists, alias, company, description, name } = info;
   const pick = await window.showQuickPick([
     {
       label: name,
       description: alias.join("/"),
-      detail: `${company} · ${subType}`,
+      detail: company,
     },
     {
       label: "$(markdown) Description",

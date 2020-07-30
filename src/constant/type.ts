@@ -51,7 +51,6 @@ export type AlbumsItem = {
   alias: string[];
   company: string;
   description: string;
-  subType: string;
   name: string;
   id: number;
 };
