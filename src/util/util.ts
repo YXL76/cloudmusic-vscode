@@ -214,8 +214,7 @@ export async function songPick(id: number): Promise<void> {
       albumPick(pick.id);
       break;
     case 3:
-      apiLike(id);
-      if (id === player.id) {
+      if ((await apiLike(id)) && id === player.id) {
         IsLike.set(true);
         AccountManager.likelist.add(id);
       }
