@@ -48,6 +48,8 @@ const {
   scrobble,
   search,
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  search_hot_detail,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   simi_song,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   song_detail,
@@ -468,6 +470,23 @@ export async function apiSearchArtist(keywords: string): Promise<Artist[]> {
     return artists.map((artist: Artist) =>
       solveArtist({ ...artist, briefDesc: "" })
     );
+  } catch {}
+  return [];
+}
+
+export async function apiSearchHotDetail(): Promise<
+  { searchWord: string; content: string }[]
+> {
+  try {
+    const { body, status } = await search_hot_detail({
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { data } = body;
+    return data.map(({ searchWord, content }) => ({ searchWord, content }));
   } catch {}
   return [];
 }
