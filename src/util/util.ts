@@ -87,15 +87,13 @@ export function solveArtist(item: Artist): Artist {
 export function solveAlbumsItem(item: AlbumsItem): AlbumsItem {
   const { artists, alias, company, description, name, id } = item;
   return {
-    artists: artists.map((artist: Artist) => {
-      return {
-        name: artist.name,
-        id: artist.id,
-        alias: artist.alias,
-        briefDesc: artist.briefDesc,
-        albumSize: artist.albumSize,
-      };
-    }),
+    artists: artists.map((artist: Artist) => ({
+      name: artist.name,
+      id: artist.id,
+      alias: artist.alias,
+      briefDesc: artist.briefDesc,
+      albumSize: artist.albumSize,
+    })),
     alias,
     company,
     description,

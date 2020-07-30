@@ -447,7 +447,7 @@ export async function apiSearchAlbum(keywords: string): Promise<AlbumsItem[]> {
     }
     const { result } = body;
     const { albums } = result;
-    return albums.map((album: ) => (song));
+    return albums.map((album: AlbumsItem) => solveAlbumsItem(album));
   } catch {}
   return [];
 }
