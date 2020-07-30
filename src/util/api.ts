@@ -452,6 +452,26 @@ export async function apiSearchAlbum(keywords: string): Promise<AlbumsItem[]> {
   return [];
 }
 
+export async function apiSearchArtist(keywords: string): Promise<Artist[]> {
+  try {
+    const { body, status } = await search({
+      keywords,
+      type: SearchType.artist,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { result } = body;
+    const { artists } = result;
+    return artists.map((artist: Artist) =>
+      solveArtist({ ...artist, briefDesc: "" })
+    );
+  } catch {}
+  return [];
+}
+
 // TODO cache
 export async function apiSimiSong(id: number): Promise<number[]> {
   const ret: number[] = [];
