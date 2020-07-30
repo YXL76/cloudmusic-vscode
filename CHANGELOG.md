@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.4.1] - 2020-07-30
+
+### Fixed
+
+- Status bar: `like` button will change when using quickpick
+- Command: `cloudmusic.addToPlaylist`
+
 ## [3.4.0] - 2020-07-28
 
 ### Added
