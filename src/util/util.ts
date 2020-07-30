@@ -324,6 +324,21 @@ export async function artistPick(
   }
 }
 
+export async function artistsPick(items: Artist[]): Promise<void> {
+  const pick = await window.showQuickPick(
+    items.map(({ name, id, alias, briefDesc }) => ({
+      label: `$(account) ${name}`,
+      description: alias.join("/"),
+      detail: briefDesc,
+      id,
+    }))
+  );
+  if (!pick) {
+    return;
+  }
+  artistPick(pick.id);
+}
+
 export async function albumPick(
   id: number,
   info?: AlbumsItem,
@@ -384,11 +399,14 @@ export async function albumPick(
 }
 
 export async function albumsPick(
-  id: number,
+  id?: number,
   albums?: AlbumsItem[]
 ): Promise<void> {
-  if (!albums) {
+  if (!albums && id) {
     albums = await apiArtistAlbum(id);
+  }
+  if (!albums) {
+    return;
   }
   const pick = await window.showQuickPick(
     albums.map((album) => ({

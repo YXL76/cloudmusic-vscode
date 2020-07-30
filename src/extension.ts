@@ -35,9 +35,21 @@ import {
   apiFmTrash,
   apiLike,
   apiPlaylistTracks,
+  apiSearchSingle,
+  apiSearchAlbum,
+  apiSearchArtist,
+  apiSearchHotDetail,
   apiUserRecord,
 } from "./util/api";
-import { lockQueue, load, stop, songPick } from "./util/util";
+import {
+  lockQueue,
+  load,
+  stop,
+  songPick,
+  songsPick,
+  albumsPick,
+  artistsPick,
+} from "./util/util";
 import { MusicCache, LyricCache } from "./util/cache";
 import { player } from "./util/player";
 import { lock } from "./state/lock";
@@ -356,6 +368,74 @@ export function activate(context: ExtensionContext): void {
     PersonalFm.set(!PersonalFm.get());
   });
 
+  // search command
+  const search = commands.registerCommand("cloudmusic.search", async () => {
+    const hotItems = await apiSearchHotDetail();
+    const pick = await window.showQuickPick(
+      [
+        {
+          label: "Input keyword",
+          type: 1,
+        },
+        {
+          label: ">>>>> HOT SEARCH <<<<<",
+        },
+      ].concat(
+        hotItems.map(({ searchWord, content }) => ({
+          label: searchWord,
+          detail: content,
+          type: 2,
+        }))
+      )
+    );
+    if (!pick || !pick.type) {
+      return;
+    }
+    let keywords = "";
+    if (pick.type === 1) {
+      const input = await window.showInputBox({
+        placeHolder: "Please enter keyword.",
+      });
+      if (!input) {
+        return;
+      }
+      keywords = input;
+    } else {
+      keywords = pick.label;
+    }
+    const type = await window.showQuickPick(
+      [
+        {
+          label: "$(link) Single",
+          type: 1,
+        },
+        {
+          label: "$(circuit-board) Album",
+          type: 2,
+        },
+        {
+          label: "$(account) Artist",
+          type: 3,
+        },
+      ],
+      { placeHolder: "Please choose search type" }
+    );
+    if (!type) {
+      return;
+    }
+    switch (type.type) {
+      case 1:
+        songsPick(undefined, await apiSearchSingle(keywords));
+        break;
+      case 2:
+        albumsPick(undefined, await apiSearchAlbum(keywords));
+        break;
+      case 3:
+        artistsPick(await apiSearchArtist(keywords));
+        break;
+    }
+  });
+
   context.subscriptions.push(signin);
   context.subscriptions.push(dailyCheck);
   context.subscriptions.push(signout);
@@ -367,6 +447,7 @@ export function activate(context: ExtensionContext): void {
   context.subscriptions.push(volume);
   context.subscriptions.push(toggleButton);
   context.subscriptions.push(personalFM);
+  context.subscriptions.push(search);
 
   // init playlist provider
   const userPlaylistProvider = PlaylistProvider.getUserInstance();
@@ -468,7 +549,7 @@ export function activate(context: ExtensionContext): void {
     async (element?: QueueItemTreeItem) => {
       const id = element ? element.item.id : player.id;
       if (id) {
-        songPick(id);
+        songPick(id, element?.item);
       }
     }
   );

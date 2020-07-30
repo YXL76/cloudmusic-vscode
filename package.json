@@ -106,6 +106,10 @@
         "title": "Cloudmusic: Personal FM"
       },
       {
+        "command": "cloudmusic.search",
+        "title": "Cloudmusic: Search"
+      },
+      {
         "command": "cloudmusic.refreshPlaylist",
         "title": "Refresh",
         "icon": "$(refresh)"
