@@ -11,3 +11,7 @@ dist
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+
+native/target
+native/index.node
+native/artifacts.json

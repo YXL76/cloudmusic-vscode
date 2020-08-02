@@ -1,0 +1,20 @@
+[package]
+name = "native"
+version = "0.1.0"
+authors = ["YXL <chenxin.lan.76@gmail.com>"]
+build = "build.rs"
+edition = "2018"
+exclude = ["artifacts.json", "index.node"]
+
+[lib]
+name = "native"
+crate-type = ["cdylib"]
+
+[build-dependencies]
+neon-build = "0.4.0"
+
+[dependencies]
+neon = "0.4.0"
+
+[profile.release]
+lto = true

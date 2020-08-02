@@ -313,6 +313,7 @@
     ]
   },
   "scripts": {
+    "build": "electron-build-env neon build --release",
     "vscode:prepublish": "node pre-webpack.js && webpack --mode production",
     "webpack": "node pre-webpack.js && webpack --mode development",
     "webpack-dev": "node pre-webpack.js && webpack --mode development --watch",
