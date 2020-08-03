@@ -8,9 +8,9 @@
 
 > Netease Music for VS Code
 
-[![Marketplace](https://img.shields.io/visual-studio-marketplace/v/yxl.cloudmusic.svg?label=VS%20Code%20Marketplace)](https://marketplace.visualstudio.com/items?itemName=yxl.cloudmusic)
-[![Installs](https://img.shields.io/visual-studio-marketplace/i/yxl.cloudmusic.svg)](https://marketplace.visualstudio.com/items?itemName=yxl.cloudmusic)
-[![Rating](https://img.shields.io/visual-studio-marketplace/stars/yxl.cloudmusic.svg)](https://marketplace.visualstudio.com/items?itemName=yxl.cloudmusic)
+[![Marketplace](https://img.shields.io/visual-studio-marketplace/v/yxl.cloudmusic.svg?label=Marketplace&style=for-the-badge&logo=visual-studio-code)](https://marketplace.visualstudio.com/items?itemName=yxl.cloudmusic)
+[![Installs](https://img.shields.io/visual-studio-marketplace/i/yxl.cloudmusic.svg?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=yxl.cloudmusic)
+[![Rating](https://img.shields.io/visual-studio-marketplace/stars/yxl.cloudmusic.svg?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=yxl.cloudmusic)
 
 </div>
 
