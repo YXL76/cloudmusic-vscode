@@ -61,7 +61,7 @@ jobs:
       - run: yarn
 
       - name: build for electron@${{ matrix.electron }}
-      - run: |
+        run: |
           yarn add electron@${{ matrix.electron }}
           yarn add electron-build-env
           yarn add neon-cli
@@ -69,7 +69,7 @@ jobs:
           cp native/index.node build/${{ matrix.os }}-${{ matrix.abi }}.node
 
       - name: remove uncessary dependencies
-      - run: |
+        run: |
           yarn remove electron
           yarn remove electron-build-env
           yarn remove neon-cli
