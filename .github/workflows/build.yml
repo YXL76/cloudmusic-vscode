@@ -17,7 +17,7 @@ jobs:
           - electron: 9.1.0
             abi: 80
 
-    name: Build for ${{ matrix.os }}
+    name: Build for ${{ matrix.os }}-${{ matrix.abi }}
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -81,5 +81,5 @@ jobs:
           git config --global user.name "YXL"
           git pull
           git add -A
-          git commit -m "🔧build(${{ matrix.os }})" || exit 0
+          git commit -m "🔧build(${{ matrix.os }}-${{ matrix.abi }})" || exit 0
           git push
