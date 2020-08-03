@@ -78,11 +78,6 @@ jobs:
           path: native/index.node
 
   push:
-    strategy:
-      matrix:
-        filename: [darwin, linux, win32]
-        abi: [75, 80]
-
     name: Push
     needs: build
     runs-on: ubuntu-latest
