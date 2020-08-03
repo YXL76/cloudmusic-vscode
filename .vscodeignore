@@ -17,6 +17,7 @@ doc/
 media/icon.svg
 media/icon-72.png
 media/icon-150.png
+native/
 
 .yarn/*
 .pnp.*
