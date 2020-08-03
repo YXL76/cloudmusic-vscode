@@ -92,12 +92,13 @@ jobs:
 
       - name: Copy file
         run: |
-          cp .artifact/darwin-75 build/darwin-75.node
-          cp .artifact/linux-75  build/linux-75.node
-          cp .artifact/win32-75  build/win32-75.node
-          cp .artifact/darwin-80 build/darwin-80.node
-          cp .artifact/linux-80  build/linux-80.node
-          cp .artifact/win32-80  build/win32-80.node
+          mkdir -p build
+          cp -r .artifact/darwin-75 build/darwin-75.node
+          cp -r .artifact/linux-75  build/linux-75.node
+          cp -r .artifact/win32-75  build/win32-75.node
+          cp -r .artifact/darwin-80 build/darwin-80.node
+          cp -r .artifact/linux-80  build/linux-80.node
+          cp -r .artifact/win32-80  build/win32-80.node
 
       - name: Get commit timestamp
         id: commit-timestamp
