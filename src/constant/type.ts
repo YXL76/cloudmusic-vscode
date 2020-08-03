@@ -89,7 +89,6 @@ export type NativePlayer = {
   play(): boolean;
   pause(): void;
   stop(): void;
-  volume(): number;
   setVolume(level: number): void;
   isPaused(): boolean;
   empty(): boolean;
