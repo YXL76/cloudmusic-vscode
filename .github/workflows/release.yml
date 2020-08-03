@@ -6,50 +6,22 @@ on:
       - "v*"
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    name: Release Test
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Install Node.js
-        uses: actions/setup-node@v1
-        with:
-          node-version: "13"
-      - run: yarn
-      - name: Run tests
-        uses: GabrielBB/xvfb-action@v1.2
-        with:
-          run: yarn test
-
-  package:
-    runs-on: ubuntu-latest
-    needs: test
-    name: Package
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: "13"
-      - run: yarn
-      - run: npm install -g vsce
-      - run: vsce package
-      - run: echo ::set-env name=VSIX_PATH::$(find . -maxdepth 1 -type f -iname "*.vsix" | head -1)
-      - run: echo ::set-env name=VSIX_NAME::$(basename $(find . -maxdepth 1 -type f -iname "*.vsix" | head -1))
-      - uses: actions/upload-artifact@v2
-        with:
-          path: ${{ env.VSIX_PATH }}
-          name: ${{ env.VSIX_NAME }}
-
   release:
     runs-on: ubuntu-latest
-    needs: package
     name: Release
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: "13"
+          node-version: "12"
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ubuntu-latest-yarn-${{ hashFiles('**/yarn.lock') }}
       - run: yarn
       - run: npm install -g vsce
       - run: vsce package
