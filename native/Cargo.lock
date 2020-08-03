@@ -46,6 +46,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "bindgen"
+version = "0.54.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f4d49b80beb70d76cdac92f5681e666f9a697c737c4f4117a67229a0386dc736"
+dependencies = [
+ "bitflags",
+ "cexpr",
+ "cfg-if",
+ "clang-sys",
+ "lazy_static",
+ "lazycell",
+ "peeking_take_while",
+ "proc-macro2",
+ "quote",
+ "regex",
+ "rustc-hash",
+ "shlex",
+]
+
+[[package]]
 name = "bitflags"
 version = "1.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -117,7 +137,7 @@ version = "0.2.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d6570ee6e089131e928d5ec9236db9e818aa3cf850f48b0eec6ef700571271d4"
 dependencies = [
- "bindgen",
+ "bindgen 0.53.3",
 ]
 
 [[package]]
@@ -142,6 +162,18 @@ name = "cslice"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "697c714f50560202b1f4e2e09cd50a421881c83e9025db75d15f276616f04f40"
+
+[[package]]
+name = "ep-miniaudio-sys"
+version = "2.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "67d043fff0d902f8c6837115c92e08e096d497cd857555a1b42dd31dec7c6042"
+dependencies = [
+ "bindgen 0.54.1",
+ "bitflags",
+ "cc",
+ "libc",
+]
 
 [[package]]
 name = "glob"
@@ -210,6 +242,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3728d817d99e5ac407411fa471ff9800a778d88a24685968b36824eaf4bee400"
 
 [[package]]
+name = "miniaudio"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8ec3e73aa4272d5f1c32a22a5033e77f1f2232e4beebdb601fc3456b2dd39940"
+dependencies = [
+ "bitflags",
+ "ep-miniaudio-sys",
+]
+
+[[package]]
 name = "minimp3"
 version = "0.3.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -232,6 +274,7 @@ dependencies = [
 name = "native"
 version = "0.1.0"
 dependencies = [
+ "miniaudio",
  "neon",
  "neon-build",
  "rodio",

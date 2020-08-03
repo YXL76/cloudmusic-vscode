@@ -16,6 +16,7 @@ neon-build = "0.4.0"
 [dependencies]
 neon = "0.4.0"
 rodio = "0.11.0"
+miniaudio = "0.10.0"
 
 [profile.release]
 lto = true
