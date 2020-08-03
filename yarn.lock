@@ -1017,15 +1017,15 @@ __metadata:
     bluebird: ^3.7.2
     cacache: ^15.0.5
     del: ^5.1.0
-    eslint: ^7.5.0
+    eslint: ^7.6.0
     glob: ^7.1.6
     lru-cache: ^6.0.0
     mocha: ^8.0.1
     node-abi: ^2.18.0
-    ts-loader: ^8.0.1
+    ts-loader: ^8.0.2
     typescript: ^3.9.7
     vscode-test: ^1.4.0
-    webpack: ^5.0.0-beta.22
+    webpack: ^5.0.0-beta.23
     webpack-cli: ^4.0.0-beta.8
   languageName: unknown
   linkType: soft
@@ -1401,13 +1401,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:5.0.0-beta.8":
-  version: 5.0.0-beta.8
-  resolution: "enhanced-resolve@npm:5.0.0-beta.8"
+"enhanced-resolve@npm:5.0.0-beta.10":
+  version: 5.0.0-beta.10
+  resolution: "enhanced-resolve@npm:5.0.0-beta.10"
   dependencies:
     graceful-fs: ^4.2.0
     tapable: ^2.0.0-beta.10
-  checksum: 6924f6dc55601b2e72bc78f0a09705b54993549dd9e00d3fcb1896a814e2f18467e44b5540964f8dd502d75a170204f3c272319d4a6639c77faef2685f7609b2
+  checksum: 25ecaee8cc0bcd45a4c1c52984f60e8e51e039f70a7868e3d164a7bfc5f6d9d4781a2b2cbd079622eb74b793a0f6967f62d4e5253b50cb489f0e52ca4759c535
   languageName: node
   linkType: hard
 
@@ -1576,9 +1576,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^7.5.0":
-  version: 7.5.0
-  resolution: "eslint@npm:7.5.0"
+"eslint@npm:^7.6.0":
+  version: 7.6.0
+  resolution: "eslint@npm:7.6.0"
   dependencies:
     "@babel/code-frame": ^7.0.0
     ajv: ^6.10.0
@@ -1618,7 +1618,7 @@ __metadata:
     v8-compile-cache: ^2.0.3
   bin:
     eslint: bin/eslint.js
-  checksum: 5a65f133db997f39e48082636496e11db168c7385839111b2ecbb9d4fa16d9eaeae9a88f0317ddcc5118fe388c2907ab0f302c752fb36e56ace6e3660070ea42
+  checksum: 1b73da24232b5796a84caac4d01e39fecc6b89690e0c27b33570f898cb7f6b5d41ed255db9d8880d2eb85cda03d2379d6667abdb8a2d05c45fd17abc0beca8a6
   languageName: node
   linkType: hard
 
@@ -4325,9 +4325,9 @@ resolve@^1.9.0:
   languageName: node
   linkType: hard
 
-"ts-loader@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "ts-loader@npm:8.0.1"
+"ts-loader@npm:^8.0.2":
+  version: 8.0.2
+  resolution: "ts-loader@npm:8.0.2"
   dependencies:
     chalk: ^2.3.0
     enhanced-resolve: ^4.0.0
@@ -4336,7 +4336,7 @@ resolve@^1.9.0:
     semver: ^6.0.0
   peerDependencies:
     typescript: "*"
-  checksum: 62772faf481c687f2ddf16cb6c7e8ec1a989868bfc442baec6a28b78a5bcc5476bf1c10d22311f2bed4ef4cf47f2a00fba21e9702b8b2f3ae1fd9715c93d78cb
+  checksum: 84bb8f625af629571132851ae9e350285b06a0cdee074d42b801236922a37e235aa41d462bd20b193720676b834b24ebbe27ab8dae4ea07ec1d136a13da151ec
   languageName: node
   linkType: hard
 
@@ -4622,9 +4622,9 @@ typescript@^3.9.7:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.0.0-beta.22, webpack@npm:^5.0.0-beta.22":
-  version: 5.0.0-beta.22
-  resolution: "webpack@npm:5.0.0-beta.22"
+"webpack@npm:^5.0.0-beta.23":
+  version: 5.0.0-beta.23
+  resolution: "webpack@npm:5.0.0-beta.23"
   dependencies:
     "@types/estree": ^0.0.45
     "@webassemblyjs/ast": 1.9.0
@@ -4633,7 +4633,7 @@ typescript@^3.9.7:
     "@webassemblyjs/wasm-parser": 1.9.0
     acorn: ^7.3.0
     chrome-trace-event: ^1.0.2
-    enhanced-resolve: 5.0.0-beta.8
+    enhanced-resolve: 5.0.0-beta.10
     eslint-scope: ^5.0.0
     events: ^3.0.0
     glob-to-regexp: ^0.4.1
@@ -4648,9 +4648,14 @@ typescript@^3.9.7:
     terser-webpack-plugin: ^3.0.2
     watchpack: 2.0.0-beta.13
     webpack-sources: 2.0.0-beta.8
+  peerDependencies:
+    webpack-cli: "*"
+  peerDependenciesMeta:
+    webpack-cli:
+      optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: b620002cae200aa9d1d6763ec8f109e32228a72dabd0e33c7b715ba9d5588dd0bf468bc18bf35aa409cfd521291d776e3d9e17ffc0a97ddbdd2991417def7a40
+  checksum: 4d961a954cdcce3c1a7ca704c90a40bc758b2dea65f26e9c25a230d9d553df82e1c85682e6b211322cd057d91ceee03eda64248b7e5689dea10275c8eea6c481
   languageName: node
   linkType: hard
 
