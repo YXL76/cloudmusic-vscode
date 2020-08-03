@@ -170,7 +170,9 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
           });
         })
         .on("error", () => {
-          lock.playerLoad = false;
+          setTimeout(() => {
+            lock.playerLoad = false;
+          }, 2000);
           player.stop();
           window.showErrorMessage("Network Error");
         });
