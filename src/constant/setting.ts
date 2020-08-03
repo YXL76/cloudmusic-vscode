@@ -1,19 +1,25 @@
 import { homedir, platform } from "os";
 import { join } from "path";
 import { workspace } from "vscode";
+import { NativeModule } from "./type";
 const { getAbi } = require("node-abi");
+
 // @ts-ignore
 const abi = getAbi(process.versions.electron, "electron");
 
 const conf = workspace.getConfiguration("cloudmusic");
 export const PLATFORM = platform();
 
+// @ts-ignore
+export const NATIVE: NativeModule = __non_webpack_require__(
+  join("..", "build", `${PLATFORM}-${abi}.node`)
+);
+
 export const PLAYER_AVAILABLE = PLATFORM === "win32" || "linux" || "darwin";
-export const PLAYER_STATIC = `${PLATFORM}-${abi}.node`;
 export const DEFAULT_LIBRARY: string =
-  conf.get("player.defaultLibrary") || "rodio";
+  conf.get("player.defaultLibrary") || "Rodio";
 export const BACKUP_LIBRARY =
-  DEFAULT_LIBRARY === "rodio" ? "miniaudio" : "rodio";
+  DEFAULT_LIBRARY === "Rodio" ? "Miniaudio" : "Rodio";
 
 export const SETTING_DIR = join(homedir(), ".cloudmusic");
 export const ACCOUNT_FILE = join(SETTING_DIR, ".account");

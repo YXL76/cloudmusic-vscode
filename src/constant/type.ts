@@ -85,6 +85,7 @@ export type LyricData = {
 };
 
 export type NativePlayer = {
+  new <T>(): T;
   load(url: string): boolean;
   play(): boolean;
   pause(): void;
@@ -105,4 +106,11 @@ export interface Player {
   load(url: string, id: number, pid: number, dt: number): void;
   togglePlay(): void;
   volume(level: number): void;
+}
+
+export interface NativeModule {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Rodio: NativePlayer;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Miniaudio: NativePlayer;
 }

@@ -1,19 +1,16 @@
-import { join } from "path";
 import { commands } from "vscode";
 import { Player, NativePlayer } from "../constant/type";
 import {
   PLAYER_AVAILABLE,
-  PLAYER_STATIC,
   DEFAULT_LIBRARY,
   BACKUP_LIBRARY,
+  NATIVE,
 } from "../constant/setting";
 import { sleep } from "./util";
 import { apiScrobble } from "./api";
 import { lock } from "../state/lock";
 import { Playing, setPosition } from "../state/play";
 import { ButtonManager } from "../manager/buttonManager";
-
-const playerPath = join("..", "build", "player");
 
 class NoPlayer implements Player {
   id = 0;
@@ -52,17 +49,11 @@ class AudioPlayer implements Player {
 
   constructor() {
     try {
-      // @ts-ignore
-      const nPlayer = __non_webpack_require__(
-        join(playerPath, DEFAULT_LIBRARY, PLAYER_STATIC)
-      ).Player;
-      this.player = new nPlayer();
+      const player = NATIVE[DEFAULT_LIBRARY];
+      this.player = new player();
     } catch {
-      // @ts-ignore
-      const nPlayer = __non_webpack_require__(
-        join(playerPath, BACKUP_LIBRARY, PLAYER_STATIC)
-      ).Player;
-      this.player = new nPlayer();
+      const player = NATIVE[BACKUP_LIBRARY];
+      this.player = new player();
     }
     setInterval(() => {
       if (!this.player.isPaused()) {

@@ -300,11 +300,11 @@
           },
           "cloudmusic.player.defaultLibrary": {
             "type": "string",
-            "default": "rodio",
+            "default": "Rodio",
             "markdownDescription": "",
             "enum": [
-              "rodio",
-              "miniaudio"
+              "Rodio",
+              "Miniaudio"
             ],
             "scope": "window"
           }
