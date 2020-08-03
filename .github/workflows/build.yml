@@ -12,12 +12,18 @@ jobs:
         os: [macos-latest, ubuntu-latest, windows-latest]
         electron: [7.3.2, 9.1.0]
         include:
+          - os: macos-latest
+            filename: darwin
+          - os: ubuntu-latest
+            filename: linux
+          - os: windows-latest
+            filename: win32
           - electron: 7.3.2
             abi: 75
           - electron: 9.1.0
             abi: 80
 
-    name: Build for ${{ matrix.os }}-${{ matrix.abi }}
+    name: Build for ${{ matrix.filename }}-${{ matrix.abi }}
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -60,26 +66,36 @@ jobs:
 
       - run: yarn
 
-      - name: build for electron@${{ matrix.electron }}
+      - name: Build
         run: |
           yarn add electron@${{ matrix.electron }}
           yarn add electron-build-env
           yarn add neon-cli
           yarn build
-          cp native/index.node build/${{ matrix.os }}-${{ matrix.abi }}.node
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.filename }}-${{ matrix.abi }}.node
+          path: native/index.node
 
-      - name: remove uncessary dependencies
-        run: |
-          yarn remove electron
-          yarn remove electron-build-env
-          yarn remove neon-cli
+  push:
+    name: Push
+    runs-on: ubuntu-latest
 
-      - name: push to repository
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          path: build
+
+      - name: Get commit timestamp
+        id: commit-timestamp
+        run: echo "::set-output name=timestamp::$(git show -s --format=%ct)"
+
+      - name: Push to repository
         run: |
           git diff
           git config --global user.email "chenxin.lan.76@gmail.com"
           git config --global user.name "YXL"
           git pull
           git add -A
-          git commit -m "🔧build(${{ matrix.os }}-${{ matrix.abi }})" || exit 0
+          git commit -m "🔧build(${{ steps.commit-timestamp.outputs.timestamp }})" || exit 0
           git push
