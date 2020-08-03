@@ -162,6 +162,10 @@ export class PlaylistItemTreeItem extends TreeItem {
     super(label, collapsibleState);
   }
 
+  valueOf(): number {
+    return this.item.id;
+  }
+
   get tooltip(): string {
     const { description, playCount, subscribedCount, trackCount } = this.item;
     return `
