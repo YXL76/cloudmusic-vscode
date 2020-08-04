@@ -311,6 +311,8 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
             } else if prev_key != next && b & 1 << next != 0 {
                 prev_key = next;
                 tx.send(KeyboardEvent::Prev).unwrap_or(());
+            } else if prev_key != 0 && b & 1 << prev_key == 0 {
+                prev_key = 0;
             }
         }
     });
@@ -327,16 +329,18 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
 
     thread::spawn(move || {
         let keys = [177, 179, 176];
+        let mut flag;
         let mut prev_key = 0;
 
         loop {
             thread::sleep(Duration::from_millis(32));
 
+            flag = false;
             for key in keys.iter() {
-                if prev_key != *key {
-                    unsafe {
-                        let state = GetAsyncKeyState(*key);
-                        if state & -32768 != 0 {
+                unsafe {
+                    let state = GetAsyncKeyState(*key);
+                    if state & -32768 != 0 {
+                        if prev_key != *key {
                             prev_key = *key;
                             match *key {
                                 177 => {
@@ -350,10 +354,14 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
                                 }
                                 _ => {}
                             }
-                            break;
                         }
+                        flag = true;
+                        break;
                     }
                 }
+            }
+            if !flag {
+                prev_key = 0;
             }
         }
     });
