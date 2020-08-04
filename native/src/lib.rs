@@ -1,6 +1,9 @@
 use neon::prelude::*;
 use std::fs::File;
 use std::io::BufReader;
+use std::sync::mpsc;
+use std::sync::{Arc, Mutex};
+use std::thread;
 use std::time::{Duration, Instant};
 
 enum Status {
@@ -267,7 +270,136 @@ declare_types! {
     }
 }
 
+#[cfg(target_os = "linux")]
+use std::ptr;
+#[cfg(target_os = "linux")]
+use std::slice::from_raw_parts;
+#[cfg(target_os = "linux")]
+use x11::xlib::{XOpenDisplay, XQueryKeymap};
+
+pub enum KeyboardEvent {
+    Prev,
+    Play,
+    Next,
+}
+
+#[cfg(target_os = "linux")]
+fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
+    let (tx, events_rx) = mpsc::channel();
+
+    thread::spawn(move || unsafe {
+        let disp = XOpenDisplay(ptr::null());
+        let keymap: *mut i8 = [0; 32].as_mut_ptr();
+
+        loop {
+            thread::sleep(Duration::from_millis(20));
+
+            XQueryKeymap(disp, keymap);
+            let b = from_raw_parts(keymap, 32)[21];
+
+            if b & 1 << 3 != 0 {
+                tx.send(KeyboardEvent::Next).unwrap_or(());
+            } else if b & 1 << 4 != 0 {
+                tx.send(KeyboardEvent::Play).unwrap_or(());
+            } else if b & 1 << 5 != 0 {
+                tx.send(KeyboardEvent::Prev).unwrap_or(());
+            }
+        }
+    });
+
+    events_rx
+}
+
+#[cfg(target_os = "windows")]
+fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
+    let (tx, events_rx) = mpsc::channel();
+
+    events_rx
+}
+
+#[cfg(target_os = "macos")]
+fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
+    let (tx, events_rx) = mpsc::channel();
+
+    events_rx
+}
+
+pub struct KeyboardEventEmitter(Arc<Mutex<mpsc::Receiver<KeyboardEvent>>>);
+
+impl Task for KeyboardEventEmitter {
+    type Output = Option<KeyboardEvent>;
+    type Error = String;
+    type JsEvent = JsValue;
+
+    fn perform(&self) -> Result<Self::Output, Self::Error> {
+        let rx = self
+            .0
+            .lock()
+            .map_err(|_| "Could not obtain lock on receiver".to_string())?;
+
+        match rx.recv() {
+            Ok(event) => Ok(Some(event)),
+            _ => Ok(None),
+        }
+    }
+
+    fn complete(
+        self,
+        mut cx: TaskContext,
+        event: Result<Self::Output, Self::Error>,
+    ) -> JsResult<Self::JsEvent> {
+        let event = event.unwrap_or(None);
+
+        let event = match event {
+            Some(event) => event,
+            _ => return Ok(JsUndefined::new().upcast()),
+        };
+
+        let o = cx.empty_object();
+
+        match event {
+            KeyboardEvent::Prev => {
+                let event_name = cx.string("prev");
+                o.set(&mut cx, "event", event_name)?;
+            }
+            KeyboardEvent::Play => {
+                let event_name = cx.string("play");
+                o.set(&mut cx, "event", event_name)?;
+            }
+            KeyboardEvent::Next => {
+                let event_name = cx.string("next");
+                o.set(&mut cx, "event", event_name)?;
+            }
+        }
+
+        Ok(o.upcast())
+    }
+}
+
+declare_types! {
+    pub class JsKeyboardEventEmitter for KeyboardEventEmitter {
+        init(_) {
+            let rx = keyboard_event_thread();
+            Ok(KeyboardEventEmitter (Arc::new(Mutex::new(rx))))
+        }
+
+        method poll(mut cx) {
+            let cb = cx.argument::<JsFunction>(0)?;
+            let this = cx.this();
+
+            let events = cx.borrow(&this, |emitter| Arc::clone(&emitter.0));
+            let emitter = KeyboardEventEmitter(events);
+
+            emitter.schedule(cb);
+
+            Ok(JsUndefined::new().upcast())
+        }
+
+    }
+}
+
 register_module!(mut cx, {
     cx.export_class::<JsRodio>("Rodio")?;
-    cx.export_class::<JsMiniaudio>("Miniaudio")
+    cx.export_class::<JsMiniaudio>("Miniaudio")?;
+    cx.export_class::<JsKeyboardEventEmitter>("KeyboardEventEmitter")
 });
