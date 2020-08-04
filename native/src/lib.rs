@@ -332,7 +332,7 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
         loop {
             thread::sleep(Duration::from_millis(32));
 
-            for key in keys {
+            for key in keys.iter() {
                 if prev_key != key {
                     unsafe {
                         let state = GetAsyncKeyState(key);
