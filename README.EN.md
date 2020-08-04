@@ -168,6 +168,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 | :------------------------: | :---------------------------: | :----: |
 |          likelist          |       喜欢的歌曲(无序)        |   ✔️   |
 |      playlist_catlist      |         全部歌单分类          |        |
+|   playlist_cover_update    |         歌单封面上传          |   ❌   |
 |      playlist_create       |           创建歌单            |        |
 |      playlist_delete       |           删除歌单            |        |
 |      playlist_detail       |           歌单详情            |   ✔️   |
@@ -221,6 +222,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |              module              |        function        | status |
 | :------------------------------: | :--------------------: | :----: |
 |      activate_init_profile       |       初始化名字       |   ❌   |
+|          avatar_upload           |        更新头像        |   ❌   |
 |           captcha_sent           |       发送验证码       |   ❌   |
 |          captcha_verify          |       校验验证码       |   ❌   |
 |    cellphone_existence_check     | 检测手机号码是否已注册 |   ❌   |
