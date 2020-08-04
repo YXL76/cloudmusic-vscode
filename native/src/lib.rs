@@ -270,18 +270,18 @@ declare_types! {
     }
 }
 
+pub enum KeyboardEvent {
+    Prev,
+    Play,
+    Next,
+}
+
 #[cfg(target_os = "linux")]
 use std::ptr;
 #[cfg(target_os = "linux")]
 use std::slice::from_raw_parts;
 #[cfg(target_os = "linux")]
 use x11::xlib::{XOpenDisplay, XQueryKeymap};
-
-pub enum KeyboardEvent {
-    Prev,
-    Play,
-    Next,
-}
 
 #[cfg(target_os = "linux")]
 fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
@@ -319,8 +319,43 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
 }
 
 #[cfg(target_os = "windows")]
+use winapi::um::winuser::GetAsyncKeyState;
+
+#[cfg(target_os = "windows")]
 fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
     let (tx, events_rx) = mpsc::channel();
+
+    thread::spawn(move || unsafe {
+        let keys = [177, 179, 176];
+        let mut prev_key = 0;
+
+        loop {
+            thread::sleep(Duration::from_millis(32));
+
+            for key in keys {
+                if prev_key != key {
+                    unsafe {
+                        let state = GetAsyncKeyState(key);
+                        if state & 0x8000 != 0 {
+                            prev_key = key;
+                            match key {
+                                177 => {
+                                    tx.send(KeyboardEvent::Prev).unwrap_or(());
+                                }
+                                179 => {
+                                    tx.send(KeyboardEvent::Play).unwrap_or(());
+                                }
+                                176 => {
+                                    tx.send(KeyboardEvent::Next).unwrap_or(());
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    });
 
     events_rx
 }

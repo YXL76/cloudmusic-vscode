@@ -278,6 +278,7 @@ dependencies = [
  "neon",
  "neon-build",
  "rodio",
+ "winapi",
  "x11",
 ]
 
