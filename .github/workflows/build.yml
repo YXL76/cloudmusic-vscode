@@ -32,6 +32,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libasound2-dev
+          sudo apt-get install -y libx11-dev
       - name: Install needed Windows dependencies
         if: matrix.os == 'windows-latest'
         run: choco install llvm
@@ -92,7 +93,6 @@ jobs:
 
       - name: Copy file
         run: |
-          ls -l .artifact/darwin-75
           mkdir -p build
           cp .artifact/darwin-75/index.node build/darwin-75.node
           cp .artifact/linux-75/index.node  build/linux-75.node
