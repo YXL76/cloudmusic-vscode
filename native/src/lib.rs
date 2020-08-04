@@ -143,7 +143,7 @@ declare_types! {
 
         method position(mut cx) {
             unsafe {
-                Ok(cx.number(STATUS.elapsed().as_millis() as f64).upcast())
+                Ok(cx.number(STATUS.elapsed().as_millis() as f64 / 1000.0).upcast())
             }
         }
     }
@@ -261,7 +261,7 @@ declare_types! {
 
         method position(mut cx) {
             unsafe {
-                Ok(cx.number(STATUS.elapsed().as_millis() as f64).upcast())
+                Ok(cx.number(STATUS.elapsed().as_millis() as f64 / 1000.0).upcast())
             }
         }
     }

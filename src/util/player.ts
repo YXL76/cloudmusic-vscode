@@ -61,7 +61,7 @@ class AudioPlayer implements Player {
           Playing.set(false);
           commands.executeCommand("cloudmusic.next");
         } else {
-          setPosition(this.player.position() / 1000.0);
+          setPosition(this.player.position());
         }
       }
     }, 1000);
