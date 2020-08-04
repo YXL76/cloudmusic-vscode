@@ -35,8 +35,11 @@ impl Status {
 
 static mut STATUS: Status = Status::Stopped(Duration::from_nanos(0));
 static mut SINK: Option<rodio::Sink> = None;
+static mut EMPTY: bool = true;
+static mut DEVICE: Option<miniaudio::Device> = None;
 
 pub struct Rodio {}
+pub struct Miniaudio {}
 
 declare_types! {
     pub class JsRodio for Rodio {
@@ -45,6 +48,7 @@ declare_types! {
             let s = rodio::Sink::new(&device);
             s.pause();
             unsafe  {
+                STATUS.reset();
                 SINK = Some(s);
             }
             Ok(Rodio {})
@@ -63,6 +67,7 @@ declare_types! {
                             let s = rodio::Sink::new(&device);
                             s.append(source);
                             s.play();
+                            STATUS.reset();
                             STATUS.play();
                             SINK = Some(s);
                             true
@@ -76,16 +81,16 @@ declare_types! {
         }
 
         method play(mut cx) {
-            let res = unsafe  {
+            unsafe  {
                 match &SINK {
                     Some(s) if !s.empty() => {
                         s.play();
-                        true
+                        STATUS.play();
+                        Ok(cx.boolean(true).upcast())
                     },
-                    _ => false
+                    _ => Ok(cx.boolean(false).upcast()),
                 }
-            };
-            Ok(cx.boolean(res).upcast())
+            }
         }
 
         method pause(mut cx) {
@@ -142,191 +147,122 @@ declare_types! {
             }
         }
     }
-}
 
-static mut PLAYING: bool = false;
+    pub class JsMiniaudio for Miniaudio {
+        init(_) {
+            let config = miniaudio::DeviceConfig::new(miniaudio::DeviceType::Playback);
+            let device = miniaudio::Device::new(None, &config).unwrap();
+            unsafe  {
+                STATUS.reset();
+                EMPTY = true;
+                DEVICE = Some(device);
+            }
+            Ok(Miniaudio {})
+        }
 
-pub struct Miniaudio {
-    status: Status,
-    device: miniaudio::Device,
-}
-
-impl Miniaudio {
-    pub fn load(&mut self, url: &str) -> bool {
-        match miniaudio::Decoder::from_file(url, None) {
-            Ok(mut decoder) => {
-                let mut config = miniaudio::DeviceConfig::new(miniaudio::DeviceType::Playback);
-                config.playback_mut().set_format(decoder.output_format());
-                config
-                    .playback_mut()
-                    .set_channels(decoder.output_channels());
-                config.set_sample_rate(decoder.output_sample_rate());
-                match miniaudio::Device::new(None, &config) {
-                    Ok(device) => {
-                        self.device = device;
-                        self.device
-                            .set_data_callback(move |_device, output, _frames| unsafe {
-                                if PLAYING {
-                                    let frames = decoder.read_pcm_frames(output);
-                                    if frames == 0 {
-                                        PLAYING = false;
+        method load(mut cx) {
+            let url: String = cx.argument::<JsString>(0)?.value();
+            let res = {
+                match miniaudio::Decoder::from_file(url, None) {
+                    Ok(mut decoder) => {
+                        let mut config = miniaudio::DeviceConfig::new(miniaudio::DeviceType::Playback);
+                        config.playback_mut().set_format(decoder.output_format());
+                        config
+                            .playback_mut()
+                            .set_channels(decoder.output_channels());
+                        config.set_sample_rate(decoder.output_sample_rate());
+                        match miniaudio::Device::new(None, &config) {
+                            Ok(mut device) => unsafe {
+                                device
+                                    .set_data_callback(move |_device, output, _frames|  {
+                                        if let Status::Playing(_, _) = STATUS   {
+                                            if !EMPTY {
+                                                let frames = decoder.read_pcm_frames(output);
+                                                if frames == 0 {
+                                                    EMPTY = true;
+                                                }
+                                            }
+                                        }
+                                    });
+                                match device.start() {
+                                    Ok(_) => {
+                                        STATUS.reset();
+                                        STATUS.play();
+                                        EMPTY = false;
+                                        DEVICE = Some(device);
+                                        true
                                     }
+                                    _ => false,
                                 }
-                            });
-                        match self.device.start() {
-                            Ok(_) => {
-                                self.status.reset();
-                                self.play();
-                                true
                             }
                             _ => false,
                         }
                     }
                     _ => false,
                 }
-            }
-            _ => false,
-        }
-    }
-
-    pub fn play(&mut self) -> bool {
-        match self.status {
-            Status::Stopped(_) => {
-                unsafe { PLAYING = true }
-                self.status.play();
-                true
-            }
-            _ => false,
-        }
-    }
-
-    pub fn pause(&mut self) {
-        unsafe { PLAYING = false }
-        self.status.stop()
-    }
-
-    pub fn stop(&mut self) {
-        unsafe { PLAYING = false }
-        self.device.stop().unwrap_or(());
-        self.status.reset();
-    }
-
-    pub fn set_volume(&self, volume: f32) {
-        self.device.set_master_volume(volume).unwrap_or(());
-    }
-
-    pub fn is_paused(&self) -> bool {
-        match self.status {
-            Status::Stopped(_) => true,
-            _ => false,
-        }
-    }
-
-    pub fn empty(&mut self) -> bool {
-        unsafe {
-            if !PLAYING {
-                self.status.stop();
-            }
-            !PLAYING
-        }
-    }
-
-    pub fn position(&self) -> u128 {
-        self.status.elapsed().as_millis()
-    }
-}
-
-declare_types! {
-    pub class JsMiniaudio for Miniaudio {
-        init(_) {
-            let config = miniaudio::DeviceConfig::new(miniaudio::DeviceType::Playback);
-            let device = miniaudio::Device::new(None, &config).unwrap();
-            Ok(Miniaudio {
-                status: Status::Stopped(Duration::from_nanos(0)),
-                device,
-            })
-        }
-
-        method load(mut cx) {
-            let url: String = cx.argument::<JsString>(0)?.value();
-            let res = {
-                let mut this = cx.this();
-                let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
-                player.load(&url)
             };
             Ok(cx.boolean(res).upcast())
         }
 
         method play(mut cx) {
-            let res = {
-                let mut this = cx.this();
-                let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
-                player.play()
-            };
-            Ok(cx.boolean(res).upcast())
+            unsafe {
+                match STATUS {
+                    Status::Stopped(_) if !EMPTY => {
+                        STATUS.play();
+                        Ok(cx.boolean(true).upcast())
+                    }
+                    _ => Ok(cx.boolean(false).upcast()),
+                }
+            }
         }
 
         method pause(mut cx) {
-            {
-                let mut this = cx.this();
-                let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
-                player.pause();
-            };
+            unsafe  {
+                STATUS.stop();
+            }
             Ok(cx.undefined().upcast())
         }
 
         method stop(mut cx) {
-            {
-                let mut this = cx.this();
-                let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
-                player.stop();
-            };
+            unsafe  {
+                if let Some(device) = &DEVICE {
+                    device.stop().unwrap_or(());
+                };
+                STATUS.reset();
+                EMPTY = true;
+            }
             Ok(cx.undefined().upcast())
         }
 
         method setVolume(mut cx) {
             let level = cx.argument::<JsNumber>(0)?.value() / 100.0;
-            {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.set_volume(level as f32);
-            };
+            unsafe  {
+                if let Some(device) = &DEVICE {
+                    device.set_master_volume(level as f32).unwrap_or(());
+                };
+            }
             Ok(cx.undefined().upcast())
         }
 
         method isPaused(mut cx) {
-            let res = {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.is_paused()
-            };
-            Ok(cx.boolean(res).upcast())
+            unsafe  {
+                match STATUS {
+                    Status::Stopped(_) => Ok(cx.boolean(true).upcast()),
+                    _ => Ok(cx.boolean(false).upcast())
+                }
+            }
         }
 
         method empty(mut cx) {
-            let res = {
-                let mut this = cx.this();
-                let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
-                player.empty()
-            };
-            Ok(cx.boolean(res).upcast())
+            unsafe  {
+                Ok(cx.boolean(EMPTY).upcast())
+            }
         }
 
         method position(mut cx) {
-            let res = {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.position()
-            };
-            Ok(cx.number(res as f64).upcast())
+            unsafe {
+                Ok(cx.number(STATUS.elapsed().as_millis() as f64).upcast())
+            }
         }
     }
 }
