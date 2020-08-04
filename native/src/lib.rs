@@ -333,12 +333,12 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
             thread::sleep(Duration::from_millis(32));
 
             for key in keys.iter() {
-                if prev_key != key {
+                if prev_key != *key {
                     unsafe {
-                        let state = GetAsyncKeyState(key);
+                        let state = GetAsyncKeyState(*key);
                         if state & 0x8000 != 0 {
-                            prev_key = key;
-                            match key {
+                            prev_key = *key;
+                            match *key {
                                 177 => {
                                     tx.send(KeyboardEvent::Prev).unwrap_or(());
                                 }
