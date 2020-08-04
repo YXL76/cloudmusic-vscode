@@ -45,11 +45,11 @@ declare_types! {
     pub class JsRodio for Rodio {
         init(_) {
             let device = rodio::default_output_device().unwrap();
-            let s = rodio::Sink::new(&device);
-            s.pause();
+            let sink = rodio::Sink::new(&device);
+            sink.pause();
             unsafe  {
                 STATUS.reset();
-                SINK = Some(s);
+                SINK = Some(sink);
             }
             Ok(Rodio {})
         }
@@ -60,16 +60,16 @@ declare_types! {
                 match File::open(url) {
                     Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
                         Ok(source) => unsafe {
-                            if let Some(s) = &SINK {
-                                s.stop();
+                            if let Some(sink) = &SINK {
+                                sink.stop();
                             }
                             let device = rodio::default_output_device().unwrap();
-                            let s = rodio::Sink::new(&device);
-                            s.append(source);
-                            s.play();
+                            let sink = rodio::Sink::new(&device);
+                            sink.append(source);
+                            sink.play();
                             STATUS.reset();
                             STATUS.play();
-                            SINK = Some(s);
+                            SINK = Some(sink);
                             true
                         }
                         _ => false,
@@ -83,8 +83,8 @@ declare_types! {
         method play(mut cx) {
             unsafe  {
                 match &SINK {
-                    Some(s) if !s.empty() => {
-                        s.play();
+                    Some(sink) if !sink.empty() => {
+                        sink.play();
                         STATUS.play();
                         Ok(cx.boolean(true).upcast())
                     },
@@ -95,8 +95,8 @@ declare_types! {
 
         method pause(mut cx) {
             unsafe  {
-                if let Some(s) = &SINK {
-                    s.pause();
+                if let Some(sink) = &SINK {
+                    sink.pause();
                 };
                 STATUS.stop();
             }
@@ -105,8 +105,8 @@ declare_types! {
 
         method stop(mut cx) {
             unsafe  {
-                if let Some(s) = &SINK {
-                    s.stop();
+                if let Some(sink) = &SINK {
+                    sink.stop();
                 };
                 STATUS.reset();
             }
@@ -116,8 +116,8 @@ declare_types! {
         method setVolume(mut cx) {
             let level = cx.argument::<JsNumber>(0)?.value() / 100.0;
             unsafe  {
-                if let Some(s) = &SINK {
-                    s.set_volume(level as f32);
+                if let Some(sink) = &SINK {
+                    sink.set_volume(level as f32);
                 };
             }
             Ok(cx.undefined().upcast())
@@ -126,7 +126,7 @@ declare_types! {
         method isPaused(mut cx) {
             unsafe  {
                 match &SINK {
-                    Some(s) => Ok(cx.boolean(s.is_paused()).upcast()),
+                    Some(sink) => Ok(cx.boolean(sink.is_paused()).upcast()),
                     _ => Ok(cx.boolean(true).upcast())
                 }
             }
@@ -135,7 +135,7 @@ declare_types! {
         method empty(mut cx) {
             unsafe  {
                 match &SINK {
-                    Some(s) => Ok(cx.boolean(s.empty()).upcast()),
+                    Some(sink) => Ok(cx.boolean(sink.empty()).upcast()),
                     _ => Ok(cx.boolean(false).upcast())
                 }
             }
