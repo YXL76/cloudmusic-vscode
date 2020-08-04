@@ -290,18 +290,22 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
     thread::spawn(move || unsafe {
         let disp = XOpenDisplay(ptr::null());
         let keymap: *mut i8 = [0; 32].as_mut_ptr();
+        let mut prev_key = 0;
 
         loop {
-            thread::sleep(Duration::from_millis(20));
+            thread::sleep(Duration::from_millis(32));
 
             XQueryKeymap(disp, keymap);
             let b = from_raw_parts(keymap, 32)[21];
 
-            if b & 1 << 3 != 0 {
+            if prev_key != 1 && b & 1 << 3 != 0 {
+                prev_key = 1;
                 tx.send(KeyboardEvent::Next).unwrap_or(());
-            } else if b & 1 << 4 != 0 {
+            } else if prev_key != 2 && b & 1 << 4 != 0 {
+                prev_key = 2;
                 tx.send(KeyboardEvent::Play).unwrap_or(());
-            } else if b & 1 << 5 != 0 {
+            } else if prev_key != 3 && b & 1 << 5 != 0 {
+                prev_key = 3;
                 tx.send(KeyboardEvent::Prev).unwrap_or(());
             }
         }
