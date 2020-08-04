@@ -36,13 +36,60 @@ impl Status {
     }
 }
 
-static mut STATUS: Status = Status::Stopped(Duration::from_nanos(0));
-static mut SINK: Option<rodio::Sink> = None;
-static mut EMPTY: bool = true;
-static mut DEVICE: Option<miniaudio::Device> = None;
+pub struct Rodio {
+    status: Status,
+    sink: rodio::Sink,
+}
 
-pub struct Rodio {}
-pub struct Miniaudio {}
+impl Rodio {
+    pub fn load(&mut self, url: &str) -> bool {
+        match File::open(url) {
+            Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
+                Ok(source) => {
+                    self.stop();
+                    let device = rodio::default_output_device().unwrap();
+                    self.sink = rodio::Sink::new(&device);
+                    self.sink.append(source);
+                    self.play();
+                    true
+                }
+                _ => false,
+            },
+            _ => false,
+        }
+    }
+
+    pub fn play(&mut self) {
+        self.sink.play();
+        self.status.play()
+    }
+
+    pub fn pause(&mut self) {
+        self.sink.pause();
+        self.status.stop()
+    }
+
+    pub fn stop(&mut self) {
+        self.sink.stop();
+        self.status.reset();
+    }
+
+    pub fn set_volume(&self, volume: f32) {
+        self.sink.set_volume(volume);
+    }
+
+    pub fn is_paused(&self) -> bool {
+        self.sink.is_paused()
+    }
+
+    pub fn empty(&self) -> bool {
+        self.sink.empty()
+    }
+
+    pub fn position(&self) -> u128 {
+        self.status.elapsed().as_millis()
+    }
+}
 
 declare_types! {
     pub class JsRodio for Rodio {
@@ -50,107 +97,109 @@ declare_types! {
             let device = rodio::default_output_device().unwrap();
             let sink = rodio::Sink::new(&device);
             sink.pause();
-            unsafe  {
-                STATUS.reset();
-                SINK = Some(sink);
-            }
-            Ok(Rodio {})
+            Ok(Rodio {
+                status: Status::Stopped(Duration::from_nanos(0)),
+                sink,
+            })
         }
 
         method load(mut cx) {
             let url: String = cx.argument::<JsString>(0)?.value();
             let res = {
-                match File::open(url) {
-                    Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
-                        Ok(source) => unsafe {
-                            if let Some(sink) = &SINK {
-                                sink.stop();
-                            }
-                            let device = rodio::default_output_device().unwrap();
-                            let sink = rodio::Sink::new(&device);
-                            sink.append(source);
-                            sink.play();
-                            STATUS.reset();
-                            STATUS.play();
-                            SINK = Some(sink);
-                            true
-                        }
-                        _ => false,
-                    },
-                    _ => false,
-                }
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut player = this.borrow_mut(&guard);
+                player.load(&url)
             };
             Ok(cx.boolean(res).upcast())
         }
 
         method play(mut cx) {
-            unsafe  {
-                match &SINK {
-                    Some(sink) if !sink.empty() => {
-                        sink.play();
-                        STATUS.play();
-                        Ok(cx.boolean(true).upcast())
-                    },
-                    _ => Ok(cx.boolean(false).upcast()),
+            let res = {
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut player = this.borrow_mut(&guard);
+                match player.empty() {
+                    false => {
+                        player.play();
+                        true
+                    }
+                    _ => false
                 }
-            }
+            };
+            Ok(cx.boolean(res).upcast())
         }
 
         method pause(mut cx) {
-            unsafe  {
-                if let Some(sink) = &SINK {
-                    sink.pause();
-                };
-                STATUS.stop();
-            }
+            {
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut player = this.borrow_mut(&guard);
+                player.pause();
+            };
             Ok(cx.undefined().upcast())
         }
 
         method stop(mut cx) {
-            unsafe  {
-                if let Some(sink) = &SINK {
-                    sink.stop();
-                };
-                STATUS.reset();
-            }
+            {
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut player = this.borrow_mut(&guard);
+                player.stop();
+            };
             Ok(cx.undefined().upcast())
         }
 
         method setVolume(mut cx) {
             let level = cx.argument::<JsNumber>(0)?.value() / 100.0;
-            unsafe  {
-                if let Some(sink) = &SINK {
-                    sink.set_volume(level as f32);
-                };
-            }
+            {
+                let this = cx.this();
+                let guard = cx.lock();
+                let player = this.borrow(&guard);
+                player.set_volume(level as f32);
+            };
             Ok(cx.undefined().upcast())
         }
 
         method isPaused(mut cx) {
-            unsafe  {
-                match &SINK {
-                    Some(sink) => Ok(cx.boolean(sink.is_paused()).upcast()),
-                    _ => Ok(cx.boolean(true).upcast())
-                }
-            }
+            let res = {
+                let this = cx.this();
+                let guard = cx.lock();
+                let player = this.borrow(&guard);
+                player.is_paused()
+            };
+            Ok(cx.boolean(res).upcast())
         }
 
         method empty(mut cx) {
-            unsafe  {
-                match &SINK {
-                    Some(sink) => Ok(cx.boolean(sink.empty()).upcast()),
-                    _ => Ok(cx.boolean(false).upcast())
-                }
-            }
+            let res = {
+                let this = cx.this();
+                let guard = cx.lock();
+                let player = this.borrow(&guard);
+                player.empty()
+            };
+            Ok(cx.boolean(res).upcast())
         }
 
         method position(mut cx) {
-            unsafe {
-                Ok(cx.number(STATUS.elapsed().as_millis() as f64 / 1000.0).upcast())
-            }
+            let res = {
+                let this = cx.this();
+                let guard = cx.lock();
+                let player = this.borrow(&guard);
+                player.position()
+            };
+            Ok(cx.number(res as f64 / 1000.0).upcast())
         }
     }
+}
 
+static mut STATUS: Status = Status::Stopped(Duration::from_nanos(0));
+static mut EMPTY: bool = true;
+static mut DEVICE: Option<miniaudio::Device> = None;
+
+pub struct Miniaudio {}
+
+declare_types! {
     pub class JsMiniaudio for Miniaudio {
         init(_) {
             let config = miniaudio::DeviceConfig::new(miniaudio::DeviceType::Playback);
