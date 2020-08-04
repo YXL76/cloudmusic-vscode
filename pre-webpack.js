@@ -29,7 +29,6 @@ fs.writeFileSync(
   path.join(dir, "main.js"),
   `
   const request = require('./util/request')
-  const { cookieToJson } = require('./util/index')
 
   let obj = {}
 
