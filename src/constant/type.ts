@@ -96,6 +96,11 @@ export type NativePlayer = {
   position(): number;
 };
 
+export type NativeEventEmitter = {
+  new <T>(): T;
+  poll(callback: (err: string, event: { event: string }) => void): void;
+};
+
 export interface Player {
   id: number;
   pid: number;
@@ -113,4 +118,6 @@ export interface NativeModule {
   Rodio: NativePlayer;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Miniaudio: NativePlayer;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  KeyboardEventEmitter: NativeEventEmitter;
 }

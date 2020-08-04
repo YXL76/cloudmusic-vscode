@@ -23,7 +23,9 @@ import {
   CACHE_DIR,
   MUSIC_QUALITY,
   PLAYER_AVAILABLE,
+  NATIVE,
 } from "./constant/setting";
+import { NativeEventEmitter } from "./constant/type";
 import { AccountManager } from "./manager/accountManager";
 import { ButtonManager } from "./manager/buttonManager";
 import {
@@ -606,6 +608,33 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand("cloudmusic.fmTrash", () => {
     apiFmTrash(player.id);
   });
+
+  // keyboard detect
+  try {
+    const keyboardEventEmitter: NativeEventEmitter = new NATIVE[
+      "KeyboardEventEmitter"
+    ]();
+    const keyboardLoop = () => {
+      keyboardEventEmitter.poll((err, e) => {
+        if (!err && e) {
+          const { event } = e;
+          switch (event) {
+            case "prev":
+              commands.executeCommand("cloudmusic.previous");
+              break;
+            case "play":
+              commands.executeCommand("cloudmusic.play");
+              break;
+            case "next":
+              commands.executeCommand("cloudmusic.next");
+              break;
+          }
+        }
+        setImmediate(keyboardLoop);
+      });
+    };
+    setImmediate(keyboardLoop);
+  } catch {}
 }
 
 export function deactivate(): void {
