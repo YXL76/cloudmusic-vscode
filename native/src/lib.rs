@@ -336,7 +336,7 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
                 if prev_key != *key {
                     unsafe {
                         let state = GetAsyncKeyState(*key);
-                        if state & 0x8000 != 0 {
+                        if state & -32768 != 0 {
                             prev_key = *key;
                             match *key {
                                 177 => {
