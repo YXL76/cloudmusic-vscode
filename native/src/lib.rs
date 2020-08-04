@@ -33,94 +33,55 @@ impl Status {
     }
 }
 
-pub struct Rodio {
-    status: Status,
-    sink: rodio::Sink,
-}
+static mut STATUS: Status = Status::Stopped(Duration::from_nanos(0));
+static mut SINK: Option<rodio::Sink> = None;
 
-impl Rodio {
-    pub fn load(&mut self, url: &str) -> bool {
-        match File::open(url) {
-            Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
-                Ok(source) => {
-                    self.stop();
-                    let device = rodio::default_output_device().unwrap();
-                    self.sink = rodio::Sink::new(&device);
-                    self.sink.append(source);
-                    self.play();
-                    true
-                }
-                _ => false,
-            },
-            _ => false,
-        }
-    }
-
-    pub fn play(&mut self) {
-        self.sink.play();
-        self.status.play()
-    }
-
-    pub fn pause(&mut self) {
-        self.sink.pause();
-        self.status.stop()
-    }
-
-    pub fn stop(&mut self) {
-        self.sink.stop();
-        self.status.reset();
-    }
-
-    pub fn set_volume(&self, volume: f32) {
-        self.sink.set_volume(volume);
-    }
-
-    pub fn is_paused(&self) -> bool {
-        self.sink.is_paused()
-    }
-
-    pub fn empty(&self) -> bool {
-        self.sink.empty()
-    }
-
-    pub fn position(&self) -> u128 {
-        self.status.elapsed().as_millis()
-    }
-}
+pub struct Rodio {}
 
 declare_types! {
     pub class JsRodio for Rodio {
         init(_) {
             let device = rodio::default_output_device().unwrap();
-            let sink = rodio::Sink::new(&device);
-            sink.pause();
-            Ok(Rodio {
-                status: Status::Stopped(Duration::from_nanos(0)),
-                sink,
-            })
+            let s = rodio::Sink::new(&device);
+            s.pause();
+            unsafe  {
+                SINK = Some(s);
+            }
+            Ok(Rodio {})
         }
 
         method load(mut cx) {
             let url: String = cx.argument::<JsString>(0)?.value();
             let res = {
-                let mut this = cx.this();
-                let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
-                player.load(&url)
+                match File::open(url) {
+                    Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
+                        Ok(source) => unsafe {
+                            if let Some(s) = &SINK {
+                                s.stop();
+                            }
+                            let device = rodio::default_output_device().unwrap();
+                            let s = rodio::Sink::new(&device);
+                            s.append(source);
+                            s.play();
+                            STATUS.play();
+                            SINK = Some(s);
+                            true
+                        }
+                        _ => false,
+                    },
+                    _ => false,
+                }
             };
             Ok(cx.boolean(res).upcast())
         }
 
         method play(mut cx) {
-            let res = {
-                let mut this = cx.this();
-                let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
-                match player.empty() {
-                    false => {
-                        player.play();
+            let res = unsafe  {
+                match &SINK {
+                    Some(s) if !s.empty() => {
+                        s.play();
                         true
-                    }
+                    },
                     _ => false
                 }
             };
@@ -128,64 +89,57 @@ declare_types! {
         }
 
         method pause(mut cx) {
-            {
-                let mut this = cx.this();
-                let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
-                player.pause();
-            };
+            unsafe  {
+                if let Some(s) = &SINK {
+                    s.pause();
+                };
+                STATUS.stop();
+            }
             Ok(cx.undefined().upcast())
         }
 
         method stop(mut cx) {
-            {
-                let mut this = cx.this();
-                let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
-                player.stop();
-            };
+            unsafe  {
+                if let Some(s) = &SINK {
+                    s.stop();
+                };
+                STATUS.reset();
+            }
             Ok(cx.undefined().upcast())
         }
 
         method setVolume(mut cx) {
             let level = cx.argument::<JsNumber>(0)?.value() / 100.0;
-            {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.set_volume(level as f32);
-            };
+            unsafe  {
+                if let Some(s) = &SINK {
+                    s.set_volume(level as f32);
+                };
+            }
             Ok(cx.undefined().upcast())
         }
 
         method isPaused(mut cx) {
-            let res = {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.is_paused()
-            };
-            Ok(cx.boolean(res).upcast())
+            unsafe  {
+                match &SINK {
+                    Some(s) => Ok(cx.boolean(s.is_paused()).upcast()),
+                    _ => Ok(cx.boolean(true).upcast())
+                }
+            }
         }
 
         method empty(mut cx) {
-            let res = {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.empty()
-            };
-            Ok(cx.boolean(res).upcast())
+            unsafe  {
+                match &SINK {
+                    Some(s) => Ok(cx.boolean(s.empty()).upcast()),
+                    _ => Ok(cx.boolean(false).upcast())
+                }
+            }
         }
 
         method position(mut cx) {
-            let res = {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.position()
-            };
-            Ok(cx.number(res as f64).upcast())
+            unsafe {
+                Ok(cx.number(STATUS.elapsed().as_millis() as f64).upcast())
+            }
         }
     }
 }
