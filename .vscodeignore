@@ -19,7 +19,7 @@ media/icon-72.png
 media/icon-150.png
 native/
 
-.yarn/*
+.yarn/
 .pnp.*
 .yarnrc.yml
 yarn-error.log
