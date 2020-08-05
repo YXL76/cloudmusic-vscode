@@ -6,6 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.6.0] - 2020-08-05
+
+### Added
+
+- Media control support (windows/linux)
+
+### Changed
+
+- Lock: unlock after 2s when network error occurs
+- Native module: reduce size
+
 ## [3.5.0] - 2020-07-30
 
 ### Added
