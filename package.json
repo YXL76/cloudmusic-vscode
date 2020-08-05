@@ -298,6 +298,12 @@
             ],
             "scope": "window"
           },
+          "cloudmusic.player.mediaControl": {
+            "type": "boolean",
+            "default": true,
+            "markdownDescription": "enable media control support",
+            "scope": "window"
+          },
           "cloudmusic.player.defaultLibrary": {
             "type": "string",
             "default": "Rodio",

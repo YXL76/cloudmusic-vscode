@@ -16,6 +16,8 @@ export const NATIVE: NativeModule = __non_webpack_require__(
 );
 
 export const PLAYER_AVAILABLE = PLATFORM === "win32" || "linux" || "darwin";
+export const MEDIA_CONTROL =
+  conf.get("player.mediaControl") && PLAYER_AVAILABLE;
 export const DEFAULT_LIBRARY: string =
   conf.get("player.defaultLibrary") || "Rodio";
 export const BACKUP_LIBRARY =
