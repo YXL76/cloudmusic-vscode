@@ -15,7 +15,8 @@ export const NATIVE: NativeModule = __non_webpack_require__(
   join("..", "build", `${PLATFORM}-${abi}.node`)
 );
 
-export const PLAYER_AVAILABLE = PLATFORM === "win32" || "linux" || "darwin";
+export const PLAYER_AVAILABLE =
+  PLATFORM === "win32" || PLATFORM === "linux" || PLATFORM === "darwin";
 export const MEDIA_CONTROL =
   conf.get("player.mediaControl") && PLAYER_AVAILABLE;
 export const DEFAULT_LIBRARY: string =
