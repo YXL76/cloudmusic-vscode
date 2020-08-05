@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.6.1] - 2020-08-05
+
+### Added
+
+- Ignore `.yarn` folder
+
 ## [3.6.0] - 2020-08-05
 
 ### Added
