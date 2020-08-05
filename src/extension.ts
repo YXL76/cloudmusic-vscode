@@ -641,6 +641,7 @@ export function activate(context: ExtensionContext): void {
 }
 
 export function deactivate(): void {
+  player.stop();
   MusicCache.verify();
   LyricCache.verify();
   del.sync([TMP_DIR], { force: true });
