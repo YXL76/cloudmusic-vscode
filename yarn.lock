@@ -1044,6 +1044,7 @@ __metadata:
     node-abi: ^2.18.0
     ts-loader: ^8.0.2
     typescript: ^3.9.7
+    vscode-nls: ^4.1.2
     vscode-test: ^1.4.0
     webpack: ^5.0.0-beta.23
     webpack-cli: ^4.0.0-beta.8
@@ -4583,6 +4584,13 @@ typescript@^3.9.7:
     core-util-is: 1.0.2
     extsprintf: ^1.2.0
   checksum: 38ea80312cb42e5e8b4ac562d108d675b2354a79f8f125d363671f692657461b9181fd26f4fc9acdca433f8afee099cb78058806e1303e6b15b8fb022affba94
+  languageName: node
+  linkType: hard
+
+"vscode-nls@npm:^4.1.2":
+  version: 4.1.2
+  resolution: "vscode-nls@npm:4.1.2"
+  checksum: d71594bcc2fd70b79dc90601dea538d849a5b5404c188822410e437a994abdcbe447be57eec4cf42368616c16be8361a3f4eb5ef5633f076d607c96697bdc01b
   languageName: node
   linkType: hard
 
