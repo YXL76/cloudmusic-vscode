@@ -6,6 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.6.2] - 2020-08-05
+
+### Added
+
+- Configuration: `cloudmusic.player.mediaControl`
+
+### Fixed
+
+- check if platform is supported
+
 ## [3.6.1] - 2020-08-05
 
 ### Added
