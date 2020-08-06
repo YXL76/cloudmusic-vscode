@@ -140,8 +140,8 @@ export function solveAnotherSongItem(item: AnotherSongItem): SongsItem {
 export function stop(): void {
   player.id = 0;
   player.stop();
-  ButtonManager.buttonSong("Song", "");
-  ButtonManager.buttonLyric("Lyric");
+  ButtonManager.buttonSong(localize("song", "Song"), "");
+  ButtonManager.buttonLyric(localize("lyric", "Lyric"));
 }
 
 export async function load(element: QueueItemTreeItem): Promise<void> {

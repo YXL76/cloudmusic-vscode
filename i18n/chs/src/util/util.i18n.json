@@ -1,5 +1,7 @@
 {
   "error.network": "网络错误",
+  "song": "歌曲",
+  "lyric": "歌词",
   "artist": "歌手",
   "album": "专辑",
   "like.song": "喜欢这首歌",
