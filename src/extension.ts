@@ -1,4 +1,5 @@
 import * as crypto from "crypto";
+import * as nls from "vscode-nls";
 import { join } from "path";
 import {
   commands,
@@ -62,11 +63,20 @@ import { LoggedIn } from "./state/login";
 import { userMusicRanking } from "./page/page";
 const del = require("del");
 
+nls.config({
+  messageFormat: nls.MessageFormat.bundle,
+  bundleFormat: nls.BundleFormat.standalone,
+})();
+
+const localize = nls.loadMessageBundle();
+
 export function activate(context: ExtensionContext): void {
   // init player
   if (!PLAYER_AVAILABLE) {
     lock.playerLoad = true;
-    window.showErrorMessage("System is not supported");
+    window.showErrorMessage(
+      localize("system.support", "System is not supported")
+    );
   } else {
     player.volume(85);
   }
@@ -166,31 +176,40 @@ export function activate(context: ExtensionContext): void {
     const method = await window.showQuickPick(
       [
         {
-          label: "✉Email",
-          description: "use email to sign in",
+          label: localize("signin.email.label", "✉Email"),
+          description: localize(
+            "signin.email.description",
+            "use email to sign in"
+          ),
           phone: false,
         },
         {
-          label: "📱Cellphone",
-          description: "use cellphone to sign in",
+          label: localize("signin.cellphone.label", "📱Cellphone"),
+          description: localize(
+            "signin.cellphone.description",
+            "use cellphone to sign in"
+          ),
           phone: true,
         },
       ],
       {
-        placeHolder: "Select the method to sign in.",
+        placeHolder: localize(
+          "signin.placeHolder",
+          "Select the method to sign in."
+        ),
       }
     );
     if (!method) {
       return;
     }
     const account = await window.showInputBox({
-      placeHolder: "Please enter your account.",
+      placeHolder: localize("signin.account", "Please enter your account."),
     });
     if (!account) {
       return;
     }
     const password = await window.showInputBox({
-      placeHolder: "Please enter your password.",
+      placeHolder: localize("signin.password", "Please enter your password."),
       password: true,
     });
     if (!password) {
@@ -215,9 +234,11 @@ export function activate(context: ExtensionContext): void {
         }
       );
       LoggedIn.set(true);
-      window.showInformationMessage("Sign in success");
+      window.showInformationMessage(
+        localize("signin.success", "Sign in success")
+      );
     } else {
-      window.showErrorMessage("Sign in fail");
+      window.showErrorMessage(localize("signin.fail", "Sign in fail"));
     }
   });
 
@@ -238,7 +259,6 @@ export function activate(context: ExtensionContext): void {
       });
     } catch {}
     LoggedIn.set(false);
-    window.showInformationMessage("Sign out success");
   });
 
   // account command
@@ -246,29 +266,29 @@ export function activate(context: ExtensionContext): void {
     const pick = await window.showQuickPick([
       {
         label: AccountManager.nickname,
-        description: "current user",
+        description: localize("account.user", "current user"),
         type: 0,
       },
       {
-        label: "Personal FM",
+        label: localize("account.fm", "Personal FM"),
         type: 1,
       },
       {
-        label: "User music ranking",
-        description: "Weekly",
+        label: localize("account.userRanking", "User music ranking"),
+        description: localize("account.userRanking.weekly", "Weekly"),
         id: "userMusicRankingWeekly",
         queryType: 1,
         type: 2,
       },
       {
-        label: "User music ranking",
-        description: "All Time",
+        label: localize("account.userRanking", "User music ranking"),
+        description: localize("account.userRanking.allTime", "All Time"),
         id: "userMusicRankingAllTime",
         queryType: 0,
         type: 2,
       },
       {
-        label: "Sign out",
+        label: localize("account.signout", "Sign out"),
         type: 3,
       },
     ]);
@@ -351,7 +371,10 @@ export function activate(context: ExtensionContext): void {
   const volume = commands.registerCommand("cloudmusic.volume", async () => {
     const volume = await window.showInputBox({
       value: `${player.level}`,
-      placeHolder: "Please enter volume between 0 and 100.",
+      placeHolder: localize(
+        "volume.placeHolder",
+        "Please enter volume between 0 and 100."
+      ),
     });
     if (volume && /^\d+$/.exec(volume)) {
       player.volume(parseInt(volume));
@@ -377,11 +400,11 @@ export function activate(context: ExtensionContext): void {
     const pick = await window.showQuickPick(
       [
         {
-          label: "Input keyword",
+          label: localize("search.keyword", "Input keyword"),
           type: 1,
         },
         {
-          label: ">>>>> HOT SEARCH <<<<<",
+          label: localize("search.hot", ">>>>>     HOT SEARCH     <<<<<"),
         },
       ].concat(
         hotItems.map(({ searchWord, content }) => ({
@@ -397,7 +420,10 @@ export function activate(context: ExtensionContext): void {
     let keywords = "";
     if (pick.type === 1) {
       const input = await window.showInputBox({
-        placeHolder: "Please enter keyword.",
+        placeHolder: localize(
+          "search.keyword.placeHolder",
+          "Please enter keyword."
+        ),
       });
       if (!input) {
         return;
@@ -409,19 +435,24 @@ export function activate(context: ExtensionContext): void {
     const type = await window.showQuickPick(
       [
         {
-          label: "$(link) Single",
+          label: `$(link) ${localize("search.type.single", "Single")}`,
           type: 1,
         },
         {
-          label: "$(circuit-board) Album",
+          label: `$(circuit-board) ${localize("search.type.album", "Album")}`,
           type: 2,
         },
         {
-          label: "$(account) Artist",
+          label: `$(account) ${localize("search.type.artist", "Artist")}`,
           type: 3,
         },
       ],
-      { placeHolder: "Please choose search type" }
+      {
+        placeHolder: localize(
+          "search.type.placeHolder",
+          "Please choose search type."
+        ),
+      }
     );
     if (!type) {
       return;
@@ -559,16 +590,19 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand("cloudmusic.lyric", async () => {
     const pick = await window.showQuickPick([
       {
-        label: "Lyric delay",
-        description: "Set lyric delay (defult: -1.0)",
+        label: localize("lyric.delay.label", "Lyric delay"),
+        description: localize(
+          "lyric.delay.description",
+          "Set lyric delay (defult: -1.0)"
+        ),
         type: 0,
       },
       {
-        label: "Show full lyric",
+        label: localize("lyric.full.label", "Show full lyric"),
         type: 1,
       },
       {
-        label: "Clear lyric cache",
+        label: localize("lyric.cache.label", "Clear lyric cache"),
         type: 2,
       },
     ]);
@@ -579,7 +613,10 @@ export function activate(context: ExtensionContext): void {
       case 0:
         const delay = await window.showInputBox({
           value: `${lyric.delay}`,
-          placeHolder: "Please enter lyric delay.",
+          placeHolder: localize(
+            "lyric.delay.placeHolder",
+            "Please enter lyric delay."
+          ),
         });
         if (!delay || !/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay)) {
           return;
