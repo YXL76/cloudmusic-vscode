@@ -98,7 +98,7 @@
       },
       {
         "command": "cloudmusic.like",
-        "title": "cloudmusic.commands.cloudmusic.like.title",
+        "title": "%cloudmusic.commands.cloudmusic.like.title%",
         "category": "Cloudmusic"
       },
       {
@@ -108,7 +108,7 @@
       },
       {
         "command": "cloudmusic.toggleButton",
-        "title": "cloudmusic.commands.cloudmusic.toggleButton.title",
+        "title": "%cloudmusic.commands.cloudmusic.toggleButton.title%",
         "category": "Cloudmusic"
       },
       {
