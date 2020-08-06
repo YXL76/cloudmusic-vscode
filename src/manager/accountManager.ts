@@ -68,12 +68,12 @@ export class AccountManager {
       if (status === 200) {
         const { cookie, profile } = body;
         const { userId, nickname } = profile;
-        LoggedIn.set(true);
         this.cookie = cookieToJson(cookie);
         this.uid = userId;
         this.nickname = nickname;
         const ids = await apiLikelist();
         ids.forEach((id) => this.likelist.add(id));
+        LoggedIn.set(true);
         return true;
       }
       return false;
@@ -92,11 +92,11 @@ export class AccountManager {
 
   static async logout(): Promise<boolean> {
     if (await apiLogout()) {
-      LoggedIn.set(false);
       this.cookie = {};
       this.uid = 0;
       this.nickname = "";
       this.likelist.clear();
+      LoggedIn.set(false);
       return true;
     }
     return false;

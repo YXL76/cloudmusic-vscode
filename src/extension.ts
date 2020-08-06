@@ -92,7 +92,6 @@ export function activate(context: ExtensionContext): void {
         readFileSync(ACCOUNT_FILE, "utf8")
       );
       AccountManager.login(phone, account, md5_password).then(() => {
-        LoggedIn.set(true);
         if (AUTO_CHECK) {
           AccountManager.dailySignin();
         }
@@ -233,7 +232,6 @@ export function activate(context: ExtensionContext): void {
           //
         }
       );
-      LoggedIn.set(true);
       window.showInformationMessage(
         localize("signin.success", "Sign in success")
       );
