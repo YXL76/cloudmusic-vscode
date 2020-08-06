@@ -24,3 +24,6 @@ native/
 .yarnrc.yml
 yarn-error.log
 yarn.lock
+
+i18n/
+gulpfile.js
