@@ -1,6 +1,14 @@
+import * as nls from "vscode-nls";
 import { join } from "path";
 import { ExtensionContext, Uri, WebviewPanel } from "vscode";
 import { SongsItem } from "../constant/type";
+
+nls.config({
+  messageFormat: nls.MessageFormat.bundle,
+  bundleFormat: nls.BundleFormat.standalone,
+})();
+
+const localize = nls.loadMessageBundle();
 
 export function userMusicRanking(
   context: ExtensionContext,
@@ -19,7 +27,7 @@ export function userMusicRanking(
     labels: songs.map(({ song }) => song.name),
     datasets: [
       {
-        label: "Play Count",
+        label: localize("playcount", "Play Count"),
         borderWidth: 1,
         data: songs.map(({ count }) => count),
       },
