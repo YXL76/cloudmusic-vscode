@@ -35,7 +35,7 @@ const config = {
       {
         loader: "vscode-nls-dev/lib/webpack-loader",
         options: {
-          base: __dirname,
+          base: path.join(__dirname, "src"),
         },
       },
       {
