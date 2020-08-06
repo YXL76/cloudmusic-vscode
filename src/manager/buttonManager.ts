@@ -163,12 +163,22 @@ export class ButtonManager {
     }
   }
 
-  static buttonAccount(
-    text: string,
-    tooltip: string,
-    command?: string | Command
-  ): void {
-    this.updateButton(ButtonLabel.account, text, tooltip, command);
+  static buttonAccountAccount(tooltip: string): void {
+    this.updateButton(
+      ButtonLabel.account,
+      "$(account)",
+      tooltip,
+      "cloudmusic.account"
+    );
+  }
+
+  static buttonAccountSignin(): void {
+    this.updateButton(
+      ButtonLabel.account,
+      "$(account)",
+      localize("account", "Account"),
+      "cloudmusic.signin"
+    );
   }
 
   static buttonPrevious(personalFm: boolean): void {

@@ -14,19 +14,11 @@ export class LoggedIn {
     if (newValue !== this.state) {
       this.state = newValue;
       if (newValue) {
-        ButtonManager.buttonAccount(
-          "$(account)",
-          AccountManager.nickname,
-          "cloudmusic.account"
-        );
+        ButtonManager.buttonAccountAccount(AccountManager.nickname);
         ButtonManager.show();
         PlaylistProvider.refresh();
       } else {
-        ButtonManager.buttonAccount(
-          "$(account)",
-          "Account",
-          "cloudmusic.signin"
-        );
+        ButtonManager.buttonAccountSignin();
         ButtonManager.hide();
       }
       commands.executeCommand("cloudmusic.clearQueue");
