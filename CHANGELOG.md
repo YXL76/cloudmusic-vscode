@@ -6,6 +6,20 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.7.0] - 2020-08-06
+
+### Added
+
+- i18n: `zh-cn` support
+
+### Changed
+
+- stop the player when activated
+
+### Fixed
+
+- sign in process
+
 ## [3.6.2] - 2020-08-05
 
 ### Added
