@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.7.2] - 2020-08-06
+
+### Change
+
+- bundle `vscode-nls`
+
 ## [3.7.1] - 2020-08-06
 
 ### Fixed
