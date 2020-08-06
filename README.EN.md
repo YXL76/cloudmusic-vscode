@@ -68,9 +68,10 @@ Full list in `Feature Contributions`
 ### Commands
 
 - `Cloudmusic: Sign in`: sign in
-- `Cloudmusic: Sign out` :sign out
+- `Cloudmusic: Sign out`: sign out
 - `Cloudmusic: Daily check`: daily check
 - `Cloudmusic: Toggle button`: show/hide button
+- `Cloudmusic: Search`: search
 
 ## Known Issues
 

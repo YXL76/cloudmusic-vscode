@@ -68,9 +68,10 @@
 ### Commands
 
 - `Cloudmusic: Sign in`: 登录
-- `Cloudmusic: Sign out` :登出
+- `Cloudmusic: Sign out`: 登出
 - `Cloudmusic: Daily check`: 每日签到
 - `Cloudmusic: Toggle button`: 显示/隐藏按钮
+- `Cloudmusic: Search`: 搜索
 
 ## Known Issues
 
