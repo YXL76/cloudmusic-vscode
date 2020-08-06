@@ -1,7 +1,15 @@
+import * as nls from "vscode-nls";
 import { existsSync, readFileSync, writeFile } from "fs";
 import { Command, StatusBarAlignment, StatusBarItem, window } from "vscode";
 import { BUTTON_FILE } from "../constant/setting";
 import { LoggedIn } from "../state/login";
+
+nls.config({
+  messageFormat: nls.MessageFormat.bundle,
+  bundleFormat: nls.BundleFormat.standalone,
+})();
+
+const localize = nls.loadMessageBundle();
 
 enum ButtonLabel {
   account,
@@ -38,25 +46,55 @@ export class ButtonManager {
 
   private static buttonShow = getSetting();
   private static buttonName = [
-    "$(account)Account",
-    "$(chevron-left)Previous",
-    "$(play)Play",
-    "$(chevron-right)Next",
-    "$(star)Like",
-    "$(unmute)Volume",
-    "$(file-media)Song",
-    "$(text-size)Lyric",
+    `$(account) ${localize("account", "Account")}`,
+    `$(chevron-left) ${localize("previous", "Previous")}`,
+    `$(play) ${localize("play", "Play")}`,
+    `$(chevron-right) ${localize("next", "Next")}`,
+    `$(star) ${localize("like", "Like")}`,
+    `$(unmute) ${localize("volume", "Volume")}`,
+    `$(file-media) ${localize("song", "Song")}`,
+    `$(text-size) ${localize("lyric", "Lyric")}`,
   ];
 
   static init(): void {
-    this.updateButton(0, "$(account)", "Account", "cloudmusic.signin");
-    this.updateButton(1, "$(chevron-left)", "Previous", "cloudmusic.previous");
-    this.updateButton(2, "$(play)", "Play", "cloudmusic.play");
-    this.updateButton(3, "$(chevron-right)", "Next", "cloudmusic.next");
-    this.updateButton(4, "$(star)", "Like", "cloudmusic.like");
-    this.updateButton(5, "$(unmute)", "Volume: 85", "cloudmusic.volume");
-    this.updateButton(6, "Song", "", "cloudmusic.songDetail");
-    this.updateButton(7, "Lyric", "", "cloudmusic.lyric");
+    this.updateButton(
+      0,
+      "$(account)",
+      localize("account", "Account"),
+      "cloudmusic.signin"
+    );
+    this.updateButton(
+      1,
+      "$(chevron-left)",
+      localize("previous", "Previous"),
+      "cloudmusic.previous"
+    );
+    this.updateButton(
+      2,
+      "$(play)",
+      localize("play", "Play"),
+      "cloudmusic.play"
+    );
+    this.updateButton(
+      3,
+      "$(chevron-right)",
+      localize("next", "Next"),
+      "cloudmusic.next"
+    );
+    this.updateButton(
+      4,
+      "$(star)",
+      localize("like", "Like"),
+      "cloudmusic.like"
+    );
+    this.updateButton(
+      5,
+      "$(unmute)",
+      `${localize("volume", "Volume")}: 85`,
+      "cloudmusic.volume"
+    );
+    this.updateButton(6, localize("song", "Song"), "", "cloudmusic.songDetail");
+    this.updateButton(7, localize("lyric", "Lyric"), "", "cloudmusic.lyric");
     this.buttons[0].show();
   }
 
@@ -82,12 +120,17 @@ export class ButtonManager {
     for (let id = 1; id < this.buttons.length; ++id) {
       pick.push({
         label: this.buttonName[id],
-        description: this.buttonShow[id] ? "show" : "hide",
+        description: this.buttonShow[id]
+          ? localize("show", "Show")
+          : localize("hide", "Hide"),
         id,
       });
     }
     const button = await window.showQuickPick(pick, {
-      placeHolder: "Set buton is showing or hidding",
+      placeHolder: localize(
+        "toggleButton.placeHolder",
+        "Set buton is showing or hidding"
+      ),
     });
     if (!button) {
       return;
@@ -133,13 +176,13 @@ export class ButtonManager {
       ? this.updateButton(
           ButtonLabel.previous,
           "$(trash)",
-          "Trash",
+          localize("trash", "Trash"),
           "cloudmusic.fmTrash"
         )
       : this.updateButton(
           ButtonLabel.previous,
           "$(chevron-left)",
-          "Previous",
+          localize("previous", "Previous"),
           "cloudmusic.previous"
         );
   }
@@ -148,7 +191,7 @@ export class ButtonManager {
     this.updateButton(
       ButtonLabel.play,
       playing ? "$(debug-pause)" : "$(play)",
-      playing ? "Pause" : "PLay"
+      playing ? localize("pause", "Pause") : localize("play", "Play")
     );
   }
 
@@ -156,12 +199,16 @@ export class ButtonManager {
     this.updateButton(
       ButtonLabel.like,
       islike ? "$(star-full)" : "$(star)",
-      islike ? "Unlike" : "Like"
+      islike ? localize("unlike", "Unlike") : localize("like", "Like")
     );
   }
 
   static buttonVolume(level: number): void {
-    this.updateButton(ButtonLabel.volume, "$(unmute)", `Volume: ${level}`);
+    this.updateButton(
+      ButtonLabel.volume,
+      "$(unmute)",
+      `${localize("volume", "Volume")}: ${level}`
+    );
   }
 
   static buttonSong(name: string, ar: string): void {
