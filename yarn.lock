@@ -933,7 +933,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camelcase@npm:^5.0.0":
+"camelcase@npm:^5.0.0, camelcase@npm:^5.3.1":
   version: 5.3.1
   resolution: "camelcase@npm:5.3.1"
   checksum: 6a3350c4ea8ab6e5109e0b443cfaf43dc40abfad7b2d79dcafbbafbe9b6b4059b4365b17ad822e24cf08e6627c1ffb65a9651d05cef9fcc6f64b6a0c2f327feb
@@ -1095,14 +1095,14 @@ __metadata:
     eslint: ^7.6.0
     glob: ^7.1.6
     lru-cache: ^6.0.0
-    mocha: ^8.0.1
+    mocha: ^8.1.1
     node-abi: ^2.18.0
     ts-loader: ^8.0.2
     typescript: ^3.9.7
     vscode-nls: ^4.1.2
     vscode-nls-dev: ^3.3.2
     vscode-test: ^1.4.0
-    webpack: ^5.0.0-beta.23
+    webpack: ^5.0.0-beta.24
     webpack-cli: ^4.0.0-beta.8
   languageName: unknown
   linkType: soft
@@ -2665,6 +2665,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"is-plain-obj@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "is-plain-obj@npm:1.1.0"
+  checksum: d2eb5a32eacd7c79f3b2fe20552d091805a5ae88a7ca2aa71226bf822e4d690ef046ed2beb795f32666a401dfbf9a25ee3d4acde5426f963d55474468708ad22
+  languageName: node
+  linkType: hard
+
 "is-regex@npm:^1.1.0":
   version: 1.1.0
   resolution: "is-regex@npm:1.1.0"
@@ -3164,9 +3171,9 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"mocha@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "mocha@npm:8.0.1"
+"mocha@npm:^8.1.1":
+  version: 8.1.1
+  resolution: "mocha@npm:8.1.1"
   dependencies:
     ansi-colors: 4.1.1
     browser-stdout: 1.3.1
@@ -3184,7 +3191,7 @@ fsevents@~2.1.2:
     ms: 2.1.2
     object.assign: 4.1.0
     promise.allsettled: 1.0.2
-    serialize-javascript: 3.0.0
+    serialize-javascript: 4.0.0
     strip-json-comments: 3.0.1
     supports-color: 7.1.0
     which: 2.0.2
@@ -3192,11 +3199,11 @@ fsevents@~2.1.2:
     workerpool: 6.0.0
     yargs: 13.3.2
     yargs-parser: 13.1.2
-    yargs-unparser: 1.6.0
+    yargs-unparser: 1.6.1
   bin:
     _mocha: bin/_mocha
     mocha: bin/mocha
-  checksum: e48c5ebbaf2c0dc490d91c840dfd1c7c0dd23ac2e3309b51eab3bf9586a743c35136abab3b0eeda2caf752b6e39ffc04de001668641ad51528522011645876a8
+  checksum: f0cc3da2d05e013848d93b0dae2c469418969de96be8618a95893ed36dd73c7f48e257b0e3eed394a726289f7d5d5411515fbcd205341b5d5b9ea0304bafae5e
   languageName: node
   linkType: hard
 
@@ -4085,14 +4092,7 @@ resolve@^1.9.0:
   languageName: node
   linkType: hard
 
-"serialize-javascript@npm:3.0.0":
-  version: 3.0.0
-  resolution: "serialize-javascript@npm:3.0.0"
-  checksum: 8a6f5d8a6c5ee18400ccf6e7faef206c9dd424ca3fa4ebc787289e19d0eb8c9e1d8afd4f12861017183738a0279339e3e36b84d5161d394154210f8e0f42a8e6
-  languageName: node
-  linkType: hard
-
-"serialize-javascript@npm:^4.0.0":
+"serialize-javascript@npm:4.0.0, serialize-javascript@npm:^4.0.0":
   version: 4.0.0
   resolution: "serialize-javascript@npm:4.0.0"
   dependencies:
@@ -4910,9 +4910,9 @@ resolve@^1.9.0:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.0.0-beta.23":
-  version: 5.0.0-beta.23
-  resolution: "webpack@npm:5.0.0-beta.23"
+"webpack@npm:^5.0.0-beta.24":
+  version: 5.0.0-beta.24
+  resolution: "webpack@npm:5.0.0-beta.24"
   dependencies:
     "@types/estree": ^0.0.45
     "@webassemblyjs/ast": 1.9.0
@@ -4943,7 +4943,7 @@ resolve@^1.9.0:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 4d961a954cdcce3c1a7ca704c90a40bc758b2dea65f26e9c25a230d9d553df82e1c85682e6b211322cd057d91ceee03eda64248b7e5689dea10275c8eea6c481
+  checksum: a503e96c32caa2f0a8c54da9de942df7f00751109d08777f786233e0dcf1bb6aca6049b050859475433fc224eaa2e8977506b82f37933809ce6f556140261eb4
   languageName: node
   linkType: hard
 
@@ -5073,18 +5073,30 @@ resolve@^1.9.0:
   languageName: node
   linkType: hard
 
-"yargs-unparser@npm:1.6.0":
-  version: 1.6.0
-  resolution: "yargs-unparser@npm:1.6.0"
+"yargs-parser@npm:^15.0.1":
+  version: 15.0.1
+  resolution: "yargs-parser@npm:15.0.1"
   dependencies:
-    flat: ^4.1.0
-    lodash: ^4.17.15
-    yargs: ^13.3.0
-  checksum: b78a4ccc2e1c8aa73e0e30bf3adb7b7be52b98d8d638250d32dc8c4a514cd43144702577d33c02f12de20c9df1e27fdbf77bdf6863a9338661f7bdeb674a2cad
+    camelcase: ^5.0.0
+    decamelize: ^1.2.0
+  checksum: 1969d5cf00b9ff37e4958f2fde76728b6ed0b3be36f25870348f825bc99671665488580179af344209c9e08acf12249a9812c0f426b4062cbf00509ee7815fee
   languageName: node
   linkType: hard
 
-"yargs@npm:13.3.2, yargs@npm:^13.2.4, yargs@npm:^13.3.0":
+"yargs-unparser@npm:1.6.1":
+  version: 1.6.1
+  resolution: "yargs-unparser@npm:1.6.1"
+  dependencies:
+    camelcase: ^5.3.1
+    decamelize: ^1.2.0
+    flat: ^4.1.0
+    is-plain-obj: ^1.1.0
+    yargs: ^14.2.3
+  checksum: 216c70b233afd2caa3a7c7ae5f4e6e5e02c6ef59e285f2518157b7b14ba4ed66663b07342e54641752d604411068c6f9e9afff3e5adfef6fe558f54ae826381e
+  languageName: node
+  linkType: hard
+
+"yargs@npm:13.3.2, yargs@npm:^13.2.4":
   version: 13.3.2
   resolution: "yargs@npm:13.3.2"
   dependencies:
@@ -5099,5 +5111,24 @@ resolve@^1.9.0:
     y18n: ^4.0.0
     yargs-parser: ^13.1.2
   checksum: 92c612cd14a9217d7421ae4f42bc7c460472633bfc2e45f7f86cd614a61a845670d3bac7c2228c39df7fcecce0b8c12b2af65c785b1f757de974dcf84b5074f9
+  languageName: node
+  linkType: hard
+
+"yargs@npm:^14.2.3":
+  version: 14.2.3
+  resolution: "yargs@npm:14.2.3"
+  dependencies:
+    cliui: ^5.0.0
+    decamelize: ^1.2.0
+    find-up: ^3.0.0
+    get-caller-file: ^2.0.1
+    require-directory: ^2.1.1
+    require-main-filename: ^2.0.0
+    set-blocking: ^2.0.0
+    string-width: ^3.0.0
+    which-module: ^2.0.0
+    y18n: ^4.0.0
+    yargs-parser: ^15.0.1
+  checksum: cfe46545a6ddb535e7704a5311986e638734b4a11ed548ca7b3af43ecf99089563d54b1353e47c2d12cc7402f5a3e7c6b95c84f968a1f66bdb209c25aea638c9
   languageName: node
   linkType: hard
