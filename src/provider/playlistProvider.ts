@@ -1,3 +1,4 @@
+import * as nls from "vscode-nls";
 import {
   Event,
   EventEmitter,
@@ -14,6 +15,13 @@ import {
   getPlaylistContentIntelligence,
 } from "../util/util";
 import { apiPlaylistDetail, apiSongDetail } from "../util/api";
+
+nls.config({
+  messageFormat: nls.MessageFormat.bundle,
+  bundleFormat: nls.BundleFormat.standalone,
+})();
+
+const localize = nls.loadMessageBundle();
 
 const queueProvider = QueueProvider.getInstance();
 
@@ -169,10 +177,10 @@ export class PlaylistItemTreeItem extends TreeItem {
   get tooltip(): string {
     const { description, playCount, subscribedCount, trackCount } = this.item;
     return `
-Description: ${description || ""}
-Track: ${trackCount}
-Play count: ${playCount}
-Subscribed count: ${subscribedCount}
+${localize("description", "Description")}: ${description || ""}
+${localize("track", "Track")}: ${trackCount}
+${localize("play.count", "Play count")}: ${playCount}
+${localize("subscribed.count", "Subscribed count")}: ${subscribedCount}
     `;
   }
 
