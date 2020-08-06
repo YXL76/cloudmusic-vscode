@@ -1,4 +1,5 @@
 import * as http from "http";
+import * as nls from "vscode-nls";
 import { join } from "path";
 import { createWriteStream } from "fs";
 import { commands, window } from "vscode";
@@ -30,6 +31,13 @@ import { AccountManager } from "../manager/accountManager";
 import { ButtonManager } from "../manager/buttonManager";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 import { setTimeout } from "timers";
+
+nls.config({
+  messageFormat: nls.MessageFormat.bundle,
+  bundleFormat: nls.BundleFormat.standalone,
+})();
+
+const localize = nls.loadMessageBundle();
 
 export function sleep(ms: number): Promise<unknown> {
   return new Promise((resolve) => {
@@ -174,7 +182,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
             lock.playerLoad = false;
           }, 2000);
           player.stop();
-          window.showErrorMessage("Network Error");
+          window.showErrorMessage(localize("error.network", "Network Error"));
         });
     }
     lyric.index = 0;
@@ -194,27 +202,27 @@ export async function songPick(id: number, item?: SongsItem): Promise<void> {
       detail: alia.join("/"),
     },
     ...ar.map((i) => ({
-      label: "$(account) Artist",
+      label: `$(account) ${localize("artist", "Artist")}`,
       detail: i.name,
       id: i.id,
       type: 1,
     })),
     {
-      label: "$(circuit-board) Album",
+      label: `$(circuit-board) ${localize("album", "Album")}`,
       detail: al.name,
       id: al.id,
       type: 2,
     },
     {
-      label: "$(heart) Like this song",
+      label: `$(heart) ${localize("like.song", "Like this song")}`,
       type: 3,
     },
     {
-      label: "$(add) Save to playlist",
+      label: `$(add) ${localize("save.playlist", "Save to playlist")}`,
       type: 4,
     },
     {
-      label: "$(library) Similar songs",
+      label: `$(library) ${localize("similar.song", "Similar songs")}`,
       type: 5,
     },
   ]);
@@ -291,17 +299,17 @@ export async function artistPick(
       detail: alias.join("/"),
     },
     {
-      label: "$(markdown) Brief description",
+      label: `$(markdown) ${localize("description", "Brief description")}`,
       detail: briefDesc,
     },
     {
-      label: "$(circuit-board) Albums",
+      label: `$(circuit-board) ${localize("album", "Album")}`,
       detail: `${albumSize}`,
       id,
       type: 1,
     },
     {
-      label: ">>>>> HOT SONGS <<<<<",
+      label: localize("song.hot", ">>>>>     HOT SONGS     <<<<<"),
     },
     ...songs.map((song) => ({
       label: `$(link) ${song.name}`,
@@ -363,18 +371,18 @@ export async function albumPick(
       type: 0,
     },
     {
-      label: "$(markdown) Description",
+      label: `$(markdown) ${localize("description", "Description")}`,
       detail: description,
       type: 0,
     },
     ...artists.map((i) => ({
-      label: "$(account) Artist",
+      label: `$(account) ${localize("artist", "Artist")}`,
       detail: i.name,
       item: i,
       type: 1,
     })),
     {
-      label: ">>>>> CONTENTS <<<<<",
+      label: localize("content", ">>>>>     CONTENTS     <<<<<"),
       type: 0,
     },
     ...songs.map((song) => ({

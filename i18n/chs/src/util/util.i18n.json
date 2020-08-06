@@ -1,0 +1,11 @@
+{
+  "error.network": "网络错误",
+  "artist": "歌手",
+  "album": "专辑",
+  "like.song": "喜欢这首歌",
+  "save.playlist": "收藏到歌单",
+  "similar.song": "相似歌曲",
+  "description": "描述",
+  "song.hot": ">>>>>     热门歌曲     <<<<<",
+  "content": ">>>>>     内容     <<<<<"
+}
