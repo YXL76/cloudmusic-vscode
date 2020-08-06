@@ -1,3 +1,4 @@
+import * as nls from "vscode-nls";
 import { window } from "vscode";
 import { PlaylistItem } from "../constant/type";
 import {
@@ -13,6 +14,13 @@ import { LoggedIn } from "../state/login";
 const { login, login_cellphone } = require("NeteaseCloudMusicApi");
 const { cookieToJson } = require("NeteaseCloudMusicApi/util/index");
 
+nls.config({
+  messageFormat: nls.MessageFormat.bundle,
+  bundleFormat: nls.BundleFormat.standalone,
+})();
+
+const localize = nls.loadMessageBundle();
+
 export class AccountManager {
   static cookie = {};
   static uid = 0;
@@ -23,10 +31,12 @@ export class AccountManager {
     if (LoggedIn.get()) {
       const code = await apiDailySignin();
       if (code === 200) {
-        window.showInformationMessage("Daily check success");
+        window.showInformationMessage(
+          localize("dailyCheck.success", "Daily check success")
+        );
       }
     } else {
-      window.showErrorMessage("Please sign in");
+      window.showErrorMessage(localize("dailyCheck.signin", "Please sign in"));
     }
   }
 
@@ -37,7 +47,9 @@ export class AccountManager {
     md5_password: string
   ): Promise<boolean> {
     if (LoggedIn.get()) {
-      window.showInformationMessage("Already sign in");
+      window.showInformationMessage(
+        localize("signin.already", "Already sign in")
+      );
       return true;
     }
     try {
