@@ -39,7 +39,7 @@
       "activitybar": [
         {
           "id": "cloudmusic",
-          "title": "cloudmusic",
+          "title": "%cloudmusic.viewsContainers.activitybar.cloudmusic.title%",
           "icon": "media/disc.svg"
         }
       ]
@@ -48,141 +48,153 @@
       "cloudmusic": [
         {
           "id": "userPlaylist",
-          "name": "use playlist"
+          "name": "%cloudmusic.views.cloudmusic.userPlaylist.name%"
         },
         {
           "id": "favoritePlaylist",
-          "name": "favorite playlist"
+          "name": "%cloudmusic.views.cloudmusic.favoritePlaylist.name%"
         },
         {
           "id": "queue",
-          "name": "queue"
+          "name": "%cloudmusic.views.cloudmusic.queue.name%"
         }
       ]
     },
     "commands": [
       {
         "command": "cloudmusic.signin",
-        "title": "Cloudmusic: Sign in"
+        "title": "%cloudmusic.commands.cloudmusic.signin.title%",
+        "category": "Cloudmusic"
       },
       {
         "command": "cloudmusic.signout",
-        "title": "Cloudmusic: Sign Out"
+        "title": "%cloudmusic.commands.cloudmusic.signout.title%",
+        "category": "Cloudmusic"
       },
       {
         "command": "cloudmusic.dailyCheck",
-        "title": "Cloudmusic: Daily check"
+        "title": "%cloudmusic.commands.cloudmusic.dailyCheck.title%",
+        "category": "Cloudmusic"
       },
       {
         "command": "cloudmusic.account",
-        "title": "Cloudmusic: Account"
+        "title": "%cloudmusic.commands.cloudmusic.account.title%",
+        "category": "Cloudmusic"
       },
       {
         "command": "cloudmusic.previous",
-        "title": "Cloudmusic: Previous"
+        "title": "%cloudmusic.commands.cloudmusic.previous.title%",
+        "category": "Cloudmusic"
       },
       {
         "command": "cloudmusic.next",
-        "title": "Cloudmusic: Next"
+        "title": "%cloudmusic.commands.cloudmusic.next.title%",
+        "category": "Cloudmusic"
       },
       {
         "command": "cloudmusic.play",
-        "title": "Cloudmusic: Play"
+        "title": "%cloudmusic.commands.cloudmusic.play.title%",
+        "category": "Cloudmusic"
       },
       {
         "command": "cloudmusic.like",
-        "title": "Cloudmusic: Like"
+        "title": "cloudmusic.commands.cloudmusic.like.title",
+        "category": "Cloudmusic"
       },
       {
         "command": "cloudmusic.volume",
-        "title": "Cloudmusic: Volume"
+        "title": "%cloudmusic.commands.cloudmusic.volume.title%",
+        "category": "Cloudmusic"
       },
       {
         "command": "cloudmusic.toggleButton",
-        "title": "Cloudmusic: Toggle button"
+        "title": "cloudmusic.commands.cloudmusic.toggleButton.title",
+        "category": "Cloudmusic"
       },
       {
         "command": "cloudmusic.personalFM",
-        "title": "Cloudmusic: Personal FM"
+        "title": "%cloudmusic.commands.cloudmusic.personalFM.title%",
+        "category": "Cloudmusic"
       },
       {
         "command": "cloudmusic.search",
-        "title": "Cloudmusic: Search"
+        "title": "%cloudmusic.commands.cloudmusic.search.title%",
+        "category": "Cloudmusic"
       },
       {
         "command": "cloudmusic.refreshPlaylist",
-        "title": "Refresh",
+        "title": "%cloudmusic.commands.cloudmusic.refreshPlaylist.title%",
         "icon": "$(refresh)"
       },
       {
         "command": "cloudmusic.refreshPlaylistContent",
-        "title": "Refresh",
+        "title": "%cloudmusic.commands.cloudmusic.refreshPlaylistContent.title%",
         "icon": "$(refresh)"
       },
       {
         "command": "cloudmusic.playPlaylist",
-        "title": "Play",
+        "title": "%cloudmusic.commands.cloudmusic.playPlaylist.title%",
         "icon": "$(play)"
       },
       {
         "command": "cloudmusic.addPlaylist",
-        "title": "Add",
+        "title": "%cloudmusic.commands.cloudmusic.addPlaylist.title%",
         "icon": "$(plus)"
       },
       {
         "command": "cloudmusic.clearQueue",
-        "title": "Clear",
+        "title": "%cloudmusic.commands.cloudmusic.clearQueue.title%",
         "icon": "$(clear-all)"
       },
       {
         "command": "cloudmusic.randomQueue",
-        "title": "Shuffle",
+        "title": "%cloudmusic.commands.cloudmusic.randomQueue.title%",
         "icon": "$(sort-precedence)"
       },
       {
         "command": "cloudmusic.intelligence",
-        "title": "Intelligence",
+        "title": "%cloudmusic.commands.cloudmusic.intelligence.title%",
         "icon": "$(pulse)"
       },
       {
         "command": "cloudmusic.addSong",
-        "title": "Add",
+        "title": "%cloudmusic.commands.cloudmusic.addSong.title%",
         "icon": "$(add)"
       },
       {
         "command": "cloudmusic.playSongWithPlaylist",
-        "title": "Play",
+        "title": "%cloudmusic.commands.cloudmusic.playSongWithPlaylist.title%",
         "icon": "$(play)"
       },
       {
         "command": "cloudmusic.playSong",
-        "title": "Play",
+        "title": "%cloudmusic.commands.cloudmusic.playSong.title%",
         "icon": "$(play)"
       },
       {
         "command": "cloudmusic.deleteSong",
-        "title": "Delete",
+        "title": "%cloudmusic.commands.cloudmusic.deleteSong.title%",
         "icon": "$(remove)"
       },
       {
         "command": "cloudmusic.deleteFromPlaylist",
-        "title": "Delete from playlist"
+        "title": "%cloudmusic.commands.cloudmusic.deleteFromPlaylist.title%"
       },
       {
         "command": "cloudmusic.addToPlaylist",
-        "title": "Add to playlist"
+        "title": "%cloudmusic.commands.cloudmusic.addToPlaylist.title%"
       },
       {
         "command": "cloudmusic.songDetail",
-        "title": "Song detail"
+        "title": "%cloudmusic.commands.cloudmusic.songDetail.title%"
       },
       {
         "command": "cloudmusic.lyric",
-        "title": "Lyric"
+        "title": "%cloudmusic.commands.cloudmusic.lyric.title%"
       },
       {
         "command": "cloudmusic.fmTrash",
-        "title": "Fm trash"
+        "title": "%cloudmusic.commands.cloudmusic.fmTrash.title%"
       }
     ],
     "menus": {
@@ -265,25 +277,25 @@
           "cloudmusic.account.autoCheck": {
             "type": "boolean",
             "default": false,
-            "markdownDescription": "Auto check when extension is active",
+            "markdownDescription": "%cloudmusic.configuration.cloudmusic.account.autoCheck.markdownDescription%",
             "scope": "window"
           },
           "cloudmusic.cache.size": {
             "type": "number",
             "default": 1024,
-            "markdownDescription": "Set maximum cache size (`128 ~ 10240 MB`)",
+            "markdownDescription": "%cloudmusic.configuration.cloudmusic.cache.size.markdownDescription%",
             "scope": "window"
           },
           "cloudmusic.music.proxy": {
             "type": "string",
             "default": "",
-            "markdownDescription": "See [可以使用代理](https://binaryify.github.io/NeteaseCloudMusicApi/#/?id=%e5%8f%af%e4%bb%a5%e4%bd%bf%e7%94%a8%e4%bb%a3%e7%90%86)",
+            "markdownDescription": "%cloudmusic.configuration.cloudmusic.music.proxy.markdownDescription%",
             "scope": "window"
           },
           "cloudmusic.music.quality": {
             "type": "number",
             "default": 192000,
-            "markdownDescription": "Choose your prefer music quality",
+            "markdownDescription": "%cloudmusic.configuration.cloudmusic.music.quality.markdownDescription%",
             "enum": [
               128000,
               192000,
@@ -291,23 +303,23 @@
               999000
             ],
             "enumDescriptions": [
-              "Low Quality",
-              "Medium Quality",
-              "High Quality",
-              "Lossless Quality"
+              "%cloudmusic.configuration.cloudmusic.music.quality.enumDescriptions.low%",
+              "%cloudmusic.configuration.cloudmusic.music.quality.enumDescriptions.medium%",
+              "%cloudmusic.configuration.cloudmusic.music.quality.enumDescriptions.high%",
+              "%cloudmusic.configuration.cloudmusic.music.quality.enumDescriptions.lossless%"
             ],
             "scope": "window"
           },
           "cloudmusic.player.mediaControl": {
             "type": "boolean",
             "default": true,
-            "markdownDescription": "enable media control support",
+            "markdownDescription": "%cloudmusic.configuration.cloudmusic.player.mediaControl.markdownDescription%",
             "scope": "window"
           },
           "cloudmusic.player.defaultLibrary": {
             "type": "string",
             "default": "Rodio",
-            "markdownDescription": "",
+            "markdownDescription": "%cloudmusic.configuration.cloudmusic.player.defaultLibrary.markdownDescription%",
             "enum": [
               "Rodio",
               "Miniaudio"
