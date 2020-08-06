@@ -1,6 +1,4 @@
 import * as nls from "vscode-nls";
-import { window } from "vscode";
-import { PlaylistItem } from "../constant/type";
 import {
   apiDailySignin,
   apiLikelist,
@@ -10,6 +8,8 @@ import {
   apiUserPlaylist,
 } from "../util/api";
 import { LoggedIn } from "../state/login";
+import { PlaylistItem } from "../constant/type";
+import { window } from "vscode";
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { login, login_cellphone } = require("NeteaseCloudMusicApi");
 const { cookieToJson } = require("NeteaseCloudMusicApi/util/index");

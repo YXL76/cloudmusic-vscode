@@ -1,22 +1,22 @@
 import {
-  Artist,
   AlbumsItem,
-  PlaylistItem,
-  SongsItem,
   AnotherSongItem,
-  TrackIdsItem,
-  SongDetail,
+  Artist,
   LyricData,
+  PlaylistItem,
+  SongDetail,
+  SongsItem,
+  TrackIdsItem,
 } from "../constant/type";
-import { PROXY, MUSIC_QUALITY } from "../constant/setting";
-import { LyricCache } from "./cache";
+import { MUSIC_QUALITY, PROXY } from "../constant/setting";
 import {
-  solveArtist,
   solveAlbumsItem,
-  solveSongItem,
   solveAnotherSongItem,
+  solveArtist,
+  solveSongItem,
 } from "./util";
 import { AccountManager } from "../manager/accountManager";
+import { LyricCache } from "./cache";
 
 const {
   album,

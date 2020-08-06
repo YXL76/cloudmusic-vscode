@@ -1,65 +1,65 @@
 import * as crypto from "crypto";
 import * as nls from "vscode-nls";
-import { join } from "path";
 import {
-  commands,
+  ACCOUNT_FILE,
+  AUTO_CHECK,
+  CACHE_DIR,
+  MEDIA_CONTROL,
+  MUSIC_QUALITY,
+  NATIVE,
+  PLAYER_AVAILABLE,
+  SETTING_DIR,
+  TMP_DIR,
+} from "./constant/setting";
+import {
   ExtensionContext,
   QuickPickItem,
   ViewColumn,
+  commands,
   window,
 } from "vscode";
-import {
-  existsSync,
-  mkdirSync,
-  readdirSync,
-  readFileSync,
-  unlink,
-  writeFile,
-} from "fs";
-import {
-  AUTO_CHECK,
-  ACCOUNT_FILE,
-  TMP_DIR,
-  SETTING_DIR,
-  CACHE_DIR,
-  MUSIC_QUALITY,
-  PLAYER_AVAILABLE,
-  MEDIA_CONTROL,
-  NATIVE,
-} from "./constant/setting";
-import { NativeEventEmitter } from "./constant/type";
-import { AccountManager } from "./manager/accountManager";
-import { ButtonManager } from "./manager/buttonManager";
+import { LyricCache, MusicCache } from "./util/cache";
+import { PersonalFm, lyric } from "./state/play";
 import {
   PlaylistItemTreeItem,
   PlaylistProvider,
 } from "./provider/playlistProvider";
-import { QueueProvider, QueueItemTreeItem } from "./provider/queueProvider";
+import { QueueItemTreeItem, QueueProvider } from "./provider/queueProvider";
+import {
+  albumsPick,
+  artistsPick,
+  load,
+  lockQueue,
+  songPick,
+  songsPick,
+  stop,
+} from "./util/util";
 import {
   apiFmTrash,
   apiLike,
   apiPlaylistTracks,
-  apiSearchSingle,
   apiSearchAlbum,
   apiSearchArtist,
   apiSearchHotDetail,
+  apiSearchSingle,
   apiUserRecord,
 } from "./util/api";
 import {
-  lockQueue,
-  load,
-  stop,
-  songPick,
-  songsPick,
-  albumsPick,
-  artistsPick,
-} from "./util/util";
-import { MusicCache, LyricCache } from "./util/cache";
-import { player } from "./util/player";
-import { lock } from "./state/lock";
-import { lyric, PersonalFm } from "./state/play";
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  unlink,
+  writeFile,
+} from "fs";
+import { AccountManager } from "./manager/accountManager";
+import { ButtonManager } from "./manager/buttonManager";
 import { IsLike } from "./state/like";
 import { LoggedIn } from "./state/login";
+import { NativeEventEmitter } from "./constant/type";
+import { join } from "path";
+import { lock } from "./state/lock";
+import { player } from "./util/player";
 import { userMusicRanking } from "./page/page";
 const del = require("del");
 

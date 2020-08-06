@@ -1,19 +1,16 @@
 import * as http from "http";
 import * as nls from "vscode-nls";
-import { join } from "path";
-import { createWriteStream } from "fs";
-import { commands, window } from "vscode";
-import { TMP_DIR } from "../constant/setting";
-import { MusicCache } from "../util/cache";
-import { player } from "./player";
-import { lock } from "../state/lock";
-import { lyric } from "../state/play";
-import { IsLike } from "../state/like";
-import { TreeItemCollapsibleState } from "vscode";
+
+import {
+  AlbumsItem,
+  AnotherSongItem,
+  Artist,
+  SongsItem,
+} from "../constant/type";
 import {
   apiAlbum,
-  apiArtists,
   apiArtistAlbum,
+  apiArtists,
   apiLike,
   apiLyric,
   apiPlaymodeIntelligenceList,
@@ -21,16 +18,19 @@ import {
   apiSongDetail,
   apiSongUrl,
 } from "./api";
-import {
-  Artist,
-  AlbumsItem,
-  SongsItem,
-  AnotherSongItem,
-} from "../constant/type";
+import { commands, window } from "vscode";
 import { AccountManager } from "../manager/accountManager";
 import { ButtonManager } from "../manager/buttonManager";
+import { IsLike } from "../state/like";
+import { MusicCache } from "../util/cache";
 import { QueueItemTreeItem } from "../provider/queueProvider";
-import { setTimeout } from "timers";
+import { TMP_DIR } from "../constant/setting";
+import { TreeItemCollapsibleState } from "vscode";
+import { createWriteStream } from "fs";
+import { join } from "path";
+import { lock } from "../state/lock";
+import { lyric } from "../state/play";
+import { player } from "./player";
 
 nls.config({
   messageFormat: nls.MessageFormat.bundle,

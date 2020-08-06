@@ -1,16 +1,16 @@
-import { commands } from "vscode";
-import { Player, NativePlayer } from "../constant/type";
 import {
-  PLAYER_AVAILABLE,
-  DEFAULT_LIBRARY,
   BACKUP_LIBRARY,
+  DEFAULT_LIBRARY,
   NATIVE,
+  PLAYER_AVAILABLE,
 } from "../constant/setting";
-import { sleep } from "./util";
-import { apiScrobble } from "./api";
-import { lock } from "../state/lock";
+import { NativePlayer, Player } from "../constant/type";
 import { Playing, setPosition } from "../state/play";
 import { ButtonManager } from "../manager/buttonManager";
+import { apiScrobble } from "./api";
+import { commands } from "vscode";
+import { lock } from "../state/lock";
+import { sleep } from "./util";
 
 class NoPlayer implements Player {
   id = 0;

@@ -1,7 +1,7 @@
 import * as nls from "vscode-nls";
-import { join } from "path";
 import { ExtensionContext, Uri, WebviewPanel } from "vscode";
 import { SongsItem } from "../constant/type";
+import { join } from "path";
 
 nls.config({
   messageFormat: nls.MessageFormat.bundle,

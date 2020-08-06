@@ -1,7 +1,7 @@
-import { commands } from "vscode";
 import { AccountManager } from "../manager/accountManager";
 import { ButtonManager } from "../manager/buttonManager";
 import { PlaylistProvider } from "../provider/playlistProvider";
+import { commands } from "vscode";
 
 export class LoggedIn {
   private static state = false;

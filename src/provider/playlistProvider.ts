@@ -7,14 +7,14 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import { QueueProvider, QueueItemTreeItem } from "./queueProvider";
-import { PlaylistItem } from "../constant/type";
-import { AccountManager } from "../manager/accountManager";
-import {
-  songsItem2TreeItem,
-  getPlaylistContentIntelligence,
-} from "../util/util";
+import { QueueItemTreeItem, QueueProvider } from "./queueProvider";
 import { apiPlaylistDetail, apiSongDetail } from "../util/api";
+import {
+  getPlaylistContentIntelligence,
+  songsItem2TreeItem,
+} from "../util/util";
+import { AccountManager } from "../manager/accountManager";
+import { PlaylistItem } from "../constant/type";
 
 nls.config({
   messageFormat: nls.MessageFormat.bundle,

@@ -1,14 +1,14 @@
-import { join } from "path";
-import { commands } from "vscode";
+import { load, songsItem2TreeItem } from "../util/util";
 import { readdirSync, unlinkSync } from "fs";
-import { lock } from "./lock";
-import { TMP_DIR } from "../constant/setting";
-import { Lyric } from "../constant/type";
-import { player } from "../util/player";
-import { apiPersonalFm } from "../util/api";
-import { songsItem2TreeItem, load } from "../util/util";
 import { ButtonManager } from "../manager/buttonManager";
+import { Lyric } from "../constant/type";
 import { QueueItemTreeItem } from "../provider/queueProvider";
+import { TMP_DIR } from "../constant/setting";
+import { apiPersonalFm } from "../util/api";
+import { commands } from "vscode";
+import { join } from "path";
+import { lock } from "./lock";
+import { player } from "../util/player";
 
 export class Playing {
   private static state = false;

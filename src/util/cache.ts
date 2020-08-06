@@ -1,10 +1,10 @@
-import { readFileSync } from "fs";
-import { LruCacheValue, LyricData } from "../constant/type";
 import {
+  LYRIC_CACHE_DIR,
   MUSIC_CACHE_DIR,
   MUSIC_CACHE_SIZE,
-  LYRIC_CACHE_DIR,
 } from "../constant/setting";
+import { LruCacheValue, LyricData } from "../constant/type";
+import { readFileSync } from "fs";
 const cacache = require("cacache");
 const LRU = require("lru-cache");
 

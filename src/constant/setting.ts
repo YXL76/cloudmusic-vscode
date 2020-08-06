@@ -1,7 +1,7 @@
 import { homedir, platform } from "os";
+import { NativeModule } from "./type";
 import { join } from "path";
 import { workspace } from "vscode";
-import { NativeModule } from "./type";
 const { getAbi } = require("node-abi");
 
 // @ts-ignore
