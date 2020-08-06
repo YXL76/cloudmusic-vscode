@@ -332,9 +332,10 @@
   },
   "scripts": {
     "build": "electron-build-env neon build --release",
-    "vscode:prepublish": "node pre-webpack.js && gulp translations-generate && webpack --mode production",
-    "webpack": "node pre-webpack.js && webpack --mode development",
-    "webpack-dev": "node pre-webpack.js && webpack --mode development --watch",
+    "vscode:prepublish": "yarn webpack-prod",
+    "webpack": "node pre-webpack.js && gulp translations-generate && webpack --mode development",
+    "webpack-dev": "node pre-webpack.js && gulp translations-generate && webpack --mode development --watch",
+    "webpack-prod": "node pre-webpack.js && gulp translations-generate && webpack --mode production",
     "test": "tsc -p ./",
     "lint": "eslint . --ext .ts,.tsx"
   },
