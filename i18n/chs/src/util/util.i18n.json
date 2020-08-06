@@ -1,13 +1,13 @@
 {
-  "error.network": "网络错误",
-  "song": "歌曲",
-  "lyric": "歌词",
-  "artist": "歌手",
   "album": "专辑",
+  "artist": "歌手",
+  "content": ">>>>>     内容     <<<<<",
+  "description": "描述",
+  "error.network": "网络错误",
   "like.song": "喜欢这首歌",
+  "lyric": "歌词",
   "save.playlist": "收藏到歌单",
   "similar.song": "相似歌曲",
-  "description": "描述",
-  "song.hot": ">>>>>     热门歌曲     <<<<<",
-  "content": ">>>>>     内容     <<<<<"
+  "song": "歌曲",
+  "song.hot": ">>>>>     热门歌曲     <<<<<"
 }
