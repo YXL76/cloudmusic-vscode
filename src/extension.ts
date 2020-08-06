@@ -32,6 +32,7 @@ import {
   lockQueue,
   songPick,
   songsPick,
+  splitLine,
   stop,
 } from "./util/util";
 import {
@@ -398,11 +399,11 @@ export function activate(context: ExtensionContext): void {
     const pick = await window.showQuickPick(
       [
         {
-          label: localize("search.keyword", "Input keyword"),
+          label: `$(keyboard) ${localize("search.keyword", "Input keyword")}`,
           type: 1,
         },
         {
-          label: localize("search.hot", ">>>>>     HOT SEARCH     <<<<<"),
+          label: splitLine(localize("search.hot", "HOT SEARCH")),
         },
       ].concat(
         hotItems.map(({ searchWord, content }) => ({

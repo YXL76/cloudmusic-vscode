@@ -194,6 +194,10 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
   }
 }
 
+export function splitLine(content: string): string {
+  return `>>>>>>>>                        ${content}                        <<<<<<<<`;
+}
+
 export async function songPick(id: number, item?: SongsItem): Promise<void> {
   const { name, alia, ar, al } = item || (await apiSongDetail([id]))[0];
   const pick = await window.showQuickPick([
@@ -309,7 +313,7 @@ export async function artistPick(
       type: 1,
     },
     {
-      label: localize("song.hot", ">>>>>     HOT SONGS     <<<<<"),
+      label: splitLine(localize("song.hot", "HOT SONGS")),
     },
     ...songs.map((song) => ({
       label: `$(link) ${song.name}`,
@@ -382,7 +386,7 @@ export async function albumPick(
       type: 1,
     })),
     {
-      label: localize("content", ">>>>>     CONTENTS     <<<<<"),
+      label: splitLine(localize("content", "CONTENTS")),
       type: 0,
     },
     ...songs.map((song) => ({
