@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.7.1] - 2020-08-06
+
+### Fixed
+
+- fix `Cannot find module 'vscode-nls'`
+
 ## [3.7.0] - 2020-08-06
 
 ### Added
