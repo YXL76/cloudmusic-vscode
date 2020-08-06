@@ -27,5 +27,3 @@ yarn.lock
 
 i18n/
 gulpfile.js
-
-!node_modules/vscode-nls
