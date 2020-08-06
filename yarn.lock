@@ -89,6 +89,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/glob@npm:7.1.3":
+  version: 7.1.3
+  resolution: "@types/glob@npm:7.1.3"
+  dependencies:
+    "@types/minimatch": "*"
+    "@types/node": "*"
+  checksum: 633bf1dda9a30899b233ed6b97c75cdd59f2ee856a12240c85474ce6889e26b3b3520b62de56f6bb61824af0ef51b311a0cae305f27ba0de8ddc4898a3673d42
+  languageName: node
+  linkType: hard
+
 "@types/glob@npm:^7.1.1":
   version: 7.1.2
   resolution: "@types/glob@npm:7.1.2"
@@ -96,16 +106,6 @@ __metadata:
     "@types/minimatch": "*"
     "@types/node": "*"
   checksum: 28bc8b1c10b141173c0d8f287729e727bd864c652c8887fd471b2841de5227b08757a13dd7090133e915cd0e1753800cb69cb251525171972140655c390737b3
-  languageName: node
-  linkType: hard
-
-"@types/glob@npm:^7.1.3":
-  version: 7.1.3
-  resolution: "@types/glob@npm:7.1.3"
-  dependencies:
-    "@types/minimatch": "*"
-    "@types/node": "*"
-  checksum: 633bf1dda9a30899b233ed6b97c75cdd59f2ee856a12240c85474ce6889e26b3b3520b62de56f6bb61824af0ef51b311a0cae305f27ba0de8ddc4898a3673d42
   languageName: node
   linkType: hard
 
@@ -123,7 +123,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/mocha@npm:^8.0.1":
+"@types/mocha@npm:8.0.1":
   version: 8.0.1
   resolution: "@types/mocha@npm:8.0.1"
   checksum: 32cc366a86eeb1a6435ea07ad146a6bb1bfa321e8e511f61e04987676b20188eff1dbdb16a542ff8f0f19a00fbda3db7324240f036fa494f74d558578bd84e2a
@@ -137,21 +137,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^12.8.1":
-  version: 12.12.50
-  resolution: "@types/node@npm:12.12.50"
-  checksum: 02e4e057a353e61eb8b4146633cc766f932951bc11cff9707af03aca8eaf9813133bfca3f2d4b4329cb41a0b892698bf04a1fce1e134813bd8a00dd5b7d36288
+"@types/node@npm:12.12.6":
+  version: 12.12.6
+  resolution: "@types/node@npm:12.12.6"
+  checksum: c33c3822c3c80b1156cb4790cee16ef6855b2f93898967d21063c4c84a0ecf69a6d3d89a21fccea345ca2c53ab7b86672c9879995452d77327d313406cdb3352
   languageName: node
   linkType: hard
 
-"@types/vscode@npm:^1.46.0":
-  version: 1.47.0
-  resolution: "@types/vscode@npm:1.47.0"
-  checksum: fe2bb70651ed49772fc04112aacecd7ba1e504be177e14d12052d401faaa414f356fbcc862f80b80eed8ab6e690890ac53c8dce991600daa4422cc5b1650bede
+"@types/vscode@npm:1.46.0":
+  version: 1.46.0
+  resolution: "@types/vscode@npm:1.46.0"
+  checksum: 68f95bf9dca6359c3889253ef1184a68127b8ca440f99e01fbb95457896cec523013d4a90e401c69caad59c4d7fe718c576d99eb789a7d57332221e59047950f
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^3.8.0":
+"@typescript-eslint/eslint-plugin@npm:3.8.0":
   version: 3.8.0
   resolution: "@typescript-eslint/eslint-plugin@npm:3.8.0"
   dependencies:
@@ -187,7 +187,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^3.8.0":
+"@typescript-eslint/parser@npm:3.8.0":
   version: 3.8.0
   resolution: "@typescript-eslint/parser@npm:3.8.0"
   dependencies:
@@ -1058,7 +1058,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bluebird@npm:^3.7.2":
+"bluebird@npm:3.7.2":
   version: 3.7.2
   resolution: "bluebird@npm:3.7.2"
   checksum: 4f2288662f3d4eadbb82d4daa4a7d7976a28fa3c7eb4102c9b4033b03e5be4574ba123ac52a7c103cde4cb7b2d2afc1dbe41817ca15a29ff21ecd258d0286047
@@ -1407,32 +1407,32 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cloudmusic@workspace:."
   dependencies:
-    "@types/glob": ^7.1.3
-    "@types/mocha": ^8.0.1
-    "@types/node": ^12.8.1
-    "@types/vscode": ^1.46.0
-    "@typescript-eslint/eslint-plugin": ^3.8.0
-    "@typescript-eslint/parser": ^3.8.0
+    "@types/glob": 7.1.3
+    "@types/mocha": 8.0.1
+    "@types/node": 12.12.6
+    "@types/vscode": 1.46.0
+    "@typescript-eslint/eslint-plugin": 3.8.0
+    "@typescript-eslint/parser": 3.8.0
     NeteaseCloudMusicApi: ^3.37.2
     array-unsort: ^1.1.5
-    bluebird: ^3.7.2
+    bluebird: 3.7.2
     cacache: ^15.0.5
     del: ^5.1.0
-    eslint: ^7.6.0
-    glob: ^7.1.6
-    gulp: ^4.0.2
-    gulp-filter: ^6.0.0
-    gulp-typescript: ^6.0.0-alpha.1
+    eslint: 7.6.0
+    glob: 7.1.6
+    gulp: 4.0.2
+    gulp-filter: 6.0.0
+    gulp-typescript: 6.0.0-alpha.1
     lru-cache: ^6.0.0
-    mocha: ^8.1.1
+    mocha: 8.1.1
     node-abi: ^2.18.0
-    ts-loader: ^8.0.2
-    typescript: ^3.9.7
+    ts-loader: 8.0.2
+    typescript: 3.9.7
     vscode-nls: ^4.1.2
-    vscode-nls-dev: ^3.3.2
-    vscode-test: ^1.4.0
-    webpack: ^5.0.0-beta.24
-    webpack-cli: ^4.0.0-beta.8
+    vscode-nls-dev: 3.3.2
+    vscode-test: 1.4.0
+    webpack: 5.0.0-beta.24
+    webpack-cli: 4.0.0-beta.8
   languageName: unknown
   linkType: soft
 
@@ -2216,7 +2216,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^7.6.0":
+"eslint@npm:7.6.0":
   version: 7.6.0
   resolution: "eslint@npm:7.6.0"
   dependencies:
@@ -3175,7 +3175,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"gulp-filter@npm:^6.0.0":
+"gulp-filter@npm:6.0.0":
   version: 6.0.0
   resolution: "gulp-filter@npm:6.0.0"
   dependencies:
@@ -3186,7 +3186,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"gulp-typescript@npm:^6.0.0-alpha.1":
+"gulp-typescript@npm:6.0.0-alpha.1":
   version: 6.0.0-alpha.1
   resolution: "gulp-typescript@npm:6.0.0-alpha.1"
   dependencies:
@@ -3202,7 +3202,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"gulp@npm:^4.0.2":
+"gulp@npm:4.0.2":
   version: 4.0.2
   resolution: "gulp@npm:4.0.2"
   dependencies:
@@ -4528,7 +4528,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"mocha@npm:^8.1.1":
+"mocha@npm:8.1.1":
   version: 8.1.1
   resolution: "mocha@npm:8.1.1"
   dependencies:
@@ -6684,7 +6684,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"ts-loader@npm:^8.0.2":
+"ts-loader@npm:8.0.2":
   version: 8.0.2
   resolution: "ts-loader@npm:8.0.2"
   dependencies:
@@ -6796,7 +6796,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"typescript@^3.9.5, typescript@^3.9.7":
+"typescript@3.9.7, typescript@^3.9.5":
   version: 3.9.7
   resolution: "typescript@npm:3.9.7"
   bin:
@@ -6806,7 +6806,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^3.9.5#builtin<compat/typescript>, typescript@patch:typescript@^3.9.7#builtin<compat/typescript>":
+"typescript@patch:typescript@3.9.7#builtin<compat/typescript>, typescript@patch:typescript@^3.9.5#builtin<compat/typescript>":
   version: 3.9.7
   resolution: "typescript@patch:typescript@npm%3A3.9.7#builtin<compat/typescript>::version=3.9.7&hash=5b02a2"
   bin:
@@ -7076,7 +7076,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"vscode-nls-dev@npm:^3.3.2":
+"vscode-nls-dev@npm:3.3.2":
   version: 3.3.2
   resolution: "vscode-nls-dev@npm:3.3.2"
   dependencies:
@@ -7105,7 +7105,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"vscode-test@npm:^1.4.0":
+"vscode-test@npm:1.4.0":
   version: 1.4.0
   resolution: "vscode-test@npm:1.4.0"
   dependencies:
@@ -7126,7 +7126,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"webpack-cli@npm:^4.0.0-beta.8":
+"webpack-cli@npm:4.0.0-beta.8":
   version: 4.0.0-beta.8
   resolution: "webpack-cli@npm:4.0.0-beta.8"
   dependencies:
@@ -7195,7 +7195,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"webpack@npm:^5.0.0-beta.24":
+"webpack@npm:5.0.0-beta.24":
   version: 5.0.0-beta.24
   resolution: "webpack@npm:5.0.0-beta.24"
   dependencies:
