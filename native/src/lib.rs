@@ -449,7 +449,6 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
         let play = 179;
         let next = 176;
 
-        let mut flag;
         let mut prev_key = 0;
 
         loop {
