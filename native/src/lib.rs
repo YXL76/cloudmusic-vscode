@@ -444,7 +444,7 @@ use winapi::um::winuser::GetAsyncKeyState;
 fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
     let (tx, events_rx) = mpsc::channel();
 
-    thread::spawn(move || {
+    thread::spawn(move || unsafe {
         let prev = 177;
         let play = 179;
         let next = 176;
