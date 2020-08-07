@@ -137,10 +137,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:12.12.6":
-  version: 12.12.6
-  resolution: "@types/node@npm:12.12.6"
-  checksum: c33c3822c3c80b1156cb4790cee16ef6855b2f93898967d21063c4c84a0ecf69a6d3d89a21fccea345ca2c53ab7b86672c9879995452d77327d313406cdb3352
+"@types/node@npm:12.12.54":
+  version: 12.12.54
+  resolution: "@types/node@npm:12.12.54"
+  checksum: 9e6ff179fd8b5118f353f8ed4a16eea105636414557cb6acee40325c26c00d7d54e2cb5a5f18778ecfc820c964f09673c16de67e2b55283fc64c5283685c1055
   languageName: node
   linkType: hard
 
@@ -1409,7 +1409,7 @@ __metadata:
   dependencies:
     "@types/glob": 7.1.3
     "@types/mocha": 8.0.1
-    "@types/node": 12.12.6
+    "@types/node": 12.12.54
     "@types/vscode": 1.46.0
     "@typescript-eslint/eslint-plugin": 3.8.0
     "@typescript-eslint/parser": 3.8.0
