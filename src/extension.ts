@@ -92,8 +92,8 @@ export function activate(context: ExtensionContext): void {
       const { phone, account, md5_password } = JSON.parse(
         readFileSync(ACCOUNT_FILE, "utf8")
       );
-      AccountManager.login(phone, account, md5_password).then(() => {
-        if (AUTO_CHECK) {
+      AccountManager.login(phone, account, md5_password).then((res) => {
+        if (res && AUTO_CHECK) {
           AccountManager.dailySignin();
         }
       });
@@ -657,6 +657,8 @@ export function activate(context: ExtensionContext): void {
           if (!err && e) {
             const { event } = e;
             switch (event) {
+              case undefined:
+                break;
               case "prev":
                 commands.executeCommand("cloudmusic.previous");
                 break;
