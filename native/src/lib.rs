@@ -1,10 +1,12 @@
 use neon::prelude::*;
-use std::fs::File;
-use std::io::BufReader;
-use std::sync::mpsc;
-use std::sync::{Arc, Mutex};
-use std::thread;
-use std::time::{Duration, Instant};
+use std::{
+    fs::File,
+    io::{BufReader, Read, Seek, SeekFrom},
+    mem,
+    sync::{mpsc, Arc, Mutex},
+    thread,
+    time::{Duration, Instant},
+};
 
 enum Status {
     Playing(Instant, Duration),
@@ -101,7 +103,9 @@ declare_types! {
             unsafe  {
                 STATUS.reset();
             }
-            Ok(Rodio { sink })
+            Ok(Rodio {
+                sink,
+            })
         }
 
         method load(mut cx) {
@@ -387,6 +391,212 @@ declare_types! {
     }
 }
 
+fn mpv_open(_: &mut (), uri: &str) -> File {
+    File::open(&uri[13..]).unwrap()
+}
+
+fn mpv_close(_: Box<File>) {
+    unsafe { EMPTY = true }
+}
+
+fn mpv_read(cookie: &mut File, buf: &mut [i8]) -> i64 {
+    unsafe {
+        let forbidden_magic = mem::transmute::<&mut [i8], &mut [u8]>(buf);
+        cookie.read(forbidden_magic).unwrap() as _
+    }
+}
+
+fn mpv_seek(cookie: &mut File, offset: i64) -> i64 {
+    cookie.seek(SeekFrom::Start(offset as u64)).unwrap() as _
+}
+
+fn mpv_size(cookie: &mut File) -> i64 {
+    cookie.metadata().unwrap().len() as _
+}
+
+pub struct Libmpv {
+    mpv: libmpv::Mpv,
+}
+
+impl Libmpv {
+    pub fn load(&mut self, url: &str) -> bool {
+        let path = format!("filereader://{}", url);
+        match self
+            .mpv
+            .playlist_load_files(&[(&path, libmpv::FileState::Replace, None)])
+        {
+            Ok(_) => {
+                unsafe {
+                    STATUS.reset();
+                    EMPTY = false;
+                }
+                self.play();
+                true
+            }
+            _ => false,
+        }
+    }
+
+    pub fn play(&mut self) -> bool {
+        unsafe {
+            match STATUS {
+                Status::Stopped(_) => match self.mpv.unpause() {
+                    Ok(_) => {
+                        STATUS.play();
+                        true
+                    }
+                    _ => false,
+                },
+                _ => false,
+            }
+        }
+    }
+
+    pub fn pause(&mut self) {
+        self.mpv.pause().unwrap_or(());
+        unsafe { STATUS.stop() }
+    }
+
+    pub fn stop(&mut self) {
+        unsafe {
+            STATUS.reset();
+            EMPTY = true;
+        }
+        self.mpv.playlist_remove_current().unwrap_or(());
+    }
+
+    pub fn set_volume(&self, volume: i64) {
+        self.mpv.set_property("volume", volume).unwrap_or(());
+    }
+
+    pub fn is_paused(&self) -> bool {
+        unsafe {
+            match STATUS {
+                Status::Stopped(_) => true,
+                _ => false,
+            }
+        }
+    }
+
+    pub fn empty(&mut self) -> bool {
+        unsafe { EMPTY }
+    }
+
+    pub fn position(&self) -> u128 {
+        unsafe { STATUS.elapsed().as_millis() }
+    }
+}
+
+declare_types! {
+    pub class JsLibmpv for Libmpv {
+        init(_) {
+            let protocol = unsafe {
+                libmpv::protocol::Protocol::new(
+                    "filereader".into(),
+                    (),
+                    mpv_open,
+                    mpv_close,
+                    mpv_read,
+                    Some(mpv_seek),
+                    Some(mpv_size),
+                )
+            };
+            let mpv = libmpv::Mpv::new().unwrap();
+            let proto_ctx = mpv.create_protocol_context();
+            proto_ctx.register(protocol).unwrap();
+            unsafe  {
+                STATUS.reset();
+                EMPTY = true;
+            }
+            Ok(Libmpv {
+                mpv,
+            })
+        }
+
+        method load(mut cx) {
+            let url: String = cx.argument::<JsString>(0)?.value();
+            let res = {
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut player = this.borrow_mut(&guard);
+                player.load(&url)
+            };
+            Ok(cx.boolean(res).upcast())
+        }
+
+        method play(mut cx) {
+            let res = {
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut player = this.borrow_mut(&guard);
+                player.play()
+            };
+            Ok(cx.boolean(res).upcast())
+        }
+
+        method pause(mut cx) {
+            {
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut player = this.borrow_mut(&guard);
+                player.pause();
+            };
+            Ok(cx.undefined().upcast())
+        }
+
+        method stop(mut cx) {
+            {
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut player = this.borrow_mut(&guard);
+                player.stop();
+            };
+            Ok(cx.undefined().upcast())
+        }
+
+        method setVolume(mut cx) {
+            let level = cx.argument::<JsNumber>(0)?.value();
+            {
+                let this = cx.this();
+                let guard = cx.lock();
+                let player = this.borrow(&guard);
+                player.set_volume(level as i64);
+            };
+            Ok(cx.undefined().upcast())
+        }
+
+        method isPaused(mut cx) {
+            let res = {
+                let this = cx.this();
+                let guard = cx.lock();
+                let player = this.borrow(&guard);
+                player.is_paused()
+            };
+            Ok(cx.boolean(res).upcast())
+        }
+
+        method empty(mut cx) {
+            let res = {
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut player = this.borrow_mut(&guard);
+                player.empty()
+            };
+            Ok(cx.boolean(res).upcast())
+        }
+
+        method position(mut cx) {
+            let res = {
+                let this = cx.this();
+                let guard = cx.lock();
+                let player = this.borrow(&guard);
+                player.position()
+            };
+            Ok(cx.number(res as f64 / 1000.0).upcast())
+        }
+    }
+}
+
 pub enum KeyboardEvent {
     Prev,
     Play,
@@ -581,5 +791,6 @@ declare_types! {
 register_module!(mut cx, {
     cx.export_class::<JsRodio>("Rodio")?;
     cx.export_class::<JsMiniaudio>("Miniaudio")?;
+    cx.export_class::<JsLibmpv>("Libmpv")?;
     cx.export_class::<JsKeyboardEventEmitter>("KeyboardEventEmitter")
 });
