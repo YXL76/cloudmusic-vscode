@@ -665,7 +665,7 @@ use winapi::um::winuser::GetAsyncKeyState;
 fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
     let (tx, events_rx) = mpsc::channel();
 
-    thread::spawn(move || unsafe {
+    thread::spawn(move || {
         let keys = [177, 179, 176];
         let mut flag;
         let mut prev_key = 0;
