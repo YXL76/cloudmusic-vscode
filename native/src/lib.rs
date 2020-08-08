@@ -36,8 +36,9 @@ impl Status {
     }
 }
 
+static mut STATUS: Status = Status::Stopped(Duration::from_nanos(0));
+
 pub struct Rodio {
-    status: Status,
     sink: rodio::Sink,
 }
 
@@ -61,17 +62,17 @@ impl Rodio {
 
     pub fn play(&mut self) {
         self.sink.play();
-        self.status.play()
+        unsafe { STATUS.play() }
     }
 
     pub fn pause(&mut self) {
         self.sink.pause();
-        self.status.stop()
+        unsafe { STATUS.stop() }
     }
 
     pub fn stop(&mut self) {
         self.sink.stop();
-        self.status.reset();
+        unsafe { STATUS.reset() }
     }
 
     pub fn set_volume(&self, volume: f32) {
@@ -87,7 +88,7 @@ impl Rodio {
     }
 
     pub fn position(&self) -> u128 {
-        self.status.elapsed().as_millis()
+        unsafe { STATUS.elapsed().as_millis() }
     }
 }
 
@@ -97,10 +98,10 @@ declare_types! {
             let device = rodio::default_output_device().unwrap();
             let sink = rodio::Sink::new(&device);
             sink.pause();
-            Ok(Rodio {
-                status: Status::Stopped(Duration::from_nanos(0)),
-                sink,
-            })
+            unsafe  {
+                STATUS.reset();
+            }
+            Ok(Rodio { sink })
         }
 
         method load(mut cx) {
@@ -193,7 +194,6 @@ declare_types! {
     }
 }
 
-static mut STATUS: Status = Status::Stopped(Duration::from_nanos(0));
 static mut EMPTY: bool = true;
 
 pub struct Miniaudio {
