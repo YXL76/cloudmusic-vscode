@@ -405,13 +405,11 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
     let (tx, events_rx) = mpsc::channel();
 
     thread::spawn(move || unsafe {
-        let prev = 3;
-        let play = 4;
-        let next = 5;
-
+        let keys = [3, 4, 5];
+        let mut flag;
+        let mut prev_key = 0;
         let disp = XOpenDisplay(ptr::null());
         let keymap: *mut i8 = [0; 32].as_mut_ptr();
-        let mut prev_key = 0;
 
         loop {
             thread::sleep(Duration::from_millis(32));
@@ -419,16 +417,29 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
             XQueryKeymap(disp, keymap);
             let b = from_raw_parts(keymap, 32)[21];
 
-            if prev_key != prev && b & 1 << prev != 0 {
-                prev_key = prev;
-                tx.send(KeyboardEvent::Next).unwrap_or(());
-            } else if prev_key != play && b & 1 << play != 0 {
-                prev_key = play;
-                tx.send(KeyboardEvent::Play).unwrap_or(());
-            } else if prev_key != next && b & 1 << next != 0 {
-                prev_key = next;
-                tx.send(KeyboardEvent::Prev).unwrap_or(());
-            } else if prev_key != 0 && b & 1 << prev_key == 0 {
+            flag = false;
+            for key in keys.iter() {
+                if b & 1 << *key != 0 {
+                    if prev_key != *key {
+                        prev_key = *key;
+                        match *key {
+                            3 => {
+                                tx.send(KeyboardEvent::Prev).unwrap_or(());
+                            }
+                            4 => {
+                                tx.send(KeyboardEvent::Play).unwrap_or(());
+                            }
+                            5 => {
+                                tx.send(KeyboardEvent::Next).unwrap_or(());
+                            }
+                            _ => {}
+                        }
+                    }
+                    flag = true;
+                    break;
+                }
+            }
+            if !flag {
                 prev_key = 0;
             }
         }
@@ -445,37 +456,39 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
     let (tx, events_rx) = mpsc::channel();
 
     thread::spawn(move || unsafe {
-        let prev = 177;
-        let play = 179;
-        let next = 176;
-
+        let keys = [177, 179, 176];
+        let mut flag;
         let mut prev_key = 0;
 
         loop {
             thread::sleep(Duration::from_millis(32));
 
-            if !match prev_key != prev && (GetAsyncKeyState(prev) & -32768 != 0) {
-                true => {
-                    prev_key = prev;
-                    tx.send(KeyboardEvent::Prev).unwrap_or(());
-                    true
-                }
-                _ => match prev_key != play && (GetAsyncKeyState(play) & -32768 != 0) {
-                    true => {
-                        prev_key = play;
-                        tx.send(KeyboardEvent::Play).unwrap_or(());
-                        true
-                    }
-                    _ => match prev_key != next && (GetAsyncKeyState(next) & -32768 != 0) {
-                        true => {
-                            prev_key = next;
-                            tx.send(KeyboardEvent::Next).unwrap_or(());
-                            true
+            flag = false;
+            for key in keys.iter() {
+                unsafe {
+                    let state = GetAsyncKeyState(*key);
+                    if state & -32768 != 0 {
+                        if prev_key != *key {
+                            prev_key = *key;
+                            match *key {
+                                177 => {
+                                    tx.send(KeyboardEvent::Prev).unwrap_or(());
+                                }
+                                179 => {
+                                    tx.send(KeyboardEvent::Play).unwrap_or(());
+                                }
+                                176 => {
+                                    tx.send(KeyboardEvent::Next).unwrap_or(());
+                                }
+                                _ => {}
+                            }
                         }
-                        _ => false,
-                    },
-                },
-            } {
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            if !flag {
                 prev_key = 0;
             }
         }
