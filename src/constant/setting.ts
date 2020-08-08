@@ -19,10 +19,11 @@ export const PLAYER_AVAILABLE =
   PLATFORM === "win32" || PLATFORM === "linux" || PLATFORM === "darwin";
 export const MEDIA_CONTROL =
   conf.get("player.mediaControl") && PLAYER_AVAILABLE;
-export const DEFAULT_LIBRARY: string =
-  conf.get("player.defaultLibrary") || "Rodio";
-export const BACKUP_LIBRARY =
-  DEFAULT_LIBRARY === "Rodio" ? "Miniaudio" : "Rodio";
+
+const defaultLibrary: string = conf.get("player.defaultLibrary") ?? "Rodio";
+const librarys = ["Rodio", "Miniaudio"].filter((i) => i !== defaultLibrary);
+librarys.unshift(defaultLibrary);
+export const LIBRARYS = librarys;
 
 export const SETTING_DIR = join(homedir(), ".cloudmusic");
 export const ACCOUNT_FILE = join(SETTING_DIR, ".account");

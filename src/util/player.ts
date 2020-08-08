@@ -1,9 +1,4 @@
-import {
-  BACKUP_LIBRARY,
-  DEFAULT_LIBRARY,
-  NATIVE,
-  PLAYER_AVAILABLE,
-} from "../constant/setting";
+import { LIBRARYS, NATIVE, PLAYER_AVAILABLE } from "../constant/setting";
 import { NativePlayer, Player } from "../constant/type";
 import { Playing, setPosition } from "../state/play";
 import { ButtonManager } from "../manager/buttonManager";
@@ -39,7 +34,7 @@ class NoPlayer implements Player {
 }
 
 class AudioPlayer implements Player {
-  private player: NativePlayer;
+  private player!: NativePlayer;
 
   id = 0;
   pid = 0;
@@ -48,13 +43,14 @@ class AudioPlayer implements Player {
   level = 85;
 
   constructor() {
-    try {
-      const player = NATIVE[DEFAULT_LIBRARY];
-      this.player = new player();
-    } catch {
-      const player = NATIVE[BACKUP_LIBRARY];
-      this.player = new player();
+    for (const library of LIBRARYS) {
+      try {
+        const player = NATIVE[library];
+        this.player = new player();
+        break;
+      } catch {}
     }
+
     setInterval(() => {
       if (!this.player.isPaused()) {
         if (this.player.empty()) {

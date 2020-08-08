@@ -391,7 +391,7 @@ declare_types! {
     }
 }
 
-fn mpv_open(_: &mut (), uri: &str) -> File {
+/* fn mpv_open(_: &mut (), uri: &str) -> File {
     File::open(&uri[13..]).unwrap()
 }
 
@@ -595,7 +595,7 @@ declare_types! {
             Ok(cx.number(res as f64 / 1000.0).upcast())
         }
     }
-}
+}*/
 
 pub enum KeyboardEvent {
     Prev,
@@ -791,6 +791,6 @@ declare_types! {
 register_module!(mut cx, {
     cx.export_class::<JsRodio>("Rodio")?;
     cx.export_class::<JsMiniaudio>("Miniaudio")?;
-    cx.export_class::<JsLibmpv>("Libmpv")?;
+    // cx.export_class::<JsLibmpv>("Libmpv")?;
     cx.export_class::<JsKeyboardEventEmitter>("KeyboardEventEmitter")
 });

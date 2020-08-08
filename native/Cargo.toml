@@ -17,7 +17,7 @@ neon-build = "0.4.0"
 neon = "0.4.0"
 rodio = "0.11.0"
 miniaudio = "0.10.0"
-libmpv = {version = "2.0.0", features = ["protocols"] }
+# libmpv = {version = "2.0.0", features = ["protocols"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 x11 = {version = "2.18.2", features = ["xlib"] }
