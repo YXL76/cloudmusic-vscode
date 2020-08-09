@@ -27,3 +27,6 @@ yarn.lock
 
 i18n/
 gulpfile.js
+
+page/sass
+page/ts
