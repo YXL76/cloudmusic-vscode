@@ -1,11 +1,21 @@
 "use strict";
 
 const gulp = require("gulp");
+const sass = require("gulp-sass");
 const nls = require("vscode-nls-dev");
 const ts = require("gulp-typescript");
 const typescript = require("typescript");
 const tsProject = ts.createProject("./tsconfig.json", { typescript });
 const filter = require("gulp-filter");
+
+sass.compiler = require("sass");
+
+gulp.task("sass", () => {
+  return gulp
+    .src("./page/sass/**/*.scss")
+    .pipe(sass.sync({ outputStyle: "compressed" }).on("error", sass.logError))
+    .pipe(gulp.dest("./page/css"));
+});
 
 const languages = [{ id: "zh-cn", folderName: "chs", transifexId: "zh-hans" }];
 
@@ -38,3 +48,5 @@ gulp.task(
   "translations-generate",
   gulp.series(generatedSrcLocBundle, generatedAdditionalLocFiles)
 );
+
+gulp.task("all", gulp.series("sass", "translations-generate"));

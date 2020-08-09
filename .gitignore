@@ -19,3 +19,5 @@ native/artifacts.json
 .artifact
 
 package.nls.*.json
+
+page/css/
