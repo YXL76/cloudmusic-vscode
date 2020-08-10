@@ -1,12 +1,16 @@
 use neon::prelude::*;
 use std::{
     fs::File,
-    io::{BufReader, Read, Seek, SeekFrom},
-    mem,
+    io::BufReader
     sync::{mpsc, Arc, Mutex},
     thread,
     time::{Duration, Instant},
 };
+
+/*use std::{
+    io::{Read, Seek, SeekFrom},
+    mem,
+};*/
 
 enum Status {
     Playing(Instant, Duration),

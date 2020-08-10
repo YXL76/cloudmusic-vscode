@@ -4,6 +4,7 @@ node_modules
 *.vsix
 yarn-error.log
 dist
+.DS_Store
 
 .yarn/*
 !.yarn/releases
