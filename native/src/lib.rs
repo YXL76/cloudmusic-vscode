@@ -619,7 +619,7 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
     let (tx, events_rx) = mpsc::channel();
 
     thread::spawn(move || unsafe {
-        let keys = [3, 4, 5];
+        let keys = [5, 4, 3];
         let mut flag;
         let mut prev_key = 0;
         let disp = XOpenDisplay(ptr::null());
@@ -637,13 +637,13 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
                     if prev_key != *key {
                         prev_key = *key;
                         match *key {
-                            3 => {
+                            5 => {
                                 tx.send(KeyboardEvent::Prev).unwrap_or(());
                             }
                             4 => {
                                 tx.send(KeyboardEvent::Play).unwrap_or(());
                             }
-                            5 => {
+                            3 => {
                                 tx.send(KeyboardEvent::Next).unwrap_or(());
                             }
                             _ => {}
