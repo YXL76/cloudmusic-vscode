@@ -708,8 +708,51 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
 }
 
 #[cfg(target_os = "macos")]
+extern "C" {
+    fn CGEventSourceKeyState(state: i32, keycode: u16) -> bool;
+}
+
+#[cfg(target_os = "macos")]
 fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
     let (tx, events_rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let keys = [98, 100, 101];
+        let mut flag;
+        let mut prev_key = 0;
+
+        loop {
+            thread::sleep(Duration::from_millis(32));
+
+            flag = false;
+            for key in keys.iter() {
+                unsafe {
+                    if CGEventSourceKeyState(0, *key) {
+                        if prev_key != *key {
+                            prev_key = *key;
+                            match *key {
+                                98 => {
+                                    tx.send(KeyboardEvent::Prev).unwrap_or(());
+                                }
+                                100 => {
+                                    tx.send(KeyboardEvent::Play).unwrap_or(());
+                                }
+                                101 => {
+                                    tx.send(KeyboardEvent::Next).unwrap_or(());
+                                }
+                                _ => {}
+                            }
+                        }
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            if !flag {
+                prev_key = 0;
+            }
+        }
+    });
 
     events_rx
 }
