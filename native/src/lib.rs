@@ -1,12 +1,16 @@
 use neon::prelude::*;
 use std::{
     fs::File,
-    io::{BufReader, Read, Seek, SeekFrom},
-    mem,
+    io::BufReader,
     sync::{mpsc, Arc, Mutex},
     thread,
     time::{Duration, Instant},
 };
+
+/*use std::{
+    io::{Read, Seek, SeekFrom},
+    mem,
+};*/
 
 enum Status {
     Playing(Instant, Duration),
@@ -14,6 +18,7 @@ enum Status {
 }
 
 impl Status {
+    #[inline]
     fn elapsed(&self) -> Duration {
         match *self {
             Status::Stopped(d) => d,
@@ -21,18 +26,21 @@ impl Status {
         }
     }
 
+    #[inline]
     fn stop(&mut self) {
         if let Status::Playing(start, extra) = *self {
             *self = Status::Stopped(start.elapsed() + extra)
         }
     }
 
+    #[inline]
     fn play(&mut self) {
         if let Status::Stopped(duration) = *self {
             *self = Status::Playing(Instant::now(), duration)
         }
     }
 
+    #[inline]
     fn reset(&mut self) {
         *self = Status::Stopped(Duration::from_nanos(0));
     }
@@ -40,55 +48,107 @@ impl Status {
 
 static mut STATUS: Status = Status::Stopped(Duration::from_nanos(0));
 
-pub struct Rodio {
-    sink: rodio::Sink,
+static mut SINK: Option<rodio::Sink> = None;
+
+struct LoadTask {
+    url: String,
 }
 
+impl Task for LoadTask {
+    type Output = bool;
+    type Error = bool;
+    type JsEvent = JsUndefined;
+
+    fn perform(&self) -> Result<bool, bool> {
+        let file = File::open(self.url.clone()).unwrap();
+        let source = rodio::Decoder::new(BufReader::new(file)).unwrap();
+        unsafe {
+            STATUS.reset();
+            if let Some(sink) = &SINK {
+                sink.stop();
+            }
+            let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
+            SINK = Some(rodio::Sink::try_new(&handle).unwrap());
+            if let Some(sink) = &SINK {
+                sink.append(source);
+                sink.play();
+                STATUS.play();
+                sink.sleep_until_end();
+            }
+        }
+        Ok(true)
+    }
+
+    fn complete(self, mut cx: TaskContext, _result: Result<bool, bool>) -> JsResult<JsUndefined> {
+        Ok(cx.undefined())
+    }
+}
+
+pub struct Rodio;
+
 impl Rodio {
-    pub fn load(&mut self, url: &str) -> bool {
-        match File::open(url) {
-            Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
-                Ok(source) => {
-                    self.stop();
-                    let device = rodio::default_output_device().unwrap();
-                    self.sink = rodio::Sink::new(&device);
-                    self.sink.append(source);
-                    self.play();
-                    true
-                }
-                _ => false,
-            },
-            _ => false,
+    #[inline]
+    pub fn play(&self) {
+        unsafe {
+            if let Some(sink) = &SINK {
+                sink.play();
+            }
+            STATUS.play()
         }
     }
 
-    pub fn play(&mut self) {
-        self.sink.play();
-        unsafe { STATUS.play() }
+    #[inline]
+    pub fn pause(&self) {
+        unsafe {
+            if let Some(sink) = &SINK {
+                sink.pause();
+            }
+            STATUS.stop()
+        }
     }
 
-    pub fn pause(&mut self) {
-        self.sink.pause();
-        unsafe { STATUS.stop() }
+    #[inline]
+    pub fn stop(&self) {
+        unsafe {
+            if let Some(sink) = &SINK {
+                sink.stop();
+            }
+            STATUS.reset()
+        }
     }
 
-    pub fn stop(&mut self) {
-        self.sink.stop();
-        unsafe { STATUS.reset() }
-    }
-
+    #[inline]
     pub fn set_volume(&self, volume: f32) {
-        self.sink.set_volume(volume);
+        unsafe {
+            if let Some(sink) = &SINK {
+                sink.set_volume(volume);
+            }
+        }
     }
 
+    #[inline]
     pub fn is_paused(&self) -> bool {
-        self.sink.is_paused()
+        unsafe {
+            if let Some(sink) = &SINK {
+                sink.is_paused()
+            } else {
+                true
+            }
+        }
     }
 
+    #[inline]
     pub fn empty(&self) -> bool {
-        self.sink.empty()
+        unsafe {
+            if let Some(sink) = &SINK {
+                sink.empty()
+            } else {
+                true
+            }
+        }
     }
 
+    #[inline]
     pub fn position(&self) -> u128 {
         unsafe { STATUS.elapsed().as_millis() }
     }
@@ -97,33 +157,40 @@ impl Rodio {
 declare_types! {
     pub class JsRodio for Rodio {
         init(_) {
-            let device = rodio::default_output_device().unwrap();
-            let sink = rodio::Sink::new(&device);
+            let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
+            let sink = rodio::Sink::try_new(&handle).unwrap();
             sink.pause();
             unsafe  {
                 STATUS.reset();
             }
-            Ok(Rodio {
-                sink,
-            })
+            Ok(Rodio)
         }
 
         method load(mut cx) {
             let url: String = cx.argument::<JsString>(0)?.value();
+            let cb = cx.argument::<JsFunction>(1)?;
+            let url_clone = url.clone();
             let res = {
-                let mut this = cx.this();
-                let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
-                player.load(&url)
+                match File::open(url_clone) {
+                    Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
+                        Ok(_) => {
+                            let task = LoadTask { url };
+                            task.schedule(cb);
+                            true
+                        }
+                        _ => false,
+                    },
+                    _ => false,
+                }
             };
             Ok(cx.boolean(res).upcast())
         }
 
         method play(mut cx) {
             let res = {
-                let mut this = cx.this();
+                let this = cx.this();
                 let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
+                let player = this.borrow(&guard);
                 match player.empty() {
                     false => {
                         player.play();
@@ -137,9 +204,9 @@ declare_types! {
 
         method pause(mut cx) {
             {
-                let mut this = cx.this();
+                let this = cx.this();
                 let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
+                let player = this.borrow(&guard);
                 player.pause();
             };
             Ok(cx.undefined().upcast())
@@ -147,9 +214,9 @@ declare_types! {
 
         method stop(mut cx) {
             {
-                let mut this = cx.this();
+                let this = cx.this();
                 let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
+                let player = this.borrow(&guard);
                 player.stop();
             };
             Ok(cx.undefined().upcast())
@@ -205,6 +272,7 @@ pub struct Miniaudio {
 }
 
 impl Miniaudio {
+    #[inline]
     pub fn load(&mut self, url: &str) -> bool {
         match miniaudio::Decoder::from_file(url, None) {
             Ok(mut decoder) => {
@@ -247,7 +315,8 @@ impl Miniaudio {
         }
     }
 
-    pub fn play(&mut self) -> bool {
+    #[inline]
+    pub fn play(&self) -> bool {
         unsafe {
             match STATUS {
                 Status::Stopped(_) => {
@@ -259,11 +328,13 @@ impl Miniaudio {
         }
     }
 
-    pub fn pause(&mut self) {
+    #[inline]
+    pub fn pause(&self) {
         unsafe { STATUS.stop() }
     }
 
-    pub fn stop(&mut self) {
+    #[inline]
+    pub fn stop(&self) {
         unsafe {
             STATUS.reset();
             EMPTY = true;
@@ -271,10 +342,12 @@ impl Miniaudio {
         self.device.stop().unwrap_or(());
     }
 
+    #[inline]
     pub fn set_volume(&self, volume: f32) {
         self.device.set_master_volume(volume).unwrap_or(());
     }
 
+    #[inline]
     pub fn is_paused(&self) -> bool {
         unsafe {
             match STATUS {
@@ -284,10 +357,12 @@ impl Miniaudio {
         }
     }
 
-    pub fn empty(&mut self) -> bool {
+    #[inline]
+    pub fn empty(&self) -> bool {
         unsafe { EMPTY }
     }
 
+    #[inline]
     pub fn position(&self) -> u128 {
         unsafe { STATUS.elapsed().as_millis() }
     }
@@ -320,9 +395,9 @@ declare_types! {
 
         method play(mut cx) {
             let res = {
-                let mut this = cx.this();
+                let this = cx.this();
                 let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
+                let player = this.borrow(&guard);
                 player.play()
             };
             Ok(cx.boolean(res).upcast())
@@ -330,9 +405,9 @@ declare_types! {
 
         method pause(mut cx) {
             {
-                let mut this = cx.this();
+                let this = cx.this();
                 let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
+                let player = this.borrow(&guard);
                 player.pause();
             };
             Ok(cx.undefined().upcast())
@@ -340,9 +415,9 @@ declare_types! {
 
         method stop(mut cx) {
             {
-                let mut this = cx.this();
+                let this = cx.this();
                 let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
+                let player = this.borrow(&guard);
                 player.stop();
             };
             Ok(cx.undefined().upcast())
@@ -371,9 +446,9 @@ declare_types! {
 
         method empty(mut cx) {
             let res = {
-                let mut this = cx.this();
+                let this = cx.this();
                 let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
+                let player = this.borrow(&guard);
                 player.empty()
             };
             Ok(cx.boolean(res).upcast())
@@ -615,7 +690,7 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
     let (tx, events_rx) = mpsc::channel();
 
     thread::spawn(move || unsafe {
-        let keys = [3, 4, 5];
+        let keys = [5, 4, 3];
         let mut flag;
         let mut prev_key = 0;
         let disp = XOpenDisplay(ptr::null());
@@ -633,13 +708,13 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
                     if prev_key != *key {
                         prev_key = *key;
                         match *key {
-                            3 => {
+                            5 => {
                                 tx.send(KeyboardEvent::Prev).unwrap_or(());
                             }
                             4 => {
                                 tx.send(KeyboardEvent::Play).unwrap_or(());
                             }
-                            5 => {
+                            3 => {
                                 tx.send(KeyboardEvent::Next).unwrap_or(());
                             }
                             _ => {}
@@ -708,8 +783,51 @@ fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
 }
 
 #[cfg(target_os = "macos")]
+extern "C" {
+    fn CGEventSourceKeyState(state: i32, keycode: u16) -> bool;
+}
+
+#[cfg(target_os = "macos")]
 fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
     let (tx, events_rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let keys = [98, 100, 101];
+        let mut flag;
+        let mut prev_key = 0;
+
+        loop {
+            thread::sleep(Duration::from_millis(32));
+
+            flag = false;
+            for key in keys.iter() {
+                unsafe {
+                    if CGEventSourceKeyState(0, *key) {
+                        if prev_key != *key {
+                            prev_key = *key;
+                            match *key {
+                                98 => {
+                                    tx.send(KeyboardEvent::Prev).unwrap_or(());
+                                }
+                                100 => {
+                                    tx.send(KeyboardEvent::Play).unwrap_or(());
+                                }
+                                101 => {
+                                    tx.send(KeyboardEvent::Next).unwrap_or(());
+                                }
+                                _ => {}
+                            }
+                        }
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            if !flag {
+                prev_key = 0;
+            }
+        }
+    });
 
     events_rx
 }

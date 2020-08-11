@@ -50,4 +50,34 @@ const config = {
   },
 };
 
-module.exports = config;
+/**@type {import('webpack').Configuration}*/
+const pageConfig = {
+  target: "webworker",
+  context: path.resolve(__dirname, "page", "ts"),
+  entry: {
+    userMusicRanking: "./userMusicRanking.ts",
+  },
+  output: {
+    path: path.resolve(__dirname, "page", "js"),
+    filename: "[name].js",
+  },
+  resolve: {
+    extensions: [".ts", ".js"],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: [
+          {
+            loader: "ts-loader",
+          },
+        ],
+      },
+    ],
+  },
+  devtool: false,
+};
+
+module.exports = [config, pageConfig];

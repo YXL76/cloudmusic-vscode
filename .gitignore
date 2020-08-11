@@ -4,6 +4,7 @@ node_modules
 *.vsix
 yarn-error.log
 dist
+.DS_Store
 
 .yarn/*
 !.yarn/releases
@@ -19,3 +20,6 @@ native/artifacts.json
 .artifact
 
 package.nls.*.json
+
+page/css
+page/js

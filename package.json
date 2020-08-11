@@ -333,9 +333,9 @@
   "scripts": {
     "build": "electron-build-env neon build --release",
     "vscode:prepublish": "yarn webpack-prod",
-    "webpack": "node pre-webpack.js && gulp translations-generate && webpack --mode development",
-    "webpack-dev": "node pre-webpack.js && gulp translations-generate && webpack --mode development --watch",
-    "webpack-prod": "node pre-webpack.js && gulp translations-generate && webpack --mode production",
+    "webpack": "node pre-webpack.js && gulp all && webpack --mode development",
+    "webpack-dev": "node pre-webpack.js && gulp all && webpack --mode development --watch",
+    "webpack-prod": "node pre-webpack.js && gulp all && webpack --mode production",
     "test": "tsc -p ./",
     "lint": "eslint . --ext .ts,.tsx"
   },
@@ -351,8 +351,10 @@
     "glob": "7.1.6",
     "gulp": "4.0.2",
     "gulp-filter": "6.0.0",
+    "gulp-sass": "^4.1.0",
     "gulp-typescript": "6.0.0-alpha.1",
     "mocha": "8.1.1",
+    "sass": "^1.26.10",
     "ts-loader": "8.0.2",
     "typescript": "3.9.7",
     "vscode-nls-dev": "3.3.2",

@@ -1,0 +1,35 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--vscode-editor-font-family);
+  font-size: var(--vscode-editor-font-size);
+
+  &__item {
+    display: flex;
+    flex-direction: row;
+    padding: 2px 0;
+
+    &:nth-child(odd) {
+      background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    &-left {
+      font-weight: bold;
+      text-align: center;
+      width: 6vw;
+    }
+
+    &-middle {
+      overflow: hidden;
+      padding-right: 8px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      width: 35vw;
+    }
+
+    &-right {
+      background-color: rgba(0, 0, 0, 0.4);
+      text-indent: var(--vscode-editor-font-size);
+    }
+  }
+}
