@@ -11,9 +11,8 @@ dependencies = [
 
 [[package]]
 name = "alsa-sys"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0edcbbf9ef68f15ae1b620f722180b82a98b6f0628d30baa6b8d2a5abc87d58"
+version = "0.1.1"
+source = "git+https://github.com/YXL76/cpal?branch=dev#a20afe5eb78fa16bfe9acd197ead0dedd38661eb"
 dependencies = [
  "libc",
  "pkg-config",
@@ -143,8 +142,7 @@ dependencies = [
 [[package]]
 name = "cpal"
 version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6b55d55d69f403f62a95bd3c04b431e0aedf5120c70f15d07a8edd234443dd59"
+source = "git+https://github.com/YXL76/cpal?branch=dev#a20afe5eb78fa16bfe9acd197ead0dedd38661eb"
 dependencies = [
  "alsa-sys",
  "core-foundation-sys",
@@ -403,7 +401,7 @@ checksum = "26412eb97c6b088a6997e05f69403a802a92d520de2f8e63c2b65f9e0f47c4e8"
 [[package]]
 name = "rodio"
 version = "0.11.0"
-source = "git+https://github.com/YXL76/rodio?branch=dev#cabc8427994d7abe6190ecbc29258c43003e0530"
+source = "git+https://github.com/YXL76/rodio?branch=dev#c4937dcbaec4aa8b36e816452a5dd51b661193b7"
 dependencies = [
  "claxon",
  "cpal",
@@ -459,9 +457,9 @@ checksum = "ef5430c8e36b713e13b48a9f709cc21e046723fe44ce34587b73a830203b533e"
 
 [[package]]
 name = "syn"
-version = "1.0.36"
+version = "1.0.38"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4cdb98bcb1f9d81d07b536179c269ea15999b5d14ea958196413869445bb5250"
+checksum = "e69abc24912995b3038597a7a593be5053eb0fb44f3cc5beec0deb421790c1f4"
 dependencies = [
  "proc-macro2",
  "quote",
