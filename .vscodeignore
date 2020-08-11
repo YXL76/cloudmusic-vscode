@@ -30,3 +30,6 @@ gulpfile.js
 
 page/sass
 page/ts
+script
+
+renovate.json
