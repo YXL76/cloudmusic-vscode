@@ -75,6 +75,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/eslint-scope@npm:^3.7.0":
+  version: 3.7.0
+  resolution: "@types/eslint-scope@npm:3.7.0"
+  dependencies:
+    "@types/eslint": "*"
+    "@types/estree": "*"
+  checksum: 1ee912a956f6fecd26bef9517ef33473498feda4a7fc7f191b705c750dcf8bbbd78a83d8c69e66d98c23cad4dfc8769a464780a3cf395948e3f0f85146729f68
+  languageName: node
+  linkType: hard
+
 "@types/eslint-visitor-keys@npm:^1.0.0":
   version: 1.0.0
   resolution: "@types/eslint-visitor-keys@npm:1.0.0"
@@ -82,7 +92,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/estree@npm:^0.0.45":
+"@types/eslint@npm:*":
+  version: 7.2.0
+  resolution: "@types/eslint@npm:7.2.0"
+  dependencies:
+    "@types/estree": "*"
+    "@types/json-schema": "*"
+  checksum: dcf0fee617bc4bcabd7cf300458cf5711328f9680a96d3b94691065d02dc257457a317c5e75be3017405e310c4c42ac8b6fbc1dd5c7548799d7a43e07e82e8ba
+  languageName: node
+  linkType: hard
+
+"@types/estree@npm:*, @types/estree@npm:^0.0.45":
   version: 0.0.45
   resolution: "@types/estree@npm:0.0.45"
   checksum: 9d339cbcf29a96a32e9d40efc21009c2342e93c4f653294dd1ef081ae474bca9e54707e5d4a1cff90b9e3566e8bdd71ac31e0c3d24bc2ff1d3d5aa75058b3937
@@ -109,7 +129,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/json-schema@npm:^7.0.3, @types/json-schema@npm:^7.0.4":
+"@types/json-schema@npm:*, @types/json-schema@npm:^7.0.3, @types/json-schema@npm:^7.0.4":
   version: 7.0.5
   resolution: "@types/json-schema@npm:7.0.5"
   checksum: 6290f9fe93ac957b244262d5ff56cfd3045c63da6ed88dcc2d5b84131e6284c8e6213bf0cb81423a4f940182647bcd69057309c982f8db64dfff8f65f800ef80
@@ -1431,7 +1451,7 @@ __metadata:
     vscode-nls: ^4.1.2
     vscode-nls-dev: 3.3.2
     vscode-test: 1.4.0
-    webpack: 5.0.0-beta.24
+    webpack: 5.0.0-beta.25
     webpack-cli: 4.0.0-beta.8
   languageName: unknown
   linkType: soft
@@ -7116,13 +7136,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"watchpack@npm:2.0.0-beta.13":
-  version: 2.0.0-beta.13
-  resolution: "watchpack@npm:2.0.0-beta.13"
+"watchpack@npm:2.0.0-beta.14":
+  version: 2.0.0-beta.14
+  resolution: "watchpack@npm:2.0.0-beta.14"
   dependencies:
     glob-to-regexp: ^0.4.1
     graceful-fs: ^4.1.2
-  checksum: 404d5c3c08a35c32a7a6374477848b9ab8721d3e76a180f4a9075138c2c8b1c09ef0e7b7e6e0276bcb0848e1fc33f04e6ee787129d39cd5e86262a38acc5bfc2
+  checksum: 78a2e946f951be9ec6d5fc319ccfc5d93723bd6ba579f784563f97c5e48c14ff2ff5529843caa151b6d68fbf1edced36bec004fefcba8869d993d598cd07962e
   languageName: node
   linkType: hard
 
@@ -7195,10 +7215,11 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.0.0-beta.24":
-  version: 5.0.0-beta.24
-  resolution: "webpack@npm:5.0.0-beta.24"
+"webpack@npm:5.0.0-beta.25":
+  version: 5.0.0-beta.25
+  resolution: "webpack@npm:5.0.0-beta.25"
   dependencies:
+    "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.45
     "@webassemblyjs/ast": 1.9.0
     "@webassemblyjs/helper-module-context": 1.9.0
@@ -7219,7 +7240,7 @@ fsevents@~2.1.2:
     schema-utils: ^2.5.0
     tapable: ^2.0.0-beta.10
     terser-webpack-plugin: ^3.0.2
-    watchpack: 2.0.0-beta.13
+    watchpack: 2.0.0-beta.14
     webpack-sources: 2.0.0-beta.8
   peerDependencies:
     webpack-cli: "*"
@@ -7228,7 +7249,7 @@ fsevents@~2.1.2:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: a503e96c32caa2f0a8c54da9de942df7f00751109d08777f786233e0dcf1bb6aca6049b050859475433fc224eaa2e8977506b82f37933809ce6f556140261eb4
+  checksum: a9aba254024a3564c16f13e8b460ca629d4e4fc759fe8b6d9f830f5802f677140a2fc7a2a4c4136a12dc0031ff6194771e2de5de3875780eadc8823a5e810f7e
   languageName: node
   linkType: hard
 
