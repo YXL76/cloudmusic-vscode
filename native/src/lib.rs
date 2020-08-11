@@ -48,104 +48,60 @@ impl Status {
 
 static mut STATUS: Status = Status::Stopped(Duration::from_nanos(0));
 
-static mut SINK: Option<rodio::Sink> = None;
-
-struct LoadTask {
-    url: String,
+pub struct Rodio {
+    sink: rodio::Sink,
 }
-
-impl Task for LoadTask {
-    type Output = bool;
-    type Error = bool;
-    type JsEvent = JsUndefined;
-
-    fn perform(&self) -> Result<bool, bool> {
-        let file = File::open(self.url.clone()).unwrap();
-        let source = rodio::Decoder::new(BufReader::new(file)).unwrap();
-        unsafe {
-            STATUS.reset();
-            if let Some(sink) = &SINK {
-                sink.stop();
-            }
-            let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
-            SINK = Some(rodio::Sink::try_new(&handle).unwrap());
-            if let Some(sink) = &SINK {
-                sink.append(source);
-                sink.play();
-                STATUS.play();
-                sink.sleep_until_end();
-            }
-        }
-        Ok(true)
-    }
-
-    fn complete(self, mut cx: TaskContext, _result: Result<bool, bool>) -> JsResult<JsUndefined> {
-        Ok(cx.undefined())
-    }
-}
-
-pub struct Rodio;
 
 impl Rodio {
     #[inline]
-    pub fn play(&self) {
-        unsafe {
-            if let Some(sink) = &SINK {
-                sink.play();
-            }
-            STATUS.play()
+    pub fn load(&mut self, url: &str) -> bool {
+        match File::open(url) {
+            Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
+                Ok(source) => {
+                    self.stop();
+                    let device = rodio::default_output_device().unwrap();
+                    self.sink = rodio::Sink::new(&device);
+                    self.sink.append(source);
+                    self.play();
+                    true
+                }
+                _ => false,
+            },
+            _ => false,
         }
+    }
+
+    #[inline]
+    pub fn play(&self) {
+        self.sink.play();
+        unsafe { STATUS.play() }
     }
 
     #[inline]
     pub fn pause(&self) {
-        unsafe {
-            if let Some(sink) = &SINK {
-                sink.pause();
-            }
-            STATUS.stop()
-        }
+        self.sink.pause();
+        unsafe { STATUS.stop() }
     }
 
     #[inline]
     pub fn stop(&self) {
-        unsafe {
-            if let Some(sink) = &SINK {
-                sink.stop();
-            }
-            STATUS.reset()
-        }
+        self.sink.stop();
+        unsafe { STATUS.reset() }
     }
 
     #[inline]
     pub fn set_volume(&self, volume: f32) {
-        unsafe {
-            if let Some(sink) = &SINK {
-                sink.set_volume(volume);
-            }
-        }
+        self.sink.set_volume(volume);
     }
 
     #[inline]
     pub fn is_paused(&self) -> bool {
-        unsafe {
-            if let Some(sink) = &SINK {
-                sink.is_paused()
-            } else {
-                true
-            }
-        }
+        self.sink.is_paused()
     }
 
     #[inline]
     pub fn empty(&self) -> bool {
-        unsafe {
-            if let Some(sink) = &SINK {
-                sink.empty()
-            } else {
-                true
-            }
-        }
+        self.sink.empty()
     }
 
     #[inline]
@@ -157,31 +113,24 @@ impl Rodio {
 declare_types! {
     pub class JsRodio for Rodio {
         init(_) {
-            let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
-            let sink = rodio::Sink::try_new(&handle).unwrap();
+            let device = rodio::default_output_device().unwrap();
+            let sink = rodio::Sink::new(&device);
             sink.pause();
             unsafe  {
                 STATUS.reset();
             }
-            Ok(Rodio)
+            Ok(Rodio {
+                sink,
+            })
         }
 
         method load(mut cx) {
             let url: String = cx.argument::<JsString>(0)?.value();
-            let cb = cx.argument::<JsFunction>(1)?;
-            let url_clone = url.clone();
             let res = {
-                match File::open(url_clone) {
-                    Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
-                        Ok(_) => {
-                            let task = LoadTask { url };
-                            task.schedule(cb);
-                            true
-                        }
-                        _ => false,
-                    },
-                    _ => false,
-                }
+                let mut this = cx.this();
+                let guard = cx.lock();
+                let mut player = this.borrow_mut(&guard);
+                player.load(&url)
             };
             Ok(cx.boolean(res).upcast())
         }

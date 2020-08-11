@@ -354,7 +354,6 @@
     "gulp-sass": "4.1.0",
     "gulp-typescript": "6.0.0-alpha.1",
     "mocha": "8.1.1",
-    "sass": "1.26.10",
     "ts-loader": "8.0.2",
     "typescript": "3.9.7",
     "vscode-nls-dev": "3.3.2",
