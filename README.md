@@ -105,6 +105,7 @@
 |   artist_desc   |      歌手介绍      |        |
 |   artist_list   |      歌手分类      |        |
 |    artist_mv    |    歌手相关 MV     |   ❌   |
+|  artist_songs   |    歌手所有歌曲    |        |
 |   artist_sub    | 收藏与取消收藏歌手 |        |
 | artist_sublist  |    关注歌手列表    |        |
 | artist_top_song | 歌手热门 50 首歌曲 |        |
@@ -130,6 +131,7 @@
 |    comment_album     |      专辑评论      |        |
 |      comment_dj      |      电台评论      |        |
 |    comment_event     |    获取动态评论    |        |
+|    comment_floor     |      楼层评论      |        |
 |     comment_hot      |      热门评论      |        |
 | comment_hotwall_list |      云村热评      |        |
 |     comment_like     | 点赞与取消点赞评论 |        |
