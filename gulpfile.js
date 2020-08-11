@@ -8,8 +8,6 @@ const typescript = require("typescript");
 const tsProject = ts.createProject("./tsconfig.json", { typescript });
 const filter = require("gulp-filter");
 
-sass.compiler = require("sass");
-
 gulp.task("sass", () => {
   return gulp
     .src("./page/sass/**/*.scss")
