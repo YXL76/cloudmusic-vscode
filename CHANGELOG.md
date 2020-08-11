@@ -6,31 +6,45 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.7.3] - 2020-08-12
+
+### Added
+
+- Media control support (macos)
+
+### Changed
+
+- webview: update `userMusicRanking` style
+
+### Fix
+
+- Macos load error ([#5](https://github.com/YXL76/cloudmusic-vscode/issues/5))
+
 ## [3.7.2] - 2020-08-06
 
-### Change
+### Changed
 
-- bundle `vscode-nls`
+- Bundle `vscode-nls`
 
 ## [3.7.1] - 2020-08-06
 
 ### Fixed
 
-- fix `Cannot find module 'vscode-nls'`
+- Fix `Cannot find module 'vscode-nls'`
 
 ## [3.7.0] - 2020-08-06
 
 ### Added
 
-- i18n: `zh-cn` support
+- I18n: `zh-cn` support
 
 ### Changed
 
-- stop the player when activated
+- Stop the player when activated
 
 ### Fixed
 
-- sign in process
+- Sign in process
 
 ## [3.6.2] - 2020-08-05
 
@@ -40,7 +54,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Fixed
 
-- check if platform is supported
+- Check if platform is supported
 
 ## [3.6.1] - 2020-08-05
 
