@@ -6,6 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.7.4] - 2020-08-12
+
+### Changed
+
+- Webview: modify `userMusicRanking` style
+
+### Fix
+
+- `js` scripts missing
+
 ## [3.7.3] - 2020-08-12
 
 ### Added
@@ -14,7 +24,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Changed
 
-- webview: update `userMusicRanking` style
+- Webview: update `userMusicRanking` style
 
 ### Fix
 
