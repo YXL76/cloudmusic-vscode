@@ -18,6 +18,7 @@ enum Status {
 }
 
 impl Status {
+    #[inline]
     fn elapsed(&self) -> Duration {
         match *self {
             Status::Stopped(d) => d,
@@ -25,18 +26,21 @@ impl Status {
         }
     }
 
+    #[inline]
     fn stop(&mut self) {
         if let Status::Playing(start, extra) = *self {
             *self = Status::Stopped(start.elapsed() + extra)
         }
     }
 
+    #[inline]
     fn play(&mut self) {
         if let Status::Stopped(duration) = *self {
             *self = Status::Playing(Instant::now(), duration)
         }
     }
 
+    #[inline]
     fn reset(&mut self) {
         *self = Status::Stopped(Duration::from_nanos(0));
     }
@@ -49,6 +53,7 @@ pub struct Rodio {
 }
 
 impl Rodio {
+    #[inline]
     pub fn load(&mut self, url: &str) -> bool {
         match File::open(url) {
             Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
@@ -64,33 +69,40 @@ impl Rodio {
         }
     }
 
+    #[inline]
     pub fn play(&mut self) {
         self.sink.play();
         unsafe { STATUS.play() }
     }
 
+    #[inline]
     pub fn pause(&mut self) {
         self.sink.pause();
         unsafe { STATUS.stop() }
     }
 
+    #[inline]
     pub fn stop(&mut self) {
         self.sink.stop();
         unsafe { STATUS.reset() }
     }
 
+    #[inline]
     pub fn set_volume(&self, volume: f32) {
         self.sink.set_volume(volume);
     }
 
+    #[inline]
     pub fn is_paused(&self) -> bool {
         self.sink.is_paused()
     }
 
+    #[inline]
     pub fn empty(&self) -> bool {
         self.sink.empty()
     }
 
+    #[inline]
     pub fn position(&self) -> u128 {
         unsafe { STATUS.elapsed().as_millis() }
     }
@@ -207,6 +219,7 @@ pub struct Miniaudio {
 }
 
 impl Miniaudio {
+    #[inline]
     pub fn load(&mut self, url: &str) -> bool {
         match miniaudio::Decoder::from_file(url, None) {
             Ok(mut decoder) => {
@@ -249,6 +262,7 @@ impl Miniaudio {
         }
     }
 
+    #[inline]
     pub fn play(&mut self) -> bool {
         unsafe {
             match STATUS {
@@ -261,10 +275,12 @@ impl Miniaudio {
         }
     }
 
+    #[inline]
     pub fn pause(&mut self) {
         unsafe { STATUS.stop() }
     }
 
+    #[inline]
     pub fn stop(&mut self) {
         unsafe {
             STATUS.reset();
@@ -273,10 +289,12 @@ impl Miniaudio {
         self.device.stop().unwrap_or(());
     }
 
+    #[inline]
     pub fn set_volume(&self, volume: f32) {
         self.device.set_master_volume(volume).unwrap_or(());
     }
 
+    #[inline]
     pub fn is_paused(&self) -> bool {
         unsafe {
             match STATUS {
@@ -286,10 +304,12 @@ impl Miniaudio {
         }
     }
 
+    #[inline]
     pub fn empty(&mut self) -> bool {
         unsafe { EMPTY }
     }
 
+    #[inline]
     pub fn position(&self) -> u128 {
         unsafe { STATUS.elapsed().as_millis() }
     }
