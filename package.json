@@ -362,7 +362,7 @@
     "webpack-cli": "4.0.0-beta.8"
   },
   "dependencies": {
-    "NeteaseCloudMusicApi": "^3.37.2",
+    "NeteaseCloudMusicApi": "^3.38.0",
     "array-unsort": "^1.1.5",
     "cacache": "^15.0.5",
     "del": "^5.1.0",
