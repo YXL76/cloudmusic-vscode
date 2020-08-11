@@ -1,7 +1,7 @@
 use neon::prelude::*;
 use std::{
     fs::File,
-    io::BufReader
+    io::BufReader,
     sync::{mpsc, Arc, Mutex},
     thread,
     time::{Duration, Instant},
@@ -53,11 +53,9 @@ impl Rodio {
         match File::open(url) {
             Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
                 Ok(source) => {
-                    self.stop();
-                    let device = rodio::default_output_device().unwrap();
-                    self.sink = rodio::Sink::new(&device);
+                    self.sink.stop();
                     self.sink.append(source);
-                    self.play();
+                    self.sink.play();
                     true
                 }
                 _ => false,
@@ -101,8 +99,8 @@ impl Rodio {
 declare_types! {
     pub class JsRodio for Rodio {
         init(_) {
-            let device = rodio::default_output_device().unwrap();
-            let sink = rodio::Sink::new(&device);
+            let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
+            let sink = rodio::Sink::try_new(&handle).unwrap();
             sink.pause();
             unsafe  {
                 STATUS.reset();
