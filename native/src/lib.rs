@@ -59,8 +59,9 @@ impl Rodio {
             Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
                 Ok(source) => {
                     self.sink.stop();
+                    let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
+                    self.sink = rodio::Sink::try_new(&handle).unwrap();
                     self.sink.append(source);
-                    self.sink.play();
                     true
                 }
                 _ => false,
