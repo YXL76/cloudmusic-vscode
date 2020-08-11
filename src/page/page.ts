@@ -1,6 +1,6 @@
 import * as nls from "vscode-nls";
-import { ExtensionContext, Uri, WebviewPanel } from "vscode";
-import { SongsItem } from "../constant/type";
+import { Uri, ViewColumn, window } from "vscode";
+import { apiUserRecord } from "../util/api";
 import { join } from "path";
 
 nls.config({
@@ -8,49 +8,49 @@ nls.config({
   bundleFormat: nls.BundleFormat.standalone,
 })();
 
-const localize = nls.loadMessageBundle();
+// const localize = nls.loadMessageBundle();
 
-export function userMusicRanking(
-  context: ExtensionContext,
-  panel: WebviewPanel,
-  songs: { count: number; song: SongsItem }[]
-): string {
-  const chartCss = panel.webview.asWebviewUri(
-    Uri.file(join(context.extensionPath, "page", "css", "Chart.min.css"))
-  );
+export class WebView {
+  constructor(private extensionPath: string) {}
 
-  const chartJs = panel.webview.asWebviewUri(
-    Uri.file(join(context.extensionPath, "page", "js", "Chart.bundle.min.js"))
-  );
+  private file2uri(...path: string[]) {
+    return Uri.file(join(this.extensionPath, "page", ...path));
+  }
 
-  const data = {
-    labels: songs.map(({ song }) => song.name),
-    datasets: [
-      {
-        label: localize("playcount", "Play Count"),
-        borderWidth: 1,
-        data: songs.map(({ count }) => count),
-      },
-    ],
-  };
+  async userMusicRanking(
+    type: string,
+    title: string,
+    queryType: 0 | 1
+  ): Promise<void> {
+    const panel = window.createWebviewPanel(type, title, ViewColumn.One, {
+      enableScripts: true,
+      retainContextWhenHidden: true,
+    });
 
-  return `
+    const css = panel.webview.asWebviewUri(
+      this.file2uri("css", "userMusicRanking.css")
+    );
+
+    const js = panel.webview.asWebviewUri(
+      this.file2uri("js", "userMusicRanking.js")
+    );
+
+    panel.webview.html = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link href="${chartCss}" />
+    <meta charset="UTF-8">
+    <title>${title}</title>
+    <link rel="stylesheet" href="${css}" />
 </head>
 <body>
-  <canvas id="myChart" width="1024" height="2048"></canvas>
-  <script src="${chartJs}"></script>
-  <script>
-    const ctx = document.getElementById("myChart");
-    const myBarChart = new Chart(ctx, {
-      type: "horizontalBar",
-      data: ${JSON.stringify(data)},
-    });
-  </script>
+<div class="list" id="list">
+</div>
+<script src="${js}"></script>
 </body>
 </html>
 `;
+
+    panel.webview.postMessage(await apiUserRecord(queryType));
+  }
 }

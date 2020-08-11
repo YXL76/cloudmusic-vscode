@@ -609,7 +609,7 @@ export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
 
 export async function apiUserRecord(
   type: 0 | 1
-): Promise<{ count: number; song: SongsItem }[]> {
+): Promise<(SongsItem & { count: number })[]> {
   try {
     const { status, body } = await user_record({
       uid: AccountManager.uid,
@@ -623,7 +623,7 @@ export async function apiUserRecord(
     const data = type ? body.weekData : body.allData;
     return data.map(({ playCount, song }) => ({
       count: playCount,
-      song: solveSongItem(song),
+      ...solveSongItem(song),
     }));
   } catch {}
   return [];

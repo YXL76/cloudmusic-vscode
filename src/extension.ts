@@ -11,13 +11,7 @@ import {
   SETTING_DIR,
   TMP_DIR,
 } from "./constant/setting";
-import {
-  ExtensionContext,
-  QuickPickItem,
-  ViewColumn,
-  commands,
-  window,
-} from "vscode";
+import { ExtensionContext, QuickPickItem, commands, window } from "vscode";
 import { LyricCache, MusicCache } from "./util/cache";
 import { PersonalFm, lyric } from "./state/play";
 import {
@@ -43,7 +37,6 @@ import {
   apiSearchArtist,
   apiSearchHotDetail,
   apiSearchSingle,
-  apiUserRecord,
 } from "./util/api";
 import {
   existsSync,
@@ -58,10 +51,10 @@ import { ButtonManager } from "./manager/buttonManager";
 import { IsLike } from "./state/like";
 import { LoggedIn } from "./state/login";
 import { NativeEventEmitter } from "./constant/type";
+import { WebView } from "./page/page";
 import { join } from "path";
 import { lock } from "./state/lock";
 import { player } from "./util/player";
-import { userMusicRanking } from "./page/page";
 const del = require("del");
 
 nls.config({
@@ -260,6 +253,9 @@ export function activate(context: ExtensionContext): void {
     LoggedIn.set(false);
   });
 
+  // init webview
+  const webview = new WebView(context.extensionPath);
+
   // account command
   const account = commands.registerCommand("cloudmusic.account", async () => {
     const pick = await window.showQuickPick([
@@ -299,20 +295,11 @@ export function activate(context: ExtensionContext): void {
         commands.executeCommand("cloudmusic.personalFM");
         break;
       case 2:
-        const userMusicRankingWeekly = window.createWebviewPanel(
+        webview.userMusicRanking(
           `${pick.id}`,
           `${pick.label} (${pick.description})`,
-          ViewColumn.One,
-          {
-            enableScripts: true,
-            retainContextWhenHidden: true,
-          }
-        );
-        userMusicRankingWeekly.webview.html = userMusicRanking(
-          context,
-          userMusicRankingWeekly,
           // @ts-ignore
-          await apiUserRecord(pick.queryType)
+          pick.queryType
         );
         break;
       case 3:
