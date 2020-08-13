@@ -48,7 +48,7 @@ jobs:
 
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: nightly
+          toolchain: 1.44.1
           override: true
       - uses: actions/setup-node@v1
         with:
