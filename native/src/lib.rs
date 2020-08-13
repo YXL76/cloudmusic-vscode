@@ -48,9 +48,9 @@ impl Status {
 
 static mut STATUS: Status = Status::Stopped(Duration::from_nanos(0));
 
-pub struct Rodio {
-    sink: rodio::Sink,
-}
+static mut SINK: Option<rodio::Sink> = None;
+
+pub struct Rodio;
 
 impl Rodio {
     #[inline]
@@ -59,10 +59,15 @@ impl Rodio {
             Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
                 Ok(source) => {
                     self.stop();
-                    let device = rodio::default_output_device().unwrap();
-                    self.sink = rodio::Sink::new(&device);
-                    self.sink.append(source);
-                    self.play();
+                    thread::spawn(|| unsafe {
+                        let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
+                        SINK = Some(rodio::Sink::try_new(&handle).unwrap());
+                        if let Some(sink) = &SINK {
+                            sink.append(source);
+                            STATUS.play();
+                            sink.sleep_until_end();
+                        }
+                    });
                     true
                 }
                 _ => false,
@@ -73,35 +78,63 @@ impl Rodio {
 
     #[inline]
     pub fn play(&self) {
-        self.sink.play();
-        unsafe { STATUS.play() }
+        unsafe {
+            if let Some(sink) = &SINK {
+                sink.play();
+                STATUS.play()
+            }
+        }
     }
 
     #[inline]
     pub fn pause(&self) {
-        self.sink.pause();
-        unsafe { STATUS.stop() }
+        unsafe {
+            if let Some(sink) = &SINK {
+                sink.pause();
+                STATUS.stop()
+            }
+        }
     }
 
     #[inline]
     pub fn stop(&self) {
-        self.sink.stop();
-        unsafe { STATUS.reset() }
+        unsafe {
+            if let Some(sink) = &SINK {
+                drop(sink);
+            }
+            STATUS.reset()
+        }
     }
 
     #[inline]
     pub fn set_volume(&self, volume: f32) {
-        self.sink.set_volume(volume);
+        unsafe {
+            if let Some(sink) = &SINK {
+                sink.set_volume(volume);
+            }
+        }
     }
 
     #[inline]
     pub fn is_paused(&self) -> bool {
-        self.sink.is_paused()
+        unsafe {
+            if let Some(sink) = &SINK {
+                sink.is_paused()
+            } else {
+                true
+            }
+        }
     }
 
     #[inline]
     pub fn empty(&self) -> bool {
-        self.sink.empty()
+        unsafe {
+            if let Some(sink) = &SINK {
+                sink.empty()
+            } else {
+                true
+            }
+        }
     }
 
     #[inline]
@@ -113,15 +146,13 @@ impl Rodio {
 declare_types! {
     pub class JsRodio for Rodio {
         init(_) {
-            let device = rodio::default_output_device().unwrap();
-            let sink = rodio::Sink::new(&device);
-            sink.pause();
             unsafe  {
+                if let Some(sink) = &SINK {
+                    drop(sink);
+                }
                 STATUS.reset();
             }
-            Ok(Rodio {
-                sink,
-            })
+            Ok(Rodio)
         }
 
         method load(mut cx) {

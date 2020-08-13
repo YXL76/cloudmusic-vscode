@@ -15,8 +15,8 @@ neon-build = "0.4.0"
 
 [dependencies]
 neon = "0.4.0"
-rodio = { git = "https://github.com/YXL76/rodio", branch = "dev" }
-miniaudio = "0.10.0"
+rodio = { git = "https://github.com/RustAudio/rodio", features = ["flac", "mp3"] }
+miniaudio = { version = "0.10.0", features = ["ma-no-wav"] }
 # libmpv = {version = "2.0.0", features = ["protocols"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
