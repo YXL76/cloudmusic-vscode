@@ -181,7 +181,6 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
           setTimeout(() => {
             lock.playerLoad = false;
           }, 2000);
-          player.stop();
           window.showErrorMessage(localize("error.network", "Network Error"));
         });
     }
