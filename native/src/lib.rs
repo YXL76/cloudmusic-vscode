@@ -48,9 +48,20 @@ impl Status {
 
 static mut STATUS: Status = Status::Stopped(Duration::from_nanos(0));
 
-static mut SINK: Option<rodio::Sink> = None;
+#[derive(Clone)]
+enum ControlEvrnt {
+    Play,
+    Pause,
+    Stop,
+    Volume(f32),
+    IsPause,
+    Empty,
+}
 
-pub struct Rodio;
+pub struct Rodio {
+    control_tx: mpsc::Sender<ControlEvrnt>,
+    info_rx: mpsc::Receiver<bool>,
+}
 
 impl Rodio {
     #[inline]
@@ -59,15 +70,52 @@ impl Rodio {
             Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
                 Ok(source) => {
                     self.stop();
-                    thread::spawn(|| unsafe {
+
+                    let (control_tx, control_rx) = mpsc::channel();
+                    let (info_tx, info_rx) = mpsc::channel();
+                    self.control_tx = control_tx;
+                    self.info_rx = info_rx;
+
+                    thread::spawn(move || {
                         let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
-                        SINK = Some(rodio::Sink::try_new(&handle).unwrap());
-                        if let Some(sink) = &SINK {
-                            sink.append(source);
-                            STATUS.play();
-                            sink.sleep_until_end();
+                        let sink = rodio::Sink::try_new(&handle).unwrap();
+                        sink.append(source);
+                        let _ = info_tx.send(true);
+                        loop {
+                            match control_rx.recv() {
+                                Ok(ControlEvrnt::Stop) => {
+                                    drop(sink);
+                                    break;
+                                }
+                                Ok(ControlEvrnt::Play) => sink.play(),
+                                Ok(ControlEvrnt::Pause) => sink.pause(),
+                                Ok(ControlEvrnt::Volume(level)) => sink.set_volume(level),
+                                Ok(ControlEvrnt::IsPause) => {
+                                    let _ = info_tx.send(sink.is_paused());
+                                }
+                                Ok(ControlEvrnt::Empty) => {
+                                    let empty = sink.empty();
+                                    let _ = info_tx.send(empty);
+                                    if empty {
+                                        drop(sink);
+                                        break;
+                                    }
+                                }
+                                _ => {
+                                    if sink.empty() {
+                                        drop(sink);
+                                        break;
+                                    }
+                                    thread::sleep(Duration::from_millis(64));
+                                }
+                            }
                         }
                     });
+
+                    let _ = self.info_rx.recv();
+                    unsafe {
+                        STATUS.play();
+                    }
                     true
                 }
                 _ => false,
@@ -78,62 +126,44 @@ impl Rodio {
 
     #[inline]
     pub fn play(&self) {
-        unsafe {
-            if let Some(sink) = &SINK {
-                sink.play();
-                STATUS.play()
-            }
-        }
+        let _ = self.control_tx.send(ControlEvrnt::Play);
+        unsafe { STATUS.play() }
     }
 
     #[inline]
     pub fn pause(&self) {
-        unsafe {
-            if let Some(sink) = &SINK {
-                sink.pause();
-                STATUS.stop()
-            }
-        }
+        let _ = self.control_tx.send(ControlEvrnt::Pause);
+        unsafe { STATUS.stop() }
     }
 
     #[inline]
     pub fn stop(&self) {
-        unsafe {
-            if let Some(sink) = &SINK {
-                drop(sink);
-            }
-            STATUS.reset()
-        }
+        let _ = self.control_tx.send(ControlEvrnt::Stop);
+        unsafe { STATUS.reset() }
     }
 
     #[inline]
-    pub fn set_volume(&self, volume: f32) {
-        unsafe {
-            if let Some(sink) = &SINK {
-                sink.set_volume(volume);
-            }
-        }
+    pub fn set_volume(&self, level: f32) {
+        let _ = self.control_tx.send(ControlEvrnt::Volume(level));
     }
 
     #[inline]
     pub fn is_paused(&self) -> bool {
-        unsafe {
-            if let Some(sink) = &SINK {
-                sink.is_paused()
-            } else {
-                true
-            }
+        let _ = self.control_tx.send(ControlEvrnt::IsPause);
+        if let Ok(res) = self.info_rx.recv_timeout(Duration::from_millis(128)) {
+            res
+        } else {
+            true
         }
     }
 
     #[inline]
     pub fn empty(&self) -> bool {
-        unsafe {
-            if let Some(sink) = &SINK {
-                sink.empty()
-            } else {
-                true
-            }
+        let _ = self.control_tx.send(ControlEvrnt::Empty);
+        if let Ok(res) = self.info_rx.recv_timeout(Duration::from_millis(128)) {
+            res
+        } else {
+            true
         }
     }
 
@@ -146,13 +176,12 @@ impl Rodio {
 declare_types! {
     pub class JsRodio for Rodio {
         init(_) {
-            unsafe  {
-                if let Some(sink) = &SINK {
-                    drop(sink);
-                }
-                STATUS.reset();
-            }
-            Ok(Rodio)
+            let (control_tx, _) = mpsc::channel();
+            let (_, info_rx) = mpsc::channel();
+            Ok(Rodio {
+                control_tx,
+                info_rx,
+            })
         }
 
         method load(mut cx) {
