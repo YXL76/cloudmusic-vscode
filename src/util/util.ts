@@ -165,12 +165,12 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
       }
       const tmpFilePath = join(TMP_DIR, `${id}`);
       const tmpFile = createWriteStream(tmpFilePath);
-      tmpFile.on("pipe", () => {
-        player.load(tmpFilePath, id, pid, dt);
-      });
 
       http
         .get(url, (res) => {
+          res.once("data", () => {
+            player.load(tmpFilePath, id, pid, dt);
+          });
           res.pipe(tmpFile);
           tmpFile.on("finish", () => {
             tmpFile.close();
