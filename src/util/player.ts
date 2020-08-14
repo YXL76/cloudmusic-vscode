@@ -86,8 +86,8 @@ class AudioPlayer implements Player {
         this.time = Date.now();
 
         const diff = this.time - pTime;
-        if (diff > 60000 && this.dt > 60000) {
-          apiScrobble(this.id, this.pid, Math.min(diff, this.dt) / 1000);
+        if (diff > 60000 && this.dt > 60) {
+          apiScrobble(this.id, this.pid, Math.min(diff / 1000, this.dt));
         }
 
         this.id = id;

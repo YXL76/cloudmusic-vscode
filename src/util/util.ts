@@ -115,7 +115,7 @@ export function solveSongItem(item: SongsItem): SongsItem {
   return {
     name,
     id,
-    dt: dt,
+    dt: dt / 1000,
     alia,
     ar,
     al,
@@ -127,7 +127,7 @@ export function solveAnotherSongItem(item: AnotherSongItem): SongsItem {
   return {
     name,
     id,
-    dt: duration,
+    dt: duration / 1000,
     alia: alias,
     ar: artists.map(({ id, name }) => ({ id, name })),
     al: {
