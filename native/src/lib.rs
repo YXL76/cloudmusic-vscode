@@ -48,8 +48,18 @@ impl Status {
 
 static mut STATUS: Status = Status::Stopped(Duration::from_nanos(0));
 
+#[derive(Clone)]
+enum ControlEvrnt {
+    Play,
+    Pause,
+    Stop,
+    Volume(f32),
+    Empty,
+}
+
 pub struct Rodio {
-    sink: rodio::Sink,
+    control_tx: mpsc::Sender<ControlEvrnt>,
+    info_rx: mpsc::Receiver<bool>,
 }
 
 impl Rodio {
@@ -59,10 +69,37 @@ impl Rodio {
             Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
                 Ok(source) => {
                     self.stop();
-                    let device = rodio::default_output_device().unwrap();
-                    self.sink = rodio::Sink::new(&device);
-                    self.sink.append(source);
-                    self.play();
+
+                    let (control_tx, control_rx) = mpsc::channel();
+                    let (info_tx, info_rx) = mpsc::channel();
+
+                    thread::spawn(move || {
+                        let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
+                        let sink = rodio::Sink::try_new(&handle).unwrap();
+                        sink.append(source);
+                        let _ = info_tx.send(true);
+                        loop {
+                            match control_rx.recv() {
+                                Ok(ControlEvrnt::Play) => sink.play(),
+                                Ok(ControlEvrnt::Pause) => sink.pause(),
+                                Ok(ControlEvrnt::Volume(level)) => sink.set_volume(level),
+                                Ok(ControlEvrnt::Empty) => {
+                                    let _ = info_tx.send(sink.empty());
+                                }
+                                _ => {
+                                    drop(sink);
+                                    break;
+                                }
+                            }
+                        }
+                    });
+
+                    self.control_tx = control_tx;
+                    self.info_rx = info_rx;
+                    let _ = self.info_rx.recv();
+                    unsafe {
+                        STATUS.play();
+                    }
                     true
                 }
                 _ => false,
@@ -73,35 +110,35 @@ impl Rodio {
 
     #[inline]
     pub fn play(&self) {
-        self.sink.play();
+        let _ = self.control_tx.send(ControlEvrnt::Play);
         unsafe { STATUS.play() }
     }
 
     #[inline]
     pub fn pause(&self) {
-        self.sink.pause();
+        let _ = self.control_tx.send(ControlEvrnt::Pause);
         unsafe { STATUS.stop() }
     }
 
     #[inline]
     pub fn stop(&self) {
-        self.sink.stop();
+        let _ = self.control_tx.send(ControlEvrnt::Stop);
         unsafe { STATUS.reset() }
     }
 
     #[inline]
-    pub fn set_volume(&self, volume: f32) {
-        self.sink.set_volume(volume);
-    }
-
-    #[inline]
-    pub fn is_paused(&self) -> bool {
-        self.sink.is_paused()
+    pub fn set_volume(&self, level: f32) {
+        let _ = self.control_tx.send(ControlEvrnt::Volume(level));
     }
 
     #[inline]
     pub fn empty(&self) -> bool {
-        self.sink.empty()
+        if let Ok(_) = self.control_tx.send(ControlEvrnt::Empty) {
+            if let Ok(res) = self.info_rx.recv_timeout(Duration::from_millis(128)) {
+                return res;
+            }
+        }
+        true
     }
 
     #[inline]
@@ -113,14 +150,11 @@ impl Rodio {
 declare_types! {
     pub class JsRodio for Rodio {
         init(_) {
-            let device = rodio::default_output_device().unwrap();
-            let sink = rodio::Sink::new(&device);
-            sink.pause();
-            unsafe  {
-                STATUS.reset();
-            }
+            let (control_tx, _) = mpsc::channel();
+            let (_, info_rx) = mpsc::channel();
             Ok(Rodio {
-                sink,
+                control_tx,
+                info_rx,
             })
         }
 
@@ -180,16 +214,6 @@ declare_types! {
                 player.set_volume(level as f32);
             };
             Ok(cx.undefined().upcast())
-        }
-
-        method isPaused(mut cx) {
-            let res = {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.is_paused()
-            };
-            Ok(cx.boolean(res).upcast())
         }
 
         method empty(mut cx) {
@@ -297,16 +321,6 @@ impl Miniaudio {
     }
 
     #[inline]
-    pub fn is_paused(&self) -> bool {
-        unsafe {
-            match STATUS {
-                Status::Stopped(_) => true,
-                _ => false,
-            }
-        }
-    }
-
-    #[inline]
     pub fn empty(&self) -> bool {
         unsafe { EMPTY }
     }
@@ -381,16 +395,6 @@ declare_types! {
                 player.set_volume(level as f32);
             };
             Ok(cx.undefined().upcast())
-        }
-
-        method isPaused(mut cx) {
-            let res = {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.is_paused()
-            };
-            Ok(cx.boolean(res).upcast())
         }
 
         method empty(mut cx) {
@@ -493,15 +497,6 @@ impl Libmpv {
         self.mpv.set_property("volume", volume).unwrap_or(());
     }
 
-    pub fn is_paused(&self) -> bool {
-        unsafe {
-            match STATUS {
-                Status::Stopped(_) => true,
-                _ => false,
-            }
-        }
-    }
-
     pub fn empty(&mut self) -> bool {
         unsafe { EMPTY }
     }
@@ -587,16 +582,6 @@ declare_types! {
                 player.set_volume(level as i64);
             };
             Ok(cx.undefined().upcast())
-        }
-
-        method isPaused(mut cx) {
-            let res = {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.is_paused()
-            };
-            Ok(cx.boolean(res).upcast())
         }
 
         method empty(mut cx) {
