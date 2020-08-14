@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.7.5] - 2020-08-14
+
+### Changed
+
+- Better network error handling
+- Upgrade `rodio`
+
 ## [3.7.4] - 2020-08-12
 
 ### Changed
