@@ -368,6 +368,7 @@
     "del": "^5.1.0",
     "lru-cache": "^6.0.0",
     "node-abi": "^2.18.0",
+    "node-downloader-helper": "^1.0.13",
     "vscode-nls": "^4.1.2"
   }
 }

@@ -1511,6 +1511,7 @@ __metadata:
     lru-cache: ^6.0.0
     mocha: 8.1.1
     node-abi: ^2.18.0
+    node-downloader-helper: ^1.0.13
     ts-loader: 8.0.2
     typescript: 3.9.7
     vscode-nls: ^4.1.2
@@ -4930,6 +4931,15 @@ fsevents@~2.1.2:
   dependencies:
     semver: ^5.4.1
   checksum: 09c46e40b21f5112af39c2166c3a45a47e5bfbe9cb86f51f135e22ef107c63f9b757419e1558052e09cf17c142133a102dc69294845be21611a1639f1ec71801
+  languageName: node
+  linkType: hard
+
+"node-downloader-helper@npm:^1.0.13":
+  version: 1.0.13
+  resolution: "node-downloader-helper@npm:1.0.13"
+  bin:
+    ndh: bin/ndh
+  checksum: 345f98374b770e6a61197d86bdf5b400e1b8cba11f2a5a13bd99065875ffbc61c77d6935d501427817b6ae2c6bc053b616fa1081cb4e98986fb9cc1cd3b8c92b
   languageName: node
   linkType: hard
 
