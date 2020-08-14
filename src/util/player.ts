@@ -57,7 +57,12 @@ class AudioPlayer implements Player {
           Playing.set(false);
           commands.executeCommand("cloudmusic.next");
         } else {
-          setPosition(this.player.position());
+          const pos = this.player.position();
+          setPosition(pos);
+          if (pos > this.dt + 8) {
+            Playing.set(false);
+            commands.executeCommand("cloudmusic.next");
+          }
         }
       }
     }, 1000);
