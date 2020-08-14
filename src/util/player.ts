@@ -52,7 +52,7 @@ class AudioPlayer implements Player {
     }
 
     setInterval(() => {
-      if (!this.player.isPaused()) {
+      if (Playing.get()) {
         if (this.player.empty()) {
           Playing.set(false);
           commands.executeCommand("cloudmusic.next");
