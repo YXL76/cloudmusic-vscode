@@ -124,7 +124,9 @@ export function activate(context: ExtensionContext): void {
 
   commands.registerCommand("cloudmusic.clearQueue", () => {
     lockQueue(async () => {
-      stop();
+      if (!PersonalFm.get()) {
+        stop();
+      }
       queueProvider.clear();
       queueProvider.refresh();
     });
