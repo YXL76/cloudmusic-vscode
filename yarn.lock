@@ -888,10 +888,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"array-unsort@npm:^1.1.5":
-  version: 1.1.5
-  resolution: "array-unsort@npm:1.1.5"
-  checksum: 9de49adbe9905307524566f37bf85e58c79855669c6d25be936a964c56ec64dc83ef8a90795b5fee86836a28cdfff96ffae878f76401f075e03e90839a0c54ab
+"array-unsort@npm:^1.1.6":
+  version: 1.1.6
+  resolution: "array-unsort@npm:1.1.6"
+  checksum: e45dc1dc0c995c36ac054825b90e2f2dfb08c17d2843f4e1baf4401b1df0f0d50ddd630a467adf66e2bd38df09fd4aaaabded92a4eba4f93ea87c7c5c19988ba
   languageName: node
   linkType: hard
 
@@ -1498,7 +1498,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 3.9.0
     "@typescript-eslint/parser": 3.9.0
     NeteaseCloudMusicApi: ^3.38.0
-    array-unsort: ^1.1.5
+    array-unsort: ^1.1.6
     bluebird: 3.7.2
     cacache: ^15.0.5
     del: ^5.1.0
