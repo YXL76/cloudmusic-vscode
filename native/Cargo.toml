@@ -15,7 +15,7 @@ neon-build = "0.4.0"
 
 [dependencies]
 neon = "0.4.0"
-rodio = { git = "https://github.com/stevebob/rodio", features = ["flac", "mp3"], branch = "fix-frame-drop-stack-overflow" }
+rodio = { git = "https://github.com/YXL76/rodio", features = ["flac", "mp3"], branch = "dev" }
 miniaudio = { version = "0.10.0", features = ["ma-no-wav"] }
 # libmpv = {version = "2.0.0", features = ["protocols"] }
 

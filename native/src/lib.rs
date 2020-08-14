@@ -54,7 +54,6 @@ enum ControlEvrnt {
     Pause,
     Stop,
     Volume(f32),
-    IsPause,
     Empty,
 }
 
@@ -73,8 +72,6 @@ impl Rodio {
 
                     let (control_tx, control_rx) = mpsc::channel();
                     let (info_tx, info_rx) = mpsc::channel();
-                    self.control_tx = control_tx;
-                    self.info_rx = info_rx;
 
                     thread::spawn(move || {
                         let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
@@ -83,35 +80,22 @@ impl Rodio {
                         let _ = info_tx.send(true);
                         loop {
                             match control_rx.recv() {
-                                Ok(ControlEvrnt::Stop) => {
-                                    drop(sink);
-                                    break;
-                                }
                                 Ok(ControlEvrnt::Play) => sink.play(),
                                 Ok(ControlEvrnt::Pause) => sink.pause(),
                                 Ok(ControlEvrnt::Volume(level)) => sink.set_volume(level),
-                                Ok(ControlEvrnt::IsPause) => {
-                                    let _ = info_tx.send(sink.is_paused());
-                                }
                                 Ok(ControlEvrnt::Empty) => {
-                                    let empty = sink.empty();
-                                    let _ = info_tx.send(empty);
-                                    if empty {
-                                        drop(sink);
-                                        break;
-                                    }
+                                    let _ = info_tx.send(sink.empty());
                                 }
                                 _ => {
-                                    if sink.empty() {
-                                        drop(sink);
-                                        break;
-                                    }
-                                    thread::sleep(Duration::from_millis(64));
+                                    drop(sink);
+                                    break;
                                 }
                             }
                         }
                     });
 
+                    self.control_tx = control_tx;
+                    self.info_rx = info_rx;
                     let _ = self.info_rx.recv();
                     unsafe {
                         STATUS.play();
@@ -148,23 +132,13 @@ impl Rodio {
     }
 
     #[inline]
-    pub fn is_paused(&self) -> bool {
-        let _ = self.control_tx.send(ControlEvrnt::IsPause);
-        if let Ok(res) = self.info_rx.recv_timeout(Duration::from_millis(128)) {
-            res
-        } else {
-            true
-        }
-    }
-
-    #[inline]
     pub fn empty(&self) -> bool {
-        let _ = self.control_tx.send(ControlEvrnt::Empty);
-        if let Ok(res) = self.info_rx.recv_timeout(Duration::from_millis(128)) {
-            res
-        } else {
-            true
+        if let Ok(_) = self.control_tx.send(ControlEvrnt::Empty) {
+            if let Ok(res) = self.info_rx.recv_timeout(Duration::from_millis(128)) {
+                return res;
+            }
         }
+        true
     }
 
     #[inline]
@@ -240,16 +214,6 @@ declare_types! {
                 player.set_volume(level as f32);
             };
             Ok(cx.undefined().upcast())
-        }
-
-        method isPaused(mut cx) {
-            let res = {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.is_paused()
-            };
-            Ok(cx.boolean(res).upcast())
         }
 
         method empty(mut cx) {
@@ -357,16 +321,6 @@ impl Miniaudio {
     }
 
     #[inline]
-    pub fn is_paused(&self) -> bool {
-        unsafe {
-            match STATUS {
-                Status::Stopped(_) => true,
-                _ => false,
-            }
-        }
-    }
-
-    #[inline]
     pub fn empty(&self) -> bool {
         unsafe { EMPTY }
     }
@@ -441,16 +395,6 @@ declare_types! {
                 player.set_volume(level as f32);
             };
             Ok(cx.undefined().upcast())
-        }
-
-        method isPaused(mut cx) {
-            let res = {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.is_paused()
-            };
-            Ok(cx.boolean(res).upcast())
         }
 
         method empty(mut cx) {
@@ -553,15 +497,6 @@ impl Libmpv {
         self.mpv.set_property("volume", volume).unwrap_or(());
     }
 
-    pub fn is_paused(&self) -> bool {
-        unsafe {
-            match STATUS {
-                Status::Stopped(_) => true,
-                _ => false,
-            }
-        }
-    }
-
     pub fn empty(&mut self) -> bool {
         unsafe { EMPTY }
     }
@@ -647,16 +582,6 @@ declare_types! {
                 player.set_volume(level as i64);
             };
             Ok(cx.undefined().upcast())
-        }
-
-        method isPaused(mut cx) {
-            let res = {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.is_paused()
-            };
-            Ok(cx.boolean(res).upcast())
         }
 
         method empty(mut cx) {

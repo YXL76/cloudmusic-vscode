@@ -164,8 +164,7 @@ dependencies = [
 [[package]]
 name = "cpal"
 version = "0.12.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "be4410231e181e24e3e4612dfca601601e40942003e6a52a12d9d80f19fd9737"
+source = "git+https://github.com/RustAudio/cpal#65584037fe5ad78183db0ce420e0b455cef9923b"
 dependencies = [
  "alsa",
  "core-foundation-sys",
@@ -497,7 +496,7 @@ checksum = "26412eb97c6b088a6997e05f69403a802a92d520de2f8e63c2b65f9e0f47c4e8"
 [[package]]
 name = "rodio"
 version = "0.11.0"
-source = "git+https://github.com/stevebob/rodio?branch=fix-frame-drop-stack-overflow#b1606eea2b1c54db622dc00463e5e8c284fffd87"
+source = "git+https://github.com/YXL76/rodio?branch=dev#7881e606a6997f1afffec9dd1c99ee999692f2da"
 dependencies = [
  "claxon",
  "cpal",
