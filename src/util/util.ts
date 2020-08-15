@@ -23,6 +23,7 @@ import { AccountManager } from "../manager/accountManager";
 import { ButtonManager } from "../manager/buttonManager";
 import { IsLike } from "../state/like";
 import { MusicCache } from "../util/cache";
+import { PersonalFm } from "../state/play";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 import { TreeItemCollapsibleState } from "vscode";
 import { join } from "path";
@@ -159,7 +160,9 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
     if (!existsSync(tmpFilePath)) {
       download(url, tmpFilePath, (_, res) => {
         if (res) {
-          MusicCache.put(idString, tmpFilePath, md5);
+          if (!PersonalFm.get()) {
+            MusicCache.put(idString, tmpFilePath, md5);
+          }
         } else {
           window.showErrorMessage(localize("error.network", "Network Error"));
         }

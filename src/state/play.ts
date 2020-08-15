@@ -116,7 +116,9 @@ export async function setPosition(newValue: number): Promise<void> {
       const tmpFilePath = join(TMP_DIR, idString);
       download(url, tmpFilePath, (_, res) => {
         if (res) {
-          MusicCache.put(idString, tmpFilePath, md5);
+          if (!PersonalFm.get()) {
+            MusicCache.put(idString, tmpFilePath, md5);
+          }
         } else {
           window.showErrorMessage(localize("error.network", "Network Error"));
         }
