@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-        electron: [7.3.2, 9.1.0]
+        electron: [7.3.2]
         include:
           - os: macos-latest
             filename: darwin
@@ -20,8 +20,6 @@ jobs:
             filename: win32
           - electron: 7.3.2
             abi: 75
-          - electron: 9.1.0
-            abi: 80
 
     name: Build for ${{ matrix.filename }}-${{ matrix.abi }}
     runs-on: ${{ matrix.os }}
