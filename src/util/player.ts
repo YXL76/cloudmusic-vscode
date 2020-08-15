@@ -5,7 +5,6 @@ import { ButtonManager } from "../manager/buttonManager";
 import { apiScrobble } from "./api";
 import { commands } from "vscode";
 import { lock } from "../state/lock";
-import { sleep } from "./util";
 
 class NoPlayer implements Player {
   id = 0;
@@ -75,30 +74,23 @@ class AudioPlayer implements Player {
 
   async load(url: string, id: number, pid: number, dt: number): Promise<void> {
     lock.deleteTmp = false;
-    let i = 3;
-    while (i) {
-      if (this.player.load(url)) {
-        this.player.setVolume(this.level);
-        Playing.set(true);
-        const pTime = this.time;
-        this.time = Date.now();
+    if (this.player.load(url)) {
+      this.player.setVolume(this.level);
+      Playing.set(true);
+      const pTime = this.time;
+      this.time = Date.now();
 
-        const diff = this.time - pTime;
-        if (diff > 60000 && this.dt > 60) {
-          apiScrobble(this.id, this.pid, Math.min(diff / 1000, this.dt));
-        }
-
-        this.id = id;
-        this.pid = pid;
-        this.dt = dt;
-
-        lock.playerLoad = false;
-        break;
+      const diff = this.time - pTime;
+      if (diff > 60000 && this.dt > 60) {
+        apiScrobble(this.id, this.pid, Math.min(diff / 1000, this.dt));
       }
-      await sleep(512);
-      --i;
-    }
-    if (!i) {
+
+      this.id = id;
+      this.pid = pid;
+      this.dt = dt;
+
+      lock.playerLoad = false;
+    } else {
       lock.playerLoad = false;
       commands.executeCommand("cloudmusic.next");
     }

@@ -43,29 +43,38 @@ export const lyric: Lyric = {
   text: ["Lyric"],
 };
 
-/* function binarySearch(newValue: number) {
-  const { time, delay } = lyric;
-  const needle = newValue + delay;
+export class PersonalFm {
+  private static state = false;
+  static item: QueueItemTreeItem[] = [];
 
-  let start = 0;
-  let end = time.length - 1;
+  static get(): boolean {
+    return this.state;
+  }
 
-  while (end - start > 1) {
-    const middle = Math.floor((start + end) / 2);
-    const result = needle - time[middle];
-
-    if (!result) {
-      return middle;
-    }
-    if (result > 0) {
-      start = middle;
-    } else {
-      end = middle;
+  static async set(newValue: boolean): Promise<void> {
+    if (newValue !== this.state) {
+      this.state = newValue;
+      commands.executeCommand("cloudmusic.clearQueue");
+      ButtonManager.buttonPrevious(newValue);
+      if (newValue) {
+        load(await this.next());
+      }
     }
   }
 
-  return start;
-} */
+  static async next(): Promise<QueueItemTreeItem> {
+    if (this.item.length === 0) {
+      const songs = await apiPersonalFm();
+      this.item = await songsItem2TreeItem(
+        0,
+        songs.map(({ id }) => id),
+        songs
+      );
+    }
+
+    return this.item.splice(0, 1)[0];
+  }
+}
 
 const queueProvider = QueueProvider.getInstance();
 
@@ -115,38 +124,5 @@ export async function setPosition(newValue: number): Promise<void> {
     }
 
     lock.playerLoad = false;
-  }
-}
-
-export class PersonalFm {
-  private static state = false;
-  static item: QueueItemTreeItem[] = [];
-
-  static get(): boolean {
-    return this.state;
-  }
-
-  static async set(newValue: boolean): Promise<void> {
-    if (newValue !== this.state) {
-      this.state = newValue;
-      commands.executeCommand("cloudmusic.clearQueue");
-      ButtonManager.buttonPrevious(newValue);
-      if (newValue) {
-        load(await this.next());
-      }
-    }
-  }
-
-  static async next(): Promise<QueueItemTreeItem> {
-    if (this.item.length === 0) {
-      const songs = await apiPersonalFm();
-      this.item = await songsItem2TreeItem(
-        0,
-        songs.map(({ id }) => id),
-        songs
-      );
-    }
-
-    return this.item.splice(0, 1)[0];
   }
 }

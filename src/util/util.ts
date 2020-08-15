@@ -18,13 +18,13 @@ import {
   apiSongUrl,
 } from "./api";
 import { commands, window } from "vscode";
+import { existsSync, statSync } from "fs";
 import { AccountManager } from "../manager/accountManager";
 import { ButtonManager } from "../manager/buttonManager";
 import { IsLike } from "../state/like";
 import { MusicCache } from "../util/cache";
 import { QueueItemTreeItem } from "../provider/queueProvider";
 import { TreeItemCollapsibleState } from "vscode";
-import { existsSync } from "fs";
 import { join } from "path";
 import { lock } from "../state/lock";
 import { lyric } from "../state/play";
@@ -38,12 +38,6 @@ nls.config({
 })();
 
 const localize = nls.loadMessageBundle();
-
-export function sleep(ms: number): Promise<unknown> {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
 
 export async function lockQueue(callback: () => Promise<void>): Promise<void> {
   if (!lock.queue) {
@@ -146,46 +140,51 @@ export function stop(): void {
 
 export async function load(element: QueueItemTreeItem): Promise<void> {
   lock.playerLoad = true;
-  try {
-    const { pid, md5 } = element;
-    const { id, dt, name, ar } = element.item;
-    const idString = `${id}`;
-    const path = await MusicCache.get(idString);
-    const { time, text } = await apiLyric(id);
+  const { pid, md5 } = element;
+  const { id, dt, name, ar } = element.item;
+  const idString = `${id}`;
+  const path = await MusicCache.get(idString);
 
-    if (path) {
-      player.load(path, id, pid, dt);
+  if (path) {
+    player.load(path, id, pid, dt);
+  } else {
+    const { url } = (await apiSongUrl([id]))[0];
+    if (!url) {
+      lock.playerLoad = false;
+      commands.executeCommand("cloudmusic.next");
+      return;
+    }
+
+    const tmpFilePath = join(TMP_DIR, idString);
+    if (!existsSync(tmpFilePath)) {
+      download(url, tmpFilePath, (_, res) => {
+        if (res) {
+          MusicCache.put(idString, tmpFilePath, md5);
+        } else {
+          window.showErrorMessage(localize("error.network", "Network Error"));
+        }
+      });
+      let count = 0;
+      const timer = setInterval(() => {
+        if (statSync(tmpFilePath).size > 256) {
+          clearInterval(timer);
+          player.load(tmpFilePath, id, pid, dt);
+        } else if (++count > 8) {
+          lock.playerLoad = false;
+          commands.executeCommand("cloudmusic.next");
+          clearInterval(timer);
+        }
+      }, 256);
     } else {
-      const { url } = (await apiSongUrl([id]))[0];
-      if (!url) {
-        lock.playerLoad = false;
-        commands.executeCommand("cloudmusic.next");
-        return;
-      }
-
-      const tmpFilePath = join(TMP_DIR, idString);
-      if (!existsSync(tmpFilePath)) {
-        download(url, tmpFilePath, (_, res) => {
-          if (res) {
-            MusicCache.put(idString, tmpFilePath, md5);
-          } else {
-            window.showErrorMessage(localize("error.network", "Network Error"));
-          }
-        });
-        await sleep(512);
-      }
-
       player.load(tmpFilePath, id, pid, dt);
     }
-    ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
-    IsLike.set(AccountManager.likelist.has(id));
-    lyric.index = 0;
-    lyric.time = time;
-    lyric.text = text;
-  } catch {
-    lock.playerLoad = false;
-    commands.executeCommand("cloudmusic.next");
   }
+  ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
+  IsLike.set(AccountManager.likelist.has(id));
+  const { time, text } = await apiLyric(id);
+  lyric.index = 0;
+  lyric.time = time;
+  lyric.text = text;
 }
 
 export function splitLine(content: string): string {

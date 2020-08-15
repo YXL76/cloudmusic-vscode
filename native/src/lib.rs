@@ -851,16 +851,14 @@ impl Task for DownloadTask {
     type JsEvent = JsBoolean;
 
     fn perform(&self) -> Result<bool, String> {
-        let mut buf = Vec::new();
         let mut handle = curl::easy::Easy::new();
-        handle.timeout(Duration::from_secs(1)).unwrap();
-        handle.connect_timeout(Duration::from_secs(5)).unwrap();
         handle.url(&self.url).unwrap();
+        let mut file = File::create(&self.path).unwrap();
         {
             let mut transfer = handle.transfer();
             transfer
                 .write_function(|data| {
-                    buf.extend_from_slice(data);
+                    file.write_all(&data).unwrap();
                     Ok(data.len())
                 })
                 .unwrap();
@@ -868,8 +866,6 @@ impl Task for DownloadTask {
         }
         let http_code = handle.response_code().unwrap();
         if http_code == 200 {
-            let mut file = File::create(&self.path).unwrap();
-            file.write_all(&buf).unwrap();
             Ok(true)
         } else {
             Ok(false)
