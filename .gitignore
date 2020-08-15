@@ -18,6 +18,7 @@ native/index.node
 native/artifacts.json
 
 .artifact
+build
 
 package.nls.*.json
 

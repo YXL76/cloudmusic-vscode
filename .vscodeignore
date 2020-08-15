@@ -33,3 +33,5 @@ page/ts
 script
 
 renovate.json
+
+.artifact

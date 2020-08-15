@@ -6,11 +6,98 @@ on:
       - "v*"
 
 jobs:
+  build:
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+        electron: [7.3.2, 9.1.0]
+        include:
+          - os: macos-latest
+            filename: darwin
+          - os: ubuntu-latest
+            filename: linux
+          - os: windows-latest
+            filename: win32
+          - electron: 7.3.2
+            abi: 75
+          - electron: 9.1.0
+            abi: 80
+
+    name: Build for ${{ matrix.filename }}-${{ matrix.abi }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Installing needed Ubuntu dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libasound2-dev
+          sudo apt-get install -y libx11-dev
+
+      - name: Install needed Windows dependencies
+        if: matrix.os == 'windows-latest'
+        run: choco install llvm
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: 1.44.1
+          override: true
+      - uses: actions/setup-node@v1
+        with:
+          node-version: "12"
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - uses: actions/cache@v2
+        id: yarn-cache
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ matrix.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+      - uses: actions/cache@v2
+        id: cargo-cache
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            native/target
+          key: ${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - run: yarn
+
+      - name: Build
+        run: |
+          yarn add electron@${{ matrix.electron }}
+          yarn add electron-build-env
+          yarn add neon-cli
+          yarn build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.filename }}-${{ matrix.abi }}
+          path: native/index.node
+
   release:
     runs-on: ubuntu-latest
     name: Release
+    needs: build
     steps:
       - uses: actions/checkout@v2
+      - name: download build
+        uses: actions/download-artifact@v2
+        with:
+          path: .artifact
+      - name: Copy file
+        run: |
+          mkdir -p build
+          cp .artifact/darwin-75/index.node build/darwin-75.node
+          cp .artifact/linux-75/index.node  build/linux-75.node
+          cp .artifact/win32-75/index.node  build/win32-75.node
+          cp .artifact/darwin-80/index.node build/darwin-80.node
+          cp .artifact/linux-80/index.node  build/linux-80.node
+          cp .artifact/win32-80/index.node  build/win32-80.node
       - uses: actions/setup-node@v1
         with:
           node-version: "12"
