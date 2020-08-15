@@ -5,6 +5,7 @@ import {
   Artist,
   SongsItem,
 } from "../constant/type";
+import { NATIVE, TMP_DIR } from "../constant/setting";
 import {
   apiAlbum,
   apiArtistAlbum,
@@ -22,14 +23,14 @@ import { ButtonManager } from "../manager/buttonManager";
 import { IsLike } from "../state/like";
 import { MusicCache } from "../util/cache";
 import { QueueItemTreeItem } from "../provider/queueProvider";
-import { TMP_DIR } from "../constant/setting";
 import { TreeItemCollapsibleState } from "vscode";
+import { existsSync } from "fs";
 import { join } from "path";
 import { lock } from "../state/lock";
 import { lyric } from "../state/play";
 import { player } from "./player";
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const { DownloaderHelper } = require("node-downloader-helper");
+
+const { download } = NATIVE;
 
 nls.config({
   messageFormat: nls.MessageFormat.bundle,
@@ -143,8 +144,6 @@ export function stop(): void {
   ButtonManager.buttonLyric(localize("lyric", "Lyric"));
 }
 
-let errorCount = 0;
-
 export async function load(element: QueueItemTreeItem): Promise<void> {
   lock.playerLoad = true;
   try {
@@ -153,8 +152,6 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
     const idString = `${id}`;
     const path = await MusicCache.get(idString);
     const { time, text } = await apiLyric(id);
-    ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
-    IsLike.set(AccountManager.likelist.has(id));
 
     if (path) {
       player.load(path, id, pid, dt);
@@ -167,34 +164,21 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
       }
 
       const tmpFilePath = join(TMP_DIR, idString);
+      if (!existsSync(tmpFilePath)) {
+        download(url, tmpFilePath, (_, res) => {
+          if (res) {
+            MusicCache.put(idString, tmpFilePath, md5);
+          } else {
+            window.showErrorMessage(localize("error.network", "Network Error"));
+          }
+        });
+        await sleep(512);
+      }
 
-      const dl = new DownloaderHelper(url, TMP_DIR, {
-        fileName: idString,
-        retry: { maxRetries: 2, delay: 1024 },
-        override: true,
-      });
-
-      dl.once("download", () => {
-        player.load(tmpFilePath, id, pid, dt);
-      }).once("end", () => {
-        errorCount = 0;
-        MusicCache.put(idString, tmpFilePath, md5);
-      });
-
-      dl.start().catch(() => {
-        window.showErrorMessage(localize("error.network", "Network Error"));
-        if (++errorCount > 4) {
-          setTimeout(() => {
-            lock.playerLoad = false;
-          }, 1500);
-        } else {
-          setTimeout(() => {
-            lock.playerLoad = false;
-            commands.executeCommand("cloudmusic.next");
-          }, 1500);
-        }
-      });
+      player.load(tmpFilePath, id, pid, dt);
     }
+    ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
+    IsLike.set(AccountManager.likelist.has(id));
     lyric.index = 0;
     lyric.time = time;
     lyric.text = text;

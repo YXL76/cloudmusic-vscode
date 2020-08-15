@@ -119,4 +119,9 @@ export interface NativeModule {
   Miniaudio: NativePlayer;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   KeyboardEventEmitter: NativeEventEmitter;
+  download(
+    url: string,
+    path: string,
+    callback: (err: string, res: boolean) => void
+  ): void;
 }

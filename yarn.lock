@@ -1502,7 +1502,7 @@ __metadata:
     bluebird: 3.7.2
     cacache: ^15.0.5
     del: ^5.1.0
-    eslint: 7.6.0
+    eslint: 7.7.0
     glob: 7.1.6
     gulp: 4.0.2
     gulp-filter: 6.0.0
@@ -1511,7 +1511,6 @@ __metadata:
     lru-cache: ^6.0.0
     mocha: 8.1.1
     node-abi: ^2.18.0
-    node-downloader-helper: ^1.0.13
     ts-loader: 8.0.2
     typescript: 3.9.7
     vscode-nls: ^4.1.2
@@ -2321,9 +2320,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:7.6.0":
-  version: 7.6.0
-  resolution: "eslint@npm:7.6.0"
+"eslint@npm:7.7.0":
+  version: 7.7.0
+  resolution: "eslint@npm:7.7.0"
   dependencies:
     "@babel/code-frame": ^7.0.0
     ajv: ^6.10.0
@@ -2363,7 +2362,7 @@ __metadata:
     v8-compile-cache: ^2.0.3
   bin:
     eslint: bin/eslint.js
-  checksum: 1b73da24232b5796a84caac4d01e39fecc6b89690e0c27b33570f898cb7f6b5d41ed255db9d8880d2eb85cda03d2379d6667abdb8a2d05c45fd17abc0beca8a6
+  checksum: 6f47e20ec67a8ad58ed79ad350373142fb30387f4b9847f43943d80a2307e74252ea8739a9f53ec850ef5eaf689103c3d7b8bbc71e04e06444687cfda51fe3b7
   languageName: node
   linkType: hard
 
@@ -4931,15 +4930,6 @@ fsevents@~2.1.2:
   dependencies:
     semver: ^5.4.1
   checksum: 09c46e40b21f5112af39c2166c3a45a47e5bfbe9cb86f51f135e22ef107c63f9b757419e1558052e09cf17c142133a102dc69294845be21611a1639f1ec71801
-  languageName: node
-  linkType: hard
-
-"node-downloader-helper@npm:^1.0.13":
-  version: 1.0.13
-  resolution: "node-downloader-helper@npm:1.0.13"
-  bin:
-    ndh: bin/ndh
-  checksum: 345f98374b770e6a61197d86bdf5b400e1b8cba11f2a5a13bd99065875ffbc61c77d6935d501427817b6ae2c6bc053b616fa1081cb4e98986fb9cc1cd3b8c92b
   languageName: node
   linkType: hard
 

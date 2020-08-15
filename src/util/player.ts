@@ -75,10 +75,8 @@ class AudioPlayer implements Player {
 
   async load(url: string, id: number, pid: number, dt: number): Promise<void> {
     lock.deleteTmp = false;
-    let i = 5;
+    let i = 3;
     while (i) {
-      await sleep(128);
-
       if (this.player.load(url)) {
         this.player.setVolume(this.level);
         Playing.set(true);
@@ -97,6 +95,7 @@ class AudioPlayer implements Player {
         lock.playerLoad = false;
         break;
       }
+      await sleep(512);
       --i;
     }
     if (!i) {
