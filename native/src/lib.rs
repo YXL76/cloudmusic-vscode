@@ -1,7 +1,7 @@
 use neon::prelude::*;
 use std::{
     fs::File,
-    io::BufReader,
+    io::{BufReader, Write},
     sync::{mpsc, Arc, Mutex},
     thread,
     time::{Duration, Instant},
@@ -840,8 +840,6 @@ declare_types! {
     }
 }
 
-use parallel_getter::ParallelGetter;
-
 struct DownloadTask {
     url: String,
     path: String,
@@ -853,18 +851,29 @@ impl Task for DownloadTask {
     type JsEvent = JsBoolean;
 
     fn perform(&self) -> Result<bool, String> {
-        let mut file = File::create(&self.path).unwrap();
-        let result = ParallelGetter::new(&self.url, &mut file)
-            .threads(4)
-            .threshold_parallel(1 * 1024 * 1024)
-            .threshold_memory(10 * 1024 * 1024)
-            .retries(2)
-            .get();
-
-        if let Ok(_) = result {
-            return Ok(true);
+        let mut buf = Vec::new();
+        let mut handle = curl::easy::Easy::new();
+        handle.timeout(Duration::from_secs(1)).unwrap();
+        handle.connect_timeout(Duration::from_secs(5)).unwrap();
+        handle.url(&self.url).unwrap();
+        {
+            let mut transfer = handle.transfer();
+            transfer
+                .write_function(|data| {
+                    buf.extend_from_slice(data);
+                    Ok(data.len())
+                })
+                .unwrap();
+            transfer.perform().unwrap();
         }
-        Ok(false)
+        let http_code = handle.response_code().unwrap();
+        if http_code == 200 {
+            let mut file = File::create(&self.path).unwrap();
+            file.write_all(&buf).unwrap();
+            Ok(true)
+        } else {
+            Ok(false)
+        }
     }
 
     fn complete(self, mut cx: TaskContext, result: Result<bool, String>) -> JsResult<JsBoolean> {
