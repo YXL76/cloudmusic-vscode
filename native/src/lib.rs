@@ -779,7 +779,7 @@ impl Task for KeyboardEventEmitter {
             .lock()
             .map_err(|_| "Could not obtain lock on receiver".to_string())?;
 
-        match rx.recv() {
+        match rx.recv_timeout(Duration::from_millis(16)) {
             Ok(event) => Ok(Some(event)),
             _ => Ok(None),
         }
@@ -840,9 +840,54 @@ declare_types! {
     }
 }
 
+use parallel_getter::ParallelGetter;
+
+struct DownloadTask {
+    url: String,
+    path: String,
+}
+
+impl Task for DownloadTask {
+    type Output = bool;
+    type Error = String;
+    type JsEvent = JsBoolean;
+
+    fn perform(&self) -> Result<bool, String> {
+        let mut file = File::create(&self.path).unwrap();
+        let result = ParallelGetter::new(&self.url, &mut file)
+            .threads(4)
+            .threshold_parallel(1 * 1024 * 1024)
+            .threshold_memory(10 * 1024 * 1024)
+            .retries(2)
+            .get();
+
+        if let Ok(_) = result {
+            return Ok(true);
+        }
+        Ok(false)
+    }
+
+    fn complete(self, mut cx: TaskContext, result: Result<bool, String>) -> JsResult<JsBoolean> {
+        if let Ok(true) = result {
+            return Ok(cx.boolean(true));
+        }
+        Ok(cx.boolean(false))
+    }
+}
+
+pub fn download(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+    let url = cx.argument::<JsString>(0)?.value();
+    let path = cx.argument::<JsString>(1)?.value();
+    let cb = cx.argument::<JsFunction>(2)?;
+    let task = DownloadTask { url, path };
+    task.schedule(cb);
+    Ok(cx.undefined())
+}
+
 register_module!(mut cx, {
     cx.export_class::<JsRodio>("Rodio")?;
     cx.export_class::<JsMiniaudio>("Miniaudio")?;
     // cx.export_class::<JsLibmpv>("Libmpv")?;
-    cx.export_class::<JsKeyboardEventEmitter>("KeyboardEventEmitter")
+    cx.export_class::<JsKeyboardEventEmitter>("KeyboardEventEmitter")?;
+    cx.export_function("download", download)
 });
