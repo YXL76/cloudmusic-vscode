@@ -21,8 +21,8 @@
 - [Contributions](#Contributions)
   - [Settings](#Settings)
   - [Commands](#Commands)
-- [Known Issues](#Known%20Issues)
-- [Release Notes](#Release%20Notes)
+- [Known Issues](#Known-Issues)
+- [Release Notes](#Release-Notes)
 - [API](#API)
 
 ## Features
