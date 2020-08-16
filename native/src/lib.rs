@@ -19,6 +19,11 @@ enum Status {
 
 impl Status {
     #[inline]
+    fn new() -> Status {
+        Status::Stopped(Duration::from_nanos(0))
+    }
+
+    #[inline]
     fn elapsed(&self) -> Duration {
         match *self {
             Status::Stopped(d) => d,
@@ -46,8 +51,6 @@ impl Status {
     }
 }
 
-static mut STATUS: Status = Status::Stopped(Duration::from_nanos(0));
-
 #[derive(Clone)]
 enum ControlEvrnt {
     Play,
@@ -58,6 +61,7 @@ enum ControlEvrnt {
 }
 
 pub struct Rodio {
+    status: Status,
     control_tx: mpsc::Sender<ControlEvrnt>,
     info_rx: mpsc::Receiver<bool>,
 }
@@ -65,65 +69,60 @@ pub struct Rodio {
 impl Rodio {
     #[inline]
     pub fn load(&mut self, url: &str) -> bool {
-        match File::open(url) {
-            Ok(file) => match rodio::Decoder::new(BufReader::new(file)) {
-                Ok(source) => {
-                    self.stop();
+        if let Ok(file) = File::open(url) {
+            if let Ok(source) = rodio::Decoder::new(BufReader::new(file)) {
+                self.stop();
 
-                    let (control_tx, control_rx) = mpsc::channel();
-                    let (info_tx, info_rx) = mpsc::channel();
+                let (control_tx, control_rx) = mpsc::channel();
+                let (info_tx, info_rx) = mpsc::channel();
 
-                    thread::spawn(move || {
-                        let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
-                        let sink = rodio::Sink::try_new(&handle).unwrap();
-                        sink.append(source);
-                        let _ = info_tx.send(true);
-                        loop {
-                            match control_rx.recv() {
-                                Ok(ControlEvrnt::Play) => sink.play(),
-                                Ok(ControlEvrnt::Pause) => sink.pause(),
-                                Ok(ControlEvrnt::Volume(level)) => sink.set_volume(level),
-                                Ok(ControlEvrnt::Empty) => {
-                                    let _ = info_tx.send(sink.empty());
-                                }
-                                _ => {
-                                    drop(sink);
-                                    break;
-                                }
+                thread::spawn(move || {
+                    let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
+                    let sink = rodio::Sink::try_new(&handle).unwrap();
+                    sink.append(source);
+                    let _ = info_tx.send(true);
+                    loop {
+                        match control_rx.recv() {
+                            Ok(ControlEvrnt::Play) => sink.play(),
+                            Ok(ControlEvrnt::Pause) => sink.pause(),
+                            Ok(ControlEvrnt::Volume(level)) => sink.set_volume(level),
+                            Ok(ControlEvrnt::Empty) => {
+                                let _ = info_tx.send(sink.empty());
+                            }
+                            _ => {
+                                drop(sink);
+                                break;
                             }
                         }
-                    });
-
-                    self.control_tx = control_tx;
-                    self.info_rx = info_rx;
-                    let _ = self.info_rx.recv();
-                    unsafe {
-                        STATUS.play();
                     }
-                    true
-                }
-                _ => false,
-            },
-            _ => false,
+                });
+
+                self.control_tx = control_tx;
+                self.info_rx = info_rx;
+                let _ = self.info_rx.recv();
+                self.status.play();
+                return true;
+            }
         }
+        false
     }
 
     #[inline]
-    pub fn play(&self) {
+    pub fn play(&mut self) {
         let _ = self.control_tx.send(ControlEvrnt::Play);
-        unsafe { STATUS.play() }
+        self.status.play()
     }
 
     #[inline]
-    pub fn pause(&self) {
+    pub fn pause(&mut self) {
         let _ = self.control_tx.send(ControlEvrnt::Pause);
-        unsafe { STATUS.stop() }
+        self.status.stop()
     }
 
     #[inline]
-    pub fn stop(&self) {
+    pub fn stop(&mut self) {
         let _ = self.control_tx.send(ControlEvrnt::Stop);
-        unsafe { STATUS.reset() }
+        self.status.reset()
     }
 
     #[inline]
@@ -143,7 +142,7 @@ impl Rodio {
 
     #[inline]
     pub fn position(&self) -> u128 {
-        unsafe { STATUS.elapsed().as_millis() }
+        self.status.elapsed().as_millis()
     }
 }
 
@@ -153,6 +152,7 @@ declare_types! {
             let (control_tx, _) = mpsc::channel();
             let (_, info_rx) = mpsc::channel();
             Ok(Rodio {
+                status: Status::new(),
                 control_tx,
                 info_rx,
             })
@@ -171,9 +171,9 @@ declare_types! {
 
         method play(mut cx) {
             let res = {
-                let this = cx.this();
+                let mut this = cx.this();
                 let guard = cx.lock();
-                let player = this.borrow(&guard);
+                let mut player = this.borrow_mut(&guard);
                 match player.empty() {
                     false => {
                         player.play();
@@ -187,9 +187,9 @@ declare_types! {
 
         method pause(mut cx) {
             {
-                let this = cx.this();
+                let mut this = cx.this();
                 let guard = cx.lock();
-                let player = this.borrow(&guard);
+                let mut player = this.borrow_mut(&guard);
                 player.pause();
             };
             Ok(cx.undefined().upcast())
@@ -197,9 +197,9 @@ declare_types! {
 
         method stop(mut cx) {
             {
-                let this = cx.this();
+                let mut this = cx.this();
                 let guard = cx.lock();
-                let player = this.borrow(&guard);
+                let mut player = this.borrow_mut(&guard);
                 player.stop();
             };
             Ok(cx.undefined().upcast())
@@ -238,80 +238,68 @@ declare_types! {
     }
 }
 
-static mut EMPTY: bool = true;
-
 pub struct Miniaudio {
     device: miniaudio::Device,
+    status: Arc<Mutex<Status>>,
+    empty: Arc<Mutex<bool>>,
 }
 
 impl Miniaudio {
     #[inline]
     pub fn load(&mut self, url: &str) -> bool {
-        match miniaudio::Decoder::from_file(url, None) {
-            Ok(mut decoder) => {
-                let mut config = miniaudio::DeviceConfig::new(miniaudio::DeviceType::Playback);
-                config.playback_mut().set_format(decoder.output_format());
-                config
-                    .playback_mut()
-                    .set_channels(decoder.output_channels());
-                config.set_sample_rate(decoder.output_sample_rate());
-                match miniaudio::Device::new(None, &config) {
-                    Ok(device) => {
-                        self.device = device;
-                        self.device
-                            .set_data_callback(move |_device, output, _frames| unsafe {
-                                if let Status::Playing(_, _) = STATUS {
-                                    if !EMPTY {
-                                        let frames = decoder.read_pcm_frames(output);
-                                        if frames == 0 {
-                                            EMPTY = true;
-                                        }
-                                    }
+        if let Ok(mut decoder) = miniaudio::Decoder::from_file(url, None) {
+            let mut config = miniaudio::DeviceConfig::new(miniaudio::DeviceType::Playback);
+            config.playback_mut().set_format(decoder.output_format());
+            config
+                .playback_mut()
+                .set_channels(decoder.output_channels());
+            config.set_sample_rate(decoder.output_sample_rate());
+            if let Ok(device) = miniaudio::Device::new(None, &config) {
+                self.device = device;
+                let status = Arc::clone(&self.status);
+                let empty = Arc::clone(&self.empty);
+                self.device
+                    .set_data_callback(move |_device, output, _frames| {
+                        if let Status::Playing(_, _) = *status.lock().unwrap() {
+                            if !(*empty.lock().unwrap()) {
+                                let frames = decoder.read_pcm_frames(output);
+                                if frames == 0 {
+                                    *empty.lock().unwrap() = false;
                                 }
-                            });
-                        match self.device.start() {
-                            Ok(_) => {
-                                unsafe {
-                                    STATUS.reset();
-                                    EMPTY = false;
-                                }
-                                self.play();
-                                true
                             }
-                            _ => false,
                         }
-                    }
-                    _ => false,
+                    });
+                if let Ok(_) = self.device.start() {
+                    self.status.lock().unwrap().reset();
+                    *self.empty.lock().unwrap() = false;
+                    self.play();
+                    return true;
                 }
+            }
+        }
+        false
+    }
+
+    #[inline]
+    pub fn play(&self) -> bool {
+        match *self.status.lock().unwrap() {
+            Status::Stopped(_) => {
+                self.status.lock().unwrap().play();
+                true
             }
             _ => false,
         }
     }
 
     #[inline]
-    pub fn play(&self) -> bool {
-        unsafe {
-            match STATUS {
-                Status::Stopped(_) => {
-                    STATUS.play();
-                    true
-                }
-                _ => false,
-            }
-        }
-    }
-
-    #[inline]
     pub fn pause(&self) {
-        unsafe { STATUS.stop() }
+        self.status.lock().unwrap().stop()
     }
 
     #[inline]
     pub fn stop(&self) {
-        unsafe {
-            STATUS.reset();
-            EMPTY = true;
-        }
+        self.status.lock().unwrap().reset();
+        *self.empty.lock().unwrap() = true;
         self.device.stop().unwrap_or(());
     }
 
@@ -322,12 +310,12 @@ impl Miniaudio {
 
     #[inline]
     pub fn empty(&self) -> bool {
-        unsafe { EMPTY }
+        *self.empty.lock().unwrap()
     }
 
     #[inline]
     pub fn position(&self) -> u128 {
-        unsafe { STATUS.elapsed().as_millis() }
+        self.status.lock().unwrap().elapsed().as_millis()
     }
 }
 
@@ -336,12 +324,10 @@ declare_types! {
         init(_) {
             let config = miniaudio::DeviceConfig::new(miniaudio::DeviceType::Playback);
             let device = miniaudio::Device::new(None, &config).unwrap();
-            unsafe  {
-                STATUS.reset();
-                EMPTY = true;
-            }
             Ok(Miniaudio {
                 device,
+                status: Arc::new(Mutex::new(Status::new())),
+                empty: Arc::new(Mutex::new(true)),
             })
         }
 
@@ -424,7 +410,7 @@ declare_types! {
 }
 
 fn mpv_close(_: Box<File>) {
-    unsafe { EMPTY = true }
+    unsafe { self.empty = true }
 }
 
 fn mpv_read(cookie: &mut File, buf: &mut [i8]) -> i64 {
@@ -455,8 +441,8 @@ impl Libmpv {
         {
             Ok(_) => {
                 unsafe {
-                    STATUS.reset();
-                    EMPTY = false;
+                    self.status.reset();
+                    self.empty = false;
                 }
                 self.play();
                 true
@@ -467,10 +453,10 @@ impl Libmpv {
 
     pub fn play(&mut self) -> bool {
         unsafe {
-            match STATUS {
+            match self.status {
                 Status::Stopped(_) => match self.mpv.unpause() {
                     Ok(_) => {
-                        STATUS.play();
+                        self.status.play();
                         true
                     }
                     _ => false,
@@ -482,13 +468,13 @@ impl Libmpv {
 
     pub fn pause(&mut self) {
         self.mpv.pause().unwrap_or(());
-        unsafe { STATUS.stop() }
+        unsafe { self.status.stop() }
     }
 
     pub fn stop(&mut self) {
         unsafe {
-            STATUS.reset();
-            EMPTY = true;
+            self.status.reset();
+            self.empty = true;
         }
         self.mpv.playlist_remove_current().unwrap_or(());
     }
@@ -498,11 +484,11 @@ impl Libmpv {
     }
 
     pub fn empty(&mut self) -> bool {
-        unsafe { EMPTY }
+        unsafe { self.empty }
     }
 
     pub fn position(&self) -> u128 {
-        unsafe { STATUS.elapsed().as_millis() }
+        unsafe { self.status.elapsed().as_millis() }
     }
 }
 
@@ -524,8 +510,8 @@ declare_types! {
             let proto_ctx = mpv.create_protocol_context();
             proto_ctx.register(protocol).unwrap();
             unsafe  {
-                STATUS.reset();
-                EMPTY = true;
+                self.status.reset();
+                self.empty = true;
             }
             Ok(Libmpv {
                 mpv,

@@ -172,12 +172,12 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
         if (statSync(tmpFilePath).size > 256) {
           clearInterval(timer);
           player.load(tmpFilePath, id, pid, dt);
-        } else if (++count > 8) {
+        } else if (++count > 12) {
+          clearInterval(timer);
           lock.playerLoad = false;
           commands.executeCommand("cloudmusic.next");
-          clearInterval(timer);
         }
-      }, 256);
+      }, 100);
     } else {
       player.load(tmpFilePath, id, pid, dt);
     }
