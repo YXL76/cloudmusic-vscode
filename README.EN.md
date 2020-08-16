@@ -75,8 +75,6 @@ Full list in `Feature Contributions`
 
 ## Known Issues
 
-- For users who use proxy software, if a network error occurs during playback, please set `http.proxy` (not `cloudmusic.music.proxy`)
-
 ## Release Notes
 
 [CHANGELOG](./CHANGELOG.md)
