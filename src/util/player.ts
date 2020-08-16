@@ -1,11 +1,11 @@
 import { LIBRARYS, NATIVE, PLAYER_AVAILABLE } from "../constant/setting";
 import { NativePlayer, Player } from "../constant/type";
 import { Playing, setPosition } from "../state/play";
+import { apiLyric, apiScrobble } from "./api";
 import { ButtonManager } from "../manager/buttonManager";
-import { apiScrobble } from "./api";
 import { commands } from "vscode";
 import { lock } from "../state/lock";
-
+import { lyric } from "../state/play";
 class NoPlayer implements Player {
   id = 0;
   pid = 0;
@@ -77,6 +77,13 @@ class AudioPlayer implements Player {
     if (this.player.load(url)) {
       this.player.setVolume(this.level);
       Playing.set(true);
+
+      apiLyric(id).then(({ time, text }) => {
+        lyric.index = 0;
+        lyric.time = time;
+        lyric.text = text;
+      });
+
       const pTime = this.time;
       this.time = Date.now();
 

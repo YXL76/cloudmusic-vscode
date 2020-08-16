@@ -11,7 +11,6 @@ import {
   apiArtistAlbum,
   apiArtists,
   apiLike,
-  apiLyric,
   apiPlaymodeIntelligenceList,
   apiSimiSong,
   apiSongDetail,
@@ -28,7 +27,6 @@ import { QueueItemTreeItem } from "../provider/queueProvider";
 import { TreeItemCollapsibleState } from "vscode";
 import { join } from "path";
 import { lock } from "../state/lock";
-import { lyric } from "../state/play";
 import { player } from "./player";
 
 const { download } = NATIVE;
@@ -184,10 +182,6 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
   }
   ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
   IsLike.set(AccountManager.likelist.has(id));
-  const { time, text } = await apiLyric(id);
-  lyric.index = 0;
-  lyric.time = time;
-  lyric.text = text;
 }
 
 export function splitLine(content: string): string {
