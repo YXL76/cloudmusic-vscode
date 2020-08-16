@@ -113,16 +113,21 @@ export async function setPosition(newValue: number): Promise<void> {
     const idString = `${id}`;
     if (id !== 0 && !(await MusicCache.get(idString))) {
       const { url } = (await apiSongUrl([id]))[0];
+      if (!url) {
+        return;
+      }
       const tmpFilePath = join(TMP_DIR, idString);
-      download(url, tmpFilePath, (_, res) => {
-        if (res) {
-          if (!PersonalFm.get()) {
-            MusicCache.put(idString, tmpFilePath, md5);
+      try {
+        download(url, tmpFilePath, (_, res) => {
+          if (res) {
+            if (!PersonalFm.get()) {
+              MusicCache.put(idString, tmpFilePath, md5);
+            }
+          } else {
+            window.showErrorMessage(localize("error.network", "Network Error"));
           }
-        } else {
-          window.showErrorMessage(localize("error.network", "Network Error"));
-        }
-      });
+        });
+      } catch {}
     }
 
     lock.playerLoad = false;

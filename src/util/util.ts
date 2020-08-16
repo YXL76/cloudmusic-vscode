@@ -144,8 +144,14 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
   const idString = `${id}`;
   const path = await MusicCache.get(idString);
 
+  const playerLoad = async (p: string) => {
+    await player.load(p, id, pid, dt);
+    ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
+    IsLike.set(AccountManager.likelist.has(id));
+  };
+
   if (path) {
-    player.load(path, id, pid, dt);
+    playerLoad(path);
   } else {
     const { url } = (await apiSongUrl([id]))[0];
     if (!url) {
@@ -156,20 +162,22 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
 
     const tmpFilePath = join(TMP_DIR, idString);
     if (!existsSync(tmpFilePath)) {
-      download(url, tmpFilePath, (_, res) => {
-        if (res) {
-          if (!PersonalFm.get()) {
-            MusicCache.put(idString, tmpFilePath, md5);
+      try {
+        download(url, tmpFilePath, (_, res) => {
+          if (res) {
+            if (!PersonalFm.get()) {
+              MusicCache.put(idString, tmpFilePath, md5);
+            }
+          } else {
+            window.showErrorMessage(localize("error.network", "Network Error"));
           }
-        } else {
-          window.showErrorMessage(localize("error.network", "Network Error"));
-        }
-      });
+        });
+      } catch {}
       let count = 0;
       const timer = setInterval(() => {
         if (statSync(tmpFilePath).size > 256) {
           clearInterval(timer);
-          player.load(tmpFilePath, id, pid, dt);
+          playerLoad(tmpFilePath);
         } else if (++count > 12) {
           clearInterval(timer);
           lock.playerLoad = false;
@@ -177,11 +185,9 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
         }
       }, 100);
     } else {
-      player.load(tmpFilePath, id, pid, dt);
+      playerLoad(tmpFilePath);
     }
   }
-  ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
-  IsLike.set(AccountManager.likelist.has(id));
 }
 
 export function splitLine(content: string): string {

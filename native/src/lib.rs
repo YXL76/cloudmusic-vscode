@@ -149,6 +149,8 @@ impl Rodio {
 declare_types! {
     pub class JsRodio for Rodio {
         init(_) {
+            let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
+            let _ = rodio::Sink::try_new(&handle).unwrap();
             let (control_tx, _) = mpsc::channel();
             let (_, info_rx) = mpsc::channel();
             Ok(Rodio {
@@ -838,24 +840,25 @@ impl Task for DownloadTask {
 
     fn perform(&self) -> Result<bool, String> {
         let mut handle = curl::easy::Easy::new();
-        handle.url(&self.url).unwrap();
-        let mut file = File::create(&self.path).unwrap();
-        {
-            let mut transfer = handle.transfer();
-            transfer
-                .write_function(|data| {
-                    file.write_all(&data).unwrap();
-                    Ok(data.len())
-                })
-                .unwrap();
-            transfer.perform().unwrap();
+        if let Ok(_) = handle.url(&self.url) {
+            let mut file = File::create(&self.path).unwrap();
+            {
+                let mut transfer = handle.transfer();
+                transfer
+                    .write_function(|data| {
+                        file.write_all(&data).unwrap();
+                        Ok(data.len())
+                    })
+                    .unwrap();
+                let _ = transfer.perform();
+            }
+            if let Ok(http_code) = handle.response_code() {
+                if http_code == 200 {
+                    return Ok(true);
+                }
+            }
         }
-        let http_code = handle.response_code().unwrap();
-        if http_code == 200 {
-            Ok(true)
-        } else {
-            Ok(false)
-        }
+        Ok(false)
     }
 
     fn complete(self, mut cx: TaskContext, result: Result<bool, String>) -> JsResult<JsBoolean> {
