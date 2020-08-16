@@ -6,6 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.7.6] - 2020-08-16
+
+### Added
+
+- Download the next song in advance
+
+### Changed
+
+- No longer cache personal FM music
+- Use native `download` to break proxy restrictions
+
 ## [3.7.5] - 2020-08-14
 
 ### Changed
