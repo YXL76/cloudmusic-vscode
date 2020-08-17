@@ -281,7 +281,7 @@ impl Miniaudio {
                             }
                         }
                     });
-                    thread::sleep(Duration::from_secs(1));
+                    thread::sleep(Duration::from_millis(512));
                     if let Ok(_) = device.start() {
                         let _ = tx.send(true);
                         *empty.lock().unwrap() = false;
@@ -290,7 +290,7 @@ impl Miniaudio {
                             device
                                 .set_master_volume(*volume.lock().unwrap())
                                 .unwrap_or(());
-                            thread::sleep(Duration::from_secs(1));
+                            thread::sleep(Duration::from_millis(512));
                         }
                     }
                 }
@@ -634,7 +634,7 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
                     let keymap: *mut i8 = [0; 32].as_mut_ptr();
 
                     loop {
-                        thread::sleep(Duration::from_millis(32));
+                        thread::sleep(Duration::from_millis(16));
                         XQueryKeymap(disp, keymap);
                         let b = from_raw_parts(keymap, 32)[21];
 
@@ -671,7 +671,7 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
                 let mut prev_key = 0;
 
                 loop {
-                    thread::sleep(Duration::from_millis(32));
+                    thread::sleep(Duration::from_millis(16));
 
                     flag = false;
                     for key in keys.iter() {
@@ -710,7 +710,7 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
                 let mut prev_key = 0;
 
                 loop {
-                    thread::sleep(Duration::from_millis(32));
+                    thread::sleep(Duration::from_millis(16));
 
                     flag = false;
                     for key in keys.iter() {
