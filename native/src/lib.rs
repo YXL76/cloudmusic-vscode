@@ -242,42 +242,62 @@ declare_types! {
 }
 
 pub struct Miniaudio {
-    device: miniaudio::Device,
     status: Arc<Mutex<Status>>,
     empty: Arc<Mutex<bool>>,
+    volume: Arc<Mutex<f32>>,
 }
 
 impl Miniaudio {
     #[inline]
     pub fn load(&mut self, url: &str) -> bool {
         if let Ok(mut decoder) = miniaudio::Decoder::from_file(url, None) {
-            let mut config = miniaudio::DeviceConfig::new(miniaudio::DeviceType::Playback);
-            config.playback_mut().set_format(decoder.output_format());
-            config
-                .playback_mut()
-                .set_channels(decoder.output_channels());
-            config.set_sample_rate(decoder.output_sample_rate());
-            if let Ok(device) = miniaudio::Device::new(None, &config) {
-                self.device = device;
-                let status = self.status.clone();
-                let empty = self.empty.clone();
-                self.device
-                    .set_data_callback(move |_device, output, _frames| {
-                        if let Status::Playing(_, _) = *status.lock().unwrap() {
-                            if !(*empty.lock().unwrap()) {
+            self.status.lock().unwrap().reset();
+            *self.empty.lock().unwrap() = true;
+
+            let status = self.status.clone();
+            let empty = self.empty.clone();
+            let volume = self.volume.clone();
+
+            let (tx, rx) = mpsc::channel();
+
+            thread::spawn(move || {
+                let mut config = miniaudio::DeviceConfig::new(miniaudio::DeviceType::Playback);
+                config.playback_mut().set_format(decoder.output_format());
+                config
+                    .playback_mut()
+                    .set_channels(decoder.output_channels());
+                config.set_sample_rate(decoder.output_sample_rate());
+
+                if let Ok(mut device) = miniaudio::Device::new(None, &config) {
+                    let status_cb = status.clone();
+                    let empty_cb = empty.clone();
+                    device.set_data_callback(move |_device, output, _frames| {
+                        if let Status::Playing(_, _) = *status_cb.lock().unwrap() {
+                            if !(*empty_cb.lock().unwrap()) {
                                 let frames = decoder.read_pcm_frames(output);
                                 if frames == 0 {
-                                    *empty.lock().unwrap() = false;
+                                    *empty_cb.lock().unwrap() = true;
                                 }
                             }
                         }
                     });
-                if let Ok(_) = self.device.start() {
-                    self.status.lock().unwrap().reset();
-                    *self.empty.lock().unwrap() = false;
-                    self.play();
-                    return true;
+                    thread::sleep(Duration::from_secs(1));
+                    if let Ok(_) = device.start() {
+                        let _ = tx.send(true);
+                        *empty.lock().unwrap() = false;
+                        status.lock().unwrap().play();
+                        while !(*empty.lock().unwrap()) {
+                            device
+                                .set_master_volume(*volume.lock().unwrap())
+                                .unwrap_or(());
+                            thread::sleep(Duration::from_secs(1));
+                        }
+                    }
                 }
+            });
+
+            if let Ok(true) = rx.recv() {
+                return true;
             }
         }
         false
@@ -303,12 +323,12 @@ impl Miniaudio {
     pub fn stop(&self) {
         self.status.lock().unwrap().reset();
         *self.empty.lock().unwrap() = true;
-        self.device.stop().unwrap_or(());
+        *self.volume.lock().unwrap() = 0.0;
     }
 
     #[inline]
-    pub fn set_volume(&self, volume: f32) {
-        self.device.set_master_volume(volume).unwrap_or(());
+    pub fn set_volume(&self, level: f32) {
+        *self.volume.lock().unwrap() = level;
     }
 
     #[inline]
@@ -326,11 +346,11 @@ declare_types! {
     pub class JsMiniaudio for Miniaudio {
         init(_) {
             let config = miniaudio::DeviceConfig::new(miniaudio::DeviceType::Playback);
-            let device = miniaudio::Device::new(None, &config).unwrap();
+            let _ = miniaudio::Device::new(None, &config).unwrap();
             Ok(Miniaudio {
-                device,
                 status: Arc::new(Mutex::new(Status::new())),
                 empty: Arc::new(Mutex::new(true)),
+                volume: Arc::new(Mutex::new(85.0)),
             })
         }
 
