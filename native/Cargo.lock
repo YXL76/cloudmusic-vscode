@@ -211,8 +211,7 @@ dependencies = [
 [[package]]
 name = "ep-miniaudio-sys"
 version = "2.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "67d043fff0d902f8c6837115c92e08e096d497cd857555a1b42dd31dec7c6042"
+source = "git+https://github.com/ExPixel/miniaudio-rs.git#e1669888420316fa5424176902a5c99cad688dbe"
 dependencies = [
  "bindgen 0.54.1",
  "bitflags",
@@ -317,8 +316,7 @@ checksum = "3728d817d99e5ac407411fa471ff9800a778d88a24685968b36824eaf4bee400"
 [[package]]
 name = "miniaudio"
 version = "0.10.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8ec3e73aa4272d5f1c32a22a5033e77f1f2232e4beebdb601fc3456b2dd39940"
+source = "git+https://github.com/ExPixel/miniaudio-rs.git#e1669888420316fa5424176902a5c99cad688dbe"
 dependencies = [
  "bitflags",
  "ep-miniaudio-sys",
@@ -347,6 +345,7 @@ dependencies = [
 name = "native"
 version = "0.1.0"
 dependencies = [
+ "cfg-if",
  "curl",
  "miniaudio",
  "neon",
@@ -359,8 +358,7 @@ dependencies = [
 [[package]]
 name = "neon"
 version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6cac4691701b686e6c07b2eb5b51a9f26f5c11179c5d7924b78100dd387fc99d"
+source = "git+https://github.com/neon-bindings/neon#65681d27690e8ccfc6de1f5f8d9e575a4b14ab29"
 dependencies = [
  "cslice",
  "neon-build",
@@ -371,8 +369,7 @@ dependencies = [
 [[package]]
 name = "neon-build"
 version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f9ed332afd4711b84f4f83d334428a1fd9ce53620b62b87595934297c5ede2ed"
+source = "git+https://github.com/neon-bindings/neon#65681d27690e8ccfc6de1f5f8d9e575a4b14ab29"
 dependencies = [
  "cfg-if",
  "neon-sys",
@@ -381,8 +378,7 @@ dependencies = [
 [[package]]
 name = "neon-runtime"
 version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2beea093a60c08463f65e1da4cda68149986f60d8d2177489b44589463c782a6"
+source = "git+https://github.com/neon-bindings/neon#65681d27690e8ccfc6de1f5f8d9e575a4b14ab29"
 dependencies = [
  "cfg-if",
  "neon-sys",
@@ -391,8 +387,7 @@ dependencies = [
 [[package]]
 name = "neon-sys"
 version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "69a6c1ba6b926746f4d3f596de18ce49d062d78fd9f35f636080232aa77a0e16"
+source = "git+https://github.com/neon-bindings/neon#65681d27690e8ccfc6de1f5f8d9e575a4b14ab29"
 dependencies = [
  "cc",
  "regex",

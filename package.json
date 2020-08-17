@@ -312,7 +312,7 @@
           },
           "cloudmusic.player.mediaControl": {
             "type": "boolean",
-            "default": true,
+            "default": false,
             "markdownDescription": "%cloudmusic.configuration.cloudmusic.player.mediaControl.markdownDescription%",
             "scope": "window"
           },

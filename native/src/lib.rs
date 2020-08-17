@@ -1,3 +1,4 @@
+use cfg_if::cfg_if;
 use neon::prelude::*;
 use std::{
     fs::File,
@@ -258,8 +259,8 @@ impl Miniaudio {
             config.set_sample_rate(decoder.output_sample_rate());
             if let Ok(device) = miniaudio::Device::new(None, &config) {
                 self.device = device;
-                let status = Arc::clone(&self.status);
-                let empty = Arc::clone(&self.empty);
+                let status = self.status.clone();
+                let empty = self.empty.clone();
                 self.device
                     .set_data_callback(move |_device, output, _frames| {
                         if let Status::Playing(_, _) = *status.lock().unwrap() {
@@ -334,7 +335,7 @@ declare_types! {
         }
 
         method load(mut cx) {
-            let url: String = cx.argument::<JsString>(0)?.value();
+            let url = cx.argument::<JsString>(0)?.value();
             let res = {
                 let mut this = cx.this();
                 let guard = cx.lock();
@@ -594,238 +595,135 @@ declare_types! {
     }
 }*/
 
-pub enum KeyboardEvent {
-    Prev,
-    Play,
-    Next,
-}
-
-#[cfg(target_os = "linux")]
-use std::ptr;
-#[cfg(target_os = "linux")]
-use std::slice::from_raw_parts;
-#[cfg(target_os = "linux")]
-use x11::xlib::{XOpenDisplay, XQueryKeymap};
-
-#[cfg(target_os = "linux")]
-fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
-    let (tx, events_rx) = mpsc::channel();
-
-    thread::spawn(move || unsafe {
-        let keys = [5, 4, 3];
-        let mut flag;
-        let mut prev_key = 0;
-        let disp = XOpenDisplay(ptr::null());
-        let keymap: *mut i8 = [0; 32].as_mut_ptr();
-
-        loop {
-            thread::sleep(Duration::from_millis(32));
-
-            XQueryKeymap(disp, keymap);
-            let b = from_raw_parts(keymap, 32)[21];
-
-            flag = false;
-            for key in keys.iter() {
-                if b & 1 << *key != 0 {
-                    if prev_key != *key {
-                        prev_key = *key;
-                        match *key {
-                            5 => {
-                                tx.send(KeyboardEvent::Prev).unwrap_or(());
-                            }
-                            4 => {
-                                tx.send(KeyboardEvent::Play).unwrap_or(());
-                            }
-                            3 => {
-                                tx.send(KeyboardEvent::Next).unwrap_or(());
-                            }
-                            _ => {}
-                        }
-                    }
-                    flag = true;
-                    break;
-                }
-            }
-            if !flag {
-                prev_key = 0;
-            }
-        }
-    });
-
-    events_rx
-}
-
-#[cfg(target_os = "windows")]
-use winapi::um::winuser::GetAsyncKeyState;
-
-#[cfg(target_os = "windows")]
-fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
-    let (tx, events_rx) = mpsc::channel();
-
+pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+    let this = cx.this();
+    let func = cx.argument::<JsFunction>(0)?;
+    let cb = EventHandler::new(&cx, this, func);
     thread::spawn(move || {
-        let keys = [177, 179, 176];
-        let mut flag;
-        let mut prev_key = 0;
+        cfg_if! {
+            if #[cfg(target_os = "linux")] {
+                use std::ptr;
+                use std::slice::from_raw_parts;
+                use x11::xlib::{XOpenDisplay, XQueryKeymap};
 
-        loop {
-            thread::sleep(Duration::from_millis(32));
-
-            flag = false;
-            for key in keys.iter() {
                 unsafe {
-                    let state = GetAsyncKeyState(*key);
-                    if state & -32768 != 0 {
-                        if prev_key != *key {
-                            prev_key = *key;
-                            match *key {
-                                177 => {
-                                    tx.send(KeyboardEvent::Prev).unwrap_or(());
+                    let keys = [5, 4, 3];
+                    let mut flag;
+                    let mut prev_key = 0;
+                    let disp = XOpenDisplay(ptr::null());
+                    let keymap: *mut i8 = [0; 32].as_mut_ptr();
+
+                    loop {
+                        thread::sleep(Duration::from_millis(32));
+                        XQueryKeymap(disp, keymap);
+                        let b = from_raw_parts(keymap, 32)[21];
+
+                        flag = false;
+                        for key in keys.iter() {
+                            if b & 1 << *key != 0 {
+                                if prev_key != *key {
+                                    prev_key = *key;
+                                    let arg = match *key {
+                                        5 => "prev",
+                                        4 => "play",
+                                        3 => "next",
+                                        _ => ""
+                                    };
+                                    cb.schedule(move |cx| {
+                                        let args: Vec<Handle<JsValue>> =
+                                            vec![cx.string(arg).upcast()];
+                                        args
+                                    });
                                 }
-                                179 => {
-                                    tx.send(KeyboardEvent::Play).unwrap_or(());
-                                }
-                                176 => {
-                                    tx.send(KeyboardEvent::Next).unwrap_or(());
-                                }
-                                _ => {}
+                                flag = true;
+                                break;
                             }
                         }
-                        flag = true;
-                        break;
+                        if !flag {
+                            prev_key = 0;
+                        }
+                    }
+                }
+            } else if #[cfg(target_os = "windows")] {
+                use winapi::um::winuser::GetAsyncKeyState;
+
+                let keys = [177, 179, 176];
+                let mut flag;
+                let mut prev_key = 0;
+
+                loop {
+                    thread::sleep(Duration::from_millis(32));
+
+                    flag = false;
+                    for key in keys.iter() {
+                        unsafe {
+                            let state = GetAsyncKeyState(*key);
+                            if state & -32768 != 0 {
+                                if prev_key != *key {
+                                    prev_key = *key;
+                                    let arg = match *key {
+                                        177 => "prev",
+                                        179 => "play",
+                                        176 => "next",
+                                        _ => "",
+                                    };
+                                    cb.schedule(move |cx| {
+                                        let args: Vec<Handle<JsValue>> =
+                                            vec![cx.string(arg).upcast()];
+                                        args
+                                    });
+                                }
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                    if !flag {
+                        prev_key = 0;
+                    }
+                }
+            } else if #[cfg(target_os = "macos")] {
+                extern "C" {
+                    fn CGEventSourceKeyState(state: i32, keycode: u16) -> bool;
+                }
+
+                let keys = [98, 100, 101];
+                let mut flag;
+                let mut prev_key = 0;
+
+                loop {
+                    thread::sleep(Duration::from_millis(32));
+
+                    flag = false;
+                    for key in keys.iter() {
+                        unsafe {
+                            if CGEventSourceKeyState(0, *key) {
+                                if prev_key != *key {
+                                    prev_key = *key;
+                                    let arg = match *key {
+                                        98 => "prev",
+                                        100 => "play",
+                                        101 => "next",
+                                        _ => "",
+                                    };
+                                    cb.schedule(move |cx| {
+                                        let args: Vec<Handle<JsValue>> = vec![cx.string(arg).upcast()];
+                                        args
+                                    });
+                                }
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                    if !flag {
+                        prev_key = 0;
                     }
                 }
             }
-            if !flag {
-                prev_key = 0;
-            }
         }
     });
-
-    events_rx
-}
-
-#[cfg(target_os = "macos")]
-extern "C" {
-    fn CGEventSourceKeyState(state: i32, keycode: u16) -> bool;
-}
-
-#[cfg(target_os = "macos")]
-fn keyboard_event_thread() -> mpsc::Receiver<KeyboardEvent> {
-    let (tx, events_rx) = mpsc::channel();
-
-    thread::spawn(move || {
-        let keys = [98, 100, 101];
-        let mut flag;
-        let mut prev_key = 0;
-
-        loop {
-            thread::sleep(Duration::from_millis(32));
-
-            flag = false;
-            for key in keys.iter() {
-                unsafe {
-                    if CGEventSourceKeyState(0, *key) {
-                        if prev_key != *key {
-                            prev_key = *key;
-                            match *key {
-                                98 => {
-                                    tx.send(KeyboardEvent::Prev).unwrap_or(());
-                                }
-                                100 => {
-                                    tx.send(KeyboardEvent::Play).unwrap_or(());
-                                }
-                                101 => {
-                                    tx.send(KeyboardEvent::Next).unwrap_or(());
-                                }
-                                _ => {}
-                            }
-                        }
-                        flag = true;
-                        break;
-                    }
-                }
-            }
-            if !flag {
-                prev_key = 0;
-            }
-        }
-    });
-
-    events_rx
-}
-
-pub struct KeyboardEventEmitter(Arc<Mutex<mpsc::Receiver<KeyboardEvent>>>);
-
-impl Task for KeyboardEventEmitter {
-    type Output = Option<KeyboardEvent>;
-    type Error = String;
-    type JsEvent = JsValue;
-
-    fn perform(&self) -> Result<Self::Output, Self::Error> {
-        let rx = self
-            .0
-            .lock()
-            .map_err(|_| "Could not obtain lock on receiver".to_string())?;
-
-        match rx.recv_timeout(Duration::from_millis(16)) {
-            Ok(event) => Ok(Some(event)),
-            _ => Ok(None),
-        }
-    }
-
-    fn complete(
-        self,
-        mut cx: TaskContext,
-        event: Result<Self::Output, Self::Error>,
-    ) -> JsResult<Self::JsEvent> {
-        let event = event.unwrap_or(None);
-
-        let event = match event {
-            Some(event) => event,
-            _ => return Ok(JsUndefined::new().upcast()),
-        };
-
-        let o = cx.empty_object();
-
-        match event {
-            KeyboardEvent::Prev => {
-                let event_name = cx.string("prev");
-                o.set(&mut cx, "event", event_name)?;
-            }
-            KeyboardEvent::Play => {
-                let event_name = cx.string("play");
-                o.set(&mut cx, "event", event_name)?;
-            }
-            KeyboardEvent::Next => {
-                let event_name = cx.string("next");
-                o.set(&mut cx, "event", event_name)?;
-            }
-        }
-
-        Ok(o.upcast())
-    }
-}
-
-declare_types! {
-    pub class JsKeyboardEventEmitter for KeyboardEventEmitter {
-        init(_) {
-            let rx = keyboard_event_thread();
-            Ok(KeyboardEventEmitter (Arc::new(Mutex::new(rx))))
-        }
-
-        method poll(mut cx) {
-            let cb = cx.argument::<JsFunction>(0)?;
-            let this = cx.this();
-
-            let events = cx.borrow(&this, |emitter| Arc::clone(&emitter.0));
-            let emitter = KeyboardEventEmitter(events);
-
-            emitter.schedule(cb);
-
-            Ok(JsUndefined::new().upcast())
-        }
-
-    }
+    Ok(cx.undefined())
 }
 
 struct DownloadTask {
@@ -882,6 +780,6 @@ register_module!(mut cx, {
     cx.export_class::<JsRodio>("Rodio")?;
     cx.export_class::<JsMiniaudio>("Miniaudio")?;
     // cx.export_class::<JsLibmpv>("Libmpv")?;
-    cx.export_class::<JsKeyboardEventEmitter>("KeyboardEventEmitter")?;
+    cx.export_function("startKeyboardEvent", start_keyboard_event)?;
     cx.export_function("download", download)
 });

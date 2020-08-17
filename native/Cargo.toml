@@ -10,12 +10,15 @@ exclude = ["artifacts.json", "index.node"]
 name = "native"
 crate-type = ["cdylib"]
 
-[build-dependencies]
-neon-build = "0.4.0"
+[build-dependencies.neon-build]
+git = "https://github.com/neon-bindings/neon"
 
 [dependencies]
-neon = "0.4.0"
-# libmpv = {version = "2.0.0", features = ["protocols"] }
+cfg-if = "0.1.10"
+
+[dependencies.neon]
+git = "https://github.com/neon-bindings/neon"
+features = ["event-handler-api"]
 
 [dependencies.rodio]
 git = "https://github.com/YXL76/rodio"
@@ -24,14 +27,14 @@ default-features = false
 features = ["flac", "mp3"]
 
 [dependencies.miniaudio]
-version = "0.10.0"
+git = "https://github.com/ExPixel/miniaudio-rs"
 default-features = false
 features = ["ma-no-wav"]
 
 [dependencies.curl]
 version = "0.4.31"
 default-features = false
-features = []
+features = ["static-curl"]
 
 [target.'cfg(target_os = "linux")'.dependencies.x11]
 version = "2.18.2"
