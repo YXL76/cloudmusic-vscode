@@ -626,8 +626,7 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
                                     let arg = match *key {
                                         5 => "prev",
                                         4 => "play",
-                                        3 => "next",
-                                        _ => ""
+                                        _ => "next",
                                     };
                                     cb.schedule(move |cx| {
                                         let args: Vec<Handle<JsValue>> =
@@ -664,8 +663,7 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
                                     let arg = match *key {
                                         177 => "prev",
                                         179 => "play",
-                                        176 => "next",
-                                        _ => "",
+                                        _ => "next",
                                     };
                                     cb.schedule(move |cx| {
                                         let args: Vec<Handle<JsValue>> =
@@ -703,8 +701,7 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
                                     let arg = match *key {
                                         98 => "prev",
                                         100 => "play",
-                                        101 => "next",
-                                        _ => "",
+                                        _ => "next",
                                     };
                                     cb.schedule(move |cx| {
                                         let args: Vec<Handle<JsValue>> = vec![cx.string(arg).upcast()];

@@ -50,7 +50,6 @@ import { AccountManager } from "./manager/accountManager";
 import { ButtonManager } from "./manager/buttonManager";
 import { IsLike } from "./state/like";
 import { LoggedIn } from "./state/login";
-import { NativeEventEmitter } from "./constant/type";
 import { WebView } from "./page/page";
 import { join } from "path";
 import { lock } from "./state/lock";
@@ -637,33 +636,20 @@ export function activate(context: ExtensionContext): void {
 
   // keyboard detect
   if (MEDIA_CONTROL) {
-    try {
-      const keyboardEventEmitter: NativeEventEmitter = new NATIVE[
-        "KeyboardEventEmitter"
-      ]();
-      const keyboardLoop = () => {
-        keyboardEventEmitter.poll((err, e) => {
-          if (!err && e) {
-            const { event } = e;
-            switch (event) {
-              case undefined:
-                break;
-              case "prev":
-                commands.executeCommand("cloudmusic.previous");
-                break;
-              case "play":
-                commands.executeCommand("cloudmusic.play");
-                break;
-              case "next":
-                commands.executeCommand("cloudmusic.next");
-                break;
-            }
-          }
-          setImmediate(keyboardLoop);
-        });
-      };
-      setImmediate(keyboardLoop);
-    } catch {}
+    const { startKeyboardEvent } = NATIVE;
+    startKeyboardEvent((res) => {
+      switch (res) {
+        case "prev":
+          commands.executeCommand("cloudmusic.previous");
+          break;
+        case "play":
+          commands.executeCommand("cloudmusic.play");
+          break;
+        case "next":
+          commands.executeCommand("cloudmusic.next");
+          break;
+      }
+    });
   }
 }
 
