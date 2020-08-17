@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "cloudmusic",
   "description": "Netease Music for VS Code",
-  "version": "3.7.6",
+  "version": "3.7.7",
   "publisher": "YXL",
   "engines": {
     "vscode": "^1.46.0"
@@ -312,7 +312,7 @@
           },
           "cloudmusic.player.mediaControl": {
             "type": "boolean",
-            "default": false,
+            "default": true,
             "markdownDescription": "%cloudmusic.configuration.cloudmusic.player.mediaControl.markdownDescription%",
             "scope": "window"
           },

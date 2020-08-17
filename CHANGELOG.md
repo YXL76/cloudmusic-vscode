@@ -6,6 +6,18 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [3.7.7] - 2020-08-17
+
+### Fixed
+
+- Download error will no longer crash extension
+- `Miniaudio` no sound
+
+### Changed
+
+- Static link `curl` to improve performace
+- Use `EventHandler`api to handle keyboard event
+
 ## [3.7.6] - 2020-08-16
 
 ### Added
