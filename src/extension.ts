@@ -614,8 +614,8 @@ export function activate(context: ExtensionContext): void {
         const lyricItem: QuickPickItem[] = [];
         for (let i = 0; i < lyric.text.length; ++i) {
           lyricItem.push({
-            label: `[${lyric.time[i]}]`,
-            description: lyric.text[i],
+            label: lyric.text[i],
+            description: `[${lyric.time[i]}]`,
           });
         }
         const allLyric = await window.showQuickPick(lyricItem);
