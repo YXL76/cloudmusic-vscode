@@ -32,7 +32,7 @@ default-features = false
 features = ["ma-no-wav"]
 
 [dependencies.curl]
-version = "0.4.31"
+version = "0.4.32"
 default-features = false
 features = ["static-curl"]
 
