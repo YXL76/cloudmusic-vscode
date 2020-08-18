@@ -13,7 +13,6 @@ import {
 } from "./constant/setting";
 import { ExtensionContext, QuickPickItem, commands, window } from "vscode";
 import { LyricCache, MusicCache } from "./util/cache";
-import { PersonalFm, lyric } from "./state/play";
 import {
   PlaylistItemTreeItem,
   PlaylistProvider,
@@ -46,14 +45,15 @@ import {
   unlink,
   writeFile,
 } from "fs";
+import { lyric, player } from "./util/player";
 import { AccountManager } from "./manager/accountManager";
 import { ButtonManager } from "./manager/buttonManager";
 import { IsLike } from "./state/like";
 import { LoggedIn } from "./state/login";
+import { PersonalFm } from "./state/play";
 import { WebView } from "./page/page";
 import { join } from "path";
 import { lock } from "./state/lock";
-import { player } from "./util/player";
 const del = require("del");
 
 nls.config({
@@ -66,7 +66,7 @@ const localize = nls.loadMessageBundle();
 export function activate(context: ExtensionContext): void {
   // init player
   if (!PLAYER_AVAILABLE) {
-    lock.playerLoad = true;
+    lock.playerLoad.set(true);
     window.showErrorMessage(
       localize("system.support", "System is not supported")
     );
@@ -139,7 +139,7 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand(
     "cloudmusic.playSong",
     async (element: QueueItemTreeItem) => {
-      if (!lock.playerLoad) {
+      if (!lock.playerLoad.get()) {
         lockQueue(async () => {
           PersonalFm.set(false);
           await load(element);
@@ -323,7 +323,7 @@ export function activate(context: ExtensionContext): void {
 
   // next command
   const next = commands.registerCommand("cloudmusic.next", async () => {
-    if (lock.playerLoad) {
+    if (lock.playerLoad.get()) {
       return;
     }
     if (PersonalFm.get()) {
@@ -491,7 +491,7 @@ export function activate(context: ExtensionContext): void {
       lockQueue(async () => {
         PersonalFm.set(false);
         await PlaylistProvider.playPlaylist(element.item.id);
-        if (!lock.playerLoad) {
+        if (!lock.playerLoad.get()) {
           load(queueProvider.songs[0]);
         }
       });
@@ -511,7 +511,7 @@ export function activate(context: ExtensionContext): void {
       lockQueue(async () => {
         PersonalFm.set(false);
         await PlaylistProvider.intelligence(element);
-        if (!lock.playerLoad) {
+        if (!lock.playerLoad.get()) {
           load(element);
         }
       });
@@ -531,7 +531,7 @@ export function activate(context: ExtensionContext): void {
       lockQueue(async () => {
         PersonalFm.set(false);
         await PlaylistProvider.playPlaylist(element.pid, element);
-        if (!lock.playerLoad) {
+        if (!lock.playerLoad.get()) {
           load(element);
         }
       });

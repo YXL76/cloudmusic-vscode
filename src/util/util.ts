@@ -38,6 +38,25 @@ nls.config({
 
 const localize = nls.loadMessageBundle();
 
+export function downloadMusic(
+  url: string,
+  filename: string,
+  path: string,
+  md5: string
+): void {
+  try {
+    download(url, path, (_, res) => {
+      if (res) {
+        if (!PersonalFm.get()) {
+          MusicCache.put(filename, path, md5);
+        }
+      } else {
+        window.showErrorMessage(localize("error.network", "Network Error"));
+      }
+    });
+  } catch {}
+}
+
 export async function lockQueue(callback: () => Promise<void>): Promise<void> {
   if (!lock.queue) {
     lock.queue = true;
@@ -138,7 +157,7 @@ export function stop(): void {
 }
 
 export async function load(element: QueueItemTreeItem): Promise<void> {
-  lock.playerLoad = true;
+  lock.playerLoad.set(true);
   const { pid, md5 } = element;
   const { id, dt, name, ar } = element.item;
   const idString = `${id}`;
@@ -155,24 +174,14 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
   } else {
     const { url } = (await apiSongUrl([id]))[0];
     if (!url) {
-      lock.playerLoad = false;
+      lock.playerLoad.set(false);
       commands.executeCommand("cloudmusic.next");
       return;
     }
 
     const tmpFilePath = join(TMP_DIR, idString);
     if (!existsSync(tmpFilePath)) {
-      try {
-        download(url, tmpFilePath, (_, res) => {
-          if (res) {
-            if (!PersonalFm.get()) {
-              MusicCache.put(idString, tmpFilePath, md5);
-            }
-          } else {
-            window.showErrorMessage(localize("error.network", "Network Error"));
-          }
-        });
-      } catch {}
+      downloadMusic(url, idString, tmpFilePath, md5);
       let count = 0;
       const timer = setInterval(() => {
         if (statSync(tmpFilePath).size > 256) {
@@ -180,7 +189,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
           playerLoad(tmpFilePath);
         } else if (++count > 12) {
           clearInterval(timer);
-          lock.playerLoad = false;
+          lock.playerLoad.set(false);
           commands.executeCommand("cloudmusic.next");
         }
       }, 100);

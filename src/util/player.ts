@@ -1,11 +1,12 @@
 import { LIBRARYS, NATIVE, PLAYER_AVAILABLE } from "../constant/setting";
 import { NativePlayer, Player } from "../constant/type";
-import { Playing, setPosition } from "../state/play";
 import { apiLyric, apiScrobble } from "./api";
 import { ButtonManager } from "../manager/buttonManager";
+import { Lyric } from "../constant/type";
+import { Playing } from "../state/play";
 import { commands } from "vscode";
 import { lock } from "../state/lock";
-import { lyric } from "../state/play";
+
 class NoPlayer implements Player {
   id = 0;
   pid = 0;
@@ -32,6 +33,13 @@ class NoPlayer implements Player {
   }
 }
 
+export const lyric: Lyric = {
+  index: 0,
+  delay: -1.0,
+  time: [0],
+  text: ["Lyric"],
+};
+
 class AudioPlayer implements Player {
   private player!: NativePlayer;
 
@@ -57,10 +65,21 @@ class AudioPlayer implements Player {
           commands.executeCommand("cloudmusic.next");
         } else {
           const pos = this.player.position();
-          setPosition(pos);
+
+          while (lyric.time[lyric.index] <= pos) {
+            ++lyric.index;
+          }
+          ButtonManager.buttonLyric(lyric.text[lyric.index - 1]);
+
           if (pos > this.dt + 8) {
             Playing.set(false);
             commands.executeCommand("cloudmusic.next");
+          }
+
+          if (!lock.deleteTmp.get() && pos > 120 && !lock.playerLoad.get()) {
+            lock.playerLoad.set(true);
+            lock.deleteTmp.set(true);
+            lock.playerLoad.set(false);
           }
         }
       }
@@ -73,7 +92,7 @@ class AudioPlayer implements Player {
   }
 
   async load(url: string, id: number, pid: number, dt: number): Promise<void> {
-    lock.deleteTmp = false;
+    lock.deleteTmp.set(false);
     if (this.player.load(url)) {
       this.player.setVolume(this.level);
       Playing.set(true);
@@ -96,9 +115,9 @@ class AudioPlayer implements Player {
       this.pid = pid;
       this.dt = dt;
 
-      lock.playerLoad = false;
+      lock.playerLoad.set(false);
     } else {
-      lock.playerLoad = false;
+      lock.playerLoad.set(false);
       commands.executeCommand("cloudmusic.next");
     }
   }
