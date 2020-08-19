@@ -1,11 +1,21 @@
+import * as nls from "vscode-nls";
 import {
   Disposable,
   InputBox,
   QuickInput,
+  QuickInputButton,
   QuickInputButtons,
   QuickPickItem,
+  ThemeIcon,
   window,
 } from "vscode";
+
+nls.config({
+  messageFormat: nls.MessageFormat.bundle,
+  bundleFormat: nls.BundleFormat.standalone,
+})();
+
+const localize = nls.loadMessageBundle();
 
 enum InputFlowAction {
   back,
@@ -28,7 +38,7 @@ interface QuickPickParameters<T extends QuickPickItem> {
 }
 
 interface InputBoxParameters {
-  title: string;
+  title?: string;
   step: number;
   totalSteps: number;
   value?: string;
@@ -38,34 +48,49 @@ interface InputBoxParameters {
   shouldResume?: () => Promise<boolean>;
 }
 
+const forwordButton: QuickInputButton = {
+  iconPath: new ThemeIcon("arrow-right"),
+  tooltip: localize("forword", "Forword"),
+};
+
 export class MultiStepInput {
   static async run(start: InputStep): Promise<void> {
     const input = new MultiStepInput();
     return input.stepThrough(start);
   }
 
+  private step = 0;
   private current?: QuickInput;
   private steps: InputStep[] = [];
 
   private async stepThrough(start: InputStep): Promise<void> {
     let step: InputStep | void = start;
+    ++this.step;
+    this.steps.push(step);
     while (step) {
-      this.steps.push(step);
       if (this.current) {
         this.current.enabled = false;
         this.current.busy = true;
       }
       try {
         step = await step(this);
+        while (this.steps.length > this.step) {
+          this.steps.pop();
+        }
+        if (step) {
+          ++this.step;
+          this.steps.push(step);
+        }
       } catch (err) {
         if (err === InputFlowAction.back) {
-          this.steps.pop();
-          step = this.steps.pop();
+          --this.step;
+          step = this.steps[this.step - 1];
         } else if (err === InputFlowAction.forward) {
+          ++this.step;
+          step = this.steps[this.step - 1];
         } else if (err === InputFlowAction.cancel) {
           step = undefined;
         } else if (err === InputFlowAction.resume) {
-          step = this.steps.pop();
         }
       }
     }
@@ -98,6 +123,7 @@ export class MultiStepInput {
         }
         input.buttons = [
           ...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
+          ...(this.step < this.steps.length ? [forwordButton] : []),
         ];
         disposables.push(
           input.onDidTriggerButton((item) => {
@@ -109,6 +135,7 @@ export class MultiStepInput {
           }),
           input.onDidChangeSelection((items) => {
             if (unsave) {
+              --this.step;
               this.steps.pop();
             }
             resolve(items[0]);
@@ -156,6 +183,7 @@ export class MultiStepInput {
         input.prompt = prompt;
         input.buttons = [
           ...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
+          ...(this.step < this.steps.length ? [forwordButton] : []),
         ];
         input.password = password || false;
         disposables.push(
@@ -171,6 +199,7 @@ export class MultiStepInput {
             input.enabled = false;
             input.busy = true;
             if (unsave) {
+              --this.step;
               this.steps.pop();
             }
             resolve(value);
