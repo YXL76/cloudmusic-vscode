@@ -50,6 +50,7 @@ import { AccountManager } from "./manager/accountManager";
 import { ButtonManager } from "./manager/buttonManager";
 import { IsLike } from "./state/like";
 import { LoggedIn } from "./state/login";
+import { MultiStepInput } from "./util/multiStepInput";
 import { PersonalFm } from "./state/play";
 import { WebView } from "./page/page";
 import { join } from "path";
@@ -139,7 +140,7 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand(
     "cloudmusic.playSong",
     async (element: QueueItemTreeItem) => {
-      if (!lock.playerLoad.get()) {
+      if (!lock.playerLoad) {
         lockQueue(async () => {
           PersonalFm.set(false);
           await load(element);
@@ -167,71 +168,94 @@ export function activate(context: ExtensionContext): void {
     if (LoggedIn.get()) {
       return;
     }
-    const method = await window.showQuickPick(
-      [
-        {
-          label: localize("signin.email.label", "✉Email"),
-          description: localize(
-            "signin.email.description",
-            "use email to sign in"
-          ),
-          phone: false,
-        },
-        {
-          label: localize("signin.cellphone.label", "📱Cellphone"),
-          description: localize(
-            "signin.cellphone.description",
-            "use cellphone to sign in"
-          ),
-          phone: true,
-        },
-      ],
-      {
-        placeHolder: localize(
-          "signin.placeHolder",
-          "Select the method to sign in."
-        ),
-      }
-    );
-    if (!method) {
-      return;
-    }
-    const account = await window.showInputBox({
-      placeHolder: localize("signin.account", "Please enter your account."),
-    });
-    if (!account) {
-      return;
-    }
-    const password = await window.showInputBox({
-      placeHolder: localize("signin.password", "Please enter your password."),
-      password: true,
-    });
-    if (!password) {
-      return;
-    }
+
+    const title = localize("signin", "Sign in");
+
+    type State = {
+      phone: boolean;
+      account: string;
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      md5_password: string;
+    };
+
+    const state = {} as State;
+    await MultiStepInput.run((input) => pickMethod(input));
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const md5_password = crypto
-      .createHash("md5")
-      .update(password)
-      .digest("hex");
-    if (await AccountManager.login(method.phone, account, md5_password)) {
-      writeFile(
-        ACCOUNT_FILE,
-        JSON.stringify({
-          phone: method.phone,
-          account,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          md5_password,
-        }),
-        () => {
-          //
-        }
-      );
+    const { phone, account, md5_password } = state;
+    if (
+      md5_password &&
+      (await AccountManager.login(phone, account, md5_password))
+    ) {
+      writeFile(ACCOUNT_FILE, JSON.stringify(state), () => {
+        //
+      });
       window.showInformationMessage(
         localize("signin.success", "Sign in success")
       );
     } else {
       window.showErrorMessage(localize("signin.fail", "Sign in fail"));
+    }
+
+    async function pickMethod(input: MultiStepInput) {
+      interface T extends QuickPickItem {
+        phone: boolean;
+      }
+
+      const pick = await input.showQuickPick<T>({
+        title,
+        step: 1,
+        totalSteps: 3,
+        items: [
+          {
+            label: localize("signin.email.label", "✉Email"),
+            description: localize(
+              "signin.email.description",
+              "use email to sign in"
+            ),
+            phone: false,
+          },
+          {
+            label: localize("signin.cellphone.label", "📱Cellphone"),
+            description: localize(
+              "signin.cellphone.description",
+              "use cellphone to sign in"
+            ),
+            phone: true,
+          },
+        ],
+        placeholder: localize(
+          "signin.placeHolder",
+          "Select the method to sign in."
+        ),
+      });
+      state.phone = pick.phone;
+      return (input: MultiStepInput) => inputAccount(input);
+    }
+
+    async function inputAccount(input: MultiStepInput) {
+      state.account = await input.showInputBox({
+        title,
+        step: 2,
+        totalSteps: 3,
+        value: state.account,
+        prompt: localize("signin.account", "Please enter your account."),
+      });
+      return (input: MultiStepInput) => inputPassword(input);
+    }
+
+    async function inputPassword(input: MultiStepInput) {
+      const password = await input.showInputBox({
+        title,
+        step: 3,
+        totalSteps: 3,
+        prompt: localize("signin.password", "Please enter your password."),
+        password: true,
+      });
+
+      state.md5_password = crypto
+        .createHash("md5")
+        .update(password)
+        .digest("hex");
     }
   });
 
@@ -266,7 +290,7 @@ export function activate(context: ExtensionContext): void {
         type: 0,
       },
       {
-        label: localize("account.fm", "Personal FM"),
+        label: localize("personalFM", "Personal FM"),
         type: 1,
       },
       {
@@ -284,7 +308,7 @@ export function activate(context: ExtensionContext): void {
         type: 2,
       },
       {
-        label: localize("account.signout", "Sign out"),
+        label: localize("signout", "Sign out"),
         type: 3,
       },
     ]);
@@ -323,7 +347,7 @@ export function activate(context: ExtensionContext): void {
 
   // next command
   const next = commands.registerCommand("cloudmusic.next", async () => {
-    if (lock.playerLoad.get()) {
+    if (lock.playerLoad) {
       return;
     }
     if (PersonalFm.get()) {
@@ -491,7 +515,7 @@ export function activate(context: ExtensionContext): void {
       lockQueue(async () => {
         PersonalFm.set(false);
         await PlaylistProvider.playPlaylist(element.item.id);
-        if (!lock.playerLoad.get()) {
+        if (!lock.playerLoad) {
           load(queueProvider.songs[0]);
         }
       });
@@ -511,7 +535,7 @@ export function activate(context: ExtensionContext): void {
       lockQueue(async () => {
         PersonalFm.set(false);
         await PlaylistProvider.intelligence(element);
-        if (!lock.playerLoad.get()) {
+        if (!lock.playerLoad) {
           load(element);
         }
       });
@@ -531,7 +555,7 @@ export function activate(context: ExtensionContext): void {
       lockQueue(async () => {
         PersonalFm.set(false);
         await PlaylistProvider.playPlaylist(element.pid, element);
-        if (!lock.playerLoad.get()) {
+        if (!lock.playerLoad) {
           load(element);
         }
       });

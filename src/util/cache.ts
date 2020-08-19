@@ -34,14 +34,13 @@ export class MusicCache {
     cacache.verify(MUSIC_CACHE_DIR);
   }
 
-  static async get(key: string): Promise<string> {
+  static async get(key: string): Promise<string | undefined> {
     try {
       const { path } = await cacache.get.info(MUSIC_CACHE_DIR, key);
       this.lruCache.get(key);
       return path;
-    } catch {
-      return "";
-    }
+    } catch {}
+    return undefined;
   }
 
   static async put(key: string, path: string, md5: string): Promise<void> {

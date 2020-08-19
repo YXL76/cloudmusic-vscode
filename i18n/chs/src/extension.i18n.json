@@ -1,6 +1,4 @@
 {
-  "account.fm": "私人 FM",
-  "account.signout": "登出",
   "account.user": "当前用户",
   "account.userRanking": "听歌排行",
   "account.userRanking.allTime": "所有时间",
@@ -10,6 +8,7 @@
   "lyric.delay.label": "歌词延迟",
   "lyric.delay.placeHolder": "请输入歌词延迟",
   "lyric.full.label": "显示全部歌词",
+  "personalFM": "私人 FM",
   "search.hot": "热搜",
   "search.keyword": "输入关键词",
   "search.keyword.placeHolder": "请输入关键词",
@@ -17,6 +16,7 @@
   "search.type.artist": "歌手",
   "search.type.placeHolder": "请选择搜索类型",
   "search.type.single": "单曲",
+  "signin": "登录",
   "signin.account": "请输入账号",
   "signin.cellphone.description": "使用手机登录",
   "signin.cellphone.label": "📱手机",
@@ -26,6 +26,7 @@
   "signin.password": "请输入密码",
   "signin.placeHolder": "选择登录方式",
   "signin.success": "登录成功",
+  "signout": "登出",
   "system.support": "不支持的系统",
   "volume.placeHolder": "请输入音量（0～100）"
 }
