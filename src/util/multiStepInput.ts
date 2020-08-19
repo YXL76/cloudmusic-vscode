@@ -1,5 +1,6 @@
 import {
   Disposable,
+  InputBox,
   QuickInput,
   QuickInputButtons,
   QuickPickItem,
@@ -10,6 +11,7 @@ enum InputFlowAction {
   back,
   forward,
   cancel,
+  resume,
 }
 
 type InputStep = (input: MultiStepInput) => Promise<InputStep | void>;
@@ -20,7 +22,9 @@ interface QuickPickParameters<T extends QuickPickItem> {
   totalSteps: number;
   items: T[];
   activeItems?: T[];
-  placeholder: string;
+  placeholder?: string;
+  unsave?: boolean;
+  shouldResume?: () => Promise<boolean>;
 }
 
 interface InputBoxParameters {
@@ -30,6 +34,8 @@ interface InputBoxParameters {
   value?: string;
   prompt?: string;
   password?: boolean;
+  unsave?: boolean;
+  shouldResume?: () => Promise<boolean>;
 }
 
 export class MultiStepInput {
@@ -58,6 +64,8 @@ export class MultiStepInput {
         } else if (err === InputFlowAction.forward) {
         } else if (err === InputFlowAction.cancel) {
           step = undefined;
+        } else if (err === InputFlowAction.resume) {
+          step = this.steps.pop();
         }
       }
     }
@@ -73,6 +81,8 @@ export class MultiStepInput {
     items,
     activeItems,
     placeholder,
+    unsave,
+    shouldResume,
   }: QuickPickParameters<T>): Promise<T> {
     const disposables: Disposable[] = [];
     try {
@@ -97,9 +107,18 @@ export class MultiStepInput {
               reject(InputFlowAction.forward);
             }
           }),
-          input.onDidChangeSelection((items) => resolve(items[0])),
-          input.onDidHide(() => {
-            reject(InputFlowAction.cancel);
+          input.onDidChangeSelection((items) => {
+            if (unsave) {
+              this.steps.pop();
+            }
+            resolve(items[0]);
+          }),
+          input.onDidHide(async () => {
+            if (shouldResume && (await shouldResume())) {
+              reject(InputFlowAction.resume);
+            } else {
+              reject(InputFlowAction.cancel);
+            }
           })
         );
         if (this.current) {
@@ -113,14 +132,19 @@ export class MultiStepInput {
     }
   }
 
-  async showInputBox({
-    title,
-    step,
-    totalSteps,
-    value,
-    prompt,
-    password,
-  }: InputBoxParameters): Promise<string> {
+  async showInputBox(
+    {
+      title,
+      step,
+      totalSteps,
+      value,
+      prompt,
+      password,
+      unsave,
+      shouldResume,
+    }: InputBoxParameters,
+    changeCallback?: (input: InputBox, value: string) => Promise<void>
+  ): Promise<string> {
     const disposables: Disposable[] = [];
     try {
       return await new Promise<string>((resolve, reject) => {
@@ -146,14 +170,28 @@ export class MultiStepInput {
             const value = input.value;
             input.enabled = false;
             input.busy = true;
+            if (unsave) {
+              this.steps.pop();
+            }
             resolve(value);
             input.enabled = true;
             input.busy = false;
           }),
-          input.onDidHide(() => {
-            reject(InputFlowAction.cancel);
+          input.onDidHide(async () => {
+            if (shouldResume && (await shouldResume())) {
+              reject(InputFlowAction.resume);
+            } else {
+              reject(InputFlowAction.cancel);
+            }
           })
         );
+        if (changeCallback) {
+          disposables.push(
+            input.onDidChangeValue(async (value) => {
+              await changeCallback(input, value);
+            })
+          );
+        }
         if (this.current) {
           this.current.dispose();
         }
