@@ -399,7 +399,7 @@ export async function apiScrobble(
   });
 }
 
-enum SearchType {
+export enum SearchType {
   single = 1,
   album = 10,
   artist = 100,
@@ -411,11 +411,17 @@ enum SearchType {
   video = 1014,
 }
 
-export async function apiSearchSingle(keywords: string): Promise<SongsItem[]> {
+export async function apiSearchSingle(
+  keywords: string,
+  limit?: number,
+  offset?: number
+): Promise<SongsItem[]> {
   try {
     const { body, status } = await search({
       keywords,
       type: SearchType.single,
+      limit,
+      offset,
       cookie: AccountManager.cookie,
       proxy: PROXY,
     });
@@ -429,11 +435,17 @@ export async function apiSearchSingle(keywords: string): Promise<SongsItem[]> {
   return [];
 }
 
-export async function apiSearchAlbum(keywords: string): Promise<AlbumsItem[]> {
+export async function apiSearchAlbum(
+  keywords: string,
+  limit?: number,
+  offset?: number
+): Promise<AlbumsItem[]> {
   try {
     const { body, status } = await search({
       keywords,
       type: SearchType.album,
+      limit,
+      offset,
       cookie: AccountManager.cookie,
       proxy: PROXY,
     });
@@ -447,11 +459,17 @@ export async function apiSearchAlbum(keywords: string): Promise<AlbumsItem[]> {
   return [];
 }
 
-export async function apiSearchArtist(keywords: string): Promise<Artist[]> {
+export async function apiSearchArtist(
+  keywords: string,
+  limit?: number,
+  offset?: number
+): Promise<Artist[]> {
   try {
     const { body, status } = await search({
       keywords,
       type: SearchType.artist,
+      limit,
+      offset,
       cookie: AccountManager.cookie,
       proxy: PROXY,
     });

@@ -19,6 +19,16 @@ import {
 } from "./provider/playlistProvider";
 import { QueueItemTreeItem, QueueProvider } from "./provider/queueProvider";
 import {
+  SearchType,
+  apiFmTrash,
+  apiLike,
+  apiPlaylistTracks,
+  apiSearchAlbum,
+  apiSearchArtist,
+  apiSearchHotDetail,
+  apiSearchSingle,
+} from "./util/api";
+import {
   albumsPick,
   artistsPick,
   load,
@@ -28,15 +38,6 @@ import {
   splitLine,
   stop,
 } from "./util/util";
-import {
-  apiFmTrash,
-  apiLike,
-  apiPlaylistTracks,
-  apiSearchAlbum,
-  apiSearchArtist,
-  apiSearchHotDetail,
-  apiSearchSingle,
-} from "./util/api";
 import {
   existsSync,
   mkdirSync,
@@ -170,6 +171,7 @@ export function activate(context: ExtensionContext): void {
     }
 
     const title = localize("signin", "Sign in");
+    const totalSteps = 3;
 
     type State = {
       phone: boolean;
@@ -204,7 +206,7 @@ export function activate(context: ExtensionContext): void {
       const pick = await input.showQuickPick<T>({
         title,
         step: 1,
-        totalSteps: 3,
+        totalSteps,
         items: [
           {
             label: localize("signin.email.label", "✉Email"),
@@ -236,7 +238,7 @@ export function activate(context: ExtensionContext): void {
       state.account = await input.showInputBox({
         title,
         step: 2,
-        totalSteps: 3,
+        totalSteps,
         value: state.account,
         prompt: localize("signin.account", "Please enter your account."),
       });
@@ -247,7 +249,7 @@ export function activate(context: ExtensionContext): void {
       const password = await input.showInputBox({
         title,
         step: 3,
-        totalSteps: 3,
+        totalSteps,
         prompt: localize("signin.password", "Please enter your password."),
         password: true,
       });
@@ -408,76 +410,224 @@ export function activate(context: ExtensionContext): void {
   // search command
   const search = commands.registerCommand("cloudmusic.search", async () => {
     const hotItems = await apiSearchHotDetail();
-    const pick = await window.showQuickPick(
-      [
-        {
-          label: `$(keyboard) ${localize("search.keyword", "Input keyword")}`,
-          type: 1,
-        },
-        {
-          label: splitLine(localize("search.hot", "HOT SEARCH")),
-        },
-      ].concat(
-        hotItems.map(({ searchWord, content }) => ({
-          label: searchWord,
-          detail: content,
-          type: 2,
-        }))
-      )
-    );
-    if (!pick || !pick.type) {
-      return;
-    }
-    let keywords = "";
-    if (pick.type === 1) {
-      const input = await window.showInputBox({
-        placeHolder: localize(
-          "search.keyword.placeHolder",
-          "Please enter keyword."
+
+    const title = localize("search", "Search");
+    const totalSteps = 5;
+    const limit = 30;
+
+    type State = {
+      keyword: string;
+      type: SearchType;
+      id: number;
+    };
+
+    const state = {} as State;
+    await MultiStepInput.run((input) => pickKeyword(input));
+
+    async function pickKeyword(input: MultiStepInput) {
+      const pick = await input.showQuickPick({
+        title,
+        step: 1,
+        totalSteps,
+        items: [
+          {
+            label: `$(keyboard) ${localize("search.keyword", "Input keyword")}`,
+            type: 1,
+          },
+          {
+            label: splitLine(localize("search.hot", "HOT SEARCH")),
+          },
+        ].concat(
+          hotItems.map(({ searchWord, content }) => ({
+            label: searchWord,
+            detail: content,
+            type: 2,
+          }))
         ),
       });
-      if (!input) {
-        return;
+      if (pick.type === 2) {
+        state.keyword = pick.label;
       }
-      keywords = input;
-    } else {
-      keywords = pick.label;
+      return (input: MultiStepInput) => inputKeyword(input);
     }
-    const type = await window.showQuickPick(
-      [
-        {
-          label: `$(link) ${localize("search.type.single", "Single")}`,
-          type: 1,
-        },
-        {
-          label: `$(circuit-board) ${localize("search.type.album", "Album")}`,
-          type: 2,
-        },
-        {
-          label: `$(account) ${localize("search.type.artist", "Artist")}`,
-          type: 3,
-        },
-      ],
-      {
-        placeHolder: localize(
+
+    async function inputKeyword(input: MultiStepInput) {
+      state.keyword = await input.showInputBox({
+        title,
+        step: 2,
+        totalSteps,
+        value: state.keyword,
+        prompt: localize("search.keyword.placeHolder", "Please enter keyword."),
+      });
+      return (input: MultiStepInput) => pickType(input);
+    }
+
+    async function pickType(input: MultiStepInput) {
+      const pick = await input.showQuickPick({
+        title,
+        step: 3,
+        totalSteps,
+        items: [
+          {
+            label: `$(link) ${localize("search.type.single", "Single")}`,
+            type: SearchType.single,
+          },
+          {
+            label: `$(circuit-board) ${localize("search.type.album", "Album")}`,
+            type: SearchType.album,
+          },
+          {
+            label: `$(account) ${localize("search.type.artist", "Artist")}`,
+            type: SearchType.artist,
+          },
+        ],
+        placeholder: localize(
           "search.type.placeHolder",
           "Please choose search type."
         ),
+      });
+      state.type = pick.type;
+      if (state.type === SearchType.single) {
+        return (input: MultiStepInput) => pickSingle(input, 0);
       }
-    );
-    if (!type) {
-      return;
+      if (state.type === SearchType.album) {
+        return (input: MultiStepInput) => pickAlbum(input, 0);
+      }
+      if (state.type === SearchType.artist) {
+        return (input: MultiStepInput) => pickArtist(input, 0);
+      }
     }
-    switch (type.type) {
-      case 1:
-        songsPick(undefined, await apiSearchSingle(keywords));
-        break;
-      case 2:
-        albumsPick(undefined, await apiSearchAlbum(keywords));
-        break;
-      case 3:
-        artistsPick(await apiSearchArtist(keywords));
-        break;
+
+    async function pickSingle(input: MultiStepInput, offset: number) {
+      const songs = await apiSearchSingle(state.keyword, limit, offset);
+      const pick = await input.showQuickPick({
+        title,
+        step: 5,
+        totalSteps,
+        items: [
+          ...(offset > 0
+            ? [
+                {
+                  label: `$(arrow-up) ${localize(
+                    "page.previous",
+                    "previous page"
+                  )}`,
+                  id: -1,
+                },
+              ]
+            : []),
+          ...songs.map(({ name, ar, alia, id }) => ({
+            label: `$(link) ${name}`,
+            description: ar.map((i) => i.name).join("/"),
+            detail: alia.join("/"),
+            id,
+          })),
+          ...(songs.length > 0
+            ? [
+                {
+                  label: `$(arrow-down) ${localize("page.next", "Next page")}`,
+                  id: -2,
+                },
+              ]
+            : []),
+        ],
+        unsave: true,
+      });
+      if (pick.id === -1) {
+        return (input: MultiStepInput) => pickSingle(input, offset - limit);
+      }
+      if (pick.id === -2) {
+        return (input: MultiStepInput) => pickSingle(input, offset + limit);
+      }
+      state.id = pick.id;
+    }
+
+    async function pickAlbum(input: MultiStepInput, offset: number) {
+      const albums = await apiSearchAlbum(state.keyword, limit, offset);
+      const pick = await input.showQuickPick({
+        title,
+        step: 5,
+        totalSteps,
+        items: [
+          ...(offset > 0
+            ? [
+                {
+                  label: `$(arrow-up) ${localize(
+                    "page.previous",
+                    "previous page"
+                  )}`,
+                  id: -1,
+                },
+              ]
+            : []),
+          ...albums.map(({ name, alias, artists, id }) => ({
+            label: `$(circuit-board) ${name}`,
+            description: alias.join("/"),
+            detail: artists.map((artist) => artist.name).join("/"),
+            id: id,
+          })),
+          ...(albums.length > 0
+            ? [
+                {
+                  label: `$(arrow-down) ${localize("page.next", "Next page")}`,
+                  id: -2,
+                },
+              ]
+            : []),
+        ],
+        unsave: true,
+      });
+      if (pick.id === -1) {
+        return (input: MultiStepInput) => pickAlbum(input, offset - limit);
+      }
+      if (pick.id === -2) {
+        return (input: MultiStepInput) => pickAlbum(input, offset + limit);
+      }
+      state.id = pick.id;
+    }
+
+    async function pickArtist(input: MultiStepInput, offset: number) {
+      const artists = await apiSearchArtist(state.keyword, limit, offset);
+      const pick = await input.showQuickPick({
+        title,
+        step: 5,
+        totalSteps,
+        items: [
+          ...(offset > 0
+            ? [
+                {
+                  label: `$(arrow-up) ${localize(
+                    "page.previous",
+                    "previous page"
+                  )}`,
+                  id: -1,
+                },
+              ]
+            : []),
+          ...artists.map(({ name, id, alias, briefDesc }) => ({
+            label: `$(account) ${name}`,
+            description: alias.join("/"),
+            detail: briefDesc,
+            id,
+          })),
+          ...(artists.length > 0
+            ? [
+                {
+                  label: `$(arrow-down) ${localize("page.next", "Next page")}`,
+                  id: -2,
+                },
+              ]
+            : []),
+        ],
+        unsave: true,
+      });
+      if (pick.id === -1) {
+        return (input: MultiStepInput) => pickArtist(input, offset - limit);
+      }
+      if (pick.id === -2) {
+        return (input: MultiStepInput) => pickArtist(input, offset + limit);
+      }
+      state.id = pick.id;
     }
   });
 
@@ -662,16 +812,12 @@ export function activate(context: ExtensionContext): void {
   if (MEDIA_CONTROL) {
     const { startKeyboardEvent } = NATIVE;
     startKeyboardEvent((res) => {
-      switch (res) {
-        case "prev":
-          commands.executeCommand("cloudmusic.previous");
-          break;
-        case "play":
-          commands.executeCommand("cloudmusic.play");
-          break;
-        case "next":
-          commands.executeCommand("cloudmusic.next");
-          break;
+      if (res === "prev") {
+        commands.executeCommand("cloudmusic.previous");
+      } else if (res === "play") {
+        commands.executeCommand("cloudmusic.play");
+      } else if (res === "next") {
+        commands.executeCommand("cloudmusic.next");
       }
     });
   }
