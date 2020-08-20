@@ -6,7 +6,7 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import { SongsItem } from "../constant/type";
+import { SongsItem } from "../constant";
 const { unsortInplace } = require("array-unsort");
 
 export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {

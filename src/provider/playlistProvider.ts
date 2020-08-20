@@ -8,13 +8,14 @@ import {
   TreeItemCollapsibleState,
 } from "vscode";
 import { QueueItemTreeItem, QueueProvider } from "./queueProvider";
-import { apiPlaylistDetail, apiSongDetail } from "../util/api";
 import {
-  getPlaylistContentIntelligence,
-  songsItem2TreeItem,
-} from "../util/util";
-import { AccountManager } from "../manager/accountManager";
-import { PlaylistItem } from "../constant/type";
+  apiPlaylistDetail,
+  apiPlaymodeIntelligenceList,
+  apiSongDetail,
+} from "../util";
+import { AccountManager } from "../manager";
+import { PlaylistItem } from "../constant";
+import { songsItem2TreeItem } from "../util";
 
 nls.config({
   messageFormat: nls.MessageFormat.bundle,
@@ -147,11 +148,13 @@ export class PlaylistProvider
   }
 
   static async intelligence(element: QueueItemTreeItem): Promise<void> {
+    const { id } = element.item;
+    const songs = await apiPlaymodeIntelligenceList(id, element.pid);
+    const ids = songs.map((song) => song.id);
+    const elements = await songsItem2TreeItem(id, ids, songs);
     queueProvider.clear();
     queueProvider.add([element]);
-    queueProvider.add(
-      await getPlaylistContentIntelligence(element.item.id, element.pid)
-    );
+    queueProvider.add(elements);
     queueProvider.refresh();
   }
 

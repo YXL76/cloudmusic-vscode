@@ -1,6 +1,6 @@
-import { AccountManager } from "../manager/accountManager";
-import { ButtonManager } from "../manager/buttonManager";
-import { PlaylistProvider } from "../provider/playlistProvider";
+import { AccountManager } from "../manager";
+import { ButtonManager } from "../manager";
+import { PlaylistProvider } from "../provider";
 import { commands } from "vscode";
 
 export class LoggedIn {

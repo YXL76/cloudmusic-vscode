@@ -1,6 +1,6 @@
 import * as nls from "vscode-nls";
 import { Uri, ViewColumn, window } from "vscode";
-import { apiUserRecord } from "../util/api";
+import { apiUserRecord } from "../util";
 import { join } from "path";
 
 nls.config({

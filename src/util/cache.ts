@@ -2,8 +2,8 @@ import {
   LYRIC_CACHE_DIR,
   MUSIC_CACHE_DIR,
   MUSIC_CACHE_SIZE,
-} from "../constant/setting";
-import { LruCacheValue, LyricData } from "../constant/type";
+} from "../constant";
+import { LruCacheValue, LyricData } from "../constant";
 import { readFileSync } from "fs";
 const cacache = require("cacache");
 const LRU = require("lru-cache");

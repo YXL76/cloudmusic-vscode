@@ -10,16 +10,16 @@ import {
   PLAYER_AVAILABLE,
   SETTING_DIR,
   TMP_DIR,
-} from "./constant/setting";
+} from "./constant";
+import { AccountManager, ButtonManager } from "./manager";
 import { ExtensionContext, QuickPickItem, commands, window } from "vscode";
-import { LyricCache, MusicCache } from "./util/cache";
+import { IsLike, LoggedIn, PersonalFm, lock } from "./state";
 import {
-  PlaylistItemTreeItem,
-  PlaylistProvider,
-} from "./provider/playlistProvider";
-import { QueueItemTreeItem, QueueProvider } from "./provider/queueProvider";
-import {
+  LyricCache,
+  MultiStepInput,
+  MusicCache,
   SearchType,
+  albumsPick,
   apiFmTrash,
   apiLike,
   apiPlaylistTracks,
@@ -27,17 +27,22 @@ import {
   apiSearchArtist,
   apiSearchHotDetail,
   apiSearchSingle,
-} from "./util/api";
-import {
-  albumsPick,
   artistsPick,
   load,
   lockQueue,
+  lyric,
+  player,
   songPick,
   songsPick,
   splitLine,
   stop,
-} from "./util/util";
+} from "./util";
+import {
+  PlaylistItemTreeItem,
+  PlaylistProvider,
+  QueueItemTreeItem,
+  QueueProvider,
+} from "./provider";
 import {
   existsSync,
   mkdirSync,
@@ -46,16 +51,8 @@ import {
   unlink,
   writeFile,
 } from "fs";
-import { lyric, player } from "./util/player";
-import { AccountManager } from "./manager/accountManager";
-import { ButtonManager } from "./manager/buttonManager";
-import { IsLike } from "./state/like";
-import { LoggedIn } from "./state/login";
-import { MultiStepInput } from "./util/multiStepInput";
-import { PersonalFm } from "./state/play";
-import { WebView } from "./page/page";
+import { WebView } from "./page";
 import { join } from "path";
-import { lock } from "./state/lock";
 const del = require("del");
 
 nls.config({

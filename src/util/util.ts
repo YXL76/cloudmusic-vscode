@@ -1,32 +1,26 @@
 import * as nls from "vscode-nls";
-import {
-  AlbumsItem,
-  AnotherSongItem,
-  Artist,
-  SongsItem,
-} from "../constant/type";
-import { NATIVE, TMP_DIR } from "../constant/setting";
+import { AlbumsItem, AnotherSongItem, Artist, SongsItem } from "../constant";
+import { NATIVE, TMP_DIR } from "../constant";
 import {
   apiAlbum,
   apiArtistAlbum,
   apiArtists,
   apiLike,
-  apiPlaymodeIntelligenceList,
   apiSimiSong,
   apiSongDetail,
   apiSongUrl,
 } from "./api";
 import { commands, window } from "vscode";
 import { existsSync, statSync } from "fs";
-import { AccountManager } from "../manager/accountManager";
-import { ButtonManager } from "../manager/buttonManager";
-import { IsLike } from "../state/like";
-import { MusicCache } from "../util/cache";
-import { PersonalFm } from "../state/play";
-import { QueueItemTreeItem } from "../provider/queueProvider";
+import { AccountManager } from "../manager";
+import { ButtonManager } from "../manager";
+import { IsLike } from "../state";
+import { MusicCache } from "../util";
+import { PersonalFm } from "../state";
+import { QueueItemTreeItem } from "../provider";
 import { TreeItemCollapsibleState } from "vscode";
 import { join } from "path";
-import { lock } from "../state/lock";
+import { lock } from "../state";
 import { player } from "./player";
 
 const { download } = NATIVE;
@@ -88,15 +82,6 @@ export async function songsItem2TreeItem(
     }
   }
   return ret;
-}
-
-export async function getPlaylistContentIntelligence(
-  id: number,
-  pid: number
-): Promise<QueueItemTreeItem[]> {
-  const songs = await apiPlaymodeIntelligenceList(id, pid);
-  const ids = songs.map((song) => song.id);
-  return await songsItem2TreeItem(id, ids, songs);
 }
 
 export function solveArtist(item: Artist): Artist {

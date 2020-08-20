@@ -1,14 +1,14 @@
 import * as nls from "vscode-nls";
 import { Disposable, window } from "vscode";
 import { readdirSync, unlinkSync } from "fs";
-import { MusicCache } from "../util/cache";
+import { MusicCache } from "../util";
 import { PersonalFm } from "./play";
-import { QueueProvider } from "../provider/queueProvider";
-import { TMP_DIR } from "../constant/setting";
-import { apiSongUrl } from "../util/api";
-import { downloadMusic } from "../util/util";
+import { QueueProvider } from "../provider";
+import { TMP_DIR } from "../constant";
+import { apiSongUrl } from "../util";
+import { downloadMusic } from "../util";
 import { join } from "path";
-import { player } from "../util/player";
+import { player } from "../util";
 
 nls.config({
   messageFormat: nls.MessageFormat.bundle,

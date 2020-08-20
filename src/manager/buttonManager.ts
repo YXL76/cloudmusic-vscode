@@ -1,8 +1,8 @@
 import * as nls from "vscode-nls";
 import { Command, StatusBarAlignment, StatusBarItem, window } from "vscode";
 import { existsSync, readFileSync, writeFile } from "fs";
-import { BUTTON_FILE } from "../constant/setting";
-import { LoggedIn } from "../state/login";
+import { BUTTON_FILE } from "../constant";
+import { LoggedIn } from "../state";
 
 nls.config({
   messageFormat: nls.MessageFormat.bundle,

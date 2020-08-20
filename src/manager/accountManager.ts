@@ -6,9 +6,9 @@ import {
   apiLoginStatus,
   apiLogout,
   apiUserPlaylist,
-} from "../util/api";
-import { LoggedIn } from "../state/login";
-import { PlaylistItem } from "../constant/type";
+} from "../util";
+import { LoggedIn } from "../state";
+import { PlaylistItem } from "../constant";
 import { window } from "vscode";
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const { login, login_cellphone } = require("NeteaseCloudMusicApi");

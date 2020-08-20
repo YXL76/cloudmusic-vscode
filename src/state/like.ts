@@ -1,4 +1,4 @@
-import { ButtonManager } from "../manager/buttonManager";
+import { ButtonManager } from "../manager";
 
 export class IsLike {
   private static state = false;

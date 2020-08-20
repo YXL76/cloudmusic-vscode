@@ -7,15 +7,15 @@ import {
   SongDetail,
   SongsItem,
   TrackIdsItem,
-} from "../constant/type";
-import { MUSIC_QUALITY, PROXY } from "../constant/setting";
+} from "../constant";
+import { MUSIC_QUALITY, PROXY } from "../constant";
 import {
   solveAlbumsItem,
   solveAnotherSongItem,
   solveArtist,
   solveSongItem,
 } from "./util";
-import { AccountManager } from "../manager/accountManager";
+import { AccountManager } from "../manager";
 import { LyricCache } from "./cache";
 
 const {
