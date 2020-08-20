@@ -140,7 +140,7 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand(
     "cloudmusic.playSong",
     async (element: QueueItemTreeItem) => {
-      if (!lock.playerLoad) {
+      if (!lock.playerLoad.get()) {
         lockQueue(async () => {
           PersonalFm.set(false);
           await load(element);
@@ -333,7 +333,7 @@ export function activate(context: ExtensionContext): void {
   // previous command
   const previous = commands.registerCommand("cloudmusic.previous", async () => {
     const len = queueProvider.songs.length - 1;
-    if (!lock.playerLoad && len > 0) {
+    if (!lock.playerLoad.get() && len > 0) {
       lockQueue(async () => {
         await load(queueProvider.songs[len]);
         queueProvider.shift(-1);
@@ -344,7 +344,7 @@ export function activate(context: ExtensionContext): void {
 
   // next command
   const next = commands.registerCommand("cloudmusic.next", async () => {
-    if (lock.playerLoad) {
+    if (lock.playerLoad.get()) {
       return;
     }
     if (PersonalFm.get()) {
@@ -650,7 +650,7 @@ export function activate(context: ExtensionContext): void {
       lockQueue(async () => {
         PersonalFm.set(false);
         await PlaylistProvider.playPlaylist(element.item.id);
-        if (!lock.playerLoad) {
+        if (!lock.playerLoad.get()) {
           load(queueProvider.songs[0]);
         }
       });
@@ -670,7 +670,7 @@ export function activate(context: ExtensionContext): void {
       lockQueue(async () => {
         PersonalFm.set(false);
         await PlaylistProvider.intelligence(element);
-        if (!lock.playerLoad) {
+        if (!lock.playerLoad.get()) {
           load(element);
         }
       });
@@ -690,7 +690,7 @@ export function activate(context: ExtensionContext): void {
       lockQueue(async () => {
         PersonalFm.set(false);
         await PlaylistProvider.playPlaylist(element.pid, element);
-        if (!lock.playerLoad) {
+        if (!lock.playerLoad.get()) {
           load(element);
         }
       });
