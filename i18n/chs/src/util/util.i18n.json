@@ -3,6 +3,7 @@
   "artist": "歌手",
   "content": "内容",
   "description": "描述",
+  "detail": "详情",
   "error.network": "网络错误",
   "like.song": "喜欢这首歌",
   "lyric": "歌词",

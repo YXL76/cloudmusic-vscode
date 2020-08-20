@@ -27,24 +27,22 @@ enum InputFlowAction {
 export type InputStep = (input: MultiStepInput) => Promise<InputStep | void>;
 
 interface QuickPickParameters<T extends QuickPickItem> {
-  title?: string;
+  title: string;
   step: number;
   totalSteps?: number;
   items: T[];
   activeItems?: T[];
   placeholder?: string;
-  unsave?: boolean;
   shouldResume?: () => Promise<boolean>;
 }
 
 interface InputBoxParameters {
-  title?: string;
+  title: string;
   step: number;
   totalSteps?: number;
   value?: string;
   prompt?: string;
   password?: boolean;
-  unsave?: boolean;
   shouldResume?: () => Promise<boolean>;
   changeCallback?: (input: InputBox, value: string) => Promise<void>;
 }
@@ -60,30 +58,29 @@ export class MultiStepInput {
     return input.stepThrough(start);
   }
 
-  private error = false;
   private step = 0;
   private current?: QuickInput;
   private steps: InputStep[] = [];
 
   private async stepThrough(start: InputStep): Promise<void> {
     let step: InputStep | void = start;
+    ++this.step;
+    this.steps.push(step);
     while (step) {
       if (this.current) {
         this.current.enabled = false;
         this.current.busy = true;
       }
       try {
-        if (!this.error) {
+        step = await step(this);
+        if (step) {
+          while (this.steps.length > this.step) {
+            this.steps.pop();
+          }
           ++this.step;
           this.steps.push(step);
         }
-        step = await step(this);
-        this.error = false;
-        while (this.steps.length > this.step) {
-          this.steps.pop();
-        }
       } catch (err) {
-        this.error = true;
         if (err === InputFlowAction.back) {
           --this.step;
           step = this.steps[this.step - 1];
@@ -101,6 +98,11 @@ export class MultiStepInput {
     }
   }
 
+  pop(): void {
+    --this.step;
+    this.steps.pop();
+  }
+
   async showQuickPick<T extends QuickPickItem>({
     title,
     step,
@@ -108,7 +110,6 @@ export class MultiStepInput {
     items,
     activeItems,
     placeholder,
-    unsave,
     shouldResume,
   }: QuickPickParameters<T>): Promise<T> {
     const disposables: Disposable[] = [];
@@ -117,18 +118,18 @@ export class MultiStepInput {
         const input = window.createQuickPick<T>();
         input.title = title;
         input.step = step;
-        input.totalSteps = totalSteps
-          ? totalSteps
-          : step > this.steps.length
-          ? step
-          : this.steps.length;
+        input.totalSteps = Math.max(
+          totalSteps || 1,
+          this.step,
+          this.steps.length
+        );
         input.placeholder = placeholder;
         input.items = items;
         if (activeItems) {
           input.activeItems = activeItems;
         }
         input.buttons = [
-          ...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
+          ...(this.step > 1 ? [QuickInputButtons.Back] : []),
           ...(this.step < this.steps.length ? [forwordButton] : []),
         ];
         disposables.push(
@@ -140,10 +141,6 @@ export class MultiStepInput {
             }
           }),
           input.onDidChangeSelection((items) => {
-            if (unsave) {
-              --this.step;
-              this.steps.pop();
-            }
             resolve(items[0]);
           }),
           input.onDidHide(async () => {
@@ -172,7 +169,6 @@ export class MultiStepInput {
     value,
     prompt,
     password,
-    unsave,
     shouldResume,
     changeCallback,
   }: InputBoxParameters): Promise<string> {
@@ -182,15 +178,15 @@ export class MultiStepInput {
         const input = window.createInputBox();
         input.title = title;
         input.step = step;
-        input.totalSteps = totalSteps
-          ? totalSteps
-          : step > this.steps.length
-          ? step
-          : this.steps.length;
+        input.totalSteps = Math.max(
+          totalSteps || 1,
+          this.step,
+          this.steps.length
+        );
         input.value = value || "";
         input.prompt = prompt;
         input.buttons = [
-          ...(this.steps.length > 1 ? [QuickInputButtons.Back] : []),
+          ...(this.step ? [QuickInputButtons.Back] : []),
           ...(this.step < this.steps.length ? [forwordButton] : []),
         ];
         input.password = password || false;
@@ -206,10 +202,6 @@ export class MultiStepInput {
             const value = input.value;
             input.enabled = false;
             input.busy = true;
-            if (unsave) {
-              --this.step;
-              this.steps.pop();
-            }
             resolve(value);
             input.enabled = true;
             input.busy = false;

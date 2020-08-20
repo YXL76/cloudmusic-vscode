@@ -520,13 +520,14 @@ export function activate(context: ExtensionContext): void {
               ]
             : []),
         ],
-        unsave: true,
       });
       if (pick.id === -1) {
+        input.pop();
         return (input: MultiStepInput) =>
           pickSearchSingle(input, offset - limit);
       }
       if (pick.id === -2) {
+        input.pop();
         return (input: MultiStepInput) =>
           pickSearchSingle(input, offset + limit);
       }
@@ -561,13 +562,14 @@ export function activate(context: ExtensionContext): void {
               ]
             : []),
         ],
-        unsave: true,
       });
       if (pick.id === -1) {
+        input.pop();
         return (input: MultiStepInput) =>
           pickSearchAlbum(input, offset - limit);
       }
       if (pick.id === -2) {
+        input.pop();
         return (input: MultiStepInput) =>
           pickSearchAlbum(input, offset + limit);
       }
@@ -602,13 +604,14 @@ export function activate(context: ExtensionContext): void {
               ]
             : []),
         ],
-        unsave: true,
       });
       if (pick.id === -1) {
+        input.pop();
         return (input: MultiStepInput) =>
           pickSearchArtist(input, offset - limit);
       }
       if (pick.id === -2) {
+        input.pop();
         return (input: MultiStepInput) =>
           pickSearchArtist(input, offset + limit);
       }
