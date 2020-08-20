@@ -7,12 +7,12 @@ import {
   apiLogout,
   apiUserPlaylist,
 } from "../util";
+// eslint-disable-next-line @typescript-eslint/naming-convention
+import { login, login_cellphone } from "NeteaseCloudMusicApi";
 import { LoggedIn } from "../state";
 import { PlaylistItem } from "../constant";
+import { cookieToJson } from "NeteaseCloudMusicApi/util/index";
 import { window } from "vscode";
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const { login, login_cellphone } = require("NeteaseCloudMusicApi");
-const { cookieToJson } = require("NeteaseCloudMusicApi/util/index");
 
 nls.config({
   messageFormat: nls.MessageFormat.bundle,

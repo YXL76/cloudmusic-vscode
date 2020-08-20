@@ -10,6 +10,32 @@ import {
 } from "../constant";
 import { MUSIC_QUALITY, PROXY } from "../constant";
 import {
+  album,
+  artist_album,
+  artists,
+  check_music,
+  daily_signin,
+  fm_trash,
+  like,
+  likelist,
+  login_refresh,
+  login_status,
+  logout,
+  lyric,
+  personal_fm,
+  playlist_detail,
+  playlist_tracks,
+  playmode_intelligence_list,
+  scrobble,
+  search,
+  search_hot_detail,
+  simi_song,
+  song_detail,
+  song_url,
+  user_playlist,
+  user_record,
+} from "NeteaseCloudMusicApi";
+import {
   solveAlbumsItem,
   solveAnotherSongItem,
   solveArtist,
@@ -17,54 +43,25 @@ import {
 } from "./util";
 import { AccountManager } from "../manager";
 import { LyricCache } from "./cache";
+import NodeCache = require("node-cache");
 
-const {
-  album,
-  artists,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  artist_album,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  check_music,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  daily_signin,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  fm_trash,
-  like,
-  likelist,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  login_refresh,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  login_status,
-  logout,
-  lyric,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  personal_fm,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  playlist_detail,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  playlist_tracks,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  playmode_intelligence_list,
-  scrobble,
-  search,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  search_hot_detail,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  simi_song,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  song_detail,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  song_url,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  user_playlist,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  user_record,
-} = require("NeteaseCloudMusicApi");
+const apiCache = new NodeCache({
+  stdTTL: 300,
+  checkperiod: 600,
+  useClones: true,
+  deleteOnExpire: true,
+  enableLegacyCallbacks: false,
+  maxKeys: -1,
+});
 
-// TODO cache
 export async function apiAlbum(
   id: number
 ): Promise<{ info: AlbumsItem; songs: SongsItem[] }> {
+  const key = `album${id}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as { info: AlbumsItem; songs: SongsItem[] };
+  }
   try {
     const { status, body } = await album({
       id,
@@ -76,10 +73,12 @@ export async function apiAlbum(
     }
     const { songs } = body;
     const info = solveAlbumsItem(body.album);
-    return {
+    const ret = {
       info,
       songs: songs.map((song: SongsItem) => solveSongItem(song)),
     };
+    apiCache.set(key, ret);
+    return ret;
   } catch {
     return { info: {} as AlbumsItem, songs: [] };
   }
@@ -88,6 +87,11 @@ export async function apiAlbum(
 export async function apiArtists(
   id: number
 ): Promise<{ info: Artist; songs: SongsItem[] }> {
+  const key = `artists${id}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as { info: Artist; songs: SongsItem[] };
+  }
   try {
     const { status, body } = await artists({
       id,
@@ -98,15 +102,18 @@ export async function apiArtists(
       return { info: {} as Artist, songs: [] };
     }
     const { artist, hotSongs } = body;
-    return {
+    const ret = {
       info: solveArtist(artist),
       songs: hotSongs.map((song: SongsItem) => solveSongItem(song)),
     };
+    apiCache.set(key, ret);
+    return ret;
   } catch {
     return { info: {} as Artist, songs: [] };
   }
 }
 
+// TODO refactor
 export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
   let ret: AlbumsItem[] = [];
   const limit = 50;
@@ -321,8 +328,12 @@ export async function apiPersonalFm(): Promise<SongsItem[]> {
   }
 }
 
-// TODO cache
 export async function apiPlaylistDetail(id: number): Promise<number[]> {
+  const key = `playlist_detail${id}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as number[];
+  }
   try {
     const { status, body } = await playlist_detail({
       id,
@@ -334,9 +345,11 @@ export async function apiPlaylistDetail(id: number): Promise<number[]> {
     }
     const { playlist } = body;
     const { trackIds } = playlist;
-    return trackIds.map((trackId: TrackIdsItem) => {
+    const ret = trackIds.map((trackId: TrackIdsItem) => {
       return trackId.id;
     });
+    apiCache.set(key, ret);
+    return ret;
   } catch {
     return [];
   }
@@ -413,9 +426,14 @@ export enum SearchType {
 
 export async function apiSearchSingle(
   keywords: string,
-  limit?: number,
-  offset?: number
+  limit: number,
+  offset: number
 ): Promise<SongsItem[]> {
+  const key = `search${SearchType.single}-${keywords}-${limit}-${offset}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as SongsItem[];
+  }
   try {
     const { body, status } = await search({
       keywords,
@@ -430,16 +448,25 @@ export async function apiSearchSingle(
     }
     const { result } = body;
     const { songs } = result;
-    return songs.map((song: AnotherSongItem) => solveAnotherSongItem(song));
+    const ret = songs.map((song: AnotherSongItem) =>
+      solveAnotherSongItem(song)
+    );
+    apiCache.set(key, ret);
+    return ret;
   } catch {}
   return [];
 }
 
 export async function apiSearchAlbum(
   keywords: string,
-  limit?: number,
-  offset?: number
+  limit: number,
+  offset: number
 ): Promise<AlbumsItem[]> {
+  const key = `search${SearchType.album}-${keywords}-${limit}-${offset}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as AlbumsItem[];
+  }
   try {
     const { body, status } = await search({
       keywords,
@@ -454,16 +481,23 @@ export async function apiSearchAlbum(
     }
     const { result } = body;
     const { albums } = result;
-    return albums.map((album: AlbumsItem) => solveAlbumsItem(album));
+    const ret = albums.map((album: AlbumsItem) => solveAlbumsItem(album));
+    apiCache.set(key, ret);
+    return ret;
   } catch {}
   return [];
 }
 
 export async function apiSearchArtist(
   keywords: string,
-  limit?: number,
-  offset?: number
+  limit: number,
+  offset: number
 ): Promise<Artist[]> {
+  const key = `search${SearchType.artist}-${keywords}-${limit}-${offset}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as Artist[];
+  }
   try {
     const { body, status } = await search({
       keywords,
@@ -478,9 +512,11 @@ export async function apiSearchArtist(
     }
     const { result } = body;
     const { artists } = result;
-    return artists.map((artist: Artist) =>
+    const ret = artists.map((artist: Artist) =>
       solveArtist({ ...artist, briefDesc: "" })
     );
+    apiCache.set(key, ret);
+    return ret;
   } catch {}
   return [];
 }
@@ -488,6 +524,11 @@ export async function apiSearchArtist(
 export async function apiSearchHotDetail(): Promise<
   { searchWord: string; content: string }[]
 > {
+  const key = "search_hot_detail";
+  const value = apiCache.get(key);
+  if (value) {
+    return value as { searchWord: string; content: string }[];
+  }
   try {
     const { body, status } = await search_hot_detail({
       cookie: AccountManager.cookie,
@@ -497,14 +538,22 @@ export async function apiSearchHotDetail(): Promise<
       return [];
     }
     const { data } = body;
-    return data.map(({ searchWord, content }) => ({ searchWord, content }));
+    const ret = data.map(({ searchWord, content }) => ({
+      searchWord,
+      content,
+    }));
+    apiCache.set(key, ret);
+    return ret;
   } catch {}
   return [];
 }
 
-// TODO cache
-export async function apiSimiSong(id: number): Promise<number[]> {
-  const ret: number[] = [];
+export async function apiSimiSong(id: number): Promise<SongsItem[]> {
+  const key = `simi_song${id}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as SongsItem[];
+  }
   try {
     const { body, status } = await simi_song({
       id,
@@ -512,34 +561,28 @@ export async function apiSimiSong(id: number): Promise<number[]> {
       proxy: PROXY,
     });
     if (status !== 200) {
-      return ret;
+      return [];
     }
     const { songs } = body;
-    /*for (const { name, id, duration, alias, artists, album } of songs) {
-      ret.push({
-        name,
-        id,
-        dt: duration,
-        alia: alias,
-        ar: artists.map((artist: { name: string; id: number }) => {
-          return { name: artist.name, id: artist.id };
-        }),
-        al: {
-          name: album.name,
-          id: album.id,
-        },
-      });
-    }*/
-    for (const { id } of songs) {
-      ret.push(id);
-    }
+    const ret = songs.map((song: AnotherSongItem) =>
+      solveAnotherSongItem(song)
+    );
+    apiCache.set(key, ret);
     return ret;
   } catch {
-    return ret;
+    return [];
   }
 }
 
 export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
+  let key = "";
+  if (trackIds.length === 1) {
+    key = `song_detail${trackIds[0]}`;
+    const value = apiCache.get(key);
+    if (value) {
+      return value as SongsItem[];
+    }
+  }
   let ret: SongsItem[] = [];
   try {
     for (let i = 0; i < trackIds.length; i += 512) {
@@ -553,6 +596,9 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
       }
       const { songs } = body;
       ret = ret.concat(songs.map((song: SongsItem) => solveSongItem(song)));
+    }
+    if (trackIds.length === 1) {
+      apiCache.set(key, ret);
     }
     return ret;
   } catch {

@@ -55,7 +55,7 @@ import {
 } from "fs";
 import { WebView } from "./page";
 import { join } from "path";
-const del = require("del");
+import del = require("del");
 
 nls.config({
   messageFormat: nls.MessageFormat.bundle,
@@ -99,14 +99,6 @@ export function activate(context: ExtensionContext): void {
   }
 
   // init cache folder
-  try {
-    readdirSync(CACHE_DIR).forEach((folder) => {
-      if (folder !== "music" && folder !== "lyric") {
-        const pattern = join(CACHE_DIR, folder);
-        del.sync([pattern], { force: true });
-      }
-    });
-  } catch {}
   try {
     const pf = join(CACHE_DIR, "music");
     readdirSync(pf).forEach((folder) => {

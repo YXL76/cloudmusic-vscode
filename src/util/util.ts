@@ -276,17 +276,24 @@ export async function pickSong(
       item: { id },
     });
   } else if (pick.type === PickType.similar) {
-    const ids = await apiSimiSong(id);
-    return (input: MultiStepInput) => pickSongs(input, step + 1, ids);
+    const songs = await apiSimiSong(id);
+    return (input: MultiStepInput) =>
+      pickSongs(input, step + 1, undefined, songs);
   }
 }
 
 export async function pickSongs(
   input: MultiStepInput,
   step: number,
-  ids: number[]
+  ids?: number[],
+  songs?: SongsItem[]
 ): Promise<InputStep | void> {
-  const songs = await apiSongDetail(ids);
+  if (!songs && ids) {
+    songs = await apiSongDetail(ids);
+  }
+  if (!songs) {
+    return;
+  }
   const pick = await input.showQuickPick({
     title: localize("song", "Songs"),
     step,

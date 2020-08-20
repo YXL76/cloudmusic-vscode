@@ -5,8 +5,8 @@ import {
 } from "../constant";
 import { LruCacheValue, LyricData } from "../constant";
 import { readFileSync } from "fs";
-const cacache = require("cacache");
-const LRU = require("lru-cache");
+import cacache = require("cacache");
+import LRU = require("lru-cache");
 
 export class MusicCache {
   static lruCache = new LRU({

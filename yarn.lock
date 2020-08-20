@@ -1469,7 +1469,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"clone@npm:^2.1.1":
+"clone@npm:2.x, clone@npm:^2.1.1":
   version: 2.1.2
   resolution: "clone@npm:2.1.2"
   checksum: 85232d66015d2d703dc59812e30049931d97c7815bf70569ae4fb7a66be257f46fcf47040e4e7050966ca195a9e615d59d73ba9e39fc37eedba1a76865f27ab1
@@ -1511,6 +1511,7 @@ __metadata:
     lru-cache: ^6.0.0
     mocha: 8.1.1
     node-abi: ^2.18.0
+    node-cache: ^5.1.2
     ts-loader: 8.0.2
     typescript: 3.9.7
     vscode-nls: ^4.1.2
@@ -4937,6 +4938,15 @@ fsevents@~2.1.2:
   dependencies:
     semver: ^5.4.1
   checksum: 09c46e40b21f5112af39c2166c3a45a47e5bfbe9cb86f51f135e22ef107c63f9b757419e1558052e09cf17c142133a102dc69294845be21611a1639f1ec71801
+  languageName: node
+  linkType: hard
+
+"node-cache@npm:^5.1.2":
+  version: 5.1.2
+  resolution: "node-cache@npm:5.1.2"
+  dependencies:
+    clone: 2.x
+  checksum: 2790fee0366b9c2f747106cbfeaf2b5f60b20201320dd77ebd097d51703c406898aa1c84819cc57fd54a39962bba413956eb721a7a04357add241c53471b4818
   languageName: node
   linkType: hard
 

@@ -1,8 +1,8 @@
 import { homedir, platform } from "os";
 import { NativeModule } from "./type";
+import { getAbi } from "node-abi";
 import { join } from "path";
 import { workspace } from "vscode";
-const { getAbi } = require("node-abi");
 
 // @ts-ignore
 const abi = getAbi(process.versions.electron, "electron");
