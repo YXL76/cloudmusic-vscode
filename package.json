@@ -292,6 +292,12 @@
             "markdownDescription": "%cloudmusic.configuration.cloudmusic.music.proxy.markdownDescription%",
             "scope": "window"
           },
+          "cloudmusic.music.realIP": {
+            "type": "string",
+            "default": "",
+            "markdownDescription": "%cloudmusic.configuration.cloudmusic.music.realIP.markdownDescription%",
+            "scope": "window"
+          },
           "cloudmusic.music.quality": {
             "type": "number",
             "default": 192000,

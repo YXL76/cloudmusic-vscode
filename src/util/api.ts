@@ -4,6 +4,7 @@ import {
   Artist,
   LyricData,
   PlaylistItem,
+  REAL_IP,
   SongDetail,
   SongsItem,
   TrackIdsItem,
@@ -67,6 +68,7 @@ export async function apiAlbum(
       id,
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return { info: {} as AlbumsItem, songs: [] };
@@ -97,6 +99,7 @@ export async function apiArtists(
       id,
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return { info: {} as Artist, songs: [] };
@@ -113,8 +116,12 @@ export async function apiArtists(
   }
 }
 
-// TODO refactor
 export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
+  const key = `artist_album${id}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as AlbumsItem[];
+  }
   let ret: AlbumsItem[] = [];
   const limit = 50;
   let offset = 0;
@@ -126,6 +133,7 @@ export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
         offset,
         cookie: AccountManager.cookie,
         proxy: PROXY,
+        realIP: REAL_IP,
       });
       if (status !== 200) {
         break;
@@ -141,6 +149,9 @@ export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
       }
     }
   } catch {}
+  if (ret.length > 0) {
+    apiCache.set(key, ret);
+  }
   return ret;
 }
 
@@ -150,6 +161,7 @@ export async function apiCheckMusic(id: number): Promise<boolean> {
       id,
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return false;
@@ -166,6 +178,7 @@ export async function apiDailySignin(): Promise<number> {
     const { status, body } = await daily_signin({
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return 0;
@@ -183,6 +196,7 @@ export async function apiFmTrash(id: number): Promise<boolean> {
       id,
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status === 200) {
       return true;
@@ -198,6 +212,7 @@ export async function apiLike(id: number, islike?: string): Promise<boolean> {
       like: islike,
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return false;
@@ -214,6 +229,7 @@ export async function apiLikelist(): Promise<number[]> {
       uid: AccountManager.uid,
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return [];
@@ -230,6 +246,7 @@ export async function apiLoginRefresh(): Promise<boolean> {
     const { status } = await login_refresh({
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return false;
@@ -245,6 +262,7 @@ export async function apiLoginStatus(): Promise<boolean> {
     const { status } = await login_status({
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return false;
@@ -260,6 +278,7 @@ export async function apiLogout(): Promise<boolean> {
     const { status } = await logout({
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return false;
@@ -282,6 +301,7 @@ export async function apiLyric(id: number): Promise<LyricData> {
       id,
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return { time, text };
@@ -317,6 +337,7 @@ export async function apiPersonalFm(): Promise<SongsItem[]> {
     const { status, body } = await personal_fm({
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return [];
@@ -339,6 +360,7 @@ export async function apiPlaylistDetail(id: number): Promise<number[]> {
       id,
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return [];
@@ -367,6 +389,7 @@ export async function apiPlaylistTracks(
       tracks: tracks.join(","),
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return false;
@@ -388,6 +411,7 @@ export async function apiPlaymodeIntelligenceList(
       pid,
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return ret;
@@ -442,6 +466,7 @@ export async function apiSearchSingle(
       offset,
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return [];
@@ -475,6 +500,7 @@ export async function apiSearchAlbum(
       offset,
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return [];
@@ -506,6 +532,7 @@ export async function apiSearchArtist(
       offset,
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return [];
@@ -533,6 +560,7 @@ export async function apiSearchHotDetail(): Promise<
     const { body, status } = await search_hot_detail({
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return [];
@@ -559,6 +587,7 @@ export async function apiSimiSong(id: number): Promise<SongsItem[]> {
       id,
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return [];
@@ -641,6 +670,7 @@ export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
       uid: AccountManager.uid,
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return ret;
@@ -680,6 +710,7 @@ export async function apiUserRecord(
       type,
       cookie: AccountManager.cookie,
       proxy: PROXY,
+      realIP: REAL_IP,
     });
     if (status !== 200) {
       return [];

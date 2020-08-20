@@ -35,6 +35,7 @@
   "cloudmusic.configuration.cloudmusic.music.quality.enumDescriptions.low": "普通",
   "cloudmusic.configuration.cloudmusic.music.quality.enumDescriptions.medium": "较高",
   "cloudmusic.configuration.cloudmusic.music.quality.markdownDescription": "选择优先播放的音质",
+  "cloudmusic.configuration.cloudmusic.music.realIP.markdownDescription": "参考 [Doc](https://binaryify.github.io/NeteaseCloudMusicApi/#/)",
   "cloudmusic.configuration.cloudmusic.player.defaultLibrary.markdownDescription": "选择播放库",
   "cloudmusic.configuration.cloudmusic.player.mediaControl.markdownDescription": "开启媒体控制",
   "cloudmusic.views.cloudmusic.favoritePlaylist.name": "收藏歌单",

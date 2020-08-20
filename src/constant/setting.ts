@@ -34,6 +34,9 @@ export const AUTO_CHECK = conf.get("account.autoCheck");
 export const PROXY = conf.get("music.proxy")
   ? conf.get("music.proxy")
   : undefined;
+export const REAL_IP = conf.get("music.realIP")
+  ? conf.get("music.realIP")
+  : undefined;
 
 export const MUSIC_QUALITY = conf.get("music.quality");
 

@@ -13,6 +13,7 @@ import {
   PLATFORM,
   PLAYER_AVAILABLE,
   PROXY,
+  REAL_IP,
   SETTING_DIR,
   TMP_DIR,
 } from "./setting";
@@ -47,6 +48,7 @@ export {
   PLATFORM,
   PLAYER_AVAILABLE,
   PROXY,
+  REAL_IP,
   SETTING_DIR,
   TMP_DIR,
   AlbumsItem,
