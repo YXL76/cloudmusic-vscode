@@ -30,6 +30,7 @@ import {
   scrobble,
   search,
   search_hot_detail,
+  search_suggest,
   simi_song,
   song_detail,
   song_url,
@@ -620,6 +621,32 @@ export async function apiSearchHotDetail(): Promise<
       searchWord,
       content,
     }));
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
+}
+
+export async function apiSearchSuggest(keywords: string): Promise<string[]> {
+  const key = `search_suggest${keywords}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as string[];
+  }
+  try {
+    const { body, status } = await search_suggest({
+      keywords,
+      type: "mobile",
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+      realIP: REAL_IP,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { result } = body;
+    const { allMatch } = result;
+    const ret = allMatch.map(({ keyword }) => keyword);
     apiCache.set(key, ret);
     return ret;
   } catch {}

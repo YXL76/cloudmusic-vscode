@@ -306,6 +306,7 @@ export async function pickSong(
     return (input: MultiStepInput) =>
       pickSongs(input, step + 1, undefined, songs);
   }
+  input.pop();
   return (input: MultiStepInput) => pickSong(input, step, id);
 }
 
@@ -323,6 +324,7 @@ export async function pickSongs(
     step,
     items: pickSongItems(songs),
   });
+  input.pop();
   return (input: MultiStepInput) => pickSong(input, step + 1, pick.id);
 }
 
@@ -365,6 +367,7 @@ export async function pickArtist(
     return (input: MultiStepInput) =>
       pickSong(input, step + 1, pick.id as number);
   }
+  input.pop();
   return (input: MultiStepInput) => pickArtist(input, step, id);
 }
 
@@ -403,6 +406,7 @@ export async function pickAlbum(
     return (input: MultiStepInput) =>
       pickSong(input, step + 1, pick.id as number);
   }
+  input.pop();
   return (input: MultiStepInput) => pickAlbum(input, step, id);
 }
 
@@ -468,5 +472,6 @@ export async function pickPlaylist(
     return (input: MultiStepInput) =>
       pickSong(input, step + 1, pick.id as number);
   }
+  input.pop();
   return (input: MultiStepInput) => pickPlaylist(input, step, item);
 }

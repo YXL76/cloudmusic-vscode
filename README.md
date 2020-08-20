@@ -287,7 +287,7 @@
 |    search_hot     |    热门搜索    |   ❌   |
 | search_hot_detail |    热搜列表    |   ✔️   |
 | search_multimatch |   多类型搜索   |   ❌   |
-|  search_suggest   |    搜索建议    |   ❌   |
+|  search_suggest   |    搜索建议    |   ✔️   |
 
 - 杂项
 

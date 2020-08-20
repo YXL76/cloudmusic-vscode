@@ -5,6 +5,7 @@ import {
   QuickInput,
   QuickInputButton,
   QuickInputButtons,
+  QuickPick,
   QuickPickItem,
   ThemeIcon,
   window,
@@ -32,6 +33,7 @@ interface QuickPickParameters<T extends QuickPickItem> {
   items: T[];
   activeItems?: T[];
   placeholder?: string;
+  changeCallback?: (input: QuickPick<T>, value: string) => void;
 }
 
 interface InputBoxParameters {
@@ -41,7 +43,7 @@ interface InputBoxParameters {
   value?: string;
   prompt?: string;
   password?: boolean;
-  changeCallback?: (input: InputBox, value: string) => Promise<void>;
+  changeCallback?: (input: InputBox, value: string) => void;
 }
 
 const forwordButton: QuickInputButton = {
@@ -106,6 +108,7 @@ export class MultiStepInput {
     items,
     activeItems,
     placeholder,
+    changeCallback,
   }: QuickPickParameters<T>): Promise<T> {
     const disposables: Disposable[] = [];
     try {
@@ -142,6 +145,11 @@ export class MultiStepInput {
             reject(InputFlowAction.cancel);
           })
         );
+        if (changeCallback) {
+          disposables.push(
+            input.onDidChangeValue((value) => changeCallback(input, value))
+          );
+        }
         if (this.current) {
           this.current.dispose();
         }
@@ -190,11 +198,7 @@ export class MultiStepInput {
           }),
           input.onDidAccept(async () => {
             const value = input.value;
-            input.enabled = false;
-            input.busy = true;
             resolve(value);
-            input.enabled = true;
-            input.busy = false;
           }),
           input.onDidHide(async () => {
             reject(InputFlowAction.cancel);
@@ -202,9 +206,7 @@ export class MultiStepInput {
         );
         if (changeCallback) {
           disposables.push(
-            input.onDidChangeValue(async (value) => {
-              await changeCallback(input, value);
-            })
+            input.onDidChangeValue((value) => changeCallback(input, value))
           );
         }
         if (this.current) {

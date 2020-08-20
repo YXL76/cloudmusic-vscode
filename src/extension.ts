@@ -28,6 +28,7 @@ import {
   apiSearchHotDetail,
   apiSearchPlaylist,
   apiSearchSingle,
+  apiSearchSuggest,
   load,
   lockQueue,
   lyric,
@@ -40,7 +41,6 @@ import {
   pickSong,
   pickSongItems,
   player,
-  splitLine,
   stop,
 } from "./util";
 import {
@@ -59,6 +59,7 @@ import {
 } from "fs";
 import { WebView } from "./page";
 import { join } from "path";
+import { throttle } from "lodash";
 import del = require("del");
 
 nls.config({
@@ -400,10 +401,15 @@ export function activate(context: ExtensionContext): void {
 
   // search command
   const search = commands.registerCommand("cloudmusic.search", async () => {
-    const hotItems = await apiSearchHotDetail();
+    const hotItems = (await apiSearchHotDetail()).map(
+      ({ searchWord, content }) => ({
+        label: searchWord,
+        detail: content,
+      })
+    );
 
     const title = localize("search", "Search");
-    const totalSteps = 4;
+    const totalSteps = 3;
     const limit = 30;
 
     type State = {
@@ -411,51 +417,50 @@ export function activate(context: ExtensionContext): void {
       type: SearchType;
     };
 
-    const state = {} as State;
-    await MultiStepInput.run((input) => pickKeyword(input));
+    const updateSuggestions = throttle((that, value) => {
+      that.enabled = false;
+      that.busy = true;
+      apiSearchSuggest(value).then((suggestions) => {
+        that.items = [that.items[0]].concat(
+          suggestions.map((label) => ({ label }))
+        );
+        that.enabled = true;
+        that.busy = false;
+      });
+    }, 256);
 
-    async function pickKeyword(input: MultiStepInput) {
+    const state = {} as State;
+    await MultiStepInput.run((input) => inputKeyword(input));
+
+    async function inputKeyword(input: MultiStepInput) {
       const pick = await input.showQuickPick({
         title,
         step: 1,
         totalSteps,
-        items: [
-          {
-            label: `$(keyboard) ${localize("search.keyword", "Input keyword")}`,
-            type: 1,
-          },
-          {
-            label: splitLine(localize("search.hot", "HOT SEARCH")),
-          },
-        ].concat(
-          hotItems.map(({ searchWord, content }) => ({
-            label: searchWord,
-            detail: content,
-            type: 2,
-          }))
+        items: state.keyword
+          ? [{ label: state.keyword }].concat(hotItems)
+          : hotItems,
+        placeholder: localize(
+          "search.keyword.placeHolder",
+          "Please enter keyword."
         ),
+        changeCallback: (that, value) => {
+          if (value) {
+            that.items = [{ label: value }].concat(that.items.slice(1));
+            updateSuggestions(that, value);
+          } else {
+            that.items = hotItems;
+          }
+        },
       });
-      if (pick.type === 2) {
-        state.keyword = pick.label;
-      }
-      return (input: MultiStepInput) => inputKeyword(input);
-    }
-
-    async function inputKeyword(input: MultiStepInput) {
-      state.keyword = await input.showInputBox({
-        title,
-        step: 2,
-        totalSteps,
-        value: state.keyword,
-        prompt: localize("search.keyword.placeHolder", "Please enter keyword."),
-      });
+      state.keyword = pick.label;
       return (input: MultiStepInput) => pickType(input);
     }
 
     async function pickType(input: MultiStepInput) {
       const pick = await input.showQuickPick({
         title,
-        step: 3,
+        step: 2,
         totalSteps,
         items: [
           {
@@ -500,7 +505,7 @@ export function activate(context: ExtensionContext): void {
       const songs = await apiSearchSingle(state.keyword, limit, offset);
       const pick = await input.showQuickPick({
         title,
-        step: 4,
+        step: 3,
         totalSteps,
         items: [
           ...(offset > 0
@@ -535,14 +540,14 @@ export function activate(context: ExtensionContext): void {
         return (input: MultiStepInput) =>
           pickSearchSingle(input, offset + limit);
       }
-      return (input: MultiStepInput) => pickSong(input, 5, pick.id);
+      return (input: MultiStepInput) => pickSong(input, 4, pick.id);
     }
 
     async function pickSearchAlbum(input: MultiStepInput, offset: number) {
       const albums = await apiSearchAlbum(state.keyword, limit, offset);
       const pick = await input.showQuickPick({
         title,
-        step: 4,
+        step: 3,
         totalSteps,
         items: [
           ...(offset > 0
@@ -577,14 +582,14 @@ export function activate(context: ExtensionContext): void {
         return (input: MultiStepInput) =>
           pickSearchAlbum(input, offset + limit);
       }
-      return (input: MultiStepInput) => pickAlbum(input, 5, pick.id);
+      return (input: MultiStepInput) => pickAlbum(input, 4, pick.id);
     }
 
     async function pickSearchArtist(input: MultiStepInput, offset: number) {
       const artists = await apiSearchArtist(state.keyword, limit, offset);
       const pick = await input.showQuickPick({
         title,
-        step: 4,
+        step: 3,
         totalSteps,
         items: [
           ...(offset > 0
@@ -619,7 +624,7 @@ export function activate(context: ExtensionContext): void {
         return (input: MultiStepInput) =>
           pickSearchArtist(input, offset + limit);
       }
-      return (input: MultiStepInput) => pickArtist(input, 5, pick.id);
+      return (input: MultiStepInput) => pickArtist(input, 4, pick.id);
     }
 
     async function pickSearchPlaylist(input: MultiStepInput, offset: number) {
@@ -664,7 +669,7 @@ export function activate(context: ExtensionContext): void {
           pickSearchPlaylist(input, offset + limit);
       }
       return (input: MultiStepInput) =>
-        pickPlaylist(input, 5, pick.item as PlaylistItem);
+        pickPlaylist(input, 4, pick.item as PlaylistItem);
     }
   });
 
