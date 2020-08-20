@@ -8,6 +8,7 @@ import {
   MUSIC_QUALITY,
   NATIVE,
   PLAYER_AVAILABLE,
+  PlaylistItem,
   SETTING_DIR,
   TMP_DIR,
 } from "./constant";
@@ -25,6 +26,7 @@ import {
   apiSearchAlbum,
   apiSearchArtist,
   apiSearchHotDetail,
+  apiSearchPlaylist,
   apiSearchSingle,
   load,
   lockQueue,
@@ -33,6 +35,8 @@ import {
   pickAlbumItems,
   pickArtist,
   pickArtistItems,
+  pickPlaylist,
+  pickPlaylistItems,
   pickSong,
   pickSongItems,
   player,
@@ -455,16 +459,20 @@ export function activate(context: ExtensionContext): void {
         totalSteps,
         items: [
           {
-            label: `$(link) ${localize("search.type.single", "Single")}`,
+            label: `$(link) ${localize("single", "Single")}`,
             type: SearchType.single,
           },
           {
-            label: `$(circuit-board) ${localize("search.type.album", "Album")}`,
+            label: `$(circuit-board) ${localize("album", "Album")}`,
             type: SearchType.album,
           },
           {
-            label: `$(account) ${localize("search.type.artist", "Artist")}`,
+            label: `$(account) ${localize("artist", "Artist")}`,
             type: SearchType.artist,
+          },
+          {
+            label: `$(list-unordered) ${localize("playlist", "Playlist")}`,
+            type: SearchType.playlist,
           },
         ],
         placeholder: localize(
@@ -482,6 +490,10 @@ export function activate(context: ExtensionContext): void {
       if (state.type === SearchType.artist) {
         return (input: MultiStepInput) => pickSearchArtist(input, 0);
       }
+      if (state.type === SearchType.playlist) {
+        return (input: MultiStepInput) => pickSearchPlaylist(input, 0);
+      }
+      return (input: MultiStepInput) => pickSearchSingle(input, 0);
     }
 
     async function pickSearchSingle(input: MultiStepInput, offset: number) {
@@ -503,7 +515,7 @@ export function activate(context: ExtensionContext): void {
               ]
             : []),
           ...pickSongItems(songs),
-          ...(songs.length > 0
+          ...(songs.length === limit
             ? [
                 {
                   label: `$(arrow-down) ${localize("page.next", "Next page")}`,
@@ -545,7 +557,7 @@ export function activate(context: ExtensionContext): void {
               ]
             : []),
           ...pickAlbumItems(albums),
-          ...(albums.length > 0
+          ...(albums.length === limit
             ? [
                 {
                   label: `$(arrow-down) ${localize("page.next", "Next page")}`,
@@ -587,7 +599,7 @@ export function activate(context: ExtensionContext): void {
               ]
             : []),
           ...pickArtistItems(artists),
-          ...(artists.length > 0
+          ...(artists.length === limit
             ? [
                 {
                   label: `$(arrow-down) ${localize("page.next", "Next page")}`,
@@ -608,6 +620,51 @@ export function activate(context: ExtensionContext): void {
           pickSearchArtist(input, offset + limit);
       }
       return (input: MultiStepInput) => pickArtist(input, 5, pick.id);
+    }
+
+    async function pickSearchPlaylist(input: MultiStepInput, offset: number) {
+      const playlists = await apiSearchPlaylist(state.keyword, limit, offset);
+      const pick = await input.showQuickPick({
+        title,
+        step: 4,
+        totalSteps,
+        items: [
+          ...(offset > 0
+            ? [
+                {
+                  label: `$(arrow-up) ${localize(
+                    "page.previous",
+                    "previous page"
+                  )}`,
+                  id: -1,
+                  item: undefined,
+                },
+              ]
+            : []),
+          ...pickPlaylistItems(playlists),
+          ...(playlists.length === limit
+            ? [
+                {
+                  label: `$(arrow-down) ${localize("page.next", "Next page")}`,
+                  id: -2,
+                  item: undefined,
+                },
+              ]
+            : []),
+        ],
+      });
+      if (pick.id === -1) {
+        input.pop();
+        return (input: MultiStepInput) =>
+          pickSearchPlaylist(input, offset - limit);
+      }
+      if (pick.id === -2) {
+        input.pop();
+        return (input: MultiStepInput) =>
+          pickSearchPlaylist(input, offset + limit);
+      }
+      return (input: MultiStepInput) =>
+        pickPlaylist(input, 5, pick.item as PlaylistItem);
     }
   });
 

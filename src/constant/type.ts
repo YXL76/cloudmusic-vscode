@@ -2,8 +2,8 @@ export type PlaylistItem = {
   description: string;
   id: number;
   name: string;
-  playCount: string;
-  subscribedCount: string;
+  playCount: number;
+  subscribedCount: number;
   trackCount: number;
   userId: number;
 };

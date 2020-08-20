@@ -1,5 +1,11 @@
 import * as nls from "vscode-nls";
-import { AlbumsItem, AnotherSongItem, Artist, SongsItem } from "../constant";
+import {
+  AlbumsItem,
+  AnotherSongItem,
+  Artist,
+  PlaylistItem,
+  SongsItem,
+} from "../constant";
 import { InputStep, MultiStepInput, MusicCache } from "../util";
 import { NATIVE, TMP_DIR } from "../constant";
 import { QuickPickItem, commands, window } from "vscode";
@@ -8,6 +14,7 @@ import {
   apiArtistAlbum,
   apiArtists,
   apiLike,
+  apiPlaylistDetail,
   apiSimiSong,
   apiSongDetail,
   apiSongUrl,
@@ -175,7 +182,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
 }
 
 export function splitLine(content: string): string {
-  return `>>>>>>>>                        ${content}                        <<<<<<<<`;
+  return `>>>>>>>>>>                            ${content}                            <<<<<<<<<<`;
 }
 
 enum PickType {
@@ -186,6 +193,7 @@ enum PickType {
   save,
   similar,
   song,
+  playlist,
 }
 interface T extends QuickPickItem {
   id?: number;
@@ -222,11 +230,25 @@ export const pickAlbumItems = (albums: AlbumsItem[]): ST[] =>
     type: PickType.album,
   }));
 
+interface PST extends T {
+  item: PlaylistItem;
+}
+
+export const pickPlaylistItems = (playlists: PlaylistItem[]): PST[] =>
+  playlists.map((playlist) => ({
+    label: `$(list-unordered) ${playlist.name}`,
+    description: `${playlist.trackCount}`,
+    detail: playlist.description,
+    id: playlist.id,
+    item: playlist,
+    type: PickType.playlist,
+  }));
+
 export async function pickSong(
   input: MultiStepInput,
   step: number,
   id: number
-): Promise<InputStep | void> {
+): Promise<InputStep> {
   const { name, alia, ar, al } = (await apiSongDetail([id]))[0];
 
   const pick = await input.showQuickPick<T>({
@@ -261,25 +283,30 @@ export async function pickSong(
   if (pick.type === PickType.album) {
     return (input: MultiStepInput) =>
       pickAlbum(input, step + 1, pick.id as number);
-  } else if (pick.type === PickType.artist) {
+  }
+  if (pick.type === PickType.artist) {
     return (input: MultiStepInput) =>
       pickArtist(input, step + 1, pick.id as number);
-  } else if (pick.type === PickType.like) {
+  }
+  if (pick.type === PickType.like) {
     if (await apiLike(id)) {
       AccountManager.likelist.add(id);
       if (id === player.id) {
         IsLike.set(true);
       }
     }
-  } else if (pick.type === PickType.save) {
+  }
+  if (pick.type === PickType.save) {
     commands.executeCommand("cloudmusic.addToPlaylist", {
       item: { id },
     });
-  } else if (pick.type === PickType.similar) {
+  }
+  if (pick.type === PickType.similar) {
     const songs = await apiSimiSong(id);
     return (input: MultiStepInput) =>
       pickSongs(input, step + 1, undefined, songs);
   }
+  return (input: MultiStepInput) => pickSong(input, step, id);
 }
 
 export async function pickSongs(
@@ -287,12 +314,9 @@ export async function pickSongs(
   step: number,
   ids?: number[],
   songs?: SongsItem[]
-): Promise<InputStep | void> {
-  if (!songs && ids) {
-    songs = await apiSongDetail(ids);
-  }
+): Promise<InputStep> {
   if (!songs) {
-    return;
+    songs = await apiSongDetail(ids || [0]);
   }
   const pick = await input.showQuickPick({
     title: localize("song", "Songs"),
@@ -306,7 +330,7 @@ export async function pickArtist(
   input: MultiStepInput,
   step: number,
   id: number
-): Promise<InputStep | void> {
+): Promise<InputStep> {
   const { info, songs } = await apiArtists(id);
 
   const { name, alias, briefDesc, albumSize } = info;
@@ -341,13 +365,14 @@ export async function pickArtist(
     return (input: MultiStepInput) =>
       pickSong(input, step + 1, pick.id as number);
   }
+  return (input: MultiStepInput) => pickArtist(input, step, id);
 }
 
 export async function pickAlbum(
   input: MultiStepInput,
   step: number,
   id: number
-): Promise<InputStep | void> {
+): Promise<InputStep> {
   const { info, songs } = await apiAlbum(id);
 
   const { artists, alias, company, description, name } = info;
@@ -378,13 +403,14 @@ export async function pickAlbum(
     return (input: MultiStepInput) =>
       pickSong(input, step + 1, pick.id as number);
   }
+  return (input: MultiStepInput) => pickAlbum(input, step, id);
 }
 
 export async function pickAlbums(
   input: MultiStepInput,
   step: number,
   id: number
-): Promise<InputStep | void> {
+): Promise<InputStep> {
   const albums = await apiArtistAlbum(id);
   const pick = await input.showQuickPick({
     title: localize("album", "Albums"),
@@ -392,4 +418,55 @@ export async function pickAlbums(
     items: pickAlbumItems(albums),
   });
   return (input: MultiStepInput) => pickAlbum(input, step + 1, pick.id);
+}
+
+export async function pickPlaylist(
+  input: MultiStepInput,
+  step: number,
+  item: PlaylistItem
+): Promise<InputStep> {
+  const {
+    id,
+    name,
+    description,
+    playCount,
+    subscribedCount,
+    trackCount,
+  } = item;
+  const ids = await apiPlaylistDetail(id);
+  const songs = await apiSongDetail(ids);
+  const pick = await input.showQuickPick<T>({
+    title: localize("song", "Songs"),
+    step,
+    items: [
+      {
+        label: name,
+      },
+      {
+        label: `$(markdown) ${localize("description", "Description")}`,
+        detail: description,
+      },
+      {
+        label: localize("count.play", "Play count"),
+        description: `${playCount}`,
+      },
+      {
+        label: localize("count.subscribed", "Subscribed count"),
+        description: `${subscribedCount}`,
+      },
+      {
+        label: localize("count.track", "Track count"),
+        description: `${trackCount}`,
+      },
+      {
+        label: splitLine(localize("content", "CONTENTS")),
+      },
+      ...pickSongItems(songs),
+    ],
+  });
+  if (pick.type === PickType.song) {
+    return (input: MultiStepInput) =>
+      pickSong(input, step + 1, pick.id as number);
+  }
+  return (input: MultiStepInput) => pickPlaylist(input, step, item);
 }

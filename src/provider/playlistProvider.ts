@@ -182,8 +182,8 @@ export class PlaylistItemTreeItem extends TreeItem {
     return `
 ${localize("description", "Description")}: ${description || ""}
 ${localize("track", "Track")}: ${trackCount}
-${localize("play.count", "Play count")}: ${playCount}
-${localize("subscribed.count", "Subscribed count")}: ${subscribedCount}
+${localize("count.play", "Play count")}: ${playCount}
+${localize("count.subscribed", "Subscribed count")}: ${subscribedCount}
     `;
   }
 

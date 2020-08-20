@@ -21,7 +21,6 @@ enum InputFlowAction {
   back,
   forward,
   cancel,
-  resume,
 }
 
 export type InputStep = (input: MultiStepInput) => Promise<InputStep | void>;
@@ -33,7 +32,6 @@ interface QuickPickParameters<T extends QuickPickItem> {
   items: T[];
   activeItems?: T[];
   placeholder?: string;
-  shouldResume?: () => Promise<boolean>;
 }
 
 interface InputBoxParameters {
@@ -43,7 +41,6 @@ interface InputBoxParameters {
   value?: string;
   prompt?: string;
   password?: boolean;
-  shouldResume?: () => Promise<boolean>;
   changeCallback?: (input: InputBox, value: string) => Promise<void>;
 }
 
@@ -89,7 +86,6 @@ export class MultiStepInput {
           step = this.steps[this.step - 1];
         } else if (err === InputFlowAction.cancel) {
           step = undefined;
-        } else if (err === InputFlowAction.resume) {
         }
       }
     }
@@ -110,7 +106,6 @@ export class MultiStepInput {
     items,
     activeItems,
     placeholder,
-    shouldResume,
   }: QuickPickParameters<T>): Promise<T> {
     const disposables: Disposable[] = [];
     try {
@@ -144,11 +139,7 @@ export class MultiStepInput {
             resolve(items[0]);
           }),
           input.onDidHide(async () => {
-            if (shouldResume && (await shouldResume())) {
-              reject(InputFlowAction.resume);
-            } else {
-              reject(InputFlowAction.cancel);
-            }
+            reject(InputFlowAction.cancel);
           })
         );
         if (this.current) {
@@ -169,7 +160,6 @@ export class MultiStepInput {
     value,
     prompt,
     password,
-    shouldResume,
     changeCallback,
   }: InputBoxParameters): Promise<string> {
     const disposables: Disposable[] = [];
@@ -207,11 +197,7 @@ export class MultiStepInput {
             input.busy = false;
           }),
           input.onDidHide(async () => {
-            if (shouldResume && (await shouldResume())) {
-              reject(InputFlowAction.resume);
-            } else {
-              reject(InputFlowAction.cancel);
-            }
+            reject(InputFlowAction.cancel);
           })
         );
         if (changeCallback) {

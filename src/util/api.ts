@@ -440,7 +440,7 @@ export enum SearchType {
   single = 1,
   album = 10,
   artist = 100,
-  mix = 1000,
+  playlist = 1000,
   user = 1002,
   mv = 1004,
   lyric = 1006,
@@ -541,6 +541,56 @@ export async function apiSearchArtist(
     const { artists } = result;
     const ret = artists.map((artist: Artist) =>
       solveArtist({ ...artist, briefDesc: "" })
+    );
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
+}
+
+export async function apiSearchPlaylist(
+  keywords: string,
+  limit: number,
+  offset: number
+): Promise<PlaylistItem[]> {
+  const key = `search${SearchType.playlist}-${keywords}-${limit}-${offset}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as PlaylistItem[];
+  }
+  try {
+    const { body, status } = await search({
+      keywords,
+      type: SearchType.playlist,
+      limit,
+      offset,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+      realIP: REAL_IP,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { result } = body;
+    const { playlists } = result;
+    const ret = playlists.map(
+      ({
+        description,
+        id,
+        name,
+        playCount,
+        bookCount,
+        trackCount,
+        creator,
+      }) => ({
+        description,
+        id,
+        name,
+        playCount,
+        subscribedCount: bookCount,
+        trackCount,
+        userId: creator.userId,
+      })
     );
     apiCache.set(key, ret);
     return ret;

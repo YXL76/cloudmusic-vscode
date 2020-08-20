@@ -1,6 +1,6 @@
 {
+  "count.play": "播放量",
+  "count.subscribed": "收藏数",
   "description": "描述",
-  "play.count": "播放量",
-  "subscribed.count": "收藏数",
   "track": "单曲"
 }
