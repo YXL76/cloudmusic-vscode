@@ -24,12 +24,12 @@ enum InputFlowAction {
   resume,
 }
 
-type InputStep = (input: MultiStepInput) => Promise<InputStep | void>;
+export type InputStep = (input: MultiStepInput) => Promise<InputStep | void>;
 
 interface QuickPickParameters<T extends QuickPickItem> {
-  title: string;
+  title?: string;
   step: number;
-  totalSteps: number;
+  totalSteps?: number;
   items: T[];
   activeItems?: T[];
   placeholder?: string;
@@ -40,12 +40,13 @@ interface QuickPickParameters<T extends QuickPickItem> {
 interface InputBoxParameters {
   title?: string;
   step: number;
-  totalSteps: number;
+  totalSteps?: number;
   value?: string;
   prompt?: string;
   password?: boolean;
   unsave?: boolean;
   shouldResume?: () => Promise<boolean>;
+  changeCallback?: (input: InputBox, value: string) => Promise<void>;
 }
 
 const forwordButton: QuickInputButton = {
@@ -59,29 +60,30 @@ export class MultiStepInput {
     return input.stepThrough(start);
   }
 
+  private error = false;
   private step = 0;
   private current?: QuickInput;
   private steps: InputStep[] = [];
 
   private async stepThrough(start: InputStep): Promise<void> {
     let step: InputStep | void = start;
-    ++this.step;
-    this.steps.push(step);
     while (step) {
       if (this.current) {
         this.current.enabled = false;
         this.current.busy = true;
       }
       try {
-        step = await step(this);
-        while (this.steps.length > this.step) {
-          this.steps.pop();
-        }
-        if (step) {
+        if (!this.error) {
           ++this.step;
           this.steps.push(step);
         }
+        step = await step(this);
+        this.error = false;
+        while (this.steps.length > this.step) {
+          this.steps.pop();
+        }
       } catch (err) {
+        this.error = true;
         if (err === InputFlowAction.back) {
           --this.step;
           step = this.steps[this.step - 1];
@@ -115,7 +117,11 @@ export class MultiStepInput {
         const input = window.createQuickPick<T>();
         input.title = title;
         input.step = step;
-        input.totalSteps = totalSteps;
+        input.totalSteps = totalSteps
+          ? totalSteps
+          : step > this.steps.length
+          ? step
+          : this.steps.length;
         input.placeholder = placeholder;
         input.items = items;
         if (activeItems) {
@@ -159,26 +165,28 @@ export class MultiStepInput {
     }
   }
 
-  async showInputBox(
-    {
-      title,
-      step,
-      totalSteps,
-      value,
-      prompt,
-      password,
-      unsave,
-      shouldResume,
-    }: InputBoxParameters,
-    changeCallback?: (input: InputBox, value: string) => Promise<void>
-  ): Promise<string> {
+  async showInputBox({
+    title,
+    step,
+    totalSteps,
+    value,
+    prompt,
+    password,
+    unsave,
+    shouldResume,
+    changeCallback,
+  }: InputBoxParameters): Promise<string> {
     const disposables: Disposable[] = [];
     try {
       return await new Promise<string>((resolve, reject) => {
         const input = window.createInputBox();
         input.title = title;
         input.step = step;
-        input.totalSteps = totalSteps;
+        input.totalSteps = totalSteps
+          ? totalSteps
+          : step > this.steps.length
+          ? step
+          : this.steps.length;
         input.value = value || "";
         input.prompt = prompt;
         input.buttons = [

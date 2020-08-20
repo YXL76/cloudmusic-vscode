@@ -64,7 +64,7 @@ const {
 // TODO cache
 export async function apiAlbum(
   id: number
-): Promise<{ info: AlbumsItem | undefined; songs: SongsItem[] }> {
+): Promise<{ info: AlbumsItem; songs: SongsItem[] }> {
   try {
     const { status, body } = await album({
       id,
@@ -72,7 +72,7 @@ export async function apiAlbum(
       proxy: PROXY,
     });
     if (status !== 200) {
-      return { info: undefined, songs: [] };
+      return { info: {} as AlbumsItem, songs: [] };
     }
     const { songs } = body;
     const info = solveAlbumsItem(body.album);
@@ -81,13 +81,13 @@ export async function apiAlbum(
       songs: songs.map((song: SongsItem) => solveSongItem(song)),
     };
   } catch {
-    return { info: undefined, songs: [] };
+    return { info: {} as AlbumsItem, songs: [] };
   }
 }
 
 export async function apiArtists(
   id: number
-): Promise<{ info: Artist | undefined; songs: SongsItem[] }> {
+): Promise<{ info: Artist; songs: SongsItem[] }> {
   try {
     const { status, body } = await artists({
       id,
@@ -95,7 +95,7 @@ export async function apiArtists(
       proxy: PROXY,
     });
     if (status !== 200) {
-      return { info: undefined, songs: [] };
+      return { info: {} as Artist, songs: [] };
     }
     const { artist, hotSongs } = body;
     return {
@@ -103,7 +103,7 @@ export async function apiArtists(
       songs: hotSongs.map((song: SongsItem) => solveSongItem(song)),
     };
   } catch {
-    return { info: undefined, songs: [] };
+    return { info: {} as Artist, songs: [] };
   }
 }
 

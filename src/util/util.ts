@@ -1,6 +1,8 @@
 import * as nls from "vscode-nls";
 import { AlbumsItem, AnotherSongItem, Artist, SongsItem } from "../constant";
+import { InputStep, MultiStepInput, MusicCache } from "../util";
 import { NATIVE, TMP_DIR } from "../constant";
+import { QuickPickItem, commands, window } from "vscode";
 import {
   apiAlbum,
   apiArtistAlbum,
@@ -10,12 +12,10 @@ import {
   apiSongDetail,
   apiSongUrl,
 } from "./api";
-import { commands, window } from "vscode";
 import { existsSync, statSync } from "fs";
 import { AccountManager } from "../manager";
 import { ButtonManager } from "../manager";
 import { IsLike } from "../state";
-import { MusicCache } from "../util";
 import { PersonalFm } from "../state";
 import { QueueItemTreeItem } from "../provider";
 import { TreeItemCollapsibleState } from "vscode";
@@ -109,14 +109,7 @@ export function solveAlbumsItem(item: AlbumsItem): AlbumsItem {
 
 export function solveSongItem(item: SongsItem): SongsItem {
   const { name, id, dt, alia, ar, al } = item;
-  return {
-    name,
-    id,
-    dt: dt / 1000,
-    alia,
-    ar,
-    al,
-  };
+  return { name, id, dt: dt / 1000, alia, ar, al };
 }
 
 export function solveAnotherSongItem(item: AnotherSongItem): SongsItem {
@@ -127,10 +120,7 @@ export function solveAnotherSongItem(item: AnotherSongItem): SongsItem {
     dt: duration / 1000,
     alia: alias,
     ar: artists.map(({ id, name }) => ({ id, name })),
-    al: {
-      id: album.id,
-      name: album.name,
-    },
+    al: { id: album.id, name: album.name },
   };
 }
 
@@ -188,241 +178,222 @@ export function splitLine(content: string): string {
   return `>>>>>>>>                        ${content}                        <<<<<<<<`;
 }
 
-export async function songPick(id: number, item?: SongsItem): Promise<void> {
-  const { name, alia, ar, al } = item || (await apiSongDetail([id]))[0];
-  const pick = await window.showQuickPick([
-    {
-      label: name,
-      detail: alia.join("/"),
-    },
-    ...ar.map((i) => ({
-      label: `$(account) ${localize("artist", "Artist")}`,
-      detail: i.name,
-      id: i.id,
-      type: 1,
-    })),
-    {
-      label: `$(circuit-board) ${localize("album", "Album")}`,
-      detail: al.name,
-      id: al.id,
-      type: 2,
-    },
-    {
-      label: `$(heart) ${localize("like.song", "Like this song")}`,
-      type: 3,
-    },
-    {
-      label: `$(add) ${localize("save.playlist", "Save to playlist")}`,
-      type: 4,
-    },
-    {
-      label: `$(library) ${localize("similar.song", "Similar songs")}`,
-      type: 5,
-    },
-  ]);
-  if (!pick || !pick.type) {
-    return;
-  }
-  switch (pick.type) {
-    case 1:
-      // @ts-ignore
-      artistPick(pick.id);
-      break;
-    case 2:
-      // @ts-ignore
-      albumPick(pick.id);
-      break;
-    case 3:
-      if ((await apiLike(id)) && id === player.id) {
+enum PickType {
+  artist,
+  album,
+  albums,
+  like,
+  save,
+  similar,
+  song,
+}
+interface T extends QuickPickItem {
+  id?: number;
+  type?: PickType;
+}
+interface ST extends T {
+  id: number;
+  type: PickType;
+}
+
+export const pickSongItems = (songs: SongsItem[]): ST[] =>
+  songs.map(({ name, ar, alia, id }) => ({
+    label: `$(link) ${name}`,
+    description: ar.map((i) => i.name).join("/"),
+    detail: alia.join("/"),
+    id,
+    type: PickType.song,
+  }));
+
+export const pickArtistItems = (ars: { id: number; name: string }[]): ST[] =>
+  ars.map(({ name, id }) => ({
+    label: `$(account) ${localize("artist", "Artist")}`,
+    detail: name,
+    id,
+    type: PickType.artist,
+  }));
+
+export const pickAlbumItems = (albums: AlbumsItem[]): ST[] =>
+  albums.map(({ name, alias, artists, id }) => ({
+    label: `$(circuit-board) ${name}`,
+    description: alias.join("/"),
+    detail: artists.map((artist) => artist.name).join("/"),
+    id,
+    type: PickType.album,
+  }));
+
+export async function pickSong(
+  input: MultiStepInput,
+  step: number,
+  id: number
+): Promise<InputStep | void> {
+  const { name, alia, ar, al } = (await apiSongDetail([id]))[0];
+
+  const pick = await input.showQuickPick<T>({
+    step,
+    items: [
+      {
+        label: name,
+        detail: alia.join("/"),
+      },
+      ...pickArtistItems(ar),
+      {
+        label: `$(circuit-board) ${localize("album", "Album")}`,
+        detail: al.name,
+        id: al.id,
+        type: PickType.album,
+      },
+      {
+        label: `$(heart) ${localize("like.song", "Like this song")}`,
+        type: PickType.like,
+      },
+      {
+        label: `$(add) ${localize("save.playlist", "Save to playlist")}`,
+        type: PickType.save,
+      },
+      {
+        label: `$(library) ${localize("similar.song", "Similar songs")}`,
+        type: PickType.similar,
+      },
+    ],
+  });
+  if (pick.type === PickType.album) {
+    return (input: MultiStepInput) =>
+      pickAlbum(input, step + 1, pick.id as number);
+  } else if (pick.type === PickType.artist) {
+    return (input: MultiStepInput) =>
+      pickArtist(input, step + 1, pick.id as number);
+  } else if (pick.type === PickType.like) {
+    if (await apiLike(id)) {
+      AccountManager.likelist.add(id);
+      if (id === player.id) {
         IsLike.set(true);
-        AccountManager.likelist.add(id);
       }
-      break;
-    case 4:
-      commands.executeCommand("cloudmusic.addToPlaylist", {
-        item: { id },
-      });
-      break;
-    case 5:
-      songsPick(await apiSimiSong(id));
-      break;
+    }
+  } else if (pick.type === PickType.save) {
+    commands.executeCommand("cloudmusic.addToPlaylist", {
+      item: { id },
+    });
+  } else if (pick.type === PickType.similar) {
+    const ids = await apiSimiSong(id);
+    return (input: MultiStepInput) => pickSongs(input, step + 1, ids);
   }
 }
 
-export async function songsPick(
-  ids?: number[],
-  songs?: SongsItem[]
-): Promise<void> {
-  if (!songs && ids) {
-    songs = await apiSongDetail(ids);
-  }
-  if (!songs) {
-    return;
-  }
-  const pick = await window.showQuickPick(
-    songs.map((song) => ({
-      label: `$(link) ${song.name}`,
-      description: song.ar.map((i) => i.name).join("/"),
-      detail: song.alia.join("/"),
-      item: song,
-    }))
-  );
-  if (!pick) {
-    return;
-  }
-  songPick(pick.item.id, pick.item);
+export async function pickSongs(
+  input: MultiStepInput,
+  step: number,
+  ids: number[]
+): Promise<InputStep | void> {
+  const songs = await apiSongDetail(ids);
+  const pick = await input.showQuickPick({
+    step,
+    items: pickSongItems(songs),
+  });
+  return (input: MultiStepInput) => pickSong(input, step + 1, pick.id);
 }
 
-export async function artistPick(
-  id: number,
-  info?: Artist,
-  songs?: SongsItem[]
-): Promise<void> {
-  if (!info || !songs) {
-    const item = await apiArtists(id);
-    info = item.info;
-    songs = item.songs;
-  }
-  if (!info) {
-    return;
-  }
-  const { name, alias, briefDesc, albumSize } = info;
-  const pick = await window.showQuickPick([
-    {
-      label: name,
-      detail: alias.join("/"),
-    },
-    {
-      label: `$(markdown) ${localize("description", "Brief description")}`,
-      detail: briefDesc,
-    },
-    {
-      label: `$(circuit-board) ${localize("album", "Album")}`,
-      detail: `${albumSize}`,
-      id,
-      type: 1,
-    },
-    {
-      label: splitLine(localize("song.hot", "HOT SONGS")),
-    },
-    ...songs.map((song) => ({
-      label: `$(link) ${song.name}`,
-      description: song.ar.map((i) => i.name).join("/"),
-      detail: song.alia.join("/"),
-      item: song,
-      type: 2,
-    })),
-  ]);
-  if (!pick) {
-    return;
-  }
-  switch (pick.type) {
-    case 1:
-      // @ts-ignore
-      albumsPick(pick.id);
-      break;
-    case 2:
-      // @ts-ignore
-      songPick(pick.item.id, pick.item);
-      break;
-  }
+export async function pickArtist(
+  input: MultiStepInput,
+  step: number,
+  id: number
+): Promise<InputStep | void> {
+  const { info, songs } = await apiArtists(id);
+
+  try {
+    const { name, alias, briefDesc, albumSize } = info;
+    const pick = await input.showQuickPick<T>({
+      step,
+      items: [
+        {
+          label: name,
+          detail: alias.join("/"),
+        },
+        {
+          label: `$(markdown) ${localize("description", "Brief description")}`,
+          detail: briefDesc,
+        },
+        {
+          label: `$(circuit-board) ${localize("album", "Album")}`,
+          detail: `${albumSize}`,
+          id,
+          type: PickType.albums,
+        },
+        {
+          label: splitLine(localize("song.hot", "HOT SONGS")),
+        },
+        ...pickSongItems(songs),
+      ],
+    });
+    if (pick.type === PickType.albums) {
+      return (input: MultiStepInput) =>
+        pickAlbums(input, step + 1, pick.id as number);
+    } else if (pick.type === PickType.song) {
+      return (input: MultiStepInput) =>
+        pickSong(input, step + 1, pick.id as number);
+    }
+  } catch {}
 }
 
-export async function artistsPick(items: Artist[]): Promise<void> {
-  const pick = await window.showQuickPick(
-    items.map(({ name, id, alias, briefDesc }) => ({
-      label: `$(account) ${name}`,
-      description: alias.join("/"),
-      detail: briefDesc,
-      id,
-    }))
-  );
-  if (!pick) {
-    return;
-  }
-  artistPick(pick.id);
+export async function pickArtists(
+  input: MultiStepInput,
+  step: number,
+  artists: Artist[]
+): Promise<InputStep> {
+  const pick = await input.showQuickPick({
+    step,
+    items: pickArtistItems(artists),
+  });
+  return (input: MultiStepInput) => pickArtist(input, step + 1, pick.id);
 }
 
-export async function albumPick(
-  id: number,
-  info?: AlbumsItem,
-  songs?: SongsItem[]
-): Promise<void> {
-  if (!info || !songs) {
-    const item = await apiAlbum(id);
-    info = item.info;
-    songs = item.songs;
-  }
-  if (!info) {
-    return;
-  }
-  const { artists, alias, company, description, name } = info;
-  const pick = await window.showQuickPick([
-    {
-      label: name,
-      description: alias.join("/"),
-      detail: company,
-      type: 0,
-    },
-    {
-      label: `$(markdown) ${localize("description", "Description")}`,
-      detail: description,
-      type: 0,
-    },
-    ...artists.map((i) => ({
-      label: `$(account) ${localize("artist", "Artist")}`,
-      detail: i.name,
-      item: i,
-      type: 1,
-    })),
-    {
-      label: splitLine(localize("content", "CONTENTS")),
-      type: 0,
-    },
-    ...songs.map((song) => ({
-      label: `$(link) ${song.name}`,
-      description: song.ar.map((i) => i.name).join("/"),
-      detail: song.alia.join("/"),
-      item: song,
-      type: 2,
-    })),
-  ]);
-  if (!pick || pick.type === 0) {
-    return;
-  }
-  switch (pick.type) {
-    case 1:
-      // @ts-ignore
-      artistPick(pick.item.id, pick.item);
-      break;
-    case 2:
-      // @ts-ignore
-      songPick(pick.item.id, pick.item);
-      break;
-  }
+export async function pickAlbum(
+  input: MultiStepInput,
+  step: number,
+  id: number
+): Promise<InputStep | void> {
+  const { info, songs } = await apiAlbum(id);
+
+  try {
+    const { artists, alias, company, description, name } = info;
+    const pick = await input.showQuickPick<T>({
+      step,
+      items: [
+        {
+          label: name,
+          description: alias.join("/"),
+          detail: company,
+        },
+        {
+          label: `$(markdown) ${localize("description", "Description")}`,
+          detail: description,
+        },
+        ...pickArtistItems(artists),
+        {
+          label: splitLine(localize("content", "CONTENTS")),
+        },
+        ...pickSongItems(songs),
+      ],
+    });
+    if (pick.type === PickType.artist) {
+      return (input: MultiStepInput) =>
+        pickArtist(input, step + 1, pick.id as number);
+    } else if (pick.type === PickType.song) {
+      return (input: MultiStepInput) =>
+        pickSong(input, step + 1, pick.id as number);
+    }
+  } catch {}
 }
 
-export async function albumsPick(
-  id?: number,
-  albums?: AlbumsItem[]
-): Promise<void> {
-  if (!albums && id) {
-    albums = await apiArtistAlbum(id);
-  }
-  if (!albums) {
-    return;
-  }
-  const pick = await window.showQuickPick(
-    albums.map((album) => ({
-      label: `$(circuit-board) ${album.name}`,
-      description: album.alias.join("/"),
-      detail: album.artists.map((artist) => artist.name).join("/"),
-      id: album.id,
-    }))
-  );
-  if (!pick) {
-    return;
-  }
-  // @ts-ignore
-  albumPick(pick.id);
+export async function pickAlbums(
+  input: MultiStepInput,
+  step: number,
+  id: number
+): Promise<InputStep | void> {
+  const albums = await apiArtistAlbum(id);
+  const pick = await input.showQuickPick({
+    step,
+    items: pickAlbumItems(albums),
+  });
+  return (input: MultiStepInput) => pickAlbum(input, step + 1, pick.id);
 }

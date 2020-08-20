@@ -19,7 +19,6 @@ import {
   MultiStepInput,
   MusicCache,
   SearchType,
-  albumsPick,
   apiFmTrash,
   apiLike,
   apiPlaylistTracks,
@@ -27,13 +26,16 @@ import {
   apiSearchArtist,
   apiSearchHotDetail,
   apiSearchSingle,
-  artistsPick,
   load,
   lockQueue,
   lyric,
+  pickAlbum,
+  pickAlbumItems,
+  pickArtist,
+  pickArtistItems,
+  pickSong,
+  pickSongItems,
   player,
-  songPick,
-  songsPick,
   splitLine,
   stop,
 } from "./util";
@@ -196,11 +198,7 @@ export function activate(context: ExtensionContext): void {
     }
 
     async function pickMethod(input: MultiStepInput) {
-      interface T extends QuickPickItem {
-        phone: boolean;
-      }
-
-      const pick = await input.showQuickPick<T>({
+      const pick = await input.showQuickPick({
         title,
         step: 1,
         totalSteps,
@@ -409,13 +407,12 @@ export function activate(context: ExtensionContext): void {
     const hotItems = await apiSearchHotDetail();
 
     const title = localize("search", "Search");
-    const totalSteps = 5;
+    const totalSteps = 4;
     const limit = 30;
 
     type State = {
       keyword: string;
       type: SearchType;
-      id: number;
     };
 
     const state = {} as State;
@@ -485,21 +482,21 @@ export function activate(context: ExtensionContext): void {
       });
       state.type = pick.type;
       if (state.type === SearchType.single) {
-        return (input: MultiStepInput) => pickSingle(input, 0);
+        return (input: MultiStepInput) => pickSearchSingle(input, 0);
       }
       if (state.type === SearchType.album) {
-        return (input: MultiStepInput) => pickAlbum(input, 0);
+        return (input: MultiStepInput) => pickSearchAlbum(input, 0);
       }
       if (state.type === SearchType.artist) {
-        return (input: MultiStepInput) => pickArtist(input, 0);
+        return (input: MultiStepInput) => pickSearchArtist(input, 0);
       }
     }
 
-    async function pickSingle(input: MultiStepInput, offset: number) {
+    async function pickSearchSingle(input: MultiStepInput, offset: number) {
       const songs = await apiSearchSingle(state.keyword, limit, offset);
       const pick = await input.showQuickPick({
         title,
-        step: 5,
+        step: 4,
         totalSteps,
         items: [
           ...(offset > 0
@@ -513,12 +510,7 @@ export function activate(context: ExtensionContext): void {
                 },
               ]
             : []),
-          ...songs.map(({ name, ar, alia, id }) => ({
-            label: `$(link) ${name}`,
-            description: ar.map((i) => i.name).join("/"),
-            detail: alia.join("/"),
-            id,
-          })),
+          ...pickSongItems(songs),
           ...(songs.length > 0
             ? [
                 {
@@ -531,19 +523,21 @@ export function activate(context: ExtensionContext): void {
         unsave: true,
       });
       if (pick.id === -1) {
-        return (input: MultiStepInput) => pickSingle(input, offset - limit);
+        return (input: MultiStepInput) =>
+          pickSearchSingle(input, offset - limit);
       }
       if (pick.id === -2) {
-        return (input: MultiStepInput) => pickSingle(input, offset + limit);
+        return (input: MultiStepInput) =>
+          pickSearchSingle(input, offset + limit);
       }
-      state.id = pick.id;
+      return (input: MultiStepInput) => pickSong(input, 5, pick.id);
     }
 
-    async function pickAlbum(input: MultiStepInput, offset: number) {
+    async function pickSearchAlbum(input: MultiStepInput, offset: number) {
       const albums = await apiSearchAlbum(state.keyword, limit, offset);
       const pick = await input.showQuickPick({
         title,
-        step: 5,
+        step: 4,
         totalSteps,
         items: [
           ...(offset > 0
@@ -557,12 +551,7 @@ export function activate(context: ExtensionContext): void {
                 },
               ]
             : []),
-          ...albums.map(({ name, alias, artists, id }) => ({
-            label: `$(circuit-board) ${name}`,
-            description: alias.join("/"),
-            detail: artists.map((artist) => artist.name).join("/"),
-            id: id,
-          })),
+          ...pickAlbumItems(albums),
           ...(albums.length > 0
             ? [
                 {
@@ -575,19 +564,21 @@ export function activate(context: ExtensionContext): void {
         unsave: true,
       });
       if (pick.id === -1) {
-        return (input: MultiStepInput) => pickAlbum(input, offset - limit);
+        return (input: MultiStepInput) =>
+          pickSearchAlbum(input, offset - limit);
       }
       if (pick.id === -2) {
-        return (input: MultiStepInput) => pickAlbum(input, offset + limit);
+        return (input: MultiStepInput) =>
+          pickSearchAlbum(input, offset + limit);
       }
-      state.id = pick.id;
+      return (input: MultiStepInput) => pickAlbum(input, 5, pick.id);
     }
 
-    async function pickArtist(input: MultiStepInput, offset: number) {
+    async function pickSearchArtist(input: MultiStepInput, offset: number) {
       const artists = await apiSearchArtist(state.keyword, limit, offset);
       const pick = await input.showQuickPick({
         title,
-        step: 5,
+        step: 4,
         totalSteps,
         items: [
           ...(offset > 0
@@ -601,12 +592,7 @@ export function activate(context: ExtensionContext): void {
                 },
               ]
             : []),
-          ...artists.map(({ name, id, alias, briefDesc }) => ({
-            label: `$(account) ${name}`,
-            description: alias.join("/"),
-            detail: briefDesc,
-            id,
-          })),
+          ...pickArtistItems(artists),
           ...(artists.length > 0
             ? [
                 {
@@ -619,12 +605,14 @@ export function activate(context: ExtensionContext): void {
         unsave: true,
       });
       if (pick.id === -1) {
-        return (input: MultiStepInput) => pickArtist(input, offset - limit);
+        return (input: MultiStepInput) =>
+          pickSearchArtist(input, offset - limit);
       }
       if (pick.id === -2) {
-        return (input: MultiStepInput) => pickArtist(input, offset + limit);
+        return (input: MultiStepInput) =>
+          pickSearchArtist(input, offset + limit);
       }
-      state.id = pick.id;
+      return (input: MultiStepInput) => pickArtist(input, 5, pick.id);
     }
   });
 
@@ -741,7 +729,7 @@ export function activate(context: ExtensionContext): void {
     async (element?: QueueItemTreeItem) => {
       const id = element ? element.item.id : player.id;
       if (id) {
-        songPick(id, element?.item);
+        await MultiStepInput.run((input) => pickSong(input, 1, id));
       }
     }
   );
