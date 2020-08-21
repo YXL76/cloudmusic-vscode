@@ -1,6 +1,12 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { IsLike, PersonalFm } from "../state";
-import { MusicCache, apiSongUrl, downloadMusic, player } from "../util";
+import {
+  LocalCache,
+  MusicCache,
+  apiSongUrl,
+  downloadMusic,
+  player,
+} from "../util";
 import { readdirSync, unlinkSync } from "fs";
 import { QueueProvider } from "../provider";
 import { TMP_DIR } from "../constant";
@@ -64,7 +70,10 @@ class DeleteTmp {
           }
         }
         const idString = `${id}`;
-        if (id !== 0 && !(await MusicCache.get(idString))) {
+        if (
+          id !== 0 &&
+          !(LocalCache.get(md5) || (await MusicCache.get(idString)))
+        ) {
           const { url } = (await apiSongUrl([id]))[0];
           if (!url) {
             return;

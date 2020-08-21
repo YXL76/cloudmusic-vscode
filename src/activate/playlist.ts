@@ -33,12 +33,7 @@ export function initPlaylist(): void {
   commands.registerCommand(
     "cloudmusic.playPlaylist",
     (element: PlaylistItemTreeItem) => {
-      PlaylistProvider.playPlaylist(element.item.id, () => {
-        PersonalFm.set(false);
-        if (!lock.playerLoad.get()) {
-          load(QueueProvider.songs[0]);
-        }
-      });
+      PlaylistProvider.playPlaylist(element.item.id);
     }
   );
 
@@ -81,15 +76,7 @@ export function initPlaylist(): void {
   commands.registerCommand(
     "cloudmusic.playSongWithPlaylist",
     (element: QueueItemTreeItem) => {
-      PlaylistProvider.playPlaylist(
-        element.pid,
-        () => {
-          if (!lock.playerLoad.get()) {
-            load(element);
-          }
-        },
-        element
-      );
+      PlaylistProvider.playPlaylist(element.pid, element);
     }
   );
 

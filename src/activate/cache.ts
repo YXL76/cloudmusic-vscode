@@ -1,6 +1,6 @@
 import { CACHE_DIR, MUSIC_QUALITY, TMP_DIR } from "../constant";
+import { LocalCache, MusicCache } from "../util";
 import { existsSync, mkdirSync, readdirSync } from "fs";
-import { MusicCache } from "../util";
 import { join } from "path";
 import del = require("del");
 
@@ -18,4 +18,5 @@ export function initCache(): void {
     });
   } catch {}
   MusicCache.init();
+  LocalCache.init();
 }

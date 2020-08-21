@@ -30,12 +30,9 @@ export const BUTTON_FILE = join(SETTING_DIR, ".button");
 
 export const AUTO_CHECK = conf.get("account.autoCheck") as boolean;
 
-export const PROXY: string | undefined = conf.get("music.proxy")
-  ? conf.get("music.proxy")
-  : undefined;
-export const REAL_IP: string | undefined = conf.get("music.realIP")
-  ? conf.get("music.realIP")
-  : undefined;
+export const PROXY: string | undefined = conf.get("music.proxy") ?? undefined;
+export const REAL_IP: string | undefined =
+  conf.get("music.realIP") ?? undefined;
 
 export const MUSIC_QUALITY = conf.get("music.quality") as number;
 
@@ -43,6 +40,8 @@ export const TMP_DIR = join(SETTING_DIR, "tmp");
 export const CACHE_DIR = join(SETTING_DIR, "cache");
 export const MUSIC_CACHE_DIR = join(CACHE_DIR, "music", `${MUSIC_QUALITY}`);
 export const LYRIC_CACHE_DIR = join(CACHE_DIR, "lyric");
+export const LOCAL_FILE_DIR: string | undefined =
+  conf.get("cache.localDirectory.path") ?? undefined;
 
 const cacheSize = conf.get("cache.size") as number;
 const finalSize = cacheSize > 10240 ? 10240 : cacheSize < 128 ? 128 : cacheSize;

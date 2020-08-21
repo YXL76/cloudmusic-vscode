@@ -1526,6 +1526,7 @@ __metadata:
     gulp-sass: 4.1.0
     gulp-typescript: 6.0.0-alpha.1
     lru-cache: ^6.0.0
+    md5-file: ^5.0.0
     mocha: 8.1.1
     node-abi: ^2.18.0
     node-cache: ^5.1.2
@@ -4581,6 +4582,15 @@ fsevents@~2.1.2:
     resolve: ^1.4.0
     stack-trace: 0.0.10
   checksum: df53c85b080a71c149141517a3a9cee53e11a92e8db8484ac2a0e6310a540accede12af186e9f7671c5ccef7249ed40a5dfa45af2e8025c0f51e2f6afd8c087f
+  languageName: node
+  linkType: hard
+
+"md5-file@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "md5-file@npm:5.0.0"
+  bin:
+    md5-file: cli.js
+  checksum: 7d6e43bd531c5a6a4bbaee9237bacd8590ec2a61919b5be6ce55f5ab6fa80a6b5b83fb01f4408dae6a1c1be267e53c7e5d59292167d6f40e393f549b8de2c4ba
   languageName: node
   linkType: hard
 

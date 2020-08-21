@@ -1,5 +1,5 @@
 import { InputStep, MultiStepInput } from "./multiStepInput";
-import { LyricCache, MusicCache } from "./cache";
+import { LocalCache, LyricCache, MusicCache } from "./cache";
 import {
   SearchType,
   apiAlbum,
@@ -57,6 +57,7 @@ import { lyric, player } from "./player";
 export {
   InputStep,
   MultiStepInput,
+  LocalCache,
   LyricCache,
   MusicCache,
   SearchType,

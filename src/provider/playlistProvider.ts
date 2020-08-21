@@ -6,10 +6,15 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
+import { PersonalFm, lock } from "../state";
 import { QueueItemTreeItem, QueueProvider } from "../provider";
-import { apiPlaylistDetail, apiSongDetail, songsItem2TreeItem } from "../util";
+import {
+  apiPlaylistDetail,
+  apiSongDetail,
+  load,
+  songsItem2TreeItem,
+} from "../util";
 import { AccountManager } from "../manager";
-import { PersonalFm } from "../state";
 import { PlaylistItem } from "../constant";
 import { i18n } from "../i18n";
 import NodeCache = require("node-cache");
@@ -132,11 +137,7 @@ export class PlaylistProvider
     });
   }
 
-  static playPlaylist(
-    id: number,
-    callback: () => void,
-    index?: QueueItemTreeItem
-  ): void {
+  static playPlaylist(id: number, index?: QueueItemTreeItem): void {
     PlaylistProvider.playlistActions.set(id, async () => {
       const ret = await PlaylistProvider.getPlaylistContent(id);
       QueueProvider.refresh(async (queueProvider) => {
@@ -146,7 +147,9 @@ export class PlaylistProvider
         if (index) {
           queueProvider.top(index);
         }
-        callback();
+        if (!lock.playerLoad.get()) {
+          load(QueueProvider.songs[0]);
+        }
       });
       return ret;
     });

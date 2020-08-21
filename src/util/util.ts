@@ -10,6 +10,7 @@ import {
 } from "../constant";
 import {
   InputStep,
+  LocalCache,
   MultiStepInput,
   MusicCache,
   apiAlbum,
@@ -128,7 +129,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
   const { pid, md5, item } = element;
   const { id } = item;
   const idString = `${id}`;
-  const path = await MusicCache.get(idString);
+  const path = LocalCache.get(md5) || (await MusicCache.get(idString));
 
   if (path) {
     player.load(path, pid, item);

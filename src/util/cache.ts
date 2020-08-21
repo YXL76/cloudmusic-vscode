@@ -1,13 +1,17 @@
 import {
+  LOCAL_FILE_DIR,
   LYRIC_CACHE_DIR,
   LruCacheValue,
   LyricData,
   MUSIC_CACHE_DIR,
   MUSIC_CACHE_SIZE,
 } from "../constant";
-import { readFileSync } from "fs";
+import { existsSync, readFileSync, readdirSync } from "fs";
+import { join } from "path";
 import cacache = require("cacache");
 import LRU = require("lru-cache");
+import md5File = require("md5-file");
+import NodeCache = require("node-cache");
 
 export class MusicCache {
   static lruCache = new LRU({
@@ -83,5 +87,48 @@ export class LyricCache {
 
   static put(key: string, data: LyricData): void {
     cacache.put(LYRIC_CACHE_DIR, key, JSON.stringify(data));
+  }
+}
+
+export class LocalCache {
+  private static cache = new NodeCache({
+    stdTTL: 0,
+    checkperiod: 0,
+    useClones: true,
+    deleteOnExpire: false,
+    enableLegacyCallbacks: false,
+    maxKeys: -1,
+  });
+
+  static init(): void {
+    if (LOCAL_FILE_DIR) {
+      try {
+        const items = readdirSync(LOCAL_FILE_DIR, {
+          withFileTypes: true,
+        });
+        for (const item of items) {
+          if (item.isFile()) {
+            const path = join(LOCAL_FILE_DIR, item.name);
+            this.cache.set(
+              `md5-${Buffer.from(md5File.sync(path), "hex").toString(
+                "base64"
+              )}`,
+              path
+            );
+          }
+        }
+      } catch {}
+    }
+  }
+
+  static get(key: string): string | undefined {
+    const path = this.cache.get(key) as string | undefined;
+    if (path) {
+      if (existsSync(path)) {
+        return path;
+      }
+      this.cache.del(key);
+    }
+    return undefined;
   }
 }
