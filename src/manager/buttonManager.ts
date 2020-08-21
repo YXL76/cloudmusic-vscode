@@ -1,5 +1,5 @@
 import { StatusBarAlignment, StatusBarItem, window } from "vscode";
-import { existsSync, readFileSync, writeFile } from "fs";
+import { existsSync, readFileSync, writeFileSync } from "fs";
 import { BUTTON_FILE } from "../constant";
 import { LoggedIn } from "../state";
 import { i18n } from "../i18n";
@@ -102,9 +102,8 @@ export class ButtonManager {
     if (LoggedIn.get()) {
       this.buttonShow[id] ? this.buttons[id].show() : this.buttons[id].hide();
     }
-    writeFile(BUTTON_FILE, JSON.stringify({ show: this.buttonShow }), () => {
-      //
-    });
+    writeFileSync(BUTTON_FILE, JSON.stringify({ show: this.buttonShow }));
+    this.toggle();
   }
 
   static show(): void {
