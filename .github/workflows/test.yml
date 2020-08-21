@@ -29,7 +29,9 @@ jobs:
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ matrix.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-      - run: yarn
+      - run: |
+          yarn
+          yarn webpack
       - name: Run tests
         uses: GabrielBB/xvfb-action@v1.2
         with:
@@ -39,9 +41,19 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
+        electron: [7.3.2]
+        include:
+          - os: macos-latest
+            filename: darwin
+          - os: ubuntu-latest
+            filename: linux
+          - os: windows-latest
+            filename: win32
+          - electron: 7.3.2
+            abi: 75
 
     needs: test
-    name: Build for ${{ matrix.os }}
+    name: Build for ${{ matrix.filename }}-${{ matrix.abi }}
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -51,10 +63,18 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libasound2-dev
           sudo apt-get install -y libx11-dev
+      #     sudo apt-get install -y mpv libmpv-dev libmpv1
+
+      # - name: Install needed Macos dependencies
+      #   if: matrix.os == 'macos-latest'
+      #   run: brew install mpv
 
       - name: Install needed Windows dependencies
         if: matrix.os == 'windows-latest'
         run: choco install llvm
+
+      # - name: Add msvc to PATH
+      #   uses: ilammy/msvc-dev-cmd@v1.3.0
 
       - uses: actions-rs/toolchain@v1
         with:
@@ -82,13 +102,27 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             native/target
-          key: ${{ matrix.os }}-75-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ matrix.os }}-${{ matrix.abi }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - run: yarn
 
+      # - name: make mpv.lib
+      #   if: matrix.os == 'windows-latest'
+      #   run: |
+      #     node script\\libmpv.js
+      #     7z e mpv.7z
+      #     lib /def:mpv.def /out:mpv.lib /machine:x64
+      #     mkdir -p native\\target\\release\\deps
+      #     copy mpv.lib native\\target\\release\\deps\\mpv.lib
+
       - name: Build
         run: |
-          yarn add electron@7.3.2
+          yarn add electron@${{ matrix.electron }}
           yarn add electron-build-env
           yarn add neon-cli
           yarn build
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ matrix.filename }}-${{ matrix.abi }}
+          path: native/index.node
