@@ -7,13 +7,9 @@ import {
   TreeItemCollapsibleState,
 } from "vscode";
 import { QueueItemTreeItem, QueueProvider } from "../provider";
-import {
-  apiPlaylistDetail,
-  apiPlaymodeIntelligenceList,
-  apiSongDetail,
-  songsItem2TreeItem,
-} from "../util";
+import { apiPlaylistDetail, apiSongDetail, songsItem2TreeItem } from "../util";
 import { AccountManager } from "../manager";
+import { PersonalFm } from "../state";
 import { PlaylistItem } from "../constant";
 import { i18n } from "../i18n";
 import NodeCache = require("node-cache");
@@ -94,7 +90,7 @@ export class PlaylistProvider
     element?: PlaylistItemTreeItem
   ): Promise<PlaylistItemTreeItem[] | QueueItemTreeItem[]> {
     if (element) {
-      const id = element.item.id;
+      const { id } = element.item;
       const action = PlaylistProvider.playlistActions.get(id);
       if (action) {
         PlaylistProvider.playlistActions.delete(id);
@@ -136,56 +132,39 @@ export class PlaylistProvider
     });
   }
 
-  static async playPlaylist(
+  static playPlaylist(
     id: number,
     callback: () => void,
     index?: QueueItemTreeItem
-  ): Promise<void> {
+  ): void {
     PlaylistProvider.playlistActions.set(id, async () => {
       const ret = await PlaylistProvider.getPlaylistContent(id);
-      const queueProvider = QueueProvider.getInstance();
-      queueProvider.clear();
-      queueProvider.add(this.treeView.get(id) as QueueItemTreeItem[]);
-      if (index) {
-        queueProvider.top(index);
-      }
-      queueProvider.refresh();
-      callback();
+      QueueProvider.refresh(async (queueProvider) => {
+        PersonalFm.set(false);
+        queueProvider.clear();
+        queueProvider.add(this.treeView.get(id) as QueueItemTreeItem[]);
+        if (index) {
+          queueProvider.top(index);
+        }
+        callback();
+      });
       return ret;
     });
     PlaylistProvider.refresh(PlaylistProvider.playlists.get(id));
   }
 
-  static async addPlaylist(element: PlaylistItemTreeItem): Promise<void> {
-    const id = element.item.id;
+  static addPlaylist(element: PlaylistItemTreeItem): void {
+    const { id } = element.item;
     PlaylistProvider.playlistActions.set(id, async () => {
       const ret = await PlaylistProvider.getPlaylistContent(id);
-      const queueProvider = QueueProvider.getInstance();
-      queueProvider.add(
-        this.treeView.get(element.item.id) as QueueItemTreeItem[]
-      );
-      queueProvider.refresh();
+      QueueProvider.refresh(async (queueProvider) => {
+        queueProvider.add(
+          this.treeView.get(element.item.id) as QueueItemTreeItem[]
+        );
+      });
       return ret;
     });
     PlaylistProvider.refresh(element);
-  }
-
-  static async intelligence(element: QueueItemTreeItem): Promise<void> {
-    const { id } = element.item;
-    const songs = await apiPlaymodeIntelligenceList(id, element.pid);
-    const ids = songs.map((song) => song.id);
-    const elements = await songsItem2TreeItem(id, ids, songs);
-    const queueProvider = QueueProvider.getInstance();
-    queueProvider.clear();
-    queueProvider.add([element]);
-    queueProvider.add(elements);
-    queueProvider.refresh();
-  }
-
-  static addSong(element: QueueItemTreeItem): void {
-    const queueProvider = QueueProvider.getInstance();
-    queueProvider.add([element]);
-    queueProvider.refresh();
   }
 }
 

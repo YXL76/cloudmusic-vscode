@@ -7,34 +7,43 @@ import {
   TreeItemCollapsibleState,
 } from "vscode";
 import { SongsItem } from "../constant";
+import { lock } from "../state";
 import { unsortInplace } from "array-unsort";
 
 export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   private static instance: QueueProvider;
 
-  private _onDidChangeTreeData: EventEmitter<
-    QueueItemTreeItem | undefined | void
-  > = new EventEmitter<QueueItemTreeItem | undefined | void>();
+  private _onDidChangeTreeData: EventEmitter<QueueItemTreeItem | void> = new EventEmitter<QueueItemTreeItem | void>();
 
-  readonly onDidChangeTreeData: Event<
-    QueueItemTreeItem | undefined | void
-  > = this._onDidChangeTreeData.event;
+  readonly onDidChangeTreeData: Event<QueueItemTreeItem | void> = this
+    ._onDidChangeTreeData.event;
 
+  private static action?: (instance: QueueProvider) => Promise<void>;
   songs: QueueItemTreeItem[] = [];
 
   static getInstance(): QueueProvider {
     return this.instance || (this.instance = new QueueProvider());
   }
 
-  refresh(): void {
-    this._onDidChangeTreeData.fire();
+  static refresh(action: (instance: QueueProvider) => Promise<void>): void {
+    if (!lock.queue) {
+      lock.queue = true;
+      QueueProvider.action = action;
+      this.instance._onDidChangeTreeData.fire();
+    }
   }
 
   getTreeItem(element: QueueItemTreeItem): TreeItem {
     return element;
   }
 
-  getChildren(): QueueItemTreeItem[] {
+  async getChildren(): Promise<QueueItemTreeItem[]> {
+    const localAction = QueueProvider.action;
+    QueueProvider.action = undefined;
+    if (localAction) {
+      await localAction(this);
+    }
+    lock.queue = false;
     return this.songs;
   }
 

@@ -22,6 +22,7 @@ import {
   apiFmTrash,
   apiLike,
   apiPlaylistTracks,
+  apiPlaymodeIntelligenceList,
   apiSearchAlbum,
   apiSearchArtist,
   apiSearchHotDetail,
@@ -29,7 +30,6 @@ import {
   apiSearchSingle,
   apiSearchSuggest,
   load,
-  lockQueue,
   lyric,
   pickAlbum,
   pickAlbumItems,
@@ -40,6 +40,7 @@ import {
   pickSong,
   pickSongItems,
   player,
+  songsItem2TreeItem,
   stop,
 } from "./util";
 import {
@@ -111,29 +112,26 @@ export function activate(context: ExtensionContext): void {
   window.registerTreeDataProvider("queue", queueProvider);
 
   commands.registerCommand("cloudmusic.clearQueue", () => {
-    lockQueue(async () => {
+    QueueProvider.refresh(async (queueProvider) => {
       if (!PersonalFm.get()) {
         stop();
       }
       queueProvider.clear();
-      queueProvider.refresh();
     });
   });
   commands.registerCommand("cloudmusic.randomQueue", () => {
-    lockQueue(async () => {
+    QueueProvider.refresh(async (queueProvider) => {
       queueProvider.random();
-      queueProvider.refresh();
     });
   });
   commands.registerCommand(
     "cloudmusic.playSong",
     async (element: QueueItemTreeItem) => {
       if (!lock.playerLoad.get()) {
-        lockQueue(async () => {
-          PersonalFm.set(false);
-          await load(element);
+        PersonalFm.set(false);
+        await load(element);
+        QueueProvider.refresh(async (queueProvider) => {
           queueProvider.top(element);
-          queueProvider.refresh();
         });
       }
     }
@@ -141,9 +139,8 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand(
     "cloudmusic.deleteSong",
     (element: QueueItemTreeItem) => {
-      lockQueue(async () => {
+      QueueProvider.refresh(async (queueProvider) => {
         queueProvider.delete(element);
-        queueProvider.refresh();
       });
     }
   );
@@ -311,10 +308,9 @@ export function activate(context: ExtensionContext): void {
   const previous = commands.registerCommand("cloudmusic.previous", async () => {
     const len = queueProvider.songs.length - 1;
     if (!lock.playerLoad.get() && len > 0) {
-      lockQueue(async () => {
+      QueueProvider.refresh(async (queueProvider) => {
         await load(queueProvider.songs[len]);
         queueProvider.shift(-1);
-        queueProvider.refresh();
       });
     }
   });
@@ -327,10 +323,9 @@ export function activate(context: ExtensionContext): void {
     if (PersonalFm.get()) {
       load(await PersonalFm.next());
     } else if (queueProvider.songs.length > 1) {
-      lockQueue(async () => {
+      QueueProvider.refresh(async (queueProvider) => {
         await load(queueProvider.songs[1]);
         queueProvider.shift(1);
-        queueProvider.refresh();
       });
     }
   });
@@ -632,31 +627,34 @@ export function activate(context: ExtensionContext): void {
   );
   commands.registerCommand(
     "cloudmusic.playPlaylist",
-    async (element: PlaylistItemTreeItem) => {
-      lockQueue(async () => {
+    (element: PlaylistItemTreeItem) => {
+      PlaylistProvider.playPlaylist(element.item.id, () => {
         PersonalFm.set(false);
-        await PlaylistProvider.playPlaylist(element.item.id, () => {
-          if (!lock.playerLoad.get()) {
-            load(queueProvider.songs[0]);
-          }
-        });
+        if (!lock.playerLoad.get()) {
+          load(queueProvider.songs[0]);
+        }
       });
     }
   );
   commands.registerCommand(
     "cloudmusic.addPlaylist",
     (element: PlaylistItemTreeItem) => {
-      lockQueue(async () => {
-        PlaylistProvider.addPlaylist(element);
-      });
+      PlaylistProvider.addPlaylist(element);
     }
   );
   commands.registerCommand(
     "cloudmusic.intelligence",
     async (element: QueueItemTreeItem) => {
-      lockQueue(async () => {
-        PersonalFm.set(false);
-        await PlaylistProvider.intelligence(element);
+      PersonalFm.set(false);
+      QueueProvider.refresh(async (queueProvider) => {
+        const { pid } = element;
+        const { id } = element.item;
+        const songs = await apiPlaymodeIntelligenceList(id, pid);
+        const ids = songs.map((song) => song.id);
+        const elements = await songsItem2TreeItem(id, ids, songs);
+        queueProvider.clear();
+        queueProvider.add([element]);
+        queueProvider.add(elements);
         if (!lock.playerLoad.get()) {
           load(element);
         }
@@ -666,26 +664,23 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand(
     "cloudmusic.addSong",
     (element: QueueItemTreeItem) => {
-      lockQueue(async () => {
-        PlaylistProvider.addSong(element);
+      QueueProvider.refresh(async (queueProvider) => {
+        queueProvider.add([element]);
       });
     }
   );
   commands.registerCommand(
     "cloudmusic.playSongWithPlaylist",
-    async (element: QueueItemTreeItem) => {
-      lockQueue(async () => {
-        PersonalFm.set(false);
-        await PlaylistProvider.playPlaylist(
-          element.pid,
-          () => {
-            if (!lock.playerLoad.get()) {
-              load(element);
-            }
-          },
-          element
-        );
-      });
+    (element: QueueItemTreeItem) => {
+      PlaylistProvider.playPlaylist(
+        element.pid,
+        () => {
+          if (!lock.playerLoad.get()) {
+            load(element);
+          }
+        },
+        element
+      );
     }
   );
 

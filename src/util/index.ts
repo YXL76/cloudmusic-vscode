@@ -34,7 +34,6 @@ import {
 import {
   downloadMusic,
   load,
-  lockQueue,
   pickAlbum,
   pickAlbumItems,
   pickAlbums,
@@ -91,7 +90,6 @@ export {
   apiUserRecord,
   downloadMusic,
   load,
-  lockQueue,
   pickAlbum,
   pickAlbumItems,
   pickAlbums,
