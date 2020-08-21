@@ -30,7 +30,7 @@ export function activate(context: ExtensionContext): void {
       });
 
       return new Promise((resolve) => {
-        setTimeout(resolve, 2000);
+        setTimeout(resolve, 1024);
       });
     }
   );
