@@ -1,22 +1,12 @@
 import {
-  ACCOUNT_FILE,
   AUTO_CHECK,
-  BUTTON_FILE,
-  CACHE_DIR,
   LIBRARYS,
   LOCAL_FILE_DIR,
-  LYRIC_CACHE_DIR,
   MEDIA_CONTROL,
-  MUSIC_CACHE_DIR,
   MUSIC_CACHE_SIZE,
   MUSIC_QUALITY,
-  NATIVE,
-  PLATFORM,
-  PLAYER_AVAILABLE,
   PROXY,
   REAL_IP,
-  SETTING_DIR,
-  TMP_DIR,
 } from "./setting";
 import {
   AlbumsItem,
@@ -33,26 +23,38 @@ import {
   SongsItem,
   TrackIdsItem,
 } from "./type";
+import { homedir, platform } from "os";
+import { getAbi } from "node-abi";
+import { join } from "path";
+
+export const PLATFORM = platform();
+export const PLAYER_AVAILABLE =
+  PLATFORM === "win32" || PLATFORM === "linux" || PLATFORM === "darwin";
+
+// @ts-ignore
+const abi = getAbi(process.versions.electron, "electron") as string;
+// @ts-ignore
+export const NATIVE: NativeModule = __non_webpack_require__(
+  join("..", "build", `${PLATFORM}-${abi}.node`)
+);
+
+export const SETTING_DIR = join(homedir(), ".cloudmusic");
+export const ACCOUNT_FILE = join(SETTING_DIR, ".account");
+export const BUTTON_FILE = join(SETTING_DIR, ".button");
+export const TMP_DIR = join(SETTING_DIR, "tmp");
+export const CACHE_DIR = join(SETTING_DIR, "cache");
+export const MUSIC_CACHE_DIR = join(CACHE_DIR, "music", `${MUSIC_QUALITY}`);
+export const LYRIC_CACHE_DIR = join(CACHE_DIR, "lyric");
 
 export {
-  ACCOUNT_FILE,
   AUTO_CHECK,
-  BUTTON_FILE,
-  CACHE_DIR,
   LIBRARYS,
   LOCAL_FILE_DIR,
-  LYRIC_CACHE_DIR,
   MEDIA_CONTROL,
-  MUSIC_CACHE_DIR,
   MUSIC_CACHE_SIZE,
   MUSIC_QUALITY,
-  NATIVE,
-  PLATFORM,
-  PLAYER_AVAILABLE,
   PROXY,
   REAL_IP,
-  SETTING_DIR,
-  TMP_DIR,
   AlbumsItem,
   AnotherSongItem,
   Artist,

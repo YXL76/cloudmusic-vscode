@@ -1,10 +1,3 @@
-import { PersonalFm, lock } from "../state";
-import {
-  PlaylistItemTreeItem,
-  PlaylistProvider,
-  QueueItemTreeItem,
-  QueueProvider,
-} from "../provider";
 import {
   MultiStepInput,
   apiPlaylistTracks,
@@ -13,8 +6,14 @@ import {
   pickAddToPlaylist,
   songsItem2TreeItem,
 } from "../util";
+import { PersonalFm, lock } from "../state";
+import {
+  PlaylistItemTreeItem,
+  PlaylistProvider,
+  QueueItemTreeItem,
+  QueueProvider,
+} from "../provider";
 import { commands, window } from "vscode";
-import { AccountManager } from "../manager";
 
 export function initPlaylist(): void {
   const userPlaylistProvider = PlaylistProvider.getUserInstance();
