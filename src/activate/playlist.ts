@@ -20,10 +20,9 @@ export function initPlaylist(): void {
   window.registerTreeDataProvider("userPlaylist", userPlaylistProvider);
   window.registerTreeDataProvider("favoritePlaylist", favoritePlaylistProvider);
 
-  commands.registerCommand(
-    "cloudmusic.refreshPlaylist",
-    PlaylistProvider.refresh
-  );
+  commands.registerCommand("cloudmusic.refreshPlaylist", () => {
+    PlaylistProvider.refresh();
+  });
 
   commands.registerCommand(
     "cloudmusic.refreshPlaylistContent",
@@ -33,7 +32,16 @@ export function initPlaylist(): void {
   commands.registerCommand(
     "cloudmusic.playPlaylist",
     (element: PlaylistItemTreeItem) => {
-      PlaylistProvider.playPlaylist(element.item.id);
+      PlaylistProvider.refresh(element, (items) => {
+        QueueProvider.refresh(async () => {
+          PersonalFm.set(false);
+          QueueProvider.clear();
+          QueueProvider.add(items);
+          if (!lock.playerLoad.get()) {
+            load(QueueProvider.songs[0]);
+          }
+        });
+      });
     }
   );
 
@@ -80,7 +88,20 @@ export function initPlaylist(): void {
   commands.registerCommand(
     "cloudmusic.playSongWithPlaylist",
     (element: QueueItemTreeItem) => {
-      PlaylistProvider.playPlaylist(element.pid, element);
+      PlaylistProvider.refresh(
+        PlaylistProvider.playlists.get(element.pid),
+        (items) => {
+          QueueProvider.refresh(async () => {
+            PersonalFm.set(false);
+            QueueProvider.clear();
+            QueueProvider.add(items);
+            QueueProvider.shift(QueueProvider.songs.indexOf(element));
+            if (!lock.playerLoad.get()) {
+              load(QueueProvider.songs[0]);
+            }
+          });
+        }
+      );
     }
   );
 

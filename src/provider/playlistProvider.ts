@@ -6,16 +6,10 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import { PersonalFm, lock } from "../state";
-import { QueueItemTreeItem, QueueProvider } from "../provider";
-import {
-  apiPlaylistDetail,
-  apiSongDetail,
-  load,
-  songsItem2TreeItem,
-} from "../util";
+import { apiPlaylistDetail, apiSongDetail, songsItem2TreeItem } from "../util";
 import { AccountManager } from "../manager";
 import { PlaylistItem } from "../constant";
+import { QueueItemTreeItem } from "../provider";
 import { i18n } from "../i18n";
 
 enum Type {
@@ -37,10 +31,10 @@ export class PlaylistProvider
   > = this._onDidChangeTreeData.event;
 
   private static belongsTo = new Map<number, Type>();
-  private static playlists = new Map<number, PlaylistItemTreeItem>();
 
   private static action?: (items: QueueItemTreeItem[]) => void;
 
+  static playlists = new Map<number, PlaylistItemTreeItem>();
   private static treeView = new Map<number, QueueItemTreeItem[]>();
 
   constructor(private type: Type) {}
@@ -130,22 +124,6 @@ export class PlaylistProvider
       );
       PlaylistProvider.playlists.set(playlist.id, item);
       return item;
-    });
-  }
-
-  static playPlaylist(id: number, element?: QueueItemTreeItem): void {
-    this.refresh(this.playlists.get(id), (items) => {
-      QueueProvider.refresh(async () => {
-        PersonalFm.set(false);
-        QueueProvider.clear();
-        QueueProvider.add(items);
-        if (element) {
-          QueueProvider.shift(QueueProvider.songs.indexOf(element));
-        }
-        if (!lock.playerLoad.get()) {
-          load(QueueProvider.songs[0]);
-        }
-      });
     });
   }
 }

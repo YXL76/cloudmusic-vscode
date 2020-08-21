@@ -66,7 +66,9 @@ export function media(context: ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    commands.registerCommand("cloudmusic.toggleButton", ButtonManager.toggle)
+    commands.registerCommand("cloudmusic.toggleButton", () => {
+      ButtonManager.toggle();
+    })
   );
 
   context.subscriptions.push(
