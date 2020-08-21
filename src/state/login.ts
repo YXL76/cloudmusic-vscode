@@ -1,5 +1,4 @@
-import { AccountManager } from "../manager";
-import { ButtonManager } from "../manager";
+import { AccountManager, ButtonManager } from "../manager";
 import { PlaylistProvider } from "../provider";
 import { commands } from "vscode";
 

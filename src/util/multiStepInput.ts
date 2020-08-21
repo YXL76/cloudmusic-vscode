@@ -1,4 +1,3 @@
-import * as nls from "vscode-nls";
 import {
   Disposable,
   InputBox,
@@ -10,13 +9,7 @@ import {
   ThemeIcon,
   window,
 } from "vscode";
-
-nls.config({
-  messageFormat: nls.MessageFormat.bundle,
-  bundleFormat: nls.BundleFormat.standalone,
-})();
-
-const localize = nls.loadMessageBundle();
+import { i18n } from "../i18n";
 
 enum InputFlowAction {
   back,
@@ -48,7 +41,7 @@ interface InputBoxParameters {
 
 const forwordButton: QuickInputButton = {
   iconPath: new ThemeIcon("arrow-right"),
-  tooltip: localize("forword", "Forword"),
+  tooltip: i18n.word.forword,
 };
 
 export class MultiStepInput {

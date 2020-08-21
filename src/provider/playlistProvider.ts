@@ -1,4 +1,3 @@
-import * as nls from "vscode-nls";
 import {
   Event,
   EventEmitter,
@@ -7,24 +6,16 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import { QueueItemTreeItem, QueueProvider } from "./queueProvider";
+import { QueueItemTreeItem, QueueProvider } from "../provider";
 import {
   apiPlaylistDetail,
   apiPlaymodeIntelligenceList,
   apiSongDetail,
+  songsItem2TreeItem,
 } from "../util";
 import { AccountManager } from "../manager";
 import { PlaylistItem } from "../constant";
-import { songsItem2TreeItem } from "../util";
-
-nls.config({
-  messageFormat: nls.MessageFormat.bundle,
-  bundleFormat: nls.BundleFormat.standalone,
-})();
-
-const localize = nls.loadMessageBundle();
-
-const queueProvider = QueueProvider.getInstance();
+import { i18n } from "../i18n";
 
 export class PlaylistProvider
   implements TreeDataProvider<PlaylistItemTreeItem | QueueItemTreeItem> {
@@ -134,6 +125,7 @@ export class PlaylistProvider
     id: number,
     index?: QueueItemTreeItem
   ): Promise<void> {
+    const queueProvider = QueueProvider.getInstance();
     queueProvider.clear();
     queueProvider.add(await this.getPlaylistContent(id));
     if (index) {
@@ -143,6 +135,7 @@ export class PlaylistProvider
   }
 
   static async addPlaylist(id: number): Promise<void> {
+    const queueProvider = QueueProvider.getInstance();
     queueProvider.add(await this.getPlaylistContent(id));
     queueProvider.refresh();
   }
@@ -152,6 +145,7 @@ export class PlaylistProvider
     const songs = await apiPlaymodeIntelligenceList(id, element.pid);
     const ids = songs.map((song) => song.id);
     const elements = await songsItem2TreeItem(id, ids, songs);
+    const queueProvider = QueueProvider.getInstance();
     queueProvider.clear();
     queueProvider.add([element]);
     queueProvider.add(elements);
@@ -159,6 +153,7 @@ export class PlaylistProvider
   }
 
   static addSong(element: QueueItemTreeItem): void {
+    const queueProvider = QueueProvider.getInstance();
     queueProvider.add([element]);
     queueProvider.refresh();
   }
@@ -180,10 +175,10 @@ export class PlaylistItemTreeItem extends TreeItem {
   get tooltip(): string {
     const { description, playCount, subscribedCount, trackCount } = this.item;
     return `
-${localize("description", "Description")}: ${description || ""}
-${localize("track", "Track")}: ${trackCount}
-${localize("count.play", "Play count")}: ${playCount}
-${localize("count.subscribed", "Subscribed count")}: ${subscribedCount}
+${i18n.word.description}: ${description}
+${i18n.word.trackCount}: ${trackCount}
+${i18n.word.playCount}: ${playCount}
+${i18n.word.subscribedCount}: ${subscribedCount}
     `;
   }
 

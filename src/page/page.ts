@@ -1,14 +1,6 @@
-import * as nls from "vscode-nls";
 import { Uri, ViewColumn, window } from "vscode";
 import { apiUserRecord } from "../util";
 import { join } from "path";
-
-nls.config({
-  messageFormat: nls.MessageFormat.bundle,
-  bundleFormat: nls.BundleFormat.standalone,
-})();
-
-// const localize = nls.loadMessageBundle();
 
 export class WebView {
   constructor(private extensionPath: string) {}

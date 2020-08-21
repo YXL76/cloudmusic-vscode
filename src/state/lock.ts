@@ -1,21 +1,11 @@
-import * as nls from "vscode-nls";
 import { Disposable, window } from "vscode";
+import { MusicCache, apiSongUrl, downloadMusic, player } from "../util";
 import { readdirSync, unlinkSync } from "fs";
-import { MusicCache } from "../util";
-import { PersonalFm } from "./play";
+import { PersonalFm } from "../state";
 import { QueueProvider } from "../provider";
 import { TMP_DIR } from "../constant";
-import { apiSongUrl } from "../util";
-import { downloadMusic } from "../util";
+import { i18n } from "../i18n";
 import { join } from "path";
-import { player } from "../util";
-
-nls.config({
-  messageFormat: nls.MessageFormat.bundle,
-  bundleFormat: nls.BundleFormat.standalone,
-})();
-
-const localize = nls.loadMessageBundle();
 
 class PlayerLoad {
   private static state = false;
@@ -32,10 +22,7 @@ class PlayerLoad {
       this.state = newValue;
       if (newValue) {
         this.disposable = window.setStatusBarMessage(
-          `$(loading) ${localize("music", "Music")}: ${localize(
-            "loading",
-            "Loading"
-          )}`
+          `$(loading) ${i18n.word.song}: ${i18n.word.loading}`
         );
       } else {
         this.disposable.dispose();
@@ -43,8 +30,6 @@ class PlayerLoad {
     }
   }
 }
-
-const queueProvider = QueueProvider.getInstance();
 
 class DeleteTmp {
   private static state = false;
@@ -74,6 +59,7 @@ class DeleteTmp {
             md5 = PersonalFm.item[1].md5;
           }
         } else {
+          const queueProvider = QueueProvider.getInstance();
           if (queueProvider.songs.length > 1) {
             id = queueProvider.songs[1].item.id;
             md5 = queueProvider.songs[1].md5;

@@ -1,11 +1,15 @@
-import { LIBRARYS, NATIVE, PLAYER_AVAILABLE } from "../constant";
-import { NativePlayer, Player } from "../constant";
-import { apiLyric, apiScrobble } from "./api";
+import {
+  LIBRARYS,
+  Lyric,
+  NATIVE,
+  NativePlayer,
+  PLAYER_AVAILABLE,
+  Player,
+} from "../constant";
+import { Playing, lock } from "../state";
+import { apiLyric, apiScrobble } from "../util";
 import { ButtonManager } from "../manager";
-import { Lyric } from "../constant";
-import { Playing } from "../state";
 import { commands } from "vscode";
-import { lock } from "../state";
 
 class NoPlayer implements Player {
   id = 0;

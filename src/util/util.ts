@@ -1,15 +1,17 @@
-import * as nls from "vscode-nls";
+import { AccountManager, ButtonManager } from "../manager";
 import {
   AlbumsItem,
   AnotherSongItem,
   Artist,
+  NATIVE,
   PlaylistItem,
   SongsItem,
+  TMP_DIR,
 } from "../constant";
-import { InputStep, MultiStepInput, MusicCache } from "../util";
-import { NATIVE, TMP_DIR } from "../constant";
-import { QuickPickItem, commands, window } from "vscode";
 import {
+  InputStep,
+  MultiStepInput,
+  MusicCache,
   apiAlbum,
   apiArtistAlbum,
   apiArtists,
@@ -18,26 +20,17 @@ import {
   apiSimiSong,
   apiSongDetail,
   apiSongUrl,
-} from "./api";
+  player,
+} from "../util";
+import { IsLike, PersonalFm, lock } from "../state";
+import { QuickPickItem, commands, window } from "vscode";
 import { existsSync, statSync } from "fs";
-import { AccountManager } from "../manager";
-import { ButtonManager } from "../manager";
-import { IsLike } from "../state";
-import { PersonalFm } from "../state";
 import { QueueItemTreeItem } from "../provider";
 import { TreeItemCollapsibleState } from "vscode";
+import { i18n } from "../i18n";
 import { join } from "path";
-import { lock } from "../state";
-import { player } from "./player";
 
 const { download } = NATIVE;
-
-nls.config({
-  messageFormat: nls.MessageFormat.bundle,
-  bundleFormat: nls.BundleFormat.standalone,
-})();
-
-const localize = nls.loadMessageBundle();
 
 export function downloadMusic(
   url: string,
@@ -52,7 +45,7 @@ export function downloadMusic(
           MusicCache.put(filename, path, md5);
         }
       } else {
-        window.showErrorMessage(localize("error.network", "Network Error"));
+        window.showErrorMessage(i18n.sentence.error.network);
       }
     });
   } catch {}
@@ -134,8 +127,8 @@ export function solveAnotherSongItem(item: AnotherSongItem): SongsItem {
 export function stop(): void {
   player.id = 0;
   player.stop();
-  ButtonManager.buttonSong(localize("song", "Song"), "");
-  ButtonManager.buttonLyric(localize("lyric", "Lyric"));
+  ButtonManager.buttonSong();
+  ButtonManager.buttonLyric();
 }
 
 export async function load(element: QueueItemTreeItem): Promise<void> {
@@ -182,7 +175,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
 }
 
 export function splitLine(content: string): string {
-  return `>>>>>>>>>>                            ${content}                            <<<<<<<<<<`;
+  return `>>>>>>>>>>                            ${content.toUpperCase()}                            <<<<<<<<<<`;
 }
 
 enum PickType {
@@ -215,7 +208,7 @@ export const pickSongItems = (songs: SongsItem[]): ST[] =>
 
 export const pickArtistItems = (ars: { id: number; name: string }[]): ST[] =>
   ars.map(({ name, id }) => ({
-    label: `$(account) ${localize("artist", "Artist")}`,
+    label: `$(account) ${i18n.word.artist}`,
     detail: name,
     id,
     type: PickType.artist,
@@ -252,7 +245,7 @@ export async function pickSong(
   const { name, alia, ar, al } = (await apiSongDetail([id]))[0];
 
   const pick = await input.showQuickPick<T>({
-    title: `${localize("song", "Song")}${localize("detail", " Detail")}`,
+    title: `${i18n.word.song}-${i18n.word.detail}`,
     step,
     items: [
       {
@@ -261,21 +254,21 @@ export async function pickSong(
       },
       ...pickArtistItems(ar),
       {
-        label: `$(circuit-board) ${localize("album", "Album")}`,
+        label: `$(circuit-board) ${i18n.word.album}`,
         detail: al.name,
         id: al.id,
         type: PickType.album,
       },
       {
-        label: `$(heart) ${localize("like.song", "Like this song")}`,
+        label: `$(heart) ${i18n.word.like}`,
         type: PickType.like,
       },
       {
-        label: `$(add) ${localize("save.playlist", "Save to playlist")}`,
+        label: `$(add) ${i18n.word.saveToPlaylist}`,
         type: PickType.save,
       },
       {
-        label: `$(library) ${localize("similar.song", "Similar songs")}`,
+        label: `$(library) ${i18n.word.similarSongs}`,
         type: PickType.similar,
       },
     ],
@@ -320,7 +313,7 @@ export async function pickSongs(
     songs = await apiSongDetail(ids || [0]);
   }
   const pick = await input.showQuickPick({
-    title: localize("song", "Songs"),
+    title: i18n.word.song,
     step,
     items: pickSongItems(songs),
   });
@@ -337,7 +330,7 @@ export async function pickArtist(
 
   const { name, alias, briefDesc, albumSize } = info;
   const pick = await input.showQuickPick<T>({
-    title: `${localize("artist", "Artist")}${localize("detail", " Detail")}`,
+    title: `${i18n.word.artist}-${i18n.word.detail}`,
     step,
     items: [
       {
@@ -345,17 +338,17 @@ export async function pickArtist(
         detail: alias.join("/"),
       },
       {
-        label: `$(markdown) ${localize("description", "Brief description")}`,
+        label: `$(markdown) ${i18n.word.description}`,
         detail: briefDesc,
       },
       {
-        label: `$(circuit-board) ${localize("album", "Album")}`,
+        label: `$(circuit-board) ${i18n.word.album}`,
         detail: `${albumSize}`,
         id,
         type: PickType.albums,
       },
       {
-        label: splitLine(localize("song.hot", "HOT SONGS")),
+        label: splitLine(i18n.word.hotSongs),
       },
       ...pickSongItems(songs),
     ],
@@ -380,7 +373,7 @@ export async function pickAlbum(
 
   const { artists, alias, company, description, name } = info;
   const pick = await input.showQuickPick<T>({
-    title: `${localize("album", "Album")}${localize("detail", " Detail")}`,
+    title: `${i18n.word.album}-${i18n.word.detail}`,
     step,
     items: [
       {
@@ -389,12 +382,12 @@ export async function pickAlbum(
         detail: company,
       },
       {
-        label: `$(markdown) ${localize("description", "Description")}`,
+        label: `$(markdown) ${i18n.word.description}`,
         detail: description,
       },
       ...pickArtistItems(artists),
       {
-        label: splitLine(localize("content", "CONTENTS")),
+        label: splitLine(i18n.word.content),
       },
       ...pickSongItems(songs),
     ],
@@ -417,7 +410,7 @@ export async function pickAlbums(
 ): Promise<InputStep> {
   const albums = await apiArtistAlbum(id);
   const pick = await input.showQuickPick({
-    title: localize("album", "Albums"),
+    title: i18n.word.album,
     step,
     items: pickAlbumItems(albums),
   });
@@ -440,30 +433,30 @@ export async function pickPlaylist(
   const ids = await apiPlaylistDetail(id);
   const songs = await apiSongDetail(ids);
   const pick = await input.showQuickPick<T>({
-    title: localize("song", "Songs"),
+    title: i18n.word.song,
     step,
     items: [
       {
         label: name,
       },
       {
-        label: `$(markdown) ${localize("description", "Description")}`,
+        label: `$(markdown) ${i18n.word.description}`,
         detail: description,
       },
       {
-        label: localize("count.play", "Play count"),
+        label: i18n.word.playCount,
         description: `${playCount}`,
       },
       {
-        label: localize("count.subscribed", "Subscribed count"),
+        label: i18n.word.subscribedCount,
         description: `${subscribedCount}`,
       },
       {
-        label: localize("count.track", "Track count"),
+        label: i18n.word.trackCount,
         description: `${trackCount}`,
       },
       {
-        label: splitLine(localize("content", "CONTENTS")),
+        label: splitLine(i18n.word.content),
       },
       ...pickSongItems(songs),
     ],

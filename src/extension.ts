@@ -1,5 +1,4 @@
 import * as crypto from "crypto";
-import * as nls from "vscode-nls";
 import {
   ACCOUNT_FILE,
   AUTO_CHECK,
@@ -58,24 +57,16 @@ import {
   writeFile,
 } from "fs";
 import { WebView } from "./page";
+import { i18n } from "./i18n";
 import { join } from "path";
 import { throttle } from "lodash";
 import del = require("del");
-
-nls.config({
-  messageFormat: nls.MessageFormat.bundle,
-  bundleFormat: nls.BundleFormat.standalone,
-})();
-
-const localize = nls.loadMessageBundle();
 
 export function activate(context: ExtensionContext): void {
   // init player
   if (!PLAYER_AVAILABLE) {
     lock.playerLoad.set(true);
-    window.showErrorMessage(
-      localize("system.support", "System is not supported")
-    );
+    window.showErrorMessage(i18n.sentence.error.systemSupport);
   } else {
     player.volume(85);
   }
@@ -166,7 +157,7 @@ export function activate(context: ExtensionContext): void {
       return;
     }
 
-    const title = localize("signin", "Sign in");
+    const title = i18n.word.signIn;
     const totalSteps = 3;
 
     type State = {
@@ -187,11 +178,9 @@ export function activate(context: ExtensionContext): void {
       writeFile(ACCOUNT_FILE, JSON.stringify(state), () => {
         //
       });
-      window.showInformationMessage(
-        localize("signin.success", "Sign in success")
-      );
+      window.showInformationMessage(i18n.sentence.success.signIn);
     } else {
-      window.showErrorMessage(localize("signin.fail", "Sign in fail"));
+      window.showErrorMessage(i18n.sentence.fail.signIn);
     }
 
     async function pickMethod(input: MultiStepInput) {
@@ -201,26 +190,17 @@ export function activate(context: ExtensionContext): void {
         totalSteps,
         items: [
           {
-            label: localize("signin.email.label", "✉Email"),
-            description: localize(
-              "signin.email.description",
-              "use email to sign in"
-            ),
+            label: `✉ ${i18n.word.email}`,
+            description: i18n.sentence.label.email,
             phone: false,
           },
           {
-            label: localize("signin.cellphone.label", "📱Cellphone"),
-            description: localize(
-              "signin.cellphone.description",
-              "use cellphone to sign in"
-            ),
+            label: `📱 ${i18n.word.cellphone}`,
+            description: i18n.sentence.label.cellphone,
             phone: true,
           },
         ],
-        placeholder: localize(
-          "signin.placeHolder",
-          "Select the method to sign in."
-        ),
+        placeholder: i18n.sentence.hint.signIn,
       });
       state.phone = pick.phone;
       return (input: MultiStepInput) => inputAccount(input);
@@ -232,7 +212,7 @@ export function activate(context: ExtensionContext): void {
         step: 2,
         totalSteps,
         value: state.account,
-        prompt: localize("signin.account", "Please enter your account."),
+        prompt: i18n.sentence.hint.account,
       });
       return (input: MultiStepInput) => inputPassword(input);
     }
@@ -242,7 +222,7 @@ export function activate(context: ExtensionContext): void {
         title,
         step: 3,
         totalSteps,
-        prompt: localize("signin.password", "Please enter your password."),
+        prompt: i18n.sentence.hint.password,
         password: true,
       });
 
@@ -280,29 +260,29 @@ export function activate(context: ExtensionContext): void {
     const pick = await window.showQuickPick([
       {
         label: AccountManager.nickname,
-        description: localize("account.user", "current user"),
+        description: i18n.word.user,
         type: 0,
       },
       {
-        label: localize("personalFM", "Personal FM"),
+        label: i18n.word.personalFm,
         type: 1,
       },
       {
-        label: localize("account.userRanking", "User music ranking"),
-        description: localize("account.userRanking.weekly", "Weekly"),
+        label: i18n.word.userRankingList,
+        description: i18n.word.weekly,
         id: "userMusicRankingWeekly",
         queryType: 1,
         type: 2,
       },
       {
-        label: localize("account.userRanking", "User music ranking"),
-        description: localize("account.userRanking.allTime", "All Time"),
+        label: i18n.word.userRankingList,
+        description: i18n.word.allTime,
         id: "userMusicRankingAllTime",
         queryType: 0,
         type: 2,
       },
       {
-        label: localize("signout", "Sign out"),
+        label: i18n.word.signOut,
         type: 3,
       },
     ]);
@@ -376,10 +356,7 @@ export function activate(context: ExtensionContext): void {
   const volume = commands.registerCommand("cloudmusic.volume", async () => {
     const volume = await window.showInputBox({
       value: `${player.level}`,
-      placeHolder: localize(
-        "volume.placeHolder",
-        "Please enter volume between 0 and 100."
-      ),
+      placeHolder: `${i18n.sentence.hint.volume} (0~100)`,
     });
     if (volume && /^\d+$/.exec(volume)) {
       player.volume(parseInt(volume));
@@ -408,7 +385,7 @@ export function activate(context: ExtensionContext): void {
       })
     );
 
-    const title = localize("search", "Search");
+    const title = i18n.word.search;
     const totalSteps = 3;
     const limit = 30;
 
@@ -440,10 +417,7 @@ export function activate(context: ExtensionContext): void {
         items: state.keyword
           ? [{ label: state.keyword }].concat(hotItems)
           : hotItems,
-        placeholder: localize(
-          "search.keyword.placeHolder",
-          "Please enter keyword."
-        ),
+        placeholder: i18n.sentence.hint.keyword,
         changeCallback: (that, value) => {
           if (value) {
             that.items = [{ label: value }].concat(that.items.slice(1));
@@ -464,26 +438,23 @@ export function activate(context: ExtensionContext): void {
         totalSteps,
         items: [
           {
-            label: `$(link) ${localize("single", "Single")}`,
+            label: `$(link) ${i18n.word.single}`,
             type: SearchType.single,
           },
           {
-            label: `$(circuit-board) ${localize("album", "Album")}`,
+            label: `$(circuit-board) ${i18n.word.album}`,
             type: SearchType.album,
           },
           {
-            label: `$(account) ${localize("artist", "Artist")}`,
+            label: `$(account) ${i18n.word.artist}`,
             type: SearchType.artist,
           },
           {
-            label: `$(list-unordered) ${localize("playlist", "Playlist")}`,
+            label: `$(list-unordered) ${i18n.word.playlist}`,
             type: SearchType.playlist,
           },
         ],
-        placeholder: localize(
-          "search.type.placeHolder",
-          "Please choose search type."
-        ),
+        placeholder: i18n.sentence.hint.search,
       });
       state.type = pick.type;
       if (state.type === SearchType.single) {
@@ -509,24 +480,11 @@ export function activate(context: ExtensionContext): void {
         totalSteps,
         items: [
           ...(offset > 0
-            ? [
-                {
-                  label: `$(arrow-up) ${localize(
-                    "page.previous",
-                    "previous page"
-                  )}`,
-                  id: -1,
-                },
-              ]
+            ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, id: -1 }]
             : []),
           ...pickSongItems(songs),
           ...(songs.length === limit
-            ? [
-                {
-                  label: `$(arrow-down) ${localize("page.next", "Next page")}`,
-                  id: -2,
-                },
-              ]
+            ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, id: -2 }]
             : []),
         ],
       });
@@ -551,24 +509,11 @@ export function activate(context: ExtensionContext): void {
         totalSteps,
         items: [
           ...(offset > 0
-            ? [
-                {
-                  label: `$(arrow-up) ${localize(
-                    "page.previous",
-                    "previous page"
-                  )}`,
-                  id: -1,
-                },
-              ]
+            ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, id: -1 }]
             : []),
           ...pickAlbumItems(albums),
           ...(albums.length === limit
-            ? [
-                {
-                  label: `$(arrow-down) ${localize("page.next", "Next page")}`,
-                  id: -2,
-                },
-              ]
+            ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, id: -2 }]
             : []),
         ],
       });
@@ -593,24 +538,11 @@ export function activate(context: ExtensionContext): void {
         totalSteps,
         items: [
           ...(offset > 0
-            ? [
-                {
-                  label: `$(arrow-up) ${localize(
-                    "page.previous",
-                    "previous page"
-                  )}`,
-                  id: -1,
-                },
-              ]
+            ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, id: -1 }]
             : []),
           ...pickArtistItems(artists),
           ...(artists.length === limit
-            ? [
-                {
-                  label: `$(arrow-down) ${localize("page.next", "Next page")}`,
-                  id: -2,
-                },
-              ]
+            ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, id: -2 }]
             : []),
         ],
       });
@@ -637,12 +569,9 @@ export function activate(context: ExtensionContext): void {
           ...(offset > 0
             ? [
                 {
-                  label: `$(arrow-up) ${localize(
-                    "page.previous",
-                    "previous page"
-                  )}`,
+                  label: `$(arrow-up) ${i18n.word.previousPage}`,
                   id: -1,
-                  item: undefined,
+                  item: {},
                 },
               ]
             : []),
@@ -650,9 +579,9 @@ export function activate(context: ExtensionContext): void {
           ...(playlists.length === limit
             ? [
                 {
-                  label: `$(arrow-down) ${localize("page.next", "Next page")}`,
+                  label: `$(arrow-down) ${i18n.word.nextPage}`,
                   id: -2,
-                  item: undefined,
+                  item: {},
                 },
               ]
             : []),
@@ -793,19 +722,16 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand("cloudmusic.lyric", async () => {
     const pick = await window.showQuickPick([
       {
-        label: localize("lyric.delay.label", "Lyric delay"),
-        description: localize(
-          "lyric.delay.description",
-          "Set lyric delay (defult: -1.0)"
-        ),
+        label: i18n.word.lyricDelay,
+        description: `${i18n.sentence.label.lyricDelay} (${i18n.word.default}: -1.0)`,
         type: 0,
       },
       {
-        label: localize("lyric.full.label", "Show full lyric"),
+        label: i18n.word.fullLyric,
         type: 1,
       },
       {
-        label: localize("lyric.cache.label", "Clear lyric cache"),
+        label: i18n.word.cleanCache,
         type: 2,
       },
     ]);
@@ -816,10 +742,7 @@ export function activate(context: ExtensionContext): void {
       case 0:
         const delay = await window.showInputBox({
           value: `${lyric.delay}`,
-          placeHolder: localize(
-            "lyric.delay.placeHolder",
-            "Please enter lyric delay."
-          ),
+          placeHolder: i18n.sentence.hint.lyricDelay,
         });
         if (!delay || !/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay)) {
           return;

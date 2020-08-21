@@ -3,13 +3,21 @@ import {
   AnotherSongItem,
   Artist,
   LyricData,
+  MUSIC_QUALITY,
+  PROXY,
   PlaylistItem,
   REAL_IP,
   SongDetail,
   SongsItem,
   TrackIdsItem,
 } from "../constant";
-import { MUSIC_QUALITY, PROXY } from "../constant";
+import {
+  LyricCache,
+  solveAlbumsItem,
+  solveAnotherSongItem,
+  solveArtist,
+  solveSongItem,
+} from "../util";
 import {
   album,
   artist_album,
@@ -37,14 +45,7 @@ import {
   user_playlist,
   user_record,
 } from "NeteaseCloudMusicApi";
-import {
-  solveAlbumsItem,
-  solveAnotherSongItem,
-  solveArtist,
-  solveSongItem,
-} from "./util";
 import { AccountManager } from "../manager";
-import { LyricCache } from "./cache";
 import NodeCache = require("node-cache");
 
 const apiCache = new NodeCache({

@@ -1,5 +1,5 @@
 import { homedir, platform } from "os";
-import { NativeModule } from "./type";
+import { NativeModule } from "../constant";
 import { getAbi } from "node-abi";
 import { join } from "path";
 import { workspace } from "vscode";
