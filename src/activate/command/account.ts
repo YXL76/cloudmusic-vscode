@@ -148,10 +148,9 @@ export function account(context: ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    commands.registerCommand(
-      "cloudmusic.dailyCheck",
-      AccountManager.dailySignin
-    )
+    commands.registerCommand("cloudmusic.dailyCheck", () => {
+      AccountManager.dailySignin();
+    })
   );
 
   context.subscriptions.push(

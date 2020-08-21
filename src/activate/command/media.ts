@@ -35,7 +35,9 @@ export function media(context: ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    commands.registerCommand("cloudmusic.play", player.togglePlay)
+    commands.registerCommand("cloudmusic.play", () => {
+      player.togglePlay();
+    })
   );
 
   context.subscriptions.push(

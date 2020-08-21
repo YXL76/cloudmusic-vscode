@@ -7,11 +7,11 @@ import { initQueue } from "./queue";
 import { initStatusBar } from "./statusBar";
 
 export const steps = [
-  initAccount,
   initPlayer,
   initCommand,
   initQueue,
-  initStatusBar,
   initPlaylist,
+  initStatusBar,
+  initAccount,
   initCache,
 ];
