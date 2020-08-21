@@ -18,14 +18,14 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   readonly onDidChangeTreeData: Event<QueueItemTreeItem | void> = this
     ._onDidChangeTreeData.event;
 
-  private static action?: (instance: QueueProvider) => Promise<void>;
+  private static action?: () => Promise<void>;
   static songs: QueueItemTreeItem[] = [];
 
   static getInstance(): QueueProvider {
     return this.instance || (this.instance = new QueueProvider());
   }
 
-  static refresh(action: (instance: QueueProvider) => Promise<void>): void {
+  static refresh(action: () => Promise<void>): void {
     if (!lock.queue) {
       lock.queue = true;
       QueueProvider.action = action;
@@ -41,27 +41,23 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     const localAction = QueueProvider.action;
     QueueProvider.action = undefined;
     if (localAction) {
-      await localAction(this);
+      await localAction();
     }
     lock.queue = false;
     return QueueProvider.songs;
   }
 
-  clear(): void {
+  static clear(): void {
     QueueProvider.songs = [];
   }
 
-  random(): void {
+  static random(): void {
     QueueProvider.songs = [QueueProvider.songs[0]].concat(
       unsortInplace(QueueProvider.songs.slice(1))
     );
   }
 
-  top(element: QueueItemTreeItem): void {
-    this.shift(QueueProvider.songs.indexOf(element));
-  }
-
-  shift(index: number): void {
+  static shift(index: number): void {
     if (index) {
       while (index < 0) {
         index += QueueProvider.songs.length;
@@ -72,12 +68,12 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     }
   }
 
-  add(elements: QueueItemTreeItem[]): void {
+  static add(elements: QueueItemTreeItem[]): void {
     const uniqueItems = new Set(QueueProvider.songs.concat(elements));
     QueueProvider.songs = [...uniqueItems];
   }
 
-  delete(element: QueueItemTreeItem): void {
+  static delete(element: QueueItemTreeItem): void {
     const index = QueueProvider.songs.indexOf(element);
     if (index >= 0) {
       QueueProvider.songs.splice(index, 1);

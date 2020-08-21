@@ -42,14 +42,13 @@ export class PlaylistProvider
     number,
     PlaylistItemTreeItem
   >();
-  private static playlistActions: Map<
-    number,
-    () => Promise<QueueItemTreeItem[]>
-  > = new Map<number, () => Promise<QueueItemTreeItem[]>>();
-  private static treeView = new NodeCache({
+
+  private static action?: () => void;
+
+  static treeView = new NodeCache({
     stdTTL: 300,
     checkperiod: 600,
-    useClones: true,
+    useClones: false,
     deleteOnExpire: true,
     enableLegacyCallbacks: false,
     maxKeys: -1,
@@ -71,8 +70,9 @@ export class PlaylistProvider
     );
   }
 
-  static refresh(element?: PlaylistItemTreeItem): void {
+  static refresh(element?: PlaylistItemTreeItem, action?: () => void): void {
     if (element) {
+      PlaylistProvider.action = action;
       const type = this.belongsTo.get(element.item.id);
       if (type === Type.userInstance) {
         this.userInstance._onDidChangeTreeData.fire(element);
@@ -96,12 +96,13 @@ export class PlaylistProvider
   ): Promise<PlaylistItemTreeItem[] | QueueItemTreeItem[]> {
     if (element) {
       const { id } = element.item;
-      const action = PlaylistProvider.playlistActions.get(id);
-      if (action) {
-        PlaylistProvider.playlistActions.delete(id);
-        return await action();
+      const ret = await PlaylistProvider.getPlaylistContent(id);
+      const localAction = PlaylistProvider.action;
+      if (localAction) {
+        PlaylistProvider.action = undefined;
+        localAction();
       }
-      return await PlaylistProvider.getPlaylistContent(id);
+      return ret;
     }
     return await this.getPlaylistItem();
   }
@@ -114,6 +115,7 @@ export class PlaylistProvider
       const songs = await apiSongDetail(ids);
       const ret = await songsItem2TreeItem(id, ids, songs);
       this.treeView.set(id, ret);
+      return ret;
     }
     return this.treeView.get(id) as QueueItemTreeItem[];
   }
@@ -137,37 +139,20 @@ export class PlaylistProvider
     });
   }
 
-  static playPlaylist(id: number, index?: QueueItemTreeItem): void {
-    PlaylistProvider.playlistActions.set(id, async () => {
-      const ret = await PlaylistProvider.getPlaylistContent(id);
-      QueueProvider.refresh(async (queueProvider) => {
+  static playPlaylist(id: number, element?: QueueItemTreeItem): void {
+    PlaylistProvider.refresh(PlaylistProvider.playlists.get(id), () => {
+      QueueProvider.refresh(async () => {
         PersonalFm.set(false);
-        queueProvider.clear();
-        queueProvider.add(this.treeView.get(id) as QueueItemTreeItem[]);
-        if (index) {
-          queueProvider.top(index);
+        QueueProvider.clear();
+        QueueProvider.add(this.treeView.get(id) as QueueItemTreeItem[]);
+        if (element) {
+          QueueProvider.shift(QueueProvider.songs.indexOf(element));
         }
         if (!lock.playerLoad.get()) {
           load(QueueProvider.songs[0]);
         }
       });
-      return ret;
     });
-    PlaylistProvider.refresh(PlaylistProvider.playlists.get(id));
-  }
-
-  static addPlaylist(element: PlaylistItemTreeItem): void {
-    const { id } = element.item;
-    PlaylistProvider.playlistActions.set(id, async () => {
-      const ret = await PlaylistProvider.getPlaylistContent(id);
-      QueueProvider.refresh(async (queueProvider) => {
-        queueProvider.add(
-          this.treeView.get(element.item.id) as QueueItemTreeItem[]
-        );
-      });
-      return ret;
-    });
-    PlaylistProvider.refresh(element);
   }
 }
 

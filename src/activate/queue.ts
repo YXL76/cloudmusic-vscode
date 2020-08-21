@@ -8,17 +8,17 @@ export function initQueue(): void {
   window.registerTreeDataProvider("queue", queueProvider);
 
   commands.registerCommand("cloudmusic.clearQueue", () => {
-    QueueProvider.refresh(async (queueProvider) => {
+    QueueProvider.refresh(async () => {
       if (!PersonalFm.get()) {
         stop();
       }
-      queueProvider.clear();
+      QueueProvider.clear();
     });
   });
 
   commands.registerCommand("cloudmusic.randomQueue", () => {
-    QueueProvider.refresh(async (queueProvider) => {
-      queueProvider.random();
+    QueueProvider.refresh(async () => {
+      QueueProvider.random();
     });
   });
 
@@ -28,8 +28,8 @@ export function initQueue(): void {
       if (!lock.playerLoad.get()) {
         PersonalFm.set(false);
         await load(element);
-        QueueProvider.refresh(async (queueProvider) => {
-          queueProvider.top(element);
+        QueueProvider.refresh(async () => {
+          QueueProvider.shift(QueueProvider.songs.indexOf(element));
         });
       }
     }
@@ -38,8 +38,8 @@ export function initQueue(): void {
   commands.registerCommand(
     "cloudmusic.deleteSong",
     (element: QueueItemTreeItem) => {
-      QueueProvider.refresh(async (queueProvider) => {
-        queueProvider.delete(element);
+      QueueProvider.refresh(async () => {
+        QueueProvider.delete(element);
       });
     }
   );

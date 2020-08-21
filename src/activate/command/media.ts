@@ -10,9 +10,9 @@ export function media(context: ExtensionContext): void {
     commands.registerCommand("cloudmusic.previous", async () => {
       const len = QueueProvider.songs.length - 1;
       if (!lock.playerLoad.get() && len > 0) {
-        QueueProvider.refresh(async (queueProvider) => {
+        QueueProvider.refresh(async () => {
           await load(QueueProvider.songs[len]);
-          queueProvider.shift(-1);
+          QueueProvider.shift(-1);
         });
       }
     })
@@ -26,9 +26,9 @@ export function media(context: ExtensionContext): void {
       if (PersonalFm.get()) {
         load(await PersonalFm.next());
       } else if (QueueProvider.songs.length > 1) {
-        QueueProvider.refresh(async (queueProvider) => {
+        QueueProvider.refresh(async () => {
           await load(QueueProvider.songs[1]);
-          queueProvider.shift(1);
+          QueueProvider.shift(1);
         });
       }
     })

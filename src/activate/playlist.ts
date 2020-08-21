@@ -40,7 +40,15 @@ export function initPlaylist(): void {
   commands.registerCommand(
     "cloudmusic.addPlaylist",
     (element: PlaylistItemTreeItem) => {
-      PlaylistProvider.addPlaylist(element);
+      PlaylistProvider.refresh(element, () => {
+        QueueProvider.refresh(async () => {
+          QueueProvider.add(
+            PlaylistProvider.treeView.get(
+              element.item.id
+            ) as QueueItemTreeItem[]
+          );
+        });
+      });
     }
   );
 
@@ -48,15 +56,15 @@ export function initPlaylist(): void {
     "cloudmusic.intelligence",
     async (element: QueueItemTreeItem) => {
       PersonalFm.set(false);
-      QueueProvider.refresh(async (queueProvider) => {
+      QueueProvider.refresh(async () => {
         const { pid } = element;
         const { id } = element.item;
         const songs = await apiPlaymodeIntelligenceList(id, pid);
         const ids = songs.map((song) => song.id);
         const elements = await songsItem2TreeItem(id, ids, songs);
-        queueProvider.clear();
-        queueProvider.add([element]);
-        queueProvider.add(elements);
+        QueueProvider.clear();
+        QueueProvider.add([element]);
+        QueueProvider.add(elements);
         if (!lock.playerLoad.get()) {
           load(element);
         }
@@ -67,8 +75,8 @@ export function initPlaylist(): void {
   commands.registerCommand(
     "cloudmusic.addSong",
     (element: QueueItemTreeItem) => {
-      QueueProvider.refresh(async (queueProvider) => {
-        queueProvider.add([element]);
+      QueueProvider.refresh(async () => {
+        QueueProvider.add([element]);
       });
     }
   );
