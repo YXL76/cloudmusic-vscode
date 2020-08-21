@@ -72,7 +72,7 @@ export class PlaylistProvider
 
   static refresh(element?: PlaylistItemTreeItem, action?: () => void): void {
     if (element) {
-      PlaylistProvider.action = action;
+      this.action = action;
       const type = this.belongsTo.get(element.item.id);
       if (type === Type.userInstance) {
         this.userInstance._onDidChangeTreeData.fire(element);
@@ -140,7 +140,7 @@ export class PlaylistProvider
   }
 
   static playPlaylist(id: number, element?: QueueItemTreeItem): void {
-    PlaylistProvider.refresh(PlaylistProvider.playlists.get(id), () => {
+    this.refresh(this.playlists.get(id), () => {
       QueueProvider.refresh(async () => {
         PersonalFm.set(false);
         QueueProvider.clear();
