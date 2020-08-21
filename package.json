@@ -286,6 +286,12 @@
             "markdownDescription": "%cloudmusic.configuration.cloudmusic.cache.size.markdownDescription%",
             "scope": "window"
           },
+          "cloudmusic.cache.localDirectory": {
+            "type": "string",
+            "default": "",
+            "markdownDescription": "%cloudmusic.configuration.cloudmusic.cache.localDirectory.markdownDescription%",
+            "scope": "window"
+          },
           "cloudmusic.music.proxy": {
             "type": "string",
             "default": "",
@@ -368,11 +374,13 @@
     "webpack-cli": "4.0.0-beta.8"
   },
   "dependencies": {
+    "@types/lodash.throttle": "^4.1.6",
     "NeteaseCloudMusicApi": "^3.38.0",
     "array-unsort": "^1.1.6",
     "cacache": "^15.0.5",
     "del": "^5.1.0",
     "lru-cache": "^6.0.0",
+    "md5-file": "^5.0.0",
     "node-abi": "^2.18.0",
     "node-cache": "^5.1.2",
     "vscode-nls": "^4.1.2"

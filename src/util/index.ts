@@ -1,5 +1,5 @@
 import { InputStep, MultiStepInput } from "./multiStepInput";
-import { LyricCache, MusicCache } from "./cache";
+import { LocalCache, LyricCache, MusicCache } from "./cache";
 import {
   SearchType,
   apiAlbum,
@@ -24,6 +24,7 @@ import {
   apiSearchHotDetail,
   apiSearchPlaylist,
   apiSearchSingle,
+  apiSearchSuggest,
   apiSimiSong,
   apiSongDetail,
   apiSongUrl,
@@ -33,7 +34,6 @@ import {
 import {
   downloadMusic,
   load,
-  lockQueue,
   pickAlbum,
   pickAlbumItems,
   pickAlbums,
@@ -57,6 +57,7 @@ import { lyric, player } from "./player";
 export {
   InputStep,
   MultiStepInput,
+  LocalCache,
   LyricCache,
   MusicCache,
   SearchType,
@@ -82,6 +83,7 @@ export {
   apiSearchHotDetail,
   apiSearchPlaylist,
   apiSearchSingle,
+  apiSearchSuggest,
   apiSimiSong,
   apiSongDetail,
   apiSongUrl,
@@ -89,7 +91,6 @@ export {
   apiUserRecord,
   downloadMusic,
   load,
-  lockQueue,
   pickAlbum,
   pickAlbumItems,
   pickAlbums,

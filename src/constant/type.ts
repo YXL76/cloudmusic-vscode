@@ -1,3 +1,5 @@
+import { QueueItemTreeItem } from "../provider";
+
 export type PlaylistItem = {
   description: string;
   id: number;
@@ -96,13 +98,12 @@ export type NativePlayer = {
 };
 
 export interface Player {
-  id: number;
+  item: SongsItem;
   pid: number;
-  dt: number;
   time: number;
   level: number;
   stop(): void;
-  load(url: string, id: number, pid: number, dt: number): void;
+  load(url: string, pid: number, item: SongsItem): void;
   togglePlay(): void;
   volume(level: number): void;
 }

@@ -1,7 +1,6 @@
-import { load, songsItem2TreeItem } from "../util";
+import { apiPersonalFm, load, songsItem2TreeItem } from "../util";
 import { ButtonManager } from "../manager";
 import { QueueItemTreeItem } from "../provider";
-import { apiPersonalFm } from "../util";
 import { commands } from "vscode";
 
 export class Playing {

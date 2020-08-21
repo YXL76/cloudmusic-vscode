@@ -7,67 +7,80 @@ import {
   TreeItemCollapsibleState,
 } from "vscode";
 import { SongsItem } from "../constant";
+import { lock } from "../state";
 import { unsortInplace } from "array-unsort";
 
 export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   private static instance: QueueProvider;
 
-  private _onDidChangeTreeData: EventEmitter<
-    QueueItemTreeItem | undefined | void
-  > = new EventEmitter<QueueItemTreeItem | undefined | void>();
+  private _onDidChangeTreeData: EventEmitter<QueueItemTreeItem | void> = new EventEmitter<QueueItemTreeItem | void>();
 
-  readonly onDidChangeTreeData: Event<
-    QueueItemTreeItem | undefined | void
-  > = this._onDidChangeTreeData.event;
+  readonly onDidChangeTreeData: Event<QueueItemTreeItem | void> = this
+    ._onDidChangeTreeData.event;
 
-  songs: QueueItemTreeItem[] = [];
+  private static action?: (instance: QueueProvider) => Promise<void>;
+  static songs: QueueItemTreeItem[] = [];
 
   static getInstance(): QueueProvider {
     return this.instance || (this.instance = new QueueProvider());
   }
 
-  refresh(): void {
-    this._onDidChangeTreeData.fire();
+  static refresh(action: (instance: QueueProvider) => Promise<void>): void {
+    if (!lock.queue) {
+      lock.queue = true;
+      QueueProvider.action = action;
+      this.instance._onDidChangeTreeData.fire();
+    }
   }
 
   getTreeItem(element: QueueItemTreeItem): TreeItem {
     return element;
   }
 
-  getChildren(): QueueItemTreeItem[] {
-    return this.songs;
+  async getChildren(): Promise<QueueItemTreeItem[]> {
+    const localAction = QueueProvider.action;
+    QueueProvider.action = undefined;
+    if (localAction) {
+      await localAction(this);
+    }
+    lock.queue = false;
+    return QueueProvider.songs;
   }
 
   clear(): void {
-    this.songs = [];
+    QueueProvider.songs = [];
   }
 
   random(): void {
-    this.songs = [this.songs[0]].concat(unsortInplace(this.songs.slice(1)));
+    QueueProvider.songs = [QueueProvider.songs[0]].concat(
+      unsortInplace(QueueProvider.songs.slice(1))
+    );
   }
 
   top(element: QueueItemTreeItem): void {
-    this.shift(this.songs.indexOf(element));
+    this.shift(QueueProvider.songs.indexOf(element));
   }
 
   shift(index: number): void {
     if (index) {
       while (index < 0) {
-        index += this.songs.length;
+        index += QueueProvider.songs.length;
       }
-      this.songs = this.songs.slice(index).concat(this.songs.slice(0, index));
+      QueueProvider.songs = QueueProvider.songs
+        .slice(index)
+        .concat(QueueProvider.songs.slice(0, index));
     }
   }
 
   add(elements: QueueItemTreeItem[]): void {
-    const uniqueItems = new Set(this.songs.concat(elements));
-    this.songs = [...uniqueItems];
+    const uniqueItems = new Set(QueueProvider.songs.concat(elements));
+    QueueProvider.songs = [...uniqueItems];
   }
 
   delete(element: QueueItemTreeItem): void {
-    const index = this.songs.indexOf(element);
+    const index = QueueProvider.songs.indexOf(element);
     if (index >= 0) {
-      this.songs.splice(index, 1);
+      QueueProvider.songs.splice(index, 1);
     }
   }
 }

@@ -1,27 +1,20 @@
-import * as nls from "vscode-nls";
-import { Disposable, window } from "vscode";
+import { AccountManager, ButtonManager } from "../manager";
+import { IsLike, PersonalFm } from "../state";
+import {
+  LocalCache,
+  MusicCache,
+  apiSongUrl,
+  downloadMusic,
+  player,
+} from "../util";
 import { readdirSync, unlinkSync } from "fs";
-import { MusicCache } from "../util";
-import { PersonalFm } from "./play";
 import { QueueProvider } from "../provider";
 import { TMP_DIR } from "../constant";
-import { apiSongUrl } from "../util";
-import { downloadMusic } from "../util";
+import { i18n } from "../i18n";
 import { join } from "path";
-import { player } from "../util";
-
-nls.config({
-  messageFormat: nls.MessageFormat.bundle,
-  bundleFormat: nls.BundleFormat.standalone,
-})();
-
-const localize = nls.loadMessageBundle();
 
 class PlayerLoad {
   private static state = false;
-  private static disposable = new Disposable(() => {
-    //
-  });
 
   static get(): boolean {
     return this.state;
@@ -31,20 +24,17 @@ class PlayerLoad {
     if (newValue !== this.state) {
       this.state = newValue;
       if (newValue) {
-        this.disposable = window.setStatusBarMessage(
-          `$(loading) ${localize("music", "Music")}: ${localize(
-            "loading",
-            "Loading"
-          )}`
+        ButtonManager.buttonSong(
+          `$(loading) ${i18n.word.song}: ${i18n.word.loading}`
         );
       } else {
-        this.disposable.dispose();
+        const { name, ar, id } = player.item;
+        ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
+        IsLike.set(AccountManager.likelist.has(id));
       }
     }
   }
 }
-
-const queueProvider = QueueProvider.getInstance();
 
 class DeleteTmp {
   private static state = false;
@@ -58,7 +48,7 @@ class DeleteTmp {
       this.state = newValue;
       if (newValue) {
         readdirSync(TMP_DIR).forEach((file) => {
-          if (file !== `${player.id}`) {
+          if (file !== `${player.item.id}`) {
             try {
               unlinkSync(join(TMP_DIR, file));
             } catch {}
@@ -74,13 +64,16 @@ class DeleteTmp {
             md5 = PersonalFm.item[1].md5;
           }
         } else {
-          if (queueProvider.songs.length > 1) {
-            id = queueProvider.songs[1].item.id;
-            md5 = queueProvider.songs[1].md5;
+          if (QueueProvider.songs.length > 1) {
+            id = QueueProvider.songs[1].item.id;
+            md5 = QueueProvider.songs[1].md5;
           }
         }
         const idString = `${id}`;
-        if (id !== 0 && !(await MusicCache.get(idString))) {
+        if (
+          id !== 0 &&
+          !(LocalCache.get(md5) || (await MusicCache.get(idString)))
+        ) {
           const { url } = (await apiSongUrl([id]))[0];
           if (!url) {
             return;

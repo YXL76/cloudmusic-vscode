@@ -3,13 +3,21 @@ import {
   AnotherSongItem,
   Artist,
   LyricData,
+  MUSIC_QUALITY,
+  PROXY,
   PlaylistItem,
   REAL_IP,
   SongDetail,
   SongsItem,
   TrackIdsItem,
 } from "../constant";
-import { MUSIC_QUALITY, PROXY } from "../constant";
+import {
+  LyricCache,
+  solveAlbumsItem,
+  solveAnotherSongItem,
+  solveArtist,
+  solveSongItem,
+} from "../util";
 import {
   album,
   artist_album,
@@ -30,20 +38,14 @@ import {
   scrobble,
   search,
   search_hot_detail,
+  search_suggest,
   simi_song,
   song_detail,
   song_url,
   user_playlist,
   user_record,
 } from "NeteaseCloudMusicApi";
-import {
-  solveAlbumsItem,
-  solveAnotherSongItem,
-  solveArtist,
-  solveSongItem,
-} from "./util";
 import { AccountManager } from "../manager";
-import { LyricCache } from "./cache";
 import NodeCache = require("node-cache");
 
 const apiCache = new NodeCache({
@@ -620,6 +622,32 @@ export async function apiSearchHotDetail(): Promise<
       searchWord,
       content,
     }));
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
+}
+
+export async function apiSearchSuggest(keywords: string): Promise<string[]> {
+  const key = `search_suggest${keywords}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as string[];
+  }
+  try {
+    const { body, status } = await search_suggest({
+      keywords,
+      type: "mobile",
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+      realIP: REAL_IP,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { result } = body;
+    const { allMatch } = result;
+    const ret = allMatch.map(({ keyword }) => keyword);
     apiCache.set(key, ret);
     return ret;
   } catch {}

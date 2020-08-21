@@ -1,4 +1,3 @@
-import * as nls from "vscode-nls";
 import {
   apiDailySignin,
   apiLikelist,
@@ -7,19 +6,12 @@ import {
   apiLogout,
   apiUserPlaylist,
 } from "../util";
-// eslint-disable-next-line @typescript-eslint/naming-convention
 import { login, login_cellphone } from "NeteaseCloudMusicApi";
 import { LoggedIn } from "../state";
 import { PlaylistItem } from "../constant";
 import { cookieToJson } from "NeteaseCloudMusicApi/util/index";
+import { i18n } from "../i18n";
 import { window } from "vscode";
-
-nls.config({
-  messageFormat: nls.MessageFormat.bundle,
-  bundleFormat: nls.BundleFormat.standalone,
-})();
-
-const localize = nls.loadMessageBundle();
 
 export class AccountManager {
   static cookie = {};
@@ -31,12 +23,10 @@ export class AccountManager {
     if (LoggedIn.get()) {
       const code = await apiDailySignin();
       if (code === 200) {
-        window.showInformationMessage(
-          localize("dailyCheck.success", "Daily check success")
-        );
+        window.showInformationMessage(i18n.sentence.success.dailyCheck);
       }
     } else {
-      window.showErrorMessage(localize("dailyCheck.signin", "Please sign in"));
+      window.showErrorMessage(i18n.sentence.error.needSignIn);
     }
   }
 
@@ -47,9 +37,7 @@ export class AccountManager {
     md5_password: string
   ): Promise<boolean> {
     if (LoggedIn.get()) {
-      window.showInformationMessage(
-        localize("signin.already", "Already sign in")
-      );
+      window.showInformationMessage(i18n.sentence.info.alreadySignIn);
       return true;
     }
     try {

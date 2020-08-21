@@ -1,15 +1,8 @@
-import * as nls from "vscode-nls";
-import { Command, StatusBarAlignment, StatusBarItem, window } from "vscode";
-import { existsSync, readFileSync, writeFile } from "fs";
+import { StatusBarAlignment, StatusBarItem, window } from "vscode";
+import { existsSync, readFileSync, writeFileSync } from "fs";
 import { BUTTON_FILE } from "../constant";
 import { LoggedIn } from "../state";
-
-nls.config({
-  messageFormat: nls.MessageFormat.bundle,
-  bundleFormat: nls.BundleFormat.standalone,
-})();
-
-const localize = nls.loadMessageBundle();
+import { i18n } from "../i18n";
 
 enum ButtonLabel {
   account,
@@ -45,70 +38,44 @@ export class ButtonManager {
   ];
 
   private static buttonShow = getSetting();
-  private static buttonName = [
-    `$(account) ${localize("account", "Account")}`,
-    `$(chevron-left) ${localize("previous", "Previous")}`,
-    `$(play) ${localize("play", "Play")}`,
-    `$(chevron-right) ${localize("next", "Next")}`,
-    `$(star) ${localize("like", "Like")}`,
-    `$(unmute) ${localize("volume", "Volume")}`,
-    `$(file-media) ${localize("song", "Song")}`,
-    `$(text-size) ${localize("lyric", "Lyric")}`,
+  private static buttonText = [
+    "$(account)",
+    "$(chevron-left)",
+    "$(play)",
+    "$(chevron-right)",
+    "$(star)",
+    "$(unmute)",
+    "$(file-media)",
+    "$(text-size)",
+  ];
+  private static buttonTooltip = [
+    i18n.word.account,
+    i18n.word.previousTrack,
+    i18n.word.play,
+    i18n.word.nextTrack,
+    i18n.word.like,
+    i18n.word.volume,
+    i18n.word.song,
+    i18n.word.lyric,
+  ];
+  private static buttonCommand = [
+    "cloudmusic.signin",
+    "cloudmusic.previous",
+    "cloudmusic.play",
+    "cloudmusic.next",
+    "cloudmusic.like",
+    "cloudmusic.volume",
+    "cloudmusic.songDetail",
+    "cloudmusic.lyric",
   ];
 
   static init(): void {
-    this.updateButton(
-      0,
-      "$(account)",
-      localize("account", "Account"),
-      "cloudmusic.signin"
-    );
-    this.updateButton(
-      1,
-      "$(chevron-left)",
-      localize("previous", "Previous"),
-      "cloudmusic.previous"
-    );
-    this.updateButton(
-      2,
-      "$(play)",
-      localize("play", "Play"),
-      "cloudmusic.play"
-    );
-    this.updateButton(
-      3,
-      "$(chevron-right)",
-      localize("next", "Next"),
-      "cloudmusic.next"
-    );
-    this.updateButton(
-      4,
-      "$(star)",
-      localize("like", "Like"),
-      "cloudmusic.like"
-    );
-    this.updateButton(
-      5,
-      "$(unmute)",
-      `${localize("volume", "Volume")}: 85`,
-      "cloudmusic.volume"
-    );
-    this.updateButton(6, localize("song", "Song"), "", "cloudmusic.songDetail");
-    this.updateButton(7, localize("lyric", "Lyric"), "", "cloudmusic.lyric");
-    this.buttons[0].show();
-  }
-
-  private static updateButton(
-    index: number,
-    text: string,
-    tooltip: string,
-    command?: string | Command
-  ): void {
-    this.buttons[index].text = text;
-    this.buttons[index].tooltip = tooltip;
-    if (command) {
-      this.buttons[index].command = command;
+    for (let i = 0; i < this.buttons.length; ++i) {
+      this.buttons[i].text = this.buttonText[i];
+      this.buttons[i].tooltip = this.buttonTooltip[i];
+      this.buttons[i].command = this.buttonCommand[i];
     }
+    this.buttons[0].show();
   }
 
   static async toggle(): Promise<void> {
@@ -119,18 +86,13 @@ export class ButtonManager {
     }[] = [];
     for (let id = 1; id < this.buttons.length; ++id) {
       pick.push({
-        label: this.buttonName[id],
-        description: this.buttonShow[id]
-          ? localize("show", "Show")
-          : localize("hide", "Hide"),
+        label: `${this.buttonText[id]} ${this.buttonTooltip[id]}`,
+        description: this.buttonShow[id] ? i18n.word.show : i18n.word.hide,
         id,
       });
     }
     const button = await window.showQuickPick(pick, {
-      placeHolder: localize(
-        "toggleButton.placeHolder",
-        "Set buton is showing or hidding"
-      ),
+      placeHolder: i18n.sentence.hint.button,
     });
     if (!button) {
       return;
@@ -140,13 +102,8 @@ export class ButtonManager {
     if (LoggedIn.get()) {
       this.buttonShow[id] ? this.buttons[id].show() : this.buttons[id].hide();
     }
-    writeFile(BUTTON_FILE, JSON.stringify({ show: this.buttonShow }), () => {
-      //
-    });
-  }
-
-  static clearButtonCommand(index: number): void {
-    this.buttons[index].command = undefined;
+    writeFileSync(BUTTON_FILE, JSON.stringify({ show: this.buttonShow }));
+    this.toggle();
   }
 
   static show(): void {
@@ -164,68 +121,66 @@ export class ButtonManager {
   }
 
   static buttonAccountAccount(tooltip: string): void {
-    this.updateButton(
-      ButtonLabel.account,
-      "$(account)",
-      tooltip,
-      "cloudmusic.account"
-    );
+    this.buttons[ButtonLabel.account].tooltip = tooltip;
+    this.buttons[ButtonLabel.account].command = "cloudmusic.account";
   }
 
   static buttonAccountSignin(): void {
-    this.updateButton(
-      ButtonLabel.account,
-      "$(account)",
-      localize("account", "Account"),
-      "cloudmusic.signin"
-    );
+    this.buttons[ButtonLabel.account].command = "cloudmusic.signin";
   }
 
   static buttonPrevious(personalFm: boolean): void {
-    personalFm
-      ? this.updateButton(
-          ButtonLabel.previous,
-          "$(trash)",
-          localize("trash", "Trash"),
-          "cloudmusic.fmTrash"
-        )
-      : this.updateButton(
-          ButtonLabel.previous,
-          "$(chevron-left)",
-          localize("previous", "Previous"),
-          "cloudmusic.previous"
-        );
+    if (personalFm) {
+      this.buttons[ButtonLabel.previous].text = "$(trash)";
+      this.buttons[ButtonLabel.previous].tooltip = i18n.word.trash;
+      this.buttons[ButtonLabel.previous].command = "cloudmusic.fmTrash";
+    } else {
+      this.buttons[ButtonLabel.previous].text = this.buttonText[
+        ButtonLabel.previous
+      ];
+      this.buttons[ButtonLabel.previous].tooltip = this.buttonTooltip[
+        ButtonLabel.previous
+      ];
+      this.buttons[ButtonLabel.previous].command = this.buttonCommand[
+        ButtonLabel.previous
+      ];
+    }
   }
 
   static buttonPlay(playing: boolean): void {
-    this.updateButton(
-      ButtonLabel.play,
-      playing ? "$(debug-pause)" : "$(play)",
-      playing ? localize("pause", "Pause") : localize("play", "Play")
-    );
+    this.buttons[ButtonLabel.play].text = playing
+      ? "$(debug-pause)"
+      : "$(play)";
+    this.buttons[ButtonLabel.play].tooltip = playing
+      ? i18n.word.pause
+      : i18n.word.play;
   }
 
   static buttonLike(islike: boolean): void {
-    this.updateButton(
-      ButtonLabel.like,
-      islike ? "$(star-full)" : "$(star)",
-      islike ? localize("unlike", "Unlike") : localize("like", "Like")
-    );
+    this.buttons[ButtonLabel.like].text = islike ? "$(star-full)" : "$(star)";
+    this.buttons[ButtonLabel.like].tooltip = islike
+      ? i18n.word.unlike
+      : i18n.word.like;
   }
 
   static buttonVolume(level: number): void {
-    this.updateButton(
-      ButtonLabel.volume,
-      "$(unmute)",
-      `${localize("volume", "Volume")}: ${level}`
-    );
+    this.buttons[ButtonLabel.volume].tooltip = `${i18n.word.volume}: ${level}`;
   }
 
-  static buttonSong(name: string, ar: string): void {
-    this.updateButton(ButtonLabel.song, name, ar ? `${name} - ${ar}` : name);
+  static buttonSong(name?: string, ar?: string): void {
+    if (name) {
+      this.buttons[ButtonLabel.song].text = name;
+      this.buttons[ButtonLabel.song].tooltip = ar ? `${name} - ${ar}` : name;
+    } else {
+      this.buttons[ButtonLabel.song].text = this.buttonText[ButtonLabel.song];
+      this.buttons[ButtonLabel.song].tooltip = this.buttonTooltip[
+        ButtonLabel.song
+      ];
+    }
   }
 
-  static buttonLyric(text: string): void {
-    this.updateButton(ButtonLabel.lyric, text, "");
+  static buttonLyric(text?: string): void {
+    this.buttons[ButtonLabel.lyric].text =
+      text ?? this.buttonText[ButtonLabel.lyric];
   }
 }
