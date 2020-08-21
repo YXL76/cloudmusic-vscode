@@ -2,7 +2,7 @@
   "cloudmusic.commands.cloudmusic.account.title": "帐号",
   "cloudmusic.commands.cloudmusic.addPlaylist.title": "添加",
   "cloudmusic.commands.cloudmusic.addSong.title": "添加",
-  "cloudmusic.commands.cloudmusic.addToPlaylist.title": "添加到歌单",
+  "cloudmusic.commands.cloudmusic.saveToPlaylist.title": "添加到歌单",
   "cloudmusic.commands.cloudmusic.clearQueue.title": "清空",
   "cloudmusic.commands.cloudmusic.dailyCheck.title": "签到",
   "cloudmusic.commands.cloudmusic.deleteFromPlaylist.title": "从歌单中删除",

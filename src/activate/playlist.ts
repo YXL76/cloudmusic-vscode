@@ -117,7 +117,7 @@ export function initPlaylist(): void {
   );
 
   commands.registerCommand(
-    "cloudmusic.addToPlaylist",
+    "cloudmusic.saveToPlaylist",
     (element: QueueItemTreeItem) => {
       MultiStepInput.run((input) =>
         pickAddToPlaylist(input, 1, element.item.id)

@@ -2,7 +2,7 @@
   "cloudmusic.commands.cloudmusic.account.title": "Account",
   "cloudmusic.commands.cloudmusic.addPlaylist.title": "Add",
   "cloudmusic.commands.cloudmusic.addSong.title": "Add",
-  "cloudmusic.commands.cloudmusic.addToPlaylist.title": "Add to playlist",
+  "cloudmusic.commands.cloudmusic.saveToPlaylist.title": "Add to playlist",
   "cloudmusic.commands.cloudmusic.clearQueue.title": "Clear",
   "cloudmusic.commands.cloudmusic.dailyCheck.title": "Daily check",
   "cloudmusic.commands.cloudmusic.deleteFromPlaylist.title": "Delete from playlist",

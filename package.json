@@ -181,8 +181,8 @@
         "title": "%cloudmusic.commands.cloudmusic.deleteFromPlaylist.title%"
       },
       {
-        "command": "cloudmusic.addToPlaylist",
-        "title": "%cloudmusic.commands.cloudmusic.addToPlaylist.title%"
+        "command": "cloudmusic.saveToPlaylist",
+        "title": "%cloudmusic.commands.cloudmusic.saveToPlaylist.title%"
       },
       {
         "command": "cloudmusic.songDetail",
@@ -261,7 +261,7 @@
           "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem"
         },
         {
-          "command": "cloudmusic.addToPlaylist",
+          "command": "cloudmusic.saveToPlaylist",
           "when": "viewItem == QueueItemTreeItem"
         },
         {
