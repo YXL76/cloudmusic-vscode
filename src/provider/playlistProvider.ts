@@ -17,7 +17,6 @@ import {
 import { AccountManager } from "../manager";
 import { PlaylistItem } from "../constant";
 import { i18n } from "../i18n";
-import NodeCache = require("node-cache");
 
 enum Type {
   userInstance,
@@ -37,22 +36,12 @@ export class PlaylistProvider
     PlaylistItemTreeItem | undefined | void
   > = this._onDidChangeTreeData.event;
 
-  private static belongsTo: Map<number, Type> = new Map<number, Type>();
-  private static playlists: Map<number, PlaylistItemTreeItem> = new Map<
-    number,
-    PlaylistItemTreeItem
-  >();
+  private static belongsTo = new Map<number, Type>();
+  private static playlists = new Map<number, PlaylistItemTreeItem>();
 
-  private static action?: () => void;
+  private static action?: (items: QueueItemTreeItem[]) => void;
 
-  static treeView = new NodeCache({
-    stdTTL: 300,
-    checkperiod: 600,
-    useClones: false,
-    deleteOnExpire: true,
-    enableLegacyCallbacks: false,
-    maxKeys: -1,
-  });
+  private static treeView = new Map<number, QueueItemTreeItem[]>();
 
   constructor(private type: Type) {}
 
@@ -70,7 +59,10 @@ export class PlaylistProvider
     );
   }
 
-  static refresh(element?: PlaylistItemTreeItem, action?: () => void): void {
+  static refresh(
+    element?: PlaylistItemTreeItem,
+    action?: (items: QueueItemTreeItem[]) => void
+  ): void {
     if (element) {
       this.action = action;
       const type = this.belongsTo.get(element.item.id);
@@ -81,7 +73,8 @@ export class PlaylistProvider
       }
     } else {
       this.belongsTo.clear();
-      this.treeView.del(this.treeView.keys());
+      this.playlists.clear();
+      this.treeView.clear();
       this.userInstance._onDidChangeTreeData.fire();
       this.favoriteInstance._onDidChangeTreeData.fire();
     }
@@ -100,7 +93,7 @@ export class PlaylistProvider
       const localAction = PlaylistProvider.action;
       if (localAction) {
         PlaylistProvider.action = undefined;
-        localAction();
+        localAction(ret);
       }
       return ret;
     }
@@ -110,14 +103,15 @@ export class PlaylistProvider
   private static async getPlaylistContent(
     id: number
   ): Promise<QueueItemTreeItem[]> {
-    if (!this.treeView.get(id)) {
+    const items = this.treeView.get(id);
+    if (!items) {
       const ids = await apiPlaylistDetail(id);
       const songs = await apiSongDetail(ids);
       const ret = await songsItem2TreeItem(id, ids, songs);
       this.treeView.set(id, ret);
       return ret;
     }
-    return this.treeView.get(id) as QueueItemTreeItem[];
+    return items;
   }
 
   private async getPlaylistItem(): Promise<PlaylistItemTreeItem[]> {
@@ -140,11 +134,11 @@ export class PlaylistProvider
   }
 
   static playPlaylist(id: number, element?: QueueItemTreeItem): void {
-    this.refresh(this.playlists.get(id), () => {
+    this.refresh(this.playlists.get(id), (items) => {
       QueueProvider.refresh(async () => {
         PersonalFm.set(false);
         QueueProvider.clear();
-        QueueProvider.add(this.treeView.get(id) as QueueItemTreeItem[]);
+        QueueProvider.add(items);
         if (element) {
           QueueProvider.shift(QueueProvider.songs.indexOf(element));
         }

@@ -40,13 +40,9 @@ export function initPlaylist(): void {
   commands.registerCommand(
     "cloudmusic.addPlaylist",
     (element: PlaylistItemTreeItem) => {
-      PlaylistProvider.refresh(element, () => {
+      PlaylistProvider.refresh(element, (items) => {
         QueueProvider.refresh(async () => {
-          QueueProvider.add(
-            PlaylistProvider.treeView.get(
-              element.item.id
-            ) as QueueItemTreeItem[]
-          );
+          QueueProvider.add(items);
         });
       });
     }
