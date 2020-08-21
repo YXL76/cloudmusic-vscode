@@ -16,6 +16,12 @@ import {
 import { AccountManager } from "../manager";
 import { PlaylistItem } from "../constant";
 import { i18n } from "../i18n";
+import NodeCache = require("node-cache");
+
+enum Type {
+  userInstance,
+  favoriteInstance,
+}
 
 export class PlaylistProvider
   implements TreeDataProvider<PlaylistItemTreeItem | QueueItemTreeItem> {
@@ -23,57 +29,60 @@ export class PlaylistProvider
   private static favoriteInstance: PlaylistProvider;
 
   private _onDidChangeTreeData: EventEmitter<
-    PlaylistItemTreeItem | QueueItemTreeItem | undefined | void
-  > = new EventEmitter<
-    PlaylistItemTreeItem | QueueItemTreeItem | undefined | void
-  >();
+    PlaylistItemTreeItem | undefined | void
+  > = new EventEmitter<PlaylistItemTreeItem | undefined | void>();
 
   readonly onDidChangeTreeData: Event<
-    PlaylistItemTreeItem | QueueItemTreeItem | undefined | void
+    PlaylistItemTreeItem | undefined | void
   > = this._onDidChangeTreeData.event;
 
-  private static belongsTo: Map<number, number> = new Map<number, number>();
-  private static treeView: Map<number, QueueItemTreeItem[]> = new Map<
+  private static belongsTo: Map<number, Type> = new Map<number, Type>();
+  private static playlists: Map<number, PlaylistItemTreeItem> = new Map<
     number,
-    QueueItemTreeItem[]
+    PlaylistItemTreeItem
   >();
+  private static playlistActions: Map<
+    number,
+    () => Promise<QueueItemTreeItem[]>
+  > = new Map<number, () => Promise<QueueItemTreeItem[]>>();
+  private static treeView = new NodeCache({
+    stdTTL: 300,
+    checkperiod: 600,
+    useClones: true,
+    deleteOnExpire: true,
+    enableLegacyCallbacks: false,
+    maxKeys: -1,
+  });
 
-  constructor(private type: number) {}
+  constructor(private type: Type) {}
 
   static getUserInstance(): PlaylistProvider {
-    return this.userInstance || (this.userInstance = new PlaylistProvider(1));
+    return (
+      this.userInstance ||
+      (this.userInstance = new PlaylistProvider(Type.userInstance))
+    );
   }
 
   static getFavoriteInstance(): PlaylistProvider {
     return (
-      this.favoriteInstance || (this.favoriteInstance = new PlaylistProvider(2))
+      this.favoriteInstance ||
+      (this.favoriteInstance = new PlaylistProvider(Type.favoriteInstance))
     );
   }
 
   static refresh(element?: PlaylistItemTreeItem): void {
     if (element) {
-      this.treeView.delete(element.item.id);
       const type = this.belongsTo.get(element.item.id);
-      if (type) {
-        if (type === 1) {
-          this.userInstance._onDidChangeTreeData.fire(element);
-        } else {
-          this.favoriteInstance._onDidChangeTreeData.fire(element);
-        }
+      if (type === Type.userInstance) {
+        this.userInstance._onDidChangeTreeData.fire(element);
+      } else if (type === Type.favoriteInstance) {
+        this.favoriteInstance._onDidChangeTreeData.fire(element);
       }
     } else {
       this.belongsTo.clear();
-      this.treeView.clear();
+      this.treeView.del(this.treeView.keys());
       this.userInstance._onDidChangeTreeData.fire();
       this.favoriteInstance._onDidChangeTreeData.fire();
-    }
-  }
-
-  refresh(element?: PlaylistItemTreeItem): void {
-    if (element) {
-      this._onDidChangeTreeData.fire(element);
-    } else {
-      this._onDidChangeTreeData.fire();
     }
   }
 
@@ -82,62 +91,83 @@ export class PlaylistProvider
   }
 
   async getChildren(
-    element?: PlaylistItemTreeItem | QueueItemTreeItem
+    element?: PlaylistItemTreeItem
   ): Promise<PlaylistItemTreeItem[] | QueueItemTreeItem[]> {
-    return element
-      ? await PlaylistProvider.getPlaylistContent(element.item.id)
-      : await this.getPlaylistItem();
+    if (element) {
+      const id = element.item.id;
+      const action = PlaylistProvider.playlistActions.get(id);
+      if (action) {
+        PlaylistProvider.playlistActions.delete(id);
+        return await action();
+      }
+      return await PlaylistProvider.getPlaylistContent(id);
+    }
+    return await this.getPlaylistItem();
   }
 
   private static async getPlaylistContent(
     id: number
   ): Promise<QueueItemTreeItem[]> {
-    const items = this.treeView.get(id);
-    if (items) {
-      return items;
-    } else {
+    if (!this.treeView.get(id)) {
       const ids = await apiPlaylistDetail(id);
       const songs = await apiSongDetail(ids);
       const ret = await songsItem2TreeItem(id, ids, songs);
       this.treeView.set(id, ret);
-      return ret;
     }
+    return this.treeView.get(id) as QueueItemTreeItem[];
   }
 
   private async getPlaylistItem(): Promise<PlaylistItemTreeItem[]> {
     let playlists: PlaylistItem[];
-    if (this.type === 1) {
+    if (this.type === Type.userInstance) {
       playlists = await AccountManager.userPlaylist();
     } else {
       playlists = await AccountManager.favoritePlaylist();
     }
     return playlists.map((playlist) => {
       PlaylistProvider.belongsTo.set(playlist.id, this.type);
-      return new PlaylistItemTreeItem(
+      const item = new PlaylistItemTreeItem(
         playlist.name,
         playlist,
         TreeItemCollapsibleState.Collapsed
       );
+      PlaylistProvider.playlists.set(playlist.id, item);
+      return item;
     });
   }
 
   static async playPlaylist(
     id: number,
+    callback: () => void,
     index?: QueueItemTreeItem
   ): Promise<void> {
-    const queueProvider = QueueProvider.getInstance();
-    queueProvider.clear();
-    queueProvider.add(await this.getPlaylistContent(id));
-    if (index) {
-      queueProvider.top(index);
-    }
-    queueProvider.refresh();
+    PlaylistProvider.playlistActions.set(id, async () => {
+      const ret = await PlaylistProvider.getPlaylistContent(id);
+      const queueProvider = QueueProvider.getInstance();
+      queueProvider.clear();
+      queueProvider.add(this.treeView.get(id) as QueueItemTreeItem[]);
+      if (index) {
+        queueProvider.top(index);
+      }
+      queueProvider.refresh();
+      callback();
+      return ret;
+    });
+    PlaylistProvider.refresh(PlaylistProvider.playlists.get(id));
   }
 
-  static async addPlaylist(id: number): Promise<void> {
-    const queueProvider = QueueProvider.getInstance();
-    queueProvider.add(await this.getPlaylistContent(id));
-    queueProvider.refresh();
+  static async addPlaylist(element: PlaylistItemTreeItem): Promise<void> {
+    const id = element.item.id;
+    PlaylistProvider.playlistActions.set(id, async () => {
+      const ret = await PlaylistProvider.getPlaylistContent(id);
+      const queueProvider = QueueProvider.getInstance();
+      queueProvider.add(
+        this.treeView.get(element.item.id) as QueueItemTreeItem[]
+      );
+      queueProvider.refresh();
+      return ret;
+    });
+    PlaylistProvider.refresh(element);
   }
 
   static async intelligence(element: QueueItemTreeItem): Promise<void> {

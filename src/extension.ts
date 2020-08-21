@@ -635,10 +635,11 @@ export function activate(context: ExtensionContext): void {
     async (element: PlaylistItemTreeItem) => {
       lockQueue(async () => {
         PersonalFm.set(false);
-        await PlaylistProvider.playPlaylist(element.item.id);
-        if (!lock.playerLoad.get()) {
-          load(queueProvider.songs[0]);
-        }
+        await PlaylistProvider.playPlaylist(element.item.id, () => {
+          if (!lock.playerLoad.get()) {
+            load(queueProvider.songs[0]);
+          }
+        });
       });
     }
   );
@@ -646,7 +647,7 @@ export function activate(context: ExtensionContext): void {
     "cloudmusic.addPlaylist",
     (element: PlaylistItemTreeItem) => {
       lockQueue(async () => {
-        PlaylistProvider.addPlaylist(element.item.id);
+        PlaylistProvider.addPlaylist(element);
       });
     }
   );
@@ -675,10 +676,15 @@ export function activate(context: ExtensionContext): void {
     async (element: QueueItemTreeItem) => {
       lockQueue(async () => {
         PersonalFm.set(false);
-        await PlaylistProvider.playPlaylist(element.pid, element);
-        if (!lock.playerLoad.get()) {
-          load(element);
-        }
+        await PlaylistProvider.playPlaylist(
+          element.pid,
+          () => {
+            if (!lock.playerLoad.get()) {
+              load(element);
+            }
+          },
+          element
+        );
       });
     }
   );
