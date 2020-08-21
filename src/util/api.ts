@@ -51,7 +51,7 @@ import NodeCache = require("node-cache");
 const apiCache = new NodeCache({
   stdTTL: 300,
   checkperiod: 600,
-  useClones: true,
+  useClones: false,
   deleteOnExpire: true,
   enableLegacyCallbacks: false,
   maxKeys: -1,

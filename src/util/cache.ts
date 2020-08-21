@@ -94,7 +94,7 @@ export class LocalCache {
   private static cache = new NodeCache({
     stdTTL: 0,
     checkperiod: 0,
-    useClones: true,
+    useClones: false,
     deleteOnExpire: false,
     enableLegacyCallbacks: false,
     maxKeys: -1,
