@@ -372,7 +372,7 @@
     "gulp-typescript": "6.0.0-alpha.1",
     "mocha": "8.1.1",
     "ts-loader": "8.0.2",
-    "typescript": "3.9.7",
+    "typescript": "4.0.2",
     "vscode-nls-dev": "3.3.2",
     "vscode-test": "1.4.0",
     "webpack": "5.0.0-beta.28",
