@@ -338,7 +338,7 @@ export function activate(context: ExtensionContext): void {
   // like command
   const like = commands.registerCommand("cloudmusic.like", async () => {
     const islike = !IsLike.get();
-    const { id } = player;
+    const { id } = player.item;
     if (await apiLike(id, islike ? "" : "false")) {
       IsLike.set(islike);
       islike
@@ -714,7 +714,7 @@ export function activate(context: ExtensionContext): void {
   commands.registerCommand(
     "cloudmusic.songDetail",
     async (element?: QueueItemTreeItem) => {
-      const id = element ? element.item.id : player.id;
+      const id = element ? element.item.id : player.item.id;
       if (id) {
         await MultiStepInput.run((input) => pickSong(input, 1, id));
       }
@@ -771,7 +771,7 @@ export function activate(context: ExtensionContext): void {
     }
   });
   commands.registerCommand("cloudmusic.fmTrash", () => {
-    apiFmTrash(player.id);
+    apiFmTrash(player.item.id);
   });
 
   // keyboard detect

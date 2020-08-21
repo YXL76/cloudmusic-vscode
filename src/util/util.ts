@@ -117,7 +117,7 @@ export function solveAnotherSongItem(item: AnotherSongItem): SongsItem {
 }
 
 export function stop(): void {
-  player.id = 0;
+  player.item = { id: 0 } as SongsItem;
   player.stop();
   ButtonManager.buttonSong();
   ButtonManager.buttonLyric();
@@ -125,19 +125,13 @@ export function stop(): void {
 
 export async function load(element: QueueItemTreeItem): Promise<void> {
   lock.playerLoad.set(true);
-  const { pid, md5 } = element;
-  const { id, dt, name, ar } = element.item;
+  const { pid, md5, item } = element;
+  const { id } = item;
   const idString = `${id}`;
   const path = await MusicCache.get(idString);
 
-  const playerLoad = async (p: string) => {
-    await player.load(p, id, pid, dt);
-    ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
-    IsLike.set(AccountManager.likelist.has(id));
-  };
-
   if (path) {
-    playerLoad(path);
+    player.load(path, pid, item);
   } else {
     const { url } = (await apiSongUrl([id]))[0];
     if (!url) {
@@ -153,7 +147,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
       const timer = setInterval(() => {
         if (statSync(tmpFilePath).size > 256) {
           clearInterval(timer);
-          playerLoad(tmpFilePath);
+          player.load(tmpFilePath, pid, item);
         } else if (++count > 12) {
           clearInterval(timer);
           lock.playerLoad.set(false);
@@ -161,13 +155,13 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
         }
       }, 100);
     } else {
-      playerLoad(tmpFilePath);
+      player.load(tmpFilePath, pid, item);
     }
   }
 }
 
 export function splitLine(content: string): string {
-  return `>>>>>>>>>>                            ${content.toUpperCase()}                            <<<<<<<<<<`;
+  return `>>>>>>>>>>>>>>                                ${content.toUpperCase()}                                <<<<<<<<<<<<<<`;
 }
 
 enum PickType {
@@ -276,7 +270,7 @@ export async function pickSong(
   if (pick.type === PickType.like) {
     if (await apiLike(id)) {
       AccountManager.likelist.add(id);
-      if (id === player.id) {
+      if (id === player.item.id) {
         IsLike.set(true);
       }
     }

@@ -5,6 +5,7 @@ import {
   NativePlayer,
   PLAYER_AVAILABLE,
   Player,
+  SongsItem,
 } from "../constant";
 import { Playing, lock } from "../state";
 import { apiLyric, apiScrobble } from "../util";
@@ -12,9 +13,8 @@ import { ButtonManager } from "../manager";
 import { commands } from "vscode";
 
 class NoPlayer implements Player {
-  id = 0;
+  item = {} as SongsItem;
   pid = 0;
-  dt = 0;
   time = Date.now();
   level = 85;
 
@@ -23,7 +23,7 @@ class NoPlayer implements Player {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async load(_a: string, _b: number, _c: number, _d: number): Promise<void> {
+  async load(_a: string, _b: number, _c: SongsItem): Promise<void> {
     //
   }
 
@@ -47,9 +47,8 @@ export const lyric: Lyric = {
 class AudioPlayer implements Player {
   private player!: NativePlayer;
 
-  id = 0;
+  item = {} as SongsItem;
   pid = 0;
-  dt = 0;
   time = Date.now();
   level = 85;
 
@@ -75,7 +74,7 @@ class AudioPlayer implements Player {
           }
           ButtonManager.buttonLyric(lyric.text[lyric.index - 1]);
 
-          if (pos > this.dt + 8) {
+          if (pos > this.item.dt + 8) {
             Playing.set(false);
             commands.executeCommand("cloudmusic.next");
           }
@@ -95,13 +94,13 @@ class AudioPlayer implements Player {
     this.player.stop();
   }
 
-  async load(url: string, id: number, pid: number, dt: number): Promise<void> {
+  async load(url: string, pid: number, item: SongsItem): Promise<void> {
     lock.deleteTmp.set(false);
     if (this.player.load(url)) {
       this.player.setVolume(this.level);
       Playing.set(true);
 
-      apiLyric(id).then(({ time, text }) => {
+      apiLyric(item.id).then(({ time, text }) => {
         lyric.index = 0;
         lyric.time = time;
         lyric.text = text;
@@ -111,13 +110,13 @@ class AudioPlayer implements Player {
       this.time = Date.now();
 
       const diff = this.time - pTime;
-      if (diff > 60000 && this.dt > 60) {
-        apiScrobble(this.id, this.pid, Math.min(diff / 1000, this.dt));
+      const { id, dt } = this.item;
+      if (diff > 60000 && dt > 60) {
+        apiScrobble(id, this.pid, Math.min(diff / 1000, dt));
       }
 
-      this.id = id;
       this.pid = pid;
-      this.dt = dt;
+      this.item = item;
 
       lock.playerLoad.set(false);
     } else {
@@ -127,7 +126,7 @@ class AudioPlayer implements Player {
   }
 
   togglePlay(): void {
-    if (this.id) {
+    if (this.item.id) {
       if (Playing.get()) {
         this.player.pause();
         Playing.set(false);
