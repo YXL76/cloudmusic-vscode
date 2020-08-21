@@ -19,7 +19,7 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     ._onDidChangeTreeData.event;
 
   private static action?: (instance: QueueProvider) => Promise<void>;
-  songs: QueueItemTreeItem[] = [];
+  static songs: QueueItemTreeItem[] = [];
 
   static getInstance(): QueueProvider {
     return this.instance || (this.instance = new QueueProvider());
@@ -44,39 +44,43 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
       await localAction(this);
     }
     lock.queue = false;
-    return this.songs;
+    return QueueProvider.songs;
   }
 
   clear(): void {
-    this.songs = [];
+    QueueProvider.songs = [];
   }
 
   random(): void {
-    this.songs = [this.songs[0]].concat(unsortInplace(this.songs.slice(1)));
+    QueueProvider.songs = [QueueProvider.songs[0]].concat(
+      unsortInplace(QueueProvider.songs.slice(1))
+    );
   }
 
   top(element: QueueItemTreeItem): void {
-    this.shift(this.songs.indexOf(element));
+    this.shift(QueueProvider.songs.indexOf(element));
   }
 
   shift(index: number): void {
     if (index) {
       while (index < 0) {
-        index += this.songs.length;
+        index += QueueProvider.songs.length;
       }
-      this.songs = this.songs.slice(index).concat(this.songs.slice(0, index));
+      QueueProvider.songs = QueueProvider.songs
+        .slice(index)
+        .concat(QueueProvider.songs.slice(0, index));
     }
   }
 
   add(elements: QueueItemTreeItem[]): void {
-    const uniqueItems = new Set(this.songs.concat(elements));
-    this.songs = [...uniqueItems];
+    const uniqueItems = new Set(QueueProvider.songs.concat(elements));
+    QueueProvider.songs = [...uniqueItems];
   }
 
   delete(element: QueueItemTreeItem): void {
-    const index = this.songs.indexOf(element);
+    const index = QueueProvider.songs.indexOf(element);
     if (index >= 0) {
-      this.songs.splice(index, 1);
+      QueueProvider.songs.splice(index, 1);
     }
   }
 }

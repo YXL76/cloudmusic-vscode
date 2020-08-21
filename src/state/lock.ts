@@ -58,10 +58,9 @@ class DeleteTmp {
             md5 = PersonalFm.item[1].md5;
           }
         } else {
-          const queueProvider = QueueProvider.getInstance();
-          if (queueProvider.songs.length > 1) {
-            id = queueProvider.songs[1].item.id;
-            md5 = queueProvider.songs[1].md5;
+          if (QueueProvider.songs.length > 1) {
+            id = QueueProvider.songs[1].item.id;
+            md5 = QueueProvider.songs[1].md5;
           }
         }
         const idString = `${id}`;
