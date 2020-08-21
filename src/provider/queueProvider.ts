@@ -96,13 +96,13 @@ export class QueueItemTreeItem extends TreeItem {
     return this.item.id;
   }
 
-  get description(): string {
+  description = (() => {
     const arName: string[] = [];
     for (const i of this.item.ar) {
       arName.push(i.name);
     }
     return arName.join("/");
-  }
+  })();
 
   iconPath = new ThemeIcon("zap");
 

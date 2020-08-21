@@ -141,15 +141,15 @@ export class PlaylistItemTreeItem extends TreeItem {
     return this.item.id;
   }
 
-  get tooltip(): string {
+  tooltip = (() => {
     const { description, playCount, subscribedCount, trackCount } = this.item;
     return `
-${i18n.word.description}: ${description}
+${i18n.word.description}: ${description || ""}
 ${i18n.word.trackCount}: ${trackCount}
 ${i18n.word.playCount}: ${playCount}
 ${i18n.word.subscribedCount}: ${subscribedCount}
     `;
-  }
+  })();
 
   iconPath = new ThemeIcon("selection");
 

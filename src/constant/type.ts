@@ -1,7 +1,5 @@
-import { QueueItemTreeItem } from "../provider";
-
 export type PlaylistItem = {
-  description: string;
+  description: string | null;
   id: number;
   name: string;
   playCount: number;

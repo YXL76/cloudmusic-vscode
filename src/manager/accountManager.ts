@@ -1,8 +1,6 @@
 import {
   apiDailySignin,
   apiLikelist,
-  apiLoginRefresh,
-  apiLoginStatus,
   apiLogout,
   apiUserPlaylist,
 } from "../util";
@@ -70,14 +68,6 @@ export class AccountManager {
     }
   }
 
-  static async loginRefresh(): Promise<void> {
-    await apiLoginRefresh();
-  }
-
-  static async loginStatus(): Promise<void> {
-    await apiLoginStatus();
-  }
-
   static async logout(): Promise<boolean> {
     if (await apiLogout()) {
       this.cookie = {};
@@ -88,10 +78,6 @@ export class AccountManager {
       return true;
     }
     return false;
-  }
-
-  static async playlist(): Promise<PlaylistItem[]> {
-    return await apiUserPlaylist();
   }
 
   static async userPlaylist(): Promise<PlaylistItem[]> {

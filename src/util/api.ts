@@ -748,7 +748,6 @@ export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
     return value as PlaylistItem[];
   }
   try {
-    const ret: PlaylistItem[] = [];
     const { status, body } = await user_playlist({
       uid: AccountManager.uid,
       cookie: AccountManager.cookie,
@@ -756,19 +755,19 @@ export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
       realIP: REAL_IP,
     });
     if (status !== 200) {
-      return ret;
+      return [];
     }
     const { playlist } = body;
-    for (const {
-      description,
-      id,
-      name,
-      playCount,
-      subscribedCount,
-      trackCount,
-      creator,
-    } of playlist) {
-      ret.push({
+    const ret = playlist.map(
+      ({
+        description,
+        id,
+        name,
+        playCount,
+        subscribedCount,
+        trackCount,
+        creator,
+      }) => ({
         description,
         id,
         name,
@@ -776,13 +775,14 @@ export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
         subscribedCount,
         trackCount,
         userId: creator.userId,
-      });
+      })
+    );
+    if (ret.length > 0) {
+      apiCache.set(key, ret);
     }
-    apiCache.set(key, ret);
     return ret;
-  } catch {
-    return [];
-  }
+  } catch {}
+  return [];
 }
 
 export async function apiUserRecord(

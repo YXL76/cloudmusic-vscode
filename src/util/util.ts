@@ -219,7 +219,7 @@ export const pickPlaylistItems = (playlists: PlaylistItem[]): PST[] =>
   playlists.map((playlist) => ({
     label: `$(list-unordered) ${playlist.name}`,
     description: `${playlist.trackCount}`,
-    detail: playlist.description,
+    detail: playlist.description || "",
     id: playlist.id,
     item: playlist,
     type: PickType.playlist,
@@ -427,7 +427,7 @@ export async function pickPlaylist(
       },
       {
         label: `$(markdown) ${i18n.word.description}`,
-        detail: description,
+        detail: description || "",
       },
       {
         label: i18n.word.playCount,
