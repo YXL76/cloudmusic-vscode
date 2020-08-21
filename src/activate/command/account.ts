@@ -1,5 +1,5 @@
 import * as crypto from "crypto";
-import { ExtensionContext, commands, window } from "vscode";
+import { ExtensionContext, QuickPickItem, commands, window } from "vscode";
 import { unlink, writeFile } from "fs";
 import { ACCOUNT_FILE } from "../../constant";
 import { AccountManager } from "../../manager";
@@ -13,53 +13,71 @@ export function account(context: ExtensionContext): void {
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.account", async () => {
-      const pick = await window.showQuickPick([
+      enum Type {
+        user,
+        fm,
+        search,
+        userMusicRankingListWeekly,
+        userMusicRankingListAllTime,
+        signOut,
+      }
+
+      interface T extends QuickPickItem {
+        type: Type;
+      }
+
+      const pick = await window.showQuickPick<T>([
         {
           label: AccountManager.nickname,
           description: i18n.word.user,
-          type: 0,
+          type: Type.user,
         },
         {
           label: i18n.word.personalFm,
-          type: 1,
+          type: Type.fm,
+        },
+        {
+          label: i18n.word.search,
+          type: Type.search,
         },
         {
           label: i18n.word.userRankingList,
           description: i18n.word.weekly,
-          id: "userMusicRankingWeekly",
-          queryType: 1,
-          type: 2,
+          type: Type.userMusicRankingListWeekly,
         },
         {
           label: i18n.word.userRankingList,
           description: i18n.word.allTime,
-          id: "userMusicRankingAllTime",
-          queryType: 0,
-          type: 2,
+          type: Type.userMusicRankingListAllTime,
         },
         {
           label: i18n.word.signOut,
-          type: 3,
+          type: Type.signOut,
         },
       ]);
       if (!pick) {
         return;
       }
-      switch (pick.type) {
-        case 1:
-          commands.executeCommand("cloudmusic.personalFM");
-          break;
-        case 2:
-          webview.userMusicRanking(
-            `${pick.id}`,
-            `${pick.label} (${pick.description})`,
-            // @ts-ignore
-            pick.queryType
-          );
-          break;
-        case 3:
-          commands.executeCommand("cloudmusic.signout");
-          break;
+      if (pick.type === Type.user) {
+        commands.executeCommand("cloudmusic.account");
+      } else if (pick.type === Type.fm) {
+        commands.executeCommand("cloudmusic.personalFM");
+      } else if (pick.type === Type.search) {
+        commands.executeCommand("cloudmusic.search");
+      } else if (pick.type === Type.userMusicRankingListWeekly) {
+        webview.userMusicRanking(
+          "userMusicRankingListWeekly",
+          `${pick.label} (${pick.description})`,
+          1
+        );
+      } else if (pick.type === Type.userMusicRankingListAllTime) {
+        webview.userMusicRanking(
+          "userMusicRankingListAllTime",
+          `${pick.label} (${pick.description})`,
+          0
+        );
+      } else if (pick.type === Type.signOut) {
+        commands.executeCommand("cloudmusic.signout");
       }
     })
   );

@@ -6,7 +6,7 @@ import {
   pickSong,
   player,
 } from "../util";
-import { QuickPickItem, commands, window } from "vscode";
+import { QuickPickItem, commands } from "vscode";
 import { ButtonManager } from "../manager";
 import { QueueItemTreeItem } from "../provider";
 
@@ -26,53 +26,98 @@ export function initStatusBar(): void {
   );
 
   commands.registerCommand("cloudmusic.lyric", async () => {
-    const pick = await window.showQuickPick([
-      {
-        label: i18n.word.lyricDelay,
-        description: `${i18n.sentence.label.lyricDelay} (${i18n.word.default}: -1.0)`,
-        type: 0,
-      },
-      {
-        label: i18n.word.fullLyric,
-        type: 1,
-      },
-      {
-        label: i18n.word.cleanCache,
-        type: 2,
-      },
-    ]);
-    if (!pick) {
-      return;
+    const totalSteps = 2;
+    const title = i18n.word.lyric;
+    let select = "";
+
+    enum Type {
+      delay,
+      full,
+      cache,
     }
-    switch (pick.type) {
-      case 0:
-        const delay = await window.showInputBox({
-          value: `${lyric.delay}`,
-          placeHolder: i18n.sentence.hint.lyricDelay,
-        });
-        if (!delay || !/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay)) {
-          return;
-        }
-        lyric.delay = parseFloat(delay);
-        break;
-      case 1:
-        const lyricItem: QuickPickItem[] = [];
-        for (let i = 0; i < lyric.text.length; ++i) {
-          lyricItem.push({
-            label: lyric.text[i],
-            description: `[${lyric.time[i]}]`,
-          });
-        }
-        const allLyric = await window.showQuickPick(lyricItem);
-        if (allLyric) {
-          await window.showInputBox({
-            value: allLyric.description,
-          });
-        }
-        break;
-      case 2:
+
+    interface T extends QuickPickItem {
+      type: Type;
+    }
+
+    await MultiStepInput.run((input) => pickMthod(input));
+
+    async function pickMthod(input: MultiStepInput) {
+      const pick = await input.showQuickPick<T>({
+        title,
+        step: 1,
+        totalSteps,
+        items: [
+          {
+            label: i18n.word.lyricDelay,
+            description: `${i18n.sentence.label.lyricDelay} (${i18n.word.default}: -1.0)`,
+            type: Type.delay,
+          },
+          {
+            label: i18n.word.fullLyric,
+            type: Type.full,
+          },
+          {
+            label: i18n.word.cleanCache,
+            type: Type.cache,
+          },
+        ],
+      });
+      if (pick.type === Type.delay) {
+        return (input: MultiStepInput) => inputDelay(input);
+      }
+      if (pick.type === Type.full) {
+        return (input: MultiStepInput) => pickLyric(input);
+      }
+      if (pick.type === Type.cache) {
         LyricCache.clear();
-        break;
+      }
+    }
+
+    async function inputDelay(input: MultiStepInput) {
+      const delay = await input.showInputBox({
+        title,
+        step: 2,
+        totalSteps,
+        value: `${lyric.delay}`,
+        prompt: i18n.sentence.hint.lyricDelay,
+      });
+      if (/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay)) {
+        lyric.delay = parseFloat(delay);
+      } else {
+        input.pop();
+        return (input: MultiStepInput) => inputDelay(input);
+      }
+    }
+
+    async function pickLyric(input: MultiStepInput) {
+      interface T extends QuickPickItem {
+        description: string;
+      }
+      const items: T[] = [];
+      for (let i = 0; i < lyric.text.length; ++i) {
+        items.push({
+          label: lyric.text[i],
+          description: `[${lyric.time[i]}]`,
+        });
+      }
+      const pick = await input.showQuickPick<T>({
+        title,
+        step: 2,
+        totalSteps: totalSteps + 1,
+        items,
+      });
+      select = pick.description;
+      return (input: MultiStepInput) => showLyric(input);
+    }
+
+    async function showLyric(input: MultiStepInput) {
+      await input.showInputBox({
+        title,
+        step: 3,
+        totalSteps: totalSteps + 1,
+        value: select,
+      });
     }
   });
 

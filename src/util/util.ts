@@ -18,15 +18,16 @@ import {
   apiArtists,
   apiLike,
   apiPlaylistDetail,
+  apiPlaylistTracks,
   apiSimiSong,
   apiSongDetail,
   apiSongUrl,
   player,
 } from "../util";
 import { IsLike, PersonalFm, lock } from "../state";
+import { PlaylistProvider, QueueItemTreeItem } from "../provider";
 import { QuickPickItem, commands, window } from "vscode";
 import { existsSync, statSync } from "fs";
-import { QueueItemTreeItem } from "../provider";
 import { TreeItemCollapsibleState } from "vscode";
 import { i18n } from "../i18n";
 import { join } from "path";
@@ -277,9 +278,7 @@ export async function pickSong(
     }
   }
   if (pick.type === PickType.save) {
-    commands.executeCommand("cloudmusic.addToPlaylist", {
-      item: { id },
-    });
+    return (input: MultiStepInput) => pickAddToPlaylist(input, step + 1, id);
   }
   if (pick.type === PickType.similar) {
     const songs = await apiSimiSong(id);
@@ -454,4 +453,25 @@ export async function pickPlaylist(
   }
   input.pop();
   return (input: MultiStepInput) => pickPlaylist(input, step, item);
+}
+
+export async function pickAddToPlaylist(
+  input: MultiStepInput,
+  step: number,
+  id: number
+): Promise<InputStep> {
+  const lists = await AccountManager.userPlaylist();
+  const pick = await input.showQuickPick({
+    title: i18n.word.saveToPlaylist,
+    step,
+    items: lists.map(({ name, id }) => ({
+      label: name,
+      id,
+    })),
+  });
+  if (await apiPlaylistTracks("add", pick.id, [id])) {
+    PlaylistProvider.refresh();
+  }
+  input.pop();
+  return (input: MultiStepInput) => pickAddToPlaylist(input, step, id);
 }

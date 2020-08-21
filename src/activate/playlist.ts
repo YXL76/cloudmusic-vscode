@@ -6,9 +6,11 @@ import {
   QueueProvider,
 } from "../provider";
 import {
+  MultiStepInput,
   apiPlaylistTracks,
   apiPlaymodeIntelligenceList,
   load,
+  pickAddToPlaylist,
   songsItem2TreeItem,
 } from "../util";
 import { commands, window } from "vscode";
@@ -114,19 +116,12 @@ export function initPlaylist(): void {
     }
   );
 
-  commands.registerCommand("cloudmusic.addToPlaylist", async ({ item }) => {
-    const lists = await AccountManager.userPlaylist();
-    const selection = await window.showQuickPick(
-      lists.map(({ name, id }) => ({
-        label: name,
-        id,
-      }))
-    );
-    if (!selection) {
-      return;
+  commands.registerCommand(
+    "cloudmusic.addToPlaylist",
+    (element: QueueItemTreeItem) => {
+      MultiStepInput.run((input) =>
+        pickAddToPlaylist(input, 1, element.item.id)
+      );
     }
-    if (await apiPlaylistTracks("add", selection.id, [item.id])) {
-      PlaylistProvider.refresh();
-    }
-  });
+  );
 }

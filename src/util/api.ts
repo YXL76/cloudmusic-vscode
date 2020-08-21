@@ -742,6 +742,11 @@ export async function apiSongUrl(trackIds: number[]): Promise<SongDetail[]> {
 }
 
 export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
+  const key = "user_playlist";
+  const value = apiCache.get(key);
+  if (value) {
+    return value as PlaylistItem[];
+  }
   try {
     const ret: PlaylistItem[] = [];
     const { status, body } = await user_playlist({
@@ -773,6 +778,7 @@ export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
         userId: creator.userId,
       });
     }
+    apiCache.set(key, ret);
     return ret;
   } catch {
     return [];
