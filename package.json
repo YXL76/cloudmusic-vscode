@@ -364,7 +364,7 @@
     "typescript": "3.9.7",
     "vscode-nls-dev": "3.3.2",
     "vscode-test": "1.4.0",
-    "webpack": "5.0.0-beta.26",
+    "webpack": "5.0.0-beta.28",
     "webpack-cli": "4.0.0-beta.8"
   },
   "dependencies": {
