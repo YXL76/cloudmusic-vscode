@@ -283,24 +283,29 @@
           "cloudmusic.cache.size": {
             "type": "number",
             "default": 1024,
+            "minimum": 128,
+            "maximum": 10240,
             "markdownDescription": "%cloudmusic.configuration.cloudmusic.cache.size.markdownDescription%",
             "scope": "window"
           },
           "cloudmusic.cache.localDirectory": {
             "type": "string",
             "default": "",
+            "format": "uri",
             "markdownDescription": "%cloudmusic.configuration.cloudmusic.cache.localDirectory.markdownDescription%",
             "scope": "window"
           },
           "cloudmusic.music.proxy": {
             "type": "string",
             "default": "",
+            "format": "uri",
             "markdownDescription": "%cloudmusic.configuration.cloudmusic.music.proxy.markdownDescription%",
             "scope": "window"
           },
           "cloudmusic.music.realIP": {
             "type": "string",
             "default": "",
+            "format": "ipv4",
             "markdownDescription": "%cloudmusic.configuration.cloudmusic.music.realIP.markdownDescription%",
             "scope": "window"
           },

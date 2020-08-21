@@ -43,6 +43,5 @@ export const LYRIC_CACHE_DIR = join(CACHE_DIR, "lyric");
 export const LOCAL_FILE_DIR: string | undefined =
   conf.get("cache.localDirectory.path") ?? undefined;
 
-const cacheSize = conf.get("cache.size") as number;
-const finalSize = cacheSize > 10240 ? 10240 : cacheSize < 128 ? 128 : cacheSize;
-export const MUSIC_CACHE_SIZE = finalSize * 1024 * 1024;
+export const MUSIC_CACHE_SIZE =
+  (conf.get("cache.size") as number) * 1024 * 1024;
