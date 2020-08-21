@@ -107,7 +107,7 @@ export function initStatusBar(): void {
         totalSteps: totalSteps + 1,
         items,
       });
-      select = pick.description;
+      select = pick.label;
       return (input: MultiStepInput) => showLyric(input);
     }
 
