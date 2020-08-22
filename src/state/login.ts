@@ -15,7 +15,7 @@ export class LoggedIn {
       if (newValue) {
         ButtonManager.buttonAccountAccount(AccountManager.nickname);
         ButtonManager.show();
-        PlaylistProvider.refresh();
+        PlaylistProvider.refresh(undefined, undefined, true);
       } else {
         ButtonManager.buttonAccountSignin();
         ButtonManager.hide();

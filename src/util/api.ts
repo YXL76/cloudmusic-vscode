@@ -12,6 +12,7 @@ import {
   SongsItem,
   TrackIdsItem,
 } from "../constant";
+import { LyricCache, apiCache } from "../util";
 import {
   album,
   artist_album,
@@ -29,6 +30,7 @@ import {
   personal_fm,
   personalized,
   personalized_newsong,
+  playlist_delete,
   playlist_detail,
   playlist_tracks,
   playmode_intelligence_list,
@@ -47,17 +49,6 @@ import {
   user_record,
 } from "NeteaseCloudMusicApi";
 import { AccountManager } from "../manager";
-import { LyricCache } from "../util";
-import NodeCache = require("node-cache");
-
-const apiCache = new NodeCache({
-  stdTTL: 300,
-  checkperiod: 600,
-  useClones: false,
-  deleteOnExpire: true,
-  enableLegacyCallbacks: false,
-  maxKeys: -1,
-});
 
 const solveArtist = (item: Artist): Artist => {
   const { name, id, alias, briefDesc, albumSize, musicSize } = item;
@@ -487,6 +478,21 @@ export async function apiPersonalizedNewsong(): Promise<SongsItem[]> {
     return ret;
   } catch {}
   return [];
+}
+
+export async function apiPlaylistDelete(id: number): Promise<boolean> {
+  try {
+    const { status } = await playlist_delete({
+      id,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+      realIP: REAL_IP,
+    });
+    if (status === 200) {
+      return true;
+    }
+  } catch {}
+  return false;
 }
 
 export async function apiPlaylistDetail(id: number): Promise<number[]> {

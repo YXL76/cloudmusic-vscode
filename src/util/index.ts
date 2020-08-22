@@ -1,5 +1,5 @@
 export { InputStep, MultiStepInput } from "./multiStepInput";
-export { LocalCache, LyricCache, MusicCache } from "./cache";
+export { LocalCache, LyricCache, MusicCache, apiCache } from "./cache";
 export {
   apiAlbum,
   apiArtistAlbum,
@@ -17,6 +17,7 @@ export {
   apiPersonalFm,
   apiPersonalized,
   apiPersonalizedNewsong,
+  apiPlaylistDelete,
   apiPlaylistDetail,
   apiPlaylistTracks,
   apiPlaymodeIntelligenceList,

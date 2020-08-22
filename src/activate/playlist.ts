@@ -1,5 +1,6 @@
 import {
   MultiStepInput,
+  apiPlaylistDelete,
   apiPlaylistTracks,
   apiPlaymodeIntelligenceList,
   load,
@@ -22,12 +23,13 @@ export async function initPlaylist(): Promise<void> {
   window.registerTreeDataProvider("favoritePlaylist", favoritePlaylistProvider);
 
   commands.registerCommand("cloudmusic.refreshPlaylist", () => {
-    PlaylistProvider.refresh();
+    PlaylistProvider.refresh(undefined, undefined, true);
   });
 
   commands.registerCommand(
     "cloudmusic.refreshPlaylistContent",
-    (element: PlaylistItemTreeItem) => PlaylistProvider.refresh(element)
+    (element: PlaylistItemTreeItem) =>
+      PlaylistProvider.refresh(element, undefined, true)
   );
 
   commands.registerCommand(
@@ -43,6 +45,15 @@ export async function initPlaylist(): Promise<void> {
           }
         });
       });
+    }
+  );
+
+  commands.registerCommand(
+    "cloudmusic.deletePlaylist",
+    async (element: PlaylistItemTreeItem) => {
+      if (await apiPlaylistDelete(element.item.id)) {
+        PlaylistProvider.refresh(undefined, undefined, true);
+      }
     }
   );
 

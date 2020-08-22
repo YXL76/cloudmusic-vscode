@@ -13,6 +13,15 @@ import LRU = require("lru-cache");
 import md5File = require("md5-file");
 import NodeCache = require("node-cache");
 
+export const apiCache = new NodeCache({
+  stdTTL: 300,
+  checkperiod: 600,
+  useClones: false,
+  deleteOnExpire: true,
+  enableLegacyCallbacks: false,
+  maxKeys: -1,
+});
+
 export class MusicCache {
   static lruCache = new LRU({
     max: MUSIC_CACHE_SIZE,

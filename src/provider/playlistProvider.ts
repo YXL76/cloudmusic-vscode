@@ -6,7 +6,12 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import { apiPlaylistDetail, apiSongDetail, songsItem2TreeItem } from "../util";
+import {
+  apiCache,
+  apiPlaylistDetail,
+  apiSongDetail,
+  songsItem2TreeItem,
+} from "../util";
 import { AccountManager } from "../manager";
 import { PlaylistItem } from "../constant";
 import { QueueItemTreeItem } from "../provider";
@@ -55,17 +60,26 @@ export class PlaylistProvider
 
   static refresh(
     element?: PlaylistItemTreeItem,
-    action?: (items: QueueItemTreeItem[]) => void
+    action?: (items: QueueItemTreeItem[]) => void,
+    refresh?: boolean
   ): void {
     if (element) {
       this.action = action;
-      const type = this.belongsTo.get(element.item.id);
+      const { id } = element.item;
+      if (refresh) {
+        apiCache.del(`playlist_detail${id}`);
+        this.treeView.delete(id);
+      }
+      const type = this.belongsTo.get(id);
       if (type === Type.userInstance) {
         this.userInstance._onDidChangeTreeData.fire(element);
       } else if (type === Type.favoriteInstance) {
         this.favoriteInstance._onDidChangeTreeData.fire(element);
       }
     } else {
+      if (refresh) {
+        apiCache.del("user_playlist");
+      }
       this.belongsTo.clear();
       this.playlists.clear();
       this.treeView.clear();
