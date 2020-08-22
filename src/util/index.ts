@@ -4,6 +4,7 @@ export {
   apiAlbum,
   apiArtistAlbum,
   apiArtists,
+  apiArtistSongs,
   apiCheckMusic,
   apiDailySignin,
   apiFmTrash,

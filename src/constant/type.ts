@@ -20,6 +20,7 @@ export type Artist = {
   alias: string[];
   briefDesc: string;
   albumSize: number;
+  musicSize: number;
 };
 
 export type SongsItem = {

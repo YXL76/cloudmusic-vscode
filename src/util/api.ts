@@ -23,6 +23,7 @@ import {
 import {
   album,
   artist_album,
+  artist_songs,
   artists,
   check_music,
   daily_signin,
@@ -163,6 +164,36 @@ export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
     apiCache.set(key, ret);
   }
   return ret;
+}
+
+export async function apiArtistSongs(
+  id: number,
+  limit: number,
+  offset: number
+): Promise<SongsItem[]> {
+  const key = `artist_songs${id}-${limit}-${offset}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as SongsItem[];
+  }
+  try {
+    const { status, body } = await artist_songs({
+      id,
+      limit,
+      offset,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+      realIP: REAL_IP,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { songs } = body;
+    const ret = songs.map((song: SongsItem) => solveSongItem(song));
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
 }
 
 export async function apiCheckMusic(id: number): Promise<boolean> {
@@ -423,8 +454,7 @@ export async function apiPlaylistDetail(id: number): Promise<number[]> {
     if (status !== 200) {
       return [];
     }
-    const { playlist } = body;
-    const { trackIds } = playlist;
+    const { trackIds } = body.playlist;
     const ret = trackIds.map((trackId: TrackIdsItem) => {
       return trackId.id;
     });
@@ -577,8 +607,7 @@ export async function apiSearchSingle(
     if (status !== 200) {
       return [];
     }
-    const { result } = body;
-    const { songs } = result;
+    const { songs } = body.result;
     const ret = songs.map((song: AnotherSongItem) =>
       solveAnotherSongItem(song)
     );
@@ -611,8 +640,7 @@ export async function apiSearchAlbum(
     if (status !== 200) {
       return [];
     }
-    const { result } = body;
-    const { albums } = result;
+    const { albums } = body.result;
     const ret = albums.map((album: AlbumsItem) => solveAlbumsItem(album));
     apiCache.set(key, ret);
     return ret;
@@ -643,8 +671,7 @@ export async function apiSearchArtist(
     if (status !== 200) {
       return [];
     }
-    const { result } = body;
-    const { artists } = result;
+    const { artists } = body.result;
     const ret = artists.map((artist: Artist) =>
       solveArtist({ ...artist, briefDesc: "" })
     );
@@ -677,8 +704,7 @@ export async function apiSearchPlaylist(
     if (status !== 200) {
       return [];
     }
-    const { result } = body;
-    const { playlists } = result;
+    const { playlists } = body.result;
     const ret = playlists.map((playlist: RawPlaylistItem) =>
       solvePlaylistItem(playlist)
     );
@@ -733,8 +759,7 @@ export async function apiSearchSuggest(keywords: string): Promise<string[]> {
     if (status !== 200) {
       return [];
     }
-    const { result } = body;
-    const { allMatch } = result;
+    const { allMatch } = body.result;
     const ret = allMatch.map(({ keyword }) => keyword);
     apiCache.set(key, ret);
     return ret;

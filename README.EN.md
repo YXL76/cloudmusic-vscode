@@ -101,7 +101,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |   artist_desc   |      歌手介绍      |        |
 |   artist_list   |      歌手分类      |        |
 |    artist_mv    |    歌手相关 MV     |   ❌   |
-|  artist_songs   |    歌手所有歌曲    |        |
+|  artist_songs   |    歌手所有歌曲    |   ✔️   |
 |   artist_sub    | 收藏与取消收藏歌手 |        |
 | artist_sublist  |    关注歌手列表    |        |
 | artist_top_song | 歌手热门 50 首歌曲 |        |
