@@ -17,6 +17,7 @@ export {
   LyricData,
   NativeModule,
   NativePlayer,
+  RawPlaylistItem,
   Player,
   PlaylistItem,
   SongDetail,
@@ -25,6 +26,7 @@ export {
 } from "./type";
 import { homedir, platform } from "os";
 import { MUSIC_QUALITY } from "./setting";
+import { NativeModule } from "./type";
 import { Uri } from "vscode";
 import { getAbi } from "node-abi";
 import { join } from "path";

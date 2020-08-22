@@ -1,7 +1,6 @@
 export { InputStep, MultiStepInput } from "./multiStepInput";
 export { LocalCache, LyricCache, MusicCache } from "./cache";
 export {
-  SearchType,
   apiAlbum,
   apiArtistAlbum,
   apiArtists,
@@ -15,9 +14,13 @@ export {
   apiLogout,
   apiLyric,
   apiPersonalFm,
+  apiPersonalized,
+  apiPersonalizedNewsong,
   apiPlaylistDetail,
   apiPlaylistTracks,
   apiPlaymodeIntelligenceList,
+  apiRecommendResource,
+  apiRecommendSongs,
   apiScrobble,
   apiSearchAlbum,
   apiSearchArtist,
@@ -30,6 +33,7 @@ export {
   apiSongUrl,
   apiUserPlaylist,
   apiUserRecord,
+  SearchType,
 } from "./api";
 export {
   downloadMusic,
@@ -42,12 +46,14 @@ export {
   pickArtistItems,
   pickPlaylist,
   pickPlaylistItems,
+  pickPlaylists,
   pickSong,
   pickSongItems,
   pickSongs,
   solveAlbumsItem,
   solveAnotherSongItem,
   solveArtist,
+  solvePlaylistItem,
   solveSongItem,
   songsItem2TreeItem,
   splitLine,

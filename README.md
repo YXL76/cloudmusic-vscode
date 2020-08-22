@@ -27,8 +27,6 @@
 
 ## Features
 
-本插件具有以下特点：
-
 - 简单：开箱即用，无需安装、修改任何文件
 - 快速：使用本机模块，资源占用低，速度快
 - 强大：借助网页 API，能实现所有常用功能
@@ -47,7 +45,7 @@
 - 媒体控制支持
 - 更多功能等待发现
 
-软件产生的所有本地内容都位于`$HOME/.cloudmusic`文件夹中
+拓展产生的所有本地内容都位于`$HOME/.cloudmusic`文件夹中
 
 ## Usage
 
@@ -234,8 +232,8 @@
 |          event_forward           |        转发动态        |        |
 |             fm_trash             |         垃圾桶         |   ✔️   |
 |              follow              |   关注与取消关注用户   |   ❌   |
-|     history_recommend_songs      |    历史每日推荐歌曲    |        |
-|  history_recommend_songs_detail  |  历史每日推荐歌曲详情  |        |
+|     history_recommend_songs      |    历史每日推荐歌曲    |   ❌   |
+|  history_recommend_songs_detail  |  历史每日推荐歌曲详情  |   ❌   |
 |              login               |        邮箱登录        |   ✔️   |
 |         login_cellphone          |        手机登录        |   ✔️   |
 |          login_refresh           |        登录刷新        |   ✔️   |
@@ -247,15 +245,15 @@
 |           msg_private            |          私信          |        |
 |       msg_private_history        |        私信内容        |        |
 |           personal_fm            |        私人 FM         |   ✔️   |
-|           personalized           |        推荐歌单        |        |
+|           personalized           |        推荐歌单        |   ✔️   |
 |      personalized_djprogram      |        推荐电台        |        |
 |         personalized_mv          |        推荐 MV         |   ❌   |
-|       personalized_newsong       |        推荐新歌        |        |
-|   personalized_privatecontent    |        独家放送        |        |
-| personalized_privatecontent_list |      独家放送列表      |        |
+|       personalized_newsong       |        推荐新歌        |   ✔️   |
+|   personalized_privatecontent    |        独家放送        |   ❌   |
+| personalized_privatecontent_list |      独家放送列表      |   ❌   |
 |              rebind              |        更换手机        |   ❌   |
-|        recommend_resource        |      每日推荐歌单      |        |
-|         recommend_songs          |      每日推荐歌曲      |        |
+|        recommend_resource        |      每日推荐歌单      |   ✔️   |
+|         recommend_songs          |      每日推荐歌曲      |   ✔️   |
 |        register_cellphone        |        注册账号        |   ❌   |
 |          resource_like           |   点赞与取消点赞资源   |        |
 |             scrobble             |        听歌打卡        |   ✔️   |

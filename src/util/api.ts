@@ -7,6 +7,7 @@ import {
   PROXY,
   PlaylistItem,
   REAL_IP,
+  RawPlaylistItem,
   SongDetail,
   SongsItem,
   TrackIdsItem,
@@ -16,6 +17,7 @@ import {
   solveAlbumsItem,
   solveAnotherSongItem,
   solveArtist,
+  solvePlaylistItem,
   solveSongItem,
 } from "../util";
 import {
@@ -32,9 +34,13 @@ import {
   logout,
   lyric,
   personal_fm,
+  personalized,
+  personalized_newsong,
   playlist_detail,
   playlist_tracks,
   playmode_intelligence_list,
+  recommend_resource,
+  recommend_songs,
   scrobble,
   search,
   search_hot_detail,
@@ -351,6 +357,54 @@ export async function apiPersonalFm(): Promise<SongsItem[]> {
   }
 }
 
+export async function apiPersonalized(): Promise<PlaylistItem[]> {
+  const key = "personalized";
+  const value = apiCache.get(key);
+  if (value) {
+    return value as PlaylistItem[];
+  }
+  try {
+    const { body, status } = await personalized({
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+      realIP: REAL_IP,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { result } = body;
+    const ret = result.map((playlist: RawPlaylistItem) =>
+      solvePlaylistItem(playlist)
+    );
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
+}
+
+export async function apiPersonalizedNewsong(): Promise<SongsItem[]> {
+  const key = "personalized_newsong";
+  const value = apiCache.get(key);
+  if (value) {
+    return value as SongsItem[];
+  }
+  try {
+    const { body, status } = await personalized_newsong({
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+      realIP: REAL_IP,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { result } = body;
+    const ret = result.map(({ song }) => solveAnotherSongItem(song));
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
+}
+
 export async function apiPlaylistDetail(id: number): Promise<number[]> {
   const key = `playlist_detail${id}`;
   const value = apiCache.get(key);
@@ -422,6 +476,54 @@ export async function apiPlaymodeIntelligenceList(
     ret = data.map(({ songInfo }) => solveSongItem(songInfo));
   } catch {}
   return ret;
+}
+
+export async function apiRecommendResource(): Promise<PlaylistItem[]> {
+  const key = "recommend_resource";
+  const value = apiCache.get(key);
+  if (value) {
+    return value as PlaylistItem[];
+  }
+  try {
+    const { body, status } = await recommend_resource({
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+      realIP: REAL_IP,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { recommend } = body;
+    const ret = recommend.map((playlist: RawPlaylistItem) =>
+      solvePlaylistItem(playlist)
+    );
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
+}
+
+export async function apiRecommendSongs(): Promise<SongsItem[]> {
+  const key = "recommend_songs";
+  const value = apiCache.get(key);
+  if (value) {
+    return value as SongsItem[];
+  }
+  try {
+    const { body, status } = await recommend_songs({
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+      realIP: REAL_IP,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { dailySongs } = body.data;
+    const ret = dailySongs.map((song: SongsItem) => solveSongItem(song));
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
 }
 
 export async function apiScrobble(
@@ -575,24 +677,8 @@ export async function apiSearchPlaylist(
     }
     const { result } = body;
     const { playlists } = result;
-    const ret = playlists.map(
-      ({
-        description,
-        id,
-        name,
-        playCount,
-        bookCount,
-        trackCount,
-        creator,
-      }) => ({
-        description,
-        id,
-        name,
-        playCount,
-        subscribedCount: bookCount,
-        trackCount,
-        userId: creator.userId,
-      })
+    const ret = playlists.map((playlist: RawPlaylistItem) =>
+      solvePlaylistItem(playlist)
     );
     apiCache.set(key, ret);
     return ret;
@@ -758,24 +844,8 @@ export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
       return [];
     }
     const { playlist } = body;
-    const ret = playlist.map(
-      ({
-        description,
-        id,
-        name,
-        playCount,
-        subscribedCount,
-        trackCount,
-        creator,
-      }) => ({
-        description,
-        id,
-        name,
-        playCount,
-        subscribedCount,
-        trackCount,
-        userId: creator.userId,
-      })
+    const ret = playlist.map((playlist: RawPlaylistItem) =>
+      solvePlaylistItem(playlist)
     );
     if (ret.length > 0) {
       apiCache.set(key, ret);

@@ -50,8 +50,24 @@ export const i18n = {
         "sentence.label.cellphone",
         "use cellphone to sign in"
       ),
+      dailyRecommendedPlaylists: localize(
+        "sentence.label.dailyRecommendedPlaylists",
+        "Daily recommended playlists"
+      ),
+      dailyRecommendedSongs: localize(
+        "sentence.label.dailyRecommendedSongs",
+        "Daily recommended songs"
+      ),
       email: localize("sentence.label.email", "Use email to sign in"),
       lyricDelay: localize("sentence.label.lyricDelay", "Set lyric delay"),
+      newsongRecommendation: localize(
+        "sentence.label.newsongRecommendation",
+        "New song recommendation"
+      ),
+      playlistRecommendation: localize(
+        "sentence.label.playlistRecommendation",
+        "Playlist recommendation"
+      ),
     },
     success: {
       dailyCheck: localize(
@@ -90,6 +106,7 @@ export const i18n = {
     playlist: localize("word.playlist", "Playlist"),
     previousPage: localize("word.previousPage", "Previous page"),
     previousTrack: localize("word.previousTrack", "Previous track"),
+    recommendation: localize("word.recommendation", "Recommendation"),
     saveToPlaylist: localize("word.saveToPlaylist", "Save to playlist"),
     search: localize("word.search", "Search"),
     show: localize("word.show", "Show"),

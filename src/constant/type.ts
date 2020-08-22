@@ -8,6 +8,12 @@ export type PlaylistItem = {
   userId: number;
 };
 
+export interface RawPlaylistItem extends PlaylistItem {
+  bookCount?: number;
+  copywriter?: string;
+  creator?: { userId: number };
+}
+
 export type Artist = {
   name: string;
   id: number;

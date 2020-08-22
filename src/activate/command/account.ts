@@ -7,9 +7,17 @@ import {
   window,
   workspace,
 } from "vscode";
+import {
+  MultiStepInput,
+  apiPersonalized,
+  apiPersonalizedNewsong,
+  apiRecommendResource,
+  apiRecommendSongs,
+  pickPlaylists,
+  pickSongs,
+} from "../../util";
 import { AccountManager } from "../../manager";
 import { LoggedIn } from "../../state";
-import { MultiStepInput } from "../../util";
 import { WebView } from "../../page";
 import { i18n } from "../../i18n";
 import { inputKeyword } from "./search";
@@ -19,22 +27,22 @@ export function account(context: ExtensionContext): void {
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.account", async () => {
-      enum Type {
-        user,
-        fm,
-        search,
-        userMusicRankingListWeekly,
-        userMusicRankingListAllTime,
-        signOut,
-      }
-
-      interface T extends QuickPickItem {
-        type: Type;
-      }
-
       MultiStepInput.run((input) => pickType(input));
 
       async function pickType(input: MultiStepInput) {
+        enum Type {
+          user,
+          fm,
+          search,
+          recommend,
+          userMusicRankingListWeekly,
+          userMusicRankingListAllTime,
+          signOut,
+        }
+        interface T extends QuickPickItem {
+          type: Type;
+        }
+
         const pick = await input.showQuickPick<T>({
           title: i18n.word.account,
           step: 1,
@@ -52,6 +60,10 @@ export function account(context: ExtensionContext): void {
             {
               label: `${ICON.search} ${i18n.word.search}`,
               type: Type.search,
+            },
+            {
+              label: `$(symbol-color) ${i18n.word.recommendation}`,
+              type: Type.recommend,
             },
             {
               label: `${ICON.playlist} ${i18n.word.userRankingList}`,
@@ -77,22 +89,79 @@ export function account(context: ExtensionContext): void {
         if (pick.type === Type.search) {
           return (input: MultiStepInput) => inputKeyword(input, 1);
         }
+        if (pick.type === Type.recommend) {
+          return (input: MultiStepInput) => pickRecommend(input);
+        }
         if (pick.type === Type.fm) {
           commands.executeCommand("cloudmusic.personalFM");
         } else if (pick.type === Type.userMusicRankingListWeekly) {
           webview.userMusicRanking(
             "userMusicRankingListWeekly",
-            `${pick.label} (${pick.description})`,
+            `${i18n.word.userRankingList} (${i18n.word.weekly})`,
             1
           );
         } else if (pick.type === Type.userMusicRankingListAllTime) {
           webview.userMusicRanking(
             "userMusicRankingListAllTime",
-            `${pick.label} (${pick.description})`,
+            `${i18n.word.userRankingList} (${i18n.word.allTime})`,
             0
           );
         } else if (pick.type === Type.signOut) {
           commands.executeCommand("cloudmusic.signout");
+        }
+      }
+
+      async function pickRecommend(input: MultiStepInput) {
+        enum Type {
+          dailyPlaylist,
+          dailySong,
+          playlist,
+          song,
+        }
+        interface T extends QuickPickItem {
+          type: Type;
+        }
+
+        const pick = await input.showQuickPick<T>({
+          title: i18n.word.recommendation,
+          step: 2,
+          totalSteps: 3,
+          items: [
+            {
+              label: `${ICON.playlist} ${i18n.sentence.label.dailyRecommendedPlaylists}`,
+              type: Type.dailyPlaylist,
+            },
+            {
+              label: `${ICON.song} ${i18n.sentence.label.dailyRecommendedSongs}`,
+              type: Type.dailySong,
+            },
+            {
+              label: `${ICON.playlist} ${i18n.sentence.label.playlistRecommendation}`,
+              type: Type.playlist,
+            },
+            {
+              label: `${ICON.song} ${i18n.sentence.label.newsongRecommendation}`,
+              type: Type.song,
+            },
+          ],
+        });
+        if (pick.type === Type.dailyPlaylist) {
+          const items = await apiRecommendResource();
+          return (input: MultiStepInput) => pickPlaylists(input, 3, items);
+        }
+        if (pick.type === Type.dailySong) {
+          const items = await apiRecommendSongs();
+          return (input: MultiStepInput) =>
+            pickSongs(input, 3, undefined, items);
+        }
+        if (pick.type === Type.playlist) {
+          const items = await apiPersonalized();
+          return (input: MultiStepInput) => pickPlaylists(input, 3, items);
+        }
+        if (pick.type === Type.song) {
+          const items = await apiPersonalizedNewsong();
+          return (input: MultiStepInput) =>
+            pickSongs(input, 3, undefined, items);
         }
       }
     })

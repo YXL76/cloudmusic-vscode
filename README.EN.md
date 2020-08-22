@@ -27,8 +27,6 @@
 
 ## Features
 
-This plugin has the following characteristics:
-
 - Simple: out of the box, no need to install or modify any files
 - Fast: using native modules, low resource usage and high speed
 - Powerful: With the help of web API, all common functions can be realized
@@ -234,8 +232,8 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |          event_forward           |        转发动态        |        |
 |             fm_trash             |         垃圾桶         |   ✔️   |
 |              follow              |   关注与取消关注用户   |   ❌   |
-|     history_recommend_songs      |    历史每日推荐歌曲    |        |
-|  history_recommend_songs_detail  |  历史每日推荐歌曲详情  |        |
+|     history_recommend_songs      |    历史每日推荐歌曲    |   ❌   |
+|  history_recommend_songs_detail  |  历史每日推荐歌曲详情  |   ❌   |
 |              login               |        邮箱登录        |   ✔️   |
 |         login_cellphone          |        手机登录        |   ✔️   |
 |          login_refresh           |        登录刷新        |   ✔️   |
@@ -247,15 +245,15 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |           msg_private            |          私信          |        |
 |       msg_private_history        |        私信内容        |        |
 |           personal_fm            |        私人 FM         |   ✔️   |
-|           personalized           |        推荐歌单        |        |
+|           personalized           |        推荐歌单        |   ✔️   |
 |      personalized_djprogram      |        推荐电台        |        |
 |         personalized_mv          |        推荐 MV         |   ❌   |
-|       personalized_newsong       |        推荐新歌        |        |
-|   personalized_privatecontent    |        独家放送        |        |
-| personalized_privatecontent_list |      独家放送列表      |        |
+|       personalized_newsong       |        推荐新歌        |   ✔️   |
+|   personalized_privatecontent    |        独家放送        |   ❌   |
+| personalized_privatecontent_list |      独家放送列表      |   ❌   |
 |              rebind              |        更换手机        |   ❌   |
-|        recommend_resource        |      每日推荐歌单      |        |
-|         recommend_songs          |      每日推荐歌曲      |        |
+|        recommend_resource        |      每日推荐歌单      |   ✔️   |
+|         recommend_songs          |      每日推荐歌曲      |   ✔️   |
 |        register_cellphone        |        注册账号        |   ❌   |
 |          resource_like           |   点赞与取消点赞资源   |        |
 |             scrobble             |        听歌打卡        |   ✔️   |

@@ -6,6 +6,7 @@ import {
   ICON,
   NATIVE,
   PlaylistItem,
+  RawPlaylistItem,
   SongsItem,
   TMP_DIR,
 } from "../constant";
@@ -123,6 +124,29 @@ export function solveAnotherSongItem(item: AnotherSongItem): SongsItem {
   };
 }
 
+export function solvePlaylistItem(item: RawPlaylistItem): PlaylistItem {
+  const {
+    bookCount,
+    copywriter,
+    creator,
+    description,
+    id,
+    name,
+    playCount,
+    subscribedCount,
+    trackCount,
+  } = item;
+  return {
+    description: copywriter || description,
+    id,
+    name,
+    playCount,
+    subscribedCount: bookCount || subscribedCount,
+    trackCount,
+    userId: creator?.userId || 0,
+  };
+}
+
 export function stop(): void {
   player.item = { id: 0 } as SongsItem;
   player.stop();
@@ -169,7 +193,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
 }
 
 export function splitLine(content: string): string {
-  return `>>>>>>>>>>>>>>                                ${content.toUpperCase()}                                <<<<<<<<<<<<<<`;
+  return `>>>>>>>>>>>>>>>>>>                             ${content.toUpperCase()}                             <<<<<<<<<<<<<<<<<<`;
 }
 
 enum PickType {
@@ -459,6 +483,19 @@ export async function pickPlaylist(
   }
   input.pop();
   return (input: MultiStepInput) => pickPlaylist(input, step, item);
+}
+
+export async function pickPlaylists(
+  input: MultiStepInput,
+  step: number,
+  items: PlaylistItem[]
+): Promise<InputStep> {
+  const pick = await input.showQuickPick<PST>({
+    title: i18n.word.song,
+    step,
+    items: pickPlaylistItems(items),
+  });
+  return (input: MultiStepInput) => pickPlaylist(input, step, pick.item);
 }
 
 export async function pickAddToPlaylist(
