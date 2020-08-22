@@ -13,14 +13,6 @@ import {
   TrackIdsItem,
 } from "../constant";
 import {
-  LyricCache,
-  solveAlbumsItem,
-  solveAnotherSongItem,
-  solveArtist,
-  solvePlaylistItem,
-  solveSongItem,
-} from "../util";
-import {
   album,
   artist_album,
   artist_songs,
@@ -55,6 +47,7 @@ import {
   user_record,
 } from "NeteaseCloudMusicApi";
 import { AccountManager } from "../manager";
+import { LyricCache } from "../util";
 import NodeCache = require("node-cache");
 
 const apiCache = new NodeCache({
@@ -65,6 +58,64 @@ const apiCache = new NodeCache({
   enableLegacyCallbacks: false,
   maxKeys: -1,
 });
+
+const solveArtist = (item: Artist): Artist => {
+  const { name, id, alias, briefDesc, albumSize, musicSize } = item;
+  return { name, id, alias, briefDesc, albumSize, musicSize };
+};
+
+const solveAlbumsItem = (item: AlbumsItem): AlbumsItem => {
+  const { artists, alias, company, description, name, id } = item;
+  return {
+    artists: artists.map((artist: Artist) => solveArtist(artist)),
+    alias,
+    company,
+    description,
+    name,
+    id,
+  };
+};
+
+const solveSongItem = (item: SongsItem): SongsItem => {
+  const { name, id, dt, alia, ar, al } = item;
+  return { name, id, dt: dt / 1000, alia, ar, al };
+};
+
+const solveAnotherSongItem = (item: AnotherSongItem): SongsItem => {
+  const { name, id, duration, alias, artists, album } = item;
+  return {
+    name,
+    id,
+    dt: duration / 1000,
+    alia: alias,
+    ar: artists.map(({ id, name }) => ({ id, name })),
+    al: { id: album.id, name: album.name },
+  };
+};
+
+const solvePlaylistItem = (item: RawPlaylistItem): PlaylistItem => {
+  const {
+    bookCount,
+    copywriter,
+    creator,
+    description,
+    id,
+    name,
+    playCount,
+    subscribedCount,
+    trackCount,
+    userId,
+  } = item;
+  return {
+    description: copywriter || description || "",
+    id,
+    name,
+    playCount,
+    subscribedCount: bookCount || subscribedCount,
+    trackCount,
+    userId: creator?.userId || userId || 0,
+  };
+};
 
 export async function apiAlbum(
   id: number
