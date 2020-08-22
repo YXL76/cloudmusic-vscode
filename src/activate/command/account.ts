@@ -151,8 +151,7 @@ export function account(context: ExtensionContext): void {
         }
         if (pick.type === Type.dailySong) {
           const items = await apiRecommendSongs();
-          return (input: MultiStepInput) =>
-            pickSongs(input, 3, undefined, items);
+          return (input: MultiStepInput) => pickSongs(input, 3, items);
         }
         if (pick.type === Type.playlist) {
           const items = await apiPersonalized();
@@ -160,8 +159,7 @@ export function account(context: ExtensionContext): void {
         }
         if (pick.type === Type.song) {
           const items = await apiPersonalizedNewsong();
-          return (input: MultiStepInput) =>
-            pickSongs(input, 3, undefined, items);
+          return (input: MultiStepInput) => pickSongs(input, 3, items);
         }
       }
     })

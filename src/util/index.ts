@@ -28,6 +28,8 @@ export {
   apiSearchPlaylist,
   apiSearchSingle,
   apiSearchSuggest,
+  apiSimiArtist,
+  apiSimiPlaylist,
   apiSimiSong,
   apiSongDetail,
   apiSongUrl,

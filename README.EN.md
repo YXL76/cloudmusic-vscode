@@ -106,7 +106,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 | artist_sublist  |    关注歌手列表    |        |
 | artist_top_song | 歌手热门 50 首歌曲 |        |
 |     artists     |      歌手单曲      |   ✔️   |
-|   simi_artist   |      相似歌手      |        |
+|   simi_artist   |      相似歌手      |   ✔️   |
 
 - 歌曲类
 
@@ -183,7 +183,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |      playlist_update       |           编辑歌单            |        |
 | playmode_intelligence_list |           智能播放            |   ✔️   |
 |      related_playlist      |           相关歌单            |        |
-|       simi_playlist        |           相似歌单            |        |
+|       simi_playlist        |           相似歌单            |   ✔️   |
 |     song_order_update      |         更新歌曲顺序          |        |
 |        top_playlist        |           分类歌单            |        |
 |  top_playlist_highquality  |           精品歌单            |        |

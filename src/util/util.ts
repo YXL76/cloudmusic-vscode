@@ -21,6 +21,8 @@ import {
   apiLike,
   apiPlaylistDetail,
   apiPlaylistTracks,
+  apiSimiArtist,
+  apiSimiPlaylist,
   apiSimiSong,
   apiSongDetail,
   apiSongUrl,
@@ -135,15 +137,16 @@ export function solvePlaylistItem(item: RawPlaylistItem): PlaylistItem {
     playCount,
     subscribedCount,
     trackCount,
+    userId,
   } = item;
   return {
-    description: copywriter || description,
+    description: copywriter || description || "",
     id,
     name,
     playCount,
     subscribedCount: bookCount || subscribedCount,
     trackCount,
-    userId: creator?.userId || 0,
+    userId: creator?.userId || userId || 0,
   };
 }
 
@@ -193,7 +196,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
 }
 
 export function splitLine(content: string): string {
-  return `>>>>>>>>>>>>>>>>>>                             ${content.toUpperCase()}                             <<<<<<<<<<<<<<<<<<`;
+  return `>>>>>>>>>>>>>>>>>>>>                          ${content.toUpperCase()}                          <<<<<<<<<<<<<<<<<<<<`;
 }
 
 enum PickType {
@@ -289,6 +292,10 @@ export async function pickSong(
         label: `${ICON.similar} ${i18n.word.similarSongs}`,
         type: PickType.similar,
       },
+      {
+        label: `${ICON.similar} ${i18n.word.similarPlaylists}`,
+        type: PickType.similar,
+      },
     ],
   });
   if (pick.type === PickType.album) {
@@ -311,23 +318,54 @@ export async function pickSong(
     return (input: MultiStepInput) => pickAddToPlaylist(input, step + 1, id);
   }
   if (pick.type === PickType.similar) {
-    const songs = await apiSimiSong(id);
-    return (input: MultiStepInput) =>
-      pickSongs(input, step + 1, undefined, songs);
+    if (pick.label === `${ICON.similar} ${i18n.word.similarSongs}`) {
+      return (input: MultiStepInput) => pickSimiSong(input, step + 1, id, 0);
+    }
+    return (input: MultiStepInput) => pickSimiPlaylists(input, step + 1, id, 0);
   }
   input.pop();
   return (input: MultiStepInput) => pickSong(input, step, id);
 }
 
+async function pickSimiSong(
+  input: MultiStepInput,
+  step: number,
+  id: number,
+  offset: number
+): Promise<InputStep> {
+  const limit = 50;
+  const songs = await apiSimiSong(id, limit, offset);
+  const pick = await input.showQuickPick({
+    title: i18n.word.song,
+    step,
+    items: [
+      ...(offset > 0
+        ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, id: -1 }]
+        : []),
+      ...pickSongItems(songs),
+      ...(songs.length === limit
+        ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, id: -2 }]
+        : []),
+    ],
+  });
+  if (pick.id === -1) {
+    input.pop();
+    return (input: MultiStepInput) =>
+      pickSimiSong(input, step, id, offset - limit);
+  }
+  if (pick.id === -2) {
+    input.pop();
+    return (input: MultiStepInput) =>
+      pickSimiSong(input, step, id, offset + limit);
+  }
+  return (input: MultiStepInput) => pickSong(input, step + 1, pick.id);
+}
+
 export async function pickSongs(
   input: MultiStepInput,
   step: number,
-  ids?: number[],
-  songs?: SongsItem[]
+  songs: SongsItem[]
 ): Promise<InputStep> {
-  if (!songs) {
-    songs = await apiSongDetail(ids || [0]);
-  }
   const pick = await input.showQuickPick({
     title: i18n.word.song,
     step,
@@ -364,6 +402,10 @@ export async function pickArtist(
         type: PickType.albums,
       },
       {
+        label: `${ICON.similar} ${i18n.word.similarArtists}`,
+        type: PickType.similar,
+      },
+      {
         label: splitLine(i18n.word.hotSongs),
       },
       ...pickSongItems(songs),
@@ -372,12 +414,30 @@ export async function pickArtist(
   if (pick.type === PickType.albums) {
     return (input: MultiStepInput) =>
       pickAlbums(input, step + 1, pick.id as number);
-  } else if (pick.type === PickType.song) {
+  }
+  if (pick.type === PickType.song) {
     return (input: MultiStepInput) =>
       pickSong(input, step + 1, pick.id as number);
   }
+  if (pick.type === PickType.similar) {
+    const items = await apiSimiArtist(id);
+    return (input: MultiStepInput) => pickArtists(input, step + 1, items);
+  }
   input.pop();
   return (input: MultiStepInput) => pickArtist(input, step, id);
+}
+
+export async function pickArtists(
+  input: MultiStepInput,
+  step: number,
+  artists: Artist[]
+): Promise<InputStep> {
+  const pick = await input.showQuickPick({
+    title: `${i18n.word.artist}`,
+    step,
+    items: pickArtistItems(artists),
+  });
+  return (input: MultiStepInput) => pickArtist(input, step, pick.id);
 }
 
 export async function pickAlbum(
@@ -459,18 +519,30 @@ export async function pickPlaylist(
         label: `${ICON.description} ${i18n.word.description}`,
         detail: description || "",
       },
-      {
-        label: `${ICON.number} ${i18n.word.playCount}`,
-        description: `${playCount}`,
-      },
-      {
-        label: `${ICON.number} ${i18n.word.subscribedCount}`,
-        description: `${subscribedCount}`,
-      },
-      {
-        label: `${ICON.number} ${i18n.word.trackCount}`,
-        description: `${trackCount}`,
-      },
+      ...(playCount
+        ? [
+            {
+              label: `${ICON.number} ${i18n.word.playCount}`,
+              description: `${playCount}`,
+            },
+          ]
+        : []),
+      ...(subscribedCount
+        ? [
+            {
+              label: `${ICON.number} ${i18n.word.subscribedCount}`,
+              description: `${subscribedCount}`,
+            },
+          ]
+        : []),
+      ...(trackCount
+        ? [
+            {
+              label: `${ICON.number} ${i18n.word.trackCount}`,
+              description: `${trackCount}`,
+            },
+          ]
+        : []),
       {
         label: splitLine(i18n.word.content),
       },
@@ -483,6 +555,41 @@ export async function pickPlaylist(
   }
   input.pop();
   return (input: MultiStepInput) => pickPlaylist(input, step, item);
+}
+
+async function pickSimiPlaylists(
+  input: MultiStepInput,
+  step: number,
+  id: number,
+  offset: number
+): Promise<InputStep> {
+  const limit = 50;
+  const playlists = await apiSimiPlaylist(id, limit, offset);
+  const pick = await input.showQuickPick({
+    title: i18n.word.song,
+    step,
+    items: [
+      ...(offset > 0
+        ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, id: -1, item: {} }]
+        : []),
+      ...pickPlaylistItems(playlists),
+      ...(playlists.length === limit
+        ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, id: -2, item: {} }]
+        : []),
+    ],
+  });
+  if (pick.id === -1) {
+    input.pop();
+    return (input: MultiStepInput) =>
+      pickSimiPlaylists(input, step, id, offset - limit);
+  }
+  if (pick.id === -2) {
+    input.pop();
+    return (input: MultiStepInput) =>
+      pickSimiPlaylists(input, step, id, offset + limit);
+  }
+  return (input: MultiStepInput) =>
+    pickPlaylist(input, step + 1, pick.item as PlaylistItem);
 }
 
 export async function pickPlaylists(

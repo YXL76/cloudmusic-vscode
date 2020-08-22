@@ -112,6 +112,8 @@ export const i18n = {
     show: localize("word.show", "Show"),
     signIn: localize("word.signIn", "Sign in"),
     signOut: localize("word.signOut", "Sign out"),
+    similarArtists: localize("word.similarArtists", "Similar artists"),
+    similarPlaylists: localize("word.similarPlaylists", "Similar playlists"),
     similarSongs: localize("word.similarSongs", "Similar songs"),
     single: localize("word.single", "Single"),
     song: localize("word.song", "Song"),

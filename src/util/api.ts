@@ -45,6 +45,8 @@ import {
   search,
   search_hot_detail,
   search_suggest,
+  simi_artist,
+  simi_playlist,
   simi_song,
   song_detail,
   song_url,
@@ -740,8 +742,70 @@ export async function apiSearchSuggest(keywords: string): Promise<string[]> {
   return [];
 }
 
-export async function apiSimiSong(id: number): Promise<SongsItem[]> {
-  const key = `simi_song${id}`;
+export async function apiSimiArtist(id: number): Promise<Artist[]> {
+  const key = `simi_artist${id}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as Artist[];
+  }
+  try {
+    const { body, status } = await simi_artist({
+      id,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+      realIP: REAL_IP,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { artists } = body;
+    const ret = artists.map((artist: Artist) => solveArtist(artist));
+    apiCache.set(key, ret);
+    return ret;
+  } catch {
+    return [];
+  }
+}
+
+export async function apiSimiPlaylist(
+  id: number,
+  limit: number,
+  offset: number
+): Promise<PlaylistItem[]> {
+  const key = `simi_playlist${id}-${limit}-${offset}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as PlaylistItem[];
+  }
+  try {
+    const { body, status } = await simi_playlist({
+      id,
+      limit,
+      offset,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+      realIP: REAL_IP,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { playlists } = body;
+    const ret = playlists.map((playlist: RawPlaylistItem) =>
+      solvePlaylistItem(playlist)
+    );
+    apiCache.set(key, ret);
+    return ret;
+  } catch {
+    return [];
+  }
+}
+
+export async function apiSimiSong(
+  id: number,
+  limit: number,
+  offset: number
+): Promise<SongsItem[]> {
+  const key = `simi_song${id}-${limit}-${offset}`;
   const value = apiCache.get(key);
   if (value) {
     return value as SongsItem[];
@@ -749,6 +813,8 @@ export async function apiSimiSong(id: number): Promise<SongsItem[]> {
   try {
     const { body, status } = await simi_song({
       id,
+      limit,
+      offset,
       cookie: AccountManager.cookie,
       proxy: PROXY,
       realIP: REAL_IP,
