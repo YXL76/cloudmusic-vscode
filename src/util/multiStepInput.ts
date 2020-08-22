@@ -177,7 +177,7 @@ export class MultiStepInput {
         input.value = value || "";
         input.prompt = prompt;
         input.buttons = [
-          ...(this.step ? [QuickInputButtons.Back] : []),
+          ...(this.step > 1 ? [QuickInputButtons.Back] : []),
           ...(this.step < this.steps.length ? [forwordButton] : []),
         ];
         input.password = password || false;
