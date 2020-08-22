@@ -29,6 +29,10 @@ export const i18n = {
         "sentence.hint.button",
         "Set whether the button is displayed or not"
       ),
+      confirmation: localize(
+        "sentence.hint.confirmation",
+        'Are you sure you want to do this? Please enter "yes" to confirm (case insensitive)'
+      ),
       keyword: localize("sentence.hint.keyword", "Please enter keyword"),
       lyricDelay: localize(
         "sentence.hint.lyricDelay",
@@ -86,6 +90,7 @@ export const i18n = {
     artistList: localize("word.artistList", "Artist list"),
     cellphone: localize("word.cellphone", "Cellphone"),
     cleanCache: localize("word.cleanCache", "Clean cache"),
+    confirmation: localize("word.confirmation", "Confirmation"),
     content: localize("word.content", "Content"),
     default: localize("word.default", "Default"),
     description: localize("word.description", "Description"),

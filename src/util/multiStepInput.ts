@@ -89,9 +89,9 @@ export class MultiStepInput {
     }
   }
 
-  pop(): void {
+  pop(): InputStep | undefined {
     --this.step;
-    this.steps.pop();
+    return this.steps.pop();
   }
 
   async showQuickPick<T extends QuickPickItem>({

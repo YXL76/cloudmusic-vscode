@@ -60,8 +60,8 @@ export class PlaylistProvider
 
   static refresh(
     element?: PlaylistItemTreeItem,
-    action?: (items: QueueItemTreeItem[]) => void,
-    refresh?: boolean
+    refresh?: boolean,
+    action?: (items: QueueItemTreeItem[]) => void
   ): void {
     if (element) {
       this.action = action;
@@ -79,6 +79,9 @@ export class PlaylistProvider
     } else {
       if (refresh) {
         apiCache.del("user_playlist");
+        for (const id of this.belongsTo.keys()) {
+          apiCache.del(`playlist_detail${id}`);
+        }
       }
       this.belongsTo.clear();
       this.playlists.clear();

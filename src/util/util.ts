@@ -131,6 +131,23 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
   }
 }
 
+export async function confirmation(
+  input: MultiStepInput,
+  step: number,
+  action: () => Promise<void>
+): Promise<InputStep | undefined> {
+  const i = await input.showInputBox({
+    title: i18n.word.confirmation,
+    step,
+    prompt: i18n.sentence.hint.confirmation,
+  });
+  if (i.toLowerCase() === "yes") {
+    await action();
+  }
+  input.pop();
+  return input.pop();
+}
+
 export function splitLine(content: string): string {
   return `>>>>>>>>>>>>>>>>>>>>                          ${content.toUpperCase()}                          <<<<<<<<<<<<<<<<<<<<`;
 }
@@ -625,7 +642,7 @@ export async function pickAddToPlaylist(
     })),
   });
   if (await apiPlaylistTracks("add", pick.id, [id])) {
-    PlaylistProvider.refresh();
+    PlaylistProvider.refresh(PlaylistProvider.playlists.get(pick.id), true);
   }
   input.pop();
   return (input: MultiStepInput) => pickAddToPlaylist(input, step, id);

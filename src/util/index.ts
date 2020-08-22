@@ -43,6 +43,7 @@ export {
   SearchType,
 } from "./api";
 export {
+  confirmation,
   downloadMusic,
   load,
   pickAddToPlaylist,

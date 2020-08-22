@@ -3,6 +3,7 @@ import {
   apiPlaylistDelete,
   apiPlaylistTracks,
   apiPlaymodeIntelligenceList,
+  confirmation,
   load,
   pickAddToPlaylist,
   songsItem2TreeItem,
@@ -23,19 +24,18 @@ export async function initPlaylist(): Promise<void> {
   window.registerTreeDataProvider("favoritePlaylist", favoritePlaylistProvider);
 
   commands.registerCommand("cloudmusic.refreshPlaylist", () => {
-    PlaylistProvider.refresh(undefined, undefined, true);
+    PlaylistProvider.refresh(undefined, true);
   });
 
   commands.registerCommand(
     "cloudmusic.refreshPlaylistContent",
-    (element: PlaylistItemTreeItem) =>
-      PlaylistProvider.refresh(element, undefined, true)
+    (element: PlaylistItemTreeItem) => PlaylistProvider.refresh(element, true)
   );
 
   commands.registerCommand(
     "cloudmusic.playPlaylist",
     (element: PlaylistItemTreeItem) => {
-      PlaylistProvider.refresh(element, (items) => {
+      PlaylistProvider.refresh(element, false, (items) => {
         QueueProvider.refresh(async () => {
           PersonalFm.set(false);
           QueueProvider.clear();
@@ -50,17 +50,21 @@ export async function initPlaylist(): Promise<void> {
 
   commands.registerCommand(
     "cloudmusic.deletePlaylist",
-    async (element: PlaylistItemTreeItem) => {
-      if (await apiPlaylistDelete(element.item.id)) {
-        PlaylistProvider.refresh(undefined, undefined, true);
-      }
+    (element: PlaylistItemTreeItem) => {
+      MultiStepInput.run((input) =>
+        confirmation(input, 1, async () => {
+          if (await apiPlaylistDelete(element.item.id)) {
+            PlaylistProvider.refresh(undefined, true);
+          }
+        })
+      );
     }
   );
 
   commands.registerCommand(
     "cloudmusic.addPlaylist",
     (element: PlaylistItemTreeItem) => {
-      PlaylistProvider.refresh(element, (items) => {
+      PlaylistProvider.refresh(element, false, (items) => {
         QueueProvider.refresh(async () => {
           QueueProvider.add(items);
         });
@@ -102,6 +106,7 @@ export async function initPlaylist(): Promise<void> {
     (element: QueueItemTreeItem) => {
       PlaylistProvider.refresh(
         PlaylistProvider.playlists.get(element.pid),
+        false,
         (items) => {
           QueueProvider.refresh(async () => {
             PersonalFm.set(false);
@@ -120,9 +125,16 @@ export async function initPlaylist(): Promise<void> {
   commands.registerCommand(
     "cloudmusic.deleteFromPlaylist",
     async (element: QueueItemTreeItem) => {
-      if (await apiPlaylistTracks("del", element.pid, [element.item.id])) {
-        PlaylistProvider.refresh();
-      }
+      MultiStepInput.run((input) =>
+        confirmation(input, 1, async () => {
+          if (await apiPlaylistTracks("del", element.pid, [element.item.id])) {
+            PlaylistProvider.refresh(
+              PlaylistProvider.playlists.get(element.pid),
+              true
+            );
+          }
+        })
+      );
     }
   );
 
