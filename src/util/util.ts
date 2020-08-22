@@ -1,12 +1,10 @@
 import { AccountManager, ButtonManager } from "../manager";
 import {
   AlbumsItem,
-  AnotherSongItem,
   Artist,
   ICON,
   NATIVE,
   PlaylistItem,
-  RawPlaylistItem,
   SongsItem,
   TMP_DIR,
 } from "../constant";
@@ -22,6 +20,7 @@ import {
   apiLike,
   apiPlaylistDetail,
   apiPlaylistTracks,
+  apiRelatedPlaylist,
   apiSimiArtist,
   apiSimiPlaylist,
   apiSimiSong,
@@ -435,7 +434,7 @@ export async function pickArtists(
     step,
     items: pickArtistItems(artists),
   });
-  return (input: MultiStepInput) => pickArtist(input, step, pick.id);
+  return (input: MultiStepInput) => pickArtist(input, step + 1, pick.id);
 }
 
 export async function pickAlbum(
@@ -542,6 +541,10 @@ export async function pickPlaylist(
           ]
         : []),
       {
+        label: `${ICON.similar} ${i18n.word.similarPlaylists}`,
+        type: PickType.similar,
+      },
+      {
         label: splitLine(i18n.word.content),
       },
       ...pickSongItems(songs),
@@ -550,6 +553,10 @@ export async function pickPlaylist(
   if (pick.type === PickType.song) {
     return (input: MultiStepInput) =>
       pickSong(input, step + 1, pick.id as number);
+  }
+  if (pick.type === PickType.similar) {
+    const items = await apiRelatedPlaylist(id);
+    return (input: MultiStepInput) => pickPlaylists(input, step + 1, items);
   }
   input.pop();
   return (input: MultiStepInput) => pickPlaylist(input, step, item);
@@ -600,7 +607,7 @@ export async function pickPlaylists(
     step,
     items: pickPlaylistItems(items),
   });
-  return (input: MultiStepInput) => pickPlaylist(input, step, pick.item);
+  return (input: MultiStepInput) => pickPlaylist(input, step + 1, pick.item);
 }
 
 export async function pickAddToPlaylist(

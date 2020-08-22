@@ -36,6 +36,7 @@ import {
   playmode_intelligence_list,
   recommend_resource,
   recommend_songs,
+  related_playlist,
   scrobble,
   search,
   search_hot_detail,
@@ -45,6 +46,8 @@ import {
   simi_song,
   song_detail,
   song_url,
+  toplist,
+  toplist_artist,
   user_playlist,
   user_record,
 } from "NeteaseCloudMusicApi";
@@ -615,6 +618,32 @@ export async function apiRecommendSongs(): Promise<SongsItem[]> {
   return [];
 }
 
+export async function apiRelatedPlaylist(id: number): Promise<PlaylistItem[]> {
+  const key = `related_playlist${id}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as PlaylistItem[];
+  }
+  try {
+    const { body, status } = await related_playlist({
+      id,
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+      realIP: REAL_IP,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { playlists } = body;
+    const ret = playlists.map((playlist: RawPlaylistItem) =>
+      solvePlaylistItem(playlist)
+    );
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
+}
+
 export async function apiScrobble(
   id: number,
   sourceid: number,
@@ -973,6 +1002,52 @@ export async function apiSongUrl(trackIds: number[]): Promise<SongDetail[]> {
   } catch {
     return ret;
   }
+}
+
+export async function apiToplist(): Promise<PlaylistItem[]> {
+  const key = "toplist";
+  const value = apiCache.get(key);
+  if (value) {
+    return value as PlaylistItem[];
+  }
+  try {
+    const { status, body } = await toplist({
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+      realIP: REAL_IP,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { list } = body;
+    const ret = list.map((item: RawPlaylistItem) => solvePlaylistItem(item));
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
+}
+
+export async function apiToplistArtist(): Promise<Artist[]> {
+  const key = "toplist_artist";
+  const value = apiCache.get(key);
+  if (value) {
+    return value as Artist[];
+  }
+  try {
+    const { status, body } = await toplist_artist({
+      cookie: AccountManager.cookie,
+      proxy: PROXY,
+      realIP: REAL_IP,
+    });
+    if (status !== 200) {
+      return [];
+    }
+    const { artists } = body.list;
+    const ret = artists.map((artist: Artist) => solveArtist(artist));
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
 }
 
 export async function apiUserPlaylist(): Promise<PlaylistItem[]> {

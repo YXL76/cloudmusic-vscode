@@ -13,6 +13,8 @@ import {
   apiPersonalizedNewsong,
   apiRecommendResource,
   apiRecommendSongs,
+  apiToplist,
+  apiToplistArtist,
   pickPlaylists,
   pickSongs,
 } from "../../util";
@@ -21,6 +23,7 @@ import { LoggedIn } from "../../state";
 import { WebView } from "../../page";
 import { i18n } from "../../i18n";
 import { inputKeyword } from "./search";
+import { pickArtists } from "../../util/util";
 
 export function account(context: ExtensionContext): void {
   const webview = WebView.getInstance(context.extensionUri);
@@ -35,6 +38,7 @@ export function account(context: ExtensionContext): void {
           fm,
           search,
           recommend,
+          toplist,
           userMusicRankingListWeekly,
           userMusicRankingListAllTime,
           signOut,
@@ -66,6 +70,10 @@ export function account(context: ExtensionContext): void {
               type: Type.recommend,
             },
             {
+              label: `$(rocket) ${i18n.word.toplist}`,
+              type: Type.toplist,
+            },
+            {
               label: `${ICON.playlist} ${i18n.word.userRankingList}`,
               description: i18n.word.weekly,
               type: Type.userMusicRankingListWeekly,
@@ -91,6 +99,9 @@ export function account(context: ExtensionContext): void {
         }
         if (pick.type === Type.recommend) {
           return (input: MultiStepInput) => pickRecommend(input);
+        }
+        if (pick.type === Type.toplist) {
+          return (input: MultiStepInput) => pickToplist(input);
         }
         if (pick.type === Type.fm) {
           commands.executeCommand("cloudmusic.personalFM");
@@ -160,6 +171,40 @@ export function account(context: ExtensionContext): void {
         if (pick.type === Type.song) {
           const items = await apiPersonalizedNewsong();
           return (input: MultiStepInput) => pickSongs(input, 3, items);
+        }
+      }
+
+      async function pickToplist(input: MultiStepInput) {
+        enum Type {
+          song,
+          artist,
+        }
+        interface T extends QuickPickItem {
+          type: Type;
+        }
+
+        const pick = await input.showQuickPick<T>({
+          title: i18n.word.toplist,
+          step: 2,
+          totalSteps: 3,
+          items: [
+            {
+              label: `${ICON.song} ${i18n.word.songList}`,
+              type: Type.song,
+            },
+            {
+              label: `${ICON.artist} ${i18n.word.artistList}`,
+              type: Type.artist,
+            },
+          ],
+        });
+        if (pick.type === Type.song) {
+          const items = await apiToplist();
+          return (input: MultiStepInput) => pickPlaylists(input, 3, items);
+        }
+        if (pick.type === Type.artist) {
+          const items = await apiToplistArtist();
+          return (input: MultiStepInput) => pickArtists(input, 3, items);
         }
       }
     })
