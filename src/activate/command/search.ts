@@ -1,4 +1,5 @@
 import { ExtensionContext, commands } from "vscode";
+import { ICON, PlaylistItem } from "../../constant";
 import {
   InputStep,
   MultiStepInput,
@@ -18,7 +19,6 @@ import {
   pickSong,
   pickSongItems,
 } from "../../util";
-import { PlaylistItem } from "../../constant";
 import { i18n } from "../../i18n";
 import { throttle } from "lodash";
 
@@ -83,19 +83,19 @@ async function pickType(input: MultiStepInput, addStep: number) {
     totalSteps: totalSteps + addStep,
     items: [
       {
-        label: `$(link) ${i18n.word.single}`,
+        label: `${ICON.song} ${i18n.word.single}`,
         type: SearchType.single,
       },
       {
-        label: `$(circuit-board) ${i18n.word.album}`,
+        label: `${ICON.album} ${i18n.word.album}`,
         type: SearchType.album,
       },
       {
-        label: `$(account) ${i18n.word.artist}`,
+        label: `${ICON.artist} ${i18n.word.artist}`,
         type: SearchType.artist,
       },
       {
-        label: `$(list-unordered) ${i18n.word.playlist}`,
+        label: `${ICON.playlist} ${i18n.word.playlist}`,
         type: SearchType.playlist,
       },
     ],

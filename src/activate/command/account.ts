@@ -1,7 +1,7 @@
 import * as crypto from "crypto";
+import { ACCOUNT_FILE, ICON } from "../../constant";
 import { ExtensionContext, QuickPickItem, commands, window } from "vscode";
 import { unlink, writeFile } from "fs";
-import { ACCOUNT_FILE } from "../../constant";
 import { AccountManager } from "../../manager";
 import { LoggedIn } from "../../state";
 import { MultiStepInput } from "../../util";
@@ -36,30 +36,30 @@ export function account(context: ExtensionContext): void {
           totalSteps: 1,
           items: [
             {
-              label: AccountManager.nickname,
+              label: `${ICON.artist} ${AccountManager.nickname}`,
               description: i18n.word.user,
               type: Type.user,
             },
             {
-              label: i18n.word.personalFm,
+              label: `${ICON.fm} ${i18n.word.personalFm}`,
               type: Type.fm,
             },
             {
-              label: i18n.word.search,
+              label: `${ICON.search} ${i18n.word.search}`,
               type: Type.search,
             },
             {
-              label: i18n.word.userRankingList,
+              label: `${ICON.playlist} ${i18n.word.userRankingList}`,
               description: i18n.word.weekly,
               type: Type.userMusicRankingListWeekly,
             },
             {
-              label: i18n.word.userRankingList,
+              label: `${ICON.playlist} ${i18n.word.userRankingList}`,
               description: i18n.word.allTime,
               type: Type.userMusicRankingListAllTime,
             },
             {
-              label: i18n.word.signOut,
+              label: `$(sign-out) ${i18n.word.signOut}`,
               type: Type.signOut,
             },
           ],
@@ -132,12 +132,12 @@ export function account(context: ExtensionContext): void {
           totalSteps,
           items: [
             {
-              label: `✉ ${i18n.word.email}`,
+              label: `$(mail) ${i18n.word.email}`,
               description: i18n.sentence.label.email,
               phone: false,
             },
             {
-              label: `📱 ${i18n.word.cellphone}`,
+              label: `$(rss) ${i18n.word.cellphone}`,
               description: i18n.sentence.label.cellphone,
               phone: true,
             },

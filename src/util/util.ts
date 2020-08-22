@@ -3,6 +3,7 @@ import {
   AlbumsItem,
   AnotherSongItem,
   Artist,
+  ICON,
   NATIVE,
   PlaylistItem,
   SongsItem,
@@ -187,7 +188,7 @@ interface ST extends T {
 
 export const pickSongItems = (songs: SongsItem[]): ST[] =>
   songs.map(({ name, ar, alia, id }) => ({
-    label: `$(link) ${name}`,
+    label: `${ICON.song} ${name}`,
     description: ar.map((i) => i.name).join("/"),
     detail: alia.join("/"),
     id,
@@ -196,7 +197,7 @@ export const pickSongItems = (songs: SongsItem[]): ST[] =>
 
 export const pickArtistItems = (ars: { id: number; name: string }[]): ST[] =>
   ars.map(({ name, id }) => ({
-    label: `$(account) ${i18n.word.artist}`,
+    label: `${ICON.artist} ${i18n.word.artist}`,
     detail: name,
     id,
     type: PickType.artist,
@@ -204,7 +205,7 @@ export const pickArtistItems = (ars: { id: number; name: string }[]): ST[] =>
 
 export const pickAlbumItems = (albums: AlbumsItem[]): ST[] =>
   albums.map(({ name, alias, artists, id }) => ({
-    label: `$(circuit-board) ${name}`,
+    label: `${ICON.album} ${name}`,
     description: alias.join("/"),
     detail: artists.map((artist) => artist.name).join("/"),
     id,
@@ -217,7 +218,7 @@ interface PST extends T {
 
 export const pickPlaylistItems = (playlists: PlaylistItem[]): PST[] =>
   playlists.map((playlist) => ({
-    label: `$(list-unordered) ${playlist.name}`,
+    label: `${ICON.playlist} ${playlist.name}`,
     description: `${playlist.trackCount}`,
     detail: playlist.description || "",
     id: playlist.id,
@@ -237,26 +238,26 @@ export async function pickSong(
     step,
     items: [
       {
-        label: name,
+        label: `${ICON.name} ${name}`,
         detail: alia.join("/"),
       },
       ...pickArtistItems(ar),
       {
-        label: `$(circuit-board) ${i18n.word.album}`,
+        label: `${ICON.album} ${i18n.word.album}`,
         detail: al.name,
         id: al.id,
         type: PickType.album,
       },
       {
-        label: `$(heart) ${i18n.word.like}`,
+        label: `${ICON.like} ${i18n.word.like}`,
         type: PickType.like,
       },
       {
-        label: `$(add) ${i18n.word.saveToPlaylist}`,
+        label: `${ICON.save} ${i18n.word.saveToPlaylist}`,
         type: PickType.save,
       },
       {
-        label: `$(library) ${i18n.word.similarSongs}`,
+        label: `${ICON.similar} ${i18n.word.similarSongs}`,
         type: PickType.similar,
       },
     ],
@@ -320,15 +321,15 @@ export async function pickArtist(
     step,
     items: [
       {
-        label: name,
+        label: `${ICON.name} ${name}`,
         detail: alias.join("/"),
       },
       {
-        label: `$(markdown) ${i18n.word.description}`,
+        label: `${ICON.description} ${i18n.word.description}`,
         detail: briefDesc,
       },
       {
-        label: `$(circuit-board) ${i18n.word.album}`,
+        label: `${ICON.album} ${i18n.word.album}`,
         detail: `${albumSize}`,
         id,
         type: PickType.albums,
@@ -363,12 +364,12 @@ export async function pickAlbum(
     step,
     items: [
       {
-        label: name,
+        label: `${ICON.name} ${name}`,
         description: alias.join("/"),
         detail: company,
       },
       {
-        label: `$(markdown) ${i18n.word.description}`,
+        label: `${ICON.description} ${i18n.word.description}`,
         detail: description,
       },
       ...pickArtistItems(artists),
@@ -423,22 +424,22 @@ export async function pickPlaylist(
     step,
     items: [
       {
-        label: name,
+        label: `${ICON.name} ${name}`,
       },
       {
-        label: `$(markdown) ${i18n.word.description}`,
+        label: `${ICON.description} ${i18n.word.description}`,
         detail: description || "",
       },
       {
-        label: i18n.word.playCount,
+        label: `${ICON.number} ${i18n.word.playCount}`,
         description: `${playCount}`,
       },
       {
-        label: i18n.word.subscribedCount,
+        label: `${ICON.number} ${i18n.word.subscribedCount}`,
         description: `${subscribedCount}`,
       },
       {
-        label: i18n.word.trackCount,
+        label: `${ICON.number} ${i18n.word.trackCount}`,
         description: `${trackCount}`,
       },
       {
@@ -465,7 +466,7 @@ export async function pickAddToPlaylist(
     title: i18n.word.saveToPlaylist,
     step,
     items: lists.map(({ name, id }) => ({
-      label: name,
+      label: `${ICON.playlist} ${name}`,
       id,
     })),
   });

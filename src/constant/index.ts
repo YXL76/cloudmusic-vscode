@@ -46,6 +46,21 @@ export const CACHE_DIR = join(SETTING_DIR, "cache");
 export const MUSIC_CACHE_DIR = join(CACHE_DIR, "music", `${MUSIC_QUALITY}`);
 export const LYRIC_CACHE_DIR = join(CACHE_DIR, "lyric");
 
+export const ICON = {
+  album: "$(circuit-board)",
+  artist: "$(account)",
+  description: "$(markdown)",
+  fm: "$(radio-tower)",
+  like: "$(heart)",
+  name: "$(link)",
+  number: "$(symbol-number)",
+  playlist: "$(list-unordered)",
+  save: "$(add)",
+  search: "$(search)",
+  similar: "$(library)",
+  song: "$(zap)",
+};
+
 export {
   AUTO_CHECK,
   LIBRARYS,

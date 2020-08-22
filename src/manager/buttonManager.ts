@@ -51,7 +51,7 @@ export class ButtonManager {
     "$(chevron-right)",
     "$(star)",
     "$(unmute)",
-    "$(file-media)",
+    "$(flame)",
     "$(text-size)",
   ];
   private static buttonTooltip = [

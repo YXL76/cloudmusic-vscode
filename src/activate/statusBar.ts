@@ -49,16 +49,16 @@ export function initStatusBar(): void {
         totalSteps,
         items: [
           {
-            label: i18n.word.lyricDelay,
+            label: `$(versions) ${i18n.word.lyricDelay}`,
             description: `${i18n.sentence.label.lyricDelay} (${i18n.word.default}: -1.0)`,
             type: Type.delay,
           },
           {
-            label: i18n.word.fullLyric,
+            label: `$(list-ordered) ${i18n.word.fullLyric}`,
             type: Type.full,
           },
           {
-            label: i18n.word.cleanCache,
+            label: `$(trash) ${i18n.word.cleanCache}`,
             type: Type.cache,
           },
         ],
