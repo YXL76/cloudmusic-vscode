@@ -7,6 +7,7 @@ import { LoggedIn } from "../../state";
 import { MultiStepInput } from "../../util";
 import { WebView } from "../../page";
 import { i18n } from "../../i18n";
+import { inputKeyword } from "./search";
 
 export function account(context: ExtensionContext): void {
   const webview = WebView.getInstance(context.extensionPath);
@@ -26,58 +27,68 @@ export function account(context: ExtensionContext): void {
         type: Type;
       }
 
-      const pick = await window.showQuickPick<T>([
-        {
-          label: AccountManager.nickname,
-          description: i18n.word.user,
-          type: Type.user,
-        },
-        {
-          label: i18n.word.personalFm,
-          type: Type.fm,
-        },
-        {
-          label: i18n.word.search,
-          type: Type.search,
-        },
-        {
-          label: i18n.word.userRankingList,
-          description: i18n.word.weekly,
-          type: Type.userMusicRankingListWeekly,
-        },
-        {
-          label: i18n.word.userRankingList,
-          description: i18n.word.allTime,
-          type: Type.userMusicRankingListAllTime,
-        },
-        {
-          label: i18n.word.signOut,
-          type: Type.signOut,
-        },
-      ]);
-      if (!pick) {
-        return;
-      }
-      if (pick.type === Type.user) {
-        commands.executeCommand("cloudmusic.account");
-      } else if (pick.type === Type.fm) {
-        commands.executeCommand("cloudmusic.personalFM");
-      } else if (pick.type === Type.search) {
-        commands.executeCommand("cloudmusic.search");
-      } else if (pick.type === Type.userMusicRankingListWeekly) {
-        webview.userMusicRanking(
-          "userMusicRankingListWeekly",
-          `${pick.label} (${pick.description})`,
-          1
-        );
-      } else if (pick.type === Type.userMusicRankingListAllTime) {
-        webview.userMusicRanking(
-          "userMusicRankingListAllTime",
-          `${pick.label} (${pick.description})`,
-          0
-        );
-      } else if (pick.type === Type.signOut) {
-        commands.executeCommand("cloudmusic.signout");
+      MultiStepInput.run((input) => pickType(input));
+
+      async function pickType(input: MultiStepInput) {
+        const pick = await input.showQuickPick<T>({
+          title: i18n.word.account,
+          step: 1,
+          totalSteps: 1,
+          items: [
+            {
+              label: AccountManager.nickname,
+              description: i18n.word.user,
+              type: Type.user,
+            },
+            {
+              label: i18n.word.personalFm,
+              type: Type.fm,
+            },
+            {
+              label: i18n.word.search,
+              type: Type.search,
+            },
+            {
+              label: i18n.word.userRankingList,
+              description: i18n.word.weekly,
+              type: Type.userMusicRankingListWeekly,
+            },
+            {
+              label: i18n.word.userRankingList,
+              description: i18n.word.allTime,
+              type: Type.userMusicRankingListAllTime,
+            },
+            {
+              label: i18n.word.signOut,
+              type: Type.signOut,
+            },
+          ],
+        });
+
+        if (pick.type === Type.user) {
+          input.pop();
+          return (input: MultiStepInput) => pickType(input);
+        }
+        if (pick.type === Type.search) {
+          return (input: MultiStepInput) => inputKeyword(input, 1);
+        }
+        if (pick.type === Type.fm) {
+          commands.executeCommand("cloudmusic.personalFM");
+        } else if (pick.type === Type.userMusicRankingListWeekly) {
+          webview.userMusicRanking(
+            "userMusicRankingListWeekly",
+            `${pick.label} (${pick.description})`,
+            1
+          );
+        } else if (pick.type === Type.userMusicRankingListAllTime) {
+          webview.userMusicRanking(
+            "userMusicRankingListAllTime",
+            `${pick.label} (${pick.description})`,
+            0
+          );
+        } else if (pick.type === Type.signOut) {
+          commands.executeCommand("cloudmusic.signout");
+        }
       }
     })
   );

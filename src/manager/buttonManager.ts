@@ -1,7 +1,13 @@
-import { StatusBarAlignment, StatusBarItem, window } from "vscode";
+import {
+  QuickPickItem,
+  StatusBarAlignment,
+  StatusBarItem,
+  window,
+} from "vscode";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { BUTTON_FILE } from "../constant";
 import { LoggedIn } from "../state";
+import { MultiStepInput } from "../util";
 import { i18n } from "../i18n";
 
 enum ButtonLabel {
@@ -79,31 +85,42 @@ export class ButtonManager {
   }
 
   static async toggle(): Promise<void> {
-    const pick: {
-      label: string;
-      description: string;
-      id: number;
-    }[] = [];
-    for (let id = 1; id < this.buttons.length; ++id) {
-      pick.push({
-        label: `${this.buttonText[id]} ${this.buttonTooltip[id]}`,
-        description: this.buttonShow[id] ? i18n.word.show : i18n.word.hide,
-        id,
+    const pickButton = async (input: MultiStepInput) => {
+      interface T extends QuickPickItem {
+        id: number;
+      }
+
+      const items: T[] = [];
+      for (let id = 1; id < this.buttons.length; ++id) {
+        items.push({
+          label: `${this.buttonText[id]} ${this.buttonTooltip[id]}`,
+          description: this.buttonShow[id] ? i18n.word.show : i18n.word.hide,
+          id,
+        });
+      }
+      const button = await input.showQuickPick({
+        title: "",
+        step: 1,
+        totalSteps: 1,
+        items,
+        placeholder: i18n.sentence.hint.button,
       });
-    }
-    const button = await window.showQuickPick(pick, {
-      placeHolder: i18n.sentence.hint.button,
-    });
-    if (!button) {
-      return;
-    }
-    const { id } = button;
-    this.buttonShow[id] = !this.buttonShow[id];
-    if (LoggedIn.get()) {
-      this.buttonShow[id] ? this.buttons[id].show() : this.buttons[id].hide();
-    }
-    writeFileSync(BUTTON_FILE, JSON.stringify({ show: this.buttonShow }));
-    this.toggle();
+      const { id } = button;
+      this.buttonShow[id] = !this.buttonShow[id];
+      if (LoggedIn.get()) {
+        this.buttonShow[id] ? this.buttons[id].show() : this.buttons[id].hide();
+      }
+      writeFileSync(
+        BUTTON_FILE,
+        JSON.stringify({
+          show: this.buttonShow,
+        })
+      );
+      input.pop();
+      return (input: MultiStepInput) => pickButton(input);
+    };
+
+    MultiStepInput.run((input) => pickButton(input));
   }
 
   static show(): void {

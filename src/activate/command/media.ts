@@ -1,7 +1,7 @@
 import { AccountManager, ButtonManager } from "../../manager";
-import { ExtensionContext, commands, window } from "vscode";
+import { ExtensionContext, commands } from "vscode";
 import { IsLike, PersonalFm, lock } from "../../state";
-import { apiLike, load, player } from "../../util";
+import { MultiStepInput, apiLike, load, player } from "../../util";
 import { QueueProvider } from "../../provider";
 import { i18n } from "../../i18n";
 
@@ -55,12 +55,21 @@ export function media(context: ExtensionContext): void {
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.volume", async () => {
-      const volume = await window.showInputBox({
-        value: `${player.level}`,
-        placeHolder: `${i18n.sentence.hint.volume} (0~100)`,
-      });
-      if (volume && /^\d+$/.exec(volume)) {
-        player.volume(parseInt(volume));
+      MultiStepInput.run((input) => inputLevel(input));
+
+      async function inputLevel(input: MultiStepInput) {
+        const level = await input.showInputBox({
+          title: i18n.word.volume,
+          step: 1,
+          totalSteps: 1,
+          value: `${player.level}`,
+          prompt: `${i18n.sentence.hint.volume} (0~100)`,
+        });
+        if (/^\d+$/.exec(level)) {
+          player.volume(parseInt(level));
+        }
+        input.pop();
+        return (input: MultiStepInput) => inputLevel(input);
       }
     })
   );
