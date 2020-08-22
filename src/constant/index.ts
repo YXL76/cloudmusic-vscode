@@ -1,4 +1,4 @@
-import {
+export {
   AUTO_CHECK,
   LIBRARYS,
   LOCAL_FILE_DIR,
@@ -8,7 +8,7 @@ import {
   PROXY,
   REAL_IP,
 } from "./setting";
-import {
+export {
   AlbumsItem,
   AnotherSongItem,
   Artist,
@@ -24,6 +24,7 @@ import {
   TrackIdsItem,
 } from "./type";
 import { homedir, platform } from "os";
+import { MUSIC_QUALITY } from "./setting";
 import { Uri } from "vscode";
 import { getAbi } from "node-abi";
 import { join } from "path";
@@ -64,28 +65,4 @@ export const ICON = {
   search: "$(search)",
   similar: "$(library)",
   song: "$(zap)",
-};
-
-export {
-  AUTO_CHECK,
-  LIBRARYS,
-  LOCAL_FILE_DIR,
-  MEDIA_CONTROL,
-  MUSIC_CACHE_SIZE,
-  MUSIC_QUALITY,
-  PROXY,
-  REAL_IP,
-  AlbumsItem,
-  AnotherSongItem,
-  Artist,
-  LruCacheValue,
-  Lyric,
-  LyricData,
-  NativeModule,
-  NativePlayer,
-  Player,
-  PlaylistItem,
-  SongDetail,
-  SongsItem,
-  TrackIdsItem,
 };

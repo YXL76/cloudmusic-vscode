@@ -1,3 +1,1 @@
-import { WebView } from "./page";
-
-export { WebView };
+export { WebView } from "./page";
