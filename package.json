@@ -383,7 +383,6 @@
     "NeteaseCloudMusicApi": "^3.38.0",
     "array-unsort": "^1.1.6",
     "cacache": "^15.0.5",
-    "del": "^5.1.0",
     "lru-cache": "^6.0.0",
     "md5-file": "^5.0.0",
     "node-abi": "^2.19.0",

@@ -1,18 +1,17 @@
 import { Uri, ViewColumn, window } from "vscode";
 import { apiUserRecord } from "../util";
-import { join } from "path";
 
 export class WebView {
   private static instance: WebView;
 
-  constructor(private extensionPath: string) {}
+  constructor(private extensionUri: Uri) {}
 
-  static getInstance(extensionPath?: string): WebView {
-    return this.instance || (this.instance = new WebView(extensionPath || ""));
+  static getInstance(extensionUri?: Uri): WebView {
+    return this.instance || (this.instance = new WebView(extensionUri as Uri));
   }
 
   private file2uri(...path: string[]) {
-    return Uri.file(join(this.extensionPath, "page", ...path));
+    return Uri.joinPath(this.extensionUri, "page", ...path);
   }
 
   async userMusicRanking(

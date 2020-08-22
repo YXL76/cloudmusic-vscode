@@ -3,8 +3,8 @@ import {
   StatusBarAlignment,
   StatusBarItem,
   window,
+  workspace,
 } from "vscode";
-import { existsSync, readFileSync, writeFileSync } from "fs";
 import { BUTTON_FILE } from "../constant";
 import { LoggedIn } from "../state";
 import { MultiStepInput } from "../util";
@@ -21,16 +21,6 @@ enum ButtonLabel {
   lyric,
 }
 
-function getSetting(): boolean[] {
-  try {
-    if (existsSync(BUTTON_FILE)) {
-      const { show } = JSON.parse(readFileSync(BUTTON_FILE, "utf8"));
-      return show;
-    }
-  } catch {}
-  return [true, true, true, true, true, true, true, false];
-}
-
 export class ButtonManager {
   private static buttons: StatusBarItem[] = [
     window.createStatusBarItem(StatusBarAlignment.Left, -128),
@@ -43,7 +33,7 @@ export class ButtonManager {
     window.createStatusBarItem(StatusBarAlignment.Left, -135),
   ];
 
-  private static buttonShow = getSetting();
+  private static buttonShow = [true, true, true, true, true, true, true, false];
   private static buttonText = [
     "$(account)",
     "$(chevron-left)",
@@ -75,13 +65,19 @@ export class ButtonManager {
     "cloudmusic.lyric",
   ];
 
-  static init(): void {
+  static async init(): Promise<void> {
     for (let i = 0; i < this.buttons.length; ++i) {
       this.buttons[i].text = this.buttonText[i];
       this.buttons[i].tooltip = this.buttonTooltip[i];
       this.buttons[i].command = this.buttonCommand[i];
     }
     this.buttons[0].show();
+    try {
+      const { show } = JSON.parse(
+        Buffer.from(await workspace.fs.readFile(BUTTON_FILE)).toString()
+      );
+      this.buttonShow = show;
+    } catch {}
   }
 
   static async toggle(): Promise<void> {
@@ -110,11 +106,13 @@ export class ButtonManager {
       if (LoggedIn.get()) {
         this.buttonShow[id] ? this.buttons[id].show() : this.buttons[id].hide();
       }
-      writeFileSync(
+      await workspace.fs.writeFile(
         BUTTON_FILE,
-        JSON.stringify({
-          show: this.buttonShow,
-        })
+        Buffer.from(
+          JSON.stringify({
+            show: this.buttonShow,
+          })
+        )
       );
       input.pop();
       return (input: MultiStepInput) => pickButton(input);
@@ -127,6 +125,8 @@ export class ButtonManager {
     for (let i = 1; i < this.buttons.length; ++i) {
       if (this.buttonShow[i]) {
         this.buttons[i].show();
+      } else {
+        this.buttons[i].hide();
       }
     }
   }

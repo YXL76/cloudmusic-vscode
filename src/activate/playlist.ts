@@ -15,7 +15,7 @@ import {
 } from "../provider";
 import { commands, window } from "vscode";
 
-export function initPlaylist(): void {
+export async function initPlaylist(): Promise<void> {
   const userPlaylistProvider = PlaylistProvider.getUserInstance();
   const favoritePlaylistProvider = PlaylistProvider.getFavoriteInstance();
   window.registerTreeDataProvider("userPlaylist", userPlaylistProvider);

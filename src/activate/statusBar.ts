@@ -12,8 +12,9 @@ import { QueueItemTreeItem } from "../provider";
 
 import { i18n } from "../i18n";
 
-export function initStatusBar(): void {
-  ButtonManager.init();
+export async function initStatusBar(): Promise<void> {
+  await ButtonManager.init();
+  ButtonManager.show();
 
   commands.registerCommand(
     "cloudmusic.songDetail",

@@ -1,4 +1,4 @@
-import { workspace } from "vscode";
+import { Uri, workspace } from "vscode";
 
 const conf = workspace.getConfiguration("cloudmusic");
 
@@ -17,8 +17,11 @@ export const REAL_IP: string | undefined =
 
 export const MUSIC_QUALITY = conf.get("music.quality") as number;
 
-export const LOCAL_FILE_DIR: string | undefined =
-  conf.get("cache.localDirectory.path") ?? undefined;
+const localDir: string | undefined = conf.get("cache.localDirectory.path");
+
+export const LOCAL_FILE_DIR: Uri | undefined = localDir
+  ? Uri.file(localDir)
+  : undefined;
 
 export const MUSIC_CACHE_SIZE =
   (conf.get("cache.size") as number) * 1024 * 1024;

@@ -4,10 +4,10 @@ import { i18n } from "../i18n";
 import { lock } from "../state";
 import { player } from "../util";
 
-export function initPlayer(): void {
+export async function initPlayer(): Promise<void> {
   if (!PLAYER_AVAILABLE) {
     lock.playerLoad.set(true);
-    window.showErrorMessage(i18n.sentence.error.systemSupport);
+    await window.showErrorMessage(i18n.sentence.error.systemSupport);
   } else {
     player.volume(85);
     if (MEDIA_CONTROL) {

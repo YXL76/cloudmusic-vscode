@@ -80,9 +80,11 @@ class AudioPlayer implements Player {
           }
 
           if (!lock.deleteTmp.get() && pos > 120 && !lock.playerLoad.get()) {
-            lock.playerLoad.set(true);
-            lock.deleteTmp.set(true);
-            lock.playerLoad.set(false);
+            (async () => {
+              lock.playerLoad.set(true);
+              await lock.deleteTmp.set(true);
+              lock.playerLoad.set(false);
+            })();
           }
         }
       }
@@ -95,7 +97,7 @@ class AudioPlayer implements Player {
   }
 
   async load(url: string, pid: number, item: SongsItem): Promise<void> {
-    lock.deleteTmp.set(false);
+    await lock.deleteTmp.set(false);
     if (this.player.load(url)) {
       this.player.setVolume(this.level);
       Playing.set(true);

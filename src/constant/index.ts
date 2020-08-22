@@ -24,6 +24,7 @@ import {
   TrackIdsItem,
 } from "./type";
 import { homedir, platform } from "os";
+import { Uri } from "vscode";
 import { getAbi } from "node-abi";
 import { join } from "path";
 
@@ -38,13 +39,17 @@ export const NATIVE: NativeModule = __non_webpack_require__(
   join("..", "build", `${PLATFORM}-${abi}.node`)
 );
 
-export const SETTING_DIR = join(homedir(), ".cloudmusic");
-export const ACCOUNT_FILE = join(SETTING_DIR, ".account");
-export const BUTTON_FILE = join(SETTING_DIR, ".button");
-export const TMP_DIR = join(SETTING_DIR, "tmp");
-export const CACHE_DIR = join(SETTING_DIR, "cache");
-export const MUSIC_CACHE_DIR = join(CACHE_DIR, "music", `${MUSIC_QUALITY}`);
-export const LYRIC_CACHE_DIR = join(CACHE_DIR, "lyric");
+export const SETTING_DIR = Uri.joinPath(Uri.file(homedir()), ".cloudmusic");
+export const ACCOUNT_FILE = Uri.joinPath(SETTING_DIR, ".account");
+export const BUTTON_FILE = Uri.joinPath(SETTING_DIR, ".button");
+export const TMP_DIR = Uri.joinPath(SETTING_DIR, "tmp");
+export const CACHE_DIR = Uri.joinPath(SETTING_DIR, "cache");
+export const MUSIC_CACHE_DIR = Uri.joinPath(
+  CACHE_DIR,
+  "music",
+  `${MUSIC_QUALITY}`
+);
+export const LYRIC_CACHE_DIR = Uri.joinPath(CACHE_DIR, "lyric");
 
 export const ICON = {
   album: "$(circuit-board)",

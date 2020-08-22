@@ -1,7 +1,12 @@
 import * as crypto from "crypto";
 import { ACCOUNT_FILE, ICON } from "../../constant";
-import { ExtensionContext, QuickPickItem, commands, window } from "vscode";
-import { unlink, writeFile } from "fs";
+import {
+  ExtensionContext,
+  QuickPickItem,
+  commands,
+  window,
+  workspace,
+} from "vscode";
 import { AccountManager } from "../../manager";
 import { LoggedIn } from "../../state";
 import { MultiStepInput } from "../../util";
@@ -10,7 +15,7 @@ import { i18n } from "../../i18n";
 import { inputKeyword } from "./search";
 
 export function account(context: ExtensionContext): void {
-  const webview = WebView.getInstance(context.extensionPath);
+  const webview = WebView.getInstance(context.extensionUri);
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.account", async () => {
@@ -117,9 +122,10 @@ export function account(context: ExtensionContext): void {
         md5_password &&
         (await AccountManager.login(phone, account, md5_password))
       ) {
-        writeFile(ACCOUNT_FILE, JSON.stringify(state), () => {
-          //
-        });
+        workspace.fs.writeFile(
+          ACCOUNT_FILE,
+          Buffer.from(JSON.stringify(state))
+        );
         window.showInformationMessage(i18n.sentence.success.signIn);
       } else {
         window.showErrorMessage(i18n.sentence.fail.signIn);
@@ -186,8 +192,9 @@ export function account(context: ExtensionContext): void {
     commands.registerCommand("cloudmusic.signout", () => {
       if (AccountManager.logout()) {
         try {
-          unlink(ACCOUNT_FILE, () => {
-            //
+          workspace.fs.delete(ACCOUNT_FILE, {
+            recursive: false,
+            useTrash: false,
           });
         } catch {}
       }

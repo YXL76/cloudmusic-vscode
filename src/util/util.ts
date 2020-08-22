@@ -27,11 +27,15 @@ import {
 } from "../util";
 import { IsLike, PersonalFm, lock } from "../state";
 import { PlaylistProvider, QueueItemTreeItem } from "../provider";
-import { QuickPickItem, commands, window } from "vscode";
-import { existsSync, statSync } from "fs";
-import { TreeItemCollapsibleState } from "vscode";
+import {
+  QuickPickItem,
+  TreeItemCollapsibleState,
+  Uri,
+  commands,
+  window,
+  workspace,
+} from "vscode";
 import { i18n } from "../i18n";
-import { join } from "path";
 
 const { download } = NATIVE;
 
@@ -143,22 +147,23 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
       return;
     }
 
-    const tmpFilePath = join(TMP_DIR, idString);
-    if (!existsSync(tmpFilePath)) {
-      downloadMusic(url, idString, tmpFilePath, md5);
+    const tmpFileUri = Uri.joinPath(TMP_DIR, idString);
+    try {
+      (await workspace.fs.stat(tmpFileUri)).size;
+      player.load(tmpFileUri.fsPath, pid, item);
+    } catch {
+      downloadMusic(url, idString, tmpFileUri.fsPath, md5);
       let count = 0;
-      const timer = setInterval(() => {
-        if (statSync(tmpFilePath).size > 256) {
+      const timer = setInterval(async () => {
+        if ((await workspace.fs.stat(tmpFileUri)).size > 256) {
           clearInterval(timer);
-          player.load(tmpFilePath, pid, item);
+          player.load(tmpFileUri.fsPath, pid, item);
         } else if (++count > 12) {
           clearInterval(timer);
           lock.playerLoad.set(false);
           commands.executeCommand("cloudmusic.next");
         }
       }, 100);
-    } else {
-      player.load(tmpFilePath, pid, item);
     }
   }
 }

@@ -1,3 +1,4 @@
+import { FileType, Uri, workspace } from "vscode";
 import {
   LOCAL_FILE_DIR,
   LYRIC_CACHE_DIR,
@@ -6,7 +7,6 @@ import {
   MUSIC_CACHE_DIR,
   MUSIC_CACHE_SIZE,
 } from "../constant";
-import { existsSync, readFileSync, readdirSync } from "fs";
 import { join } from "path";
 import cacache = require("cacache");
 import LRU = require("lru-cache");
@@ -26,13 +26,14 @@ export class MusicCache {
     noDisposeOnSet: true,
   });
 
-  static init(): void {
-    cacache.ls(MUSIC_CACHE_DIR).then((res: { key: LruCacheValue }) => {
+  static async init(): Promise<void> {
+    try {
+      const res: { key: LruCacheValue } = cacache.ls(MUSIC_CACHE_DIR);
       for (const item in res) {
         const { key, integrity, size } = res[item];
         this.lruCache.set(key, { integrity, size });
       }
-    });
+    } catch {}
   }
 
   static verify(): void {
@@ -50,9 +51,12 @@ export class MusicCache {
 
   static async put(key: string, path: string, md5: string): Promise<void> {
     try {
-      await cacache.put(MUSIC_CACHE_DIR, key, readFileSync(path), {
-        integrity: md5,
-      });
+      await cacache.put(
+        MUSIC_CACHE_DIR,
+        key,
+        await workspace.fs.readFile(Uri.file(path)),
+        { integrity: md5 }
+      );
       const { integrity, size } = await cacache.get.info(MUSIC_CACHE_DIR, key);
       this.lruCache.set(key, { integrity, size });
     } catch {}
@@ -76,7 +80,9 @@ export class LyricCache {
       );
       // 7 * 24 * 60 * 60 * 1000
       if (Date.now() - time < 604800000) {
-        return JSON.parse(readFileSync(path, "utf8"));
+        return JSON.parse(
+          Buffer.from(await workspace.fs.readFile(Uri.file(path))).toString()
+        );
       } else {
         cacache.rm.entry(LYRIC_CACHE_DIR, key);
         cacache.rm.content(LYRIC_CACHE_DIR, integrity);
@@ -100,15 +106,13 @@ export class LocalCache {
     maxKeys: -1,
   });
 
-  static init(): void {
+  static async init(): Promise<void> {
     if (LOCAL_FILE_DIR) {
       try {
-        const items = readdirSync(LOCAL_FILE_DIR, {
-          withFileTypes: true,
-        });
+        const items = await workspace.fs.readDirectory(LOCAL_FILE_DIR);
         for (const item of items) {
-          if (item.isFile()) {
-            const path = join(LOCAL_FILE_DIR, item.name);
+          if (item[1] === FileType.File) {
+            const path = join(LOCAL_FILE_DIR.fsPath, item[0]);
             this.cache.set(
               `md5-${Buffer.from(md5File.sync(path), "hex").toString(
                 "base64"
@@ -124,10 +128,7 @@ export class LocalCache {
   static get(key: string): string | undefined {
     const path = this.cache.get(key) as string | undefined;
     if (path) {
-      if (existsSync(path)) {
-        return path;
-      }
-      this.cache.del(key);
+      return path;
     }
     return undefined;
   }

@@ -1,8 +1,7 @@
-import { ExtensionContext, ProgressLocation, window } from "vscode";
+import { ExtensionContext, ProgressLocation, window, workspace } from "vscode";
 import { LyricCache, MusicCache, player } from "./util";
 import { TMP_DIR } from "./constant";
 import { steps } from "./activate";
-import del = require("del");
 
 export function activate(context: ExtensionContext): void {
   window.withProgress(
@@ -11,7 +10,7 @@ export function activate(context: ExtensionContext): void {
       title: "Cloudmusic initialization",
       cancellable: true,
     },
-    (progress) => {
+    async (progress) => {
       let percentage = 0;
       const unit = Math.floor(100 / steps.length);
 
@@ -20,7 +19,7 @@ export function activate(context: ExtensionContext): void {
           increment: percentage,
           message: "Initializing...",
         });
-        step(context);
+        await step(context);
         percentage += unit;
       }
 
@@ -40,5 +39,5 @@ export function deactivate(): void {
   player.stop();
   MusicCache.verify();
   LyricCache.verify();
-  del.sync([TMP_DIR], { force: true });
+  workspace.fs.delete(TMP_DIR, { recursive: true, useTrash: false });
 }

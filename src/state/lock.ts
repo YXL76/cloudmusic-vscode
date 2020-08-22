@@ -7,7 +7,7 @@ import {
   downloadMusic,
   player,
 } from "../util";
-import { readdirSync, unlinkSync } from "fs";
+import { Uri, workspace } from "vscode";
 import { QueueProvider } from "../provider";
 import { TMP_DIR } from "../constant";
 import { i18n } from "../i18n";
@@ -47,13 +47,14 @@ class DeleteTmp {
     if (newValue !== this.state) {
       this.state = newValue;
       if (newValue) {
-        readdirSync(TMP_DIR).forEach((file) => {
-          if (file !== `${player.item.id}`) {
-            try {
-              unlinkSync(join(TMP_DIR, file));
-            } catch {}
+        try {
+          const items = await workspace.fs.readDirectory(TMP_DIR);
+          for (const item of items) {
+            if (item[0] !== `${player.item.id}`) {
+              workspace.fs.delete(Uri.joinPath(TMP_DIR, item[0]));
+            }
           }
-        });
+        } catch {}
 
         let id = 0;
         let md5 = "";
@@ -78,8 +79,7 @@ class DeleteTmp {
           if (!url) {
             return;
           }
-          const tmpFilePath = join(TMP_DIR, idString);
-          downloadMusic(url, idString, tmpFilePath, md5);
+          downloadMusic(url, idString, join(TMP_DIR.fsPath, idString), md5);
         }
       }
     }

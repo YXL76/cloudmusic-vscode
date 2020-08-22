@@ -1,22 +1,21 @@
 import { CACHE_DIR, MUSIC_QUALITY, TMP_DIR } from "../constant";
 import { LocalCache, MusicCache } from "../util";
-import { existsSync, mkdirSync, readdirSync } from "fs";
-import { join } from "path";
-import del = require("del");
+import { Uri, workspace } from "vscode";
 
-export function initCache(): void {
-  if (!existsSync(TMP_DIR)) {
-    mkdirSync(TMP_DIR);
-  }
+export async function initCache(): Promise<void> {
+  await workspace.fs.createDirectory(TMP_DIR);
   try {
-    const pf = join(CACHE_DIR, "music");
-    readdirSync(pf).forEach((folder) => {
-      if (folder !== `${MUSIC_QUALITY}`) {
-        const pattern = join(pf, folder);
-        del.sync([pattern], { force: true });
+    const musicCache = Uri.joinPath(CACHE_DIR, "music");
+    const items = await workspace.fs.readDirectory(musicCache);
+    for (const item of items) {
+      if (item[0] !== `${MUSIC_QUALITY}`) {
+        workspace.fs.delete(Uri.joinPath(musicCache, item[0]), {
+          recursive: true,
+          useTrash: false,
+        });
       }
-    });
+    }
   } catch {}
-  MusicCache.init();
-  LocalCache.init();
+  await MusicCache.init();
+  await LocalCache.init();
 }

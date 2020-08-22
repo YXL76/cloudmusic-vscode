@@ -3,7 +3,7 @@ import { QueueItemTreeItem, QueueProvider } from "../provider";
 import { commands, window } from "vscode";
 import { load, stop } from "../util";
 
-export function initQueue(): void {
+export async function initQueue(): Promise<void> {
   const queueProvider = QueueProvider.getInstance();
   window.registerTreeDataProvider("queue", queueProvider);
 
