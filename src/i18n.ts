@@ -79,6 +79,7 @@ export const i18n = {
   },
   word: {
     account: localize("word.account", "Account"),
+    addToQueue: localize("word.addToQueue", "Add to queue"),
     album: localize("word.album", "Album"),
     allTime: localize("word.allTime", "All time"),
     artist: localize("word.artist", "Artist"),

@@ -35,6 +35,7 @@ import {
   TreeItemCollapsibleState,
   Uri,
   commands,
+  comments,
   window,
   workspace,
 } from "vscode";
@@ -204,6 +205,7 @@ enum PickType {
   album,
   albums,
   like,
+  add,
   save,
   similar,
   song,
@@ -263,7 +265,8 @@ export async function pickSong(
   step: number,
   id: number
 ): Promise<InputStep> {
-  const { name, alia, ar, al } = (await apiSongDetail([id]))[0];
+  const item = (await apiSongDetail([id]))[0];
+  const { name, alia, ar, al } = item;
 
   const pick = await input.showQuickPick<T>({
     title: `${i18n.word.song}-${i18n.word.detail}`,
@@ -283,6 +286,10 @@ export async function pickSong(
       {
         label: `${ICON.like} ${i18n.word.like}`,
         type: PickType.like,
+      },
+      {
+        label: `${ICON.add} ${i18n.word.addToQueue}`,
+        type: PickType.add,
       },
       {
         label: `${ICON.save} ${i18n.word.saveToPlaylist}`,
@@ -306,14 +313,6 @@ export async function pickSong(
     return (input: MultiStepInput) =>
       pickArtist(input, step + 1, pick.id as number);
   }
-  if (pick.type === PickType.like) {
-    if (await apiLike(id)) {
-      AccountManager.likelist.add(id);
-      if (id === player.item.id) {
-        IsLike.set(true);
-      }
-    }
-  }
   if (pick.type === PickType.save) {
     return (input: MultiStepInput) => pickAddToPlaylist(input, step + 1, id);
   }
@@ -322,6 +321,18 @@ export async function pickSong(
       return (input: MultiStepInput) => pickSimiSong(input, step + 1, id, 0);
     }
     return (input: MultiStepInput) => pickSimiPlaylists(input, step + 1, id, 0);
+  }
+  if (pick.type === PickType.like) {
+    if (await apiLike(id)) {
+      AccountManager.likelist.add(id);
+      if (id === player.item.id) {
+        IsLike.set(true);
+      }
+    }
+  }
+  if (pick.type === PickType.add) {
+    const element = (await songsItem2TreeItem(0, [item.id], [item]))[0];
+    commands.executeCommand("cloudmusic.addSong", element);
   }
   input.pop();
   return (input: MultiStepInput) => pickSong(input, step, id);

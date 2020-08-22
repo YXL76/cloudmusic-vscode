@@ -210,7 +210,7 @@ export function account(context: ExtensionContext): void {
               phone: false,
             },
             {
-              label: `$(rss) ${i18n.word.cellphone}`,
+              label: `$(device-mobile) ${i18n.word.cellphone}`,
               description: i18n.sentence.label.cellphone,
               phone: true,
             },
