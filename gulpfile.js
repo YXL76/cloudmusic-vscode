@@ -15,7 +15,10 @@ gulp.task("sass", () => {
     .pipe(gulp.dest("./page/css"));
 });
 
-const languages = [{ id: "zh-cn", folderName: "chs", transifexId: "zh-hans" }];
+const languages = [
+  { id: "zh-cn", folderName: "chs", transifexId: "zh-hans" },
+  { id: "zh-tw", folderName: "cht", transifexId: "zh-hant" },
+];
 
 const generatedAdditionalLocFiles = () => {
   return gulp
