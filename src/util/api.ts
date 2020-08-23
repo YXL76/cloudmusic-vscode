@@ -908,8 +908,9 @@ export async function apiTopAlbum(): Promise<AlbumsItem[]> {
       return [];
     }
     const { weekData, monthData } = body;
-    const ret = weekData.map((item: AlbumsItem) => solveAlbumsItem(item));
-    ret.concat(monthData.map((item: AlbumsItem) => solveAlbumsItem(item)));
+    const ret = weekData
+      .map((item: AlbumsItem) => solveAlbumsItem(item))
+      .concat(monthData.map((item: AlbumsItem) => solveAlbumsItem(item)));
     apiCache.set(key, ret);
     return ret;
   } catch {}

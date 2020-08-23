@@ -382,8 +382,8 @@ export async function pickArtist(
     ],
   });
   if (pick.type === PickType.albums) {
-    const albums = await apiArtistAlbum(pick.id as number);
-    return (input: MultiStepInput) => pickAlbums(input, step + 1, albums);
+    return async (input: MultiStepInput) =>
+      pickAlbums(input, step + 1, await apiArtistAlbum(pick.id as number));
   }
   if (pick.type === PickType.song) {
     return (input: MultiStepInput) =>
@@ -393,8 +393,8 @@ export async function pickArtist(
     return (input: MultiStepInput) => pickAllSongs(input, step + 1, id, 0);
   }
   if (pick.type === PickType.similar) {
-    const items = await apiSimiArtist(id);
-    return (input: MultiStepInput) => pickArtists(input, step + 1, items);
+    return async (input: MultiStepInput) =>
+      pickArtists(input, step + 1, await apiSimiArtist(id));
   }
   input.pop();
   return (input: MultiStepInput) => pickArtist(input, step, id);

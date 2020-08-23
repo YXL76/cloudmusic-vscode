@@ -170,20 +170,20 @@ export function account(context: ExtensionContext): void {
           ],
         });
         if (pick.type === Type.dailyPlaylist) {
-          const items = await apiRecommendResource();
-          return (input: MultiStepInput) => pickPlaylists(input, 3, items);
+          return async (input: MultiStepInput) =>
+            pickPlaylists(input, 3, await apiRecommendResource());
         }
         if (pick.type === Type.dailySong) {
-          const items = await apiRecommendSongs();
-          return (input: MultiStepInput) => pickSongs(input, 3, items);
+          return async (input: MultiStepInput) =>
+            pickSongs(input, 3, await apiRecommendSongs());
         }
         if (pick.type === Type.playlist) {
-          const items = await apiPersonalized();
-          return (input: MultiStepInput) => pickPlaylists(input, 3, items);
+          return async (input: MultiStepInput) =>
+            pickPlaylists(input, 3, await apiPersonalized());
         }
         if (pick.type === Type.song) {
-          const items = await apiPersonalizedNewsong();
-          return (input: MultiStepInput) => pickSongs(input, 3, items);
+          return async (input: MultiStepInput) =>
+            pickSongs(input, 3, await apiPersonalizedNewsong());
         }
       }
 
@@ -212,12 +212,12 @@ export function account(context: ExtensionContext): void {
           ],
         });
         if (pick.type === Type.song) {
-          const items = await apiToplist();
-          return (input: MultiStepInput) => pickPlaylists(input, 3, items);
+          return async (input: MultiStepInput) =>
+            pickPlaylists(input, 3, await apiToplist());
         }
         if (pick.type === Type.artist) {
-          const items = await apiToplistArtist();
-          return (input: MultiStepInput) => pickArtists(input, 3, items);
+          return async (input: MultiStepInput) =>
+            pickArtists(input, 3, await apiToplistArtist());
         }
       }
 
@@ -244,19 +244,19 @@ export function account(context: ExtensionContext): void {
               type: Type.topAlbum,
             },
             {
-              label: `${ICON.song} ${i18n.word.topSong} - ${i18n.word.zh}`,
+              label: `${ICON.song} ${i18n.word.topSong} (${i18n.word.zh})`,
               type: Type.topSongZh,
             },
             {
-              label: `${ICON.song} ${i18n.word.topSong} - ${i18n.word.en}`,
+              label: `${ICON.song} ${i18n.word.topSong} (${i18n.word.en})`,
               type: Type.topSongEn,
             },
             {
-              label: `${ICON.song} ${i18n.word.topSong} - ${i18n.word.ja}`,
+              label: `${ICON.song} ${i18n.word.topSong} (${i18n.word.ja})`,
               type: Type.topSongJa,
             },
             {
-              label: `${ICON.song} ${i18n.word.topSong} - ${i18n.word.kr}`,
+              label: `${ICON.song} ${i18n.word.topSong} (${i18n.word.kr})`,
               type: Type.topSongKr,
             },
             {
@@ -266,28 +266,28 @@ export function account(context: ExtensionContext): void {
           ],
         });
         if (pick.type === Type.topAlbum) {
-          const items = await apiTopAlbum();
-          return (input: MultiStepInput) => pickAlbums(input, 3, items);
+          return async (input: MultiStepInput) =>
+            pickAlbums(input, 3, await apiTopAlbum());
         }
         if (pick.type === Type.topSongZh) {
-          const items = await apiTopSong(TopSong.zh);
-          return (input: MultiStepInput) => pickSongs(input, 3, items);
+          return async (input: MultiStepInput) =>
+            pickSongs(input, 3, await apiTopSong(TopSong.zh));
         }
         if (pick.type === Type.topSongEn) {
-          const items = await apiTopSong(TopSong.en);
-          return (input: MultiStepInput) => pickSongs(input, 3, items);
+          return async (input: MultiStepInput) =>
+            pickSongs(input, 3, await apiTopSong(TopSong.en));
         }
         if (pick.type === Type.topSongJa) {
-          const items = await apiTopSong(TopSong.ja);
-          return (input: MultiStepInput) => pickSongs(input, 3, items);
+          return async (input: MultiStepInput) =>
+            pickSongs(input, 3, await apiTopSong(TopSong.ja));
         }
         if (pick.type === Type.topSongKr) {
-          const items = await apiTopSong(TopSong.kr);
-          return (input: MultiStepInput) => pickSongs(input, 3, items);
+          return async (input: MultiStepInput) =>
+            pickSongs(input, 3, await apiTopSong(TopSong.kr));
         }
         if (pick.type === Type.albumNewest) {
-          const items = await apiAlbumNewest();
-          return (input: MultiStepInput) => pickAlbums(input, 3, items);
+          return async (input: MultiStepInput) =>
+            pickAlbums(input, 3, await apiAlbumNewest());
         }
       }
     })
