@@ -40,6 +40,8 @@ Realized functions:
 - Personal FM
 - Lyric display
 - Search (hot/single/album/artist...)
+- Top list (Music List/Singer List...)
+- Explore (New song express/New discs on shelves...)
 - Cache management
 - Optional lossless music
 - Media control support
