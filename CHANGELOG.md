@@ -6,6 +6,36 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [4.0.0] - 2020-08-25
+
+### Added
+
+- Multi-step input
+- Configuration
+  - `cloudmusic.music.realIP`
+  - Add constraints for some items
+- Cache
+  - Local music file support (`cloudmusic.cache.localDirectory`)
+  - Add cache to some api request
+- Search
+  - Search for playlist
+  - Search suggestion
+- Treeview: busy hint
+- i18n: `中文（繁體）` support
+- Top list
+- Explore
+- Command: `cloudmusic.deletePlaylist`
+
+### Changed
+
+- Search process
+- Command: `cloudmusic.toggleButto` loop input
+- Icon: Unified icon
+
+### Removed
+
+- Command: `cloudmusic.addToPlaylist`(replace by `cloudmusic.saveToPlaylist`)
+
 ## [3.7.7] - 2020-08-17
 
 ### Fixed
