@@ -48,15 +48,6 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     return QueueProvider.songs;
   }
 
-  static indexOf(element: QueueItemTreeItem): number {
-    for (let i = 0; i < this.songs.length; ++i) {
-      if (this.songs[i].valueOf() === element.valueOf()) {
-        return i;
-      }
-    }
-    return -1;
-  }
-
   static clear(): void {
     QueueProvider.songs = [];
   }
@@ -65,6 +56,10 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     QueueProvider.songs = [QueueProvider.songs[0]].concat(
       unsortInplace(QueueProvider.songs.slice(1))
     );
+  }
+
+  static top(id: number): void {
+    this.shift(this.songs.findIndex((value) => value.valueOf() === id));
   }
 
   static shift(index: number): void {
@@ -85,8 +80,8 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     );
   }
 
-  static delete(element: QueueItemTreeItem): void {
-    const index = this.indexOf(element);
+  static delete(id: number): void {
+    const index = this.songs.findIndex((value) => value.valueOf() === id);
     if (index >= 0) {
       QueueProvider.songs.splice(index, 1);
     }

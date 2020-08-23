@@ -29,7 +29,7 @@ export async function initQueue(): Promise<void> {
         PersonalFm.set(false);
         await load(element);
         QueueProvider.refresh(async () => {
-          QueueProvider.shift(QueueProvider.indexOf(element));
+          QueueProvider.top(element.item.id);
         });
       }
     }
@@ -39,7 +39,7 @@ export async function initQueue(): Promise<void> {
     "cloudmusic.deleteSong",
     (element: QueueItemTreeItem) => {
       QueueProvider.refresh(async () => {
-        QueueProvider.delete(element);
+        QueueProvider.delete(element.item.id);
       });
     }
   );

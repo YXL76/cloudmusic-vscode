@@ -118,7 +118,7 @@ export async function initPlaylist(): Promise<void> {
             PersonalFm.set(false);
             QueueProvider.clear();
             QueueProvider.add(items);
-            QueueProvider.shift(QueueProvider.indexOf(element));
+            QueueProvider.top(element.item.id);
             if (!lock.playerLoad.get()) {
               load(QueueProvider.songs[0]);
             }
