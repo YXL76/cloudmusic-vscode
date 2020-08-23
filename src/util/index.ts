@@ -40,6 +40,7 @@ export {
   apiToplistArtist,
   apiUserPlaylist,
   apiUserRecord,
+  baseQuery,
   SearchType,
 } from "./api";
 export {

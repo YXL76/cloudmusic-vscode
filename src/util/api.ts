@@ -111,6 +111,12 @@ const solvePlaylistItem = (item: RawPlaylistItem): PlaylistItem => {
   };
 };
 
+export const baseQuery = {
+  cookie: {},
+  proxy: PROXY,
+  realIP: REAL_IP,
+};
+
 export async function apiAlbum(
   id: number
 ): Promise<{ info: AlbumsItem; songs: SongsItem[] }> {
@@ -120,12 +126,7 @@ export async function apiAlbum(
     return value as { info: AlbumsItem; songs: SongsItem[] };
   }
   try {
-    const { status, body } = await album({
-      id,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status, body } = await album(Object.assign({ id }, baseQuery));
     if (status !== 200) {
       return { info: {} as AlbumsItem, songs: [] };
     }
@@ -150,13 +151,9 @@ export async function apiArtists(
   if (value) {
     return value as { info: Artist; songs: SongsItem[] };
   }
+
   try {
-    const { status, body } = await artists({
-      id,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status, body } = await artists(Object.assign({ id }, baseQuery));
     if (status !== 200) {
       return { info: {} as Artist, songs: [] };
     }
@@ -183,14 +180,9 @@ export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
   let offset = 0;
   try {
     while (true) {
-      const { status, body } = await artist_album({
-        id,
-        limit,
-        offset,
-        cookie: AccountManager.cookie,
-        proxy: PROXY,
-        realIP: REAL_IP,
-      });
+      const { status, body } = await artist_album(
+        Object.assign({ id, limit, offset }, baseQuery)
+      );
       if (status !== 200) {
         break;
       }
@@ -222,14 +214,9 @@ export async function apiArtistSongs(
     return value as SongsItem[];
   }
   try {
-    const { status, body } = await artist_songs({
-      id,
-      limit,
-      offset,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status, body } = await artist_songs(
+      Object.assign({ id, limit, offset }, baseQuery)
+    );
     if (status !== 200) {
       return [];
     }
@@ -243,12 +230,9 @@ export async function apiArtistSongs(
 
 export async function apiCheckMusic(id: number): Promise<boolean> {
   try {
-    const { status, body } = await check_music({
-      id,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status, body } = await check_music(
+      Object.assign({ id }, baseQuery)
+    );
     if (status !== 200) {
       return false;
     }
@@ -261,11 +245,7 @@ export async function apiCheckMusic(id: number): Promise<boolean> {
 
 export async function apiDailySignin(): Promise<number> {
   try {
-    const { status, body } = await daily_signin({
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status, body } = await daily_signin(baseQuery);
     if (status !== 200) {
       return 0;
     }
@@ -278,12 +258,7 @@ export async function apiDailySignin(): Promise<number> {
 
 export async function apiFmTrash(id: number): Promise<boolean> {
   try {
-    const { status } = await fm_trash({
-      id,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status } = await fm_trash(Object.assign({ id }, baseQuery));
     if (status === 200) {
       return true;
     }
@@ -293,13 +268,9 @@ export async function apiFmTrash(id: number): Promise<boolean> {
 
 export async function apiLike(id: number, islike?: string): Promise<boolean> {
   try {
-    const { status } = await like({
-      id,
-      like: islike,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status } = await like(
+      Object.assign({ id, like: islike }, baseQuery)
+    );
     if (status !== 200) {
       return false;
     }
@@ -311,12 +282,9 @@ export async function apiLike(id: number, islike?: string): Promise<boolean> {
 
 export async function apiLikelist(): Promise<number[]> {
   try {
-    const { status, body } = await likelist({
-      uid: AccountManager.uid,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status, body } = await likelist(
+      Object.assign({ uid: AccountManager.uid }, baseQuery)
+    );
     if (status !== 200) {
       return [];
     }
@@ -329,11 +297,7 @@ export async function apiLikelist(): Promise<number[]> {
 
 export async function apiLoginRefresh(): Promise<boolean> {
   try {
-    const { status } = await login_refresh({
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status } = await login_refresh(baseQuery);
     if (status !== 200) {
       return false;
     }
@@ -345,11 +309,7 @@ export async function apiLoginRefresh(): Promise<boolean> {
 
 export async function apiLoginStatus(): Promise<boolean> {
   try {
-    const { status } = await login_status({
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status } = await login_status(baseQuery);
     if (status !== 200) {
       return false;
     }
@@ -361,11 +321,7 @@ export async function apiLoginStatus(): Promise<boolean> {
 
 export async function apiLogout(): Promise<boolean> {
   try {
-    const { status } = await logout({
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status } = await logout(baseQuery);
     if (status !== 200) {
       return false;
     }
@@ -383,12 +339,7 @@ export async function apiLyric(id: number): Promise<LyricData> {
   const time: number[] = [0];
   const text: string[] = ["Lyric"];
   try {
-    const { status, body } = await lyric({
-      id,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status, body } = await lyric(Object.assign({ id }, baseQuery));
     if (status !== 200) {
       return { time, text };
     }
@@ -420,11 +371,7 @@ export async function apiLyric(id: number): Promise<LyricData> {
 
 export async function apiPersonalFm(): Promise<SongsItem[]> {
   try {
-    const { status, body } = await personal_fm({
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status, body } = await personal_fm(baseQuery);
     if (status !== 200) {
       return [];
     }
@@ -442,11 +389,7 @@ export async function apiPersonalized(): Promise<PlaylistItem[]> {
     return value as PlaylistItem[];
   }
   try {
-    const { body, status } = await personalized({
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { body, status } = await personalized(baseQuery);
     if (status !== 200) {
       return [];
     }
@@ -467,11 +410,7 @@ export async function apiPersonalizedNewsong(): Promise<SongsItem[]> {
     return value as SongsItem[];
   }
   try {
-    const { body, status } = await personalized_newsong({
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { body, status } = await personalized_newsong(baseQuery);
     if (status !== 200) {
       return [];
     }
@@ -485,12 +424,7 @@ export async function apiPersonalizedNewsong(): Promise<SongsItem[]> {
 
 export async function apiPlaylistDelete(id: number): Promise<boolean> {
   try {
-    const { status } = await playlist_delete({
-      id,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status } = await playlist_delete(Object.assign({ id }, baseQuery));
     if (status === 200) {
       return true;
     }
@@ -505,12 +439,9 @@ export async function apiPlaylistDetail(id: number): Promise<number[]> {
     return value as number[];
   }
   try {
-    const { status, body } = await playlist_detail({
-      id,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status, body } = await playlist_detail(
+      Object.assign({ id }, baseQuery)
+    );
     if (status !== 200) {
       return [];
     }
@@ -531,14 +462,9 @@ export async function apiPlaylistTracks(
   tracks: number[]
 ): Promise<boolean> {
   try {
-    const { status } = await playlist_tracks({
-      op,
-      pid,
-      tracks: tracks.join(","),
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status } = await playlist_tracks(
+      Object.assign({ op, pid, tracks: tracks.join(",") }, baseQuery)
+    );
     if (status !== 200) {
       return false;
     }
@@ -554,13 +480,9 @@ export async function apiPlaymodeIntelligenceList(
 ): Promise<SongsItem[]> {
   let ret: SongsItem[] = [];
   try {
-    const { body, status } = await playmode_intelligence_list({
-      id,
-      pid,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { body, status } = await playmode_intelligence_list(
+      Object.assign({ id, pid }, baseQuery)
+    );
     if (status !== 200) {
       return ret;
     }
@@ -577,11 +499,7 @@ export async function apiRecommendResource(): Promise<PlaylistItem[]> {
     return value as PlaylistItem[];
   }
   try {
-    const { body, status } = await recommend_resource({
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { body, status } = await recommend_resource(baseQuery);
     if (status !== 200) {
       return [];
     }
@@ -602,11 +520,7 @@ export async function apiRecommendSongs(): Promise<SongsItem[]> {
     return value as SongsItem[];
   }
   try {
-    const { body, status } = await recommend_songs({
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { body, status } = await recommend_songs(baseQuery);
     if (status !== 200) {
       return [];
     }
@@ -625,12 +539,9 @@ export async function apiRelatedPlaylist(id: number): Promise<PlaylistItem[]> {
     return value as PlaylistItem[];
   }
   try {
-    const { body, status } = await related_playlist({
-      id,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { body, status } = await related_playlist(
+      Object.assign({ id }, baseQuery)
+    );
     if (status !== 200) {
       return [];
     }
@@ -649,13 +560,7 @@ export async function apiScrobble(
   sourceid: number,
   time: number
 ): Promise<void> {
-  await scrobble({
-    id,
-    sourceid,
-    time: Math.floor(time),
-    cookie: AccountManager.cookie,
-    proxy: PROXY,
-  });
+  await scrobble(Object.assign({ id, sourceid, time }, baseQuery));
 }
 
 export enum SearchType {
@@ -681,15 +586,12 @@ export async function apiSearchSingle(
     return value as SongsItem[];
   }
   try {
-    const { body, status } = await search({
-      keywords,
-      type: SearchType.single,
-      limit,
-      offset,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { body, status } = await search(
+      Object.assign(
+        { keywords, type: SearchType.single, limit, offset },
+        baseQuery
+      )
+    );
     if (status !== 200) {
       return [];
     }
@@ -714,15 +616,12 @@ export async function apiSearchAlbum(
     return value as AlbumsItem[];
   }
   try {
-    const { body, status } = await search({
-      keywords,
-      type: SearchType.album,
-      limit,
-      offset,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { body, status } = await search(
+      Object.assign(
+        { keywords, type: SearchType.album, limit, offset },
+        baseQuery
+      )
+    );
     if (status !== 200) {
       return [];
     }
@@ -745,15 +644,12 @@ export async function apiSearchArtist(
     return value as Artist[];
   }
   try {
-    const { body, status } = await search({
-      keywords,
-      type: SearchType.artist,
-      limit,
-      offset,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { body, status } = await search(
+      Object.assign(
+        { keywords, type: SearchType.artist, limit, offset },
+        baseQuery
+      )
+    );
     if (status !== 200) {
       return [];
     }
@@ -778,15 +674,12 @@ export async function apiSearchPlaylist(
     return value as PlaylistItem[];
   }
   try {
-    const { body, status } = await search({
-      keywords,
-      type: SearchType.playlist,
-      limit,
-      offset,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { body, status } = await search(
+      Object.assign(
+        { keywords, type: SearchType.playlist, limit, offset },
+        baseQuery
+      )
+    );
     if (status !== 200) {
       return [];
     }
@@ -809,11 +702,7 @@ export async function apiSearchHotDetail(): Promise<
     return value as { searchWord: string; content: string }[];
   }
   try {
-    const { body, status } = await search_hot_detail({
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { body, status } = await search_hot_detail(baseQuery);
     if (status !== 200) {
       return [];
     }
@@ -835,13 +724,9 @@ export async function apiSearchSuggest(keywords: string): Promise<string[]> {
     return value as string[];
   }
   try {
-    const { body, status } = await search_suggest({
-      keywords,
-      type: "mobile",
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { body, status } = await search_suggest(
+      Object.assign({ keywords, type: "mobile" }, baseQuery)
+    );
     if (status !== 200) {
       return [];
     }
@@ -860,12 +745,9 @@ export async function apiSimiArtist(id: number): Promise<Artist[]> {
     return value as Artist[];
   }
   try {
-    const { body, status } = await simi_artist({
-      id,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { body, status } = await simi_artist(
+      Object.assign({ id }, baseQuery)
+    );
     if (status !== 200) {
       return [];
     }
@@ -889,14 +771,9 @@ export async function apiSimiPlaylist(
     return value as PlaylistItem[];
   }
   try {
-    const { body, status } = await simi_playlist({
-      id,
-      limit,
-      offset,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { body, status } = await simi_playlist(
+      Object.assign({ id, limit, offset }, baseQuery)
+    );
     if (status !== 200) {
       return [];
     }
@@ -922,14 +799,9 @@ export async function apiSimiSong(
     return value as SongsItem[];
   }
   try {
-    const { body, status } = await simi_song({
-      id,
-      limit,
-      offset,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { body, status } = await simi_song(
+      Object.assign({ id, limit, offset }, baseQuery)
+    );
     if (status !== 200) {
       return [];
     }
@@ -956,11 +828,9 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
   let ret: SongsItem[] = [];
   try {
     for (let i = 0; i < trackIds.length; i += 512) {
-      const { status, body } = await song_detail({
-        ids: trackIds.slice(i, i + 512).join(","),
-        cookie: AccountManager.cookie,
-        proxy: PROXY,
-      });
+      const { status, body } = await song_detail(
+        Object.assign({ ids: trackIds.slice(i, i + 512).join(",") }, baseQuery)
+      );
       if (status !== 200) {
         continue;
       }
@@ -981,12 +851,12 @@ export async function apiSongUrl(trackIds: number[]): Promise<SongDetail[]> {
   try {
     let songs: SongDetail[] = [];
     for (let i = 0; i < trackIds.length; i += 512) {
-      const { status, body } = await song_url({
-        id: trackIds.slice(i, i + 512).join(","),
-        br: MUSIC_QUALITY,
-        cookie: AccountManager.cookie,
-        proxy: PROXY,
-      });
+      const { status, body } = await song_url(
+        Object.assign(
+          { id: trackIds.slice(i, i + 512).join(","), br: MUSIC_QUALITY },
+          baseQuery
+        )
+      );
       if (status !== 200) {
         continue;
       }
@@ -1011,11 +881,7 @@ export async function apiToplist(): Promise<PlaylistItem[]> {
     return value as PlaylistItem[];
   }
   try {
-    const { status, body } = await toplist({
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status, body } = await toplist(baseQuery);
     if (status !== 200) {
       return [];
     }
@@ -1034,11 +900,7 @@ export async function apiToplistArtist(): Promise<Artist[]> {
     return value as Artist[];
   }
   try {
-    const { status, body } = await toplist_artist({
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status, body } = await toplist_artist(baseQuery);
     if (status !== 200) {
       return [];
     }
@@ -1057,12 +919,9 @@ export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
     return value as PlaylistItem[];
   }
   try {
-    const { status, body } = await user_playlist({
-      uid: AccountManager.uid,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status, body } = await user_playlist(
+      Object.assign({ uid: AccountManager.uid }, baseQuery)
+    );
     if (status !== 200) {
       return [];
     }
@@ -1082,13 +941,9 @@ export async function apiUserRecord(
   type: 0 | 1
 ): Promise<(SongsItem & { count: number })[]> {
   try {
-    const { status, body } = await user_record({
-      uid: AccountManager.uid,
-      type,
-      cookie: AccountManager.cookie,
-      proxy: PROXY,
-      realIP: REAL_IP,
-    });
+    const { status, body } = await user_record(
+      Object.assign({ uid: AccountManager.uid, type }, baseQuery)
+    );
     if (status !== 200) {
       return [];
     }

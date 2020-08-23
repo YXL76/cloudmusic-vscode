@@ -3,6 +3,7 @@ import {
   apiLikelist,
   apiLogout,
   apiUserPlaylist,
+  baseQuery,
 } from "../util";
 import { login, login_cellphone } from "NeteaseCloudMusicApi";
 import { LoggedIn } from "../state";
@@ -12,7 +13,6 @@ import { i18n } from "../i18n";
 import { window } from "vscode";
 
 export class AccountManager {
-  static cookie = {};
   static uid = 0;
   static nickname = "";
   static likelist: Set<number> = new Set<number>();
@@ -54,7 +54,7 @@ export class AccountManager {
       if (status === 200) {
         const { cookie, profile } = body;
         const { userId, nickname } = profile;
-        this.cookie = cookieToJson(cookie);
+        baseQuery.cookie = cookieToJson(cookie);
         this.uid = userId;
         this.nickname = nickname;
         const ids = await apiLikelist();
@@ -70,7 +70,7 @@ export class AccountManager {
 
   static async logout(): Promise<boolean> {
     if (await apiLogout()) {
-      this.cookie = {};
+      baseQuery.cookie = {};
       this.uid = 0;
       this.nickname = "";
       this.likelist.clear();

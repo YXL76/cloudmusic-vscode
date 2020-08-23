@@ -114,7 +114,7 @@ class AudioPlayer implements Player {
       const diff = this.time - pTime;
       const { id, dt } = this.item;
       if (diff > 60000 && dt > 60) {
-        apiScrobble(id, this.pid, Math.min(diff / 1000, dt));
+        apiScrobble(id, this.pid, Math.floor(Math.min(diff / 1000, dt)));
       }
 
       this.pid = pid;
