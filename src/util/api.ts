@@ -15,6 +15,7 @@ import {
 import { LyricCache, apiCache } from "../util";
 import {
   album,
+  album_newest,
   artist_album,
   artist_songs,
   artists,
@@ -46,6 +47,8 @@ import {
   simi_song,
   song_detail,
   song_url,
+  top_album,
+  top_song,
   toplist,
   toplist_artist,
   user_playlist,
@@ -141,6 +144,25 @@ export async function apiAlbum(
   } catch {
     return { info: {} as AlbumsItem, songs: [] };
   }
+}
+
+export async function apiAlbumNewest(): Promise<AlbumsItem[]> {
+  const key = `album_newest`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as AlbumsItem[];
+  }
+  try {
+    const { status, body } = await album_newest(Object.assign(baseQuery));
+    if (status !== 200) {
+      return [];
+    }
+    const { albums } = body;
+    const ret = albums.map((album: AlbumsItem) => solveAlbumsItem(album));
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
 }
 
 export async function apiArtists(
@@ -872,6 +894,53 @@ export async function apiSongUrl(trackIds: number[]): Promise<SongDetail[]> {
   } catch {
     return ret;
   }
+}
+
+export async function apiTopAlbum(): Promise<AlbumsItem[]> {
+  const key = "top_album";
+  const value = apiCache.get(key);
+  if (value) {
+    return value as AlbumsItem[];
+  }
+  try {
+    const { status, body } = await top_album(baseQuery);
+    if (status !== 200) {
+      return [];
+    }
+    const { weekData, monthData } = body;
+    const ret = weekData.map((item: AlbumsItem) => solveAlbumsItem(item));
+    ret.concat(monthData.map((item: AlbumsItem) => solveAlbumsItem(item)));
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
+}
+
+export enum TopSong {
+  all = 0,
+  zh = 7,
+  en = 96,
+  ja = 8,
+  kr = 16,
+}
+
+export async function apiTopSong(type: TopSong): Promise<SongsItem[]> {
+  const key = `top_song${type}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as SongsItem[];
+  }
+  try {
+    const { status, body } = await top_song(Object.assign({ type }, baseQuery));
+    if (status !== 200) {
+      return [];
+    }
+    const { data } = body;
+    const ret = data.map((item: AnotherSongItem) => solveAnotherSongItem(item));
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
 }
 
 export async function apiToplist(): Promise<PlaylistItem[]> {

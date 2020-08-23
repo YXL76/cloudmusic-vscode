@@ -87,7 +87,7 @@
 | :--------------------: | :----------------: | :----: |
 |         album          |      专辑内容      |   ✔️   |
 |  album_detail_dynamic  |    专辑动态信息    |   ❌   |
-|      album_newest      |      最新专辑      |        |
+|      album_newest      |      最新专辑      |   ✔️   |
 |       album_sub        | 收藏与取消收藏专辑 |        |
 |     album_sublist      |   已收藏专辑列表   |        |
 | digitalAlbum_ordering  |    购买数字专辑    |        |
@@ -104,7 +104,7 @@
 |  artist_songs   |    歌手所有歌曲    |   ✔️   |
 |   artist_sub    | 收藏与取消收藏歌手 |        |
 | artist_sublist  |    关注歌手列表    |        |
-| artist_top_song | 歌手热门 50 首歌曲 |        |
+| artist_top_song | 歌手热门 50 首歌曲 |   ❌   |
 |     artists     |      歌手单曲      |   ✔️   |
 |   simi_artist   |      相似歌手      |   ✔️   |
 
@@ -303,11 +303,11 @@
 | homepage_dragon_ball | 首页-发现 dragon ball  |        |
 |      hot_topic       |        热门话题        |   ❌   |
 |  program_recommend   |        推荐节目        |        |
-|      top_album       |        新碟上架        |        |
+|      top_album       |        新碟上架        |   ✔️   |
 |     top_artists      |        热门歌手        |        |
 |       top_list       |         排行榜         |   ❌   |
 |        top_mv        |       MV 排行榜        |   ❌   |
-|       top_song       |        新歌速递        |        |
+|       top_song       |        新歌速递        |   ✔️   |
 |       toplist        |      所有榜单介绍      |   ✔️   |
 |    toplist_artist    |         歌手榜         |   ✔️   |
 |    toplist_detail    |    所有榜单内容摘要    |   ❌   |

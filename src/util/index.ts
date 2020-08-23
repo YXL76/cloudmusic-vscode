@@ -2,6 +2,7 @@ export { InputStep, MultiStepInput } from "./multiStepInput";
 export { LocalCache, LyricCache, MusicCache, apiCache } from "./cache";
 export {
   apiAlbum,
+  apiAlbumNewest,
   apiArtistAlbum,
   apiArtists,
   apiArtistSongs,
@@ -36,12 +37,15 @@ export {
   apiSimiSong,
   apiSongDetail,
   apiSongUrl,
+  apiTopAlbum,
   apiToplist,
   apiToplistArtist,
+  apiTopSong,
   apiUserPlaylist,
   apiUserRecord,
   baseQuery,
   SearchType,
+  TopSong,
 } from "./api";
 export {
   confirmation,
@@ -52,6 +56,7 @@ export {
   pickAlbumItems,
   pickAlbums,
   pickArtist,
+  pickArtists,
   pickArtistItems,
   pickPlaylist,
   pickPlaylistItems,

@@ -382,8 +382,8 @@ export async function pickArtist(
     ],
   });
   if (pick.type === PickType.albums) {
-    return (input: MultiStepInput) =>
-      pickAlbums(input, step + 1, pick.id as number);
+    const albums = await apiArtistAlbum(pick.id as number);
+    return (input: MultiStepInput) => pickAlbums(input, step + 1, albums);
   }
   if (pick.type === PickType.song) {
     return (input: MultiStepInput) =>
@@ -496,9 +496,8 @@ export async function pickAlbum(
 export async function pickAlbums(
   input: MultiStepInput,
   step: number,
-  id: number
+  albums: AlbumsItem[]
 ): Promise<InputStep> {
-  const albums = await apiArtistAlbum(id);
   const pick = await input.showQuickPick({
     title: i18n.word.album,
     step,
