@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [4.0.1] - 2020-08-25
+
+### Fixed
+
+- The queue item will be unique
+
 ## [4.0.0] - 2020-08-25
 
 ### Added
