@@ -22,6 +22,12 @@ enum Type {
   favoriteInstance,
 }
 
+type RefreshPara = {
+  element?: PlaylistItemTreeItem;
+  refresh?: boolean;
+  action?: (items: QueueItemTreeItem[]) => void;
+};
+
 export class PlaylistProvider
   implements TreeDataProvider<PlaylistItemTreeItem | QueueItemTreeItem> {
   private static userInstance: PlaylistProvider;
@@ -58,11 +64,7 @@ export class PlaylistProvider
     );
   }
 
-  static refresh(
-    element?: PlaylistItemTreeItem,
-    refresh?: boolean,
-    action?: (items: QueueItemTreeItem[]) => void
-  ): void {
+  static refresh({ element, refresh, action }: RefreshPara): void {
     if (element) {
       this.action = action;
       const { id } = element.item;
@@ -78,14 +80,14 @@ export class PlaylistProvider
       }
     } else {
       if (refresh) {
-        apiCache.del("user_playlist");
         for (const id of this.belongsTo.keys()) {
           apiCache.del(`playlist_detail${id}`);
         }
+        this.treeView.clear();
       }
+      apiCache.del("user_playlist");
       this.belongsTo.clear();
       this.playlists.clear();
-      this.treeView.clear();
       this.userInstance._onDidChangeTreeData.fire();
       this.favoriteInstance._onDidChangeTreeData.fire();
     }

@@ -24,26 +24,30 @@ export async function initPlaylist(): Promise<void> {
   window.registerTreeDataProvider("favoritePlaylist", favoritePlaylistProvider);
 
   commands.registerCommand("cloudmusic.refreshPlaylist", () => {
-    PlaylistProvider.refresh(undefined, true);
+    PlaylistProvider.refresh({ refresh: true });
   });
 
   commands.registerCommand(
     "cloudmusic.refreshPlaylistContent",
-    (element: PlaylistItemTreeItem) => PlaylistProvider.refresh(element, true)
+    (element: PlaylistItemTreeItem) =>
+      PlaylistProvider.refresh({ element, refresh: true })
   );
 
   commands.registerCommand(
     "cloudmusic.playPlaylist",
     (element: PlaylistItemTreeItem) => {
-      PlaylistProvider.refresh(element, false, (items) => {
-        QueueProvider.refresh(async () => {
-          PersonalFm.set(false);
-          QueueProvider.clear();
-          QueueProvider.add(items);
-          if (!lock.playerLoad.get()) {
-            load(QueueProvider.songs[0]);
-          }
-        });
+      PlaylistProvider.refresh({
+        element,
+        action: (items) => {
+          QueueProvider.refresh(async () => {
+            PersonalFm.set(false);
+            QueueProvider.clear();
+            QueueProvider.add(items);
+            if (!lock.playerLoad.get()) {
+              load(QueueProvider.songs[0]);
+            }
+          });
+        },
       });
     }
   );
@@ -54,7 +58,7 @@ export async function initPlaylist(): Promise<void> {
       MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
           if (await apiPlaylistDelete(element.item.id)) {
-            PlaylistProvider.refresh(undefined, true);
+            PlaylistProvider.refresh({});
           }
         })
       );
@@ -64,10 +68,13 @@ export async function initPlaylist(): Promise<void> {
   commands.registerCommand(
     "cloudmusic.addPlaylist",
     (element: PlaylistItemTreeItem) => {
-      PlaylistProvider.refresh(element, false, (items) => {
-        QueueProvider.refresh(async () => {
-          QueueProvider.add(items);
-        });
+      PlaylistProvider.refresh({
+        element,
+        action: (items) => {
+          QueueProvider.refresh(async () => {
+            QueueProvider.add(items);
+          });
+        },
       });
     }
   );
@@ -104,10 +111,9 @@ export async function initPlaylist(): Promise<void> {
   commands.registerCommand(
     "cloudmusic.playSongWithPlaylist",
     (element: QueueItemTreeItem) => {
-      PlaylistProvider.refresh(
-        PlaylistProvider.playlists.get(element.pid),
-        false,
-        (items) => {
+      PlaylistProvider.refresh({
+        element: PlaylistProvider.playlists.get(element.pid),
+        action: (items) => {
           QueueProvider.refresh(async () => {
             PersonalFm.set(false);
             QueueProvider.clear();
@@ -117,8 +123,8 @@ export async function initPlaylist(): Promise<void> {
               load(QueueProvider.songs[0]);
             }
           });
-        }
-      );
+        },
+      });
     }
   );
 
@@ -128,10 +134,10 @@ export async function initPlaylist(): Promise<void> {
       MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
           if (await apiPlaylistTracks("del", element.pid, [element.item.id])) {
-            PlaylistProvider.refresh(
-              PlaylistProvider.playlists.get(element.pid),
-              true
-            );
+            PlaylistProvider.refresh({
+              element: PlaylistProvider.playlists.get(element.pid),
+              refresh: true,
+            });
           }
         })
       );

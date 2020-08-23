@@ -641,7 +641,10 @@ export async function pickAddToPlaylist(
     })),
   });
   if (await apiPlaylistTracks("add", pick.id, [id])) {
-    PlaylistProvider.refresh(PlaylistProvider.playlists.get(pick.id), true);
+    PlaylistProvider.refresh({
+      element: PlaylistProvider.playlists.get(pick.id),
+      refresh: true,
+    });
   }
   input.pop();
   return (input: MultiStepInput) => pickAddToPlaylist(input, step, id);
