@@ -522,7 +522,7 @@ export async function pickPlaylist(
   const ids = await apiPlaylistDetail(id);
   const songs = await apiSongDetail(ids);
   const pick = await input.showQuickPick<T>({
-    title: i18n.word.song,
+    title: i18n.word.playlist,
     step,
     items: [
       {
@@ -619,7 +619,7 @@ export async function pickPlaylists(
   items: PlaylistItem[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick<PST>({
-    title: i18n.word.song,
+    title: i18n.word.playlist,
     step,
     items: pickPlaylistItems(items),
   });
