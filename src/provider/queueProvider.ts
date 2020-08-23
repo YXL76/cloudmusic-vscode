@@ -9,6 +9,7 @@ import {
 import { SongsItem } from "../constant";
 import { lock } from "../state";
 import { unsortInplace } from "array-unsort";
+import dedupe = require("dedupe");
 
 export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   private static instance: QueueProvider;
@@ -47,6 +48,15 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     return QueueProvider.songs;
   }
 
+  static indexOf(element: QueueItemTreeItem): number {
+    for (let i = 0; i < this.songs.length; ++i) {
+      if (this.songs[i].valueOf() === element.valueOf()) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
   static clear(): void {
     QueueProvider.songs = [];
   }
@@ -69,12 +79,14 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   }
 
   static add(elements: QueueItemTreeItem[]): void {
-    const uniqueItems = new Set(QueueProvider.songs.concat(elements));
-    QueueProvider.songs = [...uniqueItems];
+    QueueProvider.songs = dedupe(
+      QueueProvider.songs.concat(elements),
+      (element: QueueItemTreeItem) => element.valueOf()
+    );
   }
 
   static delete(element: QueueItemTreeItem): void {
-    const index = QueueProvider.songs.indexOf(element);
+    const index = this.indexOf(element);
     if (index >= 0) {
       QueueProvider.songs.splice(index, 1);
     }

@@ -1481,6 +1481,7 @@ __metadata:
     array-unsort: ^1.1.6
     bluebird: 3.7.2
     cacache: ^15.0.5
+    dedupe: ^3.0.2
     eslint: 7.7.0
     glob: 7.1.6
     gulp: 4.0.2
@@ -1838,6 +1839,13 @@ __metadata:
   version: 0.2.0
   resolution: "decode-uri-component@npm:0.2.0"
   checksum: d8cb28c33f7b0a70b159b5fa126aee821ba090396689bd46ad2c423c3a658c504d2743ab18060fd5ed1cae5377bdd3632760a8e98ba920ff49637d43dc6a9687
+  languageName: node
+  linkType: hard
+
+"dedupe@npm:^3.0.2":
+  version: 3.0.2
+  resolution: "dedupe@npm:3.0.2"
+  checksum: 8f78aff02c034ba6824118949b861cbcedb3403f6b0ef3928701d49e5d5f72f4080c7c16b9ba913a5bc6f0477455a61792b90fd7f789af48ea15ccacd2fadc01
   languageName: node
   linkType: hard
 

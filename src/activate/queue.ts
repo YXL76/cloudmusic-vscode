@@ -29,7 +29,7 @@ export async function initQueue(): Promise<void> {
         PersonalFm.set(false);
         await load(element);
         QueueProvider.refresh(async () => {
-          QueueProvider.shift(QueueProvider.songs.indexOf(element));
+          QueueProvider.shift(QueueProvider.indexOf(element));
         });
       }
     }
