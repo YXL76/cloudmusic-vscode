@@ -64,7 +64,7 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             native/target
-          key: ${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          key: ${{ matrix.os }}-${{ matrix.abi }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - run: yarn
 
