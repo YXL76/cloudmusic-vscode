@@ -20,6 +20,7 @@ import {
   artist_songs,
   artists,
   check_music,
+  cloudsearch,
   daily_signin,
   fm_trash,
   like,
@@ -39,7 +40,6 @@ import {
   recommend_songs,
   related_playlist,
   scrobble,
-  search,
   search_hot_detail,
   search_suggest,
   simi_artist,
@@ -608,7 +608,7 @@ export async function apiSearchSingle(
     return value as SongsItem[];
   }
   try {
-    const { body, status } = await search(
+    const { body, status } = await cloudsearch(
       Object.assign(
         { keywords, type: SearchType.single, limit, offset },
         baseQuery
@@ -638,7 +638,7 @@ export async function apiSearchAlbum(
     return value as AlbumsItem[];
   }
   try {
-    const { body, status } = await search(
+    const { body, status } = await cloudsearch(
       Object.assign(
         { keywords, type: SearchType.album, limit, offset },
         baseQuery
@@ -666,7 +666,7 @@ export async function apiSearchArtist(
     return value as Artist[];
   }
   try {
-    const { body, status } = await search(
+    const { body, status } = await cloudsearch(
       Object.assign(
         { keywords, type: SearchType.artist, limit, offset },
         baseQuery
@@ -696,7 +696,7 @@ export async function apiSearchPlaylist(
     return value as PlaylistItem[];
   }
   try {
-    const { body, status } = await search(
+    const { body, status } = await cloudsearch(
       Object.assign(
         { keywords, type: SearchType.playlist, limit, offset },
         baseQuery
