@@ -87,8 +87,7 @@ export async function initPlaylist(): Promise<void> {
         const { pid } = element;
         const { id } = element.item;
         const songs = await apiPlaymodeIntelligenceList(id, pid);
-        const ids = songs.map((song) => song.id);
-        const elements = await songsItem2TreeItem(id, ids, songs);
+        const elements = songsItem2TreeItem(id, songs);
         QueueProvider.clear();
         QueueProvider.add([element]);
         QueueProvider.add(elements);

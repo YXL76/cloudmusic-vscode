@@ -40,11 +40,7 @@ export class PersonalFm {
   static async next(): Promise<QueueItemTreeItem> {
     if (this.item.length === 0) {
       const songs = await apiPersonalFm();
-      this.item = await songsItem2TreeItem(
-        0,
-        songs.map(({ id }) => id),
-        songs
-      );
+      this.item = songsItem2TreeItem(0, songs);
     }
 
     return this.item.splice(0, 1)[0];

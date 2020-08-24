@@ -856,9 +856,12 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
       if (status !== 200) {
         continue;
       }
-      const { songs } = body;
-      ret = ret.concat(songs.map((song: SongsItem) => solveSongItem(song)));
+      const { songs, privileges } = body;
+      ret = ret.concat(
+        songs.filter((_: unknown, index: number) => privileges[index].st >= 0)
+      );
     }
+    ret = ret.map((song: SongsItem) => solveSongItem(song));
     if (trackIds.length === 1) {
       apiCache.set(key, ret);
     }
@@ -907,10 +910,8 @@ export async function apiTopAlbum(): Promise<AlbumsItem[]> {
     if (status !== 200) {
       return [];
     }
-    const { weekData, monthData } = body;
-    const ret = weekData
-      .map((item: AlbumsItem) => solveAlbumsItem(item))
-      .concat(monthData.map((item: AlbumsItem) => solveAlbumsItem(item)));
+    const { monthData } = body;
+    const ret = monthData.map((item: AlbumsItem) => solveAlbumsItem(item));
     apiCache.set(key, ret);
     return ret;
   } catch {}

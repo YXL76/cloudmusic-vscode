@@ -282,6 +282,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 
 |      module       |    function    | status |
 | :---------------: | :------------: | :----: |
+|    cloudsearch    |      搜索      |        |
 |      search       |      搜索      |   ✔️   |
 |  search_default   | 默认搜索关键词 |   ❌   |
 |    search_hot     |    热门搜索    |   ❌   |

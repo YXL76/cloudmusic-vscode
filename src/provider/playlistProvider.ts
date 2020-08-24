@@ -120,7 +120,7 @@ export class PlaylistProvider
     if (!items) {
       const ids = await apiPlaylistDetail(id);
       const songs = await apiSongDetail(ids);
-      const ret = await songsItem2TreeItem(id, ids, songs);
+      const ret = songsItem2TreeItem(id, songs);
       this.treeView.set(id, ret);
       return ret;
     }

@@ -61,29 +61,19 @@ export function downloadMusic(
   } catch {}
 }
 
-export async function songsItem2TreeItem(
+export function songsItem2TreeItem(
   id: number,
-  ids: number[],
   songs: SongsItem[]
-): Promise<QueueItemTreeItem[]> {
-  const ret: QueueItemTreeItem[] = [];
-  const items = await apiSongUrl(ids);
-  for (let i = 0; i < items.length; ++i) {
-    const song = songs[i];
-    const { url, md5 } = items[i];
-    if (url) {
-      ret.push(
-        new QueueItemTreeItem(
-          `${song.name}${song.alia[0] ? ` (${song.alia[0]})` : ""}`,
-          song,
-          id,
-          `md5-${Buffer.from(md5, "hex").toString("base64")}`,
-          TreeItemCollapsibleState.None
-        )
-      );
-    }
-  }
-  return ret;
+): QueueItemTreeItem[] {
+  return songs.map(
+    (song) =>
+      new QueueItemTreeItem(
+        `${song.name}${song.alia[0] ? ` (${song.alia[0]})` : ""}`,
+        song,
+        id,
+        TreeItemCollapsibleState.None
+      )
+  );
 }
 
 export function stop(): void {
@@ -95,38 +85,45 @@ export function stop(): void {
 
 export async function load(element: QueueItemTreeItem): Promise<void> {
   lock.playerLoad.set(true);
-  const { pid, md5, item } = element;
+  const { pid, item } = element;
   const { id } = item;
   const idString = `${id}`;
-  const path = LocalCache.get(md5) || (await MusicCache.get(idString));
+  const path = await MusicCache.get(idString);
 
   if (path) {
     player.load(path, pid, item);
   } else {
-    const { url } = (await apiSongUrl([id]))[0];
+    const { url, md5 } = (await apiSongUrl([id]))[0];
     if (!url) {
       lock.playerLoad.set(false);
       commands.executeCommand("cloudmusic.next");
       return;
     }
+    const path = LocalCache.get(md5);
 
-    const tmpFileUri = Uri.joinPath(TMP_DIR, idString);
-    try {
-      (await workspace.fs.stat(tmpFileUri)).size;
-      player.load(tmpFileUri.fsPath, pid, item);
-    } catch {
-      downloadMusic(url, idString, tmpFileUri.fsPath, md5);
-      let count = 0;
-      const timer = setInterval(async () => {
-        if ((await workspace.fs.stat(tmpFileUri)).size > 256) {
-          clearInterval(timer);
-          player.load(tmpFileUri.fsPath, pid, item);
-        } else if (++count > 12) {
-          clearInterval(timer);
-          lock.playerLoad.set(false);
-          commands.executeCommand("cloudmusic.next");
+    if (path) {
+      player.load(path, pid, item);
+    } else {
+      const tmpFileUri = Uri.joinPath(TMP_DIR, idString);
+      try {
+        if ((await workspace.fs.stat(tmpFileUri)).size < 256) {
+          throw Error;
         }
-      }, 100);
+        player.load(tmpFileUri.fsPath, pid, item);
+      } catch {
+        downloadMusic(url, idString, tmpFileUri.fsPath, md5);
+        let count = 0;
+        const timer = setInterval(async () => {
+          if ((await workspace.fs.stat(tmpFileUri)).size > 256) {
+            clearInterval(timer);
+            player.load(tmpFileUri.fsPath, pid, item);
+          } else if (++count > 12) {
+            clearInterval(timer);
+            lock.playerLoad.set(false);
+            commands.executeCommand("cloudmusic.next");
+          }
+        }, 100);
+      }
     }
   }
 }
@@ -149,7 +146,7 @@ export async function confirmation(
 }
 
 export function splitLine(content: string): string {
-  return `>>>>>>>>>>>>>>>>>>>>                          ${content.toUpperCase()}                          <<<<<<<<<<<<<<<<<<<<`;
+  return `>>>>>>>>>>>>>                       ${content.toUpperCase()}                       <<<<<<<<<<<<<<<<<<<<<<<<<<<<<`;
 }
 
 enum PickType {
@@ -284,7 +281,7 @@ export async function pickSong(
     }
   }
   if (pick.type === PickType.add) {
-    const element = (await songsItem2TreeItem(0, [item.id], [item]))[0];
+    const element = songsItem2TreeItem(0, [item])[0];
     commands.executeCommand("cloudmusic.addSong", element);
   }
   input.pop();

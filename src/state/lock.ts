@@ -57,26 +57,20 @@ class DeleteTmp {
         } catch {}
 
         let id = 0;
-        let md5 = "";
 
         if (PersonalFm.get()) {
           if (PersonalFm.item.length > 1) {
             id = PersonalFm.item[1].item.id;
-            md5 = PersonalFm.item[1].md5;
           }
         } else {
           if (QueueProvider.songs.length > 1) {
             id = QueueProvider.songs[1].item.id;
-            md5 = QueueProvider.songs[1].md5;
           }
         }
         const idString = `${id}`;
-        if (
-          id !== 0 &&
-          !(LocalCache.get(md5) || (await MusicCache.get(idString)))
-        ) {
-          const { url } = (await apiSongUrl([id]))[0];
-          if (!url) {
+        if (id !== 0 && !(await MusicCache.get(idString))) {
+          const { url, md5 } = (await apiSongUrl([id]))[0];
+          if (!url || LocalCache.get(md5)) {
             return;
           }
           downloadMusic(url, idString, join(TMP_DIR.fsPath, idString), md5);

@@ -93,7 +93,6 @@ export class QueueItemTreeItem extends TreeItem {
     public readonly label: string,
     public readonly item: SongsItem,
     public readonly pid: number,
-    public readonly md5: string,
     public readonly collapsibleState: TreeItemCollapsibleState
   ) {
     super(label, collapsibleState);
