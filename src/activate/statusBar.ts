@@ -97,10 +97,12 @@ export async function initStatusBar(): Promise<void> {
       }
       const items: T[] = [];
       for (let i = 0; i < lyric.text.length; ++i) {
-        items.push({
-          label: lyric.text[i],
-          description: `[${lyric.time[i]}]`,
-        });
+        if (lyric.text[i] !== "Lyric") {
+          items.push({
+            label: lyric.text[i],
+            description: `[${lyric.time[i]}]`,
+          });
+        }
       }
       const pick = await input.showQuickPick<T>({
         title,
