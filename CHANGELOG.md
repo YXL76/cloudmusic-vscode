@@ -6,13 +6,30 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-## [4.0.1] - 2020-08-25
+## [4.1.0] - 2020-08-25
+
+### Added
+
+- Explore: `Popular artists`
+- `album_sub`, `album_sublist`
+
+### Changed
+
+- Fit `NeteaseCloudMusicApi` 3.39.0
+- Get playlist content faster
+- Lyric: will no show uncessary items
+
+### Fixed
+
+- Quickpick: some titles
+
+## [4.0.1] - 2020-08-23
 
 ### Fixed
 
 - The queue item will be unique
 
-## [4.0.0] - 2020-08-25
+## [4.0.0] - 2020-08-23
 
 ### Added
 
