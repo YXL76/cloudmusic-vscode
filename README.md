@@ -17,6 +17,7 @@
 ## Table of contents
 
 - [Features](#Features)
+- [Requirements](#Requirements)
 - [Usage](#Usage)
 - [Contributions](#Contributions)
   - [Settings](#Settings)
@@ -47,7 +48,11 @@
 - 媒体控制支持
 - 更多功能等待发现
 
-拓展产生的所有本地内容都位于`$HOME/.cloudmusic`文件夹中
+扩展产生的所有本地内容都位于`$HOME/.cloudmusic`文件夹中
+
+## Requirements
+
+一般来说，不需要进行任何额外的操作就可以正常使用。对于`Windows`用户，如果扩展无法正常初始化，请尝试安装[Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
 
 ## Usage
 

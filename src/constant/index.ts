@@ -63,6 +63,7 @@ export const ICON = {
   name: "$(link)",
   number: "$(symbol-number)",
   playlist: "$(list-unordered)",
+  rankinglist: "$(list-ordered)",
   save: "$(diff-added)",
   unsave: "$(diff-removed)",
   add: "$(add)",

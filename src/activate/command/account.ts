@@ -87,12 +87,12 @@ export function account(context: ExtensionContext): void {
               type: Type.explore,
             },
             {
-              label: `${ICON.playlist} ${i18n.word.userRankingList}`,
+              label: `${ICON.rankinglist} ${i18n.word.userRankingList}`,
               description: i18n.word.weekly,
               type: Type.userMusicRankingListWeekly,
             },
             {
-              label: `${ICON.playlist} ${i18n.word.userRankingList}`,
+              label: `${ICON.rankinglist} ${i18n.word.userRankingList}`,
               description: i18n.word.allTime,
               type: Type.userMusicRankingListAllTime,
             },
