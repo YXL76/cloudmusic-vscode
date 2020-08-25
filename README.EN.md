@@ -85,15 +85,18 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 
 - 专辑类
 
-|         module         |      function      | status |
-| :--------------------: | :----------------: | :----: |
-|         album          |      专辑内容      |   ✔️   |
-|  album_detail_dynamic  |    专辑动态信息    |   ❌   |
-|      album_newest      |      最新专辑      |   ✔️   |
-|       album_sub        | 收藏与取消收藏专辑 |        |
-|     album_sublist      |   已收藏专辑列表   |        |
-| digitalAlbum_ordering  |    购买数字专辑    |        |
-| digitalAlbum_purchased |    我的数字专辑    |        |
+|        module        |        function        | status |
+| :------------------: | :--------------------: | :----: |
+|        album         |        专辑内容        |   ✔️   |
+|      album_list      |   数字专辑-新碟上架    |        |
+|      album_new       |        全部新碟        |        |
+|      album_sub       |   收藏与取消收藏专辑   |        |
+|     album_detail     |      数字专辑详情      |        |
+|     album_newest     |        最新专辑        |   ✔️   |
+|    album_sublist     |     已收藏专辑列表     |        |
+|   album_list_style   |  数字专辑-语种风格馆   |        |
+| album_detail_dynamic |      专辑动态信息      |   ❌   |
+| album_songsaleboard  | 数字专辑&数字单曲-榜单 |        |
 
 - 歌手类
 
@@ -176,11 +179,11 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |      playlist_detail       |           歌单详情            |   ✔️   |
 |    playlist_desc_update    |         更新歌单描述          |   ❌   |
 |        playlist_hot        |         热门歌单分类          |        |
-|    playlist_name_update    |          更新歌单名           |        |
-|   playlist_order_update    |         编辑歌单顺序          |        |
+|    playlist_name_update    |          更新歌单名           |   ❌   |
+|   playlist_order_update    |         编辑歌单顺序          |   ❌   |
 |     playlist_subscribe     |      收藏与取消收藏歌单       |        |
 |    playlist_subscribers    |          歌单收藏者           |   ❌   |
-|    playlist_tags_update    |         更新歌单标签          |        |
+|    playlist_tags_update    |         更新歌单标签          |   ❌   |
 |      playlist_tracks       | 收藏单曲到歌单/从歌单删除歌曲 |   ✔️   |
 |      playlist_update       |           编辑歌单            |        |
 | playmode_intelligence_list |           智能播放            |   ✔️   |
@@ -229,6 +232,8 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |          captcha_verify          |       校验验证码       |   ❌   |
 |    cellphone_existence_check     | 检测手机号码是否已注册 |   ❌   |
 |           daily_signin           |          签到          |   ✔️   |
+|      digitalAlbum_ordering       |      购买数字专辑      |   ❌   |
+|      digitalAlbum_purchased      |      我的数字专辑      |        |
 |              event               |          动态          |        |
 |            event_del             |        删除动态        |        |
 |          event_forward           |        转发动态        |        |
@@ -280,38 +285,32 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 
 - 搜索类
 
-|      module       |    function    | status |
-| :---------------: | :------------: | :----: |
-|    cloudsearch    |      搜索      |        |
-|      search       |      搜索      |   ✔️   |
-|  search_default   | 默认搜索关键词 |   ❌   |
-|    search_hot     |    热门搜索    |   ❌   |
-| search_hot_detail |    热搜列表    |   ✔️   |
-| search_multimatch |   多类型搜索   |   ❌   |
-|  search_suggest   |    搜索建议    |   ✔️   |
+|       module       |    function    | status |
+| :----------------: | :------------: | :----: |
+| cloudsearch/search |      搜索      |   ✔️   |
+|   search_default   | 默认搜索关键词 |   ❌   |
+|     search_hot     |    热门搜索    |   ❌   |
+| search_hot_detail  |    热搜列表    |   ✔️   |
+| search_multimatch  |   多类型搜索   |   ❌   |
+|   search_suggest   |    搜索建议    |   ✔️   |
 
 - 杂项
 
-|        module        |        function        | status |
-| :------------------: | :--------------------: | :----: |
-|     album_detail     |      数字专辑详情      |        |
-|      album_list      |   数字专辑-新碟上架    |        |
-|   album_list_style   |  数字专辑-语种风格馆   |        |
-|      album_new       |        全部新碟        |        |
-| album_songsaleboard  | 数字专辑&数字单曲-榜单 |        |
-|        banner        |       首页轮播图       |   ❌   |
-|        batch         |      批量请求接口      |        |
-|      dj_banner       |      电台 banner       |   ❌   |
-| homepage_block_page  |  首页-发现 block page  |        |
-| homepage_dragon_ball | 首页-发现 dragon ball  |        |
-|      hot_topic       |        热门话题        |   ❌   |
-|  program_recommend   |        推荐节目        |        |
-|      top_album       |        新碟上架        |   ✔️   |
-|     top_artists      |        热门歌手        |        |
-|       top_list       |         排行榜         |   ❌   |
-|        top_mv        |       MV 排行榜        |   ❌   |
-|       top_song       |        新歌速递        |   ✔️   |
-|       toplist        |      所有榜单介绍      |   ✔️   |
-|    toplist_artist    |         歌手榜         |   ✔️   |
-|    toplist_detail    |    所有榜单内容摘要    |   ❌   |
-|        weblog        |        操作记录        |        |
+|        module        |       function        | status |
+| :------------------: | :-------------------: | :----: |
+|        banner        |      首页轮播图       |   ❌   |
+|        batch         |     批量请求接口      |        |
+|      dj_banner       |      电台 banner      |   ❌   |
+| homepage_block_page  | 首页-发现 block page  |        |
+| homepage_dragon_ball | 首页-发现 dragon ball |        |
+|      hot_topic       |       热门话题        |   ❌   |
+|  program_recommend   |       推荐节目        |        |
+|      top_album       |       新碟上架        |   ✔️   |
+|     top_artists      |       热门歌手        |   ✔️   |
+|       top_list       |        排行榜         |   ❌   |
+|        top_mv        |       MV 排行榜       |   ❌   |
+|       top_song       |       新歌速递        |   ✔️   |
+|       toplist        |     所有榜单介绍      |   ✔️   |
+|    toplist_artist    |        歌手榜         |   ✔️   |
+|    toplist_detail    |   所有榜单内容摘要    |   ❌   |
+|        weblog        |       操作记录        |        |

@@ -48,6 +48,7 @@ import {
   song_detail,
   song_url,
   top_album,
+  top_artists,
   top_song,
   toplist,
   toplist_artist,
@@ -618,9 +619,7 @@ export async function apiSearchSingle(
       return [];
     }
     const { songs } = body.result;
-    const ret = songs.map((song: AnotherSongItem) =>
-      solveAnotherSongItem(song)
-    );
+    const ret = songs.map((song: SongsItem) => solveSongItem(song));
     apiCache.set(key, ret);
     return ret;
   } catch {}
@@ -847,7 +846,7 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
       return value as SongsItem[];
     }
   }
-  let ret: SongsItem[] = [];
+  const ret: SongsItem[] = [];
   try {
     for (let i = 0; i < trackIds.length; i += 512) {
       const { status, body } = await song_detail(
@@ -857,11 +856,12 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
         continue;
       }
       const { songs, privileges } = body;
-      ret = ret.concat(
-        songs.filter((_: unknown, index: number) => privileges[index].st >= 0)
-      );
+      for (let i = 0; i < privileges.length; ++i) {
+        if (privileges[i].st >= 0) {
+          ret.push(solveSongItem(songs[i]));
+        }
+      }
     }
-    ret = ret.map((song: SongsItem) => solveSongItem(song));
     if (trackIds.length === 1) {
       apiCache.set(key, ret);
     }
@@ -912,6 +912,30 @@ export async function apiTopAlbum(): Promise<AlbumsItem[]> {
     }
     const { monthData } = body;
     const ret = monthData.map((item: AlbumsItem) => solveAlbumsItem(item));
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
+}
+
+export async function apiTopArtists(
+  limit: number,
+  offset: number
+): Promise<Artist[]> {
+  const key = `top_artists${limit}-${offset}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as Artist[];
+  }
+  try {
+    const { status, body } = await top_artists(
+      Object.assign({ limit, offset }, baseQuery)
+    );
+    if (status !== 200) {
+      return [];
+    }
+    const { artists } = body;
+    const ret = artists.map((artist: Artist) => solveArtist(artist));
     apiCache.set(key, ret);
     return ret;
   } catch {}

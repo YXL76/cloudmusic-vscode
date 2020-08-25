@@ -38,6 +38,7 @@ export {
   apiSongDetail,
   apiSongUrl,
   apiTopAlbum,
+  apiTopArtists,
   apiToplist,
   apiToplistArtist,
   apiTopSong,

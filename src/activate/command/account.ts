@@ -16,6 +16,7 @@ import {
   apiRecommendResource,
   apiRecommendSongs,
   apiTopAlbum,
+  apiTopArtists,
   apiTopSong,
   apiToplist,
   apiToplistArtist,
@@ -223,11 +224,12 @@ export function account(context: ExtensionContext): void {
 
       async function pickExplore(input: MultiStepInput) {
         enum Type {
-          topAlbum,
-          topSongZh,
-          topSongEn,
-          topSongJa,
-          topSongKr,
+          topAlbums,
+          topArtists,
+          topSongsZh,
+          topSongsEn,
+          topSongsJa,
+          topSongsKr,
           albumNewest,
         }
         interface T extends QuickPickItem {
@@ -240,24 +242,28 @@ export function account(context: ExtensionContext): void {
           totalSteps: 3,
           items: [
             {
-              label: `${ICON.album} ${i18n.word.topAlbum}`,
-              type: Type.topAlbum,
+              label: `${ICON.album} ${i18n.word.topAlbums}`,
+              type: Type.topAlbums,
+            },
+            {
+              label: `${ICON.artist} ${i18n.word.topArtists}`,
+              type: Type.topArtists,
             },
             {
               label: `${ICON.song} ${i18n.word.topSong} (${i18n.word.zh})`,
-              type: Type.topSongZh,
+              type: Type.topSongsZh,
             },
             {
               label: `${ICON.song} ${i18n.word.topSong} (${i18n.word.en})`,
-              type: Type.topSongEn,
+              type: Type.topSongsEn,
             },
             {
               label: `${ICON.song} ${i18n.word.topSong} (${i18n.word.ja})`,
-              type: Type.topSongJa,
+              type: Type.topSongsJa,
             },
             {
               label: `${ICON.song} ${i18n.word.topSong} (${i18n.word.kr})`,
-              type: Type.topSongKr,
+              type: Type.topSongsKr,
             },
             {
               label: `${ICON.album} ${i18n.word.albumNewest}`,
@@ -265,23 +271,27 @@ export function account(context: ExtensionContext): void {
             },
           ],
         });
-        if (pick.type === Type.topAlbum) {
+        if (pick.type === Type.topAlbums) {
           return async (input: MultiStepInput) =>
             pickAlbums(input, 3, await apiTopAlbum());
         }
-        if (pick.type === Type.topSongZh) {
+        if (pick.type === Type.topArtists) {
+          return async (input: MultiStepInput) =>
+            pickArtists(input, 3, await apiTopArtists(50, 0));
+        }
+        if (pick.type === Type.topSongsZh) {
           return async (input: MultiStepInput) =>
             pickSongs(input, 3, await apiTopSong(TopSong.zh));
         }
-        if (pick.type === Type.topSongEn) {
+        if (pick.type === Type.topSongsEn) {
           return async (input: MultiStepInput) =>
             pickSongs(input, 3, await apiTopSong(TopSong.en));
         }
-        if (pick.type === Type.topSongJa) {
+        if (pick.type === Type.topSongsJa) {
           return async (input: MultiStepInput) =>
             pickSongs(input, 3, await apiTopSong(TopSong.ja));
         }
-        if (pick.type === Type.topSongKr) {
+        if (pick.type === Type.topSongsKr) {
           return async (input: MultiStepInput) =>
             pickSongs(input, 3, await apiTopSong(TopSong.kr));
         }
