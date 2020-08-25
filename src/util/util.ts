@@ -14,6 +14,7 @@ import {
   MultiStepInput,
   MusicCache,
   apiAlbum,
+  apiAlbumSub,
   apiArtistAlbum,
   apiArtistSongs,
   apiArtists,
@@ -156,6 +157,7 @@ enum PickType {
   like,
   add,
   save,
+  unsave,
   similar,
   song,
   songs,
@@ -474,6 +476,14 @@ export async function pickAlbum(
       },
       ...pickArtistItems(artists),
       {
+        label: `${ICON.save} ${i18n.word.save}`,
+        type: PickType.save,
+      },
+      {
+        label: `${ICON.unsave} ${i18n.word.unsave}`,
+        type: PickType.unsave,
+      },
+      {
         label: splitLine(i18n.word.content),
       },
       ...pickSongItems(songs),
@@ -482,9 +492,15 @@ export async function pickAlbum(
   if (pick.type === PickType.artist) {
     return (input: MultiStepInput) =>
       pickArtist(input, step + 1, pick.id as number);
-  } else if (pick.type === PickType.song) {
+  }
+  if (pick.type === PickType.song) {
     return (input: MultiStepInput) =>
       pickSong(input, step + 1, pick.id as number);
+  }
+  if (pick.type === PickType.save) {
+    await apiAlbumSub(id, 1);
+  } else if (pick.type === PickType.unsave) {
+    await apiAlbumSub(id);
   }
   input.pop();
   return (input: MultiStepInput) => pickAlbum(input, step, id);

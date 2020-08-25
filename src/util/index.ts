@@ -3,6 +3,8 @@ export { LocalCache, LyricCache, MusicCache, apiCache } from "./cache";
 export {
   apiAlbum,
   apiAlbumNewest,
+  apiAlbumSub,
+  apiAlbumSublist,
   apiArtistAlbum,
   apiArtists,
   apiArtistSongs,

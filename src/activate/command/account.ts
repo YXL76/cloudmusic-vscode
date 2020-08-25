@@ -11,6 +11,7 @@ import {
   MultiStepInput,
   TopSong,
   apiAlbumNewest,
+  apiAlbumSublist,
   apiPersonalized,
   apiPersonalizedNewsong,
   apiRecommendResource,
@@ -48,6 +49,7 @@ export function account(context: ExtensionContext): void {
           explore,
           userMusicRankingListWeekly,
           userMusicRankingListAllTime,
+          save,
           signOut,
         }
         interface T extends QuickPickItem {
@@ -95,6 +97,10 @@ export function account(context: ExtensionContext): void {
               type: Type.userMusicRankingListAllTime,
             },
             {
+              label: `${ICON.save} ${i18n.word.saved}`,
+              type: Type.save,
+            },
+            {
               label: `$(sign-out) ${i18n.word.signOut}`,
               type: Type.signOut,
             },
@@ -116,6 +122,9 @@ export function account(context: ExtensionContext): void {
         }
         if (pick.type === Type.explore) {
           return (input: MultiStepInput) => pickExplore(input);
+        }
+        if (pick.type === Type.save) {
+          return (input: MultiStepInput) => pickSave(input);
         }
         if (pick.type === Type.fm) {
           commands.executeCommand("cloudmusic.personalFM");
@@ -298,6 +307,31 @@ export function account(context: ExtensionContext): void {
         if (pick.type === Type.albumNewest) {
           return async (input: MultiStepInput) =>
             pickAlbums(input, 3, await apiAlbumNewest());
+        }
+      }
+
+      async function pickSave(input: MultiStepInput) {
+        enum Type {
+          album,
+        }
+        interface T extends QuickPickItem {
+          type: Type;
+        }
+
+        const pick = await input.showQuickPick<T>({
+          title: i18n.word.explore,
+          step: 2,
+          totalSteps: 3,
+          items: [
+            {
+              label: `${ICON.album} ${i18n.word.album}`,
+              type: Type.album,
+            },
+          ],
+        });
+        if (pick.type === Type.album) {
+          return async (input: MultiStepInput) =>
+            pickAlbums(input, 3, await apiAlbumSublist());
         }
       }
     })

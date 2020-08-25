@@ -88,15 +88,15 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |        module        |        function        | status |
 | :------------------: | :--------------------: | :----: |
 |        album         |        专辑内容        |   ✔️   |
-|      album_list      |   数字专辑-新碟上架    |        |
-|      album_new       |        全部新碟        |        |
-|      album_sub       |   收藏与取消收藏专辑   |        |
-|     album_detail     |      数字专辑详情      |        |
+|      album_list      |   数字专辑-新碟上架    |   ❌   |
+|      album_new       |        全部新碟        |   ❌   |
+|      album_sub       |   收藏与取消收藏专辑   |   ✔️   |
+|     album_detail     |      数字专辑详情      |   ❌   |
 |     album_newest     |        最新专辑        |   ✔️   |
-|    album_sublist     |     已收藏专辑列表     |        |
-|   album_list_style   |  数字专辑-语种风格馆   |        |
+|    album_sublist     |     已收藏专辑列表     |   ✔️   |
+|   album_list_style   |  数字专辑-语种风格馆   |   ❌   |
 | album_detail_dynamic |      专辑动态信息      |   ❌   |
-| album_songsaleboard  | 数字专辑&数字单曲-榜单 |        |
+| album_songsaleboard  | 数字专辑&数字单曲-榜单 |   ❌   |
 
 - 歌手类
 

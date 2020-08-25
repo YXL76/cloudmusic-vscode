@@ -16,6 +16,8 @@ import { LyricCache, apiCache } from "../util";
 import {
   album,
   album_newest,
+  album_sub,
+  album_sublist,
   artist_album,
   artist_songs,
   artists,
@@ -190,6 +192,40 @@ export async function apiArtists(
   } catch {
     return { info: {} as Artist, songs: [] };
   }
+}
+
+export async function apiAlbumSub(id: number, t?: 1): Promise<boolean> {
+  try {
+    const { status } = await album_sub(Object.assign({ id, t }, baseQuery));
+    if (status !== 200) {
+      return false;
+    }
+    return true;
+  } catch {}
+  return false;
+}
+
+export async function apiAlbumSublist(): Promise<AlbumsItem[]> {
+  const limit = 100;
+  let offset = 0;
+  let ret: AlbumsItem[] = [];
+  try {
+    while (true) {
+      const { body, status } = await album_sublist(
+        Object.assign({ limit, offset }, baseQuery)
+      );
+      if (status !== 200) {
+        break;
+      }
+      const { data } = body;
+      ret = ret.concat(data.map((item: AlbumsItem) => solveAlbumsItem(item)));
+      if (data.length < limit) {
+        break;
+      }
+      offset += limit;
+    }
+  } catch {}
+  return ret;
 }
 
 export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {

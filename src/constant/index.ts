@@ -64,6 +64,7 @@ export const ICON = {
   number: "$(symbol-number)",
   playlist: "$(list-unordered)",
   save: "$(diff-added)",
+  unsave: "$(diff-removed)",
   add: "$(add)",
   search: "$(search)",
   similar: "$(library)",
