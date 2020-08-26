@@ -38,6 +38,7 @@ import {
   personalized_newsong,
   playlist_delete,
   playlist_detail,
+  playlist_subscribe,
   playlist_tracks,
   playmode_intelligence_list,
   recommend_resource,
@@ -549,6 +550,22 @@ export async function apiPlaylistDetail(id: number): Promise<number[]> {
   } catch {
     return [];
   }
+}
+
+export async function apiPlaylistSubscribe(
+  id: number,
+  t?: 1
+): Promise<boolean> {
+  try {
+    const { status } = await playlist_subscribe(
+      Object.assign({ id, t }, baseQuery)
+    );
+    if (status !== 200) {
+      return false;
+    }
+    return true;
+  } catch {}
+  return false;
 }
 
 export async function apiPlaylistTracks(

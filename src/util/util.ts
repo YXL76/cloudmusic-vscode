@@ -41,6 +41,7 @@ import {
   workspace,
 } from "vscode";
 import { i18n } from "../i18n";
+import { apiPlaylistSubscribe } from "./api";
 
 const { download } = NATIVE;
 
@@ -588,6 +589,10 @@ export async function pickPlaylist(
         type: PickType.similar,
       },
       {
+        label: `${ICON.save} ${i18n.word.save}`,
+        type: PickType.save,
+      },
+      {
         label: splitLine(i18n.word.content),
       },
       ...pickSongItems(songs),
@@ -598,8 +603,11 @@ export async function pickPlaylist(
       pickSong(input, step + 1, pick.id as number);
   }
   if (pick.type === PickType.similar) {
-    const items = await apiRelatedPlaylist(id);
-    return (input: MultiStepInput) => pickPlaylists(input, step + 1, items);
+    return async (input: MultiStepInput) =>
+      pickPlaylists(input, step + 1, await apiRelatedPlaylist(id));
+  }
+  if (pick.type === PickType.save) {
+    await apiPlaylistSubscribe(id, 1);
   }
   input.pop();
   return (input: MultiStepInput) => pickPlaylist(input, step, item);

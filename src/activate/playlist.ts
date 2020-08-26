@@ -1,6 +1,7 @@
 import {
   MultiStepInput,
   apiPlaylistDelete,
+  apiPlaylistSubscribe,
   apiPlaylistTracks,
   apiPlaymodeIntelligenceList,
   confirmation,
@@ -58,6 +59,19 @@ export async function initPlaylist(): Promise<void> {
       MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
           if (await apiPlaylistDelete(element.item.id)) {
+            PlaylistProvider.refresh({});
+          }
+        })
+      );
+    }
+  );
+
+  commands.registerCommand(
+    "cloudmusic.unsavePlaylist",
+    (element: PlaylistItemTreeItem) => {
+      MultiStepInput.run((input) =>
+        confirmation(input, 1, async () => {
+          if (await apiPlaylistSubscribe(element.item.id)) {
             PlaylistProvider.refresh({});
           }
         })

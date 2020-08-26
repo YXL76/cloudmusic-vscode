@@ -24,6 +24,7 @@ export {
   apiPersonalizedNewsong,
   apiPlaylistDelete,
   apiPlaylistDetail,
+  apiPlaylistSubscribe,
   apiPlaylistTracks,
   apiPlaymodeIntelligenceList,
   apiRecommendResource,

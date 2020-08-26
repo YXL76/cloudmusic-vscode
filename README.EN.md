@@ -142,9 +142,9 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 | comment_hotwall_list |      云村热评      |        |
 |     comment_like     | 点赞与取消点赞评论 |        |
 |    comment_music     |      歌曲评论      |        |
-|      comment_mv      |      MV 评论       |        |
+|      comment_mv      |      MV 评论       |   ❌   |
 |   comment_playlist   |      歌单评论      |        |
-|    comment_video     |      视频评论      |        |
+|    comment_video     |      视频评论      |   ❌   |
 
 - 电台类
 
@@ -169,7 +169,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |        dj_toplist        | 新晋电台榜/热门电台榜 |        |
 |     dj_toplist_hours     |  电台 24 小时主播榜   |        |
 |   dj_toplist_newcomer    |      电台新人榜       |        |
-|      dj_toplist_pay      |       付费精品        |        |
+|      dj_toplist_pay      |       付费精品        |   ❌   |
 |    dj_toplist_popular    |    电台最热主播榜     |        |
 
 - 歌单类
@@ -186,7 +186,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |        playlist_hot        |         热门歌单分类          |        |
 |    playlist_name_update    |          更新歌单名           |   ❌   |
 |   playlist_order_update    |         编辑歌单顺序          |   ❌   |
-|     playlist_subscribe     |      收藏与取消收藏歌单       |        |
+|     playlist_subscribe     |      收藏与取消收藏歌单       |   ✔️   |
 |    playlist_subscribers    |          歌单收藏者           |   ❌   |
 |    playlist_tags_update    |         更新歌单标签          |   ❌   |
 |      playlist_tracks       | 收藏单曲到歌单/从歌单删除歌曲 |   ✔️   |
@@ -238,7 +238,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |    cellphone_existence_check     | 检测手机号码是否已注册 |   ❌   |
 |           daily_signin           |          签到          |   ✔️   |
 |      digitalAlbum_ordering       |      购买数字专辑      |   ❌   |
-|      digitalAlbum_purchased      |      我的数字专辑      |        |
+|      digitalAlbum_purchased      |      我的数字专辑      |   ❌   |
 |              event               |          动态          |        |
 |            event_del             |        删除动态        |        |
 |          event_forward           |        转发动态        |        |
@@ -285,7 +285,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |           user_follows           |   TA 关注的人(关注)    |        |
 |          user_playlist           |        用户歌单        |   ✔️   |
 |           user_record            |        听歌排行        |   ✔️   |
-|          user_subcount           |        收藏计数        |        |
+|          user_subcount           |        收藏计数        |   ❌   |
 |           user_update            |      编辑用户信息      |   ❌   |
 
 - 搜索类
