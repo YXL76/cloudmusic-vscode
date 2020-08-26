@@ -4,6 +4,7 @@ import {
   apiPlaylistDelete,
   apiPlaylistSubscribe,
   apiPlaylistTracks,
+  apiPlaylistUpdate,
   apiPlaymodeIntelligenceList,
   confirmation,
   load,
@@ -116,6 +117,46 @@ export async function initPlaylist(): Promise<void> {
           }
         })
       );
+    }
+  );
+
+  commands.registerCommand(
+    "cloudmusic.editPlaylist",
+    (element: PlaylistItemTreeItem) => {
+      type State = {
+        name: string;
+        desc: string;
+      };
+      const state: State = {
+        name: element.item.name,
+        desc: element.item.description || "",
+      };
+
+      MultiStepInput.run((input) => inputName(input));
+
+      async function inputName(input: MultiStepInput) {
+        state.name = await input.showInputBox({
+          title: i18n.word.editPlaylist,
+          step: 1,
+          totalSteps: 2,
+          value: state.name,
+          prompt: i18n.sentence.hint.name,
+        });
+        return (input: MultiStepInput) => inputDesc(input);
+      }
+
+      async function inputDesc(input: MultiStepInput) {
+        state.desc = await input.showInputBox({
+          title: i18n.word.editPlaylist,
+          step: 2,
+          totalSteps: 2,
+          value: state.desc,
+          prompt: i18n.sentence.hint.desc,
+        });
+        if (await apiPlaylistUpdate(element.item.id, state.name, state.desc)) {
+          PlaylistProvider.refresh({});
+        }
+      }
     }
   );
 

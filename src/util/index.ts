@@ -27,6 +27,7 @@ export {
   apiPlaylistDetail,
   apiPlaylistSubscribe,
   apiPlaylistTracks,
+  apiPlaylistUpdate,
   apiPlaymodeIntelligenceList,
   apiRecommendResource,
   apiRecommendSongs,

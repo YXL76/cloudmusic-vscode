@@ -8,6 +8,7 @@
   "cloudmusic.commands.cloudmusic.deleteFromPlaylist.title": "从歌单中删除",
   "cloudmusic.commands.cloudmusic.deletePlaylist.title": "删除歌单",
   "cloudmusic.commands.cloudmusic.deleteSong.title": "删除",
+  "cloudmusic.commands.cloudmusic.editPlaylist.title": "编辑歌单",
   "cloudmusic.commands.cloudmusic.fmTrash.title": "垃圾箱",
   "cloudmusic.commands.cloudmusic.intelligence.title": "心动模式",
   "cloudmusic.commands.cloudmusic.like.title": "喜欢",

@@ -151,6 +151,10 @@
         "title": "%cloudmusic.commands.cloudmusic.deletePlaylist.title%"
       },
       {
+        "command": "cloudmusic.editPlaylist",
+        "title": "%cloudmusic.commands.cloudmusic.editPlaylist.title%"
+      },
+      {
         "command": "cloudmusic.unsavePlaylist",
         "title": "%cloudmusic.commands.cloudmusic.unsavePlaylist.title%"
       },
@@ -251,6 +255,10 @@
         },
         {
           "command": "cloudmusic.deletePlaylist",
+          "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem"
+        },
+        {
+          "command": "cloudmusic.editPlaylist",
           "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem"
         },
         {

@@ -41,6 +41,7 @@ import {
   playlist_detail,
   playlist_subscribe,
   playlist_tracks,
+  playlist_update,
   playmode_intelligence_list,
   recommend_resource,
   recommend_songs,
@@ -598,9 +599,25 @@ export async function apiPlaylistTracks(
       return false;
     }
     return true;
-  } catch {
-    return false;
-  }
+  } catch {}
+  return false;
+}
+
+export async function apiPlaylistUpdate(
+  id: number,
+  name: string,
+  desc: string
+): Promise<boolean> {
+  try {
+    const { status } = await playlist_update(
+      Object.assign({ id, name, desc }, baseQuery)
+    );
+    if (status !== 200) {
+      return false;
+    }
+    return true;
+  } catch {}
+  return false;
 }
 
 export async function apiPlaymodeIntelligenceList(
