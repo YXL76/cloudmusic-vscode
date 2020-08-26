@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "cloudmusic",
   "description": "Netease Music for VS Code",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "publisher": "YXL",
   "engines": {
     "vscode": "^1.46.0"
@@ -404,7 +404,7 @@
     "gulp-filter": "6.0.0",
     "gulp-sass": "4.1.0",
     "gulp-typescript": "6.0.0-alpha.1",
-    "mocha": "8.1.1",
+    "mocha": "8.1.2",
     "ts-loader": "8.0.3",
     "typescript": "4.0.2",
     "vscode-nls-dev": "3.3.2",

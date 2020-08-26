@@ -6,6 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [4.2.0] - 2020-08-26
+
+### Added
+
+- `artist_sub`, `artist_sublist`
+- `playlist_create`, `playlist_update`, `playlist_subscribe`
+
+### Fixed
+
+- I18n: fix some spelling mistakes
+
 ## [4.1.0] - 2020-08-25
 
 ### Added
