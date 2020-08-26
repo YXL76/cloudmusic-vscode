@@ -405,10 +405,14 @@ export async function pickArtist(
     return async (input: MultiStepInput) =>
       pickArtists(input, step + 1, await apiSimiArtist(id));
   }
+  if (pick.type === PickType.unsave) {
+    return (input: MultiStepInput) =>
+      confirmation(input, step + 1, async () => {
+        await apiArtistSub(id);
+      });
+  }
   if (pick.type === PickType.save) {
     await apiArtistSub(id, 1);
-  } else if (pick.type === PickType.unsave) {
-    await apiArtistSub(id);
   }
   input.pop();
   return (input: MultiStepInput) => pickArtist(input, step, id);
@@ -512,10 +516,14 @@ export async function pickAlbum(
     return (input: MultiStepInput) =>
       pickSong(input, step + 1, pick.id as number);
   }
+  if (pick.type === PickType.unsave) {
+    return (input: MultiStepInput) =>
+      confirmation(input, step + 1, async () => {
+        await apiAlbumSub(id);
+      });
+  }
   if (pick.type === PickType.save) {
     await apiAlbumSub(id, 1);
-  } else if (pick.type === PickType.unsave) {
-    await apiAlbumSub(id);
   }
   input.pop();
   return (input: MultiStepInput) => pickAlbum(input, step, id);
