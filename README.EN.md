@@ -179,7 +179,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |          likelist          |       喜欢的歌曲(无序)        |   ✔️   |
 |      playlist_catlist      |         全部歌单分类          |        |
 |   playlist_cover_update    |         歌单封面上传          |   ❌   |
-|      playlist_create       |           创建歌单            |        |
+|      playlist_create       |           创建歌单            |   ✔️   |
 |      playlist_delete       |           删除歌单            |   ✔️   |
 |      playlist_detail       |           歌单详情            |   ✔️   |
 |    playlist_desc_update    |         更新歌单描述          |   ❌   |
@@ -190,7 +190,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |    playlist_subscribers    |          歌单收藏者           |   ❌   |
 |    playlist_tags_update    |         更新歌单标签          |   ❌   |
 |      playlist_tracks       | 收藏单曲到歌单/从歌单删除歌曲 |   ✔️   |
-|      playlist_update       |           编辑歌单            |        |
+|      playlist_update       |           编辑歌单            |   ✔️   |
 | playmode_intelligence_list |           智能播放            |   ✔️   |
 |      related_playlist      |           相关歌单            |   ✔️   |
 |       simi_playlist        |           相似歌单            |   ✔️   |

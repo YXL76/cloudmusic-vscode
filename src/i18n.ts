@@ -38,7 +38,11 @@ export const i18n = {
         "sentence.hint.lyricDelay",
         "Please enter lyric delay"
       ),
-      password: localize("sentence.hint.password", "lease enter your password"),
+      name: localize("sentence.hint.name", "Please enter the name"),
+      password: localize(
+        "sentence.hint.password",
+        "Please enter your password"
+      ),
       search: localize("sentence.hint.search", "Please choose search type"),
       signIn: localize("sentence.hint.signIn", "Select the method to sign in"),
       volume: localize("sentence.hint.volume", "Please enter volume"),
@@ -93,6 +97,7 @@ export const i18n = {
     cleanCache: localize("word.cleanCache", "Clean cache"),
     confirmation: localize("word.confirmation", "Confirmation"),
     content: localize("word.content", "Content"),
+    createPlaylist: localize("word.createPlaylist", "Create playlist"),
     default: localize("word.default", "Default"),
     description: localize("word.description", "Description"),
     detail: localize("word.detail", "Detail"),
@@ -118,6 +123,8 @@ export const i18n = {
     playlist: localize("word.playlist", "Playlist"),
     previousPage: localize("word.previousPage", "Previous page"),
     previousTrack: localize("word.previousTrack", "Previous track"),
+    private: localize("word.private", "Private"),
+    public: localize("word.public", "Public"),
     recommendation: localize("word.recommendation", "Recommendation"),
     save: localize("word.save", "Save"),
     saved: localize("word.save", "Saved"),

@@ -1,5 +1,6 @@
 import {
   MultiStepInput,
+  apiPlaylistCreate,
   apiPlaylistDelete,
   apiPlaylistSubscribe,
   apiPlaylistTracks,
@@ -16,7 +17,8 @@ import {
   QueueItemTreeItem,
   QueueProvider,
 } from "../provider";
-import { commands, window } from "vscode";
+import { QuickPickItem, commands, window } from "vscode";
+import { i18n } from "../i18n";
 
 export async function initPlaylist(): Promise<void> {
   const userPlaylistProvider = PlaylistProvider.getUserInstance();
@@ -26,6 +28,57 @@ export async function initPlaylist(): Promise<void> {
 
   commands.registerCommand("cloudmusic.refreshPlaylist", () => {
     PlaylistProvider.refresh({ refresh: true });
+  });
+
+  commands.registerCommand("cloudmusic.createPlaylist", () => {
+    let name: undefined | string = undefined;
+
+    MultiStepInput.run((input) => inputName(input));
+
+    async function inputName(input: MultiStepInput) {
+      name = await input.showInputBox({
+        title: i18n.word.createPlaylist,
+        step: 1,
+        totalSteps: 2,
+        value: name,
+        prompt: i18n.sentence.hint.name,
+      });
+
+      return (input: MultiStepInput) => pickType(input);
+    }
+
+    async function pickType(input: MultiStepInput) {
+      enum Type {
+        public,
+        private,
+      }
+      interface T extends QuickPickItem {
+        type: Type;
+      }
+
+      const pick = await input.showQuickPick<T>({
+        title: i18n.word.createPlaylist,
+        step: 2,
+        totalSteps: 2,
+        items: [
+          {
+            label: i18n.word.public,
+            type: Type.public,
+          },
+          {
+            label: i18n.word.private,
+            type: Type.private,
+          },
+        ],
+      });
+
+      if (
+        name &&
+        (await apiPlaylistCreate(name, pick.type === Type.public ? 10 : 0))
+      ) {
+        PlaylistProvider.refresh({});
+      }
+    }
   });
 
   commands.registerCommand(

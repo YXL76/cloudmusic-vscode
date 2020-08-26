@@ -3,6 +3,7 @@
   "cloudmusic.commands.cloudmusic.addPlaylist.title": "添加",
   "cloudmusic.commands.cloudmusic.addSong.title": "添加",
   "cloudmusic.commands.cloudmusic.clearQueue.title": "清空",
+  "cloudmusic.commands.cloudmusic.createPlaylist.title": "創建歌單",
   "cloudmusic.commands.cloudmusic.dailyCheck.title": "簽到",
   "cloudmusic.commands.cloudmusic.deleteFromPlaylist.title": "從歌單中删除",
   "cloudmusic.commands.cloudmusic.deletePlaylist.title": "删除歌單",

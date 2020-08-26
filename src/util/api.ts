@@ -36,6 +36,7 @@ import {
   personal_fm,
   personalized,
   personalized_newsong,
+  playlist_create,
   playlist_delete,
   playlist_detail,
   playlist_subscribe,
@@ -516,6 +517,22 @@ export async function apiPersonalizedNewsong(): Promise<SongsItem[]> {
     return ret;
   } catch {}
   return [];
+}
+
+export async function apiPlaylistCreate(
+  name: string,
+  privacy: 0 | 10
+): Promise<boolean> {
+  try {
+    const { status } = await playlist_create(
+      Object.assign({ name, privacy }, baseQuery)
+    );
+    if (status !== 200) {
+      return false;
+    }
+    return true;
+  } catch {}
+  return false;
 }
 
 export async function apiPlaylistDelete(id: number): Promise<boolean> {

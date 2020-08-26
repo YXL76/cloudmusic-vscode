@@ -22,6 +22,7 @@ export {
   apiPersonalFm,
   apiPersonalized,
   apiPersonalizedNewsong,
+  apiPlaylistCreate,
   apiPlaylistDelete,
   apiPlaylistDetail,
   apiPlaylistSubscribe,
