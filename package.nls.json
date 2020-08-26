@@ -27,6 +27,7 @@
   "cloudmusic.commands.cloudmusic.signout.title": "Sign Out",
   "cloudmusic.commands.cloudmusic.songDetail.title": "Song detail",
   "cloudmusic.commands.cloudmusic.toggleButton.title": "Toggle button",
+  "cloudmusic.commands.cloudmusic.unsavePlaylist.title": "Unsave playlist",
   "cloudmusic.commands.cloudmusic.volume.title": "Volume",
   "cloudmusic.configuration.cloudmusic.account.autoCheck.markdownDescription": "Auto check when extension is active",
   "cloudmusic.configuration.cloudmusic.cache.localDirectory.markdownDescription": "Add local music. Note: after enable, the `MD5` of each file will be checked, and the initialization time will be increased. It is necessary to ensure that the local file is the same as the file on the server",

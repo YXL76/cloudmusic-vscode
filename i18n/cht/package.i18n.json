@@ -27,6 +27,7 @@
   "cloudmusic.commands.cloudmusic.signout.title": "登出",
   "cloudmusic.commands.cloudmusic.songDetail.title": "單曲詳情",
   "cloudmusic.commands.cloudmusic.toggleButton.title": "按鈕切換",
+  "cloudmusic.commands.cloudmusic.unsavePlaylist.title": "取消收藏歌單",
   "cloudmusic.commands.cloudmusic.volume.title": "音量",
   "cloudmusic.configuration.cloudmusic.account.autoCheck.markdownDescription": "自動簽到",
   "cloudmusic.configuration.cloudmusic.cache.localDirectory.markdownDescription": "添加本地音樂。注意：開啟後會檢查每個檔案的`MD5`，會新增初始化的時間，需要保證本地檔案與服務器上的檔案相同",
