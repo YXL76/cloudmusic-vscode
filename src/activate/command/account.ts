@@ -12,6 +12,7 @@ import {
   TopSong,
   apiAlbumNewest,
   apiAlbumSublist,
+  apiArtistSublist,
   apiPersonalized,
   apiPersonalizedNewsong,
   apiRecommendResource,
@@ -313,6 +314,7 @@ export function account(context: ExtensionContext): void {
       async function pickSave(input: MultiStepInput) {
         enum Type {
           album,
+          artist,
         }
         interface T extends QuickPickItem {
           type: Type;
@@ -327,11 +329,19 @@ export function account(context: ExtensionContext): void {
               label: `${ICON.album} ${i18n.word.album}`,
               type: Type.album,
             },
+            {
+              label: `${ICON.artist} ${i18n.word.artist}`,
+              type: Type.artist,
+            },
           ],
         });
         if (pick.type === Type.album) {
           return async (input: MultiStepInput) =>
             pickAlbums(input, 3, await apiAlbumSublist());
+        }
+        if (pick.type === Type.artist) {
+          return async (input: MultiStepInput) =>
+            pickArtists(input, 3, await apiArtistSublist());
         }
       }
     })

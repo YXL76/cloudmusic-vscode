@@ -8,6 +8,8 @@ export {
   apiArtistAlbum,
   apiArtists,
   apiArtistSongs,
+  apiArtistSub,
+  apiArtistSublist,
   apiCheckMusic,
   apiDailySignin,
   apiFmTrash,

@@ -20,6 +20,8 @@ import {
   album_sublist,
   artist_album,
   artist_songs,
+  artist_sub,
+  artist_sublist,
   artists,
   check_music,
   cloudsearch,
@@ -285,6 +287,40 @@ export async function apiArtistSongs(
     return ret;
   } catch {}
   return [];
+}
+
+export async function apiArtistSub(id: number, t?: 1): Promise<boolean> {
+  try {
+    const { status } = await artist_sub(Object.assign({ id, t }, baseQuery));
+    if (status !== 200) {
+      return false;
+    }
+    return true;
+  } catch {}
+  return false;
+}
+
+export async function apiArtistSublist(): Promise<Artist[]> {
+  const limit = 100;
+  let offset = 0;
+  let ret: Artist[] = [];
+  try {
+    while (true) {
+      const { body, status } = await artist_sublist(
+        Object.assign({ limit, offset }, baseQuery)
+      );
+      if (status !== 200) {
+        break;
+      }
+      const { data } = body;
+      ret = ret.concat(data.map((item: Artist) => solveArtist(item)));
+      if (data.length < limit) {
+        break;
+      }
+      offset += limit;
+    }
+  } catch {}
+  return ret;
 }
 
 export async function apiCheckMusic(id: number): Promise<boolean> {

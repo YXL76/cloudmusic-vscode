@@ -1500,7 +1500,7 @@ __metadata:
     lru-cache: ^6.0.0
     md5-file: ^5.0.0
     mocha: 8.1.1
-    node-abi: ^2.19.0
+    node-abi: ^2.19.1
     node-cache: ^5.1.2
     ts-loader: 8.0.3
     typescript: 4.0.2
@@ -4868,12 +4868,12 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"node-abi@npm:^2.19.0":
-  version: 2.19.0
-  resolution: "node-abi@npm:2.19.0"
+"node-abi@npm:^2.19.1":
+  version: 2.19.1
+  resolution: "node-abi@npm:2.19.1"
   dependencies:
     semver: ^5.4.1
-  checksum: 12096ef611ecdd2e78b2c05dae6ad1d4a1f9047ee155cf782d57d8cc83aa59cda01c154e67c4be9bc09c0e21cc819d4afc99e647ba36978621b8a51339233783
+  checksum: 3dc98098e2fb61068e52f751e6d07d8bba6d042dc1e7986ff182e71c7aba2a86466135e603941ff33525e85a57ee93f44b4ed5498637261ed11000639e2720e7
   languageName: node
   linkType: hard
 

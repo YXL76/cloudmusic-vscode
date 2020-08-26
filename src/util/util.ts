@@ -17,6 +17,7 @@ import {
   apiAlbumSub,
   apiArtistAlbum,
   apiArtistSongs,
+  apiArtistSub,
   apiArtists,
   apiLike,
   apiPlaylistDetail,
@@ -375,6 +376,14 @@ export async function pickArtist(
         type: PickType.similar,
       },
       {
+        label: `${ICON.save} ${i18n.word.save}`,
+        type: PickType.save,
+      },
+      {
+        label: `${ICON.unsave} ${i18n.word.unsave}`,
+        type: PickType.unsave,
+      },
+      {
         label: splitLine(i18n.word.hotSongs),
       },
       ...pickSongItems(songs),
@@ -394,6 +403,11 @@ export async function pickArtist(
   if (pick.type === PickType.similar) {
     return async (input: MultiStepInput) =>
       pickArtists(input, step + 1, await apiSimiArtist(id));
+  }
+  if (pick.type === PickType.save) {
+    await apiArtistSub(id, 1);
+  } else if (pick.type === PickType.unsave) {
+    await apiArtistSub(id);
   }
   input.pop();
   return (input: MultiStepInput) => pickArtist(input, step, id);

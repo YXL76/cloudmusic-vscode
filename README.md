@@ -112,8 +112,8 @@
 |   artist_list   |      歌手分类      |        |
 |    artist_mv    |    歌手相关 MV     |   ❌   |
 |  artist_songs   |    歌手所有歌曲    |   ✔️   |
-|   artist_sub    | 收藏与取消收藏歌手 |        |
-| artist_sublist  |    关注歌手列表    |        |
+|   artist_sub    | 收藏与取消收藏歌手 |   ✔️   |
+| artist_sublist  |    关注歌手列表    |   ✔️   |
 | artist_top_song | 歌手热门 50 首歌曲 |   ❌   |
 |     artists     |      歌手单曲      |   ✔️   |
 |   simi_artist   |      相似歌手      |   ✔️   |
