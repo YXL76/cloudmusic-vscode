@@ -25,6 +25,7 @@
 - [Known Issues](#Known-Issues)
 - [Release Notes](#Release-Notes)
 - [API](#API)
+- [Acknowledgements](#Acknowledgements)
 
 ## Features
 
@@ -319,3 +320,17 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |    toplist_artist    |        歌手榜         |   ✔️   |
 |    toplist_detail    |   所有榜单内容摘要    |   ❌   |
 |        weblog        |       操作记录        |        |
+
+## Acknowledgements
+
+Inspired by:
+
+- [swdc-vscode-musictime](https://github.com/swdotcom/swdc-vscode-musictime)
+- [vsc-netease-music](https://github.com/nondanee/vsc-netease-music)
+- [netease-music-tui](https://github.com/betta-cyber/netease-music-tui)
+
+Thanks for these awesome projects:
+
+- [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)
+- [neon](https://github.com/neon-bindings/neon)
+- [rodio](https://github.com/RustAudio/rodio)

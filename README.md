@@ -25,6 +25,7 @@
 - [Known Issues](#Known-Issues)
 - [Release Notes](#Release-Notes)
 - [API](#API)
+- [Acknowledgements](#Acknowledgements)
 
 ## Features
 
@@ -319,3 +320,17 @@
 |    toplist_artist    |        歌手榜         |   ✔️   |
 |    toplist_detail    |   所有榜单内容摘要    |   ❌   |
 |        weblog        |       操作记录        |        |
+
+## Acknowledgements
+
+受到以下项目的启发：
+
+- [swdc-vscode-musictime](https://github.com/swdotcom/swdc-vscode-musictime)
+- [vsc-netease-music](https://github.com/nondanee/vsc-netease-music)
+- [netease-music-tui](https://github.com/betta-cyber/netease-music-tui)
+
+感谢这些超棒的项目：
+
+- [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)
+- [neon](https://github.com/neon-bindings/neon)
+- [rodio](https://github.com/RustAudio/rodio)
