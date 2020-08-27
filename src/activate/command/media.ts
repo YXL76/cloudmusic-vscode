@@ -68,8 +68,7 @@ export function media(context: ExtensionContext): void {
         if (/^\d+$/.exec(level)) {
           player.volume(parseInt(level));
         }
-        input.pop();
-        return (input: MultiStepInput) => inputLevel(input);
+        return input.pop();
       }
     })
   );

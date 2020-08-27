@@ -288,8 +288,7 @@ export async function pickSong(
     const element = songsItem2TreeItem(0, [item])[0];
     commands.executeCommand("cloudmusic.addSong", element);
   }
-  input.pop();
-  return (input: MultiStepInput) => pickSong(input, step, id);
+  return input.pop() as InputStep;
 }
 
 async function pickSimiSong(
@@ -414,8 +413,7 @@ export async function pickArtist(
   if (pick.type === PickType.save) {
     await apiArtistSub(id, 1);
   }
-  input.pop();
-  return (input: MultiStepInput) => pickArtist(input, step, id);
+  return input.pop() as InputStep;
 
   async function pickAllSongs(
     input: MultiStepInput,
@@ -454,7 +452,6 @@ export async function pickArtist(
       return (input: MultiStepInput) =>
         pickAllSongs(input, step, id, offset + limit);
     }
-    input.pop();
     return (input: MultiStepInput) => pickSong(input, step + 1, pick.id);
   }
 }
@@ -525,8 +522,7 @@ export async function pickAlbum(
   if (pick.type === PickType.save) {
     await apiAlbumSub(id, 1);
   }
-  input.pop();
-  return (input: MultiStepInput) => pickAlbum(input, step, id);
+  return input.pop() as InputStep;
 }
 
 export async function pickAlbums(
@@ -617,8 +613,7 @@ export async function pickPlaylist(
   if (pick.type === PickType.save) {
     await apiPlaylistSubscribe(id, 1);
   }
-  input.pop();
-  return (input: MultiStepInput) => pickPlaylist(input, step, item);
+  return input.pop() as InputStep;
 }
 
 async function pickSimiPlaylists(
@@ -673,7 +668,7 @@ export async function pickAddToPlaylist(
   input: MultiStepInput,
   step: number,
   id: number
-): Promise<InputStep> {
+): Promise<InputStep | undefined> {
   const lists = await AccountManager.userPlaylist();
   const pick = await input.showQuickPick({
     title: i18n.word.saveToPlaylist,
@@ -690,5 +685,5 @@ export async function pickAddToPlaylist(
     });
   }
   input.pop();
-  return (input: MultiStepInput) => pickAddToPlaylist(input, step, id);
+  return input.pop();
 }

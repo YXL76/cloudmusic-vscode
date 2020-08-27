@@ -85,10 +85,8 @@ export async function initStatusBar(): Promise<void> {
       });
       if (/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay)) {
         lyric.delay = parseFloat(delay);
-      } else {
-        input.pop();
-        return (input: MultiStepInput) => inputDelay(input);
       }
+      return input.pop();
     }
 
     async function pickLyric(input: MultiStepInput) {

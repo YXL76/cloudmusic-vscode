@@ -114,8 +114,7 @@ export class ButtonManager {
           })
         )
       );
-      input.pop();
-      return (input: MultiStepInput) => pickButton(input);
+      return input.pop();
     };
 
     MultiStepInput.run((input) => pickButton(input));

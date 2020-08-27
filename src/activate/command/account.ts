@@ -109,8 +109,7 @@ export function account(context: ExtensionContext): void {
         });
 
         if (pick.type === Type.user) {
-          input.pop();
-          return (input: MultiStepInput) => pickType(input);
+          return input.pop();
         }
         if (pick.type === Type.search) {
           return (input: MultiStepInput) => inputKeyword(input, 1);
