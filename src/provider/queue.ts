@@ -19,18 +19,18 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   readonly onDidChangeTreeData: Event<QueueItemTreeItem | void> = this
     ._onDidChangeTreeData.event;
 
-  private static action?: () => Promise<void>;
   static songs: QueueItemTreeItem[] = [];
 
   static getInstance(): QueueProvider {
     return this.instance || (this.instance = new QueueProvider());
   }
 
-  static refresh(action: () => Promise<void>): void {
+  static async refresh(action: () => Promise<void>): Promise<void> {
     if (!lock.queue) {
       lock.queue = true;
-      QueueProvider.action = action;
+      await action();
       this.instance._onDidChangeTreeData.fire();
+      lock.queue = false;
     }
   }
 
@@ -39,12 +39,6 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   }
 
   async getChildren(): Promise<QueueItemTreeItem[]> {
-    const localAction = QueueProvider.action;
-    QueueProvider.action = undefined;
-    if (localAction) {
-      await localAction();
-    }
-    lock.queue = false;
     return QueueProvider.songs;
   }
 
