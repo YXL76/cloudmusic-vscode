@@ -1,2 +1,2 @@
-export { AccountManager } from "./accountManager";
-export { ButtonManager } from "./buttonManager";
+export { AccountManager } from "./account";
+export { ButtonManager } from "./button";
