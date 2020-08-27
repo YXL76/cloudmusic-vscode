@@ -159,6 +159,11 @@
         "title": "%cloudmusic.commands.cloudmusic.unsavePlaylist.title%"
       },
       {
+        "command": "cloudmusic.sortQueue",
+        "title": "%cloudmusic.commands.cloudmusic.sortQueue.title%",
+        "icon": "$(ungroup-by-ref-type)"
+      },
+      {
         "command": "cloudmusic.clearQueue",
         "title": "%cloudmusic.commands.cloudmusic.clearQueue.title%",
         "icon": "$(clear-all)"
@@ -229,6 +234,11 @@
         {
           "command": "cloudmusic.createPlaylist",
           "when": "view == userPlaylist",
+          "group": "navigation"
+        },
+        {
+          "command": "cloudmusic.sortQueue",
+          "when": "view == queue",
           "group": "navigation"
         },
         {

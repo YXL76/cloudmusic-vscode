@@ -29,6 +29,7 @@
   "cloudmusic.commands.cloudmusic.signin.title": "Sign in",
   "cloudmusic.commands.cloudmusic.signout.title": "Sign Out",
   "cloudmusic.commands.cloudmusic.songDetail.title": "Song detail",
+  "cloudmusic.commands.cloudmusic.sortQueue.title": "Sort",
   "cloudmusic.commands.cloudmusic.toggleButton.title": "Toggle button",
   "cloudmusic.commands.cloudmusic.unsavePlaylist.title": "Unsave playlist",
   "cloudmusic.commands.cloudmusic.volume.title": "Volume",

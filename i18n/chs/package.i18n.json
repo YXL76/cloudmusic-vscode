@@ -29,6 +29,7 @@
   "cloudmusic.commands.cloudmusic.signin.title": "登录",
   "cloudmusic.commands.cloudmusic.signout.title": "登出",
   "cloudmusic.commands.cloudmusic.songDetail.title": "单曲详情",
+  "cloudmusic.commands.cloudmusic.sortQueue.title": "排序",
   "cloudmusic.commands.cloudmusic.toggleButton.title": "按钮切换",
   "cloudmusic.commands.cloudmusic.unsavePlaylist.title": "取消收藏歌单",
   "cloudmusic.commands.cloudmusic.volume.title": "音量",
