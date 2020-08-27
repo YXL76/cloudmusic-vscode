@@ -16,6 +16,7 @@
   "cloudmusic.commands.cloudmusic.next.title": "Next",
   "cloudmusic.commands.cloudmusic.personalFM.title": "Personal FM",
   "cloudmusic.commands.cloudmusic.play.title": "Play",
+  "cloudmusic.commands.cloudmusic.playNext.title": "Play next",
   "cloudmusic.commands.cloudmusic.playPlaylist.title": "Play",
   "cloudmusic.commands.cloudmusic.playSong.title": "Play",
   "cloudmusic.commands.cloudmusic.playSongWithPlaylist.title": "Play",
@@ -43,8 +44,8 @@
   "cloudmusic.configuration.cloudmusic.music.realIP.markdownDescription": "Refer to [Doc](https://binaryify.github.io/NeteaseCloudMusicApi/#/)",
   "cloudmusic.configuration.cloudmusic.player.defaultLibrary.markdownDescription": "Choose default playback library",
   "cloudmusic.configuration.cloudmusic.player.mediaControl.markdownDescription": "Enable media control",
-  "cloudmusic.views.cloudmusic.favoritePlaylist.name": "favorite playlist",
-  "cloudmusic.views.cloudmusic.queue.name": "queue",
-  "cloudmusic.views.cloudmusic.userPlaylist.name": "user playlist",
-  "cloudmusic.viewsContainers.activitybar.cloudmusic.title": "cloudmusic"
+  "cloudmusic.views.cloudmusic.favoritePlaylist.name": "Favorite playlist",
+  "cloudmusic.views.cloudmusic.queue.name": "Qqueue",
+  "cloudmusic.views.cloudmusic.userPlaylist.name": "User playlist",
+  "cloudmusic.viewsContainers.activitybar.cloudmusic.title": "Cloudmusic"
 }

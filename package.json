@@ -194,6 +194,11 @@
         "icon": "$(remove)"
       },
       {
+        "command": "cloudmusic.playNext",
+        "title": "%cloudmusic.commands.cloudmusic.playNext.title%",
+        "icon": "$(arrow-up)"
+      },
+      {
         "command": "cloudmusic.deleteFromPlaylist",
         "title": "%cloudmusic.commands.cloudmusic.deleteFromPlaylist.title%"
       },
@@ -287,6 +292,11 @@
         },
         {
           "command": "cloudmusic.deleteSong",
+          "when": "view == queue && viewItem == QueueItemTreeItem",
+          "group": "inline"
+        },
+        {
+          "command": "cloudmusic.playNext",
           "when": "view == queue && viewItem == QueueItemTreeItem",
           "group": "inline"
         },
