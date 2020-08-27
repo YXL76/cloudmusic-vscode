@@ -49,18 +49,17 @@ export function downloadMusic(
   url: string,
   filename: string,
   path: Uri,
-  md5: string
+  md5: string,
+  cache: boolean
 ): void {
   try {
     download(url, path.fsPath, (_, res) => {
-      if (res) {
-        if (!PersonalFm.get()) {
-          MusicCache.put(
-            filename,
-            path,
-            `md5-${Buffer.from(md5, "hex").toString("base64")}`
-          );
-        }
+      if (res && cache) {
+        MusicCache.put(
+          filename,
+          path,
+          `md5-${Buffer.from(md5, "hex").toString("base64")}`
+        );
       } else {
         window.showErrorMessage(i18n.sentence.error.network);
       }
@@ -118,7 +117,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
         }
         player.load(tmpFileUri.fsPath, pid, item);
       } catch {
-        downloadMusic(url, idString, tmpFileUri, md5);
+        downloadMusic(url, idString, tmpFileUri, md5, !PersonalFm.get());
         let count = 0;
         const timer = setInterval(async () => {
           if ((await workspace.fs.stat(tmpFileUri)).size > 256) {

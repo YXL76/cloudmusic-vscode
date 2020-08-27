@@ -72,7 +72,13 @@ class DeleteTmp {
           if (!url || LocalCache.get(md5)) {
             return;
           }
-          downloadMusic(url, idString, Uri.joinPath(TMP_DIR, idString), md5);
+          downloadMusic(
+            url,
+            idString,
+            Uri.joinPath(TMP_DIR, idString),
+            md5,
+            !PersonalFm.get()
+          );
         }
       }
     }
