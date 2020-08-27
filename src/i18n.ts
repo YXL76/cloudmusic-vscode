@@ -146,7 +146,7 @@ export const i18n = {
     topArtists: localize("word.topArtists", "Popular artists"),
     toplist: localize("word.toplist", "Toplist"),
     topSong: localize("word.topSong", "New song express"),
-    trackCount: localize("word.trackCount", "trackCount"),
+    trackCount: localize("word.trackCount", "Track count"),
     trash: localize("word.trash", "Trash"),
     unlike: localize("word.unlike", "Unlike"),
     unsave: localize("word.unsave", "Unsave"),
