@@ -3,6 +3,7 @@ import {
   AlbumsItem,
   Artist,
   ICON,
+  MUSIC_QUALITY,
   NATIVE,
   PlaylistItem,
   SongsItem,
@@ -89,6 +90,9 @@ export function stop(): void {
   ButtonManager.buttonLyric();
 }
 
+const minSize = MUSIC_QUALITY === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
+const retryTimes = MUSIC_QUALITY === 999000 ? 25 : 10;
+
 export async function load(element: QueueItemTreeItem): Promise<void> {
   lock.playerLoad.set(true);
   const { pid, item } = element;
@@ -111,25 +115,26 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
       player.load(path, pid, item);
     } else {
       const tmpFileUri = Uri.joinPath(TMP_DIR, idString);
-      try {
-        if ((await workspace.fs.stat(tmpFileUri)).size < 256) {
-          throw Error;
-        }
-        player.load(tmpFileUri.fsPath, pid, item);
-      } catch {
-        downloadMusic(url, idString, tmpFileUri, md5, !PersonalFm.get());
-        let count = 0;
-        const timer = setInterval(async () => {
-          if ((await workspace.fs.stat(tmpFileUri)).size > 256) {
-            clearInterval(timer);
-            player.load(tmpFileUri.fsPath, pid, item);
-          } else if (++count > 12) {
+      downloadMusic(url, idString, tmpFileUri, md5, !PersonalFm.get());
+      let count = 0;
+      const timer = setInterval(() => {
+        workspace.fs.stat(tmpFileUri).then(
+          ({ size }) => {
+            if (size > minSize) {
+              clearInterval(timer);
+              player.load(tmpFileUri.fsPath, pid, item);
+            } else if (++count > retryTimes) {
+              clearInterval(timer);
+              lock.playerLoad.set(false);
+              commands.executeCommand("cloudmusic.next");
+            }
+          },
+          () => {
             clearInterval(timer);
             lock.playerLoad.set(false);
-            commands.executeCommand("cloudmusic.next");
           }
-        }, 100);
-      }
+        );
+      }, 200);
     }
   }
 }

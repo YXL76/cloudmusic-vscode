@@ -36,7 +36,9 @@ export class MusicCache {
 
   static async init(): Promise<void> {
     try {
-      const res: { key: LruCacheValue } = cacache.ls(MUSIC_CACHE_DIR.fsPath);
+      const res: { key: LruCacheValue } = await cacache.ls(
+        MUSIC_CACHE_DIR.fsPath
+      );
       for (const item in res) {
         const { key, integrity, size } = res[item];
         this.lruCache.set(key, { integrity, size });
