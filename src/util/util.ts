@@ -55,12 +55,14 @@ export function downloadMusic(
 ): void {
   try {
     download(url, path.fsPath, (_, res) => {
-      if (res && cache) {
-        MusicCache.put(
-          filename,
-          path,
-          `md5-${Buffer.from(md5, "hex").toString("base64")}`
-        );
+      if (res) {
+        if (cache) {
+          MusicCache.put(
+            filename,
+            path,
+            `md5-${Buffer.from(md5, "hex").toString("base64")}`
+          );
+        }
       } else {
         window.showErrorMessage(i18n.sentence.error.network);
       }
