@@ -65,7 +65,7 @@ export function media(context: ExtensionContext): void {
           value: `${player.level}`,
           prompt: `${i18n.sentence.hint.volume} (0~100)`,
         });
-        if (/^\d+$/.exec(level)) {
+        if (/^[1-9]\d$|^\d$|^100$/.exec(level)) {
           player.volume(parseInt(level));
         }
         return input.pop();
