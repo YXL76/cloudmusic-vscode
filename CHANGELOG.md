@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [4.2.2] - 2020-08-27
+
+### Fixed
+
+- No error is displayed when musics are not cached
+
 ## [4.2.1] - 2020-08-27
 
 ### Fixed
