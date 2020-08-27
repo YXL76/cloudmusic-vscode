@@ -21,6 +21,7 @@ import {
   apiArtists,
   apiLike,
   apiPlaylistDetail,
+  apiPlaylistSubscribe,
   apiPlaylistTracks,
   apiRelatedPlaylist,
   apiSimiArtist,
@@ -41,21 +42,24 @@ import {
   workspace,
 } from "vscode";
 import { i18n } from "../i18n";
-import { apiPlaylistSubscribe } from "./api";
 
 const { download } = NATIVE;
 
 export function downloadMusic(
   url: string,
   filename: string,
-  path: string,
+  path: Uri,
   md5: string
 ): void {
   try {
-    download(url, path, (_, res) => {
+    download(url, path.fsPath, (_, res) => {
       if (res) {
         if (!PersonalFm.get()) {
-          MusicCache.put(filename, path, md5);
+          MusicCache.put(
+            filename,
+            path,
+            `md5-${Buffer.from(md5, "hex").toString("base64")}`
+          );
         }
       } else {
         window.showErrorMessage(i18n.sentence.error.network);
@@ -114,7 +118,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
         }
         player.load(tmpFileUri.fsPath, pid, item);
       } catch {
-        downloadMusic(url, idString, tmpFileUri.fsPath, md5);
+        downloadMusic(url, idString, tmpFileUri, md5);
         let count = 0;
         const timer = setInterval(async () => {
           if ((await workspace.fs.stat(tmpFileUri)).size > 256) {

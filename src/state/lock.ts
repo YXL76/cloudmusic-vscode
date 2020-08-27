@@ -11,7 +11,6 @@ import { Uri, workspace } from "vscode";
 import { QueueProvider } from "../provider";
 import { TMP_DIR } from "../constant";
 import { i18n } from "../i18n";
-import { join } from "path";
 
 class PlayerLoad {
   private static state = false;
@@ -73,7 +72,7 @@ class DeleteTmp {
           if (!url || LocalCache.get(md5)) {
             return;
           }
-          downloadMusic(url, idString, join(TMP_DIR.fsPath, idString), md5);
+          downloadMusic(url, idString, Uri.joinPath(TMP_DIR, idString), md5);
         }
       }
     }
