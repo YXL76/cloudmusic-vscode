@@ -1,3 +1,7 @@
+import * as LRU from "lru-cache";
+import * as NodeCache from "node-cache";
+import * as cacache from "cacache";
+import * as md5File from "md5-file";
 import { FileType, Uri, workspace } from "vscode";
 import {
   LOCAL_FILE_DIR,
@@ -7,10 +11,6 @@ import {
   MUSIC_CACHE_DIR,
   MUSIC_CACHE_SIZE,
 } from "../constant";
-import cacache = require("cacache");
-import LRU = require("lru-cache");
-import md5File = require("md5-file");
-import NodeCache = require("node-cache");
 
 export const apiCache = new NodeCache({
   stdTTL: 300,

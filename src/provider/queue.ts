@@ -1,3 +1,4 @@
+import * as dedupe from "dedupe";
 import {
   Event,
   EventEmitter,
@@ -9,7 +10,6 @@ import {
 import { SongsItem } from "../constant";
 import { lock } from "../state";
 import { unsortInplace } from "array-unsort";
-import dedupe = require("dedupe");
 
 export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   private static instance: QueueProvider;

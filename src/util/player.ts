@@ -23,7 +23,7 @@ class NoPlayer implements Player {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async load(_a: string, _b: number, _c: SongsItem): Promise<void> {
+  load(_a: string, _b: number, _c: SongsItem): void {
     //
   }
 
@@ -96,8 +96,8 @@ class AudioPlayer implements Player {
     this.player.stop();
   }
 
-  async load(url: string, pid: number, item: SongsItem): Promise<void> {
-    await lock.deleteTmp.set(false);
+  load(url: string, pid: number, item: SongsItem): void {
+    lock.deleteTmp.set(false);
     if (this.player.load(url)) {
       this.player.setVolume(this.level);
       Playing.set(true);
