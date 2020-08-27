@@ -6,6 +6,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [4.2.1] - 2020-08-27
+
+### Fixed
+
+- Cache
+- Player: increase the minimum load size
+- Queue: cannot switch songs when not in focus
+
 ## [4.2.0] - 2020-08-26
 
 ### Added
