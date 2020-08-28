@@ -46,7 +46,7 @@
   "cloudmusic.configuration.cloudmusic.player.defaultLibrary.markdownDescription": "Choose default playback library",
   "cloudmusic.configuration.cloudmusic.player.mediaControl.markdownDescription": "Enable media control",
   "cloudmusic.views.cloudmusic.favoritePlaylist.name": "Favorite playlist",
-  "cloudmusic.views.cloudmusic.queue.name": "Qqueue",
+  "cloudmusic.views.cloudmusic.queue.name": "Queue",
   "cloudmusic.views.cloudmusic.userPlaylist.name": "User playlist",
   "cloudmusic.viewsContainers.activitybar.cloudmusic.title": "Cloudmusic"
 }
