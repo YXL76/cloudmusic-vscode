@@ -6,7 +6,19 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-## [4.2.2] - 2020-08-27
+## [4.3.0] - 2020-08-28
+
+### Added
+
+- Command: `cloudmusic.playNext`, `cloudmusic.sortQueue`
+- Api: `top_playlist`, `top_playlist_highquality`, `artist_list`
+- When there is only one song in the queue, it is played in a loop
+
+### Changed
+
+- The volume input is only valid from 0 to 100
+
+## [4.2.2] - 2020-08-28
 
 ### Fixed
 
