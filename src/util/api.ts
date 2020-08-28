@@ -19,6 +19,7 @@ import {
   album_sub,
   album_sublist,
   artist_album,
+  artist_list,
   artist_songs,
   artist_sub,
   artist_sublist,
@@ -268,6 +269,77 @@ export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
     apiCache.set(key, ret);
   }
   return ret;
+}
+
+export enum ArtistType {
+  male = 1,
+  female = 2,
+  band = 3,
+}
+
+export enum ArtistArea {
+  all = -1,
+  zh = 7,
+  en = 96,
+  ja = 8,
+  kr = 16,
+  other = 0,
+}
+
+export type ArtistInitial =
+  | "A"
+  | "B"
+  | "C"
+  | "D"
+  | "E"
+  | "F"
+  | "G"
+  | "H"
+  | "I"
+  | "J"
+  | "K"
+  | "L"
+  | "M"
+  | "N"
+  | "O"
+  | "P"
+  | "Q"
+  | "R"
+  | "S"
+  | "T"
+  | "U"
+  | "V"
+  | "W"
+  | "X"
+  | "Y"
+  | "Z"
+  | undefined;
+
+export async function apiArtistList(
+  type: ArtistType,
+  area: ArtistArea,
+  initial: ArtistInitial,
+  limit: number,
+  offset: number
+): Promise<Artist[]> {
+  const key = `artist_album${type}-${area}-${initial}-${limit}-${offset}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as Artist[];
+  }
+  try {
+    const { status, body } = await artist_list(
+      Object.assign({ type, area, initial, limit, offset }, baseQuery)
+    );
+    if (status !== 200) {
+      return [];
+    }
+    const { artists } = body;
+    const ret = artists.map((artist: Artist) => solveArtist(artist));
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
 }
 
 export async function apiArtistSongs(
