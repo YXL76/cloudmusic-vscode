@@ -36,6 +36,7 @@ import {
   personal_fm,
   personalized,
   personalized_newsong,
+  playlist_catlist,
   playlist_create,
   playlist_delete,
   playlist_detail,
@@ -56,6 +57,8 @@ import {
   song_url,
   top_album,
   top_artists,
+  top_playlist,
+  top_playlist_highquality,
   top_song,
   toplist,
   toplist_artist,
@@ -518,6 +521,37 @@ export async function apiPersonalizedNewsong(): Promise<SongsItem[]> {
     return ret;
   } catch {}
   return [];
+}
+
+type PlaylistCatlistItem = { name: string; category?: number; hot: boolean };
+
+type PlaylistCatlist = Record<string, PlaylistCatlistItem[]>;
+
+export async function apiPlaylistCatlist(): Promise<PlaylistCatlist> {
+  const key = "playlist_catlist";
+  const value = apiCache.get(key);
+  if (value) {
+    return value as PlaylistCatlist;
+  }
+  try {
+    const { body, status } = await playlist_catlist(baseQuery);
+    if (status !== 200) {
+      return {};
+    }
+    const ret: PlaylistCatlist = {};
+    const { sub, categories } = body;
+    for (const [key, value] of Object.entries(categories) as [
+      string,
+      string
+    ][]) {
+      ret[value] = sub
+        .filter((value: PlaylistCatlistItem) => `${value.category}` === key)
+        .map(({ name, hot }) => ({ name, hot }));
+    }
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return {};
 }
 
 export async function apiPlaylistCreate(
@@ -1059,6 +1093,60 @@ export async function apiTopArtists(
     }
     const { artists } = body;
     const ret = artists.map((artist: Artist) => solveArtist(artist));
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
+}
+
+export async function apiTopPlaylist(
+  cat: string,
+  limit: number,
+  offset: number
+): Promise<PlaylistItem[]> {
+  const key = `top_playlist${cat}-${limit}-${offset}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as PlaylistItem[];
+  }
+  try {
+    const { status, body } = await top_playlist(
+      Object.assign({ cat, limit, offset }, baseQuery)
+    );
+    if (status !== 200) {
+      return [];
+    }
+    const { playlists } = body;
+    const ret = playlists.map((playlist: PlaylistItem) =>
+      solvePlaylistItem(playlist)
+    );
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
+}
+
+export async function apiTopPlaylistHighquality(
+  cat: string,
+  limit: number,
+  offset: number
+): Promise<PlaylistItem[]> {
+  const key = `top_playlist_highquality${cat}-${limit}-${offset}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as PlaylistItem[];
+  }
+  try {
+    const { status, body } = await top_playlist_highquality(
+      Object.assign({ cat, limit, offset }, baseQuery)
+    );
+    if (status !== 200) {
+      return [];
+    }
+    const { playlists } = body;
+    const ret = playlists.map((playlist: PlaylistItem) =>
+      solvePlaylistItem(playlist)
+    );
     apiCache.set(key, ret);
     return ret;
   } catch {}

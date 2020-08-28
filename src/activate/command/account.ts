@@ -1,5 +1,5 @@
 import * as crypto from "crypto";
-import { ACCOUNT_FILE, ICON } from "../../constant";
+import { ACCOUNT_FILE, ICON, PlaylistItem } from "../../constant";
 import {
   ExtensionContext,
   QuickPickItem,
@@ -15,15 +15,20 @@ import {
   apiArtistSublist,
   apiPersonalized,
   apiPersonalizedNewsong,
+  apiPlaylistCatlist,
   apiRecommendResource,
   apiRecommendSongs,
   apiTopAlbum,
   apiTopArtists,
+  apiTopPlaylist,
+  apiTopPlaylistHighquality,
   apiTopSong,
   apiToplist,
   apiToplistArtist,
   pickAlbums,
   pickArtists,
+  pickPlaylist,
+  pickPlaylistItems,
   pickPlaylists,
   pickSongs,
 } from "../../util";
@@ -38,6 +43,8 @@ export function account(context: ExtensionContext): void {
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.account", async () => {
+      let highquality = false;
+      let cat = "";
       MultiStepInput.run((input) => pickType(input));
 
       async function pickType(input: MultiStepInput) {
@@ -233,6 +240,8 @@ export function account(context: ExtensionContext): void {
 
       async function pickExplore(input: MultiStepInput) {
         enum Type {
+          playlist,
+          highqualityPlaylist,
           topAlbums,
           topArtists,
           topSongsZh,
@@ -250,6 +259,14 @@ export function account(context: ExtensionContext): void {
           step: 2,
           totalSteps: 3,
           items: [
+            {
+              label: `${ICON.playlist} ${i18n.word.playlist}`,
+              type: Type.playlist,
+            },
+            {
+              label: `${ICON.playlist} ${i18n.word.highqualityPlaylist}`,
+              type: Type.highqualityPlaylist,
+            },
             {
               label: `${ICON.album} ${i18n.word.topAlbums}`,
               type: Type.topAlbums,
@@ -280,6 +297,14 @@ export function account(context: ExtensionContext): void {
             },
           ],
         });
+        if (pick.type === Type.playlist) {
+          highquality = false;
+          return (input: MultiStepInput) => pickPlaylistCategories(input);
+        }
+        if (pick.type === Type.highqualityPlaylist) {
+          highquality = true;
+          return (input: MultiStepInput) => pickPlaylistCategories(input);
+        }
         if (pick.type === Type.topAlbums) {
           return async (input: MultiStepInput) =>
             pickAlbums(input, 3, await apiTopAlbum());
@@ -308,6 +333,71 @@ export function account(context: ExtensionContext): void {
           return async (input: MultiStepInput) =>
             pickAlbums(input, 3, await apiAlbumNewest());
         }
+      }
+
+      async function pickPlaylistCategories(input: MultiStepInput) {
+        const categories = await apiPlaylistCatlist();
+        const pick = await input.showQuickPick({
+          title: i18n.word.categorie,
+          step: 3,
+          totalSteps: 6,
+          items: Object.keys(categories).map((label) => ({ label })),
+        });
+        return (input: MultiStepInput) =>
+          pickPlaylistSubCategories(
+            input,
+            categories[pick.label].map(({ name, hot }) => ({
+              label: name,
+              description: hot ? "$(flame)" : undefined,
+            }))
+          );
+      }
+
+      async function pickPlaylistSubCategories(
+        input: MultiStepInput,
+        items: QuickPickItem[]
+      ) {
+        const pick = await input.showQuickPick({
+          title: i18n.word.categorie,
+          step: 4,
+          totalSteps: 6,
+          items,
+        });
+        cat = pick.label;
+        return (input: MultiStepInput) => pickAllPlaylists(input, 0);
+      }
+
+      async function pickAllPlaylists(input: MultiStepInput, offset: number) {
+        const limit = 50;
+        const playlists = highquality
+          ? await apiTopPlaylistHighquality(cat, limit, offset)
+          : await apiTopPlaylist(cat, limit, offset);
+        const pick = await input.showQuickPick({
+          title: i18n.word.categorie,
+          step: 5,
+          totalSteps: 6,
+          items: [
+            ...(offset > 0
+              ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, item: -1 }]
+              : []),
+            ...pickPlaylistItems(playlists),
+            ...(playlists.length === limit
+              ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, item: -2 }]
+              : []),
+          ],
+        });
+        if (pick.item === -1) {
+          input.pop();
+          return (input: MultiStepInput) =>
+            pickAllPlaylists(input, offset - limit);
+        }
+        if (pick.item === -2) {
+          input.pop();
+          return (input: MultiStepInput) =>
+            pickAllPlaylists(input, offset + limit);
+        }
+        return (input: MultiStepInput) =>
+          pickPlaylist(input, 6, pick.item as PlaylistItem);
       }
 
       async function pickSave(input: MultiStepInput) {

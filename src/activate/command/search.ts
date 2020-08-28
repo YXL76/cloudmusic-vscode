@@ -51,6 +51,7 @@ export async function inputKeyword(
   const hotItems = (await apiSearchHotDetail()).map(
     ({ searchWord, content }) => ({
       label: searchWord,
+      description: "$(flame)",
       detail: content,
     })
   );

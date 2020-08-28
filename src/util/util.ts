@@ -159,7 +159,7 @@ export async function confirmation(
 }
 
 export function splitLine(content: string): string {
-  return `>>>>>>>>>>>>>                       ${content.toUpperCase()}                       <<<<<<<<<<<<<<<<<<<<<<<<<<<<<`;
+  return `>>>>>>>>        ${content.toUpperCase()}        <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<`;
 }
 
 enum PickType {

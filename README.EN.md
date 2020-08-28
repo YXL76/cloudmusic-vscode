@@ -178,13 +178,13 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |           module           |           function            | status |
 | :------------------------: | :---------------------------: | :----: |
 |          likelist          |       喜欢的歌曲(无序)        |   ✔️   |
-|      playlist_catlist      |         全部歌单分类          |        |
+|      playlist_catlist      |         全部歌单分类          |   ✔️   |
 |   playlist_cover_update    |         歌单封面上传          |   ❌   |
 |      playlist_create       |           创建歌单            |   ✔️   |
 |      playlist_delete       |           删除歌单            |   ✔️   |
 |      playlist_detail       |           歌单详情            |   ✔️   |
 |    playlist_desc_update    |         更新歌单描述          |   ❌   |
-|        playlist_hot        |         热门歌单分类          |        |
+|        playlist_hot        |         热门歌单分类          |   ❌   |
 |    playlist_name_update    |          更新歌单名           |   ❌   |
 |   playlist_order_update    |         编辑歌单顺序          |   ❌   |
 |     playlist_subscribe     |      收藏与取消收藏歌单       |   ✔️   |
@@ -196,8 +196,8 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |      related_playlist      |           相关歌单            |   ✔️   |
 |       simi_playlist        |           相似歌单            |   ✔️   |
 |     song_order_update      |         更新歌曲顺序          |   ❌   |
-|        top_playlist        |           分类歌单            |        |
-|  top_playlist_highquality  |           精品歌单            |        |
+|        top_playlist        |           分类歌单            |   ✔️   |
+|  top_playlist_highquality  |           精品歌单            |   ✔️   |
 
 - MV 类
 
@@ -307,8 +307,8 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |        banner        |      首页轮播图       |   ❌   |
 |        batch         |     批量请求接口      |        |
 |      dj_banner       |      电台 banner      |   ❌   |
-| homepage_block_page  | 首页-发现 block page  |        |
-| homepage_dragon_ball | 首页-发现 dragon ball |        |
+| homepage_block_page  | 首页-发现 block page  |   ❌   |
+| homepage_dragon_ball | 首页-发现 dragon ball |   ❌   |
 |      hot_topic       |       热门话题        |   ❌   |
 |  program_recommend   |       推荐节目        |        |
 |      top_album       |       新碟上架        |   ✔️   |
