@@ -111,7 +111,6 @@ export class MultiStepInput {
         input.step = step;
         input.totalSteps = Math.max(
           totalSteps || 1,
-          step,
           this.step,
           this.steps.length
         );

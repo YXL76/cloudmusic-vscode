@@ -785,7 +785,7 @@ export async function pickUsers(
   offset: number,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ...args: any[]
-): Promise<InputStep | undefined> {
+): Promise<InputStep> {
   const users = await func(...args, limit, offset);
   const pick = await input.showQuickPick({
     title: i18n.word.user,
@@ -800,7 +800,6 @@ export async function pickUsers(
         : []),
     ],
   });
-  setTimeout;
   if (pick.id === -1) {
     input.pop();
     return (input: MultiStepInput) =>
@@ -811,5 +810,6 @@ export async function pickUsers(
     return (input: MultiStepInput) =>
       pickUsers(input, step, func, pagination, offset + limit, args);
   }
-  return pickUser(input, step + 1, pick.id as number);
+  return (input: MultiStepInput) =>
+    pickUser(input, step + 1, pick.id as number);
 }
