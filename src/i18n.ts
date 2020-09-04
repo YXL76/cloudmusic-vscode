@@ -113,6 +113,8 @@ export const i18n = {
     en: localize("word.en", "English"),
     explore: localize("word.explore", "Explore"),
     female: localize("word.female", "Female artist"),
+    followeds: localize("word.followeds", "Followeds"),
+    follows: localize("word.follows", "Follows"),
     forword: localize("word.forword", "Forword"),
     fullLyric: localize("word.fullLyric", "Full lyric"),
     hide: localize("word.hide", "Hide"),

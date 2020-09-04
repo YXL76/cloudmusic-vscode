@@ -5,13 +5,13 @@ export type PlaylistItem = {
   playCount: number;
   subscribedCount: number;
   trackCount: number;
-  userId: number;
+  creator: UserDetail;
 };
 
 export interface RawPlaylistItem extends PlaylistItem {
   bookCount?: number;
   copywriter?: string;
-  creator?: { userId: number };
+  userId?: number;
 }
 
 export type Artist = {
@@ -66,6 +66,14 @@ export type SongDetail = {
   id: number;
   url: string;
   md5: string;
+};
+
+export type UserDetail = {
+  userId: number;
+  nickname: string;
+  signature: string;
+  followeds: number;
+  follows: number;
 };
 
 export type TrackIdsItem = {

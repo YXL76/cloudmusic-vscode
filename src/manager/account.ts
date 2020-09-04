@@ -82,11 +82,11 @@ export class AccountManager {
 
   static async userPlaylist(): Promise<PlaylistItem[]> {
     const lists = await apiUserPlaylist();
-    return lists.filter((list) => list.userId === AccountManager.uid);
+    return lists.filter((list) => list.creator.userId === AccountManager.uid);
   }
 
   static async favoritePlaylist(): Promise<PlaylistItem[]> {
     const lists = await apiUserPlaylist();
-    return lists.filter((list) => list.userId !== AccountManager.uid);
+    return lists.filter((list) => list.creator.userId !== AccountManager.uid);
   }
 }

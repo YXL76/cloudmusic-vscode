@@ -11,6 +11,7 @@ import {
   SongDetail,
   SongsItem,
   TrackIdsItem,
+  UserDetail,
 } from "../constant";
 import { LyricCache, apiCache } from "../util";
 import {
@@ -42,6 +43,7 @@ import {
   playlist_delete,
   playlist_detail,
   playlist_subscribe,
+  playlist_subscribers,
   playlist_tracks,
   playlist_update,
   playmode_intelligence_list,
@@ -63,6 +65,9 @@ import {
   top_song,
   toplist,
   toplist_artist,
+  user_detail,
+  user_followeds,
+  user_follows,
   user_playlist,
   user_record,
 } from "NeteaseCloudMusicApi";
@@ -122,7 +127,18 @@ const solvePlaylistItem = (item: RawPlaylistItem): PlaylistItem => {
     playCount,
     subscribedCount: bookCount || subscribedCount,
     trackCount,
-    userId: creator?.userId || userId || 0,
+    creator: creator || { userId: userId || 0 },
+  };
+};
+
+const solveUserDetail = (item: UserDetail): UserDetail => {
+  const { userId, nickname, signature, followeds, follows } = item;
+  return {
+    userId,
+    nickname,
+    signature,
+    followeds: followeds || 0,
+    follows: follows || 0,
   };
 };
 
@@ -690,6 +706,33 @@ export async function apiPlaylistSubscribe(
     return true;
   } catch {}
   return false;
+}
+
+export async function apiPlaylistSubscribers(
+  id: number,
+  limit: number,
+  offset: number
+): Promise<UserDetail[]> {
+  const key = `playlist_subscribers${id}-${limit}-${offset}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as UserDetail[];
+  }
+  try {
+    const { body, status } = await playlist_subscribers(
+      Object.assign({ id, limit, offset }, baseQuery)
+    );
+    if (status !== 200) {
+      return [];
+    }
+    const { subscribers } = body;
+    const ret = subscribers.map((subscriber: UserDetail) =>
+      solveUserDetail(subscriber)
+    );
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
 }
 
 export async function apiPlaylistTracks(
@@ -1285,6 +1328,77 @@ export async function apiToplistArtist(): Promise<Artist[]> {
     const { artists } = body.list;
     const ret = artists.map((artist: Artist) => solveArtist(artist));
     apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
+}
+
+export async function apiUserDetail(
+  uid: number
+): Promise<UserDetail | undefined> {
+  const key = `user_detail${uid}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as UserDetail;
+  }
+  try {
+    const { status, body } = await user_detail(
+      Object.assign({ uid }, baseQuery)
+    );
+    if (status !== 200) {
+      return undefined;
+    }
+    const { profile } = body;
+    const ret = solveUserDetail(profile);
+    return ret;
+  } catch {}
+  return undefined;
+}
+
+export async function apiUserFolloweds(
+  uid: number,
+  limit: number
+): Promise<UserDetail[]> {
+  const key = `user_followeds${uid}-${limit}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as UserDetail[];
+  }
+  try {
+    const { status, body } = await user_followeds(
+      Object.assign({ uid, limit }, baseQuery)
+    );
+    if (status !== 200) {
+      return [];
+    }
+    const { followeds } = body;
+    const ret = followeds.map((followed: UserDetail) =>
+      solveUserDetail(followed)
+    );
+    return ret;
+  } catch {}
+  return [];
+}
+
+export async function apiUserFollows(
+  uid: number,
+  limit: number,
+  offset: number
+): Promise<UserDetail[]> {
+  const key = `user_follows${uid}-${limit}-${offset}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as UserDetail[];
+  }
+  try {
+    const { status, body } = await user_follows(
+      Object.assign({ uid, limit, offset }, baseQuery)
+    );
+    if (status !== 200) {
+      return [];
+    }
+    const { follow } = body;
+    const ret = follow.map((item: UserDetail) => solveUserDetail(item));
     return ret;
   } catch {}
   return [];

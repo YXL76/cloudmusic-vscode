@@ -30,6 +30,7 @@ import {
   pickPlaylistItems,
   pickPlaylists,
   pickSongs,
+  pickUser,
 } from "../../util";
 import {
   ExtensionContext,
@@ -80,7 +81,6 @@ export function account(context: ExtensionContext): void {
           items: [
             {
               label: `${ICON.artist} ${AccountManager.nickname}`,
-              description: i18n.word.user,
               type: Type.user,
             },
             {
@@ -125,7 +125,8 @@ export function account(context: ExtensionContext): void {
         });
 
         if (pick.type === Type.user) {
-          return input.pop();
+          return (input: MultiStepInput) =>
+            pickUser(input, 2, AccountManager.uid);
         }
         if (pick.type === Type.search) {
           return (input: MultiStepInput) => inputKeyword(input, 1);

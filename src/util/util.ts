@@ -8,6 +8,7 @@ import {
   PlaylistItem,
   SongsItem,
   TMP_DIR,
+  UserDetail,
 } from "../constant";
 import {
   InputStep,
@@ -23,6 +24,7 @@ import {
   apiLike,
   apiPlaylistDetail,
   apiPlaylistSubscribe,
+  apiPlaylistSubscribers,
   apiPlaylistTracks,
   apiRelatedPlaylist,
   apiSimiArtist,
@@ -30,6 +32,9 @@ import {
   apiSimiSong,
   apiSongDetail,
   apiSongUrl,
+  apiUserDetail,
+  apiUserFolloweds,
+  apiUserFollows,
   player,
 } from "../util";
 import { IsLike, PersonalFm, lock } from "../state";
@@ -174,6 +179,8 @@ enum PickType {
   song,
   songs,
   playlist,
+  subscribed,
+  user,
 }
 interface T extends QuickPickItem {
   id?: number;
@@ -222,6 +229,14 @@ export const pickPlaylistItems = (playlists: PlaylistItem[]): PST[] =>
     id: playlist.id,
     item: playlist,
     type: PickType.playlist,
+  }));
+
+export const pickUserDetails = (users: UserDetail[]): T[] =>
+  users.map((user) => ({
+    label: `${ICON.artist} ${user.nickname}`,
+    detail: user.signature,
+    id: user.userId,
+    type: PickType.user,
   }));
 
 export async function pickSong(
@@ -560,6 +575,7 @@ export async function pickPlaylist(
     playCount,
     subscribedCount,
     trackCount,
+    creator,
   } = item;
   const ids = await apiPlaylistDetail(id);
   const songs = await apiSongDetail(ids);
@@ -587,6 +603,7 @@ export async function pickPlaylist(
             {
               label: `${ICON.number} ${i18n.word.subscribedCount}`,
               description: `${subscribedCount}`,
+              type: PickType.subscribed,
             },
           ]
         : []),
@@ -598,6 +615,7 @@ export async function pickPlaylist(
             },
           ]
         : []),
+      ...pickUserDetails([creator]),
       {
         label: `${ICON.similar} ${i18n.word.similarPlaylists}`,
         type: PickType.similar,
@@ -619,6 +637,14 @@ export async function pickPlaylist(
   if (pick.type === PickType.similar) {
     return async (input: MultiStepInput) =>
       pickPlaylists(input, step + 1, await apiRelatedPlaylist(id));
+  }
+  if (pick.type === PickType.subscribed) {
+    return (input: MultiStepInput) =>
+      pickUsers(input, step + 1, apiPlaylistSubscribers, true, 0, id);
+  }
+  if (pick.type === PickType.user) {
+    return (input: MultiStepInput) =>
+      pickUser(input, step + 1, pick.id as number);
   }
   if (pick.type === PickType.save) {
     await apiPlaylistSubscribe(id, 1);
@@ -696,4 +722,94 @@ export async function pickAddToPlaylist(
   }
   input.pop();
   return input.pop();
+}
+
+export async function pickUser(
+  input: MultiStepInput,
+  step: number,
+  uid: number
+): Promise<InputStep> {
+  enum PickType {
+    none,
+    followeds,
+    follows,
+  }
+  interface T extends QuickPickItem {
+    type: PickType;
+  }
+  const user = await apiUserDetail(uid);
+  if (!user) {
+    input.pop();
+    return input.pop() as InputStep;
+  }
+  const pick = await input.showQuickPick<T>({
+    title: i18n.word.user,
+    step,
+    items: [
+      {
+        label: `${ICON.artist} ${user.nickname}`,
+        detail: user.signature,
+        type: PickType.none,
+      },
+      {
+        label: `${ICON.number} ${i18n.word.followeds}`,
+        description: `${user.followeds}`,
+        type: PickType.followeds,
+      },
+      {
+        label: `${ICON.number} ${i18n.word.follows}`,
+        description: `${user.follows}`,
+        type: PickType.follows,
+      },
+    ],
+  });
+  if (pick.type === PickType.followeds) {
+    return (input: MultiStepInput) =>
+      pickUsers(input, step + 1, apiUserFolloweds, false, 0, uid);
+  }
+  if (pick.type === PickType.follows) {
+    return (input: MultiStepInput) =>
+      pickUsers(input, step + 1, apiUserFollows, true, 0, uid);
+  }
+  return input.pop() as InputStep;
+}
+
+const limit = 50;
+
+export async function pickUsers(
+  input: MultiStepInput,
+  step: number,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  func: (...args: any[]) => Promise<UserDetail[]>,
+  pagination: boolean,
+  offset: number,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ...args: any[]
+): Promise<InputStep | undefined> {
+  const users = await func(...args, limit, offset);
+  const pick = await input.showQuickPick({
+    title: i18n.word.user,
+    step,
+    items: [
+      ...(pagination && offset > 0
+        ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, id: -1 }]
+        : []),
+      ...pickUserDetails(users),
+      ...(pagination && users.length === limit
+        ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, id: -2 }]
+        : []),
+    ],
+  });
+  setTimeout;
+  if (pick.id === -1) {
+    input.pop();
+    return (input: MultiStepInput) =>
+      pickUsers(input, step, func, pagination, offset - limit, args);
+  }
+  if (pick.id === -2) {
+    input.pop();
+    return (input: MultiStepInput) =>
+      pickUsers(input, step, func, pagination, offset + limit, args);
+  }
+  return pickUser(input, step + 1, pick.id as number);
 }

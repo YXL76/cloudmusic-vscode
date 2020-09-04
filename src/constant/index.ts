@@ -17,12 +17,13 @@ export {
   LyricData,
   NativeModule,
   NativePlayer,
-  RawPlaylistItem,
   Player,
   PlaylistItem,
+  RawPlaylistItem,
   SongDetail,
   SongsItem,
   TrackIdsItem,
+  UserDetail,
 } from "./type";
 import { homedir, platform } from "os";
 import { MUSIC_QUALITY } from "./setting";
