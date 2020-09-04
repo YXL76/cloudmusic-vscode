@@ -1404,15 +1404,15 @@ export async function apiUserFollows(
   return [];
 }
 
-export async function apiUserPlaylist(): Promise<PlaylistItem[]> {
-  const key = "user_playlist";
+export async function apiUserPlaylist(uid: number): Promise<PlaylistItem[]> {
+  const key = `user_playlist${uid}`;
   const value = apiCache.get(key);
   if (value) {
     return value as PlaylistItem[];
   }
   try {
     const { status, body } = await user_playlist(
-      Object.assign({ uid: AccountManager.uid }, baseQuery)
+      Object.assign({ uid }, baseQuery)
     );
     if (status !== 200) {
       return [];

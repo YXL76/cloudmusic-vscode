@@ -35,6 +35,7 @@ import {
   apiUserDetail,
   apiUserFolloweds,
   apiUserFollows,
+  apiUserPlaylist,
   player,
 } from "../util";
 import { IsLike, PersonalFm, lock } from "../state";
@@ -181,6 +182,8 @@ enum PickType {
   playlist,
   subscribed,
   user,
+  followeds,
+  follows,
 }
 interface T extends QuickPickItem {
   id?: number;
@@ -729,38 +732,47 @@ export async function pickUser(
   step: number,
   uid: number
 ): Promise<InputStep> {
-  enum PickType {
-    none,
-    followeds,
-    follows,
-  }
-  interface T extends QuickPickItem {
-    type: PickType;
-  }
   const user = await apiUserDetail(uid);
   if (!user) {
     input.pop();
     return input.pop() as InputStep;
   }
-  const pick = await input.showQuickPick<T>({
+  const playlists = await apiUserPlaylist(uid);
+  const pick = await input.showQuickPick({
     title: i18n.word.user,
     step,
     items: [
       {
         label: `${ICON.artist} ${user.nickname}`,
         detail: user.signature,
-        type: PickType.none,
+        item: 0,
       },
       {
         label: `${ICON.number} ${i18n.word.followeds}`,
         description: `${user.followeds}`,
         type: PickType.followeds,
+        item: 0,
       },
       {
         label: `${ICON.number} ${i18n.word.follows}`,
         description: `${user.follows}`,
         type: PickType.follows,
+        item: 0,
       },
+      {
+        label: splitLine(i18n.word.playlist),
+        item: 0,
+      },
+      ...pickPlaylistItems(
+        playlists.filter((playlist) => playlist.creator.userId === uid)
+      ),
+      {
+        label: splitLine(i18n.word.saved),
+        item: 0,
+      },
+      ...pickPlaylistItems(
+        playlists.filter((playlist) => playlist.creator.userId !== uid)
+      ),
     ],
   });
   if (pick.type === PickType.followeds) {
@@ -770,6 +782,10 @@ export async function pickUser(
   if (pick.type === PickType.follows) {
     return (input: MultiStepInput) =>
       pickUsers(input, step + 1, apiUserFollows, true, 0, uid);
+  }
+  if (pick.type === PickType.playlist) {
+    return (input: MultiStepInput) =>
+      pickPlaylist(input, step + 1, pick.item as PlaylistItem);
   }
   return input.pop() as InputStep;
 }

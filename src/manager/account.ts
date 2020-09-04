@@ -81,12 +81,12 @@ export class AccountManager {
   }
 
   static async userPlaylist(): Promise<PlaylistItem[]> {
-    const lists = await apiUserPlaylist();
-    return lists.filter((list) => list.creator.userId === AccountManager.uid);
+    const lists = await apiUserPlaylist(this.uid);
+    return lists.filter((list) => list.creator.userId === this.uid);
   }
 
   static async favoritePlaylist(): Promise<PlaylistItem[]> {
-    const lists = await apiUserPlaylist();
-    return lists.filter((list) => list.creator.userId !== AccountManager.uid);
+    const lists = await apiUserPlaylist(this.uid);
+    return lists.filter((list) => list.creator.userId !== this.uid);
   }
 }
