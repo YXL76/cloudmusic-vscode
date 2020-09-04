@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [4.4.1] - 2020-09-04
+
+### Added
+
+- Quickpick: show playlists in `user`
+
 ## [4.4.0] - 2020-09-04
 
 ### Added
