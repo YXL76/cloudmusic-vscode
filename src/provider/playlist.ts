@@ -6,12 +6,7 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import {
-  apiCache,
-  apiPlaylistDetail,
-  apiSongDetail,
-  songsItem2TreeItem,
-} from "../util";
+import { apiCache, apiPlaylistDetail, songsItem2TreeItem } from "../util";
 import { AccountManager } from "../manager";
 import { PlaylistItem } from "../constant";
 import { QueueItemTreeItem } from "../provider";
@@ -46,7 +41,6 @@ export class PlaylistProvider
   private static action?: (items: QueueItemTreeItem[]) => void;
 
   static playlists = new Map<number, PlaylistItemTreeItem>();
-  private static treeView = new Map<number, QueueItemTreeItem[]>();
 
   constructor(private type: Type) {}
 
@@ -70,7 +64,6 @@ export class PlaylistProvider
       const { id } = element.item;
       if (refresh) {
         apiCache.del(`playlist_detail${id}`);
-        this.treeView.delete(id);
       }
       const type = this.belongsTo.get(id);
       if (type === Type.userInstance) {
@@ -83,7 +76,6 @@ export class PlaylistProvider
         for (const id of this.belongsTo.keys()) {
           apiCache.del(`playlist_detail${id}`);
         }
-        this.treeView.clear();
       }
       apiCache.del("user_playlist");
       this.belongsTo.clear();
@@ -116,14 +108,9 @@ export class PlaylistProvider
   private static async getPlaylistContent(
     id: number
   ): Promise<QueueItemTreeItem[]> {
-    const items = this.treeView.get(id);
-    if (!items) {
-      const songs = await apiPlaylistDetail(id);
-      const ret = songsItem2TreeItem(id, songs);
-      this.treeView.set(id, ret);
-      return ret;
-    }
-    return items;
+    const songs = await apiPlaylistDetail(id);
+    const ret = songsItem2TreeItem(id, songs);
+    return ret;
   }
 
   private async getPlaylistItem(): Promise<PlaylistItemTreeItem[]> {

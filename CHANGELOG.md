@@ -6,6 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [4.5.0] - 2020-09-08
+
+### Added
+
+- Player: keep volume setting
+
+### Changed
+
+- Use `globalState` api instead of `fs-based` storage
+- Improve the speed of network data acquisition ([#34](<(https://github.com/YXL76/cloudmusic-vscode/issues/34)>)
+
 ## [4.4.1] - 2020-09-04
 
 ### Added
