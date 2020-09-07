@@ -1,11 +1,11 @@
 import {
+  ExtensionContext,
   QuickPickItem,
   StatusBarAlignment,
   StatusBarItem,
   window,
-  workspace,
 } from "vscode";
-import { BUTTON_FILE } from "../constant";
+import { BUTTON_KEY } from "../constant";
 import { LoggedIn } from "../state";
 import { MultiStepInput } from "../util";
 import { i18n } from "../i18n";
@@ -64,20 +64,26 @@ export class ButtonManager {
     "cloudmusic.songDetail",
     "cloudmusic.lyric",
   ];
+  private static context: ExtensionContext;
 
-  static async init(): Promise<void> {
+  static async init(context: ExtensionContext): Promise<void> {
+    this.context = context;
     for (let i = 0; i < this.buttons.length; ++i) {
       this.buttons[i].text = this.buttonText[i];
       this.buttons[i].tooltip = this.buttonTooltip[i];
       this.buttons[i].command = this.buttonCommand[i];
     }
     this.buttons[0].show();
-    try {
-      const { show } = JSON.parse(
-        Buffer.from(await workspace.fs.readFile(BUTTON_FILE)).toString()
-      );
-      this.buttonShow = show;
-    } catch {}
+    this.buttonShow = this.context.globalState.get(BUTTON_KEY) || [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      false,
+    ];
   }
 
   static async toggle(): Promise<void> {
@@ -106,14 +112,7 @@ export class ButtonManager {
       if (LoggedIn.get()) {
         this.buttonShow[id] ? this.buttons[id].show() : this.buttons[id].hide();
       }
-      await workspace.fs.writeFile(
-        BUTTON_FILE,
-        Buffer.from(
-          JSON.stringify({
-            show: this.buttonShow,
-          })
-        )
-      );
+      await this.context.globalState.update(BUTTON_KEY, this.buttonShow);
       return input.pop();
     };
 

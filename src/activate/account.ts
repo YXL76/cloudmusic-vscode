@@ -1,21 +1,25 @@
-import { ACCOUNT_FILE, AUTO_CHECK, SETTING_DIR } from "../constant";
+import { ACCOUNT_KEY, AUTO_CHECK, SETTING_DIR } from "../constant";
+import { ExtensionContext, workspace } from "vscode";
 import { AccountManager } from "../manager";
-import { workspace } from "vscode";
 
-export async function initAccount(): Promise<void> {
+export async function initAccount(context: ExtensionContext): Promise<void> {
   await workspace.fs.createDirectory(SETTING_DIR);
-  try {
-    try {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const { phone, account, md5_password } = JSON.parse(
-        Buffer.from(await workspace.fs.readFile(ACCOUNT_FILE)).toString()
-      );
-      if (
-        (await AccountManager.login(phone, account, md5_password)) &&
-        AUTO_CHECK
-      ) {
-        AccountManager.dailySignin();
+  const info:
+    | {
+        phone: boolean;
+        account: string;
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        md5_password: string;
       }
-    } catch {}
-  } catch {}
+    | undefined = context.globalState.get(ACCOUNT_KEY);
+  if (info) {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { phone, account, md5_password } = info;
+    if (
+      (await AccountManager.login(phone, account, md5_password)) &&
+      AUTO_CHECK
+    ) {
+      AccountManager.dailySignin();
+    }
+  }
 }

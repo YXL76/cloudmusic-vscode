@@ -1,5 +1,5 @@
 import * as crypto from "crypto";
-import { ACCOUNT_FILE, ICON, PlaylistItem } from "../../constant";
+import { ACCOUNT_KEY, ICON, PlaylistItem } from "../../constant";
 import {
   ArtistArea,
   ArtistInitial,
@@ -32,13 +32,7 @@ import {
   pickSongs,
   pickUser,
 } from "../../util";
-import {
-  ExtensionContext,
-  QuickPickItem,
-  commands,
-  window,
-  workspace,
-} from "vscode";
+import { ExtensionContext, QuickPickItem, commands, window } from "vscode";
 import { AccountManager } from "../../manager";
 import { LoggedIn } from "../../state";
 import { WebView } from "../../page";
@@ -629,10 +623,7 @@ export function account(context: ExtensionContext): void {
         md5_password &&
         (await AccountManager.login(phone, account, md5_password))
       ) {
-        workspace.fs.writeFile(
-          ACCOUNT_FILE,
-          Buffer.from(JSON.stringify(state))
-        );
+        context.globalState.update(ACCOUNT_KEY, state);
         window.showInformationMessage(i18n.sentence.success.signIn);
       } else {
         window.showErrorMessage(i18n.sentence.fail.signIn);
@@ -696,14 +687,9 @@ export function account(context: ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    commands.registerCommand("cloudmusic.signout", () => {
-      if (AccountManager.logout()) {
-        try {
-          workspace.fs.delete(ACCOUNT_FILE, {
-            recursive: false,
-            useTrash: false,
-          });
-        } catch {}
+    commands.registerCommand("cloudmusic.signout", async () => {
+      if (await AccountManager.logout()) {
+        context.globalState.update(ACCOUNT_KEY, undefined);
       }
     })
   );

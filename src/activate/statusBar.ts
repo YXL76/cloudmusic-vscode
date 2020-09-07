@@ -8,12 +8,12 @@ import {
 } from "../util";
 import { QuickPickItem, commands } from "vscode";
 import { ButtonManager } from "../manager";
+import { ExtensionContext } from "vscode";
 import { QueueItemTreeItem } from "../provider";
-
 import { i18n } from "../i18n";
 
-export async function initStatusBar(): Promise<void> {
-  await ButtonManager.init();
+export async function initStatusBar(context: ExtensionContext): Promise<void> {
+  await ButtonManager.init(context);
   ButtonManager.show();
 
   commands.registerCommand(
