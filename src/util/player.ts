@@ -98,9 +98,7 @@ class AudioPlayer implements Player {
 
   init(context: ExtensionContext): void {
     this.context = context;
-    const level: number = this.context.globalState.get(VOLUME_KEY) || 85;
-    this.player.setVolume(level);
-    ButtonManager.buttonVolume(level);
+    this.volume(this.context.globalState.get(VOLUME_KEY) || 85);
   }
 
   stop(): void {

@@ -682,9 +682,7 @@ export async function apiPlaylistDetail(id: number): Promise<number[]> {
       return [];
     }
     const { trackIds } = body.playlist;
-    const ret = trackIds.map((trackId: TrackIdsItem) => {
-      return trackId.id;
-    });
+    const ret = trackIds.map((trackId: TrackIdsItem) => trackId.id);
     apiCache.set(key, ret);
     return ret;
   } catch {
@@ -1118,11 +1116,15 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
       return value as SongsItem[];
     }
   }
+  const limit = 1000;
   const ret: SongsItem[] = [];
   try {
-    for (let i = 0; i < trackIds.length; i += 512) {
+    for (let i = 0; i < trackIds.length; i += limit) {
       const { status, body } = await song_detail(
-        Object.assign({ ids: trackIds.slice(i, i + 512).join(",") }, baseQuery)
+        Object.assign(
+          { ids: trackIds.slice(i, i + limit).join(",") },
+          baseQuery
+        )
       );
       if (status !== 200) {
         continue;
@@ -1144,13 +1146,14 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
 }
 
 export async function apiSongUrl(trackIds: number[]): Promise<SongDetail[]> {
+  const limit = 1000;
   let ret: SongDetail[] = [];
   try {
     let songs: SongDetail[] = [];
-    for (let i = 0; i < trackIds.length; i += 512) {
+    for (let i = 0; i < trackIds.length; i += limit) {
       const { status, body } = await song_url(
         Object.assign(
-          { id: trackIds.slice(i, i + 512).join(","), br: MUSIC_QUALITY },
+          { id: trackIds.slice(i, i + limit).join(","), br: MUSIC_QUALITY },
           baseQuery
         )
       );

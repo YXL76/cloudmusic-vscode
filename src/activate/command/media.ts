@@ -3,6 +3,7 @@ import { ExtensionContext, commands } from "vscode";
 import { IsLike, PersonalFm, lock } from "../../state";
 import { MultiStepInput, apiLike, load, player } from "../../util";
 import { QueueProvider } from "../../provider";
+import { VOLUME_KEY } from "../../constant";
 import { i18n } from "../../i18n";
 
 export function media(context: ExtensionContext): void {
@@ -68,7 +69,7 @@ export function media(context: ExtensionContext): void {
           title: i18n.word.volume,
           step: 1,
           totalSteps: 1,
-          value: `${player.level}`,
+          value: `${context.globalState.get(VOLUME_KEY)}`,
           prompt: `${i18n.sentence.hint.volume} (0~100)`,
         });
         if (/^[1-9]\d$|^\d$|^100$/.exec(level)) {
