@@ -1135,10 +1135,7 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
       new Promise(async (resolve, reject) => {
         const ret: SongsItem[] = [];
         const { status, body } = await song_detail(
-          Object.assign(
-            { ids: trackIds.slice(i, i + limit).join(",") },
-            baseQuery
-          )
+          Object.assign({ ids: trackIds.slice(i, i + limit) }, baseQuery)
         );
         if (status !== 200) {
           reject();
