@@ -1,15 +1,15 @@
+import { ExtensionContext, commands, window } from "vscode";
 import { MEDIA_CONTROL, NATIVE, PLAYER_AVAILABLE } from "../constant";
-import { commands, window } from "vscode";
 import { i18n } from "../i18n";
 import { lock } from "../state";
 import { player } from "../util";
 
-export async function initPlayer(): Promise<void> {
+export async function initPlayer(context: ExtensionContext): Promise<void> {
   if (!PLAYER_AVAILABLE) {
     lock.playerLoad.set(true);
     await window.showErrorMessage(i18n.sentence.error.systemSupport);
   } else {
-    player.volume(85);
+    player.init(context);
     if (MEDIA_CONTROL) {
       const { startKeyboardEvent } = NATIVE;
       startKeyboardEvent((res) => {

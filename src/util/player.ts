@@ -1,3 +1,4 @@
+import { ExtensionContext, commands } from "vscode";
 import {
   LIBRARYS,
   Lyric,
@@ -6,17 +7,21 @@ import {
   PLAYER_AVAILABLE,
   Player,
   SongsItem,
+  VOLUME_KEY,
 } from "../constant";
 import { Playing, lock } from "../state";
 import { apiLyric, apiScrobble } from "../util";
 import { ButtonManager } from "../manager";
-import { commands } from "vscode";
 
 class NoPlayer implements Player {
   item = {} as SongsItem;
   pid = 0;
   time = Date.now();
-  level = 85;
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  init(_context: ExtensionContext): void {
+    //
+  }
 
   stop(): void {
     //
@@ -32,7 +37,7 @@ class NoPlayer implements Player {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  volume(_level: number): void {
+  async volume(_level: number): Promise<void> {
     //
   }
 }
@@ -45,12 +50,12 @@ export const lyric: Lyric = {
 };
 
 class AudioPlayer implements Player {
+  private context!: ExtensionContext;
   private player!: NativePlayer;
 
   item = {} as SongsItem;
   pid = 0;
   time = Date.now();
-  level = 85;
 
   constructor() {
     for (const library of LIBRARYS) {
@@ -91,6 +96,13 @@ class AudioPlayer implements Player {
     }, 1000);
   }
 
+  init(context: ExtensionContext): void {
+    this.context = context;
+    const level: number = this.context.globalState.get(VOLUME_KEY) || 85;
+    this.player.setVolume(level);
+    ButtonManager.buttonVolume(level);
+  }
+
   stop(): void {
     Playing.set(false);
     this.player.stop();
@@ -99,7 +111,7 @@ class AudioPlayer implements Player {
   load(url: string, pid: number, item: SongsItem): void {
     lock.deleteTmp.set(false);
     if (this.player.load(url)) {
-      this.player.setVolume(this.level);
+      this.player.setVolume(this.context.globalState.get(VOLUME_KEY) || 85);
       Playing.set(true);
 
       apiLyric(item.id).then(({ time, text }) => {
@@ -140,8 +152,8 @@ class AudioPlayer implements Player {
     }
   }
 
-  volume(level: number): void {
-    this.level = level;
+  async volume(level: number): Promise<void> {
+    await this.context.globalState.update(VOLUME_KEY, level);
     this.player.setVolume(level);
     ButtonManager.buttonVolume(level);
   }

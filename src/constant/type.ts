@@ -1,3 +1,5 @@
+import { ExtensionContext } from "vscode";
+
 export type PlaylistItem = {
   description: string | null;
   id: number;
@@ -114,11 +116,11 @@ export interface Player {
   item: SongsItem;
   pid: number;
   time: number;
-  level: number;
+  init(context: ExtensionContext): void;
   stop(): void;
   load(url: string, pid: number, item: SongsItem): void;
   togglePlay(): void;
-  volume(level: number): void;
+  volume(level: number): Promise<void>;
 }
 
 export interface NativeModule {
