@@ -668,11 +668,11 @@ export async function apiPlaylistDelete(id: number): Promise<boolean> {
   return false;
 }
 
-export async function apiPlaylistDetail(id: number): Promise<number[]> {
+export async function apiPlaylistDetail(id: number): Promise<SongsItem[]> {
   const key = `playlist_detail${id}`;
   const value = apiCache.get(key);
   if (value) {
-    return value as number[];
+    return value as SongsItem[];
   }
   try {
     const { status, body } = await playlist_detail(
@@ -681,8 +681,21 @@ export async function apiPlaylistDetail(id: number): Promise<number[]> {
     if (status !== 200) {
       return [];
     }
-    const { trackIds } = body.playlist;
-    const ret = trackIds.map((trackId: TrackIdsItem) => trackId.id);
+    const { playlist, privileges } = body;
+    const { tracks, trackIds } = playlist;
+    if (tracks.length === trackIds.length) {
+      const ret: SongsItem[] = [];
+      for (let i = 0; i < privileges.length; ++i) {
+        if (privileges[i].st >= 0) {
+          ret.push(solveSongItem(tracks[i]));
+        }
+      }
+      apiCache.set(key, ret);
+      return ret;
+    }
+    const ret = await apiSongDetail(
+      trackIds.map((trackId: TrackIdsItem) => trackId.id)
+    );
     apiCache.set(key, ret);
     return ret;
   } catch {
@@ -1108,70 +1121,78 @@ export async function apiSimiSong(
 }
 
 export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
-  let key = "";
+  const key = `song_detail${trackIds[0]}`;
   if (trackIds.length === 1) {
-    key = `song_detail${trackIds[0]}`;
     const value = apiCache.get(key);
     if (value) {
       return value as SongsItem[];
     }
   }
   const limit = 1000;
-  const ret: SongsItem[] = [];
-  try {
-    for (let i = 0; i < trackIds.length; i += limit) {
-      const { status, body } = await song_detail(
-        Object.assign(
-          { ids: trackIds.slice(i, i + limit).join(",") },
-          baseQuery
-        )
-      );
-      if (status !== 200) {
-        continue;
-      }
-      const { songs, privileges } = body;
-      for (let i = 0; i < privileges.length; ++i) {
-        if (privileges[i].st >= 0) {
-          ret.push(solveSongItem(songs[i]));
+  const tasks: Promise<SongsItem[]>[] = [];
+  for (let i = 0; i < trackIds.length; i += limit) {
+    tasks.push(
+      new Promise(async (resolve, reject) => {
+        const ret: SongsItem[] = [];
+        const { status, body } = await song_detail(
+          Object.assign(
+            { ids: trackIds.slice(i, i + limit).join(",") },
+            baseQuery
+          )
+        );
+        if (status !== 200) {
+          reject();
         }
-      }
-    }
+        const { songs, privileges } = body;
+        for (let i = 0; i < privileges.length; ++i) {
+          if (privileges[i].st >= 0) {
+            ret.push(solveSongItem(songs[i]));
+          }
+        }
+        resolve(ret);
+      })
+    );
+  }
+  try {
+    const ret = (await Promise.all(tasks)).flat();
     if (trackIds.length === 1) {
       apiCache.set(key, ret);
     }
     return ret;
-  } catch {
-    return ret;
-  }
+  } catch {}
+  return [];
 }
 
 export async function apiSongUrl(trackIds: number[]): Promise<SongDetail[]> {
   const limit = 1000;
-  let ret: SongDetail[] = [];
-  try {
-    let songs: SongDetail[] = [];
-    for (let i = 0; i < trackIds.length; i += limit) {
-      const { status, body } = await song_url(
-        Object.assign(
-          { id: trackIds.slice(i, i + limit).join(","), br: MUSIC_QUALITY },
-          baseQuery
-        )
-      );
-      if (status !== 200) {
-        continue;
-      }
-      const { data } = body;
-      songs = songs.concat(data);
-    }
-    ret = songs.reduce((result: SongDetail[], song: SongDetail) => {
-      const { id, url, md5 } = song;
-      result[trackIds.indexOf(song.id)] = { id, url, md5 };
-      return result;
-    }, []);
-    return ret;
-  } catch {
-    return ret;
+  const tasks: Promise<SongDetail[]>[] = [];
+  for (let i = 0; i < trackIds.length; i += limit) {
+    tasks.push(
+      new Promise(async (resolve, reject) => {
+        const { status, body } = await song_url(
+          Object.assign(
+            { id: trackIds.slice(i, i + limit).join(","), br: MUSIC_QUALITY },
+            baseQuery
+          )
+        );
+        if (status !== 200) {
+          reject();
+        }
+        const { data } = body;
+        resolve(data);
+      })
+    );
   }
+  try {
+    return (await Promise.all(tasks))
+      .flat()
+      .reduce((result: SongDetail[], song: SongDetail) => {
+        const { id, url, md5 } = song;
+        result[trackIds.indexOf(song.id)] = { id, url, md5 };
+        return result;
+      }, []);
+  } catch {}
+  return [];
 }
 
 export async function apiTopAlbum(): Promise<AlbumsItem[]> {

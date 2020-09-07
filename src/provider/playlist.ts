@@ -118,8 +118,7 @@ export class PlaylistProvider
   ): Promise<QueueItemTreeItem[]> {
     const items = this.treeView.get(id);
     if (!items) {
-      const ids = await apiPlaylistDetail(id);
-      const songs = await apiSongDetail(ids);
+      const songs = await apiPlaylistDetail(id);
       const ret = songsItem2TreeItem(id, songs);
       this.treeView.set(id, ret);
       return ret;

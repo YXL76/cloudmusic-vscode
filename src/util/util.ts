@@ -580,8 +580,7 @@ export async function pickPlaylist(
     trackCount,
     creator,
   } = item;
-  const ids = await apiPlaylistDetail(id);
-  const songs = await apiSongDetail(ids);
+  const songs = await apiPlaylistDetail(id);
   const pick = await input.showQuickPick<T>({
     title: i18n.word.playlist,
     step,
