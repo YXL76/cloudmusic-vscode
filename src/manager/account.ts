@@ -12,6 +12,14 @@ import { cookieToJson } from "NeteaseCloudMusicApi/util/index";
 import { i18n } from "../i18n";
 import { window } from "vscode";
 
+interface LoginParameters {
+  phone: boolean;
+  account: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  md5_password: string;
+  countrycode?: string;
+}
+
 export class AccountManager {
   static uid = 0;
   static nickname = "";
@@ -28,12 +36,13 @@ export class AccountManager {
     }
   }
 
-  static async login(
-    phone: boolean,
-    account: string,
+  static async login({
+    phone,
+    account,
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    md5_password: string
-  ): Promise<boolean> {
+    md5_password,
+    countrycode,
+  }: LoginParameters): Promise<boolean> {
     if (LoggedIn.get()) {
       window.showInformationMessage(i18n.sentence.info.alreadySignIn);
       return true;
@@ -44,6 +53,7 @@ export class AccountManager {
             phone: account,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             md5_password,
+            countrycode,
           })
         : await login({
             email: account,

@@ -10,15 +10,11 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
         account: string;
         // eslint-disable-next-line @typescript-eslint/naming-convention
         md5_password: string;
+        countrycode?: string;
       }
     | undefined = context.globalState.get(ACCOUNT_KEY);
   if (info) {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { phone, account, md5_password } = info;
-    if (
-      (await AccountManager.login(phone, account, md5_password)) &&
-      AUTO_CHECK
-    ) {
+    if ((await AccountManager.login(info)) && AUTO_CHECK) {
       AccountManager.dailySignin();
     }
   }

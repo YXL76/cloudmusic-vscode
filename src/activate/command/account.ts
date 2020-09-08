@@ -606,28 +606,18 @@ export function account(context: ExtensionContext): void {
       }
 
       const title = i18n.word.signIn;
-      const totalSteps = 3;
+      let totalSteps = 3;
 
       type State = {
         phone: boolean;
         account: string;
         // eslint-disable-next-line @typescript-eslint/naming-convention
         md5_password: string;
+        countrycode?: string;
       };
 
-      const state = {} as State;
+      const state = { countrycode: "86" } as State;
       await MultiStepInput.run((input) => pickMethod(input));
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const { phone, account, md5_password } = state;
-      if (
-        md5_password &&
-        (await AccountManager.login(phone, account, md5_password))
-      ) {
-        context.globalState.update(ACCOUNT_KEY, state);
-        window.showInformationMessage(i18n.sentence.success.signIn);
-      } else {
-        window.showErrorMessage(i18n.sentence.fail.signIn);
-      }
 
       async function pickMethod(input: MultiStepInput) {
         const pick = await input.showQuickPick({
@@ -649,13 +639,29 @@ export function account(context: ExtensionContext): void {
           placeholder: i18n.sentence.hint.signIn,
         });
         state.phone = pick.phone;
+        if (state.phone) {
+          totalSteps = 4;
+          return (input: MultiStepInput) => inputCountrycode(input);
+        }
+        totalSteps = 3;
+        return (input: MultiStepInput) => inputAccount(input);
+      }
+
+      async function inputCountrycode(input: MultiStepInput) {
+        state.countrycode = await input.showInputBox({
+          title,
+          step: 2,
+          totalSteps,
+          value: state.countrycode,
+          prompt: i18n.sentence.hint.countrycode,
+        });
         return (input: MultiStepInput) => inputAccount(input);
       }
 
       async function inputAccount(input: MultiStepInput) {
         state.account = await input.showInputBox({
           title,
-          step: 2,
+          step: totalSteps - 1,
           totalSteps,
           value: state.account,
           prompt: i18n.sentence.hint.account,
@@ -666,7 +672,7 @@ export function account(context: ExtensionContext): void {
       async function inputPassword(input: MultiStepInput) {
         const password = await input.showInputBox({
           title,
-          step: 3,
+          step: totalSteps,
           totalSteps,
           prompt: i18n.sentence.hint.password,
           password: true,
@@ -676,6 +682,13 @@ export function account(context: ExtensionContext): void {
           .createHash("md5")
           .update(password)
           .digest("hex");
+
+        if (await AccountManager.login(state)) {
+          context.globalState.update(ACCOUNT_KEY, state);
+          window.showInformationMessage(i18n.sentence.success.signIn);
+        } else {
+          window.showErrorMessage(i18n.sentence.fail.signIn);
+        }
       }
     })
   );

@@ -6,6 +6,7 @@
   "sentence.hint.account": "请输入账号",
   "sentence.hint.button": "设置是否显示按钮",
   "sentence.hint.confirmation": "确定要执行此操作吗？请输入\"YES\"确认（不区分大小写）",
+  "sentence.hint.countrycode": "请输入国家码",
   "sentence.hint.desc": "请输入描述",
   "sentence.hint.keyword": "请输入关键词",
   "sentence.hint.lyricDelay": "请输入歌词延迟",

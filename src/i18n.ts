@@ -33,6 +33,10 @@ export const i18n = {
         "sentence.hint.confirmation",
         'Are you sure you want to do this? Please enter "yes" to confirm (case insensitive)'
       ),
+      countrycode: localize(
+        "sentence.hint.countrycode",
+        "Please enter your countrycode"
+      ),
       desc: localize("sentence.hint.desc", "Please enter description"),
       keyword: localize("sentence.hint.keyword", "Please enter keyword"),
       lyricDelay: localize(
