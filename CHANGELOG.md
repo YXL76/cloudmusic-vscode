@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [4.6.0] - 2020-09-08
+
+### Added
+
+- Add mobile country code
+
 ## [4.5.0] - 2020-09-08
 
 ### Added
