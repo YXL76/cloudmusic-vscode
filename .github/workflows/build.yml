@@ -3,7 +3,9 @@ name: Build
 on:
   push:
     paths:
-      - "build/*"
+      - "native/*"
+    branches:
+      - master
 
 jobs:
   build:
