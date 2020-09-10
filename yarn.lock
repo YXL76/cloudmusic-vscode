@@ -181,10 +181,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:12.12.56":
-  version: 12.12.56
-  resolution: "@types/node@npm:12.12.56"
-  checksum: 8f85b09a855c5d36c5ef5a9fe9948952c53b97f5735612cbcd92ae61f361bcae30e1b81e0a48f3872488b35d9aabe149d270eba66e4257f85f0ba150d6198e50
+"@types/node@npm:12.12.57":
+  version: 12.12.57
+  resolution: "@types/node@npm:12.12.57"
+  checksum: 533ce720c2ac4e04c3d5463c9cbd391fb7a1a2cbdd1df564e7e85ed67312ad29843ec12ba3bc478ae6663e0909f39456ddff7527f1437d2ea56d4d5eb9a6ec2e
   languageName: node
   linkType: hard
 
@@ -1535,7 +1535,7 @@ __metadata:
     "@types/glob": 7.1.3
     "@types/lodash.throttle": ^4.1.6
     "@types/mocha": 8.0.3
-    "@types/node": 12.12.56
+    "@types/node": 12.12.57
     "@types/vscode": 1.46.0
     "@typescript-eslint/eslint-plugin": 4.1.0
     "@typescript-eslint/parser": 4.1.0
