@@ -165,7 +165,7 @@ export async function initPlaylist(): Promise<void> {
     (element: PlaylistItemTreeItem) => {
       MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
-          if (await apiPlaylistSubscribe(element.item.id)) {
+          if (await apiPlaylistSubscribe(element.item.id, 0)) {
             PlaylistProvider.refresh({});
           }
         })

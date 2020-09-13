@@ -158,14 +158,15 @@ export async function apiAlbum(
   }
   try {
     const { status, body } = await album(Object.assign({ id }, baseQuery));
+
     if (status !== 200) {
       return { info: {} as AlbumsItem, songs: [] };
     }
     const { songs } = body;
-    const info = solveAlbumsItem(body.album);
+    const info = solveAlbumsItem(body.album as AlbumsItem);
     const ret = {
       info,
-      songs: songs.map((song: SongsItem) => solveSongItem(song)),
+      songs: (songs as SongsItem[]).map((song) => solveSongItem(song)),
     };
     apiCache.set(key, ret);
     return ret;
@@ -186,7 +187,7 @@ export async function apiAlbumNewest(): Promise<AlbumsItem[]> {
       return [];
     }
     const { albums } = body;
-    const ret = albums.map((album: AlbumsItem) => solveAlbumsItem(album));
+    const ret = (albums as AlbumsItem[]).map((album) => solveAlbumsItem(album));
     apiCache.set(key, ret);
     return ret;
   } catch {}
@@ -209,8 +210,8 @@ export async function apiArtists(
     }
     const { artist, hotSongs } = body;
     const ret = {
-      info: solveArtist(artist),
-      songs: hotSongs.map((song: SongsItem) => solveSongItem(song)),
+      info: solveArtist(artist as Artist),
+      songs: (hotSongs as SongsItem[]).map((song) => solveSongItem(song)),
     };
     apiCache.set(key, ret);
     return ret;
@@ -219,7 +220,7 @@ export async function apiArtists(
   }
 }
 
-export async function apiAlbumSub(id: number, t?: 1): Promise<boolean> {
+export async function apiAlbumSub(id: number, t: 1 | 0): Promise<boolean> {
   try {
     const { status } = await album_sub(Object.assign({ id, t }, baseQuery));
     if (status !== 200) {
@@ -243,8 +244,10 @@ export async function apiAlbumSublist(): Promise<AlbumsItem[]> {
         break;
       }
       const { data } = body;
-      ret = ret.concat(data.map((item: AlbumsItem) => solveAlbumsItem(item)));
-      if (data.length < limit) {
+      ret = ret.concat(
+        (data as AlbumsItem[]).map((item) => solveAlbumsItem(item))
+      );
+      if ((data as AlbumsItem[]).length < limit) {
         break;
       }
       offset += limit;
@@ -272,7 +275,7 @@ export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
       }
       const { hotAlbums, more } = body;
       ret = ret.concat(
-        hotAlbums.map((hotAlbum: AlbumsItem) => solveAlbumsItem(hotAlbum))
+        (hotAlbums as AlbumsItem[]).map((hotAlbum) => solveAlbumsItem(hotAlbum))
       );
       if (more) {
         offset += limit;
@@ -288,18 +291,18 @@ export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
 }
 
 export enum ArtistType {
-  male = 1,
-  female = 2,
-  band = 3,
+  male = "1",
+  female = "2",
+  band = "3",
 }
 
 export enum ArtistArea {
-  all = -1,
-  zh = 7,
-  en = 96,
-  ja = 8,
-  kr = 16,
-  other = 0,
+  all = "-1",
+  zh = "7",
+  en = "96",
+  ja = "8",
+  kr = "16",
+  other = "0",
 }
 
 export type ArtistInitial =
@@ -351,7 +354,7 @@ export async function apiArtistList(
       return [];
     }
     const { artists } = body;
-    const ret = artists.map((artist: Artist) => solveArtist(artist));
+    const ret = (artists as Artist[]).map((artist) => solveArtist(artist));
     apiCache.set(key, ret);
     return ret;
   } catch {}
@@ -376,14 +379,14 @@ export async function apiArtistSongs(
       return [];
     }
     const { songs } = body;
-    const ret = songs.map((song: SongsItem) => solveSongItem(song));
+    const ret = (songs as SongsItem[]).map((song) => solveSongItem(song));
     apiCache.set(key, ret);
     return ret;
   } catch {}
   return [];
 }
 
-export async function apiArtistSub(id: number, t?: 1): Promise<boolean> {
+export async function apiArtistSub(id: number, t: 1 | 0): Promise<boolean> {
   try {
     const { status } = await artist_sub(Object.assign({ id, t }, baseQuery));
     if (status !== 200) {
@@ -407,8 +410,8 @@ export async function apiArtistSublist(): Promise<Artist[]> {
         break;
       }
       const { data } = body;
-      ret = ret.concat(data.map((item: Artist) => solveArtist(item)));
-      if (data.length < limit) {
+      ret = ret.concat((data as Artist[]).map((item) => solveArtist(item)));
+      if ((data as Artist[]).length < limit) {
         break;
       }
       offset += limit;
@@ -417,16 +420,16 @@ export async function apiArtistSublist(): Promise<Artist[]> {
   return ret;
 }
 
-export async function apiCheckMusic(id: number): Promise<boolean> {
+export async function apiCheckMusic(id: number, br: number): Promise<boolean> {
   try {
     const { status, body } = await check_music(
-      Object.assign({ id }, baseQuery)
+      Object.assign({ id, br }, baseQuery)
     );
     if (status !== 200) {
       return false;
     }
     const { success } = body;
-    return success;
+    return success as boolean;
   } catch {
     return false;
   }
@@ -455,7 +458,10 @@ export async function apiFmTrash(id: number): Promise<boolean> {
   return false;
 }
 
-export async function apiLike(id: number, islike?: string): Promise<boolean> {
+export async function apiLike(
+  id: number,
+  islike?: "true" | "false"
+): Promise<boolean> {
   try {
     const { status } = await like(
       Object.assign({ id, like: islike }, baseQuery)
@@ -478,7 +484,7 @@ export async function apiLikelist(): Promise<number[]> {
       return [];
     }
     const { ids } = body;
-    return ids;
+    return ids as number[];
   } catch {
     return [];
   }
@@ -532,7 +538,7 @@ export async function apiLyric(id: number): Promise<LyricData> {
     if (status !== 200) {
       return { time, text };
     }
-    const lrc = body.lrc.lyric;
+    const lrc = (body.lrc as { lyric: "string" }).lyric;
     const lines = lrc.split("\n");
     let prev = 0;
     for (const line of lines) {
@@ -565,7 +571,9 @@ export async function apiPersonalFm(): Promise<SongsItem[]> {
       return [];
     }
     const { data } = body;
-    return data.map((song: AnotherSongItem) => solveAnotherSongItem(song));
+    return (data as AnotherSongItem[]).map((song) =>
+      solveAnotherSongItem(song)
+    );
   } catch {
     return [];
   }
@@ -583,7 +591,7 @@ export async function apiPersonalized(): Promise<PlaylistItem[]> {
       return [];
     }
     const { result } = body;
-    const ret = result.map((playlist: RawPlaylistItem) =>
+    const ret = (result as RawPlaylistItem[]).map((playlist) =>
       solvePlaylistItem(playlist)
     );
     apiCache.set(key, ret);
@@ -604,7 +612,9 @@ export async function apiPersonalizedNewsong(): Promise<SongsItem[]> {
       return [];
     }
     const { result } = body;
-    const ret = result.map(({ song }) => solveAnotherSongItem(song));
+    const ret = (result as { song: AnotherSongItem }[]).map(({ song }) =>
+      solveAnotherSongItem(song)
+    );
     apiCache.set(key, ret);
     return ret;
   } catch {}
@@ -628,12 +638,11 @@ export async function apiPlaylistCatlist(): Promise<PlaylistCatlist> {
     }
     const ret: PlaylistCatlist = {};
     const { sub, categories } = body;
-    for (const [key, value] of Object.entries(categories) as [
-      string,
-      string
-    ][]) {
-      ret[value] = sub
-        .filter((value: PlaylistCatlistItem) => `${value.category}` === key)
+    for (const [key, value] of Object.entries(
+      categories as { [key: string]: string }
+    )) {
+      ret[value] = (sub as PlaylistCatlistItem[])
+        .filter((value) => `${value.category}` === key)
         .map(({ name, hot }) => ({ name, hot }));
     }
     apiCache.set(key, ret);
@@ -682,20 +691,21 @@ export async function apiPlaylistDetail(id: number): Promise<SongsItem[]> {
       return [];
     }
     const { playlist, privileges } = body;
-    const { tracks, trackIds } = playlist;
+    const { tracks, trackIds } = playlist as {
+      tracks: SongsItem[];
+      trackIds: TrackIdsItem[];
+    };
     if (tracks.length === trackIds.length) {
       const ret: SongsItem[] = [];
-      for (let i = 0; i < privileges.length; ++i) {
-        if (privileges[i].st >= 0) {
+      for (let i = 0; i < (privileges as { st: number }[]).length; ++i) {
+        if ((privileges as { st: number }[])[i].st >= 0) {
           ret.push(solveSongItem(tracks[i]));
         }
       }
       apiCache.set(key, ret);
       return ret;
     }
-    const ret = await apiSongDetail(
-      trackIds.map((trackId: TrackIdsItem) => trackId.id)
-    );
+    const ret = await apiSongDetail(trackIds.map((trackId) => trackId.id));
     apiCache.set(key, ret);
     return ret;
   } catch {
@@ -705,7 +715,7 @@ export async function apiPlaylistDetail(id: number): Promise<SongsItem[]> {
 
 export async function apiPlaylistSubscribe(
   id: number,
-  t?: 1
+  t: 0 | 1
 ): Promise<boolean> {
   try {
     const { status } = await playlist_subscribe(
@@ -737,7 +747,7 @@ export async function apiPlaylistSubscribers(
       return [];
     }
     const { subscribers } = body;
-    const ret = subscribers.map((subscriber: UserDetail) =>
+    const ret = (subscribers as UserDetail[]).map((subscriber) =>
       solveUserDetail(subscriber)
     );
     apiCache.set(key, ret);
@@ -747,7 +757,7 @@ export async function apiPlaylistSubscribers(
 }
 
 export async function apiPlaylistTracks(
-  op: string,
+  op: "add" | "del",
   pid: number,
   tracks: number[]
 ): Promise<boolean> {
@@ -793,7 +803,9 @@ export async function apiPlaymodeIntelligenceList(
       return ret;
     }
     const { data } = body;
-    ret = data.map(({ songInfo }) => solveSongItem(songInfo));
+    ret = (data as { songInfo: SongsItem }[]).map(({ songInfo }) =>
+      solveSongItem(songInfo)
+    );
   } catch {}
   return ret;
 }
@@ -810,7 +822,7 @@ export async function apiRecommendResource(): Promise<PlaylistItem[]> {
       return [];
     }
     const { recommend } = body;
-    const ret = recommend.map((playlist: RawPlaylistItem) =>
+    const ret = (recommend as RawPlaylistItem[]).map((playlist) =>
       solvePlaylistItem(playlist)
     );
     apiCache.set(key, ret);
@@ -830,8 +842,10 @@ export async function apiRecommendSongs(): Promise<SongsItem[]> {
     if (status !== 200) {
       return [];
     }
-    const { dailySongs } = body.data;
-    const ret = dailySongs.map((song: SongsItem) => solveSongItem(song));
+    const { data } = body;
+    const ret = (data as { dailySongs: SongsItem[] }).dailySongs.map((song) =>
+      solveSongItem(song)
+    );
     apiCache.set(key, ret);
     return ret;
   } catch {}
@@ -852,7 +866,7 @@ export async function apiRelatedPlaylist(id: number): Promise<PlaylistItem[]> {
       return [];
     }
     const { playlists } = body;
-    const ret = playlists.map((playlist: RawPlaylistItem) =>
+    const ret = (playlists as RawPlaylistItem[]).map((playlist) =>
       solvePlaylistItem(playlist)
     );
     apiCache.set(key, ret);
@@ -901,8 +915,10 @@ export async function apiSearchSingle(
     if (status !== 200) {
       return [];
     }
-    const { songs } = body.result;
-    const ret = songs.map((song: SongsItem) => solveSongItem(song));
+    const { result } = body;
+    const ret = (result as { songs: SongsItem[] }).songs.map((song) =>
+      solveSongItem(song)
+    );
     apiCache.set(key, ret);
     return ret;
   } catch {}
@@ -929,8 +945,10 @@ export async function apiSearchAlbum(
     if (status !== 200) {
       return [];
     }
-    const { albums } = body.result;
-    const ret = albums.map((album: AlbumsItem) => solveAlbumsItem(album));
+    const { result } = body;
+    const ret = (result as { albums: AlbumsItem[] }).albums.map((album) =>
+      solveAlbumsItem(album)
+    );
     apiCache.set(key, ret);
     return ret;
   } catch {}
@@ -957,8 +975,8 @@ export async function apiSearchArtist(
     if (status !== 200) {
       return [];
     }
-    const { artists } = body.result;
-    const ret = artists.map((artist: Artist) =>
+    const { result } = body;
+    const ret = (result as { artists: Artist[] }).artists.map((artist) =>
       solveArtist({ ...artist, briefDesc: "" })
     );
     apiCache.set(key, ret);
@@ -987,10 +1005,10 @@ export async function apiSearchPlaylist(
     if (status !== 200) {
       return [];
     }
-    const { playlists } = body.result;
-    const ret = playlists.map((playlist: RawPlaylistItem) =>
-      solvePlaylistItem(playlist)
-    );
+    const { result } = body;
+    const ret = (result as {
+      playlists: RawPlaylistItem[];
+    }).playlists.map((playlist) => solvePlaylistItem(playlist));
     apiCache.set(key, ret);
     return ret;
   } catch {}
@@ -1011,10 +1029,12 @@ export async function apiSearchHotDetail(): Promise<
       return [];
     }
     const { data } = body;
-    const ret = data.map(({ searchWord, content }) => ({
-      searchWord,
-      content,
-    }));
+    const ret = (data as { searchWord: string; content: string }[]).map(
+      ({ searchWord, content }) => ({
+        searchWord,
+        content,
+      })
+    );
     apiCache.set(key, ret);
     return ret;
   } catch {}
@@ -1028,14 +1048,17 @@ export async function apiSearchSuggest(keywords: string): Promise<string[]> {
     return value as string[];
   }
   try {
+    const type = "mobile" as const;
     const { body, status } = await search_suggest(
-      Object.assign({ keywords, type: "mobile" }, baseQuery)
+      Object.assign({ keywords, type }, baseQuery)
     );
     if (status !== 200) {
       return [];
     }
-    const { allMatch } = body.result;
-    const ret = allMatch.map(({ keyword }) => keyword);
+    const { result } = body;
+    const ret = (result as { allMatch: { keyword: string }[] }).allMatch.map(
+      ({ keyword }) => keyword
+    );
     apiCache.set(key, ret);
     return ret;
   } catch {}
@@ -1056,7 +1079,7 @@ export async function apiSimiArtist(id: number): Promise<Artist[]> {
       return [];
     }
     const { artists } = body;
-    const ret = artists.map((artist: Artist) => solveArtist(artist));
+    const ret = (artists as Artist[]).map((artist) => solveArtist(artist));
     apiCache.set(key, ret);
     return ret;
   } catch {
@@ -1082,7 +1105,7 @@ export async function apiSimiPlaylist(
       return [];
     }
     const { playlists } = body;
-    const ret = playlists.map((playlist: RawPlaylistItem) =>
+    const ret = (playlists as RawPlaylistItem[]).map((playlist) =>
       solvePlaylistItem(playlist)
     );
     apiCache.set(key, ret);
@@ -1110,7 +1133,7 @@ export async function apiSimiSong(
       return [];
     }
     const { songs } = body;
-    const ret = songs.map((song: AnotherSongItem) =>
+    const ret = (songs as AnotherSongItem[]).map((song) =>
       solveAnotherSongItem(song)
     );
     apiCache.set(key, ret);
@@ -1141,9 +1164,9 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
           reject();
         }
         const { songs, privileges } = body;
-        for (let i = 0; i < privileges.length; ++i) {
-          if (privileges[i].st >= 0) {
-            ret.push(solveSongItem(songs[i]));
+        for (let i = 0; i < (privileges as { st: number }[]).length; ++i) {
+          if ((privileges as { st: number }[])[i].st >= 0) {
+            ret.push(solveSongItem((songs as SongsItem[])[i]));
           }
         }
         resolve(ret);
@@ -1176,7 +1199,7 @@ export async function apiSongUrl(trackIds: number[]): Promise<SongDetail[]> {
           reject();
         }
         const { data } = body;
-        resolve(data);
+        resolve(data as SongDetail[]);
       })
     );
   }
@@ -1204,7 +1227,9 @@ export async function apiTopAlbum(): Promise<AlbumsItem[]> {
       return [];
     }
     const { monthData } = body;
-    const ret = monthData.map((item: AlbumsItem) => solveAlbumsItem(item));
+    const ret = (monthData as AlbumsItem[]).map((item) =>
+      solveAlbumsItem(item)
+    );
     apiCache.set(key, ret);
     return ret;
   } catch {}
@@ -1228,7 +1253,7 @@ export async function apiTopArtists(
       return [];
     }
     const { artists } = body;
-    const ret = artists.map((artist: Artist) => solveArtist(artist));
+    const ret = (artists as Artist[]).map((artist) => solveArtist(artist));
     apiCache.set(key, ret);
     return ret;
   } catch {}
@@ -1253,7 +1278,7 @@ export async function apiTopPlaylist(
       return [];
     }
     const { playlists } = body;
-    const ret = playlists.map((playlist: PlaylistItem) =>
+    const ret = (playlists as PlaylistItem[]).map((playlist) =>
       solvePlaylistItem(playlist)
     );
     apiCache.set(key, ret);
@@ -1280,7 +1305,7 @@ export async function apiTopPlaylistHighquality(
       return [];
     }
     const { playlists } = body;
-    const ret = playlists.map((playlist: PlaylistItem) =>
+    const ret = (playlists as PlaylistItem[]).map((playlist) =>
       solvePlaylistItem(playlist)
     );
     apiCache.set(key, ret);
@@ -1309,7 +1334,9 @@ export async function apiTopSong(type: TopSong): Promise<SongsItem[]> {
       return [];
     }
     const { data } = body;
-    const ret = data.map((item: AnotherSongItem) => solveAnotherSongItem(item));
+    const ret = (data as AnotherSongItem[]).map((item) =>
+      solveAnotherSongItem(item)
+    );
     apiCache.set(key, ret);
     return ret;
   } catch {}
@@ -1328,7 +1355,9 @@ export async function apiToplist(): Promise<PlaylistItem[]> {
       return [];
     }
     const { list } = body;
-    const ret = list.map((item: RawPlaylistItem) => solvePlaylistItem(item));
+    const ret = (list as RawPlaylistItem[]).map((item) =>
+      solvePlaylistItem(item)
+    );
     apiCache.set(key, ret);
     return ret;
   } catch {}
@@ -1346,8 +1375,10 @@ export async function apiToplistArtist(): Promise<Artist[]> {
     if (status !== 200) {
       return [];
     }
-    const { artists } = body.list;
-    const ret = artists.map((artist: Artist) => solveArtist(artist));
+    const { list } = body;
+    const ret = (list as { artists: Artist[] }).artists.map((artist) =>
+      solveArtist(artist)
+    );
     apiCache.set(key, ret);
     return ret;
   } catch {}
@@ -1370,7 +1401,7 @@ export async function apiUserDetail(
       return undefined;
     }
     const { profile } = body;
-    const ret = solveUserDetail(profile);
+    const ret = solveUserDetail(profile as UserDetail);
     return ret;
   } catch {}
   return undefined;
@@ -1393,7 +1424,7 @@ export async function apiUserFolloweds(
       return [];
     }
     const { followeds } = body;
-    const ret = followeds.map((followed: UserDetail) =>
+    const ret = (followeds as UserDetail[]).map((followed) =>
       solveUserDetail(followed)
     );
     return ret;
@@ -1419,7 +1450,7 @@ export async function apiUserFollows(
       return [];
     }
     const { follow } = body;
-    const ret = follow.map((item: UserDetail) => solveUserDetail(item));
+    const ret = (follow as UserDetail[]).map((item) => solveUserDetail(item));
     return ret;
   } catch {}
   return [];
@@ -1439,7 +1470,7 @@ export async function apiUserPlaylist(uid: number): Promise<PlaylistItem[]> {
       return [];
     }
     const { playlist } = body;
-    const ret = playlist.map((playlist: RawPlaylistItem) =>
+    const ret = (playlist as RawPlaylistItem[]).map((playlist) =>
       solvePlaylistItem(playlist)
     );
     if (ret.length > 0) {
@@ -1461,10 +1492,12 @@ export async function apiUserRecord(
       return [];
     }
     const data = type ? body.weekData : body.allData;
-    return data.map(({ playCount, song }) => ({
-      count: playCount,
-      ...solveSongItem(song),
-    }));
+    return (data as { playCount: number; song: SongsItem }[]).map(
+      ({ playCount, song }) => ({
+        count: playCount,
+        ...solveSongItem(song),
+      })
+    );
   } catch {}
   return [];
 }

@@ -3,8 +3,6 @@ const path = require("path");
 
 const dir = path.join(".", "node_modules", "NeteaseCloudMusicApi");
 
-let data = [];
-
 fs.writeFileSync(
   path.join(dir, "module", "playlist_update.js"),
   `
@@ -39,6 +37,34 @@ module.exports = (query, request) => {
   })
 }`
 );
+
+fs.writeFileSync(
+  path.join(dir, "module_types", "song_detail.d.ts"),
+  `
+import { RequestBaseConfig } from './base'
+
+export interface SongDetailRequestConfig extends RequestBaseConfig {
+  ids: number[]
+}`
+);
+
+fs.writeFileSync(
+  path.join(dir, "module_types", "base.d.ts"),
+  `
+export interface APIBaseResponse {
+  code: number
+  cookie: string
+  [index: string]: unknown
+}
+
+export interface RequestBaseConfig {
+  cookie?: Object
+  realIP?: string // IPv4/IPv6 filled in X-Real-IP
+  proxy?: string // HTTP proxy
+}`
+);
+
+let data = [];
 
 fs.readdirSync(path.join(dir, "module"))
   .reverse()

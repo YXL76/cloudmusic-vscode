@@ -435,7 +435,7 @@ export async function pickArtist(
   if (pick.type === PickType.unsave) {
     return (input: MultiStepInput) =>
       confirmation(input, step + 1, async () => {
-        await apiArtistSub(id);
+        await apiArtistSub(id, 0);
       });
   }
   if (pick.type === PickType.save) {
@@ -544,7 +544,7 @@ export async function pickAlbum(
   if (pick.type === PickType.unsave) {
     return (input: MultiStepInput) =>
       confirmation(input, step + 1, async () => {
-        await apiAlbumSub(id);
+        await apiAlbumSub(id, 0);
       });
   }
   if (pick.type === PickType.save) {

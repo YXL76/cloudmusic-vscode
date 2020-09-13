@@ -434,7 +434,7 @@
   },
   "dependencies": {
     "@types/lodash.throttle": "^4.1.6",
-    "NeteaseCloudMusicApi": "^3.39.0",
+    "NeteaseCloudMusicApi": "^3.40.1",
     "array-unsort": "^1.1.6",
     "cacache": "^15.0.5",
     "dedupe": "^3.0.2",

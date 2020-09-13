@@ -53,7 +53,7 @@ export class AccountManager {
             phone: account,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             md5_password,
-            countrycode,
+            countrycode: countrycode || "86",
           })
         : await login({
             email: account,
@@ -63,7 +63,10 @@ export class AccountManager {
 
       if (status === 200) {
         const { cookie, profile } = body;
-        const { userId, nickname } = profile;
+        const { userId, nickname } = profile as {
+          userId: number;
+          nickname: string;
+        };
         baseQuery.cookie = cookieToJson(cookie);
         this.uid = userId;
         this.nickname = nickname;
