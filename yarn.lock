@@ -1560,7 +1560,7 @@ __metadata:
     vscode-nls: ^5.0.0
     vscode-nls-dev: 3.3.2
     vscode-test: 1.4.0
-    webpack: 5.0.0-beta.30
+    webpack: 5.0.0-beta.31
     webpack-cli: 4.0.0-beta.8
   languageName: unknown
   linkType: soft
@@ -2120,13 +2120,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:5.0.0-beta.10":
-  version: 5.0.0-beta.10
-  resolution: "enhanced-resolve@npm:5.0.0-beta.10"
+"enhanced-resolve@npm:5.0.0-beta.12":
+  version: 5.0.0-beta.12
+  resolution: "enhanced-resolve@npm:5.0.0-beta.12"
   dependencies:
     graceful-fs: ^4.2.0
     tapable: ^2.0.0-beta.10
-  checksum: 25ecaee8cc0bcd45a4c1c52984f60e8e51e039f70a7868e3d164a7bfc5f6d9d4781a2b2cbd079622eb74b793a0f6967f62d4e5253b50cb489f0e52ca4759c535
+  checksum: c296362ef2efb100cf16867bf137c3b2bb88aad40f82c66eeac90b1f44a4fdf01308371648332bb107f6c4fbaa042e85ceb8350022d8e23f16edb9b40754d029
   languageName: node
   linkType: hard
 
@@ -7750,9 +7750,9 @@ typescript@^3.9.5:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.0.0-beta.30":
-  version: 5.0.0-beta.30
-  resolution: "webpack@npm:5.0.0-beta.30"
+"webpack@npm:5.0.0-beta.31":
+  version: 5.0.0-beta.31
+  resolution: "webpack@npm:5.0.0-beta.31"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.45
@@ -7762,7 +7762,7 @@ typescript@^3.9.5:
     "@webassemblyjs/wasm-parser": 1.9.0
     acorn: ^7.4.0
     chrome-trace-event: ^1.0.2
-    enhanced-resolve: 5.0.0-beta.10
+    enhanced-resolve: 5.0.0-beta.12
     eslint-scope: ^5.1.0
     events: ^3.2.0
     glob-to-regexp: ^0.4.1
@@ -7784,7 +7784,7 @@ typescript@^3.9.5:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: fc95c4cfe9e0954d5029f8d62bb1b089c92970dccaef3df864b222b65c7cce89c8bbd3fa6124ff59e8c416709ec9d0caa1c1c33cbf2364b45de06cc00099ca44
+  checksum: a8445f70cc6442ff40c379f482ce3a5523c3d2d08f2f55ca379685172536a3007ed95b2f19e3af2764c58fcd51c63edc98d7cdf65ba2166e55e3b26358debe4c
   languageName: node
   linkType: hard
 
