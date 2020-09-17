@@ -39,7 +39,11 @@ import {
   player,
 } from "../util";
 import { IsLike, PersonalFm, lock } from "../state";
-import { PlaylistProvider, QueueItemTreeItem } from "../provider";
+import {
+  PlaylistProvider,
+  QueueItemTreeItem,
+  QueueProvider,
+} from "../provider";
 import {
   QuickPickItem,
   TreeItemCollapsibleState,
@@ -623,6 +627,10 @@ export async function pickPlaylist(
         type: PickType.similar,
       },
       {
+        label: `${ICON.add} ${i18n.word.addToQueue}`,
+        type: PickType.add,
+      },
+      {
         label: `${ICON.save} ${i18n.word.save}`,
         type: PickType.save,
       },
@@ -647,6 +655,11 @@ export async function pickPlaylist(
   if (pick.type === PickType.user) {
     return (input: MultiStepInput) =>
       pickUser(input, step + 1, pick.id as number);
+  }
+  if (pick.type === PickType.add) {
+    QueueProvider.refresh(async () => {
+      QueueProvider.add(songsItem2TreeItem(id, songs));
+    });
   }
   if (pick.type === PickType.save) {
     await apiPlaylistSubscribe(id, 1);
