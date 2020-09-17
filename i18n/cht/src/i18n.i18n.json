@@ -14,6 +14,7 @@
   "sentence.hint.password": "請輸入密碼",
   "sentence.hint.search": "請選擇搜索類型",
   "sentence.hint.signIn": "請選擇登入管道",
+  "sentence.hint.trySignIn": "發現到您還沒登入",
   "sentence.hint.volume": "請輸入音量",
   "sentence.info.alreadySignIn": "帳號已登入",
   "sentence.label.cellphone": "使用手機登入",

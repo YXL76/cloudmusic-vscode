@@ -14,6 +14,7 @@
   "sentence.hint.password": "请输入密码",
   "sentence.hint.search": "请选择搜索类型",
   "sentence.hint.signIn": "请选择登录方式",
+  "sentence.hint.trySignIn": "发现到您还没登录",
   "sentence.hint.volume": "请输入音量",
   "sentence.info.alreadySignIn": "帐号已登录",
   "sentence.label.cellphone": "使用手机登录",

@@ -1,6 +1,14 @@
-import { ExtensionContext, ProgressLocation, window, workspace } from "vscode";
+import {
+  ExtensionContext,
+  ProgressLocation,
+  commands,
+  window,
+  workspace,
+} from "vscode";
 import { LyricCache, MusicCache, player } from "./util";
-import { TMP_DIR } from "./constant";
+import { SETTING_DIR, TMP_DIR } from "./constant";
+import { LoggedIn } from "./state";
+import { i18n } from "./i18n";
 import { steps } from "./activate";
 
 export function activate(context: ExtensionContext): void {
@@ -11,6 +19,9 @@ export function activate(context: ExtensionContext): void {
       cancellable: true,
     },
     async (progress) => {
+      await workspace.fs.createDirectory(SETTING_DIR);
+      await workspace.fs.createDirectory(TMP_DIR);
+
       let percentage = 0;
       const unit = Math.floor(100 / steps.length);
 
@@ -27,6 +38,19 @@ export function activate(context: ExtensionContext): void {
         increment: percentage,
         message: "Initialization ended",
       });
+
+      if (!LoggedIn.get()) {
+        window
+          .showInformationMessage(
+            i18n.sentence.hint.trySignIn,
+            i18n.word.signIn
+          )
+          .then((result) => {
+            if (result === i18n.word.signIn) {
+              commands.executeCommand("cloudmusic.signin");
+            }
+          });
+      }
 
       return new Promise((resolve) => {
         setTimeout(resolve, 1024);

@@ -50,6 +50,10 @@ export const i18n = {
       ),
       search: localize("sentence.hint.search", "Please choose search type"),
       signIn: localize("sentence.hint.signIn", "Select the method to sign in"),
+      trySignIn: localize(
+        "sentence.hint.trySignIn",
+        "Found that you have not logged in"
+      ),
       volume: localize("sentence.hint.volume", "Please enter volume"),
     },
     info: {
