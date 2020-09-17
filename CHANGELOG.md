@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [4.6.1] - 2020-09-17
+
+### Added
+
+- Prompt the user to log in after initialization
+
 ## [4.6.0] - 2020-09-08
 
 ### Added
