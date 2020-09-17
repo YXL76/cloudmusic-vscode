@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [4.6.2] - 2020-09-17
+
+### Added
+
+- Add `addToQueue` item in playlist pick ([#50](https://github.com/YXL76/cloudmusic-vscode/issues/50))
+
 ## [4.6.1] - 2020-09-17
 
 ### Added
@@ -27,7 +33,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Changed
 
 - Use `globalState` api instead of `fs-based` storage
-- Improve the speed of network data acquisition ([#34](<(https://github.com/YXL76/cloudmusic-vscode/issues/34)>)
+- Improve the speed of network data acquisition ([#34](https://github.com/YXL76/cloudmusic-vscode/issues/34))
 
 ## [4.4.1] - 2020-09-04
 
