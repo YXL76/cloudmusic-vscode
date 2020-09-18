@@ -1560,7 +1560,7 @@ __metadata:
     vscode-nls: ^5.0.0
     vscode-nls-dev: 3.3.2
     vscode-test: 1.4.0
-    webpack: 5.0.0-beta.31
+    webpack: 5.0.0-beta.32
     webpack-cli: 4.0.0-beta.8
   languageName: unknown
   linkType: soft
@@ -2120,16 +2120,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:5.0.0-beta.12":
-  version: 5.0.0-beta.12
-  resolution: "enhanced-resolve@npm:5.0.0-beta.12"
-  dependencies:
-    graceful-fs: ^4.2.0
-    tapable: ^2.0.0-beta.10
-  checksum: c296362ef2efb100cf16867bf137c3b2bb88aad40f82c66eeac90b1f44a4fdf01308371648332bb107f6c4fbaa042e85ceb8350022d8e23f16edb9b40754d029
-  languageName: node
-  linkType: hard
-
 "enhanced-resolve@npm:^4.0.0":
   version: 4.2.0
   resolution: "enhanced-resolve@npm:4.2.0"
@@ -2138,6 +2128,16 @@ __metadata:
     memory-fs: ^0.5.0
     tapable: ^1.0.0
   checksum: 7af292a11b10a431a6bdb83c09f5505a4c906882be85d9f670469b875f9c7ab0d25766b7b6eacffbb7de3508c422d443be88f7b5783459a5a4a7a9f99a85aa38
+  languageName: node
+  linkType: hard
+
+"enhanced-resolve@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "enhanced-resolve@npm:5.0.0"
+  dependencies:
+    graceful-fs: ^4.2.4
+    tapable: ^2.0.0
+  checksum: ad0535212c74a0f5fbbaa3cd0a94619b6ffb8bd000b32597b03a91b0518af62b770e9c8c5863031dc6e7c4598fe4da4064e740cc2987c3432b71636d71091c92
   languageName: node
   linkType: hard
 
@@ -6989,10 +6989,10 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"tapable@npm:^2.0.0-beta.10, tapable@npm:^2.0.0-beta.11":
-  version: 2.0.0-beta.11
-  resolution: "tapable@npm:2.0.0-beta.11"
-  checksum: e4c750918ab2804dc10ad7088a0f30fbe812faff4134dece91a2804c099372c90bea70fe7f14c92f8c27c91ce82b2b266f1574f5fd5fee6401d774f79dbf9a40
+"tapable@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "tapable@npm:2.0.0"
+  checksum: e6321280f9ace1043b2d2e893b998454227f27da05e5e1f7c92a67752d6a87e2ca529aeb516f31a21c1a92d2532a77518423b7df7aaf7acd3a8df925f02b4c66
   languageName: node
   linkType: hard
 
@@ -7671,13 +7671,13 @@ typescript@^3.9.5:
   languageName: node
   linkType: hard
 
-"watchpack@npm:2.0.0-beta.15":
-  version: 2.0.0-beta.15
-  resolution: "watchpack@npm:2.0.0-beta.15"
+"watchpack@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "watchpack@npm:2.0.0"
   dependencies:
     glob-to-regexp: ^0.4.1
     graceful-fs: ^4.1.2
-  checksum: 61145a3f87e3f655103bc45f18683cc6ea3de7e21db55508d6cf0c697fe61acbb234cc3d1decc33c410da9b3b50d67f0efc36b483fe5e9503d8230f3b4b6601d
+  checksum: de23b15ad1e07b56866ff4f1281692ef5ee3b0f114b3dd1d1beb45271e3a4510a7853ea1824fe1eb232e23a3765a5f9c5ffcc51040c85433664851e1d9c28083
   languageName: node
   linkType: hard
 
@@ -7730,16 +7730,6 @@ typescript@^3.9.5:
   languageName: node
   linkType: hard
 
-"webpack-sources@npm:2.0.0-beta.10":
-  version: 2.0.0-beta.10
-  resolution: "webpack-sources@npm:2.0.0-beta.10"
-  dependencies:
-    source-list-map: ^2.0.1
-    source-map: ^0.6.1
-  checksum: ecfe1f3dc81039de246abe27b8cf3f78b38196e43c29754c47b7e0833905ff6781bb022784b80b4dbe47c92822a1596a10ad2f8b1d949ecd7dfc8accd8ee69da
-  languageName: node
-  linkType: hard
-
 "webpack-sources@npm:^1.4.3":
   version: 1.4.3
   resolution: "webpack-sources@npm:1.4.3"
@@ -7750,9 +7740,19 @@ typescript@^3.9.5:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.0.0-beta.31":
-  version: 5.0.0-beta.31
-  resolution: "webpack@npm:5.0.0-beta.31"
+"webpack-sources@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "webpack-sources@npm:2.0.0"
+  dependencies:
+    source-list-map: ^2.0.1
+    source-map: ^0.6.1
+  checksum: 9c6d99ca7d98fb013a49edbf628e266a46528ff41ae74f35782a1f8e82b4f23bdf0491498fba245978906177f616a4fe5bf1f3b15d89e8a6ab40e2d044422062
+  languageName: node
+  linkType: hard
+
+"webpack@npm:5.0.0-beta.32":
+  version: 5.0.0-beta.32
+  resolution: "webpack@npm:5.0.0-beta.32"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.45
@@ -7762,7 +7762,7 @@ typescript@^3.9.5:
     "@webassemblyjs/wasm-parser": 1.9.0
     acorn: ^7.4.0
     chrome-trace-event: ^1.0.2
-    enhanced-resolve: 5.0.0-beta.12
+    enhanced-resolve: ^5.0.0
     eslint-scope: ^5.1.0
     events: ^3.2.0
     glob-to-regexp: ^0.4.1
@@ -7773,10 +7773,10 @@ typescript@^3.9.5:
     neo-async: ^2.6.2
     pkg-dir: ^4.2.0
     schema-utils: ^2.7.0
-    tapable: ^2.0.0-beta.11
+    tapable: ^2.0.0
     terser-webpack-plugin: ^4.1.0
-    watchpack: 2.0.0-beta.15
-    webpack-sources: 2.0.0-beta.10
+    watchpack: ^2.0.0
+    webpack-sources: ^2.0.0
   peerDependencies:
     webpack-cli: "*"
   peerDependenciesMeta:
@@ -7784,7 +7784,7 @@ typescript@^3.9.5:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: a8445f70cc6442ff40c379f482ce3a5523c3d2d08f2f55ca379685172536a3007ed95b2f19e3af2764c58fcd51c63edc98d7cdf65ba2166e55e3b26358debe4c
+  checksum: 121ed07c322d6527180505b00f3f8cc0c4a459b1e16364e740a43ca4476dd5bae5fd10406eb09d1444e9a23371c256a2a19a060cccd76e5e1537519cb1e9d210
   languageName: node
   linkType: hard
 
