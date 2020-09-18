@@ -94,19 +94,33 @@ export class MultiStepInput {
     return this.steps.pop();
   }
 
-  async showQuickPick<T extends QuickPickItem>({
-    title,
-    step,
-    totalSteps,
-    items,
-    activeItems,
-    placeholder,
-    changeCallback,
-  }: QuickPickParameters<T>): Promise<T> {
+  async showQuickPick<T extends QuickPickItem>({}: QuickPickParameters<
+    T
+  >): Promise<T>;
+  async showQuickPick<T extends QuickPickItem>(
+    {}: QuickPickParameters<T>,
+    canSelectMany: true
+  ): Promise<readonly T[]>;
+
+  async showQuickPick<T extends QuickPickItem>(
+    {
+      title,
+      step,
+      totalSteps,
+      items,
+      activeItems,
+      placeholder,
+      changeCallback,
+    }: QuickPickParameters<T>,
+    canSelectMany?: true
+  ): Promise<readonly T[] | T> {
     const disposables: Disposable[] = [];
     try {
-      return await new Promise<T>((resolve, reject) => {
+      return await new Promise<readonly T[] | T>((resolve, reject) => {
         const input = window.createQuickPick<T>();
+        input.canSelectMany = canSelectMany ?? false;
+        input.matchOnDescription = true;
+        input.matchOnDetail = true;
         input.title = title;
         input.step = step;
         input.totalSteps = Math.max(
@@ -131,8 +145,10 @@ export class MultiStepInput {
               reject(InputFlowAction.forward);
             }
           }),
-          input.onDidChangeSelection((items) => {
-            resolve(items[0]);
+          input.onDidAccept(() => {
+            resolve(
+              canSelectMany ? input.selectedItems : input.selectedItems[0]
+            );
           }),
           input.onDidHide(async () => {
             reject(InputFlowAction.cancel);

@@ -323,6 +323,30 @@ export async function pickSong(
   return input.pop() as InputStep;
 }
 
+export async function pickSongMany(
+  input: MultiStepInput,
+  step: number,
+  ids: number[]
+): Promise<InputStep> {
+  const pick = await input.showQuickPick({
+    title: i18n.word.song,
+    step,
+    items: [
+      {
+        label: `${ICON.add} ${i18n.word.addToQueue}`,
+        type: PickType.add,
+      },
+    ],
+  });
+  if (pick.type === PickType.add) {
+    QueueProvider.refresh(async () => {
+      QueueProvider.add(songsItem2TreeItem(0, await apiSongDetail(ids)));
+    });
+  }
+  input.pop();
+  return input.pop() as InputStep;
+}
+
 async function pickSimiSong(
   input: MultiStepInput,
   step: number,
@@ -362,13 +386,26 @@ export async function pickSongs(
   step: number,
   songs: SongsItem[]
 ): Promise<InputStep> {
-  const pick = await input.showQuickPick({
-    title: i18n.word.song,
-    step,
-    items: pickSongItems(songs),
-  });
-  input.pop();
-  return (input: MultiStepInput) => pickSong(input, step + 1, pick.id);
+  const pick = await input.showQuickPick(
+    {
+      title: i18n.word.song,
+      step,
+      items: pickSongItems(songs),
+    },
+    true
+  );
+  if (pick.length === 0) {
+    return input.pop() as InputStep;
+  }
+  if (pick.length === 1) {
+    return (input: MultiStepInput) => pickSong(input, step + 1, pick[0].id);
+  }
+  return (input: MultiStepInput) =>
+    pickSongMany(
+      input,
+      step + 1,
+      pick.map(({ id }) => id)
+    );
 }
 
 export async function pickArtist(
