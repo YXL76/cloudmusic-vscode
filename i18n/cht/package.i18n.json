@@ -1,7 +1,7 @@
 {
   "cloudmusic.commands.cloudmusic.account.title": "帳號",
   "cloudmusic.commands.cloudmusic.addPlaylist.title": "添加",
-  "cloudmusic.commands.cloudmusic.addSong.title": "添加",
+  "cloudmusic.commands.cloudmusic.addSong.title": "添加到隊列",
   "cloudmusic.commands.cloudmusic.clearQueue.title": "清空",
   "cloudmusic.commands.cloudmusic.createPlaylist.title": "創建歌單",
   "cloudmusic.commands.cloudmusic.dailyCheck.title": "簽到",
