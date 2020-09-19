@@ -6,6 +6,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [4.6.3] - 2020-09-19
+
+### Added
+
+- Use `canSelectMany` in PickSongs ([#50](https://github.com/YXL76/cloudmusic-vscode/issues/50))
+- Add all inline commands to the context menu ([#43](https://github.com/YXL76/cloudmusic-vscode/issues/43))
+- Add buttons to replace the items to turn pages
+
 ## [4.6.2] - 2020-09-17
 
 ### Added
