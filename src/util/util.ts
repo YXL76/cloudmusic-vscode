@@ -11,6 +11,7 @@ import {
   UserDetail,
 } from "../constant";
 import {
+  ButtonAction,
   InputStep,
   LocalCache,
   MultiStepInput,
@@ -355,25 +356,24 @@ async function pickSimiSong(
 ): Promise<InputStep> {
   const limit = 50;
   const songs = await apiSimiSong(id, limit, offset);
-  const pick = await input.showQuickPick({
-    title: i18n.word.similarSongs,
-    step,
-    items: [
-      ...(offset > 0
-        ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, id: -1 }]
-        : []),
-      ...pickSongItems(songs),
-      ...(songs.length === limit
-        ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, id: -2 }]
-        : []),
-    ],
-  });
-  if (pick.id === -1) {
+  const pick = await input.showQuickPick(
+    {
+      title: i18n.word.similarSongs,
+      step,
+      items: pickSongItems(songs),
+    },
+    undefined,
+    {
+      previous: offset > 0,
+      next: songs.length === limit,
+    }
+  );
+  if (pick === ButtonAction.previous) {
     input.pop();
     return (input: MultiStepInput) =>
       pickSimiSong(input, step, id, offset - limit);
   }
-  if (pick.id === -2) {
+  if (pick === ButtonAction.next) {
     input.pop();
     return (input: MultiStepInput) =>
       pickSimiSong(input, step, id, offset + limit);
@@ -492,31 +492,24 @@ export async function pickArtist(
   ): Promise<InputStep> {
     const limit = 100;
     const songs = await apiArtistSongs(id, limit, offset);
-    const pick = await input.showQuickPick({
-      title: i18n.word.song,
-      step,
-      items: [
-        ...(offset > 0
-          ? [
-              {
-                label: `$(arrow-up) ${i18n.word.previousPage}`,
-                id: -1,
-                item: {},
-              },
-            ]
-          : []),
-        ...pickSongItems(songs),
-        ...(songs.length === limit
-          ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, id: -2, item: {} }]
-          : []),
-      ],
-    });
-    if (pick.id === -1) {
+    const pick = await input.showQuickPick(
+      {
+        title: i18n.word.song,
+        step,
+        items: pickSongItems(songs),
+      },
+      undefined,
+      {
+        previous: offset > 0,
+        next: songs.length === limit,
+      }
+    );
+    if (pick === ButtonAction.previous) {
       input.pop();
       return (input: MultiStepInput) =>
         pickAllSongs(input, step, id, offset - limit);
     }
-    if (pick.id === -2) {
+    if (pick === ButtonAction.next) {
       input.pop();
       return (input: MultiStepInput) =>
         pickAllSongs(input, step, id, offset + limit);
@@ -712,25 +705,24 @@ async function pickSimiPlaylists(
 ): Promise<InputStep> {
   const limit = 50;
   const playlists = await apiSimiPlaylist(id, limit, offset);
-  const pick = await input.showQuickPick({
-    title: i18n.word.similarPlaylists,
-    step,
-    items: [
-      ...(offset > 0
-        ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, id: -1, item: {} }]
-        : []),
-      ...pickPlaylistItems(playlists),
-      ...(playlists.length === limit
-        ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, id: -2, item: {} }]
-        : []),
-    ],
-  });
-  if (pick.id === -1) {
+  const pick = await input.showQuickPick(
+    {
+      title: i18n.word.similarPlaylists,
+      step,
+      items: pickPlaylistItems(playlists),
+    },
+    undefined,
+    {
+      previous: offset > 0,
+      next: playlists.length === limit,
+    }
+  );
+  if (pick === ButtonAction.previous) {
     input.pop();
     return (input: MultiStepInput) =>
       pickSimiPlaylists(input, step, id, offset - limit);
   }
-  if (pick.id === -2) {
+  if (pick === ButtonAction.next) {
     input.pop();
     return (input: MultiStepInput) =>
       pickSimiPlaylists(input, step, id, offset + limit);
@@ -852,25 +844,24 @@ export async function pickUsers(
   ...args: any[]
 ): Promise<InputStep> {
   const users = await func(...args, limit, offset);
-  const pick = await input.showQuickPick({
-    title: i18n.word.user,
-    step,
-    items: [
-      ...(pagination && offset > 0
-        ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, id: -1 }]
-        : []),
-      ...pickUserDetails(users),
-      ...(pagination && users.length === limit
-        ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, id: -2 }]
-        : []),
-    ],
-  });
-  if (pick.id === -1) {
+  const pick = await input.showQuickPick(
+    {
+      title: i18n.word.user,
+      step,
+      items: pickUserDetails(users),
+    },
+    undefined,
+    {
+      previous: offset > 0,
+      next: users.length === limit,
+    }
+  );
+  if (pick === ButtonAction.previous) {
     input.pop();
     return (input: MultiStepInput) =>
       pickUsers(input, step, func, pagination, offset - limit, args);
   }
-  if (pick.id === -2) {
+  if (pick === ButtonAction.next) {
     input.pop();
     return (input: MultiStepInput) =>
       pickUsers(input, step, func, pagination, offset + limit, args);
