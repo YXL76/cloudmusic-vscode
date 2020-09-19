@@ -39,10 +39,34 @@ interface InputBoxParameters {
   changeCallback?: (input: InputBox, value: string) => void;
 }
 
-const forwordButton: QuickInputButton = {
-  iconPath: new ThemeIcon("arrow-right"),
-  tooltip: i18n.word.forword,
+const pickButtons: {
+  forward: QuickInputButton;
+  previous: QuickInputButton;
+  next: QuickInputButton;
+} = {
+  forward: {
+    iconPath: new ThemeIcon("arrow-right"),
+    tooltip: i18n.word.forward,
+  },
+  previous: {
+    iconPath: new ThemeIcon("arrow-up"),
+    tooltip: i18n.word.previousPage,
+  },
+  next: {
+    iconPath: new ThemeIcon("arrow-down"),
+    tooltip: i18n.word.nextPage,
+  },
 };
+
+export enum ButtonAction {
+  previous,
+  next,
+}
+
+interface ButtonOption {
+  previous?: boolean;
+  next?: boolean;
+}
 
 export class MultiStepInput {
   static async run(start: InputStep): Promise<void> {
@@ -94,61 +118,106 @@ export class MultiStepInput {
     return this.steps.pop();
   }
 
-  async showQuickPick<T extends QuickPickItem>({
-    title,
-    step,
-    totalSteps,
-    items,
-    activeItems,
-    placeholder,
-    changeCallback,
-  }: QuickPickParameters<T>): Promise<T> {
+  async showQuickPick<T extends QuickPickItem>({}: QuickPickParameters<
+    T
+  >): Promise<T>;
+  async showQuickPick<T extends QuickPickItem>(
+    {}: QuickPickParameters<T>,
+    canSelectMany: true
+  ): Promise<readonly T[]>;
+  async showQuickPick<T extends QuickPickItem>(
+    {}: QuickPickParameters<T>,
+    canSelectMany: undefined,
+    buttons: ButtonOption
+  ): Promise<T | ButtonAction>;
+  async showQuickPick<T extends QuickPickItem>(
+    {}: QuickPickParameters<T>,
+    canSelectMany: true,
+    buttons: ButtonOption
+  ): Promise<readonly T[] | ButtonAction>;
+
+  async showQuickPick<T extends QuickPickItem>(
+    {
+      title,
+      step,
+      totalSteps,
+      items,
+      activeItems,
+      placeholder,
+      changeCallback,
+    }: QuickPickParameters<T>,
+    canSelectMany?: true,
+    buttons?: ButtonOption
+  ): Promise<readonly T[] | T | ButtonAction> {
     const disposables: Disposable[] = [];
     try {
-      return await new Promise<T>((resolve, reject) => {
-        const input = window.createQuickPick<T>();
-        input.title = title;
-        input.step = step;
-        input.totalSteps = Math.max(
-          totalSteps || 1,
-          this.step,
-          this.steps.length
-        );
-        input.placeholder = placeholder;
-        input.items = items;
-        if (activeItems) {
-          input.activeItems = activeItems;
-        }
-        input.buttons = [
-          ...(this.step > 1 ? [QuickInputButtons.Back] : []),
-          ...(this.step < this.steps.length ? [forwordButton] : []),
-        ];
-        disposables.push(
-          input.onDidTriggerButton((item) => {
-            if (item === QuickInputButtons.Back) {
-              reject(InputFlowAction.back);
-            } else {
-              reject(InputFlowAction.forward);
-            }
-          }),
-          input.onDidChangeSelection((items) => {
-            resolve(items[0]);
-          }),
-          input.onDidHide(async () => {
-            reject(InputFlowAction.cancel);
-          })
-        );
-        if (changeCallback) {
-          disposables.push(
-            input.onDidChangeValue((value) => changeCallback(input, value))
+      return await new Promise<readonly T[] | T | ButtonAction>(
+        (resolve, reject) => {
+          const input = window.createQuickPick<T>();
+          input.canSelectMany = canSelectMany ?? false;
+          input.matchOnDescription = true;
+          input.matchOnDetail = true;
+          input.ignoreFocusOut = true;
+          input.title = title;
+          input.step = step;
+          input.totalSteps = Math.max(
+            totalSteps || 1,
+            this.step,
+            this.steps.length
           );
+          input.placeholder = placeholder;
+          input.items = items;
+          if (activeItems) {
+            input.activeItems = activeItems;
+          }
+          const button: QuickInputButton[] = [];
+          if (buttons) {
+            const { next, previous } = buttons;
+            if (previous) {
+              button.push(pickButtons.previous);
+            }
+            if (next) {
+              button.push(pickButtons.next);
+            }
+          }
+          input.buttons = [
+            ...(this.step > 1 ? [QuickInputButtons.Back] : []),
+            ...button,
+            ...(this.step < this.steps.length ? [pickButtons.forward] : []),
+          ];
+          disposables.push(
+            input.onDidTriggerButton((item) => {
+              if (item === QuickInputButtons.Back) {
+                reject(InputFlowAction.back);
+              } else if (item === pickButtons.forward) {
+                reject(InputFlowAction.forward);
+              } else if (item === pickButtons.previous) {
+                resolve(ButtonAction.previous);
+              } else {
+                resolve(ButtonAction.next);
+              }
+            }),
+            input.onDidAccept(() => {
+              resolve(
+                canSelectMany ? input.selectedItems : input.selectedItems[0]
+              );
+            }),
+            input.onDidHide(async () => {
+              reject(InputFlowAction.cancel);
+            })
+          );
+          if (changeCallback) {
+            disposables.push(
+              input.onDidChangeValue((value) => changeCallback(input, value))
+            );
+          }
+          if (this.current) {
+            this.current.dispose();
+          }
+          this.current = input;
+          this.current.show();
         }
-        if (this.current) {
-          this.current.dispose();
-        }
-        this.current = input;
-        this.current.show();
-      });
+      );
     } finally {
       disposables.forEach((d) => d.dispose());
     }
@@ -167,6 +236,7 @@ export class MultiStepInput {
     try {
       return await new Promise<string>((resolve, reject) => {
         const input = window.createInputBox();
+        input.ignoreFocusOut = true;
         input.title = title;
         input.step = step;
         input.totalSteps = Math.max(
@@ -178,7 +248,7 @@ export class MultiStepInput {
         input.prompt = prompt;
         input.buttons = [
           ...(this.step > 1 ? [QuickInputButtons.Back] : []),
-          ...(this.step < this.steps.length ? [forwordButton] : []),
+          ...(this.step < this.steps.length ? [pickButtons.forward] : []),
         ];
         input.password = password || false;
         disposables.push(

@@ -4,6 +4,7 @@ import {
   ArtistArea,
   ArtistInitial,
   ArtistType,
+  ButtonAction,
   MultiStepInput,
   TopSong,
   apiAlbumNewest,
@@ -384,26 +385,25 @@ export function account(context: ExtensionContext): void {
         const playlists = highquality
           ? await apiTopPlaylistHighquality(cat, limit, offset)
           : await apiTopPlaylist(cat, limit, offset);
-        const pick = await input.showQuickPick({
-          title: i18n.word.playlist,
-          step: 5,
-          totalSteps: 6,
-          items: [
-            ...(offset > 0
-              ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, item: -1 }]
-              : []),
-            ...pickPlaylistItems(playlists),
-            ...(playlists.length === limit
-              ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, item: -2 }]
-              : []),
-          ],
-        });
-        if (pick.item === -1) {
+        const pick = await input.showQuickPick(
+          {
+            title: i18n.word.playlist,
+            step: 5,
+            totalSteps: 6,
+            items: pickPlaylistItems(playlists),
+          },
+          undefined,
+          {
+            previous: offset > 0,
+            next: playlists.length === limit,
+          }
+        );
+        if (pick === ButtonAction.previous) {
           input.pop();
           return (input: MultiStepInput) =>
             pickAllPlaylists(input, offset - limit);
         }
-        if (pick.item === -2) {
+        if (pick === ButtonAction.next) {
           input.pop();
           return (input: MultiStepInput) =>
             pickAllPlaylists(input, offset + limit);
@@ -536,26 +536,25 @@ export function account(context: ExtensionContext): void {
       async function pickAllArtist(input: MultiStepInput, offset: number) {
         const limit = 50;
         const artists = await apiArtistList(type, area, initial, limit, offset);
-        const pick = await input.showQuickPick({
-          title: i18n.word.artist,
-          step: 6,
-          totalSteps: 7,
-          items: [
-            ...(offset > 0
-              ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, id: -1 }]
-              : []),
-            ...pickArtistItems(artists),
-            ...(artists.length === limit
-              ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, id: -2 }]
-              : []),
-          ],
-        });
-        if (pick.id === -1) {
+        const pick = await input.showQuickPick(
+          {
+            title: i18n.word.artist,
+            step: 6,
+            totalSteps: 7,
+            items: pickArtistItems(artists),
+          },
+          undefined,
+          {
+            previous: offset > 0,
+            next: artists.length === limit,
+          }
+        );
+        if (pick === ButtonAction.previous) {
           input.pop();
           return (input: MultiStepInput) =>
             pickAllArtist(input, offset - limit);
         }
-        if (pick.id === -2) {
+        if (pick === ButtonAction.next) {
           input.pop();
           return (input: MultiStepInput) =>
             pickAllArtist(input, offset + limit);

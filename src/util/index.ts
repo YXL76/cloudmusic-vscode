@@ -1,4 +1,4 @@
-export { InputStep, MultiStepInput } from "./multiStepInput";
+export { ButtonAction, InputStep, MultiStepInput } from "./multiStepInput";
 export { LocalCache, LyricCache, MusicCache, apiCache } from "./cache";
 export {
   apiAlbum,
@@ -82,6 +82,7 @@ export {
   pickPlaylists,
   pickSong,
   pickSongItems,
+  pickSongMany,
   pickSongs,
   pickUser,
   pickUserDetails,

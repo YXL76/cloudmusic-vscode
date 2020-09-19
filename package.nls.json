@@ -1,7 +1,7 @@
 {
   "cloudmusic.commands.cloudmusic.account.title": "Account",
   "cloudmusic.commands.cloudmusic.addPlaylist.title": "Add",
-  "cloudmusic.commands.cloudmusic.addSong.title": "Add",
+  "cloudmusic.commands.cloudmusic.addSong.title": "Add to queue",
   "cloudmusic.commands.cloudmusic.clearQueue.title": "Clear",
   "cloudmusic.commands.cloudmusic.createPlaylist.title": "Create playlist",
   "cloudmusic.commands.cloudmusic.dailyCheck.title": "Daily check",

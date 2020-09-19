@@ -1,6 +1,5 @@
-import { ExtensionContext, commands } from "vscode";
-import { ICON, PlaylistItem } from "../../constant";
 import {
+  ButtonAction,
   InputStep,
   MultiStepInput,
   SearchType,
@@ -18,7 +17,10 @@ import {
   pickPlaylistItems,
   pickSong,
   pickSongItems,
+  pickSongMany,
 } from "../../util";
+import { ExtensionContext, commands } from "vscode";
+import { ICON, PlaylistItem } from "../../constant";
 import { i18n } from "../../i18n";
 import { throttle } from "lodash";
 
@@ -123,31 +125,41 @@ async function pickSearchSingle(
   offset: number
 ) {
   const songs = await apiSearchSingle(state.keyword, limit, offset);
-  const pick = await input.showQuickPick({
-    title,
-    step: 3 + addStep,
-    totalSteps: totalSteps + addStep,
-    items: [
-      ...(offset > 0
-        ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, id: -1 }]
-        : []),
-      ...pickSongItems(songs),
-      ...(songs.length === limit
-        ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, id: -2 }]
-        : []),
-    ],
-  });
-  if (pick.id === -1) {
+  const pick = await input.showQuickPick(
+    {
+      title,
+      step: 3 + addStep,
+      totalSteps: totalSteps + addStep,
+      items: pickSongItems(songs),
+    },
+    true,
+    {
+      previous: offset > 0,
+      next: songs.length === limit,
+    }
+  );
+  if (pick === ButtonAction.previous) {
     input.pop();
     return (input: MultiStepInput) =>
       pickSearchSingle(input, addStep, offset - limit);
   }
-  if (pick.id === -2) {
+  if (pick === ButtonAction.next) {
     input.pop();
     return (input: MultiStepInput) =>
       pickSearchSingle(input, addStep, offset + limit);
   }
-  return (input: MultiStepInput) => pickSong(input, 4 + addStep, pick.id);
+  if (pick.length === 0) {
+    return input.pop();
+  }
+  if (pick.length === 1) {
+    return (input: MultiStepInput) => pickSong(input, 4 + addStep, pick[0].id);
+  }
+  return (input: MultiStepInput) =>
+    pickSongMany(
+      input,
+      4 + addStep,
+      pick.map(({ id }) => id)
+    );
 }
 
 async function pickSearchAlbum(
@@ -156,26 +168,25 @@ async function pickSearchAlbum(
   offset: number
 ) {
   const albums = await apiSearchAlbum(state.keyword, limit, offset);
-  const pick = await input.showQuickPick({
-    title,
-    step: 3 + addStep,
-    totalSteps: totalSteps + addStep,
-    items: [
-      ...(offset > 0
-        ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, id: -1 }]
-        : []),
-      ...pickAlbumItems(albums),
-      ...(albums.length === limit
-        ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, id: -2 }]
-        : []),
-    ],
-  });
-  if (pick.id === -1) {
+  const pick = await input.showQuickPick(
+    {
+      title,
+      step: 3 + addStep,
+      totalSteps: totalSteps + addStep,
+      items: pickAlbumItems(albums),
+    },
+    undefined,
+    {
+      previous: offset > 0,
+      next: albums.length === limit,
+    }
+  );
+  if (pick === ButtonAction.previous) {
     input.pop();
     return (input: MultiStepInput) =>
       pickSearchAlbum(input, addStep, offset - limit);
   }
-  if (pick.id === -2) {
+  if (pick === ButtonAction.next) {
     input.pop();
     return (input: MultiStepInput) =>
       pickSearchAlbum(input, addStep, offset + limit);
@@ -189,26 +200,25 @@ async function pickSearchArtist(
   offset: number
 ) {
   const artists = await apiSearchArtist(state.keyword, limit, offset);
-  const pick = await input.showQuickPick({
-    title,
-    step: 3 + addStep,
-    totalSteps: totalSteps + addStep,
-    items: [
-      ...(offset > 0
-        ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, id: -1 }]
-        : []),
-      ...pickArtistItems(artists),
-      ...(artists.length === limit
-        ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, id: -2 }]
-        : []),
-    ],
-  });
-  if (pick.id === -1) {
+  const pick = await input.showQuickPick(
+    {
+      title,
+      step: 3 + addStep,
+      totalSteps: totalSteps + addStep,
+      items: pickArtistItems(artists),
+    },
+    undefined,
+    {
+      previous: offset > 0,
+      next: artists.length === limit,
+    }
+  );
+  if (pick === ButtonAction.previous) {
     input.pop();
     return (input: MultiStepInput) =>
       pickSearchArtist(input, addStep, offset - limit);
   }
-  if (pick.id === -2) {
+  if (pick === ButtonAction.next) {
     input.pop();
     return (input: MultiStepInput) =>
       pickSearchArtist(input, addStep, offset + limit);
@@ -222,26 +232,25 @@ async function pickSearchPlaylist(
   offset: number
 ) {
   const playlists = await apiSearchPlaylist(state.keyword, limit, offset);
-  const pick = await input.showQuickPick({
-    title,
-    step: 3 + addStep,
-    totalSteps: totalSteps + addStep,
-    items: [
-      ...(offset > 0
-        ? [{ label: `$(arrow-up) ${i18n.word.previousPage}`, id: -1, item: {} }]
-        : []),
-      ...pickPlaylistItems(playlists),
-      ...(playlists.length === limit
-        ? [{ label: `$(arrow-down) ${i18n.word.nextPage}`, id: -2, item: {} }]
-        : []),
-    ],
-  });
-  if (pick.id === -1) {
+  const pick = await input.showQuickPick(
+    {
+      title,
+      step: 3 + addStep,
+      totalSteps: totalSteps + addStep,
+      items: pickPlaylistItems(playlists),
+    },
+    undefined,
+    {
+      previous: offset > 0,
+      next: playlists.length === limit,
+    }
+  );
+  if (pick === ButtonAction.previous) {
     input.pop();
     return (input: MultiStepInput) =>
       pickSearchPlaylist(input, addStep, offset - limit);
   }
-  if (pick.id === -2) {
+  if (pick === ButtonAction.next) {
     input.pop();
     return (input: MultiStepInput) =>
       pickSearchPlaylist(input, addStep, offset + limit);
