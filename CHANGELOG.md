@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [4.6.4] - 2020-09-19
+
+### Added
+
+- All songs pick use `canSelectMany`
+
 ## [4.6.3] - 2020-09-19
 
 ### Added
