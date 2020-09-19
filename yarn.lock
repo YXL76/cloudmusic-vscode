@@ -515,16 +515,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"NeteaseCloudMusicApi@npm:^3.40.1":
-  version: 3.40.1
-  resolution: "NeteaseCloudMusicApi@npm:3.40.1"
+"NeteaseCloudMusicApi@npm:^3.41.0":
+  version: 3.41.0
+  resolution: "NeteaseCloudMusicApi@npm:3.41.0"
   dependencies:
     axios: ^0.20.0
     express: ^4.17.1
     express-fileupload: ^1.1.9
     pac-proxy-agent: ^4.0.0
     request: ^2.88.0
-  checksum: 7e0aae24c778798803c1c921335ff160050897ebfb34bc57ef1d0a4e51b09bb847c14676e687d025eb31e5ff69683ce3c8256aa0089cf20f25b386316f7ae29b
+  checksum: d5934aa1100777ba55e28a4f0b1c46dc193c69ee273c609bf07524f2ff9d4bbe1a10e59c13273c02ab1ea719aeaa3e7e8efe4905dd45dd99071187b78d46ecc4
   languageName: node
   linkType: hard
 
@@ -1539,7 +1539,7 @@ __metadata:
     "@types/vscode": 1.46.0
     "@typescript-eslint/eslint-plugin": 4.1.1
     "@typescript-eslint/parser": 4.1.1
-    NeteaseCloudMusicApi: ^3.40.1
+    NeteaseCloudMusicApi: ^3.41.0
     array-unsort: ^1.1.6
     bluebird: 3.7.2
     cacache: ^15.0.5

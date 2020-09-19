@@ -184,6 +184,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |      playlist_delete       |           删除歌单            |   ✔️   |
 |      playlist_detail       |           歌单详情            |   ✔️   |
 |    playlist_desc_update    |         更新歌单描述          |   ❌   |
+| playlist_highquality_tags  |         精品歌单标签          |        |
 |        playlist_hot        |         热门歌单分类          |   ❌   |
 |    playlist_name_update    |          更新歌单名           |   ❌   |
 |   playlist_order_update    |         编辑歌单顺序          |   ❌   |
@@ -284,6 +285,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |            user_event            |        用户动态        |        |
 |          user_followeds          |   关注 TA 的人(粉丝)   |   ✔️   |
 |           user_follows           |   TA 关注的人(关注)    |   ✔️   |
+|            user_level            |      用户等级信息      |        |
 |          user_playlist           |        用户歌单        |   ✔️   |
 |           user_record            |        听歌排行        |   ✔️   |
 |          user_subcount           |        收藏计数        |   ❌   |
