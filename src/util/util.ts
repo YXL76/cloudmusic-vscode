@@ -31,7 +31,6 @@ import {
   apiSimiArtist,
   apiSimiPlaylist,
   apiSimiSong,
-  apiSongDetail,
   apiSongUrl,
   apiUserDetail,
   apiUserFolloweds,
@@ -191,24 +190,25 @@ enum PickType {
   follows,
 }
 interface T extends QuickPickItem {
-  id?: number;
-  type?: PickType;
-}
-interface ST extends T {
   id: number;
   type: PickType;
 }
 
+interface ST extends T {
+  item: SongsItem;
+}
+
 export const pickSongItems = (songs: SongsItem[]): ST[] =>
-  songs.map(({ name, ar, alia, id }) => ({
-    label: `${ICON.song} ${name}`,
-    description: ar.map((i) => i.name).join("/"),
-    detail: alia.join("/"),
-    id,
+  songs.map((item) => ({
+    label: `${ICON.song} ${item.name}`,
+    description: item.ar.map((i) => i.name).join("/"),
+    detail: item.alia.join("/"),
+    id: item.id,
+    item,
     type: PickType.song,
   }));
 
-export const pickArtistItems = (ars: { id: number; name: string }[]): ST[] =>
+export const pickArtistItems = (ars: { id: number; name: string }[]): T[] =>
   ars.map(({ name, id }) => ({
     label: `${ICON.artist} ${i18n.word.artist}`,
     detail: name,
@@ -216,7 +216,7 @@ export const pickArtistItems = (ars: { id: number; name: string }[]): ST[] =>
     type: PickType.artist,
   }));
 
-export const pickAlbumItems = (albums: AlbumsItem[]): ST[] =>
+export const pickAlbumItems = (albums: AlbumsItem[]): T[] =>
   albums.map(({ name, alias, artists, id }) => ({
     label: `${ICON.album} ${name}`,
     description: alias.join("/"),
@@ -225,11 +225,11 @@ export const pickAlbumItems = (albums: AlbumsItem[]): ST[] =>
     type: PickType.album,
   }));
 
-interface PST extends T {
+interface PT extends T {
   item: PlaylistItem;
 }
 
-export const pickPlaylistItems = (playlists: PlaylistItem[]): PST[] =>
+export const pickPlaylistItems = (playlists: PlaylistItem[]): PT[] =>
   playlists.map((playlist) => ({
     label: `${ICON.playlist} ${playlist.name}`,
     description: `${playlist.trackCount}`,
@@ -250,12 +250,11 @@ export const pickUserDetails = (users: UserDetail[]): T[] =>
 export async function pickSong(
   input: MultiStepInput,
   step: number,
-  id: number
+  item: SongsItem
 ): Promise<InputStep> {
-  const item = (await apiSongDetail([id]))[0];
-  const { name, alia, ar, al } = item;
+  const { name, alia, ar, al, id } = item;
 
-  const pick = await input.showQuickPick<T>({
+  const pick = await input.showQuickPick({
     title: `${i18n.word.song}-${i18n.word.detail}`,
     step,
     items: [
@@ -294,11 +293,11 @@ export async function pickSong(
   });
   if (pick.type === PickType.album) {
     return (input: MultiStepInput) =>
-      pickAlbum(input, step + 1, pick.id as number);
+      pickAlbum(input, step + 1, (pick as T).id);
   }
   if (pick.type === PickType.artist) {
     return (input: MultiStepInput) =>
-      pickArtist(input, step + 1, pick.id as number);
+      pickArtist(input, step + 1, (pick as T).id);
   }
   if (pick.type === PickType.save) {
     return (input: MultiStepInput) => pickAddToPlaylist(input, step + 1, id);
@@ -327,7 +326,7 @@ export async function pickSong(
 export async function pickSongMany(
   input: MultiStepInput,
   step: number,
-  ids: number[]
+  songs: SongsItem[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
     title: i18n.word.song,
@@ -341,7 +340,7 @@ export async function pickSongMany(
   });
   if (pick.type === PickType.add) {
     QueueProvider.refresh(async () => {
-      QueueProvider.add(songsItem2TreeItem(0, await apiSongDetail(ids)));
+      QueueProvider.add(songsItem2TreeItem(0, songs));
     });
   }
   input.pop();
@@ -362,7 +361,7 @@ async function pickSimiSong(
       step,
       items: pickSongItems(songs),
     },
-    undefined,
+    true,
     {
       previous: offset > 0,
       next: songs.length === limit,
@@ -378,7 +377,18 @@ async function pickSimiSong(
     return (input: MultiStepInput) =>
       pickSimiSong(input, step, id, offset + limit);
   }
-  return (input: MultiStepInput) => pickSong(input, step + 1, pick.id);
+  if (pick.length === 0) {
+    return input.pop() as InputStep;
+  }
+  if (pick.length === 1) {
+    return (input: MultiStepInput) => pickSong(input, step + 1, pick[0].item);
+  }
+  return (input: MultiStepInput) =>
+    pickSongMany(
+      input,
+      step + 1,
+      pick.map(({ item }) => item)
+    );
 }
 
 export async function pickSongs(
@@ -398,13 +408,13 @@ export async function pickSongs(
     return input.pop() as InputStep;
   }
   if (pick.length === 1) {
-    return (input: MultiStepInput) => pickSong(input, step + 1, pick[0].id);
+    return (input: MultiStepInput) => pickSong(input, step + 1, pick[0].item);
   }
   return (input: MultiStepInput) =>
     pickSongMany(
       input,
       step + 1,
-      pick.map(({ id }) => id)
+      pick.map(({ item }) => item)
     );
 }
 
@@ -416,7 +426,7 @@ export async function pickArtist(
   const { info, songs } = await apiArtists(id);
 
   const { name, alias, briefDesc, albumSize, musicSize } = info;
-  const pick = await input.showQuickPick<T>({
+  const pick = await input.showQuickPick({
     title: `${i18n.word.artist}-${i18n.word.detail}`,
     step,
     items: [
@@ -464,7 +474,7 @@ export async function pickArtist(
   }
   if (pick.type === PickType.song) {
     return (input: MultiStepInput) =>
-      pickSong(input, step + 1, pick.id as number);
+      pickSong(input, step + 1, (pick as ST).item);
   }
   if (pick.type === PickType.songs) {
     return (input: MultiStepInput) => pickAllSongs(input, step + 1, id, 0);
@@ -498,7 +508,7 @@ export async function pickArtist(
         step,
         items: pickSongItems(songs),
       },
-      undefined,
+      true,
       {
         previous: offset > 0,
         next: songs.length === limit,
@@ -514,7 +524,18 @@ export async function pickArtist(
       return (input: MultiStepInput) =>
         pickAllSongs(input, step, id, offset + limit);
     }
-    return (input: MultiStepInput) => pickSong(input, step + 1, pick.id);
+    if (pick.length === 0) {
+      return input.pop() as InputStep;
+    }
+    if (pick.length === 1) {
+      return (input: MultiStepInput) => pickSong(input, step + 1, pick[0].item);
+    }
+    return (input: MultiStepInput) =>
+      pickSongMany(
+        input,
+        step + 1,
+        pick.map(({ item }) => item)
+      );
   }
 }
 
@@ -539,7 +560,7 @@ export async function pickAlbum(
   const { info, songs } = await apiAlbum(id);
 
   const { artists, alias, company, description, name } = info;
-  const pick = await input.showQuickPick<T>({
+  const pick = await input.showQuickPick({
     title: `${i18n.word.album}-${i18n.word.detail}`,
     step,
     items: [
@@ -569,11 +590,11 @@ export async function pickAlbum(
   });
   if (pick.type === PickType.artist) {
     return (input: MultiStepInput) =>
-      pickArtist(input, step + 1, pick.id as number);
+      pickArtist(input, step + 1, (pick as T).id);
   }
   if (pick.type === PickType.song) {
     return (input: MultiStepInput) =>
-      pickSong(input, step + 1, pick.id as number);
+      pickSong(input, step + 1, (pick as ST).item);
   }
   if (pick.type === PickType.unsave) {
     return (input: MultiStepInput) =>
@@ -615,7 +636,7 @@ export async function pickPlaylist(
     creator,
   } = item;
   const songs = await apiPlaylistDetail(id);
-  const pick = await input.showQuickPick<T>({
+  const pick = await input.showQuickPick({
     title: i18n.word.playlist,
     step,
     items: [
@@ -672,7 +693,7 @@ export async function pickPlaylist(
   });
   if (pick.type === PickType.song) {
     return (input: MultiStepInput) =>
-      pickSong(input, step + 1, pick.id as number);
+      pickSong(input, step + 1, (pick as ST).item);
   }
   if (pick.type === PickType.similar) {
     return async (input: MultiStepInput) =>
@@ -683,8 +704,7 @@ export async function pickPlaylist(
       pickUsers(input, step + 1, apiPlaylistSubscribers, true, 0, id);
   }
   if (pick.type === PickType.user) {
-    return (input: MultiStepInput) =>
-      pickUser(input, step + 1, pick.id as number);
+    return (input: MultiStepInput) => pickUser(input, step + 1, (pick as T).id);
   }
   if (pick.type === PickType.add) {
     QueueProvider.refresh(async () => {
@@ -736,7 +756,7 @@ export async function pickPlaylists(
   step: number,
   items: PlaylistItem[]
 ): Promise<InputStep> {
-  const pick = await input.showQuickPick<PST>({
+  const pick = await input.showQuickPick({
     title: i18n.word.playlist,
     step,
     items: pickPlaylistItems(items),
