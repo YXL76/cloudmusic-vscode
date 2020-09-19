@@ -152,13 +152,14 @@ async function pickSearchSingle(
     return input.pop();
   }
   if (pick.length === 1) {
-    return (input: MultiStepInput) => pickSong(input, 4 + addStep, pick[0].id);
+    return (input: MultiStepInput) =>
+      pickSong(input, 4 + addStep, pick[0].item);
   }
   return (input: MultiStepInput) =>
     pickSongMany(
       input,
       4 + addStep,
-      pick.map(({ id }) => id)
+      pick.map(({ item }) => item)
     );
 }
 

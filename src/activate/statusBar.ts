@@ -19,9 +19,9 @@ export async function initStatusBar(context: ExtensionContext): Promise<void> {
   commands.registerCommand(
     "cloudmusic.songDetail",
     async (element?: QueueItemTreeItem) => {
-      const id = element ? element.item.id : player.item.id;
-      if (id) {
-        await MultiStepInput.run((input) => pickSong(input, 1, id));
+      const item = element ? element.item : player.item;
+      if (item) {
+        await MultiStepInput.run((input) => pickSong(input, 1, item));
       }
     }
   );
@@ -37,14 +37,10 @@ export async function initStatusBar(context: ExtensionContext): Promise<void> {
       cache,
     }
 
-    interface T extends QuickPickItem {
-      type: Type;
-    }
-
     await MultiStepInput.run((input) => pickMthod(input));
 
     async function pickMthod(input: MultiStepInput) {
-      const pick = await input.showQuickPick<T>({
+      const pick = await input.showQuickPick({
         title,
         step: 1,
         totalSteps,
@@ -102,7 +98,7 @@ export async function initStatusBar(context: ExtensionContext): Promise<void> {
           });
         }
       }
-      const pick = await input.showQuickPick<T>({
+      const pick = await input.showQuickPick({
         title,
         step: 2,
         totalSteps: totalSteps + 1,

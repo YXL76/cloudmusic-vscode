@@ -18,7 +18,7 @@ import {
   QueueItemTreeItem,
   QueueProvider,
 } from "../provider";
-import { QuickPickItem, commands, window } from "vscode";
+import { commands, window } from "vscode";
 import { i18n } from "../i18n";
 
 export async function initPlaylist(): Promise<void> {
@@ -53,11 +53,7 @@ export async function initPlaylist(): Promise<void> {
         public,
         private,
       }
-      interface T extends QuickPickItem {
-        type: Type;
-      }
-
-      const pick = await input.showQuickPick<T>({
+      const pick = await input.showQuickPick({
         title: i18n.word.createPlaylist,
         step: 2,
         totalSteps: 2,

@@ -1,7 +1,7 @@
 import { MultiStepInput, load, stop } from "../util";
 import { PersonalFm, lock } from "../state";
 import { QueueItemTreeItem, QueueProvider } from "../provider";
-import { QuickPickItem, commands, window } from "vscode";
+import { commands, window } from "vscode";
 import { ICON } from "../constant";
 import { i18n } from "../i18n";
 
@@ -22,12 +22,8 @@ export async function initQueue(): Promise<void> {
         ascending,
         descending,
       }
-      interface T extends QuickPickItem {
-        type: Type;
-        order: Order;
-      }
 
-      const pick = await input.showQuickPick<T>({
+      const pick = await input.showQuickPick({
         title: i18n.word.account,
         step: 1,
         totalSteps: 1,

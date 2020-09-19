@@ -65,11 +65,8 @@ export function account(context: ExtensionContext): void {
           save,
           signOut,
         }
-        interface T extends QuickPickItem {
-          type: Type;
-        }
 
-        const pick = await input.showQuickPick<T>({
+        const pick = await input.showQuickPick({
           title: i18n.word.account,
           step: 1,
           totalSteps: 1,
@@ -164,11 +161,8 @@ export function account(context: ExtensionContext): void {
           playlist,
           song,
         }
-        interface T extends QuickPickItem {
-          type: Type;
-        }
 
-        const pick = await input.showQuickPick<T>({
+        const pick = await input.showQuickPick({
           title: i18n.word.recommendation,
           step: 2,
           totalSteps: 3,
@@ -214,11 +208,8 @@ export function account(context: ExtensionContext): void {
           song,
           artist,
         }
-        interface T extends QuickPickItem {
-          type: Type;
-        }
 
-        const pick = await input.showQuickPick<T>({
+        const pick = await input.showQuickPick({
           title: i18n.word.toplist,
           step: 2,
           totalSteps: 3,
@@ -256,11 +247,7 @@ export function account(context: ExtensionContext): void {
           topSongsKr,
           albumNewest,
         }
-        interface T extends QuickPickItem {
-          type: Type;
-        }
-
-        const pick = await input.showQuickPick<T>({
+        const pick = await input.showQuickPick({
           title: i18n.word.explore,
           step: 2,
           totalSteps: 3,
@@ -413,11 +400,7 @@ export function account(context: ExtensionContext): void {
       }
 
       async function pickArtistType(input: MultiStepInput) {
-        interface T extends QuickPickItem {
-          type: ArtistType;
-        }
-
-        const pick = await input.showQuickPick<T>({
+        const pick = await input.showQuickPick({
           title: i18n.word.type,
           step: 3,
           totalSteps: 7,
@@ -441,11 +424,7 @@ export function account(context: ExtensionContext): void {
       }
 
       async function pickArtistArea(input: MultiStepInput) {
-        interface T extends QuickPickItem {
-          type: ArtistArea;
-        }
-
-        const pick = await input.showQuickPick<T>({
+        const pick = await input.showQuickPick({
           title: i18n.word.area,
           step: 4,
           totalSteps: 7,
@@ -481,10 +460,6 @@ export function account(context: ExtensionContext): void {
       }
 
       async function pickArtistInitial(input: MultiStepInput) {
-        interface T extends QuickPickItem {
-          type: ArtistInitial;
-        }
-
         const allInitial: ArtistInitial[] = [
           "A",
           "B",
@@ -514,7 +489,7 @@ export function account(context: ExtensionContext): void {
           "Z",
         ];
 
-        const pick = await input.showQuickPick<T>({
+        const pick = await input.showQuickPick({
           title: i18n.word.initial,
           step: 5,
           totalSteps: 7,
@@ -567,11 +542,8 @@ export function account(context: ExtensionContext): void {
           album,
           artist,
         }
-        interface T extends QuickPickItem {
-          type: Type;
-        }
 
-        const pick = await input.showQuickPick<T>({
+        const pick = await input.showQuickPick({
           title: i18n.word.explore,
           step: 2,
           totalSteps: 3,
