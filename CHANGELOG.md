@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [4.7.0] - 2020-09-20
+
+### Added
+
+- Api: add `user_level` and `playlist_highquality_tags`
+
 ## [4.6.4] - 2020-09-19
 
 ### Added
