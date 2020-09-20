@@ -57,6 +57,7 @@ export {
   apiUserDetail,
   apiUserFolloweds,
   apiUserFollows,
+  apiUserLevel,
   apiUserPlaylist,
   apiUserRecord,
   ArtistArea,
@@ -64,7 +65,7 @@ export {
   ArtistType,
   baseQuery,
   SearchType,
-  TopSong,
+  TopSong
 } from "./api";
 export {
   confirmation,
@@ -89,6 +90,6 @@ export {
   pickUsers,
   songsItem2TreeItem,
   splitLine,
-  stop,
+  stop
 } from "./util";
 export { lyric, player } from "./player";
