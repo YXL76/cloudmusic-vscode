@@ -10,7 +10,7 @@ export async function initCache(): Promise<void> {
       if (item[0] !== `${MUSIC_QUALITY}`) {
         workspace.fs.delete(Uri.joinPath(musicCache, item[0]), {
           recursive: true,
-          useTrash: false,
+          useTrash: false
         });
       }
     }

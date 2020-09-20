@@ -5,7 +5,7 @@ import {
   ThemeIcon,
   TreeDataProvider,
   TreeItem,
-  TreeItemCollapsibleState,
+  TreeItemCollapsibleState
 } from "vscode";
 import { SongsItem } from "../constant";
 import { lock } from "../state";
@@ -53,7 +53,7 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   }
 
   static top(id: number): void {
-    this.shift(this.songs.findIndex((value) => value.valueOf() === id));
+    this.shift(this.songs.findIndex(value => value.valueOf() === id));
   }
 
   static shift(index: number): void {
@@ -75,7 +75,7 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   }
 
   static delete(id: number): void {
-    const index = this.songs.findIndex((value) => value.valueOf() === id);
+    const index = this.songs.findIndex(value => value.valueOf() === id);
     if (index >= 0) {
       QueueProvider.songs.splice(index, 1);
     }

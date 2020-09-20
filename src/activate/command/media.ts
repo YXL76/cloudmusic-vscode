@@ -62,7 +62,7 @@ export function media(context: ExtensionContext): void {
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.volume", async () => {
-      MultiStepInput.run((input) => inputLevel(input));
+      MultiStepInput.run(input => inputLevel(input));
 
       async function inputLevel(input: MultiStepInput) {
         const level = await input.showInputBox({
@@ -70,7 +70,7 @@ export function media(context: ExtensionContext): void {
           step: 1,
           totalSteps: 1,
           value: `${context.globalState.get(VOLUME_KEY)}`,
-          prompt: `${i18n.sentence.hint.volume} (0~100)`,
+          prompt: `${i18n.sentence.hint.volume} (0~100)`
         });
         if (/^[1-9]\d$|^\d$|^100$/.exec(level)) {
           await player.volume(parseInt(level));

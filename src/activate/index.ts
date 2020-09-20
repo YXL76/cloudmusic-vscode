@@ -13,5 +13,5 @@ export const steps = [
   initPlaylist,
   initStatusBar,
   initAccount,
-  initCache,
+  initCache
 ];

@@ -17,7 +17,7 @@ import {
   pickPlaylistItems,
   pickSong,
   pickSongItems,
-  pickSongMany,
+  pickSongMany
 } from "../../util";
 import { ExtensionContext, commands } from "vscode";
 import { ICON, PlaylistItem } from "../../constant";
@@ -37,10 +37,8 @@ const state = {} as State;
 const updateSuggestions = throttle((that, value) => {
   that.enabled = false;
   that.busy = true;
-  apiSearchSuggest(value).then((suggestions) => {
-    that.items = [that.items[0]].concat(
-      suggestions.map((label) => ({ label }))
-    );
+  apiSearchSuggest(value).then(suggestions => {
+    that.items = [that.items[0]].concat(suggestions.map(label => ({ label })));
     that.enabled = true;
     that.busy = false;
   });
@@ -54,7 +52,7 @@ export async function inputKeyword(
     ({ searchWord, content }) => ({
       label: searchWord,
       description: "$(flame)",
-      detail: content,
+      detail: content
     })
   );
 
@@ -73,7 +71,7 @@ export async function inputKeyword(
       } else {
         that.items = hotItems;
       }
-    },
+    }
   });
   state.keyword = pick.label;
   return (input: MultiStepInput) => pickType(input, addStep);
@@ -87,22 +85,22 @@ async function pickType(input: MultiStepInput, addStep: number) {
     items: [
       {
         label: `${ICON.song} ${i18n.word.single}`,
-        type: SearchType.single,
+        type: SearchType.single
       },
       {
         label: `${ICON.album} ${i18n.word.album}`,
-        type: SearchType.album,
+        type: SearchType.album
       },
       {
         label: `${ICON.artist} ${i18n.word.artist}`,
-        type: SearchType.artist,
+        type: SearchType.artist
       },
       {
         label: `${ICON.playlist} ${i18n.word.playlist}`,
-        type: SearchType.playlist,
-      },
+        type: SearchType.playlist
+      }
     ],
-    placeholder: i18n.sentence.hint.search,
+    placeholder: i18n.sentence.hint.search
   });
   if (pick.type === SearchType.single) {
     return (input: MultiStepInput) => pickSearchSingle(input, addStep, 0);
@@ -130,12 +128,12 @@ async function pickSearchSingle(
       title,
       step: 3 + addStep,
       totalSteps: totalSteps + addStep,
-      items: pickSongItems(songs),
+      items: pickSongItems(songs)
     },
     true,
     {
       previous: offset > 0,
-      next: songs.length === limit,
+      next: songs.length === limit
     }
   );
   if (pick === ButtonAction.previous) {
@@ -156,11 +154,7 @@ async function pickSearchSingle(
       pickSong(input, 4 + addStep, pick[0].item);
   }
   return (input: MultiStepInput) =>
-    pickSongMany(
-      input,
-      4 + addStep,
-      pick.map(({ item }) => item)
-    );
+    pickSongMany(input, 4 + addStep, pick.map(({ item }) => item));
 }
 
 async function pickSearchAlbum(
@@ -174,12 +168,12 @@ async function pickSearchAlbum(
       title,
       step: 3 + addStep,
       totalSteps: totalSteps + addStep,
-      items: pickAlbumItems(albums),
+      items: pickAlbumItems(albums)
     },
     undefined,
     {
       previous: offset > 0,
-      next: albums.length === limit,
+      next: albums.length === limit
     }
   );
   if (pick === ButtonAction.previous) {
@@ -206,12 +200,12 @@ async function pickSearchArtist(
       title,
       step: 3 + addStep,
       totalSteps: totalSteps + addStep,
-      items: pickArtistItems(artists),
+      items: pickArtistItems(artists)
     },
     undefined,
     {
       previous: offset > 0,
-      next: artists.length === limit,
+      next: artists.length === limit
     }
   );
   if (pick === ButtonAction.previous) {
@@ -238,12 +232,12 @@ async function pickSearchPlaylist(
       title,
       step: 3 + addStep,
       totalSteps: totalSteps + addStep,
-      items: pickPlaylistItems(playlists),
+      items: pickPlaylistItems(playlists)
     },
     undefined,
     {
       previous: offset > 0,
-      next: playlists.length === limit,
+      next: playlists.length === limit
     }
   );
   if (pick === ButtonAction.previous) {
@@ -256,14 +250,13 @@ async function pickSearchPlaylist(
     return (input: MultiStepInput) =>
       pickSearchPlaylist(input, addStep, offset + limit);
   }
-  return (input: MultiStepInput) =>
-    pickPlaylist(input, 4 + addStep, pick.item as PlaylistItem);
+  return (input: MultiStepInput) => pickPlaylist(input, 4 + addStep, pick.item);
 }
 
 export function search(context: ExtensionContext): void {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.search", () => {
-      MultiStepInput.run((input) => inputKeyword(input, 0));
+      MultiStepInput.run(input => inputKeyword(input, 0));
     })
   );
 }

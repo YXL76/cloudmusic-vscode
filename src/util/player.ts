@@ -7,7 +7,7 @@ import {
   PLAYER_AVAILABLE,
   Player,
   SongsItem,
-  VOLUME_KEY,
+  VOLUME_KEY
 } from "../constant";
 import { Playing, lock } from "../state";
 import { apiLyric, apiScrobble } from "../util";
@@ -46,7 +46,7 @@ export const lyric: Lyric = {
   index: 0,
   delay: -1.0,
   time: [0],
-  text: ["Lyric"],
+  text: ["Lyric"]
 };
 
 class AudioPlayer implements Player {

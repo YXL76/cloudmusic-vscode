@@ -12,7 +12,7 @@ export async function initPlayer(context: ExtensionContext): Promise<void> {
     player.init(context);
     if (MEDIA_CONTROL) {
       const { startKeyboardEvent } = NATIVE;
-      startKeyboardEvent((res) => {
+      startKeyboardEvent(res => {
         if (res === "prev") {
           commands.executeCommand("cloudmusic.previous");
         } else if (res === "play") {

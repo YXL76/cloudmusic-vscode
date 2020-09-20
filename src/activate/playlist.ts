@@ -9,14 +9,14 @@ import {
   confirmation,
   load,
   pickAddToPlaylist,
-  songsItem2TreeItem,
+  songsItem2TreeItem
 } from "../util";
 import { PersonalFm, lock } from "../state";
 import {
   PlaylistItemTreeItem,
   PlaylistProvider,
   QueueItemTreeItem,
-  QueueProvider,
+  QueueProvider
 } from "../provider";
 import { commands, window } from "vscode";
 import { i18n } from "../i18n";
@@ -34,7 +34,7 @@ export async function initPlaylist(): Promise<void> {
   commands.registerCommand("cloudmusic.createPlaylist", () => {
     let name: undefined | string = undefined;
 
-    MultiStepInput.run((input) => inputName(input));
+    MultiStepInput.run(input => inputName(input));
 
     async function inputName(input: MultiStepInput) {
       name = await input.showInputBox({
@@ -42,7 +42,7 @@ export async function initPlaylist(): Promise<void> {
         step: 1,
         totalSteps: 2,
         value: name,
-        prompt: i18n.sentence.hint.name,
+        prompt: i18n.sentence.hint.name
       });
 
       return (input: MultiStepInput) => pickType(input);
@@ -51,7 +51,7 @@ export async function initPlaylist(): Promise<void> {
     async function pickType(input: MultiStepInput) {
       enum Type {
         public,
-        private,
+        private
       }
       const pick = await input.showQuickPick({
         title: i18n.word.createPlaylist,
@@ -60,13 +60,13 @@ export async function initPlaylist(): Promise<void> {
         items: [
           {
             label: i18n.word.public,
-            type: Type.public,
+            type: Type.public
           },
           {
             label: i18n.word.private,
-            type: Type.private,
-          },
-        ],
+            type: Type.private
+          }
+        ]
       });
 
       if (
@@ -89,7 +89,7 @@ export async function initPlaylist(): Promise<void> {
     (element: PlaylistItemTreeItem) => {
       PlaylistProvider.refresh({
         element,
-        action: (items) => {
+        action: items => {
           QueueProvider.refresh(async () => {
             PersonalFm.set(false);
             QueueProvider.clear();
@@ -98,7 +98,7 @@ export async function initPlaylist(): Promise<void> {
               load(QueueProvider.songs[0]);
             }
           });
-        },
+        }
       });
     }
   );
@@ -106,7 +106,7 @@ export async function initPlaylist(): Promise<void> {
   commands.registerCommand(
     "cloudmusic.deletePlaylist",
     (element: PlaylistItemTreeItem) => {
-      MultiStepInput.run((input) =>
+      MultiStepInput.run(input =>
         confirmation(input, 1, async () => {
           if (await apiPlaylistDelete(element.item.id)) {
             PlaylistProvider.refresh({});
@@ -125,10 +125,10 @@ export async function initPlaylist(): Promise<void> {
       };
       const state: State = {
         name: element.item.name,
-        desc: element.item.description || "",
+        desc: element.item.description || ""
       };
 
-      MultiStepInput.run((input) => inputName(input));
+      MultiStepInput.run(input => inputName(input));
 
       async function inputName(input: MultiStepInput) {
         state.name = await input.showInputBox({
@@ -136,7 +136,7 @@ export async function initPlaylist(): Promise<void> {
           step: 1,
           totalSteps: 2,
           value: state.name,
-          prompt: i18n.sentence.hint.name,
+          prompt: i18n.sentence.hint.name
         });
         return (input: MultiStepInput) => inputDesc(input);
       }
@@ -147,7 +147,7 @@ export async function initPlaylist(): Promise<void> {
           step: 2,
           totalSteps: 2,
           value: state.desc,
-          prompt: i18n.sentence.hint.desc,
+          prompt: i18n.sentence.hint.desc
         });
         if (await apiPlaylistUpdate(element.item.id, state.name, state.desc)) {
           PlaylistProvider.refresh({});
@@ -159,7 +159,7 @@ export async function initPlaylist(): Promise<void> {
   commands.registerCommand(
     "cloudmusic.unsavePlaylist",
     (element: PlaylistItemTreeItem) => {
-      MultiStepInput.run((input) =>
+      MultiStepInput.run(input =>
         confirmation(input, 1, async () => {
           if (await apiPlaylistSubscribe(element.item.id, 0)) {
             PlaylistProvider.refresh({});
@@ -174,11 +174,11 @@ export async function initPlaylist(): Promise<void> {
     (element: PlaylistItemTreeItem) => {
       PlaylistProvider.refresh({
         element,
-        action: (items) => {
+        action: items => {
           QueueProvider.refresh(async () => {
             QueueProvider.add(items);
           });
-        },
+        }
       });
     }
   );
@@ -216,7 +216,7 @@ export async function initPlaylist(): Promise<void> {
     (element: QueueItemTreeItem) => {
       PlaylistProvider.refresh({
         element: PlaylistProvider.playlists.get(element.pid),
-        action: (items) => {
+        action: items => {
           QueueProvider.refresh(async () => {
             PersonalFm.set(false);
             QueueProvider.clear();
@@ -226,7 +226,7 @@ export async function initPlaylist(): Promise<void> {
               load(QueueProvider.songs[0]);
             }
           });
-        },
+        }
       });
     }
   );
@@ -234,12 +234,12 @@ export async function initPlaylist(): Promise<void> {
   commands.registerCommand(
     "cloudmusic.deleteFromPlaylist",
     async (element: QueueItemTreeItem) => {
-      MultiStepInput.run((input) =>
+      MultiStepInput.run(input =>
         confirmation(input, 1, async () => {
           if (await apiPlaylistTracks("del", element.pid, [element.item.id])) {
             PlaylistProvider.refresh({
               element: PlaylistProvider.playlists.get(element.pid),
-              refresh: true,
+              refresh: true
             });
           }
         })
@@ -250,9 +250,7 @@ export async function initPlaylist(): Promise<void> {
   commands.registerCommand(
     "cloudmusic.saveToPlaylist",
     (element: QueueItemTreeItem) => {
-      MultiStepInput.run((input) =>
-        pickAddToPlaylist(input, 1, element.item.id)
-      );
+      MultiStepInput.run(input => pickAddToPlaylist(input, 1, element.item.id));
     }
   );
 }

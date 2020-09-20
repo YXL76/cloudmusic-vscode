@@ -21,7 +21,7 @@ export class WebView {
   ): Promise<void> {
     const panel = window.createWebviewPanel(type, title, ViewColumn.One, {
       enableScripts: true,
-      retainContextWhenHidden: true,
+      retainContextWhenHidden: true
     });
 
     const css = panel.webview.asWebviewUri(
