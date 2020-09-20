@@ -1,5 +1,5 @@
 import * as crypto from "crypto";
-import { ACCOUNT_KEY, ICON, PlaylistItem } from "../../constant";
+import { ACCOUNT_KEY, ICON } from "../../constant";
 import {
   ArtistArea,
   ArtistInitial,
@@ -11,6 +11,7 @@ import {
   apiAlbumSublist,
   apiArtistList,
   apiArtistSublist,
+  apiHighqualityTags,
   apiPersonalized,
   apiPersonalizedNewsong,
   apiPlaylistCatlist,
@@ -56,7 +57,6 @@ export function account(context: ExtensionContext): void {
         }
         return;
       }
-      let highquality = false;
       let cat = "";
       let type: ArtistType;
       let area: ArtistArea;
@@ -317,12 +317,11 @@ export function account(context: ExtensionContext): void {
           ]
         });
         if (pick.type === Type.playlist) {
-          highquality = false;
           return (input: MultiStepInput) => pickPlaylistCategories(input);
         }
         if (pick.type === Type.highqualityPlaylist) {
-          highquality = true;
-          return (input: MultiStepInput) => pickPlaylistCategories(input);
+          return (input: MultiStepInput) =>
+            pickHighqualitPlaylistCategories(input);
         }
         if (pick.type === Type.artist) {
           return (input: MultiStepInput) => pickArtistType(input);
@@ -375,6 +374,21 @@ export function account(context: ExtensionContext): void {
           );
       }
 
+      async function pickHighqualitPlaylistCategories(input: MultiStepInput) {
+        const categories = await apiHighqualityTags();
+        const pick = await input.showQuickPick({
+          title: i18n.word.categorie,
+          step: 3,
+          totalSteps: 5,
+          items: categories.map(({ name, hot }) => ({
+            label: name,
+            description: hot ? "$(flame)" : undefined
+          }))
+        });
+        cat = pick.label;
+        return (input: MultiStepInput) => pickAllHighqualityPlaylists(input, 0);
+      }
+
       async function pickPlaylistSubCategories(
         input: MultiStepInput,
         items: QuickPickItem[]
@@ -391,9 +405,7 @@ export function account(context: ExtensionContext): void {
 
       async function pickAllPlaylists(input: MultiStepInput, offset: number) {
         const limit = 50;
-        const playlists = highquality
-          ? await apiTopPlaylistHighquality(cat, limit, offset)
-          : await apiTopPlaylist(cat, limit, offset);
+        const playlists = await apiTopPlaylist(cat, limit, offset);
         const pick = await input.showQuickPick(
           {
             title: i18n.word.playlist,
@@ -417,8 +429,39 @@ export function account(context: ExtensionContext): void {
           return (input: MultiStepInput) =>
             pickAllPlaylists(input, offset + limit);
         }
-        return (input: MultiStepInput) =>
-          pickPlaylist(input, 6, pick.item as PlaylistItem);
+        return (input: MultiStepInput) => pickPlaylist(input, 6, pick.item);
+      }
+
+      async function pickAllHighqualityPlaylists(
+        input: MultiStepInput,
+        offset: number
+      ) {
+        const limit = 50;
+        const playlists = await apiTopPlaylistHighquality(cat, limit, offset);
+        const pick = await input.showQuickPick(
+          {
+            title: i18n.word.playlist,
+            step: 4,
+            totalSteps: 5,
+            items: pickPlaylistItems(playlists)
+          },
+          undefined,
+          {
+            previous: offset > 0,
+            next: playlists.length === limit
+          }
+        );
+        if (pick === ButtonAction.previous) {
+          input.pop();
+          return (input: MultiStepInput) =>
+            pickAllHighqualityPlaylists(input, offset - limit);
+        }
+        if (pick === ButtonAction.next) {
+          input.pop();
+          return (input: MultiStepInput) =>
+            pickAllHighqualityPlaylists(input, offset + limit);
+        }
+        return (input: MultiStepInput) => pickPlaylist(input, 5, pick.item);
       }
 
       async function pickArtistType(input: MultiStepInput) {

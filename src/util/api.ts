@@ -42,6 +42,7 @@ import {
   playlist_create,
   playlist_delete,
   playlist_detail,
+  playlist_highquality_tags,
   playlist_subscribe,
   playlist_subscribers,
   playlist_tracks,
@@ -710,6 +711,27 @@ export async function apiPlaylistDetail(id: number): Promise<SongsItem[]> {
   } catch {
     return [];
   }
+}
+
+export async function apiHighqualityTags(): Promise<PlaylistCatlistItem[]> {
+  const key = `playlist_highquality_tags`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as PlaylistCatlistItem[];
+  }
+  try {
+    const { status, body } = await playlist_highquality_tags(baseQuery);
+    if (status !== 200) {
+      return [];
+    }
+    const { tags } = body;
+    const ret = (tags as { name: string; hot: boolean }[]).map(
+      ({ name, hot }) => ({ name, hot })
+    );
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return [];
 }
 
 export async function apiPlaylistSubscribe(
@@ -1471,7 +1493,9 @@ export async function apiUserLevel(): Promise<UserLevel> {
     }
     const { data } = body;
     const { progress, level } = data as UserLevel;
-    return { progress, level };
+    const ret = { progress, level };
+    apiCache.set(key, ret);
+    return ret;
   } catch {}
   return {} as UserLevel;
 }
