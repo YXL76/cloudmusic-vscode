@@ -157,6 +157,7 @@
 |        dj_detail         |       电台详情        |        |
 |          dj_hot          |       热门电台        |        |
 |        dj_paygift        |       付费电台        |        |
+| dj_personalize_recommend |     电台个性推荐      |        |
 |        dj_program        |     电台节目列表      |        |
 |    dj_program_detail     |     电台节目详情      |        |
 |    dj_program_toplist    |      电台节目榜       |        |
