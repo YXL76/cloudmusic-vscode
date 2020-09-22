@@ -66,7 +66,7 @@ export {
   ArtistType,
   baseQuery,
   SearchType,
-  TopSong
+  TopSong,
 } from "./api";
 export {
   confirmation,
@@ -91,6 +91,6 @@ export {
   pickUsers,
   songsItem2TreeItem,
   splitLine,
-  stop
+  stop,
 } from "./util";
 export { lyric, player } from "./player";

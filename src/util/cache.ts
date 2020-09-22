@@ -9,7 +9,7 @@ import {
   LruCacheValue,
   LyricData,
   MUSIC_CACHE_DIR,
-  MUSIC_CACHE_SIZE
+  MUSIC_CACHE_SIZE,
 } from "../constant";
 
 export const apiCache = new NodeCache({
@@ -18,7 +18,7 @@ export const apiCache = new NodeCache({
   useClones: false,
   deleteOnExpire: true,
   enableLegacyCallbacks: false,
-  maxKeys: -1
+  maxKeys: -1,
 });
 
 export class MusicCache {
@@ -31,7 +31,7 @@ export class MusicCache {
       cacache.rm.entry(MUSIC_CACHE_DIR.fsPath, key);
       cacache.rm.content(MUSIC_CACHE_DIR.fsPath, n.integrity);
     },
-    noDisposeOnSet: true
+    noDisposeOnSet: true,
   });
 
   static async init(): Promise<void> {
@@ -116,7 +116,7 @@ export class LocalCache {
     useClones: false,
     deleteOnExpire: false,
     enableLegacyCallbacks: false,
-    maxKeys: -1
+    maxKeys: -1,
   });
 
   static async init(): Promise<void> {

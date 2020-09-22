@@ -6,7 +6,7 @@ export {
   MUSIC_CACHE_SIZE,
   MUSIC_QUALITY,
   PROXY,
-  REAL_IP
+  REAL_IP,
 } from "./setting";
 export {
   AlbumsItem,
@@ -23,7 +23,7 @@ export {
   SongDetail,
   SongsItem,
   TrackIdsItem,
-  UserDetail
+  UserDetail,
 } from "./type";
 import { homedir, platform } from "os";
 import { MUSIC_QUALITY } from "./setting";
@@ -73,5 +73,5 @@ export const ICON = {
   add: "$(add)",
   search: "$(search)",
   similar: "$(library)",
-  song: "$(zap)"
+  song: "$(zap)",
 };

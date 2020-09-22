@@ -4,17 +4,17 @@ import {
   ThemeIcon,
   TreeDataProvider,
   TreeItem,
-  TreeItemCollapsibleState
+  TreeItemCollapsibleState,
 } from "vscode";
 import { apiCache, apiPlaylistDetail, songsItem2TreeItem } from "../util";
 import { AccountManager } from "../manager";
 import { PlaylistItem } from "../constant";
 import { QueueItemTreeItem } from "../provider";
-import { i18n } from "../i18n";
+import { i18n } from "../../i18n";
 
 enum Type {
   userInstance,
-  favoriteInstance
+  favoriteInstance,
 }
 
 type RefreshPara = {
@@ -120,7 +120,7 @@ export class PlaylistProvider
     } else {
       playlists = await AccountManager.favoritePlaylist();
     }
-    return playlists.map(playlist => {
+    return playlists.map((playlist) => {
       PlaylistProvider.belongsTo.set(playlist.id, this.type);
       const item = new PlaylistItemTreeItem(
         playlist.name,

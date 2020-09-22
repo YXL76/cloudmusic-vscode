@@ -3,13 +3,13 @@ import {
   apiLikelist,
   apiLogout,
   apiUserPlaylist,
-  baseQuery
+  baseQuery,
 } from "../util";
 import { login, login_cellphone } from "NeteaseCloudMusicApi";
 import { LoggedIn } from "../state";
 import { PlaylistItem } from "../constant";
 import { cookieToJson } from "NeteaseCloudMusicApi/util/index";
-import { i18n } from "../i18n";
+import { i18n } from "../../i18n";
 import { window } from "vscode";
 
 interface LoginParameters {
@@ -41,7 +41,7 @@ export class AccountManager {
     account,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     md5_password,
-    countrycode
+    countrycode,
   }: LoginParameters): Promise<boolean> {
     if (LoggedIn.get()) {
       window.showInformationMessage(i18n.sentence.info.alreadySignIn);
@@ -53,12 +53,12 @@ export class AccountManager {
             phone: account,
             // eslint-disable-next-line @typescript-eslint/naming-convention
             md5_password,
-            countrycode: countrycode || "86"
+            countrycode: countrycode || "86",
           })
         : await login({
             email: account,
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            md5_password
+            md5_password,
           });
 
       if (status === 200) {
@@ -71,7 +71,7 @@ export class AccountManager {
         this.uid = userId;
         this.nickname = nickname;
         const ids = await apiLikelist();
-        ids.forEach(id => this.likelist.add(id));
+        ids.forEach((id) => this.likelist.add(id));
         LoggedIn.set(true);
         return true;
       }
@@ -95,11 +95,11 @@ export class AccountManager {
 
   static async userPlaylist(): Promise<PlaylistItem[]> {
     const lists = await apiUserPlaylist(this.uid);
-    return lists.filter(list => list.creator.userId === this.uid);
+    return lists.filter((list) => list.creator.userId === this.uid);
   }
 
   static async favoritePlaylist(): Promise<PlaylistItem[]> {
     const lists = await apiUserPlaylist(this.uid);
-    return lists.filter(list => list.creator.userId !== this.uid);
+    return lists.filter((list) => list.creator.userId !== this.uid);
   }
 }

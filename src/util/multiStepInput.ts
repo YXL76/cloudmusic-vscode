@@ -9,7 +9,7 @@ import {
   ThemeIcon,
   window,
 } from "vscode";
-import { i18n } from "../i18n";
+import { i18n } from "../../i18n";
 
 enum InputFlowAction {
   back,
@@ -118,20 +118,20 @@ export class MultiStepInput {
     return this.steps.pop();
   }
 
-  async showQuickPick<T extends QuickPickItem>({}: QuickPickParameters<
-    T
-  >): Promise<T>;
   async showQuickPick<T extends QuickPickItem>(
-    {}: QuickPickParameters<T>,
+    parameters: QuickPickParameters<T>
+  ): Promise<T>;
+  async showQuickPick<T extends QuickPickItem>(
+    parameters: QuickPickParameters<T>,
     canSelectMany: true
   ): Promise<readonly T[]>;
   async showQuickPick<T extends QuickPickItem>(
-    {}: QuickPickParameters<T>,
+    parameters: QuickPickParameters<T>,
     canSelectMany: undefined,
     buttons: ButtonOption
   ): Promise<T | ButtonAction>;
   async showQuickPick<T extends QuickPickItem>(
-    {}: QuickPickParameters<T>,
+    parameters: QuickPickParameters<T>,
     canSelectMany: true,
     buttons: ButtonOption
   ): Promise<readonly T[] | ButtonAction>;
