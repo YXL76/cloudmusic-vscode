@@ -33,18 +33,10 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libasound2-dev
           sudo apt-get install -y libx11-dev
-      #     sudo apt-get install -y mpv libmpv-dev libmpv1
-
-      # - name: Install needed Macos dependencies
-      #   if: matrix.os == 'macos-latest'
-      #   run: brew install mpv
 
       - name: Install needed Windows dependencies
         if: matrix.os == 'windows-latest'
         run: choco install llvm
-
-      # - name: Add msvc to PATH
-      #   uses: ilammy/msvc-dev-cmd@v1.3.0
 
       - uses: actions-rs/toolchain@v1
         with:
@@ -75,21 +67,12 @@ jobs:
 
       - run: yarn
 
-      # - name: make mpv.lib
-      #   if: matrix.os == 'windows-latest'
-      #   run: |
-      #     node script\\libmpv.js
-      #     7z e mpv.7z
-      #     lib /def:mpv.def /out:mpv.lib /machine:x64
-      #     mkdir -p native\\target\\release\\deps
-      #     copy mpv.lib native\\target\\release\\deps\\mpv.lib
-
       - name: Build
         run: |
           yarn add electron@${{ matrix.electron }}
           yarn add electron-build-env
           yarn add neon-cli
-          yarn build
+          yarn build::native
 
       - uses: actions/upload-artifact@v2
         with:
