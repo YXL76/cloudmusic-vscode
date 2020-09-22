@@ -1410,22 +1410,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash.throttle@npm:^4.1.6":
-  version: 4.1.6
-  resolution: "@types/lodash.throttle@npm:4.1.6"
-  dependencies:
-    "@types/lodash": "*"
-  checksum: 6ee4ca706681cb561b96f0b7a14da2f637783d0fe9af0b68efa8f29bff3b2caa1ad4e13d59ed139a4e4ef10098c825447045145b1b8f63410cdb5dc256b33082
-  languageName: node
-  linkType: hard
-
-"@types/lodash@npm:*":
-  version: 4.14.159
-  resolution: "@types/lodash@npm:4.14.159"
-  checksum: 15fc1b690916aec2e169327759fbc71b0cb25ca0cd0003c4d20d2e5b4ed14b7bc2feb2835d643e0335eabc1536e7c11b499de591eb794fbb764523cb06c66eee
-  languageName: node
-  linkType: hard
-
 "@types/minimatch@npm:*, @types/minimatch@npm:^3.0.3":
   version: 3.0.3
   resolution: "@types/minimatch@npm:3.0.3"
@@ -3160,7 +3144,6 @@ __metadata:
   resolution: "cloudmusic@workspace:."
   dependencies:
     "@types/glob": 7.1.3
-    "@types/lodash.throttle": ^4.1.6
     "@types/mocha": 8.0.3
     "@types/node": 12.12.62
     "@types/vscode": 1.46.0
