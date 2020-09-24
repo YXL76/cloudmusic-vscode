@@ -1,39 +1,22 @@
 {
-  "env": {
-    "node": true
-  },
-  "extends": [
-    "plugin:@typescript-eslint/recommended",
-    "plugin:vue/vue3-essential",
-    "eslint:recommended",
-    "@vue/typescript/recommended",
-    "@vue/prettier",
-    "@vue/prettier/@typescript-eslint"
-  ],
+  "extends": ["plugin:@typescript-eslint/recommended"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
-    "ecmaVersion": 2020,
+    "ecmaVersion": 10,
     "sourceType": "module"
   },
   "plugins": ["@typescript-eslint"],
   "root": true,
   "rules": {
-    "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/naming-convention": "warn",
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/semi": "warn",
     "curly": "warn",
     "eqeqeq": "warn",
-    "no-empty": [
-      "error",
-      {
-        "allowEmptyCatch": true
-      }
-    ],
     "no-throw-literal": "warn",
-    "semi": "off",
+    "semi": "warn",
     "sort-imports": [
-      "error",
+      "warn",
       {
         "allowSeparatedGroups": false,
         "ignoreCase": false,
