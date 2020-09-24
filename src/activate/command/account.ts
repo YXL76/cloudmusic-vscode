@@ -38,12 +38,11 @@ import {
 import { ExtensionContext, QuickPickItem, commands, window } from "vscode";
 import { AccountManager } from "../../manager";
 import { LoggedIn } from "../../state";
-import { WebView } from "../../page";
 import { i18n } from "../../i18n";
 import { inputKeyword } from "./search";
 
 export function account(context: ExtensionContext): void {
-  const webview = WebView.getInstance(context.extensionUri);
+  // const webview = WebView.getInstance(context.extensionUri);
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.account", async () => {
@@ -160,17 +159,17 @@ export function account(context: ExtensionContext): void {
         if (pick.type === Type.fm) {
           commands.executeCommand("cloudmusic.personalFM");
         } else if (pick.type === Type.userMusicRankingListWeekly) {
-          webview.userMusicRanking(
-            "userMusicRankingListWeekly",
-            `${i18n.word.userRankingList} (${i18n.word.weekly})`,
-            1
-          );
+          // webview.userMusicRanking(
+          //   "userMusicRankingListWeekly",
+          //   `${i18n.word.userRankingList} (${i18n.word.weekly})`,
+          //   1
+          // );
         } else if (pick.type === Type.userMusicRankingListAllTime) {
-          webview.userMusicRanking(
-            "userMusicRankingListAllTime",
-            `${i18n.word.userRankingList} (${i18n.word.allTime})`,
-            0
-          );
+          // webview.userMusicRanking(
+          //   "userMusicRankingListAllTime",
+          //   `${i18n.word.userRankingList} (${i18n.word.allTime})`,
+          //   0
+          // );
         } else if (pick.type === Type.signOut) {
           commands.executeCommand("cloudmusic.signout");
         }
