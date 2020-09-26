@@ -1,6 +1,6 @@
 import { ACCOUNT_KEY, AUTO_CHECK } from "../constant";
 import { AccountManager } from "../manager";
-import { ExtensionContext } from "vscode";
+import type { ExtensionContext } from "vscode";
 
 export async function initAccount(context: ExtensionContext): Promise<void> {
   const info:
@@ -14,7 +14,7 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
     | undefined = context.globalState.get(ACCOUNT_KEY);
   if (info) {
     if ((await AccountManager.login(info)) && AUTO_CHECK) {
-      AccountManager.dailySignin();
+      void AccountManager.dailySignin();
     }
   }
 }

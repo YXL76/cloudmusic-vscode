@@ -1,20 +1,21 @@
 import { AccountManager, ButtonManager } from "../../manager";
-import { ExtensionContext, commands } from "vscode";
 import { IsLike, PersonalFm, lock } from "../../state";
 import { MultiStepInput, apiLike, load, player } from "../../util";
+import type { ExtensionContext } from "vscode";
 import { QueueProvider } from "../../provider";
 import { VOLUME_KEY } from "../../constant";
+import { commands } from "vscode";
 import { i18n } from "../../i18n";
 
 export function media(context: ExtensionContext): void {
   context.subscriptions.push(
-    commands.registerCommand("cloudmusic.previous", async () => {
+    commands.registerCommand("cloudmusic.previous", () => {
       const len = QueueProvider.songs.length - 1;
       if (!PersonalFm.get() && !lock.playerLoad.get() && len > 0) {
         if (len === 1) {
-          load(QueueProvider.songs[0]);
+          void load(QueueProvider.songs[0]);
         } else {
-          QueueProvider.refresh(async () => {
+          void QueueProvider.refresh(async () => {
             await load(QueueProvider.songs[len]);
             QueueProvider.shift(-1);
           });
@@ -29,14 +30,14 @@ export function media(context: ExtensionContext): void {
         return;
       }
       if (PersonalFm.get()) {
-        load(await PersonalFm.next());
+        void load(await PersonalFm.next());
       } else if (QueueProvider.songs.length > 1) {
-        QueueProvider.refresh(async () => {
+        void QueueProvider.refresh(async () => {
           await load(QueueProvider.songs[1]);
           QueueProvider.shift(1);
         });
       } else if (QueueProvider.songs.length === 1) {
-        load(QueueProvider.songs[0]);
+        void load(QueueProvider.songs[0]);
       }
     })
   );
@@ -61,16 +62,16 @@ export function media(context: ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    commands.registerCommand("cloudmusic.volume", async () => {
-      MultiStepInput.run(input => inputLevel(input));
+    commands.registerCommand("cloudmusic.volume", () => {
+      void MultiStepInput.run((input) => inputLevel(input));
 
       async function inputLevel(input: MultiStepInput) {
         const level = await input.showInputBox({
           title: i18n.word.volume,
           step: 1,
           totalSteps: 1,
-          value: `${context.globalState.get(VOLUME_KEY)}`,
-          prompt: `${i18n.sentence.hint.volume} (0~100)`
+          value: `${context.globalState.get(VOLUME_KEY) as number}`,
+          prompt: `${i18n.sentence.hint.volume} (0~100)`,
         });
         if (/^[1-9]\d$|^\d$|^100$/.exec(level)) {
           await player.volume(parseInt(level));
@@ -82,13 +83,13 @@ export function media(context: ExtensionContext): void {
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.toggleButton", () => {
-      ButtonManager.toggle();
+      void ButtonManager.toggle();
     })
   );
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.personalFM", () => {
-      PersonalFm.set(!PersonalFm.get());
+      void PersonalFm.set(true);
     })
   );
 }

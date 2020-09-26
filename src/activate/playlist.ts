@@ -9,19 +9,15 @@ import {
   confirmation,
   load,
   pickAddToPlaylist,
-  songsItem2TreeItem
+  songsItem2TreeItem,
 } from "../util";
 import { PersonalFm, lock } from "../state";
-import {
-  PlaylistItemTreeItem,
-  PlaylistProvider,
-  QueueItemTreeItem,
-  QueueProvider
-} from "../provider";
+import type { PlaylistItemTreeItem, QueueItemTreeItem } from "../provider";
+import { PlaylistProvider, QueueProvider } from "../provider";
 import { commands, window } from "vscode";
 import { i18n } from "../i18n";
 
-export async function initPlaylist(): Promise<void> {
+export function initPlaylist(): void {
   const userPlaylistProvider = PlaylistProvider.getUserInstance();
   const favoritePlaylistProvider = PlaylistProvider.getFavoriteInstance();
   window.registerTreeDataProvider("userPlaylist", userPlaylistProvider);
@@ -34,7 +30,7 @@ export async function initPlaylist(): Promise<void> {
   commands.registerCommand("cloudmusic.createPlaylist", () => {
     let name: undefined | string = undefined;
 
-    MultiStepInput.run(input => inputName(input));
+    void MultiStepInput.run((input) => inputName(input));
 
     async function inputName(input: MultiStepInput) {
       name = await input.showInputBox({
@@ -42,7 +38,7 @@ export async function initPlaylist(): Promise<void> {
         step: 1,
         totalSteps: 2,
         value: name,
-        prompt: i18n.sentence.hint.name
+        prompt: i18n.sentence.hint.name,
       });
 
       return (input: MultiStepInput) => pickType(input);
@@ -51,7 +47,7 @@ export async function initPlaylist(): Promise<void> {
     async function pickType(input: MultiStepInput) {
       enum Type {
         public,
-        private
+        private,
       }
       const pick = await input.showQuickPick({
         title: i18n.word.createPlaylist,
@@ -60,13 +56,13 @@ export async function initPlaylist(): Promise<void> {
         items: [
           {
             label: i18n.word.public,
-            type: Type.public
+            type: Type.public,
           },
           {
             label: i18n.word.private,
-            type: Type.private
-          }
-        ]
+            type: Type.private,
+          },
+        ],
       });
 
       if (
@@ -89,16 +85,16 @@ export async function initPlaylist(): Promise<void> {
     (element: PlaylistItemTreeItem) => {
       PlaylistProvider.refresh({
         element,
-        action: items => {
-          QueueProvider.refresh(async () => {
-            PersonalFm.set(false);
+        action: (items) => {
+          void QueueProvider.refresh(() => {
+            void PersonalFm.set(false);
             QueueProvider.clear();
             QueueProvider.add(items);
             if (!lock.playerLoad.get()) {
-              load(QueueProvider.songs[0]);
+              void load(QueueProvider.songs[0]);
             }
           });
-        }
+        },
       });
     }
   );
@@ -106,7 +102,7 @@ export async function initPlaylist(): Promise<void> {
   commands.registerCommand(
     "cloudmusic.deletePlaylist",
     (element: PlaylistItemTreeItem) => {
-      MultiStepInput.run(input =>
+      void MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
           if (await apiPlaylistDelete(element.item.id)) {
             PlaylistProvider.refresh({});
@@ -125,10 +121,10 @@ export async function initPlaylist(): Promise<void> {
       };
       const state: State = {
         name: element.item.name,
-        desc: element.item.description || ""
+        desc: element.item.description || "",
       };
 
-      MultiStepInput.run(input => inputName(input));
+      void MultiStepInput.run((input) => inputName(input));
 
       async function inputName(input: MultiStepInput) {
         state.name = await input.showInputBox({
@@ -136,7 +132,7 @@ export async function initPlaylist(): Promise<void> {
           step: 1,
           totalSteps: 2,
           value: state.name,
-          prompt: i18n.sentence.hint.name
+          prompt: i18n.sentence.hint.name,
         });
         return (input: MultiStepInput) => inputDesc(input);
       }
@@ -147,7 +143,7 @@ export async function initPlaylist(): Promise<void> {
           step: 2,
           totalSteps: 2,
           value: state.desc,
-          prompt: i18n.sentence.hint.desc
+          prompt: i18n.sentence.hint.desc,
         });
         if (await apiPlaylistUpdate(element.item.id, state.name, state.desc)) {
           PlaylistProvider.refresh({});
@@ -159,7 +155,7 @@ export async function initPlaylist(): Promise<void> {
   commands.registerCommand(
     "cloudmusic.unsavePlaylist",
     (element: PlaylistItemTreeItem) => {
-      MultiStepInput.run(input =>
+      void MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
           if (await apiPlaylistSubscribe(element.item.id, 0)) {
             PlaylistProvider.refresh({});
@@ -174,20 +170,20 @@ export async function initPlaylist(): Promise<void> {
     (element: PlaylistItemTreeItem) => {
       PlaylistProvider.refresh({
         element,
-        action: items => {
-          QueueProvider.refresh(async () => {
+        action: (items) => {
+          void QueueProvider.refresh(() => {
             QueueProvider.add(items);
           });
-        }
+        },
       });
     }
   );
 
   commands.registerCommand(
     "cloudmusic.intelligence",
-    async (element: QueueItemTreeItem) => {
-      PersonalFm.set(false);
-      QueueProvider.refresh(async () => {
+    (element: QueueItemTreeItem) => {
+      void PersonalFm.set(false);
+      void QueueProvider.refresh(async () => {
         const { pid } = element;
         const { id } = element.item;
         const songs = await apiPlaymodeIntelligenceList(id, pid);
@@ -196,7 +192,7 @@ export async function initPlaylist(): Promise<void> {
         QueueProvider.add([element]);
         QueueProvider.add(elements);
         if (!lock.playerLoad.get()) {
-          load(element);
+          void load(element);
         }
       });
     }
@@ -205,7 +201,7 @@ export async function initPlaylist(): Promise<void> {
   commands.registerCommand(
     "cloudmusic.addSong",
     (element: QueueItemTreeItem) => {
-      QueueProvider.refresh(async () => {
+      void QueueProvider.refresh(() => {
         QueueProvider.add([element]);
       });
     }
@@ -216,30 +212,30 @@ export async function initPlaylist(): Promise<void> {
     (element: QueueItemTreeItem) => {
       PlaylistProvider.refresh({
         element: PlaylistProvider.playlists.get(element.pid),
-        action: items => {
-          QueueProvider.refresh(async () => {
-            PersonalFm.set(false);
+        action: (items) => {
+          void QueueProvider.refresh(() => {
+            void PersonalFm.set(false);
             QueueProvider.clear();
             QueueProvider.add(items);
             QueueProvider.top(element.item.id);
             if (!lock.playerLoad.get()) {
-              load(QueueProvider.songs[0]);
+              void load(QueueProvider.songs[0]);
             }
           });
-        }
+        },
       });
     }
   );
 
   commands.registerCommand(
     "cloudmusic.deleteFromPlaylist",
-    async (element: QueueItemTreeItem) => {
-      MultiStepInput.run(input =>
+    (element: QueueItemTreeItem) => {
+      void MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
           if (await apiPlaylistTracks("del", element.pid, [element.item.id])) {
             PlaylistProvider.refresh({
               element: PlaylistProvider.playlists.get(element.pid),
-              refresh: true
+              refresh: true,
             });
           }
         })
@@ -250,7 +246,9 @@ export async function initPlaylist(): Promise<void> {
   commands.registerCommand(
     "cloudmusic.saveToPlaylist",
     (element: QueueItemTreeItem) => {
-      MultiStepInput.run(input => pickAddToPlaylist(input, 1, element.item.id));
+      void MultiStepInput.run((input) =>
+        pickAddToPlaylist(input, 1, element.item.id)
+      );
     }
   );
 }

@@ -1,20 +1,14 @@
 import { AccountManager, ButtonManager } from "../manager";
-import {
+import type {
   AlbumsItem,
   Artist,
-  ICON,
-  MUSIC_QUALITY,
-  NATIVE,
   PlaylistItem,
   SongsItem,
-  TMP_DIR,
-  UserDetail
+  UserDetail,
 } from "../constant";
 import {
   ButtonAction,
-  InputStep,
   LocalCache,
-  MultiStepInput,
   MusicCache,
   apiAlbum,
   apiAlbumSub,
@@ -36,25 +30,25 @@ import {
   apiUserFolloweds,
   apiUserFollows,
   apiUserPlaylist,
-  player
+  player,
 } from "../util";
+import { ICON, MUSIC_QUALITY, NATIVE, TMP_DIR } from "../constant";
+import type { InputStep, MultiStepInput } from "../util";
 import { IsLike, PersonalFm, lock } from "../state";
 import {
   PlaylistProvider,
   QueueItemTreeItem,
-  QueueProvider
+  QueueProvider,
 } from "../provider";
 import {
-  QuickPickItem,
   TreeItemCollapsibleState,
   Uri,
   commands,
   window,
-  workspace
+  workspace,
 } from "vscode";
+import type { QuickPickItem } from "vscode";
 import { i18n } from "../i18n";
-
-const { download } = NATIVE;
 
 export function downloadMusic(
   url: string,
@@ -64,17 +58,17 @@ export function downloadMusic(
   cache: boolean
 ): void {
   try {
-    download(url, path.fsPath, (_, res) => {
+    NATIVE.download(url, path.fsPath, (_, res) => {
       if (res) {
         if (cache) {
-          MusicCache.put(
+          void MusicCache.put(
             filename,
             path,
             `md5-${Buffer.from(md5, "hex").toString("base64")}`
           );
         }
       } else {
-        window.showErrorMessage(i18n.sentence.error.network);
+        void window.showErrorMessage(i18n.sentence.error.network);
       }
     });
   } catch {}
@@ -82,12 +76,12 @@ export function downloadMusic(
 
 export function songsItem2TreeItem(
   id: number,
-  songs: SongsItem[]
+  songs: Readonly<SongsItem[]>
 ): QueueItemTreeItem[] {
   return songs.map(
-    song =>
+    (song) =>
       new QueueItemTreeItem(
-        `${song.name}${song.alia[0] ? ` (${song.alia[0]})` : ""}`,
+        `${song.name}${song.alia ? ` (${song.alia.join("/")})` : ""}`,
         song,
         id,
         TreeItemCollapsibleState.None
@@ -110,7 +104,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
   const { pid, item } = element;
   const { id } = item;
   const idString = `${id}`;
-  const path = await MusicCache.get(idString);
+  const path = (await MusicCache.get(idString)) as string;
 
   if (path) {
     player.load(path, pid, item);
@@ -118,10 +112,10 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
     const { url, md5 } = (await apiSongUrl([id]))[0];
     if (!url) {
       lock.playerLoad.set(false);
-      commands.executeCommand("cloudmusic.next");
+      void commands.executeCommand("cloudmusic.next");
       return;
     }
-    const path = LocalCache.get(md5);
+    const path = LocalCache.get(md5) as string;
 
     if (path) {
       player.load(path, pid, item);
@@ -138,7 +132,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
             } else if (++count > retryTimes) {
               clearInterval(timer);
               lock.playerLoad.set(false);
-              commands.executeCommand("cloudmusic.next");
+              void commands.executeCommand("cloudmusic.next");
             }
           },
           () => {
@@ -159,7 +153,7 @@ export async function confirmation(
   const i = await input.showInputBox({
     title: i18n.word.confirmation,
     step,
-    prompt: i18n.sentence.hint.confirmation
+    prompt: i18n.sentence.hint.confirmation,
   });
   if (i.toLowerCase() === "yes") {
     await action();
@@ -187,7 +181,7 @@ enum PickType {
   subscribed,
   user,
   followeds,
-  follows
+  follows,
 }
 interface T extends QuickPickItem {
   id: number;
@@ -199,13 +193,13 @@ interface ST extends T {
 }
 
 export const pickSongItems = (songs: SongsItem[]): ST[] =>
-  songs.map(item => ({
+  songs.map((item) => ({
     label: `${ICON.song} ${item.name}`,
-    description: item.ar.map(i => i.name).join("/"),
+    description: item.ar.map((i) => i.name).join("/"),
     detail: item.alia.join("/"),
     id: item.id,
     item,
-    type: PickType.song
+    type: PickType.song,
   }));
 
 export const pickArtistItems = (ars: { id: number; name: string }[]): T[] =>
@@ -213,16 +207,16 @@ export const pickArtistItems = (ars: { id: number; name: string }[]): T[] =>
     label: `${ICON.artist} ${i18n.word.artist}`,
     detail: name,
     id,
-    type: PickType.artist
+    type: PickType.artist,
   }));
 
 export const pickAlbumItems = (albums: AlbumsItem[]): T[] =>
   albums.map(({ name, alias, artists, id }) => ({
     label: `${ICON.album} ${name}`,
     description: alias.join("/"),
-    detail: artists.map(artist => artist.name).join("/"),
+    detail: artists.map((artist) => artist.name).join("/"),
     id,
-    type: PickType.album
+    type: PickType.album,
   }));
 
 interface PT extends T {
@@ -230,21 +224,21 @@ interface PT extends T {
 }
 
 export const pickPlaylistItems = (playlists: PlaylistItem[]): PT[] =>
-  playlists.map(playlist => ({
+  playlists.map((playlist) => ({
     label: `${ICON.playlist} ${playlist.name}`,
     description: `${playlist.trackCount}`,
     detail: playlist.description || "",
     id: playlist.id,
     item: playlist,
-    type: PickType.playlist
+    type: PickType.playlist,
   }));
 
 export const pickUserDetails = (users: UserDetail[]): T[] =>
-  users.map(user => ({
+  users.map((user) => ({
     label: `${ICON.artist} ${user.nickname}`,
     detail: user.signature,
     id: user.userId,
-    type: PickType.user
+    type: PickType.user,
   }));
 
 export async function pickSong(
@@ -260,36 +254,36 @@ export async function pickSong(
     items: [
       {
         label: `${ICON.name} ${name}`,
-        detail: alia.join("/")
+        detail: alia.join("/"),
       },
       ...pickArtistItems(ar),
       {
         label: `${ICON.album} ${i18n.word.album}`,
         detail: al.name,
         id: al.id,
-        type: PickType.album
+        type: PickType.album,
       },
       {
         label: `${ICON.like} ${i18n.word.like}`,
-        type: PickType.like
+        type: PickType.like,
       },
       {
         label: `${ICON.add} ${i18n.word.addToQueue}`,
-        type: PickType.add
+        type: PickType.add,
       },
       {
         label: `${ICON.save} ${i18n.word.saveToPlaylist}`,
-        type: PickType.save
+        type: PickType.save,
       },
       {
         label: `${ICON.similar} ${i18n.word.similarSongs}`,
-        type: PickType.similar
+        type: PickType.similar,
       },
       {
         label: `${ICON.similar} ${i18n.word.similarPlaylists}`,
-        type: PickType.similar
-      }
-    ]
+        type: PickType.similar,
+      },
+    ],
   });
   if (pick.type === PickType.album) {
     return (input: MultiStepInput) =>
@@ -318,7 +312,7 @@ export async function pickSong(
   }
   if (pick.type === PickType.add) {
     const element = songsItem2TreeItem(0, [item])[0];
-    commands.executeCommand("cloudmusic.addSong", element);
+    void commands.executeCommand("cloudmusic.addSong", element);
   }
   return input.pop() as InputStep;
 }
@@ -334,12 +328,12 @@ export async function pickSongMany(
     items: [
       {
         label: `${ICON.add} ${i18n.word.addToQueue}`,
-        type: PickType.add
-      }
-    ]
+        type: PickType.add,
+      },
+    ],
   });
   if (pick.type === PickType.add) {
-    QueueProvider.refresh(async () => {
+    void QueueProvider.refresh(() => {
       QueueProvider.add(songsItem2TreeItem(0, songs));
     });
   }
@@ -359,12 +353,12 @@ async function pickSimiSong(
     {
       title: i18n.word.similarSongs,
       step,
-      items: pickSongItems(songs)
+      items: pickSongItems(songs),
     },
     true,
     {
       previous: offset > 0,
-      next: songs.length === limit
+      next: songs.length === limit,
     }
   );
   if (pick === ButtonAction.previous) {
@@ -400,7 +394,7 @@ export async function pickSongs(
     {
       title: i18n.word.song,
       step,
-      items: pickSongItems(songs)
+      items: pickSongItems(songs),
     },
     true
   );
@@ -432,41 +426,41 @@ export async function pickArtist(
     items: [
       {
         label: `${ICON.name} ${name}`,
-        detail: alias.join("/")
+        detail: alias.join("/"),
       },
       {
         label: `${ICON.description} ${i18n.word.description}`,
-        detail: briefDesc
+        detail: briefDesc,
       },
       {
         label: `${ICON.album} ${i18n.word.album}`,
         description: `${albumSize}`,
         id,
-        type: PickType.albums
+        type: PickType.albums,
       },
       {
         label: `${ICON.number} ${i18n.word.trackCount}`,
         description: `${musicSize}`,
         id,
-        type: PickType.songs
+        type: PickType.songs,
       },
       {
         label: `${ICON.similar} ${i18n.word.similarArtists}`,
-        type: PickType.similar
+        type: PickType.similar,
       },
       {
         label: `${ICON.save} ${i18n.word.save}`,
-        type: PickType.save
+        type: PickType.save,
       },
       {
         label: `${ICON.unsave} ${i18n.word.unsave}`,
-        type: PickType.unsave
+        type: PickType.unsave,
       },
       {
-        label: splitLine(i18n.word.hotSongs)
+        label: splitLine(i18n.word.hotSongs),
       },
-      ...pickSongItems(songs)
-    ]
+      ...pickSongItems(songs),
+    ],
   });
   if (pick.type === PickType.albums) {
     return async (input: MultiStepInput) =>
@@ -506,12 +500,12 @@ export async function pickArtist(
       {
         title: i18n.word.song,
         step,
-        items: pickSongItems(songs)
+        items: pickSongItems(songs),
       },
       true,
       {
         previous: offset > 0,
-        next: songs.length === limit
+        next: songs.length === limit,
       }
     );
     if (pick === ButtonAction.previous) {
@@ -547,7 +541,7 @@ export async function pickArtists(
   const pick = await input.showQuickPick({
     title: i18n.word.artist,
     step,
-    items: pickArtistItems(artists)
+    items: pickArtistItems(artists),
   });
   return (input: MultiStepInput) => pickArtist(input, step + 1, pick.id);
 }
@@ -567,26 +561,26 @@ export async function pickAlbum(
       {
         label: `${ICON.name} ${name}`,
         description: alias.join("/"),
-        detail: company
+        detail: company,
       },
       {
         label: `${ICON.description} ${i18n.word.description}`,
-        detail: description
+        detail: description,
       },
       ...pickArtistItems(artists),
       {
         label: `${ICON.save} ${i18n.word.save}`,
-        type: PickType.save
+        type: PickType.save,
       },
       {
         label: `${ICON.unsave} ${i18n.word.unsave}`,
-        type: PickType.unsave
+        type: PickType.unsave,
       },
       {
-        label: splitLine(i18n.word.content)
+        label: splitLine(i18n.word.content),
       },
-      ...pickSongItems(songs)
-    ]
+      ...pickSongItems(songs),
+    ],
   });
   if (pick.type === PickType.artist) {
     return (input: MultiStepInput) =>
@@ -616,7 +610,7 @@ export async function pickAlbums(
   const pick = await input.showQuickPick({
     title: i18n.word.album,
     step,
-    items: pickAlbumItems(albums)
+    items: pickAlbumItems(albums),
   });
   return (input: MultiStepInput) => pickAlbum(input, step + 1, pick.id);
 }
@@ -633,7 +627,7 @@ export async function pickPlaylist(
     playCount,
     subscribedCount,
     trackCount,
-    creator
+    creator,
   } = item;
   const songs = await apiPlaylistDetail(id);
   const pick = await input.showQuickPick({
@@ -641,18 +635,18 @@ export async function pickPlaylist(
     step,
     items: [
       {
-        label: `${ICON.name} ${name}`
+        label: `${ICON.name} ${name}`,
       },
       {
         label: `${ICON.description} ${i18n.word.description}`,
-        detail: description || ""
+        detail: description || "",
       },
       ...(playCount
         ? [
             {
               label: `${ICON.number} ${i18n.word.playCount}`,
-              description: `${playCount}`
-            }
+              description: `${playCount}`,
+            },
           ]
         : []),
       ...(subscribedCount
@@ -660,36 +654,36 @@ export async function pickPlaylist(
             {
               label: `${ICON.number} ${i18n.word.subscribedCount}`,
               description: `${subscribedCount}`,
-              type: PickType.subscribed
-            }
+              type: PickType.subscribed,
+            },
           ]
         : []),
       ...(trackCount
         ? [
             {
               label: `${ICON.number} ${i18n.word.trackCount}`,
-              description: `${trackCount}`
-            }
+              description: `${trackCount}`,
+            },
           ]
         : []),
       ...pickUserDetails([creator]),
       {
         label: `${ICON.similar} ${i18n.word.similarPlaylists}`,
-        type: PickType.similar
+        type: PickType.similar,
       },
       {
         label: `${ICON.add} ${i18n.word.addToQueue}`,
-        type: PickType.add
+        type: PickType.add,
       },
       {
         label: `${ICON.save} ${i18n.word.save}`,
-        type: PickType.save
+        type: PickType.save,
       },
       {
-        label: splitLine(i18n.word.content)
+        label: splitLine(i18n.word.content),
       },
-      ...pickSongItems(songs)
-    ]
+      ...pickSongItems(songs),
+    ],
   });
   if (pick.type === PickType.song) {
     return (input: MultiStepInput) =>
@@ -707,7 +701,7 @@ export async function pickPlaylist(
     return (input: MultiStepInput) => pickUser(input, step + 1, (pick as T).id);
   }
   if (pick.type === PickType.add) {
-    QueueProvider.refresh(async () => {
+    void QueueProvider.refresh(() => {
       QueueProvider.add(songsItem2TreeItem(id, songs));
     });
   }
@@ -729,12 +723,12 @@ async function pickSimiPlaylists(
     {
       title: i18n.word.similarPlaylists,
       step,
-      items: pickPlaylistItems(playlists)
+      items: pickPlaylistItems(playlists),
     },
     undefined,
     {
       previous: offset > 0,
-      next: playlists.length === limit
+      next: playlists.length === limit,
     }
   );
   if (pick === ButtonAction.previous) {
@@ -747,8 +741,7 @@ async function pickSimiPlaylists(
     return (input: MultiStepInput) =>
       pickSimiPlaylists(input, step, id, offset + limit);
   }
-  return (input: MultiStepInput) =>
-    pickPlaylist(input, step + 1, pick.item as PlaylistItem);
+  return (input: MultiStepInput) => pickPlaylist(input, step + 1, pick.item);
 }
 
 export async function pickPlaylists(
@@ -759,7 +752,7 @@ export async function pickPlaylists(
   const pick = await input.showQuickPick({
     title: i18n.word.playlist,
     step,
-    items: pickPlaylistItems(items)
+    items: pickPlaylistItems(items),
   });
   return (input: MultiStepInput) => pickPlaylist(input, step + 1, pick.item);
 }
@@ -775,13 +768,13 @@ export async function pickAddToPlaylist(
     step,
     items: lists.map(({ name, id }) => ({
       label: `${ICON.playlist} ${name}`,
-      id
-    }))
+      id,
+    })),
   });
   if (await apiPlaylistTracks("add", pick.id, [id])) {
     PlaylistProvider.refresh({
       element: PlaylistProvider.playlists.get(pick.id),
-      refresh: true
+      refresh: true,
     });
   }
   input.pop();
@@ -806,35 +799,35 @@ export async function pickUser(
       {
         label: `${ICON.artist} ${user.nickname}`,
         detail: user.signature,
-        item: 0
+        item: 0,
       },
       {
         label: `${ICON.number} ${i18n.word.followeds}`,
         description: `${user.followeds}`,
         type: PickType.followeds,
-        item: 0
+        item: 0,
       },
       {
         label: `${ICON.number} ${i18n.word.follows}`,
         description: `${user.follows}`,
         type: PickType.follows,
-        item: 0
+        item: 0,
       },
       {
         label: splitLine(i18n.word.playlist),
-        item: 0
+        item: 0,
       },
       ...pickPlaylistItems(
-        playlists.filter(playlist => playlist.creator.userId === uid)
+        playlists.filter((playlist) => playlist.creator.userId === uid)
       ),
       {
         label: splitLine(i18n.word.saved),
-        item: 0
+        item: 0,
       },
       ...pickPlaylistItems(
-        playlists.filter(playlist => playlist.creator.userId !== uid)
-      )
-    ]
+        playlists.filter((playlist) => playlist.creator.userId !== uid)
+      ),
+    ],
   });
   if (pick.type === PickType.followeds) {
     return (input: MultiStepInput) =>
@@ -868,12 +861,12 @@ export async function pickUsers(
     {
       title: i18n.word.user,
       step,
-      items: pickUserDetails(users)
+      items: pickUserDetails(users),
     },
     undefined,
     {
       previous: offset > 0,
-      next: users.length === limit
+      next: users.length === limit,
     }
   );
   if (pick === ButtonAction.previous) {
@@ -886,6 +879,5 @@ export async function pickUsers(
     return (input: MultiStepInput) =>
       pickUsers(input, step, func, pagination, offset + limit, args);
   }
-  return (input: MultiStepInput) =>
-    pickUser(input, step + 1, pick.id as number);
+  return (input: MultiStepInput) => pickUser(input, step + 1, pick.id);
 }

@@ -4,7 +4,7 @@ const gulp = require("gulp");
 const nls = require("vscode-nls-dev");
 const ts = require("gulp-typescript");
 const typescript = require("typescript");
-const tsProject = ts.createProject("./tsconfig.json", { typescript });
+const tsProject = ts.createProject("./src/tsconfig.json", { typescript });
 const filter = require("gulp-filter");
 
 const languages = [

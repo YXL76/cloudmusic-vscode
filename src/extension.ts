@@ -1,24 +1,19 @@
-import {
-  ExtensionContext,
-  ProgressLocation,
-  commands,
-  window,
-  workspace
-} from "vscode";
 import { LyricCache, MusicCache, player } from "./util";
+import { ProgressLocation, commands, window, workspace } from "vscode";
 import { SETTING_DIR, TMP_DIR } from "./constant";
+import type { ExtensionContext } from "vscode";
 import { LoggedIn } from "./state";
 import { i18n } from "./i18n";
 import { steps } from "./activate";
 
 export function activate(context: ExtensionContext): void {
-  window.withProgress(
+  void window.withProgress(
     {
       location: ProgressLocation.Notification,
       title: "Cloudmusic initialization",
-      cancellable: true
+      cancellable: true,
     },
-    async progress => {
+    async (progress) => {
       await workspace.fs.createDirectory(SETTING_DIR);
       await workspace.fs.createDirectory(TMP_DIR);
 
@@ -28,7 +23,7 @@ export function activate(context: ExtensionContext): void {
       for (const step of steps) {
         progress.report({
           increment: percentage,
-          message: "Initializing..."
+          message: "Initializing...",
         });
         await step(context);
         percentage += unit;
@@ -36,23 +31,23 @@ export function activate(context: ExtensionContext): void {
 
       progress.report({
         increment: percentage,
-        message: "Initialization ended"
+        message: "Initialization ended",
       });
 
       if (!LoggedIn.get()) {
-        window
+        void window
           .showInformationMessage(
             i18n.sentence.hint.trySignIn,
             i18n.word.signIn
           )
-          .then(result => {
+          .then((result) => {
             if (result === i18n.word.signIn) {
-              commands.executeCommand("cloudmusic.signin");
+              void commands.executeCommand("cloudmusic.signin");
             }
           });
       }
 
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         setTimeout(resolve, 1024);
       });
     }
@@ -63,5 +58,5 @@ export function deactivate(): void {
   player.stop();
   MusicCache.verify();
   LyricCache.verify();
-  workspace.fs.delete(TMP_DIR, { recursive: true, useTrash: false });
+  void workspace.fs.delete(TMP_DIR, { recursive: true, useTrash: false });
 }

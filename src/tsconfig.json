@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["es2019", "dom"],
+    "lib": ["es2019"],
     "module": "commonjs",
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": false,
@@ -12,5 +12,5 @@
     "strict": true,
     "target": "es2019"
   },
-  "exclude": ["node_modules", ".vscode-test", "page"]
+  "exclude": ["node_modules", ".vscode-test"]
 }

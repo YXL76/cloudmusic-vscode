@@ -1350,6 +1350,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/cacache@npm:^12.0.1":
+  version: 12.0.1
+  resolution: "@types/cacache@npm:12.0.1"
+  dependencies:
+    "@types/node": "*"
+  checksum: e51d28afb71a465ca9ca27560e5f7c3635fbd48584309c5466caa9029b96e3057762b1c8fb4344c905035ed1d0e35c2edb598d3ba6baf089adfb7d671b684f3f
+  languageName: node
+  linkType: hard
+
 "@types/cacheable-request@npm:^6.0.1":
   version: 6.0.1
   resolution: "@types/cacheable-request@npm:6.0.1"
@@ -1429,6 +1438,29 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/lodash.throttle@npm:^4.1.6":
+  version: 4.1.6
+  resolution: "@types/lodash.throttle@npm:4.1.6"
+  dependencies:
+    "@types/lodash": "*"
+  checksum: 6ee4ca706681cb561b96f0b7a14da2f637783d0fe9af0b68efa8f29bff3b2caa1ad4e13d59ed139a4e4ef10098c825447045145b1b8f63410cdb5dc256b33082
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:*":
+  version: 4.14.161
+  resolution: "@types/lodash@npm:4.14.161"
+  checksum: c3657517dab1a23059d86ae379c4e7538212f05ba9c3e108ab694167f086118a5b44ed04bcb6e5cd0a89778c29909668302a755df576e3597df16fda8b603443
+  languageName: node
+  linkType: hard
+
+"@types/lru-cache@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "@types/lru-cache@npm:5.1.0"
+  checksum: 55bffcbc9589163e5c02896fbd658a9e7878527c12197576e1e9b8db5b27744cfabd3dd522939835740eccd9bf348064f0e32a13b9b3019a81c8f69666499590
+  languageName: node
+  linkType: hard
+
 "@types/minimatch@npm:*, @types/minimatch@npm:^3.0.3":
   version: 3.0.3
   resolution: "@types/minimatch@npm:3.0.3"
@@ -1440,6 +1472,13 @@ __metadata:
   version: 8.0.3
   resolution: "@types/mocha@npm:8.0.3"
   checksum: 36a4429f508c46224f8dfa3e7a8318ff90d9e6c8e0da35b48b0e61ba5ccce07dff7ec1af79c1423ff2beb77f703ee58e820c3ca8f895c134d02fb827fae6abc2
+  languageName: node
+  linkType: hard
+
+"@types/node-abi@npm:^2.10.0":
+  version: 2.10.0
+  resolution: "@types/node-abi@npm:2.10.0"
+  checksum: ae419fc6898b96c7440c195c2a919104a479a0b8a70e13c1b164f24eaa9c83f8a215e910b178b4be9993a53e050c68bceadf582757e6b0d957f4df86f6df1b5e
   languageName: node
   linkType: hard
 
@@ -2975,9 +3014,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cloudmusic@workspace:."
   dependencies:
+    "@types/cacache": ^12.0.1
     "@types/glob": 7.1.3
+    "@types/lodash.throttle": ^4.1.6
+    "@types/lru-cache": ^5.1.0
     "@types/mocha": 8.0.3
     "@types/node": 12.12.62
+    "@types/node-abi": ^2.10.0
     "@types/vscode": 1.46.0
     "@typescript-eslint/eslint-plugin": 4.2.0
     "@typescript-eslint/parser": 4.2.0
@@ -2987,6 +3030,8 @@ __metadata:
     cacache: ^15.0.5
     dedupe: ^3.0.2
     eslint: 7.9.0
+    eslint-config-prettier: ^6.12.0
+    eslint-plugin-prettier: ^3.1.4
     glob: 7.1.6
     gulp: 4.0.2
     gulp-filter: 6.0.0
@@ -2996,6 +3041,7 @@ __metadata:
     mocha: 8.1.3
     node-abi: ^2.19.1
     node-cache: ^5.1.2
+    prettier: ^2.1.2
     ts-loader: 8.0.4
     typescript: 4.0.3
     vscode-nls: ^5.0.0
@@ -3929,6 +3975,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-config-prettier@npm:^6.12.0":
+  version: 6.12.0
+  resolution: "eslint-config-prettier@npm:6.12.0"
+  dependencies:
+    get-stdin: ^6.0.0
+  peerDependencies:
+    eslint: ">=3.14.1"
+  bin:
+    eslint-config-prettier-check: bin/cli.js
+  checksum: 9371c0a8d05df36f3698247e703118a8eb95fa887aabc4b1e189c21e248ab9c49c3b8e5621f42826b89bbfd05aa52493ffddf0c41219db9b6e4df20e46e21da0
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-prettier@npm:^3.1.4":
+  version: 3.1.4
+  resolution: "eslint-plugin-prettier@npm:3.1.4"
+  dependencies:
+    prettier-linter-helpers: ^1.0.0
+  peerDependencies:
+    eslint: ">=5.0.0"
+    prettier: ">=1.13.0"
+  checksum: 4e4df155790a20a7ceef9008bbc22a677a8f7e790e9ef613a049a78dfe0b5dc3726afcd4bfd2a8ce41abc88c9a11db029819a722f70b940da32a03629e7f7832
+  languageName: node
+  linkType: hard
+
 "eslint-scope@npm:^5.0.0, eslint-scope@npm:^5.1.0":
   version: 5.1.0
   resolution: "eslint-scope@npm:5.1.0"
@@ -4278,6 +4349,13 @@ __metadata:
   version: 3.1.3
   resolution: "fast-deep-equal@npm:3.1.3"
   checksum: 451526766b219503131d11e823eaadd1533080b0be4860e316670b039dcaf31cd1007c2fe036a9b922abba7c040dfad5e942ed79d21f2ff849e50049f36e0fb7
+  languageName: node
+  linkType: hard
+
+"fast-diff@npm:^1.1.2":
+  version: 1.2.0
+  resolution: "fast-diff@npm:1.2.0"
+  checksum: 9c5407d9c4869407854fe8838b8d9d26065ca747c9b80697957ae37482e982e880de823efa2c97ea1cba05dc06fce853a005e7557d10550c64c052cf7021ba9e
   languageName: node
   linkType: hard
 
@@ -4776,6 +4854,13 @@ fsevents@~2.1.2:
   version: 2.0.5
   resolution: "get-caller-file@npm:2.0.5"
   checksum: 9dd9e1e2591039ee4c38c897365b904f66f1e650a8c1cb7b7db8ce667fa63e88cc8b13282b74df9d93de481114b3304a0487880d31cd926dfda6efe71455855d
+  languageName: node
+  linkType: hard
+
+"get-stdin@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "get-stdin@npm:6.0.0"
+  checksum: b51d664838aef7f8353dc57371ce59cea54d8d584fec015a9d89d24561e95b97806d5b5ba120bc81574c9ed63cb3e210176ffa0ff9263c7e7ba4d56d0fe54913
   languageName: node
   linkType: hard
 
@@ -7732,12 +7817,30 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"prettier-linter-helpers@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "prettier-linter-helpers@npm:1.0.0"
+  dependencies:
+    fast-diff: ^1.1.2
+  checksum: 6d698b9c8dc28e52c8d69df520cde3410cc06cc40471acf81b4b7c18ca08e73d0efb0f878654985bb02fce4f8d3d64cdf64fe9f3ffad3e1dc7e17b837d4ddcb2
+  languageName: node
+  linkType: hard
+
 "prettier@npm:1.19.1":
   version: 1.19.1
   resolution: "prettier@npm:1.19.1"
   bin:
     prettier: ./bin-prettier.js
   checksum: e5fcdfe5e159ef5c5480245353cf8fb5bbd1b8afff266f31f281641825238f8a645e58472f77cd75a09ccc45d44c335466e8d901ec138c2bda05e1bd6ea1077c
+  languageName: node
+  linkType: hard
+
+"prettier@npm:^2.1.2":
+  version: 2.1.2
+  resolution: "prettier@npm:2.1.2"
+  bin:
+    prettier: bin-prettier.js
+  checksum: bedc24c568efbcfe45f255558900777e2fabb36bf28ed4c22d2456eb22dfb012d12e566a46472ea5b857a4e9f263e888f7e316527d00bb58188f1820b0b0031a
   languageName: node
   linkType: hard
 

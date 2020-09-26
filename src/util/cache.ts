@@ -6,11 +6,10 @@ import { FileType, Uri, workspace } from "vscode";
 import {
   LOCAL_FILE_DIR,
   LYRIC_CACHE_DIR,
-  LruCacheValue,
-  LyricData,
   MUSIC_CACHE_DIR,
-  MUSIC_CACHE_SIZE
+  MUSIC_CACHE_SIZE,
 } from "../constant";
+import type { LruCacheValue, LyricData } from "../constant";
 
 export const apiCache = new NodeCache({
   stdTTL: 300,
@@ -18,7 +17,7 @@ export const apiCache = new NodeCache({
   useClones: false,
   deleteOnExpire: true,
   enableLegacyCallbacks: false,
-  maxKeys: -1
+  maxKeys: -1,
 });
 
 export class MusicCache {
@@ -28,17 +27,15 @@ export class MusicCache {
     length: (n: LruCacheValue, _key: string) => n.size,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     dispose: (key: string, n: LruCacheValue) => {
-      cacache.rm.entry(MUSIC_CACHE_DIR.fsPath, key);
-      cacache.rm.content(MUSIC_CACHE_DIR.fsPath, n.integrity);
+      void cacache.rm.entry(MUSIC_CACHE_DIR.fsPath, key);
+      void cacache.rm.content(MUSIC_CACHE_DIR.fsPath, n.integrity);
     },
-    noDisposeOnSet: true
+    noDisposeOnSet: true,
   });
 
   static async init(): Promise<void> {
     try {
-      const res: { key: LruCacheValue } = await cacache.ls(
-        MUSIC_CACHE_DIR.fsPath
-      );
+      const res = await cacache.ls(MUSIC_CACHE_DIR.fsPath);
       for (const item in res) {
         const { key, integrity, size } = res[item];
         this.lruCache.set(key, { integrity, size });
@@ -47,7 +44,7 @@ export class MusicCache {
   }
 
   static verify(): void {
-    cacache.verify(MUSIC_CACHE_DIR.fsPath);
+    void cacache.verify(MUSIC_CACHE_DIR.fsPath);
   }
 
   static async get(key: string): Promise<string | undefined> {
@@ -78,11 +75,11 @@ export class MusicCache {
 
 export class LyricCache {
   static verify(): void {
-    cacache.verify(LYRIC_CACHE_DIR.fsPath);
+    void cacache.verify(LYRIC_CACHE_DIR.fsPath);
   }
 
   static clear(): void {
-    cacache.rm.all(LYRIC_CACHE_DIR.fsPath);
+    void cacache.rm.all(LYRIC_CACHE_DIR.fsPath);
   }
 
   static async get(key: string): Promise<LyricData | undefined> {
@@ -95,17 +92,17 @@ export class LyricCache {
       if (Date.now() - time < 604800000) {
         return JSON.parse(
           Buffer.from(await workspace.fs.readFile(Uri.file(path))).toString()
-        );
+        ) as LyricData;
       } else {
-        cacache.rm.entry(LYRIC_CACHE_DIR.fsPath, key);
-        cacache.rm.content(LYRIC_CACHE_DIR.fsPath, integrity);
+        void cacache.rm.entry(LYRIC_CACHE_DIR.fsPath, key);
+        void cacache.rm.content(LYRIC_CACHE_DIR.fsPath, integrity);
       }
     } catch {}
     return undefined;
   }
 
   static put(key: string, data: LyricData): void {
-    cacache.put(LYRIC_CACHE_DIR.fsPath, key, JSON.stringify(data));
+    void cacache.put(LYRIC_CACHE_DIR.fsPath, key, JSON.stringify(data));
   }
 }
 
@@ -116,7 +113,7 @@ export class LocalCache {
     useClones: false,
     deleteOnExpire: false,
     enableLegacyCallbacks: false,
-    maxKeys: -1
+    maxKeys: -1,
   });
 
   static async init(): Promise<void> {
@@ -139,7 +136,7 @@ export class LocalCache {
   }
 
   static get(key: string): string | undefined {
-    const path = this.cache.get(key) as string | undefined;
+    const path = this.cache.get<string>(key);
     if (path) {
       return path;
     }

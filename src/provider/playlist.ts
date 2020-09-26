@@ -1,20 +1,19 @@
+import type { Event, TreeDataProvider } from "vscode";
 import {
-  Event,
   EventEmitter,
   ThemeIcon,
-  TreeDataProvider,
   TreeItem,
-  TreeItemCollapsibleState
+  TreeItemCollapsibleState,
 } from "vscode";
 import { apiCache, apiPlaylistDetail, songsItem2TreeItem } from "../util";
 import { AccountManager } from "../manager";
-import { PlaylistItem } from "../constant";
-import { QueueItemTreeItem } from "../provider";
+import type { PlaylistItem } from "../constant";
+import type { QueueItemTreeItem } from "../provider";
 import { i18n } from "../i18n";
 
 enum Type {
   userInstance,
-  favoriteInstance
+  favoriteInstance,
 }
 
 type RefreshPara = {
@@ -25,22 +24,23 @@ type RefreshPara = {
 
 export class PlaylistProvider
   implements TreeDataProvider<PlaylistItemTreeItem | QueueItemTreeItem> {
+  static playlists = new Map<number, PlaylistItemTreeItem>();
+
   private static userInstance: PlaylistProvider;
+
   private static favoriteInstance: PlaylistProvider;
 
-  private _onDidChangeTreeData: EventEmitter<
+  private static belongsTo = new Map<number, Type>();
+
+  private static action?: (items: QueueItemTreeItem[]) => void;
+
+  _onDidChangeTreeData: EventEmitter<
     PlaylistItemTreeItem | undefined | void
   > = new EventEmitter<PlaylistItemTreeItem | undefined | void>();
 
   readonly onDidChangeTreeData: Event<
     PlaylistItemTreeItem | undefined | void
   > = this._onDidChangeTreeData.event;
-
-  private static belongsTo = new Map<number, Type>();
-
-  private static action?: (items: QueueItemTreeItem[]) => void;
-
-  static playlists = new Map<number, PlaylistItemTreeItem>();
 
   constructor(private type: Type) {}
 
@@ -85,6 +85,14 @@ export class PlaylistProvider
     }
   }
 
+  private static async getPlaylistContent(
+    id: number
+  ): Promise<QueueItemTreeItem[]> {
+    const songs = await apiPlaylistDetail(id);
+    const ret = songsItem2TreeItem(id, songs);
+    return ret;
+  }
+
   getTreeItem(element: PlaylistItemTreeItem | QueueItemTreeItem): TreeItem {
     return element;
   }
@@ -105,14 +113,6 @@ export class PlaylistProvider
     return await this.getPlaylistItem();
   }
 
-  private static async getPlaylistContent(
-    id: number
-  ): Promise<QueueItemTreeItem[]> {
-    const songs = await apiPlaylistDetail(id);
-    const ret = songsItem2TreeItem(id, songs);
-    return ret;
-  }
-
   private async getPlaylistItem(): Promise<PlaylistItemTreeItem[]> {
     let playlists: PlaylistItem[];
     if (this.type === Type.userInstance) {
@@ -120,7 +120,7 @@ export class PlaylistProvider
     } else {
       playlists = await AccountManager.favoritePlaylist();
     }
-    return playlists.map(playlist => {
+    return playlists.map((playlist) => {
       PlaylistProvider.belongsTo.set(playlist.id, this.type);
       const item = new PlaylistItemTreeItem(
         playlist.name,
@@ -134,18 +134,6 @@ export class PlaylistProvider
 }
 
 export class PlaylistItemTreeItem extends TreeItem {
-  constructor(
-    public readonly label: string,
-    public readonly item: PlaylistItem,
-    public readonly collapsibleState: TreeItemCollapsibleState
-  ) {
-    super(label, collapsibleState);
-  }
-
-  valueOf(): number {
-    return this.item.id;
-  }
-
   tooltip = (() => {
     const { description, playCount, subscribedCount, trackCount } = this.item;
     return `
@@ -159,4 +147,16 @@ ${i18n.word.subscribedCount}: ${subscribedCount}
   iconPath = new ThemeIcon("selection");
 
   contextValue = "PlaylistItemTreeItem";
+
+  constructor(
+    public readonly label: string,
+    public readonly item: PlaylistItem,
+    public readonly collapsibleState: TreeItemCollapsibleState
+  ) {
+    super(label, collapsibleState);
+  }
+
+  valueOf(): number {
+    return this.item.id;
+  }
 }

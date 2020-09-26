@@ -1,21 +1,16 @@
-import { ExtensionContext, commands } from "vscode";
-import {
-  LIBRARYS,
-  Lyric,
-  NATIVE,
-  NativePlayer,
-  PLAYER_AVAILABLE,
-  Player,
-  SongsItem,
-  VOLUME_KEY
-} from "../constant";
+import { LIBRARYS, NATIVE, PLAYER_AVAILABLE, VOLUME_KEY } from "../constant";
+import type { Lyric, NativePlayer, Player, SongsItem } from "../constant";
 import { Playing, lock } from "../state";
 import { apiLyric, apiScrobble } from "../util";
 import { ButtonManager } from "../manager";
+import type { ExtensionContext } from "vscode";
+import { commands } from "vscode";
 
 class NoPlayer implements Player {
   item = {} as SongsItem;
+
   pid = 0;
+
   time = Date.now();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -46,21 +41,24 @@ export const lyric: Lyric = {
   index: 0,
   delay: -1.0,
   time: [0],
-  text: ["Lyric"]
+  text: ["Lyric"],
 };
 
 class AudioPlayer implements Player {
-  private context!: ExtensionContext;
-  private player!: NativePlayer;
-
   item = {} as SongsItem;
+
   pid = 0;
+
   time = Date.now();
+
+  private context!: ExtensionContext;
+
+  private player!: NativePlayer;
 
   constructor() {
     for (const library of LIBRARYS) {
       try {
-        const player = NATIVE[library];
+        const player = NATIVE[library] as NativePlayer;
         this.player = new player();
         break;
       } catch {}
@@ -70,7 +68,7 @@ class AudioPlayer implements Player {
       if (Playing.get()) {
         if (this.player.empty()) {
           Playing.set(false);
-          commands.executeCommand("cloudmusic.next");
+          void commands.executeCommand("cloudmusic.next");
         } else {
           const pos = this.player.position();
 
@@ -81,11 +79,11 @@ class AudioPlayer implements Player {
 
           if (pos > this.item.dt + 8) {
             Playing.set(false);
-            commands.executeCommand("cloudmusic.next");
+            void commands.executeCommand("cloudmusic.next");
           }
 
           if (!lock.deleteTmp.get() && pos > 120 && !lock.playerLoad.get()) {
-            (async () => {
+            void (async () => {
               lock.playerLoad.set(true);
               await lock.deleteTmp.set(true);
               lock.playerLoad.set(false);
@@ -98,7 +96,7 @@ class AudioPlayer implements Player {
 
   init(context: ExtensionContext): void {
     this.context = context;
-    this.volume(this.context.globalState.get(VOLUME_KEY) || 85);
+    void this.volume(this.context.globalState.get(VOLUME_KEY) || 85);
   }
 
   stop(): void {
@@ -107,12 +105,12 @@ class AudioPlayer implements Player {
   }
 
   load(url: string, pid: number, item: SongsItem): void {
-    lock.deleteTmp.set(false);
+    void lock.deleteTmp.set(false);
     if (this.player.load(url)) {
       this.player.setVolume(this.context.globalState.get(VOLUME_KEY) || 85);
       Playing.set(true);
 
-      apiLyric(item.id).then(({ time, text }) => {
+      void apiLyric(item.id).then(({ time, text }) => {
         lyric.index = 0;
         lyric.time = time;
         lyric.text = text;
@@ -124,7 +122,7 @@ class AudioPlayer implements Player {
       const diff = this.time - pTime;
       const { id, dt } = this.item;
       if (diff > 60000 && dt > 60) {
-        apiScrobble(id, this.pid, Math.floor(Math.min(diff / 1000, dt)));
+        void apiScrobble(id, this.pid, Math.floor(Math.min(diff / 1000, dt)));
       }
 
       this.pid = pid;
@@ -133,7 +131,7 @@ class AudioPlayer implements Player {
       lock.playerLoad.set(false);
     } else {
       lock.playerLoad.set(false);
-      commands.executeCommand("cloudmusic.next");
+      void commands.executeCommand("cloudmusic.next");
     }
   }
 

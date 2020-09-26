@@ -6,7 +6,7 @@ export {
   MUSIC_CACHE_SIZE,
   MUSIC_QUALITY,
   PROXY,
-  REAL_IP
+  REAL_IP,
 } from "./setting";
 export {
   AlbumsItem,
@@ -23,11 +23,11 @@ export {
   SongDetail,
   SongsItem,
   TrackIdsItem,
-  UserDetail
+  UserDetail,
 } from "./type";
 import { homedir, platform } from "os";
 import { MUSIC_QUALITY } from "./setting";
-import { NativeModule } from "./type";
+import type { NativeModule } from "./type";
 import { Uri } from "vscode";
 import { getAbi } from "node-abi";
 import { join } from "path";
@@ -41,7 +41,7 @@ const abi = getAbi(
   "electron"
 );
 // eslint-disable-next-line @typescript-eslint/naming-convention
-declare let __non_webpack_require__: (_: string) => unknown;
+declare const __non_webpack_require__: (_: string) => unknown;
 export const NATIVE: NativeModule = __non_webpack_require__(
   join("..", "build", `${PLATFORM}-${abi}.node`)
 ) as NativeModule;
@@ -76,5 +76,5 @@ export const ICON = {
   add: "$(add)",
   search: "$(search)",
   similar: "$(library)",
-  song: "$(zap)"
+  song: "$(zap)",
 };

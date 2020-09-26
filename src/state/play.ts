@@ -1,7 +1,6 @@
 import { apiPersonalFm, load, songsItem2TreeItem } from "../util";
 import { ButtonManager } from "../manager";
-import { QueueItemTreeItem } from "../provider";
-import { commands } from "vscode";
+import type { QueueItemTreeItem } from "../provider";
 
 export class Playing {
   private static state = false;
@@ -19,8 +18,9 @@ export class Playing {
 }
 
 export class PersonalFm {
-  private static state = false;
   static item: QueueItemTreeItem[] = [];
+
+  private static state = false;
 
   static get(): boolean {
     return this.state;
@@ -29,10 +29,9 @@ export class PersonalFm {
   static async set(newValue: boolean): Promise<void> {
     if (newValue !== this.state) {
       this.state = newValue;
-      commands.executeCommand("cloudmusic.clearQueue");
       ButtonManager.buttonPrevious(newValue);
       if (newValue) {
-        load(await this.next());
+        void load(await this.next());
       }
     }
   }

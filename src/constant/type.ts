@@ -1,4 +1,4 @@
-import { ExtensionContext } from "vscode";
+import type { ExtensionContext } from "vscode";
 
 export type PlaylistItem = {
   description: string | null;
@@ -30,14 +30,8 @@ export type SongsItem = {
   id: number;
   dt: number;
   alia: string[];
-  ar: {
-    id: number;
-    name: string;
-  }[];
-  al: {
-    id: number;
-    name: string;
-  };
+  ar: { id: number; name: string }[];
+  al: { id: number; name: string; picUrl: string };
 };
 
 export type AnotherSongItem = {
@@ -45,14 +39,8 @@ export type AnotherSongItem = {
   id: number;
   duration: number;
   alias: string[];
-  artists: {
-    id: number;
-    name: string;
-  }[];
-  album: {
-    id: number;
-    name: string;
-  };
+  artists: { id: number; name: string }[];
+  album: { id: number; name: string; picUrl: string };
 };
 
 export type AlbumsItem = {

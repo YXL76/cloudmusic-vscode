@@ -1,19 +1,19 @@
+import type { ExtensionContext, QuickPickItem } from "vscode";
 import {
   LyricCache,
   MultiStepInput,
   apiFmTrash,
   lyric,
   pickSong,
-  player
+  player,
 } from "../util";
-import { QuickPickItem, commands } from "vscode";
 import { ButtonManager } from "../manager";
-import { ExtensionContext } from "vscode";
-import { QueueItemTreeItem } from "../provider";
+import type { QueueItemTreeItem } from "../provider";
+import { commands } from "vscode";
 import { i18n } from "../i18n";
 
 export async function initStatusBar(context: ExtensionContext): Promise<void> {
-  await ButtonManager.init(context);
+  void (await ButtonManager.init(context));
   ButtonManager.show();
 
   commands.registerCommand(
@@ -21,7 +21,7 @@ export async function initStatusBar(context: ExtensionContext): Promise<void> {
     async (element?: QueueItemTreeItem) => {
       const item = element ? element.item : player.item;
       if (item) {
-        await MultiStepInput.run(input => pickSong(input, 1, item));
+        await MultiStepInput.run((input) => pickSong(input, 1, item));
       }
     }
   );
@@ -34,10 +34,10 @@ export async function initStatusBar(context: ExtensionContext): Promise<void> {
     enum Type {
       delay,
       full,
-      cache
+      cache,
     }
 
-    await MultiStepInput.run(input => pickMthod(input));
+    await MultiStepInput.run((input) => pickMthod(input));
 
     async function pickMthod(input: MultiStepInput) {
       const pick = await input.showQuickPick({
@@ -48,17 +48,17 @@ export async function initStatusBar(context: ExtensionContext): Promise<void> {
           {
             label: `$(versions) ${i18n.word.lyricDelay}`,
             description: `${i18n.sentence.label.lyricDelay} (${i18n.word.default}: -1.0)`,
-            type: Type.delay
+            type: Type.delay,
           },
           {
             label: `$(list-ordered) ${i18n.word.fullLyric}`,
-            type: Type.full
+            type: Type.full,
           },
           {
             label: `$(trash) ${i18n.word.cleanCache}`,
-            type: Type.cache
-          }
-        ]
+            type: Type.cache,
+          },
+        ],
       });
       if (pick.type === Type.delay) {
         return (input: MultiStepInput) => inputDelay(input);
@@ -78,7 +78,7 @@ export async function initStatusBar(context: ExtensionContext): Promise<void> {
         step: 2,
         totalSteps,
         value: `${lyric.delay}`,
-        prompt: i18n.sentence.hint.lyricDelay
+        prompt: i18n.sentence.hint.lyricDelay,
       });
       if (/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay)) {
         lyric.delay = parseFloat(delay);
@@ -95,7 +95,7 @@ export async function initStatusBar(context: ExtensionContext): Promise<void> {
         if (lyric.text[i] !== "Lyric") {
           items.push({
             label: lyric.text[i],
-            description: `[${lyric.time[i]}]`
+            description: `[${lyric.time[i]}]`,
           });
         }
       }
@@ -103,7 +103,7 @@ export async function initStatusBar(context: ExtensionContext): Promise<void> {
         title,
         step: 2,
         totalSteps: totalSteps + 1,
-        items
+        items,
       });
       select = pick.label;
       return (input: MultiStepInput) => showLyric(input);
@@ -114,12 +114,12 @@ export async function initStatusBar(context: ExtensionContext): Promise<void> {
         title,
         step: 3,
         totalSteps: totalSteps + 1,
-        value: select
+        value: select,
       });
     }
   });
 
   commands.registerCommand("cloudmusic.fmTrash", () => {
-    apiFmTrash(player.item.id);
+    void apiFmTrash(player.item.id);
   });
 }

@@ -1,20 +1,18 @@
-import {
+import type {
   Disposable,
   InputBox,
   QuickInput,
   QuickInputButton,
-  QuickInputButtons,
   QuickPick,
   QuickPickItem,
-  ThemeIcon,
-  window
 } from "vscode";
+import { QuickInputButtons, ThemeIcon, window } from "vscode";
 import { i18n } from "../i18n";
 
 enum InputFlowAction {
   back,
   forward,
-  cancel
+  cancel,
 }
 
 export type InputStep = (input: MultiStepInput) => Promise<InputStep | void>;
@@ -46,21 +44,21 @@ const pickButtons: {
 } = {
   forward: {
     iconPath: new ThemeIcon("arrow-right"),
-    tooltip: i18n.word.forward
+    tooltip: i18n.word.forward,
   },
   previous: {
     iconPath: new ThemeIcon("arrow-up"),
-    tooltip: i18n.word.previousPage
+    tooltip: i18n.word.previousPage,
   },
   next: {
     iconPath: new ThemeIcon("arrow-down"),
-    tooltip: i18n.word.nextPage
-  }
+    tooltip: i18n.word.nextPage,
+  },
 };
 
 export enum ButtonAction {
   previous,
-  next
+  next,
 }
 
 interface ButtonOption {
@@ -69,48 +67,15 @@ interface ButtonOption {
 }
 
 export class MultiStepInput {
+  private step = 0;
+
+  private current?: QuickInput;
+
+  private steps: InputStep[] = [];
+
   static async run(start: InputStep): Promise<void> {
     const input = new MultiStepInput();
     return input.stepThrough(start);
-  }
-
-  private step = 0;
-  private current?: QuickInput;
-  private steps: InputStep[] = [];
-
-  private async stepThrough(start: InputStep): Promise<void> {
-    let step: InputStep | void = start;
-    ++this.step;
-    this.steps.push(step);
-    while (step) {
-      if (this.current) {
-        this.current.enabled = false;
-        this.current.busy = true;
-      }
-      try {
-        step = await step(this);
-        if (step) {
-          while (this.steps.length > this.step) {
-            this.steps.pop();
-          }
-          ++this.step;
-          this.steps.push(step);
-        }
-      } catch (err) {
-        if (err === InputFlowAction.back) {
-          --this.step;
-          step = this.steps[this.step - 1];
-        } else if (err === InputFlowAction.forward) {
-          ++this.step;
-          step = this.steps[this.step - 1];
-        } else if (err === InputFlowAction.cancel) {
-          step = undefined;
-        }
-      }
-    }
-    if (this.current) {
-      this.current.dispose();
-    }
   }
 
   pop(): InputStep | undefined {
@@ -144,7 +109,7 @@ export class MultiStepInput {
       items,
       activeItems,
       placeholder,
-      changeCallback
+      changeCallback,
     }: QuickPickParameters<T>,
     canSelectMany?: true,
     buttons?: ButtonOption
@@ -183,10 +148,10 @@ export class MultiStepInput {
           input.buttons = [
             ...(this.step > 1 ? [QuickInputButtons.Back] : []),
             ...button,
-            ...(this.step < this.steps.length ? [pickButtons.forward] : [])
+            ...(this.step < this.steps.length ? [pickButtons.forward] : []),
           ];
           disposables.push(
-            input.onDidTriggerButton(item => {
+            input.onDidTriggerButton((item) => {
               if (item === QuickInputButtons.Back) {
                 reject(InputFlowAction.back);
               } else if (item === pickButtons.forward) {
@@ -202,13 +167,13 @@ export class MultiStepInput {
                 canSelectMany ? input.selectedItems : input.selectedItems[0]
               );
             }),
-            input.onDidHide(async () => {
+            input.onDidHide(() => {
               reject(InputFlowAction.cancel);
             })
           );
           if (changeCallback) {
             disposables.push(
-              input.onDidChangeValue(value => changeCallback(input, value))
+              input.onDidChangeValue((value) => changeCallback(input, value))
             );
           }
           if (this.current) {
@@ -219,7 +184,9 @@ export class MultiStepInput {
         }
       );
     } finally {
-      disposables.forEach(d => d.dispose());
+      disposables.forEach((d) => {
+        d.dispose();
+      });
     }
   }
 
@@ -230,7 +197,7 @@ export class MultiStepInput {
     value,
     prompt,
     password,
-    changeCallback
+    changeCallback,
   }: InputBoxParameters): Promise<string> {
     const disposables: Disposable[] = [];
     try {
@@ -248,28 +215,28 @@ export class MultiStepInput {
         input.prompt = prompt;
         input.buttons = [
           ...(this.step > 1 ? [QuickInputButtons.Back] : []),
-          ...(this.step < this.steps.length ? [pickButtons.forward] : [])
+          ...(this.step < this.steps.length ? [pickButtons.forward] : []),
         ];
         input.password = password || false;
         disposables.push(
-          input.onDidTriggerButton(item => {
+          input.onDidTriggerButton((item) => {
             if (item === QuickInputButtons.Back) {
               reject(InputFlowAction.back);
             } else {
               reject(InputFlowAction.forward);
             }
           }),
-          input.onDidAccept(async () => {
+          input.onDidAccept(() => {
             const value = input.value;
             resolve(value);
           }),
-          input.onDidHide(async () => {
+          input.onDidHide(() => {
             reject(InputFlowAction.cancel);
           })
         );
         if (changeCallback) {
           disposables.push(
-            input.onDidChangeValue(value => changeCallback(input, value))
+            input.onDidChangeValue((value) => changeCallback(input, value))
           );
         }
         if (this.current) {
@@ -279,7 +246,44 @@ export class MultiStepInput {
         this.current.show();
       });
     } finally {
-      disposables.forEach(d => d.dispose());
+      disposables.forEach((d) => {
+        d.dispose();
+      });
+    }
+  }
+
+  private async stepThrough(start: InputStep): Promise<void> {
+    let step: InputStep | void = start;
+    ++this.step;
+    this.steps.push(step);
+    while (step) {
+      if (this.current) {
+        this.current.enabled = false;
+        this.current.busy = true;
+      }
+      try {
+        step = await step(this);
+        if (step) {
+          while (this.steps.length > this.step) {
+            this.steps.pop();
+          }
+          ++this.step;
+          this.steps.push(step);
+        }
+      } catch (err) {
+        if (err === InputFlowAction.back) {
+          --this.step;
+          step = this.steps[this.step - 1];
+        } else if (err === InputFlowAction.forward) {
+          ++this.step;
+          step = this.steps[this.step - 1];
+        } else if (err === InputFlowAction.cancel) {
+          step = undefined;
+        }
+      }
+    }
+    if (this.current) {
+      this.current.dispose();
     }
   }
 }
