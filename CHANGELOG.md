@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [5.0.2] - 2020-09-27
+
+### Added
+
+- InputBox: add close button
+
 ## [5.0.1] - 2020-09-27
 
 ### Added
