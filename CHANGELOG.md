@@ -6,6 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [5.0.1] - 2020-09-27
+
+### Added
+
+- QuickPick: add close button
+
+### Fixed
+
+- TreeView: will not show alia when it is empty
+
 ## [5.0.0] - 2020-09-27
 
 ### Changed
@@ -13,7 +23,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 - Webview: rewrite webview with `React` and `Ant Design`
 - Workflow: refactor workflow to have faster build speed and smaller build size
 
-### Remove
+### Removed
 
 - Remove `libmpv` support
 - Remove unused api modules to reduce build size
