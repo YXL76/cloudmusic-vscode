@@ -3722,7 +3722,7 @@ __metadata:
     bluebird: 3.7.2
     cacache: ^15.0.5
     dedupe: ^3.0.2
-    electron: 9.3.1
+    electron: 10.1.2
     electron-build-env: 0.2.0
     eslint: 7.10.0
     eslint-config-prettier: 6.12.0
@@ -4998,16 +4998,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron@npm:9.3.1":
-  version: 9.3.1
-  resolution: "electron@npm:9.3.1"
+"electron@npm:10.1.2":
+  version: 10.1.2
+  resolution: "electron@npm:10.1.2"
   dependencies:
     "@electron/get": ^1.0.1
     "@types/node": ^12.0.12
     extract-zip: ^1.0.3
   bin:
     electron: cli.js
-  checksum: 53d525ebd43501e79a512eb6f86bc13ec6758cbcb32c4d1f9ae70bfe81c9c4c9a4141e5faf9fdb70aea4845f3d902b3335ee937f44621c8c3592cdeece7eca02
+  checksum: ce8123547b942c90d1d0397a6758d96d12bb003096f921486a3889ef9ddc836ca50529649b097cc986b85e20efb55cb51013d8c047adfdeab8627e7fc8eb78a9
   languageName: node
   linkType: hard
 
