@@ -1,8 +1,8 @@
 /// <reference types="react-scripts" />
 
 declare interface VsCodeApi {
-  postMessage(msg: unknown): unknown;
-  setState(newState: unknown): unknown;
+  postMessage<T>(msg: T): T;
+  setState<T>(newState: T): T;
   getState(): unknown;
 }
 
