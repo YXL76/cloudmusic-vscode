@@ -1535,9 +1535,14 @@ export async function apiUserPlaylist(uid: number): Promise<PlaylistItem[]> {
   return [];
 }
 
-export async function apiUserRecord(): Promise<
-  (SongsItem & { playCount: number })[][]
-> {
+export async function apiUserRecord(
+  refresh?: true
+): Promise<(SongsItem & { playCount: number })[][]> {
+  const key = "user_record";
+  let value: (SongsItem & { playCount: number })[][] | undefined;
+  if (refresh && (value = apiCache.get(key))) {
+    return value;
+  }
   const tasks: Promise<(SongsItem & { playCount: number })[]>[] = [];
   tasks.push(
     new Promise((resolve, reject) => {
@@ -1578,7 +1583,9 @@ export async function apiUserRecord(): Promise<
     })
   );
   try {
-    return await Promise.all(tasks);
+    const ret = await Promise.all(tasks);
+    apiCache.set(key, ret);
+    return ret;
   } catch {}
   return [];
 }

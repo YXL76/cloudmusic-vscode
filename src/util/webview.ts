@@ -33,13 +33,12 @@ export class WebView {
       "userMusicRankingList",
       i18n.word.userRankingList
     );
-    const post = async () => {
+    void (async () => {
       void panel.webview.postMessage(await apiUserRecord());
-    };
-    void post();
-    panel.webview.onDidReceiveMessage((message) => {
+    })();
+    panel.webview.onDidReceiveMessage(async (message) => {
       if ((message as { command: string }).command === "refresh") {
-        void post();
+        void panel.webview.postMessage(await apiUserRecord(true));
       }
     });
     return panel;
