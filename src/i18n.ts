@@ -152,6 +152,8 @@ export const i18n = {
     private: localize("word.private", "Private"),
     public: localize("word.public", "Public"),
     recommendation: localize("word.recommendation", "Recommendation"),
+    refresh: localize("word.refresh", "Refresh"),
+    refreshing: localize("word.refreshing", "Refreshing"),
     save: localize("word.save", "Save"),
     saved: localize("word.save", "Saved"),
     saveToPlaylist: localize("word.saveToPlaylist", "Save to playlist"),

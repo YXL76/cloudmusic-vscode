@@ -11,6 +11,9 @@ interface Window {
     vscode: VsCodeApi;
     entry: "userMusicRankingList";
     language: string;
-    data: unknown;
+    data: {
+      i18n?: Record<string, string>;
+      message?: unknown;
+    };
   };
 }

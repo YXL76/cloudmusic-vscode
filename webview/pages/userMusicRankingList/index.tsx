@@ -25,6 +25,7 @@ const emptyData = new Array(100).fill({
 }) as RecordData[];
 
 const { vscode } = window.webview;
+const { i18n } = window.webview.data;
 
 export const UserMusicRankingList = () => {
   const [loading, setLoading] = useState(true);
@@ -128,7 +129,7 @@ export const UserMusicRankingList = () => {
   const tabs = lists.map((list, index) => {
     return (
       <TabPane
-        tab={index === 0 ? "Weekly" : "All time"}
+        tab={index === 0 ? i18n?.weekly : i18n?.allTime}
         key={index}
         forceRender
       >
@@ -140,11 +141,11 @@ export const UserMusicRankingList = () => {
   const OperationsSlot = {
     right: loading ? (
       <Button shape="round" icon={<LoadingOutlined />} disabled>
-        Refreshing
+        {i18n?.refreshing}
       </Button>
     ) : (
       <Button shape="round" icon={<ReloadOutlined />} onClick={refresh}>
-        Refresh
+        {i18n?.refresh}
       </Button>
     ),
   };

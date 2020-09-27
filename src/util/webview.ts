@@ -1,9 +1,14 @@
 import { ColorThemeKind, Uri, ViewColumn, env, window } from "vscode";
-import { MultiStepInput, apiUserRecord } from "../util";
+import {
+  MultiStepInput,
+  apiUserRecord,
+  pickAlbum,
+  pickArtist,
+  pickSong,
+} from "../util";
 import type { SongsItem } from "../constant";
 import type { WebviewPanel } from "vscode";
 import { i18n } from "../i18n";
-import { pickAlbum, pickArtist, pickSong } from "./util";
 
 export class WebView {
   private static instance: WebView;
@@ -33,7 +38,15 @@ export class WebView {
   userMusicRankingList(): WebviewPanel {
     const panel = this.getWebviewPanel(
       "userMusicRankingList",
-      i18n.word.userRankingList
+      i18n.word.userRankingList,
+      {
+        i18n: {
+          allTime: i18n.word.allTime,
+          refresh: i18n.word.refresh,
+          refreshing: i18n.word.refreshing,
+          weekly: i18n.word.weekly,
+        },
+      }
     );
     void (async () => {
       void panel.webview.postMessage(await apiUserRecord());
