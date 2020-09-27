@@ -41,6 +41,7 @@ const pickButtons: {
   forward: QuickInputButton;
   previous: QuickInputButton;
   next: QuickInputButton;
+  close: QuickInputButton;
 } = {
   forward: {
     iconPath: new ThemeIcon("arrow-right"),
@@ -53,6 +54,10 @@ const pickButtons: {
   next: {
     iconPath: new ThemeIcon("arrow-down"),
     tooltip: i18n.word.nextPage,
+  },
+  close: {
+    iconPath: new ThemeIcon("close"),
+    tooltip: i18n.word.close,
   },
 };
 
@@ -149,6 +154,7 @@ export class MultiStepInput {
             ...(this.step > 1 ? [QuickInputButtons.Back] : []),
             ...button,
             ...(this.step < this.steps.length ? [pickButtons.forward] : []),
+            pickButtons.close,
           ];
           disposables.push(
             input.onDidTriggerButton((item) => {
@@ -158,8 +164,10 @@ export class MultiStepInput {
                 reject(InputFlowAction.forward);
               } else if (item === pickButtons.previous) {
                 resolve(ButtonAction.previous);
-              } else {
+              } else if (item === pickButtons.next) {
                 resolve(ButtonAction.next);
+              } else {
+                input.hide();
               }
             }),
             input.onDidAccept(() => {

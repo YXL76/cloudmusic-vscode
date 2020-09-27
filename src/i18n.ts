@@ -109,6 +109,7 @@ export const i18n = {
     categorie: localize("word.categorie", "Categorie"),
     cellphone: localize("word.cellphone", "Cellphone"),
     cleanCache: localize("word.cleanCache", "Clean cache"),
+    close: localize("word.close", "Close"),
     confirmation: localize("word.confirmation", "Confirmation"),
     content: localize("word.content", "Content"),
     createPlaylist: localize("word.createPlaylist", "Create playlist"),
