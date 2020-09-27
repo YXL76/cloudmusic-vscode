@@ -441,9 +441,9 @@
     "parcel": "parcel build webview/index.tsx",
     "build": "electron-build-env neon build --release",
     "vscode:prepublish": "yarn webpack-prod",
-    "webpack": "node pre-webpack.js && gulp all && webpack --mode development",
-    "webpack-dev": "node pre-webpack.js && gulp all && webpack --mode development --watch",
-    "webpack-prod": "node pre-webpack.js && gulp all && webpack --mode production",
+    "webpack": "gulp all && webpack --mode development",
+    "webpack-dev": "gulp all && webpack --mode development --watch",
+    "webpack-prod": "gulp all && webpack --mode production",
     "test": "tsc -p ./",
     "lint": "eslint . --ext .ts,.tsx"
   },
@@ -487,7 +487,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
-    "NeteaseCloudMusicApi": "^3.41.2",
+    "NeteaseCloudMusicApi": "git+https://github.com/YXL76/NeteaseCloudMusicApi.git#self-use",
     "antd": "^4.6.5",
     "array-unsort": "^1.1.6",
     "bluebird": "3.7.2",
