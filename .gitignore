@@ -1,27 +1,26 @@
-out
-node_modules
 .vscode-test/
-*.vsix
-yarn-error.log
-dist
+node_modules
 .DS_Store
 
+# yarn
 .yarn/*
 !.yarn/releases
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+yarn-error.log
 
+# native module
 native/target
 native/index.node
 native/artifacts.json
 
+# cache and build file
 .cache
 .artifact
 build
-
-package.nls.*.json
-
-page/css
-page/js
+out
+dist
+**/package.nls.*.json
+**/*.vsix

@@ -1,37 +1,42 @@
-.github/**
-.vscode/**
-.vscode-test/**
-out/**
-src/**
-.gitignore
-vsc-extension-quickstart.md
-**/tsconfig.json
-**/.eslintrc.json
+.vscode-test
 **/*.map
-**/*.LICENSE.txt
-**/.editorconfig
 node_modules
-webpack.config.js
-pre-webpack.js
-doc/
-media/icon.svg
-media/icon-72.png
-media/icon-150.png
-native/
 
-.yarn/
+# yarn
+.yarn
 .pnp.*
 .yarnrc.yml
 yarn-error.log
 yarn.lock
 
-i18n/
-gulpfile.js
+# configuration
+.github
+.vscode
+**/gulpfile.js
+**/renovate.json
+**/webpack.config.js
+**/.gitignore
+**/.editorconfig
+**/tsconfig.json
+**/.eslintrc.json
+**/.browserslistrc
 
-page/sass
-page/ts
-script
+# scoure code
+i18n
+native
+src
+webview
 
-renovate.json
-
+# cache and build file
+.cache
 .artifact
+out
+**/*.vsix
+
+# document
+doc
+vsc-extension-quickstart.md
+media/icon.svg
+media/icon-72.png
+media/icon-150.png
+**/*.LICENSE.txt

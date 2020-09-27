@@ -29,7 +29,7 @@ const config = {
   module: {
     rules: [
       {
-        loader: "vscode-nls-dev/lib/webpack-loader",
+        loader: require.resolve("vscode-nls-dev/lib/webpack-loader"),
         options: {
           base: join(__dirname, "src"),
         },
@@ -37,11 +37,7 @@ const config = {
       {
         test: /\.ts$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: "ts-loader",
-          },
-        ],
+        loader: require.resolve("ts-loader"),
       },
     ],
   },

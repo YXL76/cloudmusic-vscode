@@ -118,7 +118,7 @@ jobs:
 
       - run: |
           yarn
-          vsce package
+          vsce package --yarn
           echo ::set-env name=VSIX_PATH::$(find . -maxdepth 1 -type f -iname "*.vsix" | head -1)
           echo ::set-env name=VSIX_NAME::$(basename $(find . -maxdepth 1 -type f -iname "*.vsix" | head -1))
 
@@ -141,4 +141,4 @@ jobs:
           asset_path: ${{ env.VSIX_PATH }}
           asset_name: ${{ env.VSIX_NAME }}
           asset_content_type: application/zip
-      - run: vsce publish -p ${{ secrets.VSCE_TOKEN }}
+      - run: vsce publish -p ${{ secrets.VSCE_TOKEN }} --yarn
