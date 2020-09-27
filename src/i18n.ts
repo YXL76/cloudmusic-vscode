@@ -2,7 +2,7 @@ import * as nls from "vscode-nls";
 
 nls.config({
   messageFormat: nls.MessageFormat.bundle,
-  bundleFormat: nls.BundleFormat.standalone
+  bundleFormat: nls.BundleFormat.standalone,
 })();
 
 const localize = nls.loadMessageBundle();
@@ -18,10 +18,10 @@ export const i18n = {
       systemSupport: localize(
         "sentence.error.systemSupport",
         "System is not supported"
-      )
+      ),
     },
     fail: {
-      signIn: localize("sentence.fail.signIn", "Sign in failed")
+      signIn: localize("sentence.fail.signIn", "Sign in failed"),
     },
     hint: {
       account: localize("sentence.hint.account", "Please enter your account"),
@@ -54,13 +54,13 @@ export const i18n = {
         "sentence.hint.trySignIn",
         "Found that you have not logged in"
       ),
-      volume: localize("sentence.hint.volume", "Please enter volume")
+      volume: localize("sentence.hint.volume", "Please enter volume"),
     },
     info: {
       alreadySignIn: localize(
         "sentence.info.alreadySignIn",
         "Account already signed in"
-      )
+      ),
     },
     label: {
       cellphone: localize(
@@ -84,15 +84,15 @@ export const i18n = {
       playlistRecommendation: localize(
         "sentence.label.playlistRecommendation",
         "Playlist recommendation"
-      )
+      ),
     },
     success: {
       dailyCheck: localize(
         "sentence.success.dailyCheck",
         "Daily check successful"
       ),
-      signIn: localize("sentence.success.signIn", "Sign in successful")
-    }
+      signIn: localize("sentence.success.signIn", "Sign in successful"),
+    },
   },
   word: {
     account: localize("word.account", "Account"),
@@ -179,6 +179,6 @@ export const i18n = {
     userRankingList: localize("word.userRankingList", "User ranking list"),
     volume: localize("word.volume", "Volume"),
     weekly: localize("word.weekly", "Weekly"),
-    zh: localize("word.zh", "Chinese")
-  }
+    zh: localize("word.zh", "Chinese"),
+  },
 };

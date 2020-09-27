@@ -5,7 +5,7 @@ import {
   MusicCache,
   apiSongUrl,
   downloadMusic,
-  player
+  player,
 } from "../util";
 import { Uri, workspace } from "vscode";
 import { QueueProvider } from "../provider";
@@ -28,7 +28,7 @@ class PlayerLoad {
         );
       } else {
         const { name, ar, id } = player.item;
-        ButtonManager.buttonSong(name, ar.map(i => i.name).join("/"));
+        ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
         IsLike.set(AccountManager.likelist.has(id));
       }
     }
@@ -50,7 +50,7 @@ class DeleteTmp {
           const items = await workspace.fs.readDirectory(TMP_DIR);
           for (const item of items) {
             if (item[0] !== `${player.item.id}`) {
-              workspace.fs.delete(Uri.joinPath(TMP_DIR, item[0]));
+              void workspace.fs.delete(Uri.joinPath(TMP_DIR, item[0]));
             }
           }
         } catch {}
@@ -88,5 +88,5 @@ class DeleteTmp {
 export const lock = {
   queue: false,
   playerLoad: PlayerLoad,
-  deleteTmp: DeleteTmp
+  deleteTmp: DeleteTmp,
 };

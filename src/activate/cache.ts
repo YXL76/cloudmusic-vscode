@@ -8,9 +8,9 @@ export async function initCache(): Promise<void> {
     const items = await workspace.fs.readDirectory(musicCache);
     for (const item of items) {
       if (item[0] !== `${MUSIC_QUALITY}`) {
-        workspace.fs.delete(Uri.joinPath(musicCache, item[0]), {
+        void workspace.fs.delete(Uri.joinPath(musicCache, item[0]), {
           recursive: true,
-          useTrash: false
+          useTrash: false,
         });
       }
     }

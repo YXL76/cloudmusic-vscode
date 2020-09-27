@@ -7,77 +7,40 @@
 
 "use strict";
 
-const path = require("path");
+const { join } = require("path");
 
 /**@type {import('webpack').Configuration}*/
 const config = {
-  target: "node", // vscode extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
-
-  entry: "./src/extension.ts", // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
+  target: "node",
+  entry: join(__dirname, "src", "extension.ts"),
   output: {
-    // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
-    path: path.resolve(__dirname, "dist"),
+    path: join(__dirname, "dist"),
     filename: "extension.js",
     libraryTarget: "commonjs2",
     devtoolModuleFilenameTemplate: "../[resource-path]",
   },
   devtool: "source-map",
   externals: {
-    vscode: "commonjs vscode", // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
+    vscode: "commonjs vscode",
   },
   resolve: {
-    // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
     extensions: [".ts", ".js"],
   },
   module: {
     rules: [
       {
-        loader: "vscode-nls-dev/lib/webpack-loader",
+        loader: require.resolve("vscode-nls-dev/lib/webpack-loader"),
         options: {
-          base: __dirname,
+          base: join(__dirname, "src"),
         },
       },
       {
         test: /\.ts$/,
         exclude: /node_modules/,
-        use: [
-          {
-            loader: "ts-loader",
-          },
-        ],
+        loader: require.resolve("ts-loader"),
       },
     ],
   },
 };
 
-/**@type {import('webpack').Configuration}*/
-const pageConfig = {
-  target: "webworker",
-  context: path.resolve(__dirname, "page", "ts"),
-  entry: {
-    userMusicRanking: "./userMusicRanking.ts",
-  },
-  output: {
-    path: path.resolve(__dirname, "page", "js"),
-    filename: "[name].js",
-  },
-  resolve: {
-    extensions: [".ts", ".js"],
-  },
-  module: {
-    rules: [
-      {
-        test: /\.ts$/,
-        exclude: /node_modules/,
-        use: [
-          {
-            loader: "ts-loader",
-          },
-        ],
-      },
-    ],
-  },
-  devtool: false,
-};
-
-module.exports = [config, pageConfig];
+module.exports = config;

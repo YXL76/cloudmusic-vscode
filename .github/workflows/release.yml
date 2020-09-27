@@ -10,7 +10,6 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-        electron: [7.3.2, 9.1.0]
         include:
           - os: macos-latest
             filename: darwin
@@ -18,12 +17,8 @@ jobs:
             filename: linux
           - os: windows-latest
             filename: win32
-          - electron: 7.3.2
-            abi: 75
-          - electron: 9.1.0
-            abi: 80
 
-    name: Build for ${{ matrix.filename }}-${{ matrix.abi }}
+    name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -57,29 +52,33 @@ jobs:
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ matrix.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ matrix.os }}-yarn-
       - uses: actions/cache@v2
         id: cargo-cache
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
+            native/target
           key: ${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - run: yarn
 
       - name: Build
         run: |
-          yarn add electron@${{ matrix.electron }}
-          yarn add electron-build-env
-          yarn add neon-cli
-          yarn build
+          yarn build-native
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.filename }}-${{ matrix.abi }}
+          name: ${{ matrix.filename }}
           path: native/index.node
 
   release:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+
+    runs-on: ${{ matrix.os }}
     name: Release
     needs: build
     steps:
@@ -91,17 +90,16 @@ jobs:
       - name: Copy file
         run: |
           mkdir -p build
-          cp .artifact/darwin-75/index.node build/darwin-75.node
-          cp .artifact/linux-75/index.node  build/linux-75.node
-          cp .artifact/win32-75/index.node  build/win32-75.node
-          cp .artifact/darwin-80/index.node build/darwin-80.node
-          cp .artifact/linux-80/index.node  build/linux-80.node
-          cp .artifact/win32-80/index.node  build/win32-80.node
+          cp .artifact/darwin/index.node build/darwin.node
+          cp .artifact/linux/index.node  build/linux.node
+          cp .artifact/win32/ndex.node  build/win32.
+
       - uses: actions/setup-node@v1
         with:
           node-version: "12"
-      - name: Install gulp-cli
-        run: npm install --global gulp-cli
+      - name: Install gulp-cli and vsce
+        run: npm i gulp-cli vsce -g
+
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
@@ -109,12 +107,21 @@ jobs:
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ubuntu-latest-yarn-${{ hashFiles('**/yarn.lock') }}
-      - run: yarn
-      - run: npm install -g vsce
-      - run: vsce package
-      - run: echo ::set-env name=VSIX_PATH::$(find . -maxdepth 1 -type f -iname "*.vsix" | head -1)
-      - run: echo ::set-env name=VSIX_NAME::$(basename $(find . -maxdepth 1 -type f -iname "*.vsix" | head -1))
+          key: ${{ matrix.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ matrix.os }}-yarn-
+      - uses: actions/cache@v2
+        id: parcel-cache
+        with:
+          path: .cache
+          key: ${{ matrix.os }}-parcel
+
+      - run: |
+          yarn
+          vsce package --yarn
+          echo ::set-env name=VSIX_PATH::$(find . -maxdepth 1 -type f -iname "*.vsix" | head -1)
+          echo ::set-env name=VSIX_NAME::$(basename $(find . -maxdepth 1 -type f -iname "*.vsix" | head -1))
+
       - uses: actions/create-release@v1
         id: create_release
         env:
@@ -125,6 +132,7 @@ jobs:
           body: See [CHANGE LOG](https://github.com/YXL76/cloudmusic-vscode/blob/master/CHANGELOG.md) for details.
           draft: false
           prerelease: false
+
       - uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -133,4 +141,4 @@ jobs:
           asset_path: ${{ env.VSIX_PATH }}
           asset_name: ${{ env.VSIX_NAME }}
           asset_content_type: application/zip
-      - run: vsce publish -p ${{ secrets.VSCE_TOKEN }}
+      - run: vsce publish -p ${{ secrets.VSCE_TOKEN }} --yarn

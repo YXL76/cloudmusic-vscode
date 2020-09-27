@@ -1,5 +1,6 @@
-import { ExtensionContext, commands, window } from "vscode";
 import { MEDIA_CONTROL, NATIVE, PLAYER_AVAILABLE } from "../constant";
+import { commands, window } from "vscode";
+import type { ExtensionContext } from "vscode";
 import { i18n } from "../i18n";
 import { lock } from "../state";
 import { player } from "../util";
@@ -11,14 +12,13 @@ export async function initPlayer(context: ExtensionContext): Promise<void> {
   } else {
     player.init(context);
     if (MEDIA_CONTROL) {
-      const { startKeyboardEvent } = NATIVE;
-      startKeyboardEvent(res => {
+      NATIVE.startKeyboardEvent((res) => {
         if (res === "prev") {
-          commands.executeCommand("cloudmusic.previous");
+          void commands.executeCommand("cloudmusic.previous");
         } else if (res === "play") {
-          commands.executeCommand("cloudmusic.play");
+          void commands.executeCommand("cloudmusic.play");
         } else if (res === "next") {
-          commands.executeCommand("cloudmusic.next");
+          void commands.executeCommand("cloudmusic.next");
         }
       });
     }

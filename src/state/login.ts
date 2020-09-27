@@ -20,7 +20,7 @@ export class LoggedIn {
         ButtonManager.buttonAccountSignin();
         ButtonManager.hide();
       }
-      commands.executeCommand("cloudmusic.clearQueue");
+      void commands.executeCommand("cloudmusic.clearQueue");
     }
   }
 }

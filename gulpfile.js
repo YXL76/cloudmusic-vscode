@@ -1,19 +1,11 @@
 "use strict";
 
 const gulp = require("gulp");
-const sass = require("gulp-sass");
 const nls = require("vscode-nls-dev");
 const ts = require("gulp-typescript");
 const typescript = require("typescript");
-const tsProject = ts.createProject("./tsconfig.json", { typescript });
+const tsProject = ts.createProject("./src/tsconfig.json", { typescript });
 const filter = require("gulp-filter");
-
-gulp.task("sass", () => {
-  return gulp
-    .src("./page/sass/**/*.scss")
-    .pipe(sass.sync({ outputStyle: "compressed" }).on("error", sass.logError))
-    .pipe(gulp.dest("./page/css"));
-});
 
 const languages = [
   { id: "zh-cn", folderName: "chs", transifexId: "zh-hans" },
@@ -50,4 +42,13 @@ gulp.task(
   gulp.series(generatedSrcLocBundle, generatedAdditionalLocFiles)
 );
 
-gulp.task("all", gulp.series("sass", "translations-generate"));
+const copyAntdCss = () => {
+  return gulp
+    .src([
+      "node_modules/antd/dist/antd.min.css",
+      "node_modules/antd/dist/antd.dark.min.css",
+    ])
+    .pipe(gulp.dest("dist"));
+};
+
+gulp.task("build", gulp.series("translations-generate", copyAntdCss));

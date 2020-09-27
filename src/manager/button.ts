@@ -1,10 +1,5 @@
-import {
-  ExtensionContext,
-  QuickPickItem,
-  StatusBarAlignment,
-  StatusBarItem,
-  window,
-} from "vscode";
+import type { ExtensionContext, QuickPickItem, StatusBarItem } from "vscode";
+import { StatusBarAlignment, window } from "vscode";
 import { BUTTON_KEY } from "../constant";
 import { LoggedIn } from "../state";
 import { MultiStepInput } from "../util";
@@ -34,6 +29,7 @@ export class ButtonManager {
   ];
 
   private static buttonShow = [true, true, true, true, true, true, true, false];
+
   private static buttonText = [
     "$(account)",
     "$(chevron-left)",
@@ -44,6 +40,7 @@ export class ButtonManager {
     "$(flame)",
     "$(text-size)",
   ];
+
   private static buttonTooltip = [
     i18n.word.account,
     i18n.word.previousTrack,
@@ -54,6 +51,7 @@ export class ButtonManager {
     i18n.word.song,
     i18n.word.lyric,
   ];
+
   private static buttonCommand = [
     "cloudmusic.signin",
     "cloudmusic.previous",
@@ -64,6 +62,7 @@ export class ButtonManager {
     "cloudmusic.songDetail",
     "cloudmusic.lyric",
   ];
+
   private static context: ExtensionContext;
 
   static async init(context: ExtensionContext): Promise<void> {
@@ -74,7 +73,7 @@ export class ButtonManager {
       this.buttons[i].command = this.buttonCommand[i];
     }
     this.buttons[0].show();
-    this.buttonShow = this.context.globalState.get(BUTTON_KEY) || [
+    this.buttonShow = (await this.context.globalState.get(BUTTON_KEY)) || [
       true,
       true,
       true,
@@ -86,7 +85,7 @@ export class ButtonManager {
     ];
   }
 
-  static async toggle(): Promise<void> {
+  static toggle(): void {
     const pickButton = async (input: MultiStepInput) => {
       interface T extends QuickPickItem {
         id: number;
@@ -116,7 +115,7 @@ export class ButtonManager {
       return input.pop();
     };
 
-    MultiStepInput.run((input) => pickButton(input));
+    void MultiStepInput.run((input) => pickButton(input));
   }
 
   static show(): void {

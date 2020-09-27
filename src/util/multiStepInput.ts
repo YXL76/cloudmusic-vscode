@@ -1,14 +1,12 @@
-import {
+import type {
   Disposable,
   InputBox,
   QuickInput,
   QuickInputButton,
-  QuickInputButtons,
   QuickPick,
   QuickPickItem,
-  ThemeIcon,
-  window,
 } from "vscode";
+import { QuickInputButtons, ThemeIcon, window } from "vscode";
 import { i18n } from "../i18n";
 
 enum InputFlowAction {
@@ -69,48 +67,15 @@ interface ButtonOption {
 }
 
 export class MultiStepInput {
+  private step = 0;
+
+  private current?: QuickInput;
+
+  private steps: InputStep[] = [];
+
   static async run(start: InputStep): Promise<void> {
     const input = new MultiStepInput();
     return input.stepThrough(start);
-  }
-
-  private step = 0;
-  private current?: QuickInput;
-  private steps: InputStep[] = [];
-
-  private async stepThrough(start: InputStep): Promise<void> {
-    let step: InputStep | void = start;
-    ++this.step;
-    this.steps.push(step);
-    while (step) {
-      if (this.current) {
-        this.current.enabled = false;
-        this.current.busy = true;
-      }
-      try {
-        step = await step(this);
-        if (step) {
-          while (this.steps.length > this.step) {
-            this.steps.pop();
-          }
-          ++this.step;
-          this.steps.push(step);
-        }
-      } catch (err) {
-        if (err === InputFlowAction.back) {
-          --this.step;
-          step = this.steps[this.step - 1];
-        } else if (err === InputFlowAction.forward) {
-          ++this.step;
-          step = this.steps[this.step - 1];
-        } else if (err === InputFlowAction.cancel) {
-          step = undefined;
-        }
-      }
-    }
-    if (this.current) {
-      this.current.dispose();
-    }
   }
 
   pop(): InputStep | undefined {
@@ -118,20 +83,20 @@ export class MultiStepInput {
     return this.steps.pop();
   }
 
-  async showQuickPick<T extends QuickPickItem>({}: QuickPickParameters<
-    T
-  >): Promise<T>;
   async showQuickPick<T extends QuickPickItem>(
-    {}: QuickPickParameters<T>,
+    _: QuickPickParameters<T>
+  ): Promise<T>;
+  async showQuickPick<T extends QuickPickItem>(
+    _: QuickPickParameters<T>,
     canSelectMany: true
   ): Promise<readonly T[]>;
   async showQuickPick<T extends QuickPickItem>(
-    {}: QuickPickParameters<T>,
+    _: QuickPickParameters<T>,
     canSelectMany: undefined,
     buttons: ButtonOption
   ): Promise<T | ButtonAction>;
   async showQuickPick<T extends QuickPickItem>(
-    {}: QuickPickParameters<T>,
+    _: QuickPickParameters<T>,
     canSelectMany: true,
     buttons: ButtonOption
   ): Promise<readonly T[] | ButtonAction>;
@@ -202,7 +167,7 @@ export class MultiStepInput {
                 canSelectMany ? input.selectedItems : input.selectedItems[0]
               );
             }),
-            input.onDidHide(async () => {
+            input.onDidHide(() => {
               reject(InputFlowAction.cancel);
             })
           );
@@ -219,7 +184,9 @@ export class MultiStepInput {
         }
       );
     } finally {
-      disposables.forEach((d) => d.dispose());
+      disposables.forEach((d) => {
+        d.dispose();
+      });
     }
   }
 
@@ -259,11 +226,11 @@ export class MultiStepInput {
               reject(InputFlowAction.forward);
             }
           }),
-          input.onDidAccept(async () => {
+          input.onDidAccept(() => {
             const value = input.value;
             resolve(value);
           }),
-          input.onDidHide(async () => {
+          input.onDidHide(() => {
             reject(InputFlowAction.cancel);
           })
         );
@@ -279,7 +246,44 @@ export class MultiStepInput {
         this.current.show();
       });
     } finally {
-      disposables.forEach((d) => d.dispose());
+      disposables.forEach((d) => {
+        d.dispose();
+      });
+    }
+  }
+
+  private async stepThrough(start: InputStep): Promise<void> {
+    let step: InputStep | void = start;
+    ++this.step;
+    this.steps.push(step);
+    while (step) {
+      if (this.current) {
+        this.current.enabled = false;
+        this.current.busy = true;
+      }
+      try {
+        step = await step(this);
+        if (step) {
+          while (this.steps.length > this.step) {
+            this.steps.pop();
+          }
+          ++this.step;
+          this.steps.push(step);
+        }
+      } catch (err) {
+        if (err === InputFlowAction.back) {
+          --this.step;
+          step = this.steps[this.step - 1];
+        } else if (err === InputFlowAction.forward) {
+          ++this.step;
+          step = this.steps[this.step - 1];
+        } else if (err === InputFlowAction.cancel) {
+          step = undefined;
+        }
+      }
+    }
+    if (this.current) {
+      this.current.dispose();
     }
   }
 }

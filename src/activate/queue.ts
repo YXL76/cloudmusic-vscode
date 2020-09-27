@@ -1,26 +1,27 @@
 import { MultiStepInput, load, stop } from "../util";
 import { PersonalFm, lock } from "../state";
-import { QueueItemTreeItem, QueueProvider } from "../provider";
 import { commands, window } from "vscode";
 import { ICON } from "../constant";
+import type { QueueItemTreeItem } from "../provider";
+import { QueueProvider } from "../provider";
 import { i18n } from "../i18n";
 
-export async function initQueue(): Promise<void> {
+export function initQueue(): void {
   const queueProvider = QueueProvider.getInstance();
   window.registerTreeDataProvider("queue", queueProvider);
 
   commands.registerCommand("cloudmusic.sortQueue", () => {
-    MultiStepInput.run((input: MultiStepInput) => pickType(input));
+    void MultiStepInput.run((input: MultiStepInput) => pickType(input));
 
     async function pickType(input: MultiStepInput) {
       enum Type {
         song,
         album,
-        artist
+        artist,
       }
       enum Order {
         ascending,
-        descending
+        descending,
       }
 
       const pick = await input.showQuickPick({
@@ -32,44 +33,44 @@ export async function initQueue(): Promise<void> {
             label: `${ICON.song} ${i18n.word.song}`,
             description: i18n.word.ascending,
             type: Type.song,
-            order: Order.ascending
+            order: Order.ascending,
           },
           {
             label: `${ICON.song} ${i18n.word.song}`,
             description: i18n.word.descending,
             type: Type.song,
-            order: Order.descending
+            order: Order.descending,
           },
           {
             label: `${ICON.album} ${i18n.word.album}`,
             description: i18n.word.ascending,
             type: Type.album,
-            order: Order.ascending
+            order: Order.ascending,
           },
           {
             label: `${ICON.album} ${i18n.word.album}`,
             description: i18n.word.descending,
             type: Type.album,
-            order: Order.descending
+            order: Order.descending,
           },
           {
             label: `${ICON.artist} ${i18n.word.artist}`,
             description: i18n.word.ascending,
             type: Type.artist,
-            order: Order.ascending
+            order: Order.ascending,
           },
           {
             label: `${ICON.artist} ${i18n.word.artist}`,
             description: i18n.word.descending,
             type: Type.artist,
-            order: Order.descending
-          }
-        ]
+            order: Order.descending,
+          },
+        ],
       });
 
       const { songs } = QueueProvider;
       stop();
-      await QueueProvider.refresh(async () => {
+      await QueueProvider.refresh(() => {
         if (pick.type === Type.song) {
           QueueProvider.songs = songs.sort((a, b) =>
             a.item.name.localeCompare(b.item.name)
@@ -92,7 +93,7 @@ export async function initQueue(): Promise<void> {
   });
 
   commands.registerCommand("cloudmusic.clearQueue", () => {
-    QueueProvider.refresh(async () => {
+    void QueueProvider.refresh(() => {
       if (!PersonalFm.get()) {
         stop();
       }
@@ -101,7 +102,7 @@ export async function initQueue(): Promise<void> {
   });
 
   commands.registerCommand("cloudmusic.randomQueue", () => {
-    QueueProvider.refresh(async () => {
+    void QueueProvider.refresh(() => {
       QueueProvider.random();
     });
   });
@@ -110,9 +111,9 @@ export async function initQueue(): Promise<void> {
     "cloudmusic.playSong",
     async (element: QueueItemTreeItem) => {
       if (!lock.playerLoad.get()) {
-        PersonalFm.set(false);
+        void PersonalFm.set(false);
         await load(element);
-        QueueProvider.refresh(async () => {
+        void QueueProvider.refresh(() => {
           QueueProvider.top(element.item.id);
         });
       }
@@ -122,7 +123,7 @@ export async function initQueue(): Promise<void> {
   commands.registerCommand(
     "cloudmusic.deleteSong",
     (element: QueueItemTreeItem) => {
-      QueueProvider.refresh(async () => {
+      void QueueProvider.refresh(() => {
         QueueProvider.delete(element.item.id);
       });
     }
@@ -133,14 +134,14 @@ export async function initQueue(): Promise<void> {
     (element: QueueItemTreeItem) => {
       if (QueueProvider.songs.length > 2) {
         const { id } = element.item;
-        QueueProvider.refresh(async () => {
+        void QueueProvider.refresh(() => {
           const index = QueueProvider.songs.findIndex(
-            value => value.valueOf() === id
+            (value) => value.valueOf() === id
           );
           if (index >= 2) {
             QueueProvider.songs = [
               QueueProvider.songs[0],
-              QueueProvider.songs[index]
+              QueueProvider.songs[index],
             ].concat(
               QueueProvider.songs.slice(1, index),
               QueueProvider.songs.slice(index + 1)
