@@ -1,13 +1,13 @@
 import "./index.scss";
 import "../../global.scss";
 import React, { useState } from "react";
+import type { RecordData, SongsItem } from "../../constant";
 import Avatar from "antd/es/avatar";
 import Button from "antd/es/button";
 import List from "antd/es/list";
 import LoadingOutlined from "@ant-design/icons/LoadingOutlined";
 import PlayCircleOutlined from "@ant-design/icons/PlayCircleOutlined";
 import Progress from "antd/es/progress";
-import type { RecordData } from "../../constant";
 import ReloadOutlined from "@ant-design/icons/ReloadOutlined";
 import Skeleton from "antd/es/skeleton";
 import Tabs from "antd/es/tabs";
@@ -24,6 +24,8 @@ const emptyData = new Array(100).fill({
   playCount: 0,
 }) as RecordData[];
 
+const { vscode } = window.webview;
+
 export const UserMusicRankingList = () => {
   const [loading, setLoading] = useState(true);
   const [lists, setLists] = useState([emptyData, emptyData] as RecordData[][]);
@@ -35,7 +37,19 @@ export const UserMusicRankingList = () => {
 
   const refresh = () => {
     setLoading(true);
-    window.webview.vscode.postMessage({ command: "refresh" });
+    vscode.postMessage({ command: "refresh" });
+  };
+
+  const song = (item: SongsItem) => {
+    vscode.postMessage({ command: "song", item });
+  };
+
+  const album = (id: number) => {
+    vscode.postMessage({ command: "album", id });
+  };
+
+  const artist = (id: number) => {
+    vscode.postMessage({ command: "artist", id });
   };
 
   const tab = (list: RecordData[], max: number) => {
@@ -44,38 +58,69 @@ export const UserMusicRankingList = () => {
         itemLayout="horizontal"
         dataSource={list}
         bordered
-        renderItem={({ name, alia, ar, al, playCount }, index) => (
-          <List.Item>
-            <Skeleton avatar title={false} loading={loading} active>
-              <List.Item.Meta
-                avatar={<Avatar src={al.picUrl} />}
-                title={
-                  <a href=".">
-                    {name}
-                    {alia[0] ? ` (${alia.join(" / ")})` : ""}
-                  </a>
-                }
-                description={ar.map(({ name }) => name).join(" / ")}
-              />
-              <div className="list-extra flex flex-row flex-space-around flex-align-center">
-                <div className="list-extra--order">{index + 1}</div>
-                <div className="list-extra--progress">
-                  <Progress
-                    percent={(playCount * 100) / max}
-                    size="small"
-                    showInfo={false}
-                    status="normal"
-                    strokeWidth={16}
-                  />
+        renderItem={(item, index) => {
+          const { name, alia, ar, al, playCount } = item;
+          return (
+            <List.Item>
+              <Skeleton avatar title={false} loading={loading} active>
+                <List.Item.Meta
+                  avatar={
+                    <a
+                      href="."
+                      onClick={() => {
+                        album(al.id);
+                      }}
+                    >
+                      <Avatar src={al.picUrl} />
+                    </a>
+                  }
+                  title={
+                    <a
+                      href="."
+                      onClick={() => {
+                        song(item);
+                      }}
+                    >
+                      {name}
+                      {alia[0] ? ` (${alia.join(" / ")})` : ""}
+                    </a>
+                  }
+                  description={ar.map(({ name, id }, index) => {
+                    return (
+                      <text>
+                        <a
+                          href="."
+                          onClick={() => {
+                            artist(id);
+                          }}
+                        >
+                          {name}
+                        </a>
+                        <text>{index < ar.length - 1 ? " / " : ""}</text>
+                      </text>
+                    );
+                  })}
+                />
+                <div className="list-extra flex flex-row flex-space-around flex-align-center">
+                  <div className="list-extra--order">{index + 1}</div>
+                  <div className="list-extra--progress">
+                    <Progress
+                      percent={(playCount * 100) / max}
+                      size="small"
+                      showInfo={false}
+                      status="normal"
+                      strokeWidth={16}
+                    />
+                  </div>
+                  <div className="list-extra--count flex flex-row flex-space-around flex-align-center">
+                    <PlayCircleOutlined />
+                    {playCount}
+                  </div>
                 </div>
-                <div className="list-extra--count flex flex-row flex-space-around flex-align-center">
-                  <PlayCircleOutlined />
-                  {playCount}
-                </div>
-              </div>
-            </Skeleton>
-          </List.Item>
-        )}
+              </Skeleton>
+            </List.Item>
+          );
+        }}
       />
     );
   };

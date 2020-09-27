@@ -1,7 +1,9 @@
 import { ColorThemeKind, Uri, ViewColumn, env, window } from "vscode";
+import { MultiStepInput, apiUserRecord } from "../util";
+import type { SongsItem } from "../constant";
 import type { WebviewPanel } from "vscode";
-import { apiUserRecord } from "../util";
 import { i18n } from "../i18n";
+import { pickAlbum, pickArtist, pickSong } from "./util";
 
 export class WebView {
   private static instance: WebView;
@@ -36,11 +38,23 @@ export class WebView {
     void (async () => {
       void panel.webview.postMessage(await apiUserRecord());
     })();
-    panel.webview.onDidReceiveMessage(async (message) => {
-      if ((message as { command: string }).command === "refresh") {
-        void panel.webview.postMessage(await apiUserRecord(true));
+    panel.webview.onDidReceiveMessage(
+      async (message: { command: string; item: SongsItem; id: number }) => {
+        const { command } = message;
+        if (command === "refresh") {
+          void panel.webview.postMessage(await apiUserRecord(true));
+        } else if (command === "song") {
+          const { item } = message;
+          void MultiStepInput.run((input) => pickSong(input, 1, item));
+        } else if (command === "album") {
+          const { id } = message;
+          void MultiStepInput.run((input) => pickAlbum(input, 1, id));
+        } else if (command === "artist") {
+          const { id } = message;
+          void MultiStepInput.run((input) => pickArtist(input, 1, id));
+        }
       }
-    });
+    );
     return panel;
   }
 
