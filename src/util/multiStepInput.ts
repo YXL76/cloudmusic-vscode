@@ -224,14 +224,17 @@ export class MultiStepInput {
         input.buttons = [
           ...(this.step > 1 ? [QuickInputButtons.Back] : []),
           ...(this.step < this.steps.length ? [pickButtons.forward] : []),
+          pickButtons.close,
         ];
         input.password = password || false;
         disposables.push(
           input.onDidTriggerButton((item) => {
             if (item === QuickInputButtons.Back) {
               reject(InputFlowAction.back);
-            } else {
+            } else if (item === pickButtons.forward) {
               reject(InputFlowAction.forward);
+            } else {
+              input.hide();
             }
           }),
           input.onDidAccept(() => {
