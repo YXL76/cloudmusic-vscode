@@ -12,7 +12,6 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-        electron: [7.3.2]
         include:
           - os: macos-latest
             filename: darwin
@@ -20,10 +19,8 @@ jobs:
             filename: linux
           - os: windows-latest
             filename: win32
-          - electron: 7.3.2
-            abi: 75
 
-    name: Build for ${{ matrix.filename }}-${{ matrix.abi }}
+    name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -57,24 +54,23 @@ jobs:
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ matrix.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ matrix.os }}-yarn-
       - uses: actions/cache@v2
         id: cargo-cache
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
+            native/target
           key: ${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - run: yarn
 
       - name: Build
-        run: |
-          yarn add electron@${{ matrix.electron }}
-          yarn add electron-build-env
-          yarn add neon-cli
-          yarn build::native
+        run: yarn build-native
 
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.filename }}-${{ matrix.abi }}
+          name: ${{ matrix.filename }}
           path: native/index.node

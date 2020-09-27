@@ -443,7 +443,7 @@
     "build-native": "electron-build-env neon build --release",
     "build-native-dev": "electron-build-env neon build",
     "lint": "eslint . --ext .ts,.tsx",
-    "test": "tsc -p ./",
+    "test": "tsc -p src",
     "vscode:prepublish": "yarn build"
   },
   "devDependencies": {
@@ -453,7 +453,6 @@
     "@types/lru-cache": "^5.1.0",
     "@types/mocha": "8.0.3",
     "@types/node": "12.12.62",
-    "@types/node-abi": "^2.10.0",
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
     "@types/vscode": "1.46.0",
@@ -497,7 +496,6 @@
     "dedupe": "^3.0.2",
     "lru-cache": "^6.0.0",
     "md5-file": "^5.0.0",
-    "node-abi": "^2.19.1",
     "node-cache": "^5.1.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

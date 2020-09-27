@@ -29,21 +29,16 @@ import { homedir, platform } from "os";
 import { MUSIC_QUALITY } from "./setting";
 import type { NativeModule } from "./type";
 import { Uri } from "vscode";
-import { getAbi } from "node-abi";
 import { join } from "path";
 
 export const PLATFORM = platform();
 export const PLAYER_AVAILABLE =
   PLATFORM === "win32" || PLATFORM === "linux" || PLATFORM === "darwin";
 
-const abi = getAbi(
-  (process.versions as NodeJS.ProcessVersions & { electron: string }).electron,
-  "electron"
-);
 // eslint-disable-next-line @typescript-eslint/naming-convention
 declare const __non_webpack_require__: (_: string) => unknown;
 export const NATIVE: NativeModule = __non_webpack_require__(
-  join("..", "build", `${PLATFORM}-${abi}.node`)
+  join("..", "build", `${PLATFORM}.node`)
 ) as NativeModule;
 
 export const ACCOUNT_KEY = "account";

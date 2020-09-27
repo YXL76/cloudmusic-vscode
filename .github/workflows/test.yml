@@ -20,7 +20,8 @@ jobs:
         with:
           node-version: "12"
       - name: Install gulp-cli
-        run: npm install --global gulp-cli
+        run: npm i gulp-cli -g
+
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
@@ -29,10 +30,13 @@ jobs:
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: ${{ matrix.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-      - run: |
-          yarn
-          yarn webpack
-      - name: Run tests
-        uses: GabrielBB/xvfb-action@v1.2
-        with:
-          run: yarn test
+          restore-keys: |
+            ${{ matrix.os }}-yarn-
+
+      - run: yarn
+      - name: Lint
+        run: yarn lint
+      - name: Build
+        run: yarn build-dev
+      - name: Test
+        run: yarn test

@@ -1664,13 +1664,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node-abi@npm:^2.10.0":
-  version: 2.10.0
-  resolution: "@types/node-abi@npm:2.10.0"
-  checksum: ae419fc6898b96c7440c195c2a919104a479a0b8a70e13c1b164f24eaa9c83f8a215e910b178b4be9993a53e050c68bceadf582757e6b0d957f4df86f6df1b5e
-  languageName: node
-  linkType: hard
-
 "@types/node@npm:*, @types/node@npm:12.12.62, @types/node@npm:^12.0.12":
   version: 12.12.62
   resolution: "@types/node@npm:12.12.62"
@@ -3727,7 +3720,6 @@ __metadata:
     "@types/lru-cache": ^5.1.0
     "@types/mocha": 8.0.3
     "@types/node": 12.12.62
-    "@types/node-abi": ^2.10.0
     "@types/react": ^16.9.49
     "@types/react-dom": ^16.9.8
     "@types/vscode": 1.46.0
@@ -3759,7 +3751,6 @@ __metadata:
     md5-file: ^5.0.0
     mocha: 8.1.3
     neon-cli: ^0.4.2
-    node-abi: ^2.19.1
     node-cache: ^5.1.2
     parcel: ^1.12.4
     prettier: ^2.1.2
@@ -9195,15 +9186,6 @@ fsevents@~2.1.2:
   version: 1.0.5
   resolution: "nice-try@npm:1.0.5"
   checksum: 330f190bf68146a560008b661e1ddbb2eac667c16990b6bf791516d89cceb707ec67901ad647d2b32674bfa816b916489cead5c2fb6e96864c659573ab5aa3bb
-  languageName: node
-  linkType: hard
-
-"node-abi@npm:^2.19.1":
-  version: 2.19.1
-  resolution: "node-abi@npm:2.19.1"
-  dependencies:
-    semver: ^5.4.1
-  checksum: 3dc98098e2fb61068e52f751e6d07d8bba6d042dc1e7986ff182e71c7aba2a86466135e603941ff33525e85a57ee93f44b4ed5498637261ed11000639e2720e7
   languageName: node
   linkType: hard
 
