@@ -1,21 +1,19 @@
 {
   "extends": [
+    "react-app",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "prettier/@typescript-eslint",
     "plugin:prettier/recommended"
   ],
-  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 10,
-    "project": "src/tsconfig.json",
-    "sourceType": "module"
+    "project": "webview/tsconfig.json"
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["prettier"],
   "rules": {
     "@typescript-eslint/consistent-type-imports": "warn",
     "@typescript-eslint/lines-between-class-members": "error",
     "@typescript-eslint/member-ordering": "warn",
-    "@typescript-eslint/naming-convention": "warn",
     "@typescript-eslint/no-var-requires": "off",
     "@typescript-eslint/semi": "warn",
     "curly": "warn",

@@ -94,3 +94,4 @@ export {
   stop,
 } from "./util";
 export { lyric, player } from "./player";
+export { WebView } from "./webview";

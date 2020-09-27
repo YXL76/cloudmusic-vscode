@@ -6,6 +6,7 @@ import {
   ButtonAction,
   MultiStepInput,
   TopSong,
+  WebView,
   apiAlbumNewest,
   apiAlbumSublist,
   apiArtistList,
@@ -43,6 +44,8 @@ import { i18n } from "../../i18n";
 import { inputKeyword } from "./search";
 
 export function account(context: ExtensionContext): void {
+  const webview = WebView.initInstance(context.extensionUri);
+
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.account", async () => {
       if (!LoggedIn.get()) {
@@ -151,6 +154,7 @@ export function account(context: ExtensionContext): void {
         if (pick.type === Type.fm) {
           void commands.executeCommand("cloudmusic.personalFM");
         } else if (pick.type === Type.userMusicRankingList) {
+          webview.userMusicRankingList();
         } else if (pick.type === Type.signOut) {
           void commands.executeCommand("cloudmusic.signout");
         }

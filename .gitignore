@@ -17,6 +17,7 @@ native/target
 native/index.node
 native/artifacts.json
 
+.cache
 .artifact
 build
 
