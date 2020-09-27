@@ -1,4 +1,4 @@
 {
   "extends": ["config:base"],
-  "ignoreDeps": ["@types/vscode"]
+  "ignoreDeps": ["@types/vscode", "electron"]
 }
