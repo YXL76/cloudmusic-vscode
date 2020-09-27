@@ -81,7 +81,7 @@ export function songsItem2TreeItem(
   return songs.map(
     (song) =>
       new QueueItemTreeItem(
-        `${song.name}${song.alia ? ` (${song.alia.join("/")})` : ""}`,
+        `${song.name}${song.alia[0] ? ` (${song.alia.join("/")})` : ""}`,
         song,
         id,
         TreeItemCollapsibleState.None
