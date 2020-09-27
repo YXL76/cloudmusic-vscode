@@ -42,4 +42,13 @@ gulp.task(
   gulp.series(generatedSrcLocBundle, generatedAdditionalLocFiles)
 );
 
-gulp.task("all", gulp.series("translations-generate"));
+const copyAntdCss = () => {
+  return gulp
+    .src([
+      "node_modules/antd/dist/antd.min.css",
+      "node_modules/antd/dist/antd.dark.min.css",
+    ])
+    .pipe(gulp.dest("dist"));
+};
+
+gulp.task("build", gulp.series("translations-generate", copyAntdCss));
