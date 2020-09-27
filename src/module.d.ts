@@ -6,7 +6,7 @@ declare module "array-unsort" {
   export function unsortInplace<T>(items: T[]): T[];
 }
 
-declare module "cacahe" {
+declare module "cacache" {
   export interface CacheObject {
     integrity: string;
     key: string;
