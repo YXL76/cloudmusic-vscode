@@ -92,7 +92,7 @@ jobs:
           mkdir -p build
           cp .artifact/darwin/index.node build/darwin.node
           cp .artifact/linux/index.node  build/linux.node
-          cp .artifact/win32/ndex.node  build/win32.
+          cp .artifact/win32/index.node  build/win32.node
 
       - uses: actions/setup-node@v1
         with:
@@ -116,8 +116,10 @@ jobs:
           path: .cache
           key: ${{ matrix.os }}-parcel
 
-      - run: |
+      - name: Package
+        run: |
           yarn
+          yarn build
           vsce package --yarn
           echo ::set-env name=VSIX_PATH::$(find . -maxdepth 1 -type f -iname "*.vsix" | head -1)
           echo ::set-env name=VSIX_NAME::$(basename $(find . -maxdepth 1 -type f -iname "*.vsix" | head -1))
@@ -141,4 +143,8 @@ jobs:
           asset_path: ${{ env.VSIX_PATH }}
           asset_name: ${{ env.VSIX_NAME }}
           asset_content_type: application/zip
-      - run: vsce publish -p ${{ secrets.VSCE_TOKEN }} --yarn
+      - name: Publish
+        run: |
+          yarn
+          yarn build
+          vsce publish -p ${{ secrets.VSCE_TOKEN }} --yarn

@@ -1711,10 +1711,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/vscode@npm:1.46.0":
-  version: 1.46.0
-  resolution: "@types/vscode@npm:1.46.0"
-  checksum: 68f95bf9dca6359c3889253ef1184a68127b8ca440f99e01fbb95457896cec523013d4a90e401c69caad59c4d7fe718c576d99eb789a7d57332221e59047950f
+"@types/vscode@npm:1.49.0":
+  version: 1.49.0
+  resolution: "@types/vscode@npm:1.49.0"
+  checksum: f648950d2f28aa81ee039aed55f78256c9d632a2823b1f9cbdaca1aadc0866e9ffd4605c28b9fbe5a48f4a4c4517722cc26d1103edc78be34240d793b3a9c3ce
   languageName: node
   linkType: hard
 
@@ -3712,7 +3712,7 @@ __metadata:
     "@types/node": 12.12.62
     "@types/react": 16.9.49
     "@types/react-dom": 16.9.8
-    "@types/vscode": 1.46.0
+    "@types/vscode": 1.49.0
     "@typescript-eslint/eslint-plugin": 4.2.0
     "@typescript-eslint/parser": 4.2.0
     NeteaseCloudMusicApi: "git+https://github.com/YXL76/NeteaseCloudMusicApi.git#self-use"

@@ -6,6 +6,19 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [5.0.0] - 2020-09-27
+
+### Changed
+
+- Webview: rewrite webview with `React` and `Ant Design`
+- Workflow: refactor workflow to have faster build speed and smaller build size
+
+### Remove
+
+- Remove `libmpv` support
+- Remove unused api modules to reduce build size
+- Remove abi check, waiting for `N-API` suport in `neon`
+
 ## [4.7.0] - 2020-09-20
 
 ### Added
