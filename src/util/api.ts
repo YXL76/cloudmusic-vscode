@@ -2,8 +2,10 @@ import type {
   AlbumsItem,
   AnotherSongItem,
   Artist,
+  Comment,
   LyricData,
   PlaylistItem,
+  RawComment,
   RawPlaylistItem,
   SongDetail,
   SongsItem,
@@ -34,6 +36,7 @@ import {
   artists,
   check_music,
   cloudsearch,
+  comment_music,
   daily_signin,
   fm_trash,
   like,
@@ -148,6 +151,23 @@ const solveUserDetail = (item: UserDetail): UserDetail => {
     signature,
     followeds: followeds || 0,
     follows: follows || 0,
+  };
+};
+
+const solveComment = (item: RawComment): Comment => {
+  const { user, commentId, content, time, likedCount, liked, beReplied } = item;
+  return {
+    user: solveUserDetail(user),
+    commentId,
+    content,
+    time,
+    likedCount,
+    liked,
+    beReplied: {
+      beRepliedCommentId: beReplied[0].beRepliedCommentId,
+      content: beReplied[0].content,
+      user: solveUserDetail(beReplied[0].user),
+    },
   };
 };
 
@@ -400,6 +420,33 @@ export async function apiCheckMusic(id: number, br: number): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+export async function apiCommentMusic(
+  id: number,
+  limit: number,
+  offset: number
+): Promise<Comment[]> {
+  const key = `comment_music${id}-${limit}-${offset}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as Comment[];
+  }
+  try {
+    const { status, body } = await comment_music(
+      Object.assign({ id, limit, offset }, baseQuery)
+    );
+    if (status !== 200) {
+      return [];
+    }
+    const { comments } = body;
+    const ret = (comments as RawComment[]).map((comment) =>
+      solveComment(comment)
+    );
+    apiCache.set(key, ret, 60);
+    return ret;
+  } catch {}
+  return [];
 }
 
 export async function apiDailySignin(): Promise<number> {

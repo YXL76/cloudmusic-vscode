@@ -89,6 +89,34 @@ export type LyricData = {
   text: string[];
 };
 
+export type RawComment = {
+  user: UserDetail;
+  commentId: number;
+  content: string;
+  time: number;
+  likedCount: number;
+  liked: boolean;
+  beReplied: {
+    beRepliedCommentId: number;
+    content: string;
+    user: UserDetail;
+  }[];
+};
+
+export type Comment = {
+  user: UserDetail;
+  commentId: number;
+  content: string;
+  time: number;
+  likedCount: number;
+  liked: boolean;
+  beReplied: {
+    beRepliedCommentId: number;
+    content: string;
+    user: UserDetail;
+  };
+};
+
 export type NativePlayer = {
   new <T>(): T;
   load(url: string): boolean;
