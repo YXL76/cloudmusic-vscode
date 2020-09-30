@@ -3752,7 +3752,7 @@ __metadata:
     vscode-nls: ^5.0.0
     vscode-nls-dev: 3.3.2
     vscode-test: 1.4.0
-    webpack: 5.0.0-rc.2
+    webpack: 5.0.0-rc.3
     webpack-cli: 4.0.0-rc.0
   languageName: unknown
   linkType: soft
@@ -5081,13 +5081,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "enhanced-resolve@npm:5.1.0"
+"enhanced-resolve@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "enhanced-resolve@npm:5.2.0"
   dependencies:
     graceful-fs: ^4.2.4
     tapable: ^2.0.0
-  checksum: 8725ba236e2f5b9bb3acaa8d4552c3c2e8fb036125122ad6431459331df1b5140c90435e3265154da39a9164eedab47aa681590cb4790c1bc474898d6aef8622
+  checksum: 0cc81613ce4767c781958abf6301c3bfe3cc20ea776840c822aba6d3ac337662d3b1fb305bf291988a10e3613e8ba802afb439cb222cdd08159e7fa8686c00a6
   languageName: node
   linkType: hard
 
@@ -8427,10 +8427,10 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"loader-runner@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "loader-runner@npm:4.0.0"
-  checksum: cf0f276bc935bfc9e34355d3fefff640e4956634036e3e3243e281a074658ab3e215c4f32b2286920ae9fa16bb1896f40fd212cc8a7b068da7016632f3df0e6e
+"loader-runner@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "loader-runner@npm:4.1.0"
+  checksum: 2b964f3484249acc18f1c28e35aee284ed698a73e9f1913bc045761ad0af3a61b403e22ce170e4cc8bdcea87fddb6a34b42e9f88a023758e635d5276c75dd8c4
   languageName: node
   linkType: hard
 
@@ -14391,9 +14391,9 @@ typescript@^3.9.5:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.0.0-rc.2":
-  version: 5.0.0-rc.2
-  resolution: "webpack@npm:5.0.0-rc.2"
+"webpack@npm:5.0.0-rc.3":
+  version: 5.0.0-rc.3
+  resolution: "webpack@npm:5.0.0-rc.3"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.45
@@ -14404,13 +14404,13 @@ typescript@^3.9.5:
     acorn: ^7.4.0
     browserslist: ^4.14.3
     chrome-trace-event: ^1.0.2
-    enhanced-resolve: ^5.1.0
+    enhanced-resolve: ^5.2.0
     eslint-scope: ^5.1.0
     events: ^3.2.0
     glob-to-regexp: ^0.4.1
     graceful-fs: ^4.2.4
     json-parse-better-errors: ^1.0.2
-    loader-runner: ^4.0.0
+    loader-runner: ^4.1.0
     mime-types: ^2.1.27
     neo-async: ^2.6.2
     pkg-dir: ^4.2.0
@@ -14424,7 +14424,7 @@ typescript@^3.9.5:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 7d25d51ee8cf6781a39cda3a82f71eac01c97c54e86c28cf5ef8566e59a144be08c4115c13ef7b1448a22edec071a2f170f17c847cc04c305a40297f25cf4aeb
+  checksum: 27e133f451edb2338be8147765ed66d82c654daa80bc1a6d83b10ac7366d461cbd2e17b3668b7522302f77b441b1815528201cd570e0a9a02073b72fe2bd56ea
   languageName: node
   linkType: hard
 
