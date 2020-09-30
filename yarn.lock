@@ -2122,10 +2122,10 @@ __metadata:
 
 "NeteaseCloudMusicApi@git+https://github.com/YXL76/NeteaseCloudMusicApi.git#self-use":
   version: 3.41.2
-  resolution: "NeteaseCloudMusicApi@https://github.com/YXL76/NeteaseCloudMusicApi.git#commit=dd89123b7bf61aeed5fa6e4a97cb0543fc37f958"
+  resolution: "NeteaseCloudMusicApi@https://github.com/YXL76/NeteaseCloudMusicApi.git#commit=8c436b43ad0ad9ed10ba9e01c0cdb164a676bf23"
   dependencies:
     request: ^2.88.2
-  checksum: 6e724f9414afe37a6e0a9abdda79b85145b90314a4b87e0a1e951f1aa363ccf6d87f3551ec4172b148faada61689a347a8b50da56197b6067c38ac84a3b8f0c4
+  checksum: 4d1ed64b80635356cb7e4fef419a376411ca5ce53c884a173ca416185e512ed1c0ab8ce2dd88300dd79801622186b388949dd39c94519d3255ce6c409edcaa5a
   languageName: node
   linkType: hard
 
@@ -3427,9 +3427,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001135":
-  version: 1.0.30001137
-  resolution: "caniuse-lite@npm:1.0.30001137"
-  checksum: 8cc7405638f4d89a77a6db51f4162bb539c6f180f8c1151d3a8efd3c2e634214b6b1897d74c93c00908d5b7ad33a16f92696be053f391747819ba68945e82f12
+  version: 1.0.30001140
+  resolution: "caniuse-lite@npm:1.0.30001140"
+  checksum: 32d2130c29d99ff9e4aca14557ede1f2024aa3da6dce77f3759d139e95a698186c713e9d005ecd81cfa4ad59ad125c84d792aaabe1b2aa7a52ed19e0aef5b047
   languageName: node
   linkType: hard
 
@@ -4485,9 +4485,9 @@ __metadata:
   linkType: hard
 
 "dayjs@npm:^1.8.30":
-  version: 1.8.36
-  resolution: "dayjs@npm:1.8.36"
-  checksum: 4e3eecfda9337f26e38f4eb0158592b6b8b171ccef6fbe0594e471bc8afda6043a4b61afb0d999b16e682367ed9c355bf162e336d1a56c000add1f3c8ab3897f
+  version: 1.9.1
+  resolution: "dayjs@npm:1.9.1"
+  checksum: c1043abb528f43878f3fa88ea6f890be8539f734b41a21cd939da8fb431472428188badb5518f18313fb332701ccc0663c0494caa158e4dac3f6f6f6a24c4849
   languageName: node
   linkType: hard
 
@@ -4992,9 +4992,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.3.571":
-  version: 1.3.573
-  resolution: "electron-to-chromium@npm:1.3.573"
-  checksum: 62ea2526a227320b3dc0879503b0ee4f18e7238acdede5c8ee3640e2c18406c709d193e32a919ad561a63edfc6ded119f0eb11d6b391fae387d4b64de5e3b024
+  version: 1.3.576
+  resolution: "electron-to-chromium@npm:1.3.576"
+  checksum: 1a96ef4a4f04f4da2b76b546c76439e7aff331d7da2085c633266077f6b9458992693e420bcd8682b3d4274de4473cb280d6c49a9341de724acbd7969352d4d7
   languageName: node
   linkType: hard
 
@@ -5082,12 +5082,12 @@ __metadata:
   linkType: hard
 
 "enhanced-resolve@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "enhanced-resolve@npm:5.1.0"
+  version: 5.2.0
+  resolution: "enhanced-resolve@npm:5.2.0"
   dependencies:
     graceful-fs: ^4.2.4
     tapable: ^2.0.0
-  checksum: 8725ba236e2f5b9bb3acaa8d4552c3c2e8fb036125122ad6431459331df1b5140c90435e3265154da39a9164eedab47aa681590cb4790c1bc474898d6aef8622
+  checksum: 0cc81613ce4767c781958abf6301c3bfe3cc20ea776840c822aba6d3ac337662d3b1fb305bf291988a10e3613e8ba802afb439cb222cdd08159e7fa8686c00a6
   languageName: node
   linkType: hard
 
@@ -8428,9 +8428,9 @@ fsevents@~2.1.2:
   linkType: hard
 
 "loader-runner@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "loader-runner@npm:4.0.0"
-  checksum: cf0f276bc935bfc9e34355d3fefff640e4956634036e3e3243e281a074658ab3e215c4f32b2286920ae9fa16bb1896f40fd212cc8a7b068da7016632f3df0e6e
+  version: 4.1.0
+  resolution: "loader-runner@npm:4.1.0"
+  checksum: 2b964f3484249acc18f1c28e35aee284ed698a73e9f1913bc045761ad0af3a61b403e22ce170e4cc8bdcea87fddb6a34b42e9f88a023758e635d5276c75dd8c4
   languageName: node
   linkType: hard
 
@@ -10690,13 +10690,13 @@ fsevents@~2.1.2:
   linkType: hard
 
 "postcss@npm:^7.0.0, postcss@npm:^7.0.1, postcss@npm:^7.0.11, postcss@npm:^7.0.17, postcss@npm:^7.0.27":
-  version: 7.0.34
-  resolution: "postcss@npm:7.0.34"
+  version: 7.0.35
+  resolution: "postcss@npm:7.0.35"
   dependencies:
     chalk: ^2.4.2
     source-map: ^0.6.1
     supports-color: ^6.1.0
-  checksum: 60e02f81cedf98bc5f902e72ca7cfef20dc5789e367fd3620a41a00719ff3226796831f4ba55db7a1a1c595564fe0fa9a0a2fa6d8b2477d10ab83422fc0f91de
+  checksum: 8a979ea9799dd48399337708a395ddb8cf0e328515201ed35c99f5ba5eaa7688eae65764c570bf49b5be0b106226e2f222abc210de068b3d3da9a9a3bbb70567
   languageName: node
   linkType: hard
 
@@ -11207,8 +11207,8 @@ fsevents@~2.1.2:
   linkType: hard
 
 "rc-mentions@npm:~1.5.0":
-  version: 1.5.1
-  resolution: "rc-mentions@npm:1.5.1"
+  version: 1.5.2
+  resolution: "rc-mentions@npm:1.5.2"
   dependencies:
     "@babel/runtime": ^7.10.1
     classnames: ^2.2.6
@@ -11218,7 +11218,7 @@ fsevents@~2.1.2:
     rc-util: ^5.0.1
   peerDependencies:
     react: "*"
-  checksum: ae4a578f2e38b21def91b12c006c823444c0ee4afb6f435ad29e3a12efaf314d8aa549eea52e728b367407a5fa7efb801807663dd57c19bd139f51aebc9bd33a
+  checksum: c44fa4526e42565def8d31b07bc5037ebc6e883365e1af96f07f60a9aa01ec4477c1951fbbae53bbdede2bc08c48a71f7008bc65b730fa3025d814994a34b4d2
   languageName: node
   linkType: hard
 
@@ -11240,8 +11240,8 @@ fsevents@~2.1.2:
   linkType: hard
 
 "rc-motion@npm:^2.0.0, rc-motion@npm:^2.0.1":
-  version: 2.1.2
-  resolution: "rc-motion@npm:2.1.2"
+  version: 2.3.1
+  resolution: "rc-motion@npm:2.3.1"
   dependencies:
     "@babel/runtime": ^7.11.1
     classnames: ^2.2.1
@@ -11249,7 +11249,7 @@ fsevents@~2.1.2:
   peerDependencies:
     react: ^16.0.0
     react-dom: ^16.0.0
-  checksum: f16c573ed709977b6874500da0ad534a80d832a3b43b1ef03df018b41b290032b9e4f29bbb3b0c1cf54d7d9c963216661202879b518d949fc06991560f50e02f
+  checksum: 6947257abff2126c938fe46f09a5ebb353f6a0557a63c5d0062e65e4d54f167d9b4e78f2ff8547caafbca7d04c59a78e3afb444c931ffd88474d65de3ce0fe6c
   languageName: node
   linkType: hard
 
@@ -11525,12 +11525,12 @@ fsevents@~2.1.2:
   linkType: hard
 
 "rc-util@npm:^5.0.0, rc-util@npm:^5.0.1, rc-util@npm:^5.0.4, rc-util@npm:^5.0.5, rc-util@npm:^5.0.6, rc-util@npm:^5.0.7, rc-util@npm:^5.1.0, rc-util@npm:^5.2.0, rc-util@npm:^5.2.1, rc-util@npm:^5.3.0, rc-util@npm:^5.3.4":
-  version: 5.3.5
-  resolution: "rc-util@npm:5.3.5"
+  version: 5.4.0
+  resolution: "rc-util@npm:5.4.0"
   dependencies:
     react-is: ^16.12.0
     shallowequal: ^1.1.0
-  checksum: 5ac3d7c8c35909f24c90095c4a0af6b980422f775fcd00613f5f61fdb40831f929f73f85199307bfbecab06706c02e0650e621c8c0baca5027ae017405129ef3
+  checksum: 897bb103e45521207ee112d53fa97aae9cc7af05a140178b0c6b8cde1e889c61a32edff07968d48a0ba8f47e831a02d0ea5453d63ecf986fe7efd08928059c94
   languageName: node
   linkType: hard
 
@@ -12642,7 +12642,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"source-map-support@npm:^0.5.16, source-map-support@npm:~0.5.10, source-map-support@npm:~0.5.12":
+"source-map-support@npm:^0.5.16, source-map-support@npm:~0.5.10, source-map-support@npm:~0.5.12, source-map-support@npm:~0.5.19":
   version: 0.5.19
   resolution: "source-map-support@npm:0.5.19"
   dependencies:
@@ -12673,7 +12673,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"source-map@npm:^0.7.3":
+"source-map@npm:^0.7.3, source-map@npm:~0.7.2":
   version: 0.7.3
   resolution: "source-map@npm:0.7.3"
   checksum: 351ce26ffa1ebf203660c0d70d7566c81e65d2d994d1c2d94da140808e02da34961673ce12ecea9b40797b96fbeb8c70bf71a4ad9f779f1a4fdbba75530bb386
@@ -13326,15 +13326,15 @@ fsevents@~2.1.2:
   linkType: hard
 
 "terser@npm:^5.3.2":
-  version: 5.3.2
-  resolution: "terser@npm:5.3.2"
+  version: 5.3.3
+  resolution: "terser@npm:5.3.3"
   dependencies:
     commander: ^2.20.0
-    source-map: ~0.6.1
-    source-map-support: ~0.5.12
+    source-map: ~0.7.2
+    source-map-support: ~0.5.19
   bin:
     terser: bin/terser
-  checksum: 4de06e4c6ca0e01199a9beba4a6a1e7b76d3465e2cfcf6a7cb195badfdebace709aa687fa209fb6793fa30d74b935d3d1e68603d3d90774109e0f2037a954ae3
+  checksum: 211bc0cad6ee9d8612ceecb2cdb54c52bc6158b5c02c35df8a3fb8fced5123ea95599d3e8cf8f2240f270f99fab8226f9051b0cfb92829ebc3d1b317a498df8e
   languageName: node
   linkType: hard
 
@@ -13796,11 +13796,11 @@ typescript@^3.9.5:
   linkType: hard
 
 "uglify-js@npm:^3.1.4":
-  version: 3.10.4
-  resolution: "uglify-js@npm:3.10.4"
+  version: 3.11.0
+  resolution: "uglify-js@npm:3.11.0"
   bin:
     uglifyjs: bin/uglifyjs
-  checksum: b16ee80e2d4bcddc6e792fdcc58a17f837eed9609f9b945012ab0829bb3a60b71e20a653d9f7a0eb73275694a08a33974bc2f9a8d9b3c829eb5e4a24bd81120d
+  checksum: f2a45ef9556fbc918cd990b8a55aa345b17b8071aa53407f90669cfe6c7bcb7136d652c0a06c8e8c835aadfb612899a06b9a4a07346a1ee4154f59dd53ea9266
   languageName: node
   linkType: hard
 

@@ -290,6 +290,9 @@ export class MultiStepInput {
           step = this.steps[this.step - 1];
         } else if (err === InputFlowAction.cancel) {
           step = undefined;
+        } else {
+          step = undefined;
+          console.error(err);
         }
       }
     }

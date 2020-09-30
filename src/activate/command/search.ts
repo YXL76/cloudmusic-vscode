@@ -1,7 +1,6 @@
 import {
   ButtonAction,
   MultiStepInput,
-  SearchType,
   apiSearchAlbum,
   apiSearchArtist,
   apiSearchHotDetail,
@@ -21,6 +20,7 @@ import {
 import type { ExtensionContext, QuickPick, QuickPickItem } from "vscode";
 import { ICON } from "../../constant";
 import type { InputStep } from "../../util";
+import { SearchType } from "NeteaseCloudMusicApi";
 import { commands } from "vscode";
 import { i18n } from "../../i18n";
 import { throttle } from "lodash";

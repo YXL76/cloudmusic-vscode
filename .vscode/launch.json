@@ -6,6 +6,14 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Run Extension without building",
+      "type": "extensionHost",
+      "request": "launch",
+      "runtimeExecutable": "${execPath}",
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
+      "outFiles": ["${workspaceFolder}/dist/**/*.js"]
+    },
+    {
       "name": "Run Extension",
       "type": "extensionHost",
       "request": "launch",

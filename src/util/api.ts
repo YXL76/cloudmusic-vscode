@@ -10,9 +10,18 @@ import type {
   TrackIdsItem,
   UserDetail,
 } from "../constant";
+import type {
+  ArtistArea,
+  ArtistInitial,
+  ArtistType,
+  RequestBaseConfig,
+  TopSongType,
+} from "NeteaseCloudMusicApi";
 import { LyricCache, apiCache } from "../util";
 import { MUSIC_QUALITY, PROXY, REAL_IP } from "../constant";
 import {
+  SearchSuggestType,
+  SearchType,
   album,
   album_newest,
   album_sub,
@@ -72,7 +81,6 @@ import {
   user_record,
 } from "NeteaseCloudMusicApi";
 import { AccountManager } from "../manager";
-import type { RequestBaseConfig } from "NeteaseCloudMusicApi/module_types/base";
 
 const solveArtist = (item: Artist): Artist => {
   const { name, id, alias, briefDesc, albumSize, musicSize } = item;
@@ -290,50 +298,6 @@ export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
   }
   return ret;
 }
-
-export enum ArtistType {
-  male = "1",
-  female = "2",
-  band = "3",
-}
-
-export enum ArtistArea {
-  all = "-1",
-  zh = "7",
-  en = "96",
-  ja = "8",
-  kr = "16",
-  other = "0",
-}
-
-export type ArtistInitial =
-  | "A"
-  | "B"
-  | "C"
-  | "D"
-  | "E"
-  | "F"
-  | "G"
-  | "H"
-  | "I"
-  | "J"
-  | "K"
-  | "L"
-  | "M"
-  | "N"
-  | "O"
-  | "P"
-  | "Q"
-  | "R"
-  | "S"
-  | "T"
-  | "U"
-  | "V"
-  | "W"
-  | "X"
-  | "Y"
-  | "Z"
-  | undefined;
 
 export async function apiArtistList(
   type: ArtistType,
@@ -910,18 +874,6 @@ export async function apiScrobble(
   await scrobble(Object.assign({ id, sourceid, time }, baseQuery));
 }
 
-export enum SearchType {
-  single = 1,
-  album = 10,
-  artist = 100,
-  playlist = 1000,
-  user = 1002,
-  mv = 1004,
-  lyric = 1006,
-  dj = 1009,
-  video = 1014,
-}
-
 export async function apiSearchSingle(
   keywords: string,
   limit: number,
@@ -1075,9 +1027,8 @@ export async function apiSearchSuggest(keywords: string): Promise<string[]> {
     return value as string[];
   }
   try {
-    const type = "mobile" as const;
     const { body, status } = await search_suggest(
-      Object.assign({ keywords, type }, baseQuery)
+      Object.assign({ keywords, type: SearchSuggestType.mobile }, baseQuery)
     );
     if (status !== 200) {
       return [];
@@ -1343,15 +1294,7 @@ export async function apiTopPlaylistHighquality(
   return [];
 }
 
-export enum TopSong {
-  all = 0,
-  zh = 7,
-  en = 96,
-  ja = 8,
-  kr = 16,
-}
-
-export async function apiTopSong(type: TopSong): Promise<SongsItem[]> {
+export async function apiTopSong(type: TopSongType): Promise<SongsItem[]> {
   const key = `top_song${type}`;
   const value = apiCache.get(key);
   if (value) {

@@ -7,7 +7,8 @@
     "out": true, // set this to false to include "out" folder in search results
     "dist": true,
     "build": true,
-    ".yarn": true
+    ".yarn": true,
+    ".cache": true
   },
   // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
   "typescript.tsc.autoDetect": "off",
@@ -17,6 +18,7 @@
     "**/node_modules/**": true,
     "**/.hg/store/**": true,
     "**/.yarn/**": true,
+    "**/.cache/**": true,
     "**/dist/**": true,
     "**/native/target/**": true
   }

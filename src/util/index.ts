@@ -61,12 +61,7 @@ export {
   apiUserLevel,
   apiUserPlaylist,
   apiUserRecord,
-  ArtistArea,
-  ArtistInitial,
-  ArtistType,
   baseQuery,
-  SearchType,
-  TopSong,
 } from "./api";
 export {
   confirmation,

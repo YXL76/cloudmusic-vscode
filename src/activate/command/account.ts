@@ -1,11 +1,9 @@
 import * as crypto from "crypto";
 import { ACCOUNT_KEY, ICON } from "../../constant";
+import { ArtistArea, ArtistType, TopSongType } from "NeteaseCloudMusicApi";
 import {
-  ArtistArea,
-  ArtistType,
   ButtonAction,
   MultiStepInput,
-  TopSong,
   WebView,
   apiAlbumNewest,
   apiAlbumSublist,
@@ -35,10 +33,11 @@ import {
   pickSongs,
   pickUser,
 } from "../../util";
-import type { ArtistInitial, InputStep } from "../../util";
 import type { ExtensionContext, QuickPickItem } from "vscode";
 import { commands, window } from "vscode";
 import { AccountManager } from "../../manager";
+import type { ArtistInitial } from "NeteaseCloudMusicApi";
+import type { InputStep } from "../../util";
 import { LoggedIn } from "../../state";
 import { i18n } from "../../i18n";
 import { inputKeyword } from "./search";
@@ -323,19 +322,19 @@ export function account(context: ExtensionContext): void {
         }
         if (pick.type === Type.topSongsZh) {
           return async (input: MultiStepInput) =>
-            pickSongs(input, 3, await apiTopSong(TopSong.zh));
+            pickSongs(input, 3, await apiTopSong(TopSongType.zh));
         }
         if (pick.type === Type.topSongsEn) {
           return async (input: MultiStepInput) =>
-            pickSongs(input, 3, await apiTopSong(TopSong.en));
+            pickSongs(input, 3, await apiTopSong(TopSongType.ea));
         }
         if (pick.type === Type.topSongsJa) {
           return async (input: MultiStepInput) =>
-            pickSongs(input, 3, await apiTopSong(TopSong.ja));
+            pickSongs(input, 3, await apiTopSong(TopSongType.ja));
         }
         if (pick.type === Type.topSongsKr) {
           return async (input: MultiStepInput) =>
-            pickSongs(input, 3, await apiTopSong(TopSong.kr));
+            pickSongs(input, 3, await apiTopSong(TopSongType.kr));
         }
         if (pick.type === Type.albumNewest) {
           return async (input: MultiStepInput) =>
@@ -495,7 +494,7 @@ export function account(context: ExtensionContext): void {
             },
             {
               label: i18n.word.en,
-              type: ArtistArea.en,
+              type: ArtistArea.ea,
             },
             {
               label: i18n.word.ja,
