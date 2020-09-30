@@ -1483,7 +1483,7 @@ export async function apiUserRecord(
 ): Promise<(SongsItem & { playCount: number })[][]> {
   const key = "user_record";
   let value: (SongsItem & { playCount: number })[][] | undefined;
-  if (refresh && (value = apiCache.get(key))) {
+  if (!refresh && (value = apiCache.get(key))) {
     return value;
   }
   const tasks: Promise<(SongsItem & { playCount: number })[]>[] = [];
