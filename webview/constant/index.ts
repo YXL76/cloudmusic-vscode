@@ -1,1 +1,1 @@
-export type { RecordData, SongsItem } from "./type";
+export type { CommentDetail, RecordData, SongsItem, UserDetail } from "./type";

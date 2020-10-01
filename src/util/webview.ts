@@ -1,11 +1,15 @@
 import { ColorThemeKind, Uri, ViewColumn, env, window } from "vscode";
 import {
   MultiStepInput,
+  apiComment,
+  apiCommentHot,
   apiUserRecord,
   pickAlbum,
   pickArtist,
   pickSong,
+  pickUser,
 } from "../util";
+import type { CommentType } from "NeteaseCloudMusicApi";
 import type { SongsItem } from "../constant";
 import type { WebviewPanel } from "vscode";
 import { i18n } from "../i18n";
@@ -52,7 +56,11 @@ export class WebView {
       void panel.webview.postMessage(await apiUserRecord());
     })();
     panel.webview.onDidReceiveMessage(
-      async (message: { command: string; item: SongsItem; id: number }) => {
+      async (message: {
+        command: "refresh" | "song" | "album" | "artist";
+        item: SongsItem;
+        id: number;
+      }) => {
         const { command } = message;
         if (command === "refresh") {
           void panel.webview.postMessage(await apiUserRecord(true));
@@ -71,8 +79,55 @@ export class WebView {
     return panel;
   }
 
+  commentList(type: CommentType, id: number): WebviewPanel {
+    const limit = 50;
+    const panel = this.getWebviewPanel("commentList", i18n.word.comment, {
+      i18n: {
+        comment: i18n.word.comment,
+        hottest: i18n.word.hottest,
+        latest: i18n.word.latest,
+        reply: i18n.word.reply,
+      },
+      message: { limit },
+    });
+
+    void (async () => {
+      const { total, hotComments } = await apiCommentHot(type, id, limit, 0);
+      await panel.webview.postMessage({ command: "hottestTotal", total });
+      await panel.webview.postMessage({ command: "hottest", hotComments });
+    })();
+    void (async () => {
+      const { total, comments } = await apiComment(type, id, limit, 0);
+      await panel.webview.postMessage({ command: "latestTotal", total });
+      await panel.webview.postMessage({ command: "latest", comments });
+    })();
+
+    panel.webview.onDidReceiveMessage(
+      async (message: {
+        command: "user" | "hottest" | "latest";
+        id: number;
+        offset: number;
+      }) => {
+        const { command } = message;
+        if (command === "user") {
+          const { id } = message;
+          void MultiStepInput.run((input) => pickUser(input, 1, id));
+        } else if (command === "hottest") {
+          const { offset } = message;
+          const { hotComments } = await apiCommentHot(type, id, limit, offset);
+          await panel.webview.postMessage({ command: "hottest", hotComments });
+        } else if (command === "latest") {
+          const { offset } = message;
+          const { comments } = await apiComment(type, id, limit, offset);
+          await panel.webview.postMessage({ command: "latest", comments });
+        }
+      }
+    );
+    return panel;
+  }
+
   private getWebviewPanel(
-    entry: "userMusicRankingList",
+    entry: "userMusicRankingList" | "commentList",
     title: string,
     data: {
       i18n?: Record<string, string>;

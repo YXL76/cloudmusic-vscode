@@ -1,0 +1,154 @@
+import React, { useState } from "react";
+import Avatar from "antd/es/avatar";
+import type { CommentDetail } from "../../constant";
+import LikeFilled from "@ant-design/icons/LikeFilled";
+import LikeOutlined from "@ant-design/icons/LikeOutlined";
+import List from "antd/es/list";
+import Skeleton from "antd/es/skeleton";
+import Tabs from "antd/es/tabs";
+import moment from "moment";
+
+const { TabPane } = Tabs;
+
+const { vscode, data } = window.webview;
+const { i18n, message } = data;
+const limit = message?.limit || 50;
+
+const emptyData = new Array(limit).fill({
+  user: {
+    userId: 0,
+    nickname: "",
+    signature: "",
+    followeds: 0,
+    follows: 0,
+    avatarUrl: "",
+  },
+  name: "",
+  commentId: 0,
+  content: "",
+  time: 0,
+  likedCount: 0,
+  liked: false,
+}) as CommentDetail[];
+
+export const CommentList = () => {
+  const [hottestLoading, setHottestLoading] = useState(true);
+  const [hottestTotal, setHottestTotal] = useState(limit);
+  const [hottestLists, setHottestLists] = useState(emptyData);
+
+  const [latestLoading, setLatestLoading] = useState(true);
+  const [latestTotal, setLatestTotal] = useState(limit);
+  const [latestLists, setLatestLists] = useState(emptyData);
+
+  window.addEventListener("message", ({ data }) => {
+    const { command } = data as {
+      command: "hottestTotal" | "hottest" | "latestTotal" | "latest";
+    };
+    if (command === "hottestTotal") {
+      setHottestTotal((data as { total: number }).total);
+    } else if (command === "hottest") {
+      setHottestLists((data as { hotComments: CommentDetail[] }).hotComments);
+      setHottestLoading(false);
+    } else if (command === "latestTotal") {
+      setLatestTotal((data as { total: number }).total);
+    } else if (command === "latest") {
+      setLatestLists((data as { comments: CommentDetail[] }).comments);
+      setLatestLoading(false);
+    }
+  });
+
+  const tab = (
+    list: CommentDetail[],
+    total: number,
+    loading: boolean,
+    command: "hottest" | "latest"
+  ) => {
+    return (
+      <List
+        header={`${i18n?.comment as string} (${total})`}
+        size="small"
+        itemLayout="horizontal"
+        pagination={{
+          onChange: (page) => {
+            if (command === "hottest") {
+              setHottestLoading(true);
+            } else {
+              setLatestLoading(true);
+            }
+            vscode.postMessage({
+              command,
+              offset: (page - 1) * limit,
+            });
+          },
+          defaultPageSize: limit,
+          showQuickJumper: true,
+          showSizeChanger: false,
+          total: Math.min(total, 5000),
+          disabled: loading,
+          showTotal: (total, range) => `${range.join("-")} / ${total}`,
+        }}
+        dataSource={list}
+        renderItem={({ user, content, liked, likedCount, time }, index) => (
+          <Skeleton avatar title={false} loading={loading} active>
+            <List.Item
+              actions={[
+                <span
+                  key={`${command}-comment-like-${index}`}
+                  onClick={() => {}}
+                >
+                  {liked ? <LikeFilled /> : <LikeOutlined />}
+                  <span> ({likedCount})</span>
+                </span>,
+                <span onClick={() => {}}>{i18n?.reply}</span>,
+              ]}
+            >
+              <List.Item.Meta
+                avatar={
+                  <a
+                    href="."
+                    onClick={() =>
+                      vscode.postMessage({
+                        command: "user",
+                        id: user.userId,
+                      })
+                    }
+                  >
+                    <Avatar src={user.avatarUrl} />
+                  </a>
+                }
+                title={
+                  <div>
+                    <a
+                      href="."
+                      onClick={() =>
+                        vscode.postMessage({
+                          command: "user",
+                          id: user.userId,
+                        })
+                      }
+                    >
+                      {user.nickname}
+                    </a>
+                    <span>{moment(time).format("YYYY-MM-DD HH:mm:ss")}</span>
+                  </div>
+                }
+              />
+              <div>{content}</div>
+            </List.Item>
+          </Skeleton>
+        )}
+      />
+    );
+  };
+
+  return (
+    <Tabs className="commentList">
+      <TabPane tab={i18n?.hottest} key="1" forceRender>
+        {tab(hottestLists, hottestTotal, hottestLoading, "hottest")}
+      </TabPane>
+      <TabPane tab={i18n?.latest} key="2" forceRender>
+        {tab(latestLists, latestTotal, latestLoading, "latest")}
+      </TabPane>
+    </Tabs>
+  );
+};

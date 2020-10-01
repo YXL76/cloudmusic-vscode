@@ -8,3 +8,26 @@ export type SongsItem = {
 };
 
 export type RecordData = SongsItem & { playCount: number };
+
+export type UserDetail = {
+  userId: number;
+  nickname: string;
+  signature: string;
+  followeds: number;
+  follows: number;
+  avatarUrl: string;
+};
+
+export type CommentDetail = {
+  user: UserDetail;
+  commentId: number;
+  content: string;
+  time: number;
+  likedCount: number;
+  liked: boolean;
+  beReplied?: {
+    beRepliedCommentId: number;
+    content: string;
+    user: UserDetail;
+  };
+};

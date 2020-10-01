@@ -2,10 +2,10 @@ import type {
   AlbumsItem,
   AnotherSongItem,
   Artist,
-  Comment,
+  CommentDetail,
   LyricData,
   PlaylistItem,
-  RawComment,
+  RawCommentDetail,
   RawPlaylistItem,
   SongDetail,
   SongsItem,
@@ -19,9 +19,8 @@ import type {
   RequestBaseConfig,
   TopSongType,
 } from "NeteaseCloudMusicApi";
-import { LyricCache, apiCache } from "../util";
-import { MUSIC_QUALITY, PROXY, REAL_IP } from "../constant";
 import {
+  CommentType,
   SearchSuggestType,
   SearchType,
   album,
@@ -36,6 +35,7 @@ import {
   artists,
   check_music,
   cloudsearch,
+  comment_hot,
   comment_music,
   daily_signin,
   fm_trash,
@@ -83,6 +83,8 @@ import {
   user_playlist,
   user_record,
 } from "NeteaseCloudMusicApi";
+import { LyricCache, apiCache } from "../util";
+import { MUSIC_QUALITY, PROXY, REAL_IP } from "../constant";
 import { AccountManager } from "../manager";
 
 const solveArtist = (item: Artist): Artist => {
@@ -144,17 +146,18 @@ const solvePlaylistItem = (item: RawPlaylistItem): PlaylistItem => {
 };
 
 const solveUserDetail = (item: UserDetail): UserDetail => {
-  const { userId, nickname, signature, followeds, follows } = item;
+  const { userId, nickname, signature, followeds, follows, avatarUrl } = item;
   return {
     userId,
     nickname,
     signature,
     followeds: followeds || 0,
     follows: follows || 0,
+    avatarUrl,
   };
 };
 
-const solveComment = (item: RawComment): Comment => {
+const solveComment = (item: RawCommentDetail): CommentDetail => {
   const { user, commentId, content, time, likedCount, liked, beReplied } = item;
   return {
     user: solveUserDetail(user),
@@ -163,11 +166,13 @@ const solveComment = (item: RawComment): Comment => {
     time,
     likedCount,
     liked,
-    beReplied: {
-      beRepliedCommentId: beReplied[0].beRepliedCommentId,
-      content: beReplied[0].content,
-      user: solveUserDetail(beReplied[0].user),
-    },
+    beReplied: beReplied[0]
+      ? {
+          beRepliedCommentId: beReplied[0].beRepliedCommentId,
+          content: beReplied[0].content,
+          user: solveUserDetail(beReplied[0].user),
+        }
+      : undefined,
   };
 };
 
@@ -422,31 +427,76 @@ export async function apiCheckMusic(id: number, br: number): Promise<boolean> {
   }
 }
 
-export async function apiCommentMusic(
+export async function apiCommentHot(
+  type: CommentType,
   id: number,
   limit: number,
   offset: number
-): Promise<Comment[]> {
-  const key = `comment_music${id}-${limit}-${offset}`;
+): Promise<{ total: number; hotComments: CommentDetail[] }> {
+  const key = `comment_hot${type}-${id}-${limit}-${offset}`;
   const value = apiCache.get(key);
   if (value) {
-    return value as Comment[];
+    return value as { total: number; hotComments: CommentDetail[] };
   }
+  const empty = { total: 0, hotComments: [] };
   try {
+    const { status, body } = await comment_hot(
+      Object.assign({ type, id, limit, offset }, baseQuery)
+    );
+    if (status !== 200) {
+      return empty;
+    }
+    const { hotComments, total } = body;
+    const ret = {
+      total: total as number,
+      hotComments: (hotComments as RawCommentDetail[]).map((comment) =>
+        solveComment(comment)
+      ),
+    };
+    apiCache.set(key, ret, 60);
+    return ret;
+  } catch {}
+  return empty;
+}
+
+export async function apiComment(
+  type: CommentType,
+  id: number,
+  limit: number,
+  offset: number
+): Promise<{ total: number; comments: CommentDetail[] }> {
+  const empty = { total: 0, comments: [] };
+
+  async function apiCommentMusic() {
+    const key = `comment_music${id}-${limit}-${offset}`;
+    const value = apiCache.get(key);
+    if (value) {
+      return value as { total: number; comments: CommentDetail[] };
+    }
     const { status, body } = await comment_music(
       Object.assign({ id, limit, offset }, baseQuery)
     );
     if (status !== 200) {
-      return [];
+      return empty;
     }
-    const { comments } = body;
-    const ret = (comments as RawComment[]).map((comment) =>
-      solveComment(comment)
-    );
+    const { comments, total } = body;
+    const ret = {
+      total: total as number,
+      comments: (comments as RawCommentDetail[]).map((comment) =>
+        solveComment(comment)
+      ),
+    };
     apiCache.set(key, ret, 60);
     return ret;
+  }
+
+  try {
+    if (type === CommentType.song) {
+      return await apiCommentMusic();
+    }
   } catch {}
-  return [];
+
+  return empty;
 }
 
 export async function apiDailySignin(): Promise<number> {

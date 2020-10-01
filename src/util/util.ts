@@ -10,6 +10,7 @@ import {
   ButtonAction,
   LocalCache,
   MusicCache,
+  WebView,
   apiAlbum,
   apiAlbumSub,
   apiArtistAlbum,
@@ -47,6 +48,7 @@ import {
   window,
   workspace,
 } from "vscode";
+import { CommentType } from "NeteaseCloudMusicApi";
 import type { QuickPickItem } from "vscode";
 import { i18n } from "../i18n";
 
@@ -182,6 +184,7 @@ enum PickType {
   user,
   followeds,
   follows,
+  comment,
 }
 interface T extends QuickPickItem {
   id: number;
@@ -268,6 +271,10 @@ export async function pickSong(
         type: PickType.like,
       },
       {
+        label: `${ICON.comment} ${i18n.word.comment}`,
+        type: PickType.comment,
+      },
+      {
         label: `${ICON.add} ${i18n.word.addToQueue}`,
         type: PickType.add,
       },
@@ -302,15 +309,16 @@ export async function pickSong(
     }
     return (input: MultiStepInput) => pickSimiPlaylists(input, step + 1, id, 0);
   }
-  if (pick.type === PickType.like) {
+  if (pick.type === PickType.comment) {
+    WebView.getInstance().commentList(CommentType.song, id);
+  } else if (pick.type === PickType.like) {
     if (await apiLike(id)) {
       AccountManager.likelist.add(id);
       if (id === player.item.id) {
         IsLike.set(true);
       }
     }
-  }
-  if (pick.type === PickType.add) {
+  } else if (pick.type === PickType.add) {
     const element = songsItem2TreeItem(0, [item])[0];
     void commands.executeCommand("cloudmusic.addSong", element);
   }

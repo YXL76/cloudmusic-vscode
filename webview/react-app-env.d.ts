@@ -9,11 +9,13 @@ declare interface VsCodeApi {
 interface Window {
   webview: {
     vscode: VsCodeApi;
-    entry: "userMusicRankingList";
+    entry: "userMusicRankingList" | "commentList";
     language: string;
     data: {
       i18n?: Record<string, string>;
-      message?: unknown;
+      message?: {
+        limit?: number;
+      };
     };
   };
 }

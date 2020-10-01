@@ -12,6 +12,8 @@ export {
   apiArtistSub,
   apiArtistSublist,
   apiCheckMusic,
+  apiComment,
+  apiCommentHot,
   apiDailySignin,
   apiFmTrash,
   apiHighqualityTags,

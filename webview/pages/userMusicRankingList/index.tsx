@@ -24,15 +24,15 @@ const emptyData = new Array(100).fill({
   playCount: 0,
 }) as RecordData[];
 
-const { vscode } = window.webview;
-const { i18n } = window.webview.data;
+const { vscode, data } = window.webview;
+const { i18n } = data;
 
 export const UserMusicRankingList = () => {
   const [loading, setLoading] = useState(true);
   const [lists, setLists] = useState([emptyData, emptyData] as RecordData[][]);
 
   window.addEventListener("message", ({ data }) => {
-    setLists(() => data as RecordData[][]);
+    setLists(data as RecordData[][]);
     setLoading(false);
   });
 
@@ -151,11 +151,7 @@ export const UserMusicRankingList = () => {
   };
 
   return (
-    <Tabs
-      className="userMusicRankingList"
-      tabBarExtraContent={OperationsSlot}
-      animated
-    >
+    <Tabs className="userMusicRankingList" tabBarExtraContent={OperationsSlot}>
       {tabs}
     </Tabs>
   );

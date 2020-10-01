@@ -64,6 +64,7 @@ export type UserDetail = {
   signature: string;
   followeds: number;
   follows: number;
+  avatarUrl: string;
 };
 
 export type TrackIdsItem = {
@@ -89,7 +90,7 @@ export type LyricData = {
   text: string[];
 };
 
-export type RawComment = {
+export type RawCommentDetail = {
   user: UserDetail;
   commentId: number;
   content: string;
@@ -103,14 +104,14 @@ export type RawComment = {
   }[];
 };
 
-export type Comment = {
+export type CommentDetail = {
   user: UserDetail;
   commentId: number;
   content: string;
   time: number;
   likedCount: number;
   liked: boolean;
-  beReplied: {
+  beReplied?: {
     beRepliedCommentId: number;
     content: string;
     user: UserDetail;
