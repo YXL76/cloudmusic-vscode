@@ -261,7 +261,7 @@ export async function apiArtists(
   }
 }
 
-export async function apiAlbumSub(id: number, t: 1 | 0): Promise<boolean> {
+export async function apiAlbumSub(id: number, t: SubAction): Promise<boolean> {
   try {
     const { status } = await album_sub(Object.assign({ id, t }, baseQuery));
     if (status !== 200) {
@@ -385,7 +385,7 @@ export async function apiArtistSongs(
   return [];
 }
 
-export async function apiArtistSub(id: number, t: 1 | 0): Promise<boolean> {
+export async function apiArtistSub(id: number, t: SubAction): Promise<boolean> {
   try {
     const { status } = await artist_sub(Object.assign({ id, t }, baseQuery));
     if (status !== 200) {
@@ -857,7 +857,7 @@ export async function apiHighqualityTags(): Promise<PlaylistCatlistItem[]> {
 
 export async function apiPlaylistSubscribe(
   id: number,
-  t: 0 | 1
+  t: SubAction
 ): Promise<boolean> {
   try {
     const { status } = await playlist_subscribe(

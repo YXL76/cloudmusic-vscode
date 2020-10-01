@@ -82,17 +82,21 @@ export class WebView {
     return panel;
   }
 
-  commentList(type: CommentType, id: number): WebviewPanel {
+  commentList(type: CommentType, id: number, title: string): WebviewPanel {
     const limit = 50;
-    const panel = this.getWebviewPanel("commentList", i18n.word.comment, {
-      i18n: {
-        comment: i18n.word.comment,
-        hottest: i18n.word.hottest,
-        latest: i18n.word.latest,
-        reply: i18n.word.reply,
-      },
-      message: { rootId: id, limit },
-    });
+    const panel = this.getWebviewPanel(
+      "commentList",
+      `${i18n.word.comment} (${title})`,
+      {
+        i18n: {
+          comment: i18n.word.comment,
+          hottest: i18n.word.hottest,
+          latest: i18n.word.latest,
+          reply: i18n.word.reply,
+        },
+        message: { rootId: id, limit },
+      }
+    );
 
     void (async () => {
       const { total, hotComments } = await apiCommentHot(type, id, limit, 0);

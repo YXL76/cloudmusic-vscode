@@ -33,6 +33,7 @@ import {
   apiUserPlaylist,
   player,
 } from "../util";
+import { CommentType, SubAction } from "NeteaseCloudMusicApi";
 import { ICON, MUSIC_QUALITY, NATIVE, TMP_DIR } from "../constant";
 import type { InputStep, MultiStepInput } from "../util";
 import { IsLike, PersonalFm, lock } from "../state";
@@ -48,7 +49,6 @@ import {
   window,
   workspace,
 } from "vscode";
-import { CommentType } from "NeteaseCloudMusicApi";
 import type { QuickPickItem } from "vscode";
 import { i18n } from "../i18n";
 
@@ -310,7 +310,7 @@ export async function pickSong(
     return (input: MultiStepInput) => pickSimiPlaylists(input, step + 1, id, 0);
   }
   if (pick.type === PickType.comment) {
-    WebView.getInstance().commentList(CommentType.song, id);
+    WebView.getInstance().commentList(CommentType.song, id, name);
   } else if (pick.type === PickType.like) {
     if (await apiLike(id)) {
       AccountManager.likelist.add(id);
@@ -488,11 +488,11 @@ export async function pickArtist(
   if (pick.type === PickType.unsave) {
     return (input: MultiStepInput) =>
       confirmation(input, step + 1, async () => {
-        await apiArtistSub(id, 0);
+        await apiArtistSub(id, SubAction.ubsub);
       });
   }
   if (pick.type === PickType.save) {
-    await apiArtistSub(id, 1);
+    await apiArtistSub(id, SubAction.sub);
   }
   return input.pop() as InputStep;
 
@@ -605,13 +605,13 @@ export async function pickAlbum(
   if (pick.type === PickType.unsave) {
     return (input: MultiStepInput) =>
       confirmation(input, step + 1, async () => {
-        await apiAlbumSub(id, 0);
+        await apiAlbumSub(id, SubAction.ubsub);
       });
   }
   if (pick.type === PickType.comment) {
-    WebView.getInstance().commentList(CommentType.album, id);
+    WebView.getInstance().commentList(CommentType.album, id, name);
   } else if (pick.type === PickType.save) {
-    await apiAlbumSub(id, 1);
+    await apiAlbumSub(id, SubAction.sub);
   }
   return input.pop() as InputStep;
 }
@@ -723,9 +723,9 @@ export async function pickPlaylist(
       QueueProvider.add(songsItem2TreeItem(id, songs));
     });
   } else if (pick.type === PickType.comment) {
-    WebView.getInstance().commentList(CommentType.playlist, id);
+    WebView.getInstance().commentList(CommentType.playlist, id, name);
   } else if (pick.type === PickType.save) {
-    await apiPlaylistSubscribe(id, 1);
+    await apiPlaylistSubscribe(id, SubAction.sub);
   }
   return input.pop() as InputStep;
 }
