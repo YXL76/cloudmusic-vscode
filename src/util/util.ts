@@ -575,6 +575,10 @@ export async function pickAlbum(
         label: `${ICON.description} ${i18n.word.description}`,
         detail: description,
       },
+      {
+        label: `${ICON.comment} ${i18n.word.comment}`,
+        type: PickType.comment,
+      },
       ...pickArtistItems(artists),
       {
         label: `${ICON.save} ${i18n.word.save}`,
@@ -604,7 +608,9 @@ export async function pickAlbum(
         await apiAlbumSub(id, 0);
       });
   }
-  if (pick.type === PickType.save) {
+  if (pick.type === PickType.comment) {
+    WebView.getInstance().commentList(CommentType.album, id);
+  } else if (pick.type === PickType.save) {
     await apiAlbumSub(id, 1);
   }
   return input.pop() as InputStep;
@@ -648,6 +654,10 @@ export async function pickPlaylist(
       {
         label: `${ICON.description} ${i18n.word.description}`,
         detail: description || "",
+      },
+      {
+        label: `${ICON.comment} ${i18n.word.comment}`,
+        type: PickType.comment,
       },
       ...(playCount
         ? [
@@ -712,8 +722,9 @@ export async function pickPlaylist(
     void QueueProvider.refresh(() => {
       QueueProvider.add(songsItem2TreeItem(id, songs));
     });
-  }
-  if (pick.type === PickType.save) {
+  } else if (pick.type === PickType.comment) {
+    WebView.getInstance().commentList(CommentType.playlist, id);
+  } else if (pick.type === PickType.save) {
     await apiPlaylistSubscribe(id, 1);
   }
   return input.pop() as InputStep;

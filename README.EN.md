@@ -135,16 +135,16 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |        module        |      function      | status |
 | :------------------: | :----------------: | :----: |
 |       comment        |   发送与删除评论   |        |
-|    comment_album     |      专辑评论      |        |
+|    comment_album     |      专辑评论      |   ✔️   |
 |      comment_dj      |      电台评论      |        |
 |    comment_event     |    获取动态评论    |        |
 |    comment_floor     |      楼层评论      |        |
-|     comment_hot      |      热门评论      |        |
+|     comment_hot      |      热门评论      |   ✔️   |
 | comment_hotwall_list |      云村热评      |        |
 |     comment_like     | 点赞与取消点赞评论 |        |
-|    comment_music     |      歌曲评论      |        |
+|    comment_music     |      歌曲评论      |   ✔️   |
 |      comment_mv      |      MV 评论       |   ❌   |
-|   comment_playlist   |      歌单评论      |        |
+|   comment_playlist   |      歌单评论      |   ✔️   |
 |    comment_video     |      视频评论      |   ❌   |
 
 - 电台类

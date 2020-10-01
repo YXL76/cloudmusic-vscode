@@ -16,7 +16,9 @@ import type {
   ArtistArea,
   ArtistInitial,
   ArtistType,
+  MultiPageConfig,
   RequestBaseConfig,
+  Response,
   TopSongType,
 } from "NeteaseCloudMusicApi";
 import {
@@ -35,8 +37,10 @@ import {
   artists,
   check_music,
   cloudsearch,
+  comment_album,
   comment_hot,
   comment_music,
+  comment_playlist,
   daily_signin,
   fm_trash,
   like,
@@ -466,14 +470,37 @@ export async function apiComment(
   offset: number
 ): Promise<{ total: number; comments: CommentDetail[] }> {
   const empty = { total: 0, comments: [] };
+  let key: string;
+  let func: (
+    params: {
+      id: string | number;
+      before?: string | number;
+    } & MultiPageConfig &
+      RequestBaseConfig
+  ) => Promise<Response>;
 
-  async function apiCommentMusic() {
-    const key = `comment_music${id}-${limit}-${offset}`;
-    const value = apiCache.get(key);
-    if (value) {
-      return value as { total: number; comments: CommentDetail[] };
-    }
-    const { status, body } = await comment_music(
+  if (type === CommentType.song) {
+    key = "comment_music";
+    func = comment_music;
+  } else if (type === CommentType.album) {
+    key = "comment_album";
+    func = comment_album;
+  } else if (type === CommentType.playlist) {
+    key = "comment_playlist";
+    func = comment_playlist;
+  } else {
+    key = "comment_music";
+    func = comment_music;
+  }
+
+  key += `${id}-${limit}-${offset}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as { total: number; comments: CommentDetail[] };
+  }
+
+  try {
+    const { status, body } = await func(
       Object.assign({ id, limit, offset }, baseQuery)
     );
     if (status !== 200) {
@@ -488,12 +515,6 @@ export async function apiComment(
     };
     apiCache.set(key, ret, 60);
     return ret;
-  }
-
-  try {
-    if (type === CommentType.song) {
-      return await apiCommentMusic();
-    }
   } catch {}
 
   return empty;
