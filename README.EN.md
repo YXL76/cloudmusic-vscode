@@ -40,6 +40,7 @@ Realized functions:
 - Listen check
 - Intelligent mode
 - Personal FM
+- Comments (single/playlist...)
 - Lyric display
 - Search (hot/single/album/artist...)
 - Top list (Music List/Singer List...)
