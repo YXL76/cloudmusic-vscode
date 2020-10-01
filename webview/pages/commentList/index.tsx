@@ -1,3 +1,4 @@
+import "./index.scss";
 import React, { useState } from "react";
 import Avatar from "antd/es/avatar";
 import type { CommentDetail } from "../../constant";
@@ -57,6 +58,10 @@ export const CommentList = () => {
     }
   });
 
+  const usr = (id: number) => {
+    vscode.postMessage({ command: "user", id });
+  };
+
   const tab = (
     list: CommentDetail[],
     total: number,
@@ -88,7 +93,10 @@ export const CommentList = () => {
           showTotal: (total, range) => `${range.join("-")} / ${total}`,
         }}
         dataSource={list}
-        renderItem={({ user, content, liked, likedCount, time }, index) => (
+        renderItem={(
+          { user, content, liked, likedCount, time, beReplied },
+          index
+        ) => (
           <Skeleton avatar title={false} loading={loading} active>
             <List.Item
               actions={[
@@ -104,36 +112,34 @@ export const CommentList = () => {
             >
               <List.Item.Meta
                 avatar={
-                  <a
-                    href="."
-                    onClick={() =>
-                      vscode.postMessage({
-                        command: "user",
-                        id: user.userId,
-                      })
-                    }
-                  >
+                  <a href="." onClick={() => usr(user.userId)}>
                     <Avatar src={user.avatarUrl} />
                   </a>
                 }
                 title={
                   <div>
-                    <a
-                      href="."
-                      onClick={() =>
-                        vscode.postMessage({
-                          command: "user",
-                          id: user.userId,
-                        })
-                      }
-                    >
+                    <a href="." onClick={() => usr(user.userId)}>
                       {user.nickname}
                     </a>
-                    <span>{moment(time).format("YYYY-MM-DD HH:mm:ss")}</span>
+                    <span className="list-title--time">
+                      {moment(time).format("YYYY-MM-DD HH:mm:ss")}
+                    </span>
+                  </div>
+                }
+                description={
+                  <div className="flex flex-column">
+                    <p>{content}</p>
+                    {beReplied ? (
+                      <p className="list-content--beReplied">
+                        <a href="." onClick={() => usr(beReplied.user.userId)}>
+                          @{beReplied.user.nickname}
+                        </a>
+                        : {beReplied.content}
+                      </p>
+                    ) : undefined}
                   </div>
                 }
               />
-              <div>{content}</div>
             </List.Item>
           </Skeleton>
         )}
