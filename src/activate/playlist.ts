@@ -1,5 +1,6 @@
 import {
   MultiStepInput,
+  WebView,
   apiPlaylistCreate,
   apiPlaylistDelete,
   apiPlaylistSubscribe,
@@ -9,12 +10,16 @@ import {
   confirmation,
   load,
   pickAddToPlaylist,
+  pickPlaylist,
+  pickSong,
+  player,
   songsItem2TreeItem,
 } from "../util";
 import { PersonalFm, lock } from "../state";
 import type { PlaylistItemTreeItem, QueueItemTreeItem } from "../provider";
 import { PlaylistProvider, QueueProvider } from "../provider";
 import { commands, window } from "vscode";
+import { CommentType } from "NeteaseCloudMusicApi";
 import { i18n } from "../i18n";
 
 export function initPlaylist(): void {
@@ -180,6 +185,20 @@ export function initPlaylist(): void {
   );
 
   commands.registerCommand(
+    "cloudmusic.playlistDetail",
+    (element: PlaylistItemTreeItem) => {
+      void MultiStepInput.run((input) => pickPlaylist(input, 1, element.item));
+    }
+  );
+
+  commands.registerCommand(
+    "cloudmusic.playlistComment",
+    (element: PlaylistItemTreeItem) => {
+      WebView.getInstance().commentList(CommentType.playlist, element.item.id);
+    }
+  );
+
+  commands.registerCommand(
     "cloudmusic.intelligence",
     (element: QueueItemTreeItem) => {
       void PersonalFm.set(false);
@@ -249,6 +268,23 @@ export function initPlaylist(): void {
       void MultiStepInput.run((input) =>
         pickAddToPlaylist(input, 1, element.item.id)
       );
+    }
+  );
+
+  commands.registerCommand(
+    "cloudmusic.songDetail",
+    (element?: QueueItemTreeItem) => {
+      const item = element ? element.item : player.item;
+      if (item) {
+        void MultiStepInput.run((input) => pickSong(input, 1, item));
+      }
+    }
+  );
+
+  commands.registerCommand(
+    "cloudmusic.songComment",
+    (element: QueueItemTreeItem) => {
+      WebView.getInstance().commentList(CommentType.song, element.item.id);
     }
   );
 }

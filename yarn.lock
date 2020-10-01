@@ -2363,7 +2363,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"antd@npm:^4.6.5":
+"antd@npm:^4.6.6":
   version: 4.6.6
   resolution: "antd@npm:4.6.6"
   dependencies:
@@ -3716,7 +3716,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 4.3.0
     "@typescript-eslint/parser": 4.3.0
     NeteaseCloudMusicApi: "git+https://github.com/YXL76/NeteaseCloudMusicApi.git#self-use"
-    antd: ^4.6.5
+    antd: ^4.6.6
     array-unsort: ^1.1.6
     babel-eslint: 10.1.0
     bluebird: 3.7.2

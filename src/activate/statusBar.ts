@@ -1,30 +1,12 @@
 import type { ExtensionContext, QuickPickItem } from "vscode";
-import {
-  LyricCache,
-  MultiStepInput,
-  apiFmTrash,
-  lyric,
-  pickSong,
-  player,
-} from "../util";
+import { LyricCache, MultiStepInput, apiFmTrash, lyric, player } from "../util";
 import { ButtonManager } from "../manager";
-import type { QueueItemTreeItem } from "../provider";
 import { commands } from "vscode";
 import { i18n } from "../i18n";
 
 export async function initStatusBar(context: ExtensionContext): Promise<void> {
   void (await ButtonManager.init(context));
   ButtonManager.show();
-
-  commands.registerCommand(
-    "cloudmusic.songDetail",
-    async (element?: QueueItemTreeItem) => {
-      const item = element ? element.item : player.item;
-      if (item) {
-        await MultiStepInput.run((input) => pickSong(input, 1, item));
-      }
-    }
-  );
 
   commands.registerCommand("cloudmusic.lyric", async () => {
     const totalSteps = 2;
