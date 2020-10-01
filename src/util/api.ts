@@ -19,6 +19,7 @@ import type {
   MultiPageConfig,
   RequestBaseConfig,
   Response,
+  SubAction,
   TopSongType,
 } from "NeteaseCloudMusicApi";
 import {
@@ -40,6 +41,7 @@ import {
   cloudsearch,
   comment_album,
   comment_hot,
+  comment_like,
   comment_music,
   comment_playlist,
   daily_signin,
@@ -464,6 +466,23 @@ export async function apiCommentHot(
   return empty;
 }
 
+export async function apiCommentLike(
+  type: CommentType,
+  t: SubAction,
+  id: number,
+  cid: number
+): Promise<boolean> {
+  try {
+    const { status } = await comment_like(
+      Object.assign({ type, t, id, cid }, baseQuery)
+    );
+    if (status === 200) {
+      return true;
+    }
+  } catch {}
+  return false;
+}
+
 export async function apiComment(
   type: CommentType,
   id: number,
@@ -525,9 +544,7 @@ export async function apiDailySignin(): Promise<boolean> {
   const tasks: Promise<boolean>[] = [];
   tasks.push(
     new Promise((resolve) => {
-      void daily_signin(
-        Object.assign({ type: DailySigninType.android }, baseQuery)
-      ).then(({ status }) => {
+      void daily_signin(Object.assign(baseQuery)).then(({ status }) => {
         resolve(status === 200 ? true : false);
       });
     })

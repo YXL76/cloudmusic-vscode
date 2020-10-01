@@ -141,7 +141,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |    comment_floor     |      楼层评论      |        |
 |     comment_hot      |      热门评论      |   ✔️   |
 | comment_hotwall_list |      云村热评      |        |
-|     comment_like     | 点赞与取消点赞评论 |        |
+|     comment_like     | 点赞与取消点赞评论 |   ✔️   |
 |    comment_music     |      歌曲评论      |   ✔️   |
 |      comment_mv      |      MV 评论       |   ❌   |
 |   comment_playlist   |      歌单评论      |   ✔️   |

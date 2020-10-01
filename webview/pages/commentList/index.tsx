@@ -1,6 +1,7 @@
 import "./index.scss";
 import React, { useState } from "react";
 import Avatar from "antd/es/avatar";
+import Button from "antd/es/button";
 import type { CommentDetail } from "../../constant";
 import LikeFilled from "@ant-design/icons/LikeFilled";
 import LikeOutlined from "@ant-design/icons/LikeOutlined";
@@ -43,7 +44,7 @@ export const CommentList = () => {
 
   window.addEventListener("message", ({ data }) => {
     const { command } = data as {
-      command: "hottestTotal" | "hottest" | "latestTotal" | "latest";
+      command: "hottestTotal" | "hottest" | "latestTotal" | "latest" | "like";
     };
     if (command === "hottestTotal") {
       setHottestTotal((data as { total: number }).total);
@@ -55,6 +56,28 @@ export const CommentList = () => {
     } else if (command === "latest") {
       setLatestLists((data as { comments: CommentDetail[] }).comments);
       setLatestLoading(false);
+    } else if (command === "like") {
+      const { cid, liked, index } = data as {
+        cid: number;
+        liked: boolean;
+        index: number;
+      };
+      if (
+        hottestLists[index].commentId === cid &&
+        hottestLists[index].liked !== liked
+      ) {
+        hottestLists[index].liked = liked;
+        hottestLists[index].likedCount += liked ? 1 : -1;
+        setHottestLists([...hottestLists]);
+      }
+      if (
+        latestLists[index].commentId === cid &&
+        latestLists[index].liked !== liked
+      ) {
+        latestLists[index].liked = liked;
+        latestLists[index].likedCount += liked ? 1 : -1;
+        setLatestLists([...latestLists]);
+      }
     }
   });
 
@@ -94,20 +117,29 @@ export const CommentList = () => {
         }}
         dataSource={list}
         renderItem={(
-          { user, content, liked, likedCount, time, beReplied },
+          { commentId, user, content, liked, likedCount, time, beReplied },
           index
         ) => (
           <Skeleton avatar title={false} loading={loading} active>
             <List.Item
               actions={[
-                <span
-                  key={`${command}-comment-like-${index}`}
-                  onClick={() => {}}
+                <Button
+                  type="text"
+                  icon={liked ? <LikeFilled /> : <LikeOutlined />}
+                  onClick={() =>
+                    vscode.postMessage({
+                      command: "like",
+                      cid: commentId,
+                      t: liked ? 0 : 1,
+                      index,
+                    })
+                  }
                 >
-                  {liked ? <LikeFilled /> : <LikeOutlined />}
-                  <span> ({likedCount})</span>
-                </span>,
-                <span onClick={() => {}}>{i18n?.reply}</span>,
+                  {` (${likedCount})`}
+                </Button>,
+                <Button type="text" onClick={() => {}}>
+                  {i18n?.reply}
+                </Button>,
               ]}
             >
               <List.Item.Meta

@@ -14,6 +14,7 @@ export {
   apiCheckMusic,
   apiComment,
   apiCommentHot,
+  apiCommentLike,
   apiDailySignin,
   apiFmTrash,
   apiHighqualityTags,

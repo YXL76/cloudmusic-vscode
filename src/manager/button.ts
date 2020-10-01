@@ -173,7 +173,7 @@ export class ButtonManager {
   static buttonLike(islike: boolean): void {
     this.buttons[ButtonLabel.like].text = islike ? "$(star-full)" : "$(star)";
     this.buttons[ButtonLabel.like].tooltip = islike
-      ? i18n.word.unlike
+      ? i18n.word.dislike
       : i18n.word.like;
   }
 

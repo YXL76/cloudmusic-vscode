@@ -3,6 +3,7 @@ import {
   MultiStepInput,
   apiComment,
   apiCommentHot,
+  apiCommentLike,
   apiUserRecord,
   pickAlbum,
   pickArtist,
@@ -11,8 +12,10 @@ import {
 } from "../util";
 import type { CommentType } from "NeteaseCloudMusicApi";
 import type { SongsItem } from "../constant";
+import { SubAction } from "NeteaseCloudMusicApi";
 import type { WebviewPanel } from "vscode";
 import { i18n } from "../i18n";
+import { throttle } from "lodash";
 
 export class WebView {
   private static instance: WebView;
@@ -88,7 +91,7 @@ export class WebView {
         latest: i18n.word.latest,
         reply: i18n.word.reply,
       },
-      message: { limit },
+      message: { rootId: id, limit },
     });
 
     void (async () => {
@@ -102,27 +105,44 @@ export class WebView {
       await panel.webview.postMessage({ command: "latest", comments });
     })();
 
-    panel.webview.onDidReceiveMessage(
-      async (message: {
-        command: "user" | "hottest" | "latest";
-        id: number;
-        offset: number;
-      }) => {
-        const { command } = message;
-        if (command === "user") {
-          const { id } = message;
-          void MultiStepInput.run((input) => pickUser(input, 1, id));
-        } else if (command === "hottest") {
-          const { offset } = message;
-          const { hotComments } = await apiCommentHot(type, id, limit, offset);
-          await panel.webview.postMessage({ command: "hottest", hotComments });
-        } else if (command === "latest") {
-          const { offset } = message;
-          const { comments } = await apiComment(type, id, limit, offset);
-          await panel.webview.postMessage({ command: "latest", comments });
-        }
+    type Message = {
+      command: "user" | "hottest" | "latest" | "like";
+      id: number;
+      cid: number;
+      offset: number;
+      t: SubAction;
+      index: number;
+    };
+
+    const likeAction = throttle(async (message: Message) => {
+      const { cid, t, index } = message;
+      if (await apiCommentLike(type, t, id, cid)) {
+        void panel.webview.postMessage({
+          command: "like",
+          cid,
+          liked: t === SubAction.sub ? true : false,
+          index,
+        });
       }
-    );
+    }, 4);
+
+    panel.webview.onDidReceiveMessage(async (message: Message) => {
+      const { command } = message;
+      if (command === "user") {
+        const { id } = message;
+        void MultiStepInput.run((input) => pickUser(input, 1, id));
+      } else if (command === "hottest") {
+        const { offset } = message;
+        const { hotComments } = await apiCommentHot(type, id, limit, offset);
+        await panel.webview.postMessage({ command: "hottest", hotComments });
+      } else if (command === "latest") {
+        const { offset } = message;
+        const { comments } = await apiComment(type, id, limit, offset);
+        await panel.webview.postMessage({ command: "latest", comments });
+      } else if (command === "like") {
+        void likeAction(message);
+      }
+    });
     return panel;
   }
 

@@ -180,7 +180,7 @@ export const i18n = {
     trackCount: localize("word.trackCount", "Track count"),
     trash: localize("word.trash", "Trash"),
     type: localize("word.type", "Type"),
-    unlike: localize("word.unlike", "Unlike"),
+    dislike: localize("word.dislike", "Dislike"),
     unsave: localize("word.unsave", "Unsave"),
     user: localize("word.user", "User"),
     userRankingList: localize("word.userRankingList", "User ranking list"),
