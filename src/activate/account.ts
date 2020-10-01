@@ -12,9 +12,7 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
         countrycode?: string;
       }
     | undefined = context.globalState.get(ACCOUNT_KEY);
-  if (info) {
-    if ((await AccountManager.login(info)) && AUTO_CHECK) {
-      void AccountManager.dailySignin();
-    }
+  if (info && (await AccountManager.login(info)) && AUTO_CHECK) {
+    void AccountManager.dailySignin();
   }
 }

@@ -5,10 +5,10 @@ import { i18n } from "../i18n";
 import { lock } from "../state";
 import { player } from "../util";
 
-export async function initPlayer(context: ExtensionContext): Promise<void> {
+export function initPlayer(context: ExtensionContext): void {
   if (!PLAYER_AVAILABLE) {
     lock.playerLoad.set(true);
-    await window.showErrorMessage(i18n.sentence.error.systemSupport);
+    void window.showErrorMessage(i18n.sentence.error.systemSupport);
   } else {
     player.init(context);
     if (MEDIA_CONTROL) {
