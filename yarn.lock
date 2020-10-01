@@ -2122,10 +2122,10 @@ __metadata:
 
 "NeteaseCloudMusicApi@git+https://github.com/YXL76/NeteaseCloudMusicApi.git#self-use":
   version: 3.41.2
-  resolution: "NeteaseCloudMusicApi@https://github.com/YXL76/NeteaseCloudMusicApi.git#commit=8c436b43ad0ad9ed10ba9e01c0cdb164a676bf23"
+  resolution: "NeteaseCloudMusicApi@https://github.com/YXL76/NeteaseCloudMusicApi.git#commit=9f43cbcb304a84ca68c5eb8194c05aa11094779c"
   dependencies:
     request: ^2.88.2
-  checksum: 4d1ed64b80635356cb7e4fef419a376411ca5ce53c884a173ca416185e512ed1c0ab8ce2dd88300dd79801622186b388949dd39c94519d3255ce6c409edcaa5a
+  checksum: e3753e0c07f411a4878b92b58532323140b1b5f7b3983492f54256cc3cdd1622ee8636818d1016750fbc3ce6c488709e825601ddb22d29d97d90b2c49ac3dce6
   languageName: node
   linkType: hard
 
@@ -3427,9 +3427,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001135":
-  version: 1.0.30001140
-  resolution: "caniuse-lite@npm:1.0.30001140"
-  checksum: 32d2130c29d99ff9e4aca14557ede1f2024aa3da6dce77f3759d139e95a698186c713e9d005ecd81cfa4ad59ad125c84d792aaabe1b2aa7a52ed19e0aef5b047
+  version: 1.0.30001141
+  resolution: "caniuse-lite@npm:1.0.30001141"
+  checksum: b8850782e3fad8f6c6de6b4f7489bb2a5ea0ecb19656110052040d63ff80ecee5296f6862b333a7684f05227304b27ad455c563121995dbba52b1a669001d5f1
   languageName: node
   linkType: hard
 
@@ -5176,41 +5176,41 @@ __metadata:
   linkType: hard
 
 "es-abstract@npm:^1.17.0, es-abstract@npm:^1.17.0-next.1, es-abstract@npm:^1.17.2, es-abstract@npm:^1.17.4, es-abstract@npm:^1.17.5":
-  version: 1.17.6
-  resolution: "es-abstract@npm:1.17.6"
+  version: 1.17.7
+  resolution: "es-abstract@npm:1.17.7"
   dependencies:
     es-to-primitive: ^1.2.1
     function-bind: ^1.1.1
     has: ^1.0.3
     has-symbols: ^1.0.1
-    is-callable: ^1.2.0
-    is-regex: ^1.1.0
-    object-inspect: ^1.7.0
+    is-callable: ^1.2.2
+    is-regex: ^1.1.1
+    object-inspect: ^1.8.0
     object-keys: ^1.1.1
-    object.assign: ^4.1.0
+    object.assign: ^4.1.1
     string.prototype.trimend: ^1.0.1
     string.prototype.trimstart: ^1.0.1
-  checksum: 637ad488bdcbc538dfb35ee30cdbe5e48ecf68c5145a368c8f1be346e83d2555e416709e9382eb9902e542da94763cdd2152d87dbbb01b5b39919c1329bd0bb4
+  checksum: e8dfb81bbabcde46d2309436f107d3e795e4bcb83d78614e0c65ca7baac50522603e363be1b81ad5b1943c93fc02ed550198a7dd0580a671a6171960f2490a97
   languageName: node
   linkType: hard
 
 "es-abstract@npm:^1.18.0-next.0":
-  version: 1.18.0-next.0
-  resolution: "es-abstract@npm:1.18.0-next.0"
+  version: 1.18.0-next.1
+  resolution: "es-abstract@npm:1.18.0-next.1"
   dependencies:
     es-to-primitive: ^1.2.1
     function-bind: ^1.1.1
     has: ^1.0.3
     has-symbols: ^1.0.1
-    is-callable: ^1.2.0
+    is-callable: ^1.2.2
     is-negative-zero: ^2.0.0
     is-regex: ^1.1.1
     object-inspect: ^1.8.0
     object-keys: ^1.1.1
-    object.assign: ^4.1.0
+    object.assign: ^4.1.1
     string.prototype.trimend: ^1.0.1
     string.prototype.trimstart: ^1.0.1
-  checksum: 1b2264251b11d77edb3005700d1d21f04d388f3d880b8c044b460f3dd0621a1568e0b637f8d0a3ff901e7c74ecda7922bf8a8e45b0bb7fd8d5cc7e343746d463
+  checksum: f1e37567e49a54c09050aa3371cac601a789441f4fa9730f2c2d386aadad547d6c303bb41e7f5cb5286b616104d6c13450f33b712f664939a09729dd5e45c963
   languageName: node
   linkType: hard
 
@@ -6192,9 +6192,9 @@ __metadata:
   linkType: hard
 
 "flow-parser@npm:0.*":
-  version: 0.134.0
-  resolution: "flow-parser@npm:0.134.0"
-  checksum: 43292205992533a01d65ce9f7bd8403a1f9d6542e20c61bf639ed3c407acc31054130aedbab253c2d8289ba960dd1a5ff0bdd5236cb8cff8c25a4d8de3380fce
+  version: 0.135.0
+  resolution: "flow-parser@npm:0.135.0"
+  checksum: 9e24d10d5d65cb1f61b19404070cb3b093f463d71d4fb510c9aec38ee456dd6480ca5b3aaa92b331c99f4a80b5671d7ea61cb6d6333b5d80f177a6220fa00f99
   languageName: node
   linkType: hard
 
@@ -7549,7 +7549,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"is-callable@npm:^1.1.4, is-callable@npm:^1.2.0":
+"is-callable@npm:^1.1.4, is-callable@npm:^1.2.2":
   version: 1.2.2
   resolution: "is-callable@npm:1.2.2"
   checksum: c35d37cc46c997d6417d7254733c8a3b1146f18121197c5600f601c56fb27abd1b372b0b9c41ea9a69d30556a2a0fd85e396da8eb8bc4af2e5ad8c5232fcd433
@@ -7771,7 +7771,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"is-regex@npm:^1.1.0, is-regex@npm:^1.1.1":
+"is-regex@npm:^1.1.1":
   version: 1.1.1
   resolution: "is-regex@npm:1.1.1"
   dependencies:
@@ -9428,7 +9428,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"object-inspect@npm:^1.7.0, object-inspect@npm:^1.8.0":
+"object-inspect@npm:^1.8.0":
   version: 1.8.0
   resolution: "object-inspect@npm:1.8.0"
   checksum: 4da23a188b3811d75fcd6e7916471465f94e4752159e064f9621040945d375dca1afa092a000a398267d81b4f40bf33cfdbe1e99eff98f1972155efe055f80c8
@@ -9467,6 +9467,18 @@ fsevents@~2.1.2:
     has-symbols: ^1.0.0
     object-keys: ^1.0.11
   checksum: 92e20891ddf04d9974f7b178ae70d198727dcd638c8a5a422f07f730f40140c4fe02451cdc9c37e9f22392e5487b9162975003a9f20b16a87b9d13fe150cf62d
+  languageName: node
+  linkType: hard
+
+"object.assign@npm:^4.1.1":
+  version: 4.1.1
+  resolution: "object.assign@npm:4.1.1"
+  dependencies:
+    define-properties: ^1.1.3
+    es-abstract: ^1.18.0-next.0
+    has-symbols: ^1.0.1
+    object-keys: ^1.1.1
+  checksum: 2038905bbf7c07313df831e83e40fc4eba783d2d680533ec47c546e562e939902db69c83fea9bd836204aa3e01e8db0faa412d4f649c9825235cc8e5c1166dd1
   languageName: node
   linkType: hard
 
