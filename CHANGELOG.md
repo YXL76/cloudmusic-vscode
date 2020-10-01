@@ -6,6 +6,23 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [5.1.0] - 2020-10-01
+
+### Added
+
+- Api: comment (single/playlist/album)
+- Webview: commentList
+
+### Changed
+
+- Explore: new songs express pick
+- Daily signin will work in both platform
+- Performance improvements
+
+### Fixed
+
+- User music ranking list can be refreshed correctly
+
 ## [5.0.2] - 2020-09-27
 
 ### Added
@@ -575,7 +592,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Changed
 
 - New `random` command which will no interrupt current playback
-- performance improvements
+- Performance improvements
 
 ## [1.3.0] - 2020-07-02
 
