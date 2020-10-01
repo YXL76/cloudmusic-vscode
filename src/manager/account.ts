@@ -29,8 +29,7 @@ export class AccountManager {
 
   static async dailySignin(): Promise<void> {
     if (LoggedIn.get()) {
-      const code = await apiDailySignin();
-      if (code === 200) {
+      if (await apiDailySignin()) {
         void window.showInformationMessage(i18n.sentence.success.dailyCheck);
       }
     } else {

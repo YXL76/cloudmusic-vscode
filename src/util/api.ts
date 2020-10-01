@@ -23,6 +23,7 @@ import type {
 } from "NeteaseCloudMusicApi";
 import {
   CommentType,
+  DailySigninType,
   SearchSuggestType,
   SearchType,
   album,
@@ -520,17 +521,32 @@ export async function apiComment(
   return empty;
 }
 
-export async function apiDailySignin(): Promise<number> {
+export async function apiDailySignin(): Promise<boolean> {
+  const tasks: Promise<boolean>[] = [];
+  tasks.push(
+    new Promise((resolve) => {
+      void daily_signin(
+        Object.assign({ type: DailySigninType.android }, baseQuery)
+      ).then(({ status }) => {
+        resolve(status === 200 ? true : false);
+      });
+    })
+  );
+  tasks.push(
+    new Promise((resolve) => {
+      void daily_signin(
+        Object.assign({ type: DailySigninType.pc }, baseQuery)
+      ).then(({ status }) => {
+        resolve(status === 200 ? true : false);
+      });
+    })
+  );
   try {
-    const { status, body } = await daily_signin(baseQuery);
-    if (status !== 200) {
-      return 0;
+    if ((await Promise.all(tasks)).includes(true)) {
+      return true;
     }
-    const { code } = body;
-    return code;
-  } catch {
-    return 0;
-  }
+  } catch {}
+  return false;
 }
 
 export async function apiFmTrash(id: number): Promise<boolean> {
