@@ -2115,10 +2115,10 @@ __metadata:
 
 "NeteaseCloudMusicApi@git+https://github.com/YXL76/NeteaseCloudMusicApi.git#self-use":
   version: 3.41.2
-  resolution: "NeteaseCloudMusicApi@https://github.com/YXL76/NeteaseCloudMusicApi.git#commit=9f43cbcb304a84ca68c5eb8194c05aa11094779c"
+  resolution: "NeteaseCloudMusicApi@https://github.com/YXL76/NeteaseCloudMusicApi.git#commit=d338d95f8fbdf983fd55bfe9a9ec821cfd350675"
   dependencies:
-    request: ^2.88.2
-  checksum: e3753e0c07f411a4878b92b58532323140b1b5f7b3983492f54256cc3cdd1622ee8636818d1016750fbc3ce6c488709e825601ddb22d29d97d90b2c49ac3dce6
+    axios: ^0.20.0
+  checksum: 215da6e9664ae23024bbf468ed5c884fc4df4a94894a8cb14669a12628f919b1fccbbc188a03bb7fc08d98516a290dd8c693ea0db6267bbe5b5b11b0e6ec17be
   languageName: node
   linkType: hard
 
@@ -2828,6 +2828,15 @@ __metadata:
   version: 3.5.5
   resolution: "axe-core@npm:3.5.5"
   checksum: 3d42ed3f0a24ae08081f878a6e1c629a60e4556ab0be896463ff800274b78bf3f1ce62a20396b4e892dc17e682df631ee06fd0daaf2928a49e46e8c0c4dfdcd0
+  languageName: node
+  linkType: hard
+
+"axios@npm:^0.20.0":
+  version: 0.20.0
+  resolution: "axios@npm:0.20.0"
+  dependencies:
+    follow-redirects: ^1.10.0
+  checksum: 6cf2e963176a0d18fc457d7cb71cb6cf552193619b161fc61070d9a4db3a26a87ecfe760ba36e7af174c05a6a9898dc52cfeb5c0e62e19fddd9788739553ad73
   languageName: node
   linkType: hard
 
@@ -4259,9 +4268,9 @@ __metadata:
   linkType: hard
 
 "css-what@npm:^3.2.1":
-  version: 3.3.0
-  resolution: "css-what@npm:3.3.0"
-  checksum: 4e00fc59a9b38f4412a17e5f265b4b019ad7c1512338f17cffe589cfa0e7c1d968fba5425c82c24d6334aa22b82ffafd034e1a6206467774223bd8632609f6c7
+  version: 3.4.1
+  resolution: "css-what@npm:3.4.1"
+  checksum: 6e0b8e66e08a1da5f50a73ff287b37234acb1cc228e8a62d48d6b60664d9021f917567f25e96ee0a4912b73b936e1cc8930d2b3ed2615b8da5a82dcbaab0984a
   languageName: node
   linkType: hard
 
@@ -6093,6 +6102,13 @@ __metadata:
     inherits: ^2.0.3
     readable-stream: ^2.3.6
   checksum: b8fa1fbfadd5c4b6df3cf2c34b3c408fe508a2899c536bafa339f679de545689997e907bd4ff61dd292942f8044fb2f293a5956dd8b601f6a5601617842d0dda
+  languageName: node
+  linkType: hard
+
+"follow-redirects@npm:^1.10.0":
+  version: 1.13.0
+  resolution: "follow-redirects@npm:1.13.0"
+  checksum: f220828d3f153da30ea616fdbe9f6676e74e4e68c51d336a751037c1d556e2de34aa5918f58951fa19bb6517c9c88b4403a0a8bdfc40d3e779d37def2ac0f2c4
   languageName: node
   linkType: hard
 
@@ -12886,11 +12902,11 @@ fsevents@~2.1.2:
   linkType: hard
 
 "supports-color@npm:^7.0.0, supports-color@npm:^7.1.0":
-  version: 7.1.0
-  resolution: "supports-color@npm:7.1.0"
+  version: 7.2.0
+  resolution: "supports-color@npm:7.2.0"
   dependencies:
     has-flag: ^4.0.0
-  checksum: 6130f36b2a71f73014a6ef306bbaa5415d8daa5c0294082762a0505e4fb6800b8a9d037b60ed54f0c69cdfc37860034047d6004481c21f22dd43151b5e9334f0
+  checksum: 8e57067c39216f3c2ffce7cc14ca934d54746192571203aa9c9922d97d2d55cc1bdaa9e41a11f91e620670b5a74ebdec6b548a885d8cc2dea7cab59e21416029
   languageName: node
   linkType: hard
 
