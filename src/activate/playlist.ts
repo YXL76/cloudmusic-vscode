@@ -162,7 +162,7 @@ export function initPlaylist(): void {
     (element: PlaylistItemTreeItem) => {
       void MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
-          if (await apiPlaylistSubscribe(element.item.id, SubAction.ubsub)) {
+          if (await apiPlaylistSubscribe(element.item.id, SubAction.unsub)) {
             PlaylistProvider.refresh({});
           }
         })
