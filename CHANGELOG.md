@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [5.1.3] - 2020-10-02
+
+### Fixed
+
+- Ignore parcel build cache
+
 ## [5.1.2] - 2020-10-02
 
 ### Changed

@@ -29,6 +29,7 @@ webview
 
 # cache and build file
 .cache
+.parcel-cache
 .artifact
 out
 **/*.vsix
