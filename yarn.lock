@@ -1685,17 +1685,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*":
-  version: 16.9.49
-  resolution: "@types/react@npm:16.9.49"
-  dependencies:
-    "@types/prop-types": "*"
-    csstype: ^3.0.2
-  checksum: cf5dabe1e9c893a19a338002ac4bf5a86c9bc3cd88eb07aece54e6d2e5af35debe2a8c72d211ad9133391543ce115219cd7c7f2a6f649b81caf4548e1cc99061
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:16.9.50":
+"@types/react@npm:*, @types/react@npm:16.9.50":
   version: 16.9.50
   resolution: "@types/react@npm:16.9.50"
   dependencies:
@@ -3411,9 +3401,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001135":
-  version: 1.0.30001141
-  resolution: "caniuse-lite@npm:1.0.30001141"
-  checksum: b8850782e3fad8f6c6de6b4f7489bb2a5ea0ecb19656110052040d63ff80ecee5296f6862b333a7684f05227304b27ad455c563121995dbba52b1a669001d5f1
+  version: 1.0.30001142
+  resolution: "caniuse-lite@npm:1.0.30001142"
+  checksum: e8988ac35f495d4179eee1aee0862930e1c01aea17f4dfad7284a56fae642b074452569778306920e4df08f7efc4dbced86744906ccf686c3c5729239120e8ae
   languageName: node
   linkType: hard
 
