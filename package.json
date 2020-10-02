@@ -34,6 +34,9 @@
   ],
   "icon": "media/icon-300.png",
   "main": "./dist/extension.js",
+  "targets": {
+    "main": false
+  },
   "contributes": {
     "viewsContainers": {
       "activitybar": [
@@ -468,7 +471,7 @@
     "build-native-dev": "electron-build-env neon build",
     "lint": "eslint src && eslint webview",
     "test": "tsc -p src",
-    "vscode:prepublish": "rm -rf yarn.lock"
+    "vscode:prepublish": "yarn build"
   },
   "devDependencies": {
     "@types/lodash.throttle": "4.1.6",
@@ -496,7 +499,7 @@
     "gulp-filter": "6.0.0",
     "gulp-typescript": "6.0.0-alpha.1",
     "neon-cli": "0.4.2",
-    "parcel": "1.12.4",
+    "parcel": "2.0.0-nightly.414",
     "prettier": "2.1.2",
     "sass": "1.26.11",
     "ts-loader": "8.0.4",

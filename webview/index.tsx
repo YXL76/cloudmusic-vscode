@@ -1,5 +1,5 @@
 import { App } from "./App";
-import ConfigProvider from "antd/lib/config-provider";
+import { ConfigProvider } from "antd";
 import React from "react";
 import ReactDOM from "react-dom";
 import enUS from "antd/es/locale/en_US";

@@ -1,16 +1,11 @@
 import "./index.scss";
 import "../../global.scss";
+import { Avatar, Button, List, Progress, Skeleton, Tabs } from "antd";
 import React, { useState } from "react";
 import type { RecordData, SongsItem } from "../../constant";
-import Avatar from "antd/es/avatar";
-import Button from "antd/es/button";
-import List from "antd/es/list";
 import LoadingOutlined from "@ant-design/icons/LoadingOutlined";
 import PlayCircleOutlined from "@ant-design/icons/PlayCircleOutlined";
-import Progress from "antd/es/progress";
 import ReloadOutlined from "@ant-design/icons/ReloadOutlined";
-import Skeleton from "antd/es/skeleton";
-import Tabs from "antd/es/tabs";
 
 const { TabPane } = Tabs;
 

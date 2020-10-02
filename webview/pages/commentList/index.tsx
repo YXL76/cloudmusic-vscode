@@ -1,13 +1,9 @@
 import "./index.scss";
+import { Avatar, Button, List, Skeleton, Tabs } from "antd";
 import React, { useState } from "react";
-import Avatar from "antd/es/avatar";
-import Button from "antd/es/button";
 import type { CommentDetail } from "../../constant";
 import LikeFilled from "@ant-design/icons/LikeFilled";
 import LikeOutlined from "@ant-design/icons/LikeOutlined";
-import List from "antd/es/list";
-import Skeleton from "antd/es/skeleton";
-import Tabs from "antd/es/tabs";
 import moment from "moment";
 
 const { TabPane } = Tabs;
