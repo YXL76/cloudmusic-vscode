@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [5.1.1] - 2020-10-02
+
+### Changed
+
+- Improve performance and reduce build size
+
 ## [5.1.0] - 2020-10-01
 
 ### Added
