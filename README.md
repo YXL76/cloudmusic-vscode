@@ -145,6 +145,7 @@
 |     comment_like     | 点赞与取消点赞评论 |   ✔️   |
 |    comment_music     |      歌曲评论      |   ✔️   |
 |      comment_mv      |      MV 评论       |   ❌   |
+|     comment_new      |      新版评论      |        |
 |   comment_playlist   |      歌单评论      |   ✔️   |
 |    comment_video     |      视频评论      |   ❌   |
 
@@ -221,6 +222,10 @@
 
 |          module          |        function        | status |
 | :----------------------: | :--------------------: | :----: |
+|     playlist_mylike      |      点赞过的视频      |   ❌   |
+|    playlist_track_add    |   收藏视频到视频歌单   |   ❌   |
+|  playlist_track_delete   |  删除视频歌单里的视频  |   ❌   |
+|  playlist_video_recent   |     最近播放的视频     |   ❌   |
 |   video_category_list    |      视频分类列表      |   ❌   |
 |       video_detail       |        视频详情        |   ❌   |
 |    video_detail_info     | 视频点赞转发评论数数据 |   ❌   |
@@ -277,8 +282,9 @@
 |            send_text             |          私信          |        |
 |             setting              |          设置          |   ❌   |
 |          share_resource          |     分享歌曲到动态     |        |
-|            simi_user             |        相似用户        |        |
+|            simi_user             |        相似用户        |   ❌   |
 |            user_audio            |     用户创建的电台     |        |
+|           user_binding           |      用户绑定信息      |   ❌   |
 |            user_cloud            |        云盘数据        |   ❌   |
 |          user_cloud_del          |      云盘歌曲删除      |   ❌   |
 |        user_cloud_detail         |      云盘数据详情      |   ❌   |
@@ -310,6 +316,7 @@
 | :------------------: | :-------------------: | :----: |
 |        banner        |      首页轮播图       |   ❌   |
 |        batch         |     批量请求接口      |        |
+|       calendar       |       音乐日历        |        |
 | countries_code_list  |     国家编码列表      |        |
 |      dj_banner       |      电台 banner      |   ❌   |
 | homepage_block_page  | 首页-发现 block page  |   ❌   |
