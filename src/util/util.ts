@@ -168,7 +168,7 @@ export function splitLine(content: string): string {
   return `>>>>>>>>        ${content.toUpperCase()}        <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<`;
 }
 
-enum PickType {
+const enum PickType {
   artist,
   album,
   albums,
@@ -207,8 +207,7 @@ export const pickSongItems = (songs: SongsItem[]): ST[] =>
 
 export const pickArtistItems = (ars: { id: number; name: string }[]): T[] =>
   ars.map(({ name, id }) => ({
-    label: `${ICON.artist} ${i18n.word.artist}`,
-    detail: name,
+    label: `${ICON.artist} ${name}`,
     id,
     type: PickType.artist,
   }));

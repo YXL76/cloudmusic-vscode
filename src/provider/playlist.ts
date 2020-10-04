@@ -11,7 +11,7 @@ import type { PlaylistItem } from "../constant";
 import type { QueueItemTreeItem } from "../provider";
 import { i18n } from "../i18n";
 
-enum Type {
+const enum Type {
   userInstance,
   favoriteInstance,
 }

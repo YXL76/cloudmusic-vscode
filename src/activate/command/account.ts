@@ -64,7 +64,7 @@ export function account(context: ExtensionContext): void {
       void MultiStepInput.run((input) => pickType(input));
 
       async function pickType(input: MultiStepInput) {
-        enum Type {
+        const enum Type {
           user,
           level,
           fm,
@@ -161,7 +161,7 @@ export function account(context: ExtensionContext): void {
       }
 
       async function pickRecommend(input: MultiStepInput) {
-        enum Type {
+        const enum Type {
           dailyPlaylist,
           dailySong,
           playlist,
@@ -211,7 +211,7 @@ export function account(context: ExtensionContext): void {
       }
 
       async function pickToplist(input: MultiStepInput) {
-        enum Type {
+        const enum Type {
           song,
           artist,
         }
@@ -243,7 +243,7 @@ export function account(context: ExtensionContext): void {
       }
 
       async function pickExplore(input: MultiStepInput) {
-        enum Type {
+        const enum Type {
           playlist,
           highqualityPlaylist,
           artist,
@@ -596,7 +596,7 @@ export function account(context: ExtensionContext): void {
       }
 
       async function pickSave(input: MultiStepInput) {
-        enum Type {
+        const enum Type {
           album,
           artist,
         }

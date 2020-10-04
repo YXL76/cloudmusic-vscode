@@ -5,7 +5,7 @@ import { LoggedIn } from "../state";
 import { MultiStepInput } from "../util";
 import { i18n } from "../i18n";
 
-enum ButtonLabel {
+const enum ButtonLabel {
   account,
   previous,
   play,

@@ -9,7 +9,7 @@ import type {
 import { QuickInputButtons, ThemeIcon, window } from "vscode";
 import { i18n } from "../i18n";
 
-enum InputFlowAction {
+const enum InputFlowAction {
   back,
   forward,
   cancel,
@@ -61,7 +61,7 @@ const pickButtons: {
   },
 };
 
-export enum ButtonAction {
+export const enum ButtonAction {
   previous,
   next,
 }

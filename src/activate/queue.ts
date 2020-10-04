@@ -14,12 +14,12 @@ export function initQueue(): void {
     void MultiStepInput.run((input: MultiStepInput) => pickType(input));
 
     async function pickType(input: MultiStepInput) {
-      enum Type {
+      const enum Type {
         song,
         album,
         artist,
       }
-      enum Order {
+      const enum Order {
         ascending,
         descending,
       }

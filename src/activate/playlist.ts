@@ -50,7 +50,7 @@ export function initPlaylist(): void {
     }
 
     async function pickType(input: MultiStepInput) {
-      enum Type {
+      const enum Type {
         public,
         private,
       }

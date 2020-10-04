@@ -13,7 +13,7 @@ export async function initStatusBar(context: ExtensionContext): Promise<void> {
     const title = i18n.word.lyric;
     let select = "";
 
-    enum Type {
+    const enum Type {
       delay,
       full,
       cache,
