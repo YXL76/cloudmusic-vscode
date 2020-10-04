@@ -20,6 +20,7 @@
     "**/.hg/store/**": true,
     "**/.yarn/**": true,
     "**/.cache/**": true,
+    "**/.parcel-cache/**": true,
     "**/dist/**": true,
     "**/native/target/**": true
   }
