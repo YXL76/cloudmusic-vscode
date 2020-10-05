@@ -69,7 +69,7 @@ export function account(context: ExtensionContext): void {
           level,
           fm,
           search,
-          recommend,
+          recommendation,
           toplist,
           explore,
           userMusicRankingList,
@@ -103,7 +103,7 @@ export function account(context: ExtensionContext): void {
             },
             {
               label: `$(symbol-color) ${i18n.word.recommendation}`,
-              type: Type.recommend,
+              type: Type.recommendation,
             },
             {
               label: `$(rocket) ${i18n.word.toplist}`,
@@ -138,7 +138,7 @@ export function account(context: ExtensionContext): void {
         if (pick.type === Type.search) {
           return (input: MultiStepInput) => inputKeyword(input, 1);
         }
-        if (pick.type === Type.recommend) {
+        if (pick.type === Type.recommendation) {
           return (input: MultiStepInput) => pickRecommend(input);
         }
         if (pick.type === Type.toplist) {

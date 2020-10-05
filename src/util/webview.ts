@@ -1,9 +1,8 @@
 import { ColorThemeKind, Uri, ViewColumn, env, window } from "vscode";
 import {
   MultiStepInput,
-  apiComment,
-  apiCommentHot,
   apiCommentLike,
+  apiCommentNew,
   apiUserRecord,
   pickAlbum,
   pickArtist,
@@ -16,6 +15,12 @@ import { SubAction } from "NeteaseCloudMusicApi";
 import type { WebviewPanel } from "vscode";
 import { i18n } from "../i18n";
 import { throttle } from "lodash";
+
+const enum SortType {
+  recommendation = 1,
+  hottest = 2,
+  latest = 3,
+}
 
 export class WebView {
   private static instance: WebView;
@@ -83,37 +88,44 @@ export class WebView {
   }
 
   commentList(type: CommentType, id: number, title: string): WebviewPanel {
-    const limit = 50;
+    const pageSize = 50;
     const panel = this.getWebviewPanel(
       "commentList",
       `${i18n.word.comment} (${title})`,
       {
         i18n: {
           comment: i18n.word.comment,
+          recommendation: i18n.word.recommendation,
           hottest: i18n.word.hottest,
           latest: i18n.word.latest,
           reply: i18n.word.reply,
         },
-        message: { rootId: id, limit },
+        message: { pageSize },
       }
     );
 
-    void (async () => {
-      const { total, hotComments } = await apiCommentHot(type, id, limit, 0);
-      await panel.webview.postMessage({ command: "hottestTotal", total });
-      await panel.webview.postMessage({ command: "hottest", hotComments });
-    })();
-    void (async () => {
-      const { total, comments } = await apiComment(type, id, limit, 0);
-      await panel.webview.postMessage({ command: "latestTotal", total });
-      await panel.webview.postMessage({ command: "latest", comments });
-    })();
+    const postList = async (page: number, sortType: SortType) => {
+      const { total, comments } = await apiCommentNew(
+        type,
+        id,
+        page,
+        pageSize,
+        sortType
+      );
+      await panel.webview.postMessage({ command: "total", sortType, total });
+      await panel.webview.postMessage({ command: "list", sortType, comments });
+    };
+
+    void postList(1, SortType.recommendation);
+    void postList(1, SortType.hottest);
+    void postList(1, SortType.latest);
 
     type Message = {
-      command: "user" | "hottest" | "latest" | "like";
+      command: "user" | "list" | "like";
       id: number;
+      sortType: SortType;
+      page: number;
       cid: number;
-      offset: number;
       t: SubAction;
       index: number;
     };
@@ -130,19 +142,14 @@ export class WebView {
       }
     }, 4);
 
-    panel.webview.onDidReceiveMessage(async (message: Message) => {
+    panel.webview.onDidReceiveMessage((message: Message) => {
       const { command } = message;
       if (command === "user") {
         const { id } = message;
         void MultiStepInput.run((input) => pickUser(input, 1, id));
-      } else if (command === "hottest") {
-        const { offset } = message;
-        const { hotComments } = await apiCommentHot(type, id, limit, offset);
-        await panel.webview.postMessage({ command: "hottest", hotComments });
-      } else if (command === "latest") {
-        const { offset } = message;
-        const { comments } = await apiComment(type, id, limit, offset);
-        await panel.webview.postMessage({ command: "latest", comments });
+      } else if (command === "list") {
+        const { page, sortType } = message;
+        void postList(page, sortType);
       } else if (command === "like") {
         void likeAction(message);
       }

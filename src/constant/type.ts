@@ -97,11 +97,14 @@ export type RawCommentDetail = {
   time: number;
   likedCount: number;
   liked: boolean;
-  beReplied: {
+  beReplied?: {
     beRepliedCommentId: number;
     content: string;
     user: UserDetail;
   }[];
+  showFloorComment: {
+    replyCount: number;
+  };
 };
 
 export type CommentDetail = {
@@ -111,6 +114,7 @@ export type CommentDetail = {
   time: number;
   likedCount: number;
   liked: boolean;
+  replyCount: number;
   beReplied?: {
     beRepliedCommentId: number;
     content: string;

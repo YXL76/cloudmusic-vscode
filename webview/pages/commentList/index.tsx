@@ -10,9 +10,9 @@ const { TabPane } = Tabs;
 
 const { vscode, data } = window.webview;
 const { i18n, message } = data;
-const limit = message?.limit || 50;
+const pageSize = message?.pageSize || 50;
 
-const emptyData = new Array(limit).fill({
+const emptyData = new Array(pageSize).fill({
   user: {
     userId: 0,
     nickname: "",
@@ -29,51 +29,35 @@ const emptyData = new Array(limit).fill({
   liked: false,
 }) as CommentDetail[];
 
-export const CommentList = () => {
-  const [hottestLoading, setHottestLoading] = useState(true);
-  const [hottestTotal, setHottestTotal] = useState(limit);
-  const [hottestLists, setHottestLists] = useState(emptyData);
+enum SortType {
+  recommendation = 1,
+  hottest = 2,
+  latest = 3,
+}
 
-  const [latestLoading, setLatestLoading] = useState(true);
-  const [latestTotal, setLatestTotal] = useState(limit);
-  const [latestLists, setLatestLists] = useState(emptyData);
+export const CommentList = () => {
+  const [lists, setLists] = useState([emptyData, emptyData, emptyData]);
+  const [loadings, setLoadings] = useState([true, true, true]);
+  const [total, setTotals] = useState(pageSize);
 
   window.addEventListener("message", ({ data }) => {
-    const { command } = data as {
-      command: "hottestTotal" | "hottest" | "latestTotal" | "latest" | "like";
-    };
-    if (command === "hottestTotal") {
-      setHottestTotal((data as { total: number }).total);
-    } else if (command === "hottest") {
-      setHottestLists((data as { hotComments: CommentDetail[] }).hotComments);
-      setHottestLoading(false);
-    } else if (command === "latestTotal") {
-      setLatestTotal((data as { total: number }).total);
-    } else if (command === "latest") {
-      setLatestLists((data as { comments: CommentDetail[] }).comments);
-      setLatestLoading(false);
-    } else if (command === "like") {
-      const { cid, liked, index } = data as {
-        cid: number;
-        liked: boolean;
-        index: number;
+    const { command } = data as { command: "list" | "total" | "like" };
+    if (command === "list") {
+      const { sortType, comments } = data as {
+        sortType: SortType;
+        comments: CommentDetail[];
       };
-      if (
-        hottestLists[index].commentId === cid &&
-        hottestLists[index].liked !== liked
-      ) {
-        hottestLists[index].liked = liked;
-        hottestLists[index].likedCount += liked ? 1 : -1;
-        setHottestLists([...hottestLists]);
-      }
-      if (
-        latestLists[index].commentId === cid &&
-        latestLists[index].liked !== liked
-      ) {
-        latestLists[index].liked = liked;
-        latestLists[index].likedCount += liked ? 1 : -1;
-        setLatestLists([...latestLists]);
-      }
+      const idx = sortType - 1;
+      setLists([...lists.slice(0, idx), comments, ...lists.slice(idx + 1)]);
+      setLoadings([
+        ...loadings.slice(0, idx),
+        false,
+        ...loadings.slice(idx + 1),
+      ]);
+    } else if (command === "total") {
+      const { total } = data as { total: number };
+      setTotals(total);
+    } else if (command === "like") {
     }
   });
 
@@ -81,42 +65,34 @@ export const CommentList = () => {
     vscode.postMessage({ command: "user", id });
   };
 
-  const tab = (
-    list: CommentDetail[],
-    total: number,
-    loading: boolean,
-    command: "hottest" | "latest"
-  ) => {
+  const tab = (sortType: SortType) => {
+    const idx = sortType - 1;
     return (
       <List
-        header={`${i18n?.comment as string} (${total})`}
         size="small"
         itemLayout="horizontal"
         pagination={{
           onChange: (page) => {
-            if (command === "hottest") {
-              setHottestLoading(true);
-            } else {
-              setLatestLoading(true);
-            }
-            vscode.postMessage({
-              command,
-              offset: (page - 1) * limit,
-            });
+            setLoadings([
+              ...loadings.slice(0, idx),
+              true,
+              ...loadings.slice(idx + 1),
+            ]);
+            vscode.postMessage({ command: "list", sortType, page });
           },
-          defaultPageSize: limit,
+          defaultPageSize: pageSize,
           showQuickJumper: true,
           showSizeChanger: false,
-          total: Math.min(total, 5000),
-          disabled: loading,
+          total,
+          disabled: loadings[idx],
           showTotal: (total, range) => `${range.join("-")} / ${total}`,
         }}
-        dataSource={list}
+        dataSource={lists[idx]}
         renderItem={(
           { commentId, user, content, liked, likedCount, time, beReplied },
           index
         ) => (
-          <Skeleton avatar title={false} loading={loading} active>
+          <Skeleton avatar title={false} loading={loadings[idx]} active>
             <List.Item
               actions={[
                 <Button
@@ -176,12 +152,18 @@ export const CommentList = () => {
   };
 
   return (
-    <Tabs className="commentList">
-      <TabPane tab={i18n?.hottest} key="1" forceRender>
-        {tab(hottestLists, hottestTotal, hottestLoading, "hottest")}
+    <Tabs
+      className="commentList"
+      tabBarExtraContent={<div>{`${i18n?.comment as string} (${total})`}</div>}
+    >
+      <TabPane tab={i18n?.recommendation} key="1" forceRender>
+        {tab(SortType.recommendation)}
       </TabPane>
-      <TabPane tab={i18n?.latest} key="2" forceRender>
-        {tab(latestLists, latestTotal, latestLoading, "latest")}
+      <TabPane tab={i18n?.hottest} key="2" forceRender>
+        {tab(SortType.hottest)}
+      </TabPane>
+      <TabPane tab={i18n?.latest} key="3" forceRender>
+        {tab(SortType.latest)}
       </TabPane>
     </Tabs>
   );
