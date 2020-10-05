@@ -464,32 +464,38 @@ export async function apiCommentNew(
   pageNo: number,
   pageSize: number,
   sortType: number
-): Promise<{ total: number; comments: CommentDetail[] }> {
-  const key = `comment_new${type}-${id}-${pageNo}-${pageSize}`;
+): Promise<{ total: number; hasMore: boolean; comments: CommentDetail[] }> {
+  const key = `comment_new${type}-${id}-${pageNo}-${pageSize}-${sortType}`;
   const value = apiCache.get(key);
   if (value) {
-    return value as { total: number; comments: CommentDetail[] };
+    return value as {
+      total: number;
+      hasMore: boolean;
+      comments: CommentDetail[];
+    };
   }
   try {
     const { status, body } = await comment_new(
       Object.assign({ type, id, pageNo, pageSize, sortType }, baseQuery)
     );
     if (status !== 200) {
-      return { total: 0, comments: [] };
+      return { total: 0, hasMore: false, comments: [] };
     }
     const { data } = body;
-    const { comments, totalCount } = data as {
-      comments: RawCommentDetail[];
+    const { totalCount, hasMore, comments } = data as {
       totalCount: number;
+      hasMore: boolean;
+      comments: RawCommentDetail[];
     };
     const ret = {
       total: totalCount,
+      hasMore,
       comments: comments.map((comment) => solveComment(comment)),
     };
     apiCache.set(key, ret, 60);
     return ret;
   } catch {}
-  return { total: 0, comments: [] };
+  return { total: 0, hasMore: false, comments: [] };
 }
 
 export async function apiDailySignin(): Promise<boolean> {

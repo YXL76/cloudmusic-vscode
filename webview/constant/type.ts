@@ -25,6 +25,7 @@ export type CommentDetail = {
   time: number;
   likedCount: number;
   liked: boolean;
+  replyCount: number;
   beReplied?: {
     beRepliedCommentId: number;
     content: string;

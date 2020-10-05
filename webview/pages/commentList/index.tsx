@@ -1,5 +1,5 @@
 import "./index.scss";
-import { Avatar, Button, List, Skeleton, Tabs } from "antd";
+import { Avatar, Button, List, Tabs } from "antd";
 import React, { useState } from "react";
 import type { CommentDetail } from "../../constant";
 import LikeFilled from "@ant-design/icons/LikeFilled";
@@ -10,24 +10,7 @@ const { TabPane } = Tabs;
 
 const { vscode, data } = window.webview;
 const { i18n, message } = data;
-const pageSize = message?.pageSize || 50;
-
-const emptyData = new Array(pageSize).fill({
-  user: {
-    userId: 0,
-    nickname: "",
-    signature: "",
-    followeds: 0,
-    follows: 0,
-    avatarUrl: "",
-  },
-  name: "",
-  commentId: 0,
-  content: "",
-  time: 0,
-  likedCount: 0,
-  liked: false,
-}) as CommentDetail[];
+const pageSize = message?.pageSize || 30;
 
 enum SortType {
   recommendation = 1,
@@ -36,33 +19,72 @@ enum SortType {
 }
 
 export const CommentList = () => {
-  const [lists, setLists] = useState([emptyData, emptyData, emptyData]);
-  const [loadings, setLoadings] = useState([true, true, true]);
-  const [total, setTotals] = useState(pageSize);
+  const [lists, setLists] = useState([[], [], []] as CommentDetail[][]);
+  const [loadings, setLoadings] = useState([true, false, false]);
+  const [hasMores, setHasMores] = useState([true, true, true]);
+  const [total, setTotal] = useState(pageSize);
 
   window.addEventListener("message", ({ data }) => {
-    const { command } = data as { command: "list" | "total" | "like" };
+    const { command } = data as {
+      command: "list" | "total" | "more" | "like";
+    };
     if (command === "list") {
       const { sortType, comments } = data as {
         sortType: SortType;
         comments: CommentDetail[];
       };
       const idx = sortType - 1;
-      setLists([...lists.slice(0, idx), comments, ...lists.slice(idx + 1)]);
+      setLists([
+        ...lists.slice(0, idx),
+        lists[idx].concat(comments),
+        ...lists.slice(idx + 1),
+      ]);
       setLoadings([
         ...loadings.slice(0, idx),
         false,
         ...loadings.slice(idx + 1),
       ]);
+    } else if (command === "more") {
+      const { sortType, hasMore } = data as {
+        sortType: SortType;
+        hasMore: boolean;
+      };
+      const idx = sortType - 1;
+      setHasMores([
+        ...hasMores.slice(0, idx),
+        hasMore,
+        ...hasMores.slice(idx + 1),
+      ]);
+    } else if (command === "like") {
+      const { liked, index, sortType } = data as {
+        liked: boolean;
+        index: number;
+        sortType: SortType;
+      };
+      const idx = sortType - 1;
+      if (lists[idx][index].liked !== liked) {
+        lists[idx][index].liked = liked;
+        lists[idx][index].likedCount += liked ? 1 : -1;
+        setLists([...lists]);
+      }
     } else if (command === "total") {
       const { total } = data as { total: number };
-      setTotals(total);
-    } else if (command === "like") {
+      setTotal(total);
     }
   });
 
   const usr = (id: number) => {
     vscode.postMessage({ command: "user", id });
+  };
+
+  const loadMore = (sortType: SortType, len: number) => {
+    const idx = sortType - 1;
+    setLoadings([...loadings.slice(0, idx), true, ...loadings.slice(idx + 1)]);
+    vscode.postMessage({
+      command: "list",
+      sortType,
+      pageNo: Math.floor(len / pageSize) + 1,
+    });
   };
 
   const tab = (sortType: SortType) => {
@@ -71,81 +93,100 @@ export const CommentList = () => {
       <List
         size="small"
         itemLayout="horizontal"
-        pagination={{
-          onChange: (page) => {
-            setLoadings([
-              ...loadings.slice(0, idx),
-              true,
-              ...loadings.slice(idx + 1),
-            ]);
-            vscode.postMessage({ command: "list", sortType, page });
-          },
-          defaultPageSize: pageSize,
-          showQuickJumper: true,
-          showSizeChanger: false,
-          total,
-          disabled: loadings[idx],
-          showTotal: (total, range) => `${range.join("-")} / ${total}`,
-        }}
+        loadMore={
+          hasMores[idx] ? (
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: 12,
+                marginBottom: 12,
+                height: 32,
+                lineHeight: "32px",
+              }}
+            >
+              <Button
+                loading={loadings[idx]}
+                onClick={() => loadMore(sortType, lists[idx].length)}
+              >
+                More
+              </Button>
+            </div>
+          ) : null
+        }
         dataSource={lists[idx]}
         renderItem={(
-          { commentId, user, content, liked, likedCount, time, beReplied },
+          {
+            commentId,
+            user,
+            content,
+            liked,
+            likedCount,
+            time,
+            beReplied,
+            replyCount,
+          },
           index
         ) => (
-          <Skeleton avatar title={false} loading={loadings[idx]} active>
-            <List.Item
-              actions={[
-                <Button
-                  type="text"
-                  icon={liked ? <LikeFilled /> : <LikeOutlined />}
-                  onClick={() =>
-                    vscode.postMessage({
-                      command: "like",
-                      cid: commentId,
-                      t: liked ? 0 : 1,
-                      index,
-                    })
-                  }
-                >
-                  {` (${likedCount})`}
-                </Button>,
-                <Button type="text" onClick={() => {}}>
-                  {i18n?.reply}
-                </Button>,
-              ]}
-            >
-              <List.Item.Meta
-                avatar={
+          <List.Item
+            actions={[
+              <Button
+                type="text"
+                icon={liked ? <LikeFilled /> : <LikeOutlined />}
+                onClick={() =>
+                  vscode.postMessage({
+                    command: "like",
+                    cid: commentId,
+                    t: liked ? 0 : 1,
+                    index,
+                    sortType,
+                  })
+                }
+              >
+                {` (${likedCount})`}
+              </Button>,
+              <Button type="text" onClick={() => {}}>
+                {i18n?.reply}
+              </Button>,
+            ]}
+          >
+            <List.Item.Meta
+              avatar={
+                <a href="." onClick={() => usr(user.userId)}>
+                  <Avatar src={user.avatarUrl} />
+                </a>
+              }
+              title={
+                <div>
                   <a href="." onClick={() => usr(user.userId)}>
-                    <Avatar src={user.avatarUrl} />
+                    {user.nickname}
                   </a>
-                }
-                title={
-                  <div>
-                    <a href="." onClick={() => usr(user.userId)}>
-                      {user.nickname}
-                    </a>
-                    <span className="list-title--time">
-                      {moment(time).format("YYYY-MM-DD HH:mm:ss")}
-                    </span>
-                  </div>
-                }
-                description={
-                  <div className="flex flex-column">
-                    <p>{content}</p>
-                    {beReplied ? (
-                      <p className="list-content--beReplied">
-                        <a href="." onClick={() => usr(beReplied.user.userId)}>
-                          @{beReplied.user.nickname}
-                        </a>
-                        : {beReplied.content}
-                      </p>
-                    ) : undefined}
-                  </div>
-                }
-              />
-            </List.Item>
-          </Skeleton>
+                  <span className="list-title--time">
+                    {moment(time).format("YYYY-MM-DD HH:mm:ss")}
+                  </span>
+                </div>
+              }
+              description={
+                <div className="flex flex-column">
+                  <p>{content}</p>
+                  {beReplied && (
+                    <p className="list-content--beReplied">
+                      <a href="." onClick={() => usr(beReplied.user.userId)}>
+                        @{beReplied.user.nickname}
+                      </a>
+                      : {beReplied.content}
+                    </p>
+                  )}
+                  {replyCount > 0 && (
+                    <div>
+                      <a href="." onClick={() => {}}>
+                        {`${replyCount} ${i18n?.reply as string}`}
+                      </a>
+                    </div>
+                  )}
+                </div>
+              }
+            />
+          </List.Item>
         )}
       />
     );

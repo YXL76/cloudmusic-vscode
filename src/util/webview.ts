@@ -88,7 +88,8 @@ export class WebView {
   }
 
   commentList(type: CommentType, id: number, title: string): WebviewPanel {
-    const pageSize = 50;
+    const pageSize = 30;
+
     const panel = this.getWebviewPanel(
       "commentList",
       `${i18n.word.comment} (${title})`,
@@ -99,45 +100,46 @@ export class WebView {
           hottest: i18n.word.hottest,
           latest: i18n.word.latest,
           reply: i18n.word.reply,
+          more: i18n.word.more,
         },
         message: { pageSize },
       }
     );
 
-    const postList = async (page: number, sortType: SortType) => {
+    void (async () => {
       const { total, comments } = await apiCommentNew(
         type,
         id,
-        page,
+        1,
         pageSize,
-        sortType
+        SortType.recommendation
       );
-      await panel.webview.postMessage({ command: "total", sortType, total });
-      await panel.webview.postMessage({ command: "list", sortType, comments });
-    };
-
-    void postList(1, SortType.recommendation);
-    void postList(1, SortType.hottest);
-    void postList(1, SortType.latest);
+      void panel.webview.postMessage({ command: "total", total });
+      void panel.webview.postMessage({
+        command: "list",
+        sortType: 1,
+        comments,
+      });
+    })();
 
     type Message = {
       command: "user" | "list" | "like";
       id: number;
       sortType: SortType;
-      page: number;
+      pageNo: number;
       cid: number;
       t: SubAction;
       index: number;
     };
 
     const likeAction = throttle(async (message: Message) => {
-      const { cid, t, index } = message;
+      const { cid, t, index, sortType } = message;
       if (await apiCommentLike(type, t, id, cid)) {
         void panel.webview.postMessage({
           command: "like",
-          cid,
           liked: t === SubAction.sub ? true : false,
           index,
+          sortType,
         });
       }
     }, 4);
@@ -148,8 +150,17 @@ export class WebView {
         const { id } = message;
         void MultiStepInput.run((input) => pickUser(input, 1, id));
       } else if (command === "list") {
-        const { page, sortType } = message;
-        void postList(page, sortType);
+        const { pageNo, sortType } = message;
+        void apiCommentNew(type, id, pageNo, pageSize, sortType).then(
+          ({ hasMore, comments }) => {
+            if (!hasMore) {
+              const msg = { command: "more", sortType, hasMore };
+              void panel.webview.postMessage(msg);
+            }
+            const msg = { command: "list", sortType, comments };
+            void panel.webview.postMessage(msg);
+          }
+        );
       } else if (command === "like") {
         void likeAction(message);
       }
