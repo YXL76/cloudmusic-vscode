@@ -37,7 +37,7 @@ jobs:
 
       - uses: actions-rs/toolchain@v1
         with:
-          toolchain: 1.44.1
+          toolchain: stable
           override: true
       - uses: actions/setup-node@v1
         with:
