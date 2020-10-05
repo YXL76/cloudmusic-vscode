@@ -17,9 +17,7 @@ import type {
   ArtistInitial,
   ArtistType,
   CommentType,
-  MultiPageConfig,
   RequestBaseConfig,
-  Response,
   SubAction,
   TopSongType,
 } from "NeteaseCloudMusicApi";
@@ -39,6 +37,7 @@ import {
   artists,
   check_music,
   cloudsearch,
+  comment_floor,
   comment_like,
   comment_new,
   daily_signin,
@@ -441,6 +440,46 @@ export async function apiCheckMusic(id: number, br: number): Promise<boolean> {
   }
 }
 
+export async function apiCommentFloor(
+  type: CommentType,
+  id: number,
+  parentCommentId: number,
+  limit: number,
+  offset: number
+): Promise<{ total: number; hasMore: boolean; comments: CommentDetail[] }> {
+  const key = `comment_floor${type}-${id}-${parentCommentId}-${limit}-${offset}`;
+  const value = apiCache.get(key);
+  if (value) {
+    return value as {
+      total: number;
+      hasMore: boolean;
+      comments: CommentDetail[];
+    };
+  }
+  try {
+    const { status, body } = await comment_floor(
+      Object.assign({ type, id, parentCommentId, limit, offset }, baseQuery)
+    );
+    if (status !== 200) {
+      return { total: 0, hasMore: false, comments: [] };
+    }
+    const { data } = body;
+    const { totalCount, hasMore, comments } = data as {
+      totalCount: number;
+      hasMore: boolean;
+      comments: RawCommentDetail[];
+    };
+    const ret = {
+      total: totalCount,
+      hasMore,
+      comments: comments.map((comment) => solveComment(comment)),
+    };
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return { total: 0, hasMore: false, comments: [] };
+}
+
 export async function apiCommentLike(
   type: CommentType,
   t: SubAction,
@@ -492,7 +531,7 @@ export async function apiCommentNew(
       hasMore,
       comments: comments.map((comment) => solveComment(comment)),
     };
-    apiCache.set(key, ret, 60);
+    apiCache.set(key, ret);
     return ret;
   } catch {}
   return { total: 0, hasMore: false, comments: [] };
