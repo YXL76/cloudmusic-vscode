@@ -7,6 +7,7 @@ import type {
   PlaylistItem,
   RawCommentDetail,
   RawPlaylistItem,
+  SimplyUserDetail,
   SongDetail,
   SongsItem,
   TrackIdsItem,
@@ -92,12 +93,12 @@ import { LyricCache, apiCache } from "../util";
 import { MUSIC_QUALITY, PROXY, REAL_IP } from "../constant";
 import { AccountManager } from "../manager";
 
-const solveArtist = (item: Artist): Artist => {
+function solveArtist(item: Artist): Artist {
   const { name, id, alias, briefDesc, albumSize, musicSize } = item;
   return { name, id, alias, briefDesc, albumSize, musicSize };
-};
+}
 
-const solveAlbumsItem = (item: AlbumsItem): AlbumsItem => {
+function solveAlbumsItem(item: AlbumsItem): AlbumsItem {
   const { artists, alias, company, description, name, id } = item;
   return {
     artists: artists.map((artist: Artist) => solveArtist(artist)),
@@ -107,14 +108,14 @@ const solveAlbumsItem = (item: AlbumsItem): AlbumsItem => {
     name,
     id,
   };
-};
+}
 
-const solveSongItem = (item: SongsItem): SongsItem => {
+function solveSongItem(item: SongsItem): SongsItem {
   const { name, id, dt, alia, ar, al } = item;
   return { name, id, dt: dt / 1000, alia: alia ?? [""], ar, al };
-};
+}
 
-const solveAnotherSongItem = (item: AnotherSongItem): SongsItem => {
+function solveAnotherSongItem(item: AnotherSongItem): SongsItem {
   const { name, id, duration, alias, artists, album } = item;
   return {
     name,
@@ -124,9 +125,9 @@ const solveAnotherSongItem = (item: AnotherSongItem): SongsItem => {
     ar: artists.map(({ id, name }) => ({ id, name })),
     al: album,
   };
-};
+}
 
-const solvePlaylistItem = (item: RawPlaylistItem): PlaylistItem => {
+function solvePlaylistItem(item: RawPlaylistItem): PlaylistItem {
   const {
     bookCount,
     copywriter,
@@ -148,9 +149,9 @@ const solvePlaylistItem = (item: RawPlaylistItem): PlaylistItem => {
     trackCount,
     creator: creator || { userId: userId || 0 },
   };
-};
+}
 
-const solveUserDetail = (item: UserDetail): UserDetail => {
+function solveUserDetail(item: UserDetail): UserDetail {
   const { userId, nickname, signature, followeds, follows, avatarUrl } = item;
   return {
     userId,
@@ -160,9 +161,14 @@ const solveUserDetail = (item: UserDetail): UserDetail => {
     follows: follows || 0,
     avatarUrl,
   };
-};
+}
 
-const solveComment = (item: RawCommentDetail): CommentDetail => {
+function solveSimplyUserDetail(item: SimplyUserDetail): SimplyUserDetail {
+  const { userId, nickname, avatarUrl } = item;
+  return { userId, nickname, avatarUrl };
+}
+
+function solveComment(item: RawCommentDetail): CommentDetail {
   const {
     user,
     commentId,
@@ -174,22 +180,22 @@ const solveComment = (item: RawCommentDetail): CommentDetail => {
     showFloorComment,
   } = item;
   return {
-    user: solveUserDetail(user),
+    user: solveSimplyUserDetail(user),
     commentId,
     content,
     time,
     likedCount,
     liked,
-    replyCount: showFloorComment.replyCount,
+    replyCount: showFloorComment?.replyCount || 0,
     beReplied: beReplied
       ? {
           beRepliedCommentId: beReplied[0].beRepliedCommentId,
           content: beReplied[0].content,
-          user: solveUserDetail(beReplied[0].user),
+          user: solveSimplyUserDetail(beReplied[0].user),
         }
       : undefined,
   };
-};
+}
 
 export const baseQuery: RequestBaseConfig = {
   cookie: {},
@@ -488,23 +494,22 @@ export async function apiCommentFloor(
   id: number,
   parentCommentId: number,
   limit: number,
-  offset: number
-): Promise<{ total: number; hasMore: boolean; comments: CommentDetail[] }> {
-  const key = `comment_floor${type}-${id}-${parentCommentId}-${limit}-${offset}`;
+  time: number
+): Promise<{ hasMore: boolean; comments: CommentDetail[] }> {
+  const key = `comment_floor${type}-${id}-${parentCommentId}-${limit}-${time}`;
   const value = apiCache.get(key);
   if (value) {
     return value as {
-      total: number;
       hasMore: boolean;
       comments: CommentDetail[];
     };
   }
   try {
     const { status, body } = await comment_floor(
-      Object.assign({ type, id, parentCommentId, limit, offset }, baseQuery)
+      Object.assign({ type, id, parentCommentId, limit, time }, baseQuery)
     );
     if (status !== 200) {
-      return { total: 0, hasMore: false, comments: [] };
+      return { hasMore: false, comments: [] };
     }
     const { data } = body;
     const { totalCount, hasMore, comments } = data as {
@@ -520,7 +525,7 @@ export async function apiCommentFloor(
     apiCache.set(key, ret);
     return ret;
   } catch {}
-  return { total: 0, hasMore: false, comments: [] };
+  return { hasMore: false, comments: [] };
 }
 
 export async function apiCommentLike(

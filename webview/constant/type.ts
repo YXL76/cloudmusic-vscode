@@ -9,17 +9,14 @@ export type SongsItem = {
 
 export type RecordData = SongsItem & { playCount: number };
 
-export type UserDetail = {
+export type SimplyUserDetail = {
   userId: number;
   nickname: string;
-  signature: string;
-  followeds: number;
-  follows: number;
   avatarUrl: string;
 };
 
 export type CommentDetail = {
-  user: UserDetail;
+  user: SimplyUserDetail;
   commentId: number;
   content: string;
   time: number;
@@ -29,6 +26,6 @@ export type CommentDetail = {
   beReplied?: {
     beRepliedCommentId: number;
     content: string;
-    user: UserDetail;
+    user: SimplyUserDetail;
   };
 };

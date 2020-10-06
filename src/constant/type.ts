@@ -67,6 +67,12 @@ export type UserDetail = {
   avatarUrl: string;
 };
 
+export type SimplyUserDetail = {
+  userId: number;
+  nickname: string;
+  avatarUrl: string;
+};
+
 export type TrackIdsItem = {
   id: number;
   v: number;
@@ -91,7 +97,7 @@ export type LyricData = {
 };
 
 export type RawCommentDetail = {
-  user: UserDetail;
+  user: SimplyUserDetail;
   commentId: number;
   content: string;
   time: number;
@@ -100,15 +106,15 @@ export type RawCommentDetail = {
   beReplied?: {
     beRepliedCommentId: number;
     content: string;
-    user: UserDetail;
+    user: SimplyUserDetail;
   }[];
-  showFloorComment: {
+  showFloorComment?: {
     replyCount: number;
   };
 };
 
 export type CommentDetail = {
-  user: UserDetail;
+  user: SimplyUserDetail;
   commentId: number;
   content: string;
   time: number;
@@ -118,7 +124,7 @@ export type CommentDetail = {
   beReplied?: {
     beRepliedCommentId: number;
     content: string;
-    user: UserDetail;
+    user: SimplyUserDetail;
   };
 };
 

@@ -2,6 +2,7 @@ import { ColorThemeKind, Uri, ViewColumn, env, window } from "vscode";
 import {
   MultiStepInput,
   apiCommentAdd,
+  apiCommentFloor,
   apiCommentLike,
   apiCommentNew,
   apiCommentReply,
@@ -133,25 +134,24 @@ export class WebView {
     })();
 
     type Message = {
-      command: "user" | "list" | "like" | "add" | "reply";
+      command: "user" | "list" | "like" | "add" | "reply" | "floor";
       id: number;
       sortType: SortType;
       pageNo: number;
       cid: number;
+      pid: number;
       t: SubAction;
-      index: number;
       content: string;
-      commentId: number;
+      time: number;
     };
 
     const likeAction = throttle(async (message: Message) => {
-      const { cid, t, index, sortType } = message;
+      const { cid, t } = message;
       if (await apiCommentLike(type, t, id, cid)) {
         void panel.webview.postMessage({
           command: "like",
           liked: t === SubAction.sub ? true : false,
-          index,
-          sortType,
+          cid,
         });
       }
     }, 4);
@@ -179,8 +179,13 @@ export class WebView {
         const { content } = message;
         void apiCommentAdd(type, id, content);
       } else if (command === "reply") {
-        const { content, commentId } = message;
-        void apiCommentReply(type, id, content, commentId);
+        const { content, cid } = message;
+        void apiCommentReply(type, id, content, cid);
+      } else if (command === "floor") {
+        const { pid, time } = message;
+        void apiCommentFloor(type, id, pid, pageSize, time).then((data) => {
+          void panel.webview.postMessage({ command: "floor", ...data });
+        });
       }
     });
     return panel;

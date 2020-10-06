@@ -33,5 +33,14 @@
         }
       }
     }
+    &-footer {
+      &--load-more {
+        text-align: center;
+        margin-top: 12px;
+        margin-bottom: 12px;
+        height: 32px;
+        line-height: 32px;
+      }
+    }
   }
 }

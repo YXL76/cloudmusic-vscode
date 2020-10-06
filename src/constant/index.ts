@@ -22,6 +22,7 @@ export {
   PlaylistItem,
   RawCommentDetail,
   RawPlaylistItem,
+  SimplyUserDetail,
   SongDetail,
   SongsItem,
   TrackIdsItem,
