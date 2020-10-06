@@ -18,7 +18,7 @@ const enum Type {
 
 type RefreshPara = {
   element?: PlaylistItemTreeItem;
-  refresh?: boolean;
+  refresh?: true;
   action?: (items: QueueItemTreeItem[]) => void;
 };
 
@@ -77,7 +77,7 @@ export class PlaylistProvider
           apiCache.del(`playlist_detail${id}`);
         }
       }
-      apiCache.del("user_playlist");
+      apiCache.del(`user_playlist${AccountManager.uid}`);
       this.belongsTo.clear();
       this.playlists.clear();
       this.userInstance._onDidChangeTreeData.fire();

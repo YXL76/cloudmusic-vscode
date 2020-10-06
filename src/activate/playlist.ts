@@ -72,7 +72,7 @@ export function initPlaylist(): void {
 
       if (
         name &&
-        (await apiPlaylistCreate(name, pick.type === Type.public ? 10 : 0))
+        (await apiPlaylistCreate(name, pick.type === Type.public ? 0 : 10))
       ) {
         PlaylistProvider.refresh({});
       }
