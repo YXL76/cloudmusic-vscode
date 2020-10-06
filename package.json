@@ -476,7 +476,7 @@
   "devDependencies": {
     "@types/lodash.throttle": "4.1.6",
     "@types/lru-cache": "5.1.0",
-    "@types/node": "12.12.62",
+    "@types/node": "12.12.63",
     "@types/react": "16.9.50",
     "@types/react-dom": "16.9.8",
     "@types/vscode": "1.49.0",
