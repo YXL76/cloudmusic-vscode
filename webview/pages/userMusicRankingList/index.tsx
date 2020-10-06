@@ -9,22 +9,23 @@ import ReloadOutlined from "@ant-design/icons/ReloadOutlined";
 
 const { TabPane } = Tabs;
 
-const emptyData = new Array(100).fill({
-  name: "",
-  id: 0,
-  dt: 0,
-  alia: [],
-  ar: [],
-  al: { id: 0, name: "", picUrl: "" },
-  playCount: 0,
-}) as RecordData[];
-
 const { vscode, data } = window.webview;
 const { i18n } = data;
 
 export const UserMusicRankingList = () => {
   const [loading, setLoading] = useState(true);
-  const [lists, setLists] = useState([emptyData, emptyData] as RecordData[][]);
+  const [lists, setLists] = useState(() => {
+    const emptyData = new Array(100).fill({
+      name: "",
+      id: 0,
+      dt: 0,
+      alia: [],
+      ar: [],
+      al: { id: 0, name: "", picUrl: "" },
+      playCount: 0,
+    }) as RecordData[];
+    return [emptyData, emptyData];
+  });
 
   window.addEventListener("message", ({ data }) => {
     setLists(data as RecordData[][]);

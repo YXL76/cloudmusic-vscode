@@ -1,5 +1,5 @@
 import "./index.scss";
-import { Avatar, Button, Divider, Drawer, Input, List, Tabs } from "antd";
+import { Avatar, Button, Drawer, Input, List, Tabs } from "antd";
 import React, { useState } from "react";
 import type { CommentDetail } from "../../constant";
 import LikeFilled from "@ant-design/icons/LikeFilled";
@@ -35,6 +35,7 @@ export const CommentList = () => {
   const [floorList, setFloorList] = useState([] as CommentDetail[]);
   const [floorLoading, setFloorLoading] = useState(true);
   const [floorHasMore, setFloorHasMore] = useState(true);
+  const [floorTotal, setFloorTotal] = useState(0);
   const [pid, setPid] = useState(0);
 
   window.addEventListener("message", ({ data }) => {
@@ -56,8 +57,11 @@ export const CommentList = () => {
         hasMores[idx] = hasMore;
         setHasMores([...hasMores]);
       }
-      lists[idx].push(...comments);
-      setLists([...lists]);
+      setLists([
+        ...lists.slice(0, idx),
+        lists[idx].concat(comments),
+        ...lists.slice(idx + 1),
+      ]);
       loadings[idx] = false;
       setLoadings([...loadings]);
     } else if (command === "like") {
@@ -87,12 +91,16 @@ export const CommentList = () => {
         setLists([...lists]);
       }
     } else if (command === "floor") {
-      const { hasMore, comments } = data as {
+      const { totalCount, hasMore, comments } = data as {
+        totalCount: number;
         hasMore: boolean;
         comments: CommentDetail[];
       };
       if (!hasMore) {
         setFloorHasMore(hasMore);
+      }
+      if (totalCount > 0 && floorTotal !== totalCount) {
+        setFloorTotal(totalCount);
       }
       setFloorList(floorList.concat(comments));
       setFloorLoading(false);
@@ -101,16 +109,6 @@ export const CommentList = () => {
 
   const usr = (id: number) => {
     vscode.postMessage({ command: "user", id });
-  };
-
-  const loadMore = (sortType: SortType, len: number) => {
-    const idx = sortType - 1;
-    setLoadings([...loadings.slice(0, idx), true, ...loadings.slice(idx + 1)]);
-    vscode.postMessage({
-      command: "list",
-      sortType,
-      pageNo: Math.floor(len / pageSize) + 1,
-    });
   };
 
   const listItem = (item: CommentDetail) => {
@@ -183,12 +181,12 @@ export const CommentList = () => {
                   <a
                     href="."
                     onClick={() => {
-                      setPid(commentId);
                       vscode.postMessage({
                         command: "floor",
                         pid: commentId,
                       });
-                      setFloorOwner([item]);
+                      setPid(commentId);
+                      setFloorOwner([{ ...item, replyCount: 0 }]);
                       setFloorVisible(true);
                     }}
                   >
@@ -214,7 +212,15 @@ export const CommentList = () => {
             <div className="list-footer--load-more">
               <Button
                 loading={loadings[idx]}
-                onClick={() => loadMore(sortType, lists[idx].length)}
+                onClick={() => {
+                  vscode.postMessage({
+                    command: "list",
+                    sortType,
+                    pageNo: Math.floor(lists[idx].length / pageSize) + 1,
+                  });
+                  loadings[idx] = true;
+                  setLoadings([...loadings]);
+                }}
               >
                 {i18n?.more}
               </Button>
@@ -280,6 +286,7 @@ export const CommentList = () => {
           setFloorOwner([]);
           setFloorHasMore(true);
           setFloorLoading(true);
+          setFloorTotal(0);
         }}
         visible={floorVisible}
         zIndex={1000}
@@ -291,7 +298,9 @@ export const CommentList = () => {
           dataSource={floorOwner}
           renderItem={listItem}
         />
-        <Divider />
+        <div className="tab-bar--extra-left">{`${
+          i18n?.comment as string
+        } (${floorTotal})`}</div>
         <List
           size="small"
           itemLayout="horizontal"
@@ -301,12 +310,12 @@ export const CommentList = () => {
                 <Button
                   loading={floorLoading}
                   onClick={() => {
-                    setFloorLoading(true);
                     vscode.postMessage({
                       command: "floor",
                       pid,
                       time: floorList[floorList.length - 1].time,
                     });
+                    setFloorLoading(true);
                   }}
                 >
                   {i18n?.more}
