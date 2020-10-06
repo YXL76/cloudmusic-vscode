@@ -22,6 +22,7 @@ import type {
   TopSongType,
 } from "NeteaseCloudMusicApi";
 import {
+  CommentAction,
   DailySigninType,
   SearchSuggestType,
   SearchType,
@@ -37,6 +38,7 @@ import {
   artists,
   check_music,
   cloudsearch,
+  comment,
   comment_floor,
   comment_like,
   comment_new,
@@ -438,6 +440,47 @@ export async function apiCheckMusic(id: number, br: number): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+export async function apiCommentAdd(
+  type: CommentType,
+  id: number,
+  content: string
+): Promise<boolean> {
+  try {
+    const { status } = await comment(
+      Object.assign(
+        { type, id, content, t: CommentAction.add as const },
+        baseQuery
+      )
+    );
+    if (status !== 200) {
+      return false;
+    }
+    return true;
+  } catch {}
+  return false;
+}
+
+export async function apiCommentReply(
+  type: CommentType,
+  id: number,
+  content: string,
+  commentId: number
+): Promise<boolean> {
+  try {
+    const { status } = await comment(
+      Object.assign(
+        { type, id, content, commentId, t: CommentAction.reply as const },
+        baseQuery
+      )
+    );
+    if (status !== 200) {
+      return false;
+    }
+    return true;
+  } catch {}
+  return false;
 }
 
 export async function apiCommentFloor(
