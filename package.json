@@ -499,7 +499,7 @@
     "gulp-filter": "6.0.0",
     "gulp-typescript": "6.0.0-alpha.1",
     "neon-cli": "0.4.2",
-    "parcel": "2.0.0-nightly.415",
+    "parcel": "2.0.0-nightly.416",
     "prettier": "2.1.2",
     "sass": "1.26.11",
     "ts-loader": "8.0.4",

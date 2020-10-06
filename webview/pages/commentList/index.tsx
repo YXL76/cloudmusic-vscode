@@ -1,9 +1,11 @@
 import "./index.scss";
-import { Avatar, Button, List, Tabs } from "antd";
+import { Avatar, Button, Drawer, Input, List, Tabs } from "antd";
 import React, { useState } from "react";
 import type { CommentDetail } from "../../constant";
 import LikeFilled from "@ant-design/icons/LikeFilled";
 import LikeOutlined from "@ant-design/icons/LikeOutlined";
+import PlusOutlined from "@ant-design/icons/PlusOutlined";
+import UploadOutlined from "@ant-design/icons/UploadOutlined";
 import moment from "moment";
 
 const { TabPane } = Tabs;
@@ -23,6 +25,11 @@ export const CommentList = () => {
   const [loadings, setLoadings] = useState([true, false, false]);
   const [hasMores, setHasMores] = useState([true, true, true]);
   const [total, setTotal] = useState(pageSize);
+
+  const [replyVisible, setReplyVisible] = useState(false);
+  const [content, setContent] = useState("");
+  const [replyAction, setReplyAction] = useState("add" as "add" | "reply");
+  const [cid, setCid] = useState(0);
 
   window.addEventListener("message", ({ data }) => {
     const { command } = data as {
@@ -144,7 +151,14 @@ export const CommentList = () => {
               >
                 {` (${likedCount})`}
               </Button>,
-              <Button type="text" onClick={() => {}}>
+              <Button
+                type="text"
+                onClick={() => {
+                  setReplyAction("reply");
+                  setCid(commentId);
+                  setReplyVisible(true);
+                }}
+              >
                 {i18n?.reply}
               </Button>,
             ]}
@@ -193,19 +207,75 @@ export const CommentList = () => {
   };
 
   return (
-    <Tabs
-      className="commentList"
-      tabBarExtraContent={<div>{`${i18n?.comment as string} (${total})`}</div>}
-    >
-      <TabPane tab={i18n?.recommendation} key="1" forceRender>
-        {tab(SortType.recommendation)}
-      </TabPane>
-      <TabPane tab={i18n?.hottest} key="2" forceRender>
-        {tab(SortType.hottest)}
-      </TabPane>
-      <TabPane tab={i18n?.latest} key="3" forceRender>
-        {tab(SortType.latest)}
-      </TabPane>
-    </Tabs>
+    <>
+      <Tabs
+        className="commentList"
+        tabBarExtraContent={{
+          left: (
+            <div className="tab-bar--extra-left">{`${
+              i18n?.comment as string
+            } (${total})`}</div>
+          ),
+          right: (
+            <Button
+              icon={<PlusOutlined />}
+              onClick={() => {
+                setReplyAction("add");
+                setReplyVisible(true);
+              }}
+            >
+              {i18n?.reply}
+            </Button>
+          ),
+        }}
+      >
+        <TabPane tab={i18n?.recommendation} key="1" forceRender>
+          {tab(SortType.recommendation)}
+        </TabPane>
+        <TabPane tab={i18n?.hottest} key="2" forceRender>
+          {tab(SortType.hottest)}
+        </TabPane>
+        <TabPane tab={i18n?.latest} key="3" forceRender>
+          {tab(SortType.latest)}
+        </TabPane>
+      </Tabs>
+      <Drawer
+        title={i18n?.reply}
+        placement="bottom"
+        onClose={() => setReplyVisible(false)}
+        visible={replyVisible}
+        zIndex={2000}
+        height={200}
+        footer={
+          <Button
+            type="primary"
+            disabled={content.length === 0}
+            icon={<UploadOutlined />}
+            onClick={() => {
+              vscode.postMessage({
+                command: replyAction,
+                commentId: cid,
+                content,
+              });
+              setContent("");
+              setReplyVisible(false);
+            }}
+          >
+            {i18n?.submit}
+          </Button>
+        }
+      >
+        <Input
+          defaultValue={content}
+          allowClear={true}
+          size="large"
+          bordered={false}
+          onChange={(e) => {
+            const { value } = e.target;
+            setContent(value);
+          }}
+        />
+      </Drawer>
+    </>
   );
 };

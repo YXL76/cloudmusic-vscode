@@ -1,8 +1,10 @@
 import { ColorThemeKind, Uri, ViewColumn, env, window } from "vscode";
 import {
   MultiStepInput,
+  apiCommentAdd,
   apiCommentLike,
   apiCommentNew,
+  apiCommentReply,
   apiUserRecord,
   pickAlbum,
   pickArtist,
@@ -101,13 +103,14 @@ export class WebView {
           latest: i18n.word.latest,
           reply: i18n.word.reply,
           more: i18n.word.more,
+          submit: i18n.word.submit,
         },
         message: { pageSize },
       }
     );
 
     void (async () => {
-      const { total, comments } = await apiCommentNew(
+      const { total, hasMore, comments } = await apiCommentNew(
         type,
         id,
         1,
@@ -115,6 +118,13 @@ export class WebView {
         SortType.recommendation
       );
       void panel.webview.postMessage({ command: "total", total });
+      if (!hasMore) {
+        void panel.webview.postMessage({
+          command: "more",
+          sortType: SortType.recommendation,
+          hasMore,
+        });
+      }
       void panel.webview.postMessage({
         command: "list",
         sortType: 1,
@@ -123,13 +133,15 @@ export class WebView {
     })();
 
     type Message = {
-      command: "user" | "list" | "like";
+      command: "user" | "list" | "like" | "add" | "reply";
       id: number;
       sortType: SortType;
       pageNo: number;
       cid: number;
       t: SubAction;
       index: number;
+      content: string;
+      commentId: number;
     };
 
     const likeAction = throttle(async (message: Message) => {
@@ -163,6 +175,12 @@ export class WebView {
         );
       } else if (command === "like") {
         void likeAction(message);
+      } else if (command === "add") {
+        const { content } = message;
+        void apiCommentAdd(type, id, content);
+      } else if (command === "reply") {
+        const { content, commentId } = message;
+        void apiCommentReply(type, id, content, commentId);
       }
     });
     return panel;

@@ -173,6 +173,7 @@ export const i18n = {
     single: localize("word.single", "Single"),
     song: localize("word.song", "Song"),
     songList: localize("word.songList", "Song list"),
+    submit: localize("word.submit", "Submit"),
     subscribedCount: localize("word.subscribedCount", "Subscribed count"),
     topAlbums: localize("word.topAlbums", "New discs on shelves"),
     topArtists: localize("word.topArtists", "Popular artists"),
