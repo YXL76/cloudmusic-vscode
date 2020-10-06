@@ -16,14 +16,12 @@ import type {
   ArtistArea,
   ArtistInitial,
   ArtistType,
-  MultiPageConfig,
+  CommentType,
   RequestBaseConfig,
-  Response,
   SubAction,
   TopSongType,
 } from "NeteaseCloudMusicApi";
 import {
-  CommentType,
   DailySigninType,
   SearchSuggestType,
   SearchType,
@@ -39,11 +37,9 @@ import {
   artists,
   check_music,
   cloudsearch,
-  comment_album,
-  comment_hot,
+  comment_floor,
   comment_like,
-  comment_music,
-  comment_playlist,
+  comment_new,
   daily_signin,
   fm_trash,
   like,
@@ -165,7 +161,16 @@ const solveUserDetail = (item: UserDetail): UserDetail => {
 };
 
 const solveComment = (item: RawCommentDetail): CommentDetail => {
-  const { user, commentId, content, time, likedCount, liked, beReplied } = item;
+  const {
+    user,
+    commentId,
+    content,
+    time,
+    likedCount,
+    liked,
+    beReplied,
+    showFloorComment,
+  } = item;
   return {
     user: solveUserDetail(user),
     commentId,
@@ -173,7 +178,8 @@ const solveComment = (item: RawCommentDetail): CommentDetail => {
     time,
     likedCount,
     liked,
-    beReplied: beReplied[0]
+    replyCount: showFloorComment.replyCount,
+    beReplied: beReplied
       ? {
           beRepliedCommentId: beReplied[0].beRepliedCommentId,
           content: beReplied[0].content,
@@ -434,36 +440,44 @@ export async function apiCheckMusic(id: number, br: number): Promise<boolean> {
   }
 }
 
-export async function apiCommentHot(
+export async function apiCommentFloor(
   type: CommentType,
   id: number,
+  parentCommentId: number,
   limit: number,
   offset: number
-): Promise<{ total: number; hotComments: CommentDetail[] }> {
-  const key = `comment_hot${type}-${id}-${limit}-${offset}`;
+): Promise<{ total: number; hasMore: boolean; comments: CommentDetail[] }> {
+  const key = `comment_floor${type}-${id}-${parentCommentId}-${limit}-${offset}`;
   const value = apiCache.get(key);
   if (value) {
-    return value as { total: number; hotComments: CommentDetail[] };
+    return value as {
+      total: number;
+      hasMore: boolean;
+      comments: CommentDetail[];
+    };
   }
-  const empty = { total: 0, hotComments: [] };
   try {
-    const { status, body } = await comment_hot(
-      Object.assign({ type, id, limit, offset }, baseQuery)
+    const { status, body } = await comment_floor(
+      Object.assign({ type, id, parentCommentId, limit, offset }, baseQuery)
     );
     if (status !== 200) {
-      return empty;
+      return { total: 0, hasMore: false, comments: [] };
     }
-    const { hotComments, total } = body;
-    const ret = {
-      total: total as number,
-      hotComments: (hotComments as RawCommentDetail[]).map((comment) =>
-        solveComment(comment)
-      ),
+    const { data } = body;
+    const { totalCount, hasMore, comments } = data as {
+      totalCount: number;
+      hasMore: boolean;
+      comments: RawCommentDetail[];
     };
-    apiCache.set(key, ret, 60);
+    const ret = {
+      total: totalCount,
+      hasMore,
+      comments: comments.map((comment) => solveComment(comment)),
+    };
+    apiCache.set(key, ret);
     return ret;
   } catch {}
-  return empty;
+  return { total: 0, hasMore: false, comments: [] };
 }
 
 export async function apiCommentLike(
@@ -483,61 +497,44 @@ export async function apiCommentLike(
   return false;
 }
 
-export async function apiComment(
+export async function apiCommentNew(
   type: CommentType,
   id: number,
-  limit: number,
-  offset: number
-): Promise<{ total: number; comments: CommentDetail[] }> {
-  const empty = { total: 0, comments: [] };
-  let key: string;
-  let func: (
-    params: {
-      id: string | number;
-      before?: string | number;
-    } & MultiPageConfig &
-      RequestBaseConfig
-  ) => Promise<Response>;
-
-  if (type === CommentType.song) {
-    key = "comment_music";
-    func = comment_music;
-  } else if (type === CommentType.album) {
-    key = "comment_album";
-    func = comment_album;
-  } else if (type === CommentType.playlist) {
-    key = "comment_playlist";
-    func = comment_playlist;
-  } else {
-    key = "comment_music";
-    func = comment_music;
-  }
-
-  key += `${id}-${limit}-${offset}`;
+  pageNo: number,
+  pageSize: number,
+  sortType: number
+): Promise<{ total: number; hasMore: boolean; comments: CommentDetail[] }> {
+  const key = `comment_new${type}-${id}-${pageNo}-${pageSize}-${sortType}`;
   const value = apiCache.get(key);
   if (value) {
-    return value as { total: number; comments: CommentDetail[] };
+    return value as {
+      total: number;
+      hasMore: boolean;
+      comments: CommentDetail[];
+    };
   }
-
   try {
-    const { status, body } = await func(
-      Object.assign({ id, limit, offset }, baseQuery)
+    const { status, body } = await comment_new(
+      Object.assign({ type, id, pageNo, pageSize, sortType }, baseQuery)
     );
     if (status !== 200) {
-      return empty;
+      return { total: 0, hasMore: false, comments: [] };
     }
-    const { comments, total } = body;
-    const ret = {
-      total: total as number,
-      comments: (comments as RawCommentDetail[]).map((comment) =>
-        solveComment(comment)
-      ),
+    const { data } = body;
+    const { totalCount, hasMore, comments } = data as {
+      totalCount: number;
+      hasMore: boolean;
+      comments: RawCommentDetail[];
     };
-    apiCache.set(key, ret, 60);
+    const ret = {
+      total: totalCount,
+      hasMore,
+      comments: comments.map((comment) => solveComment(comment)),
+    };
+    apiCache.set(key, ret);
     return ret;
   } catch {}
-
-  return empty;
+  return { total: 0, hasMore: false, comments: [] };
 }
 
 export async function apiDailySignin(): Promise<boolean> {

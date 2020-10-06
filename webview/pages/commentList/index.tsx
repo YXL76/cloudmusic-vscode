@@ -1,5 +1,5 @@
 import "./index.scss";
-import { Avatar, Button, List, Skeleton, Tabs } from "antd";
+import { Avatar, Button, List, Tabs } from "antd";
 import React, { useState } from "react";
 import type { CommentDetail } from "../../constant";
 import LikeFilled from "@ant-design/icons/LikeFilled";
@@ -10,70 +10,66 @@ const { TabPane } = Tabs;
 
 const { vscode, data } = window.webview;
 const { i18n, message } = data;
-const limit = message?.limit || 50;
+const pageSize = message?.pageSize || 30;
 
-const emptyData = new Array(limit).fill({
-  user: {
-    userId: 0,
-    nickname: "",
-    signature: "",
-    followeds: 0,
-    follows: 0,
-    avatarUrl: "",
-  },
-  name: "",
-  commentId: 0,
-  content: "",
-  time: 0,
-  likedCount: 0,
-  liked: false,
-}) as CommentDetail[];
+enum SortType {
+  recommendation = 1,
+  hottest = 2,
+  latest = 3,
+}
 
 export const CommentList = () => {
-  const [hottestLoading, setHottestLoading] = useState(true);
-  const [hottestTotal, setHottestTotal] = useState(limit);
-  const [hottestLists, setHottestLists] = useState(emptyData);
-
-  const [latestLoading, setLatestLoading] = useState(true);
-  const [latestTotal, setLatestTotal] = useState(limit);
-  const [latestLists, setLatestLists] = useState(emptyData);
+  const [lists, setLists] = useState([[], [], []] as CommentDetail[][]);
+  const [loadings, setLoadings] = useState([true, false, false]);
+  const [hasMores, setHasMores] = useState([true, true, true]);
+  const [total, setTotal] = useState(pageSize);
 
   window.addEventListener("message", ({ data }) => {
     const { command } = data as {
-      command: "hottestTotal" | "hottest" | "latestTotal" | "latest" | "like";
+      command: "list" | "total" | "more" | "like";
     };
-    if (command === "hottestTotal") {
-      setHottestTotal((data as { total: number }).total);
-    } else if (command === "hottest") {
-      setHottestLists((data as { hotComments: CommentDetail[] }).hotComments);
-      setHottestLoading(false);
-    } else if (command === "latestTotal") {
-      setLatestTotal((data as { total: number }).total);
-    } else if (command === "latest") {
-      setLatestLists((data as { comments: CommentDetail[] }).comments);
-      setLatestLoading(false);
+    if (command === "list") {
+      const { sortType, comments } = data as {
+        sortType: SortType;
+        comments: CommentDetail[];
+      };
+      const idx = sortType - 1;
+      setLists([
+        ...lists.slice(0, idx),
+        lists[idx].concat(comments),
+        ...lists.slice(idx + 1),
+      ]);
+      setLoadings([
+        ...loadings.slice(0, idx),
+        false,
+        ...loadings.slice(idx + 1),
+      ]);
+    } else if (command === "more") {
+      const { sortType, hasMore } = data as {
+        sortType: SortType;
+        hasMore: boolean;
+      };
+      const idx = sortType - 1;
+      setHasMores([
+        ...hasMores.slice(0, idx),
+        hasMore,
+        ...hasMores.slice(idx + 1),
+      ]);
     } else if (command === "like") {
-      const { cid, liked, index } = data as {
-        cid: number;
+      const { liked, index, sortType } = data as {
         liked: boolean;
         index: number;
+        sortType: SortType;
       };
-      if (
-        hottestLists[index].commentId === cid &&
-        hottestLists[index].liked !== liked
-      ) {
-        hottestLists[index].liked = liked;
-        hottestLists[index].likedCount += liked ? 1 : -1;
-        setHottestLists([...hottestLists]);
+      const idx = sortType - 1;
+      if (lists[idx][index].liked !== liked) {
+        lists[idx][index].liked = liked;
+        lists[idx][index].likedCount += liked ? 1 : -1;
+        setLists([...lists]);
       }
-      if (
-        latestLists[index].commentId === cid &&
-        latestLists[index].liked !== liked
-      ) {
-        latestLists[index].liked = liked;
-        latestLists[index].likedCount += liked ? 1 : -1;
-        setLatestLists([...latestLists]);
-      }
+    } else if (command === "total") {
+      const { total } = data as { total: number };
+      setTotal(total);
     }
   });
 
@@ -81,107 +77,134 @@ export const CommentList = () => {
     vscode.postMessage({ command: "user", id });
   };
 
-  const tab = (
-    list: CommentDetail[],
-    total: number,
-    loading: boolean,
-    command: "hottest" | "latest"
-  ) => {
+  const loadMore = (sortType: SortType, len: number) => {
+    const idx = sortType - 1;
+    setLoadings([...loadings.slice(0, idx), true, ...loadings.slice(idx + 1)]);
+    vscode.postMessage({
+      command: "list",
+      sortType,
+      pageNo: Math.floor(len / pageSize) + 1,
+    });
+  };
+
+  const tab = (sortType: SortType) => {
+    const idx = sortType - 1;
     return (
       <List
-        header={`${i18n?.comment as string} (${total})`}
         size="small"
         itemLayout="horizontal"
-        pagination={{
-          onChange: (page) => {
-            if (command === "hottest") {
-              setHottestLoading(true);
-            } else {
-              setLatestLoading(true);
-            }
-            vscode.postMessage({
-              command,
-              offset: (page - 1) * limit,
-            });
-          },
-          defaultPageSize: limit,
-          showQuickJumper: true,
-          showSizeChanger: false,
-          total: Math.min(total, 5000),
-          disabled: loading,
-          showTotal: (total, range) => `${range.join("-")} / ${total}`,
-        }}
-        dataSource={list}
+        loadMore={
+          hasMores[idx] ? (
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: 12,
+                marginBottom: 12,
+                height: 32,
+                lineHeight: "32px",
+              }}
+            >
+              <Button
+                loading={loadings[idx]}
+                onClick={() => loadMore(sortType, lists[idx].length)}
+              >
+                More
+              </Button>
+            </div>
+          ) : null
+        }
+        dataSource={lists[idx]}
         renderItem={(
-          { commentId, user, content, liked, likedCount, time, beReplied },
+          {
+            commentId,
+            user,
+            content,
+            liked,
+            likedCount,
+            time,
+            beReplied,
+            replyCount,
+          },
           index
         ) => (
-          <Skeleton avatar title={false} loading={loading} active>
-            <List.Item
-              actions={[
-                <Button
-                  type="text"
-                  icon={liked ? <LikeFilled /> : <LikeOutlined />}
-                  onClick={() =>
-                    vscode.postMessage({
-                      command: "like",
-                      cid: commentId,
-                      t: liked ? 0 : 1,
-                      index,
-                    })
-                  }
-                >
-                  {` (${likedCount})`}
-                </Button>,
-                <Button type="text" onClick={() => {}}>
-                  {i18n?.reply}
-                </Button>,
-              ]}
-            >
-              <List.Item.Meta
-                avatar={
+          <List.Item
+            actions={[
+              <Button
+                type="text"
+                icon={liked ? <LikeFilled /> : <LikeOutlined />}
+                onClick={() =>
+                  vscode.postMessage({
+                    command: "like",
+                    cid: commentId,
+                    t: liked ? 0 : 1,
+                    index,
+                    sortType,
+                  })
+                }
+              >
+                {` (${likedCount})`}
+              </Button>,
+              <Button type="text" onClick={() => {}}>
+                {i18n?.reply}
+              </Button>,
+            ]}
+          >
+            <List.Item.Meta
+              avatar={
+                <a href="." onClick={() => usr(user.userId)}>
+                  <Avatar src={user.avatarUrl} />
+                </a>
+              }
+              title={
+                <div>
                   <a href="." onClick={() => usr(user.userId)}>
-                    <Avatar src={user.avatarUrl} />
+                    {user.nickname}
                   </a>
-                }
-                title={
-                  <div>
-                    <a href="." onClick={() => usr(user.userId)}>
-                      {user.nickname}
-                    </a>
-                    <span className="list-title--time">
-                      {moment(time).format("YYYY-MM-DD HH:mm:ss")}
-                    </span>
-                  </div>
-                }
-                description={
-                  <div className="flex flex-column">
-                    <p>{content}</p>
-                    {beReplied ? (
-                      <p className="list-content--beReplied">
-                        <a href="." onClick={() => usr(beReplied.user.userId)}>
-                          @{beReplied.user.nickname}
-                        </a>
-                        : {beReplied.content}
-                      </p>
-                    ) : undefined}
-                  </div>
-                }
-              />
-            </List.Item>
-          </Skeleton>
+                  <span className="list-title--time">
+                    {moment(time).format("YYYY-MM-DD HH:mm:ss")}
+                  </span>
+                </div>
+              }
+              description={
+                <div className="flex flex-column">
+                  <p>{content}</p>
+                  {beReplied && (
+                    <p className="list-content--beReplied">
+                      <a href="." onClick={() => usr(beReplied.user.userId)}>
+                        @{beReplied.user.nickname}
+                      </a>
+                      : {beReplied.content}
+                    </p>
+                  )}
+                  {replyCount > 0 && (
+                    <div>
+                      <a href="." onClick={() => {}}>
+                        {`${replyCount} ${i18n?.reply as string}`}
+                      </a>
+                    </div>
+                  )}
+                </div>
+              }
+            />
+          </List.Item>
         )}
       />
     );
   };
 
   return (
-    <Tabs className="commentList">
-      <TabPane tab={i18n?.hottest} key="1" forceRender>
-        {tab(hottestLists, hottestTotal, hottestLoading, "hottest")}
+    <Tabs
+      className="commentList"
+      tabBarExtraContent={<div>{`${i18n?.comment as string} (${total})`}</div>}
+    >
+      <TabPane tab={i18n?.recommendation} key="1" forceRender>
+        {tab(SortType.recommendation)}
       </TabPane>
-      <TabPane tab={i18n?.latest} key="2" forceRender>
-        {tab(latestLists, latestTotal, latestLoading, "latest")}
+      <TabPane tab={i18n?.hottest} key="2" forceRender>
+        {tab(SortType.hottest)}
+      </TabPane>
+      <TabPane tab={i18n?.latest} key="3" forceRender>
+        {tab(SortType.latest)}
       </TabPane>
     </Tabs>
   );

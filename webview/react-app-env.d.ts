@@ -14,7 +14,7 @@ interface Window {
     data: {
       i18n?: Record<string, string>;
       message?: {
-        limit?: number;
+        pageSize?: number;
       };
     };
   };

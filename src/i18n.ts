@@ -142,6 +142,7 @@ export const i18n = {
     lyric: localize("word.lyric", "Lyric"),
     lyricDelay: localize("word.lyricDelay", "Lyric delay"),
     male: localize("word.male", "Male artist"),
+    more: localize("word.more", "More"),
     latest: localize("word.latest", "Latest"),
     nextPage: localize("word.nextPage", "Next Rage"),
     nextTrack: localize("word.nextTrack", "Next track"),

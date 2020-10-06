@@ -123,11 +123,7 @@ export const UserMusicRankingList = () => {
 
   const tabs = lists.map((list, index) => {
     return (
-      <TabPane
-        tab={index === 0 ? i18n?.weekly : i18n?.allTime}
-        key={index}
-        forceRender
-      >
+      <TabPane tab={index === 0 ? i18n?.weekly : i18n?.allTime} key={index}>
         {tab(list, list[0].playCount)}
       </TabPane>
     );
