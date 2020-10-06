@@ -17,7 +17,6 @@ import type { SongsItem } from "../constant";
 import { SubAction } from "NeteaseCloudMusicApi";
 import type { WebviewPanel } from "vscode";
 import { i18n } from "../i18n";
-import { throttle } from "lodash";
 
 const enum SortType {
   recommendation = 1,
@@ -110,31 +109,15 @@ export class WebView {
       }
     );
 
-    void (async () => {
-      const { total, hasMore, comments } = await apiCommentNew(
-        type,
-        id,
-        1,
-        pageSize,
-        SortType.recommendation
-      );
-      void panel.webview.postMessage({ command: "total", total });
-      if (!hasMore) {
-        void panel.webview.postMessage({
-          command: "more",
-          sortType: SortType.recommendation,
-          hasMore,
-        });
-      }
-      void panel.webview.postMessage({
-        command: "list",
-        sortType: 1,
-        comments,
-      });
-    })();
+    async function list(pageNo: number, sortType: SortType) {
+      const data = await apiCommentNew(type, id, pageNo, pageSize, sortType);
+      void panel.webview.postMessage({ command: "list", sortType, ...data });
+    }
+
+    void list(1, SortType.recommendation);
 
     type Message = {
-      command: "user" | "list" | "like" | "add" | "reply" | "floor";
+      command: "user" | "list" | "like" | "reply" | "floor";
       id: number;
       sortType: SortType;
       pageNo: number;
@@ -145,17 +128,6 @@ export class WebView {
       time: number;
     };
 
-    const likeAction = throttle(async (message: Message) => {
-      const { cid, t } = message;
-      if (await apiCommentLike(type, t, id, cid)) {
-        void panel.webview.postMessage({
-          command: "like",
-          liked: t === SubAction.sub ? true : false,
-          cid,
-        });
-      }
-    }, 4);
-
     panel.webview.onDidReceiveMessage((message: Message) => {
       const { command } = message;
       if (command === "user") {
@@ -163,24 +135,25 @@ export class WebView {
         void MultiStepInput.run((input) => pickUser(input, 1, id));
       } else if (command === "list") {
         const { pageNo, sortType } = message;
-        void apiCommentNew(type, id, pageNo, pageSize, sortType).then(
-          ({ hasMore, comments }) => {
-            if (!hasMore) {
-              const msg = { command: "more", sortType, hasMore };
-              void panel.webview.postMessage(msg);
-            }
-            const msg = { command: "list", sortType, comments };
-            void panel.webview.postMessage(msg);
-          }
-        );
+        void list(pageNo, sortType);
       } else if (command === "like") {
-        void likeAction(message);
-      } else if (command === "add") {
-        const { content } = message;
-        void apiCommentAdd(type, id, content);
+        const { cid, t } = message;
+        void apiCommentLike(type, t, id, cid).then((res) => {
+          if (res) {
+            void panel.webview.postMessage({
+              command: "like",
+              liked: t === SubAction.sub ? true : false,
+              cid,
+            });
+          }
+        });
       } else if (command === "reply") {
         const { content, cid } = message;
-        void apiCommentReply(type, id, content, cid);
+        if (cid === 0) {
+          void apiCommentAdd(type, id, content);
+        } else {
+          void apiCommentReply(type, id, content, cid);
+        }
       } else if (command === "floor") {
         const { pid, time } = message;
         void apiCommentFloor(type, id, pid, pageSize, time).then((data) => {

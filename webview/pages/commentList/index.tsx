@@ -28,7 +28,6 @@ export const CommentList = () => {
 
   const [replyVisible, setReplyVisible] = useState(false);
   const [content, setContent] = useState("");
-  const [replyAction, setReplyAction] = useState("add" as "add" | "reply");
   const [cid, setCid] = useState(0);
 
   const [floorVisible, setFloorVisible] = useState(false);
@@ -40,53 +39,53 @@ export const CommentList = () => {
 
   window.addEventListener("message", ({ data }) => {
     const { command } = data as {
-      command: "list" | "total" | "more" | "like" | "floor";
+      command: "list" | "like" | "floor";
     };
     if (command === "list") {
-      const { sortType, comments } = data as {
+      const { sortType, totalCount, hasMore, comments } = data as {
         sortType: SortType;
+        totalCount: number;
+        hasMore: boolean;
         comments: CommentDetail[];
       };
       const idx = sortType - 1;
-      setLists([
-        ...lists.slice(0, idx),
-        lists[idx].concat(comments),
-        ...lists.slice(idx + 1),
-      ]);
-      setLoadings([
-        ...loadings.slice(0, idx),
-        false,
-        ...loadings.slice(idx + 1),
-      ]);
-    } else if (command === "more") {
-      const { sortType, hasMore } = data as {
-        sortType: SortType;
-        hasMore: boolean;
-      };
-      const idx = sortType - 1;
-      setHasMores([
-        ...hasMores.slice(0, idx),
-        hasMore,
-        ...hasMores.slice(idx + 1),
-      ]);
+      if (totalCount !== total) {
+        setTotal(totalCount);
+      }
+      if (!hasMore) {
+        hasMores[idx] = hasMore;
+        setHasMores([...hasMores]);
+      }
+      lists[idx].push(...comments);
+      setLists([...lists]);
+      loadings[idx] = false;
+      setLoadings([...loadings]);
     } else if (command === "like") {
       const { liked, cid } = data as {
         liked: boolean;
         cid: number;
       };
-      for (const list of lists) {
-        const idx = list.findIndex((value) => value.commentId === cid);
+      if (floorVisible) {
+        const idx = floorList.findIndex((value) => value.commentId === cid);
         if (idx >= 0) {
-          if (list[idx].liked !== liked) {
-            list[idx].liked = liked;
-            list[idx].likedCount += liked ? 1 : -1;
+          if (floorList[idx].liked !== liked) {
+            floorList[idx].liked = liked;
+            floorList[idx].likedCount += liked ? 1 : -1;
           }
         }
+        setFloorList([...floorList]);
+      } else {
+        for (const list of lists) {
+          const idx = list.findIndex((value) => value.commentId === cid);
+          if (idx >= 0) {
+            if (list[idx].liked !== liked) {
+              list[idx].liked = liked;
+              list[idx].likedCount += liked ? 1 : -1;
+            }
+          }
+        }
+        setLists([...lists]);
       }
-      setLists([...lists]);
-    } else if (command === "total") {
-      const { total } = data as { total: number };
-      setTotal(total);
     } else if (command === "floor") {
       const { hasMore, comments } = data as {
         hasMore: boolean;
@@ -144,7 +143,6 @@ export const CommentList = () => {
           <Button
             type="text"
             onClick={() => {
-              setReplyAction("reply");
               setCid(commentId);
               setReplyVisible(true);
             }}
@@ -245,7 +243,7 @@ export const CommentList = () => {
             icon={<UploadOutlined />}
             onClick={() => {
               vscode.postMessage({
-                command: replyAction,
+                command: "reply",
                 cid,
                 content,
               });
@@ -303,6 +301,7 @@ export const CommentList = () => {
                 <Button
                   loading={floorLoading}
                   onClick={() => {
+                    setFloorLoading(true);
                     vscode.postMessage({
                       command: "floor",
                       pid,
@@ -335,10 +334,7 @@ export const CommentList = () => {
           right: (
             <Button
               icon={<PlusOutlined />}
-              onClick={() => {
-                setReplyAction("add");
-                setReplyVisible(true);
-              }}
+              onClick={() => setReplyVisible(true)}
             >
               {i18n?.reply}
             </Button>

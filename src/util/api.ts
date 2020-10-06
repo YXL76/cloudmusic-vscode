@@ -495,11 +495,16 @@ export async function apiCommentFloor(
   parentCommentId: number,
   limit: number,
   time: number
-): Promise<{ hasMore: boolean; comments: CommentDetail[] }> {
+): Promise<{
+  totalCount: number;
+  hasMore: boolean;
+  comments: CommentDetail[];
+}> {
   const key = `comment_floor${type}-${id}-${parentCommentId}-${limit}-${time}`;
   const value = apiCache.get(key);
   if (value) {
     return value as {
+      totalCount: number;
       hasMore: boolean;
       comments: CommentDetail[];
     };
@@ -509,7 +514,7 @@ export async function apiCommentFloor(
       Object.assign({ type, id, parentCommentId, limit, time }, baseQuery)
     );
     if (status !== 200) {
-      return { hasMore: false, comments: [] };
+      return { totalCount: 0, hasMore: false, comments: [] };
     }
     const { data } = body;
     const { totalCount, hasMore, comments } = data as {
@@ -518,14 +523,14 @@ export async function apiCommentFloor(
       comments: RawCommentDetail[];
     };
     const ret = {
-      total: totalCount,
+      totalCount,
       hasMore,
       comments: comments.map((comment) => solveComment(comment)),
     };
     apiCache.set(key, ret);
     return ret;
   } catch {}
-  return { hasMore: false, comments: [] };
+  return { totalCount: 0, hasMore: false, comments: [] };
 }
 
 export async function apiCommentLike(
@@ -551,12 +556,16 @@ export async function apiCommentNew(
   pageNo: number,
   pageSize: number,
   sortType: number
-): Promise<{ total: number; hasMore: boolean; comments: CommentDetail[] }> {
+): Promise<{
+  totalCount: number;
+  hasMore: boolean;
+  comments: CommentDetail[];
+}> {
   const key = `comment_new${type}-${id}-${pageNo}-${pageSize}-${sortType}`;
   const value = apiCache.get(key);
   if (value) {
     return value as {
-      total: number;
+      totalCount: number;
       hasMore: boolean;
       comments: CommentDetail[];
     };
@@ -566,7 +575,7 @@ export async function apiCommentNew(
       Object.assign({ type, id, pageNo, pageSize, sortType }, baseQuery)
     );
     if (status !== 200) {
-      return { total: 0, hasMore: false, comments: [] };
+      return { totalCount: 0, hasMore: false, comments: [] };
     }
     const { data } = body;
     const { totalCount, hasMore, comments } = data as {
@@ -575,14 +584,14 @@ export async function apiCommentNew(
       comments: RawCommentDetail[];
     };
     const ret = {
-      total: totalCount,
+      totalCount,
       hasMore,
       comments: comments.map((comment) => solveComment(comment)),
     };
     apiCache.set(key, ret);
     return ret;
   } catch {}
-  return { total: 0, hasMore: false, comments: [] };
+  return { totalCount: 0, hasMore: false, comments: [] };
 }
 
 export async function apiDailySignin(): Promise<boolean> {
