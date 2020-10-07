@@ -135,18 +135,18 @@
 
 |        module        |      function      | status |
 | :------------------: | :----------------: | :----: |
-|       comment        |   发送与删除评论   |        |
-|    comment_album     |      专辑评论      |   ✔️   |
-|      comment_dj      |      电台评论      |        |
-|    comment_event     |    获取动态评论    |        |
+|       comment        |   发送与删除评论   |   ✔️   |
+|    comment_album     |      专辑评论      |   ❌   |
+|      comment_dj      |      电台评论      |   ❌   |
+|    comment_event     |    获取动态评论    |   ❌   |
 |    comment_floor     |      楼层评论      |        |
-|     comment_hot      |      热门评论      |   ✔️   |
+|     comment_hot      |      热门评论      |   ❌   |
 | comment_hotwall_list |      云村热评      |        |
 |     comment_like     | 点赞与取消点赞评论 |   ✔️   |
-|    comment_music     |      歌曲评论      |   ✔️   |
+|    comment_music     |      歌曲评论      |   ❌   |
 |      comment_mv      |      MV 评论       |   ❌   |
-|     comment_new      |      新版评论      |        |
-|   comment_playlist   |      歌单评论      |   ✔️   |
+|     comment_new      |      新版评论      |   ✔️   |
+|   comment_playlist   |      歌单评论      |   ❌   |
 |    comment_video     |      视频评论      |   ❌   |
 
 - 电台类
@@ -304,7 +304,7 @@
 |       module       |    function    | status |
 | :----------------: | :------------: | :----: |
 | cloudsearch/search |      搜索      |   ✔️   |
-|   search_default   | 默认搜索关键词 |   ❌   |
+|   search_default   | 默认搜索关键词 |   ✔️   |
 |     search_hot     |    热门搜索    |   ❌   |
 | search_hot_detail  |    热搜列表    |   ✔️   |
 | search_multimatch  |   多类型搜索   |   ❌   |
