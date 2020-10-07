@@ -6,6 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [5.2.1] - 2020-10-07
+
+### Changed
+
+- Cache: reduce comment cache ttl
+
+### Fixed
+
+- Api: load comment correctly when `sortType` is 3
+
 ## [5.2.0] - 2020-10-07
 
 ### Added

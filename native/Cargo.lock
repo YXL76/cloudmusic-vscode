@@ -159,7 +159,7 @@ dependencies = [
  "nix 0.15.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "parking_lot 0.9.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "stdweb 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)",
- "thiserror 1.0.20 (registry+https://github.com/rust-lang/crates.io-index)",
+ "thiserror 1.0.21 (registry+https://github.com/rust-lang/crates.io-index)",
  "web-sys 0.3.45 (registry+https://github.com/rust-lang/crates.io-index)",
  "winapi 0.3.9 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
@@ -197,7 +197,7 @@ dependencies = [
 [[package]]
 name = "ep-miniaudio-sys"
 version = "2.4.0"
-source = "git+https://github.com/ExPixel/miniaudio-rs#80d7a0f03842a83233d9bcd5a7c1fa4f4af596ce"
+source = "git+https://github.com/ExPixel/miniaudio-rs#d82fe846d588a8c3353ad8fa66246a7954af4e58"
 dependencies = [
  "bindgen 0.54.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "bitflags 1.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -290,7 +290,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 [[package]]
 name = "miniaudio"
 version = "0.10.0"
-source = "git+https://github.com/ExPixel/miniaudio-rs#80d7a0f03842a83233d9bcd5a7c1fa4f4af596ce"
+source = "git+https://github.com/ExPixel/miniaudio-rs#d82fe846d588a8c3353ad8fa66246a7954af4e58"
 dependencies = [
  "bitflags 1.2.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "ep-miniaudio-sys 2.4.0 (git+https://github.com/ExPixel/miniaudio-rs)",
@@ -330,7 +330,7 @@ dependencies = [
 [[package]]
 name = "neon"
 version = "0.4.2"
-source = "git+https://github.com/neon-bindings/neon#a1770816bce2b3f9bd7ddbfc4927988dc48c3035"
+source = "git+https://github.com/neon-bindings/neon#32f3276ded7bf137f5c45b596128dd84092e41f0"
 dependencies = [
  "cslice 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "neon-build 0.4.2 (git+https://github.com/neon-bindings/neon)",
@@ -342,7 +342,7 @@ dependencies = [
 [[package]]
 name = "neon-build"
 version = "0.4.2"
-source = "git+https://github.com/neon-bindings/neon#a1770816bce2b3f9bd7ddbfc4927988dc48c3035"
+source = "git+https://github.com/neon-bindings/neon#32f3276ded7bf137f5c45b596128dd84092e41f0"
 dependencies = [
  "cfg-if 0.1.10 (registry+https://github.com/rust-lang/crates.io-index)",
  "neon-sys 0.4.2 (git+https://github.com/neon-bindings/neon)",
@@ -351,7 +351,7 @@ dependencies = [
 [[package]]
 name = "neon-runtime"
 version = "0.4.2"
-source = "git+https://github.com/neon-bindings/neon#a1770816bce2b3f9bd7ddbfc4927988dc48c3035"
+source = "git+https://github.com/neon-bindings/neon#32f3276ded7bf137f5c45b596128dd84092e41f0"
 dependencies = [
  "cfg-if 0.1.10 (registry+https://github.com/rust-lang/crates.io-index)",
  "neon-sys 0.4.2 (git+https://github.com/neon-bindings/neon)",
@@ -360,7 +360,7 @@ dependencies = [
 [[package]]
 name = "neon-sys"
 version = "0.4.2"
-source = "git+https://github.com/neon-bindings/neon#a1770816bce2b3f9bd7ddbfc4927988dc48c3035"
+source = "git+https://github.com/neon-bindings/neon#32f3276ded7bf137f5c45b596128dd84092e41f0"
 dependencies = [
  "cc 1.0.60 (registry+https://github.com/rust-lang/crates.io-index)",
  "regex 1.3.9 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -559,15 +559,15 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "1.0.20"
+version = "1.0.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
- "thiserror-impl 1.0.20 (registry+https://github.com/rust-lang/crates.io-index)",
+ "thiserror-impl 1.0.21 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.20"
+version = "1.0.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "proc-macro2 1.0.24 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -755,8 +755,8 @@ dependencies = [
 "checksum socket2 0.3.15 (registry+https://github.com/rust-lang/crates.io-index)" = "b1fa70dc5c8104ec096f4fe7ede7a221d35ae13dcd19ba1ad9a81d2cab9a1c44"
 "checksum stdweb 0.1.3 (registry+https://github.com/rust-lang/crates.io-index)" = "ef5430c8e36b713e13b48a9f709cc21e046723fe44ce34587b73a830203b533e"
 "checksum syn 1.0.42 (registry+https://github.com/rust-lang/crates.io-index)" = "9c51d92969d209b54a98397e1b91c8ae82d8c87a7bb87df0b29aa2ad81454228"
-"checksum thiserror 1.0.20 (registry+https://github.com/rust-lang/crates.io-index)" = "7dfdd070ccd8ccb78f4ad66bf1982dc37f620ef696c6b5028fe2ed83dd3d0d08"
-"checksum thiserror-impl 1.0.20 (registry+https://github.com/rust-lang/crates.io-index)" = "bd80fc12f73063ac132ac92aceea36734f04a1d93c1240c6944e23a3b8841793"
+"checksum thiserror 1.0.21 (registry+https://github.com/rust-lang/crates.io-index)" = "318234ffa22e0920fe9a40d7b8369b5f649d490980cf7aadcf1eb91594869b42"
+"checksum thiserror-impl 1.0.21 (registry+https://github.com/rust-lang/crates.io-index)" = "cae2447b6282786c3493999f40a9be2a6ad20cb8bd268b0a0dbf5a065535c0ab"
 "checksum thread_local 1.0.1 (registry+https://github.com/rust-lang/crates.io-index)" = "d40c6d1b69745a6ec6fb1ca717914848da4b44ae29d9b3080cbee91d72a69b14"
 "checksum unicode-xid 0.2.1 (registry+https://github.com/rust-lang/crates.io-index)" = "f7fe0bb3479651439c9112f72b6c505038574c9fbb575ed1bf3b797fa39dd564"
 "checksum vcpkg 0.2.10 (registry+https://github.com/rust-lang/crates.io-index)" = "6454029bf181f092ad1b853286f23e2c507d8e8194d01d92da4a55c274a5508c"
