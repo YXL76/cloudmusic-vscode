@@ -26,17 +26,21 @@ export const CommentList = () => {
   const [hasMores, setHasMores] = useState([true, true, true]);
   const [total, setTotal] = useState(0);
 
-  const [replyVisible, setReplyVisible] = useState(false);
-  const [content, setContent] = useState("");
-  const [cid, setCid] = useState(0);
+  const [replyData, setReplyData] = useState({
+    visible: false,
+    content: "",
+    cid: 0,
+  });
 
-  const [floorVisible, setFloorVisible] = useState(false);
-  const [floorOwner, setFloorOwner] = useState([] as CommentDetail[]);
-  const [floorList, setFloorList] = useState([] as CommentDetail[]);
-  const [floorLoading, setFloorLoading] = useState(true);
-  const [floorHasMore, setFloorHasMore] = useState(true);
-  const [floorTotal, setFloorTotal] = useState(0);
-  const [pid, setPid] = useState(0);
+  const [floorData, setFloorData] = useState({
+    visible: false,
+    owner: [] as CommentDetail[],
+    list: [] as CommentDetail[],
+    loading: true,
+    hasMore: true,
+    total: 0,
+    pid: 0,
+  });
 
   useEffect(() => {
     const handler = ({
@@ -56,53 +60,43 @@ export const CommentList = () => {
       if (command === "list") {
         const { sortType, totalCount, hasMore, comments } = data;
         const idx = sortType - 1;
-        if (totalCount !== total) {
-          setTotal(totalCount);
-        }
-        if (!hasMore) {
-          hasMores[idx] = hasMore;
-          setHasMores([...hasMores]);
-        }
-        setLists([
-          ...lists.slice(0, idx),
-          lists[idx].concat(comments),
-          ...lists.slice(idx + 1),
-        ]);
+        setTotal(totalCount);
+        hasMores[idx] = hasMore;
+        setHasMores([...hasMores]);
+        lists[idx].push(...comments);
+        setLists([...lists]);
         loadings[idx] = false;
         setLoadings([...loadings]);
       } else if (command === "like") {
         const { liked, cid } = data;
-        if (floorVisible) {
-          const idx = floorList.findIndex((value) => value.commentId === cid);
-          if (idx >= 0) {
-            if (floorList[idx].liked !== liked) {
-              floorList[idx].liked = liked;
-              floorList[idx].likedCount += liked ? 1 : -1;
-            }
+        if (floorData.visible) {
+          const idx = floorData.list.findIndex(
+            (value) => value.commentId === cid
+          );
+          if (idx >= 0 && floorData.list[idx].liked !== liked) {
+            floorData.list[idx].liked = liked;
+            floorData.list[idx].likedCount += liked ? 1 : -1;
           }
-          setFloorList([...floorList]);
+          setFloorData({ ...floorData });
         } else {
           for (const list of lists) {
             const idx = list.findIndex((value) => value.commentId === cid);
-            if (idx >= 0) {
-              if (list[idx].liked !== liked) {
-                list[idx].liked = liked;
-                list[idx].likedCount += liked ? 1 : -1;
-              }
+            if (idx >= 0 && list[idx].liked !== liked) {
+              list[idx].liked = liked;
+              list[idx].likedCount += liked ? 1 : -1;
             }
           }
           setLists([...lists]);
         }
       } else if (command === "floor") {
         const { totalCount, hasMore, comments } = data;
-        if (!hasMore) {
-          setFloorHasMore(hasMore);
-        }
-        if (totalCount > 0 && floorTotal !== totalCount) {
-          setFloorTotal(totalCount);
-        }
-        setFloorList(floorList.concat(comments));
-        setFloorLoading(false);
+        floorData.list.push(...comments);
+        setFloorData({
+          ...floorData,
+          loading: false,
+          hasMore,
+          total: totalCount,
+        });
       }
     };
     window.addEventListener("message", handler);
@@ -115,17 +109,16 @@ export const CommentList = () => {
     vscode.postMessage({ command: "user", id });
   };
 
-  const listItem = (item: CommentDetail) => {
-    const {
-      commentId,
-      user,
-      content,
-      liked,
-      likedCount,
-      time,
-      beReplied,
-      replyCount,
-    } = item;
+  const listItem = ({
+    commentId,
+    user,
+    content,
+    liked,
+    likedCount,
+    time,
+    beReplied,
+    replyCount,
+  }: CommentDetail) => {
     return (
       <List.Item
         actions={[
@@ -144,10 +137,9 @@ export const CommentList = () => {
           </Button>,
           <Button
             type="text"
-            onClick={() => {
-              setCid(commentId);
-              setReplyVisible(true);
-            }}
+            onClick={() =>
+              setReplyData({ ...replyData, cid: commentId, visible: true })
+            }
           >
             {i18n?.reply}
           </Button>,
@@ -189,9 +181,23 @@ export const CommentList = () => {
                         command: "floor",
                         pid: commentId,
                       });
-                      setPid(commentId);
-                      setFloorOwner([{ ...item, replyCount: 0 }]);
-                      setFloorVisible(true);
+                      setFloorData({
+                        ...floorData,
+                        visible: true,
+                        owner: [
+                          {
+                            commentId,
+                            user,
+                            content,
+                            liked,
+                            likedCount,
+                            time,
+                            beReplied,
+                            replyCount: 0,
+                          },
+                        ],
+                        pid: commentId,
+                      });
                     }}
                   >
                     {`${replyCount} ${i18n?.reply as string}`}
@@ -242,23 +248,22 @@ export const CommentList = () => {
       <Drawer
         title={i18n?.reply}
         placement="bottom"
-        onClose={() => setReplyVisible(false)}
-        visible={replyVisible}
+        onClose={() => setReplyData({ ...replyData, visible: false })}
+        visible={replyData.visible}
         zIndex={2000}
         height={200}
         footer={
           <Button
             type="primary"
-            disabled={content.length === 0}
+            disabled={replyData.content.length === 0}
             icon={<UploadOutlined />}
             onClick={() => {
               vscode.postMessage({
                 command: "reply",
-                cid,
-                content,
+                cid: replyData.cid,
+                content: replyData.content,
               });
-              setContent("");
-              setReplyVisible(false);
+              setReplyData({ ...replyData, content: "", visible: false });
             }}
           >
             {i18n?.submit}
@@ -266,14 +271,13 @@ export const CommentList = () => {
         }
       >
         <Input
-          defaultValue={content}
+          defaultValue={replyData.content}
           allowClear={true}
           size="large"
           bordered={false}
-          onChange={(e) => {
-            const { value } = e.target;
-            setContent(value);
-          }}
+          onChange={(e) =>
+            setReplyData({ ...replyData, content: e.target.value })
+          }
         />
       </Drawer>
     );
@@ -284,42 +288,45 @@ export const CommentList = () => {
       <Drawer
         title={i18n?.reply}
         placement="right"
-        onClose={() => {
-          setFloorVisible(false);
-          setFloorList([]);
-          setFloorOwner([]);
-          setFloorHasMore(true);
-          setFloorLoading(true);
-          setFloorTotal(0);
-        }}
-        visible={floorVisible}
+        onClose={() =>
+          setFloorData({
+            visible: false,
+            owner: [],
+            list: [],
+            loading: true,
+            hasMore: true,
+            total: 0,
+            pid: 0,
+          })
+        }
+        visible={floorData.visible}
         zIndex={1000}
         width={1024}
       >
         <List
           size="small"
           itemLayout="horizontal"
-          dataSource={floorOwner}
+          dataSource={floorData.owner}
           renderItem={listItem}
         />
-        <div className="tab-bar--extra-left">{`${
-          i18n?.comment as string
-        } (${floorTotal})`}</div>
+        <div className="tab-bar--extra-left">{`${i18n?.comment as string} (${
+          floorData.total
+        })`}</div>
         <List
           size="small"
           itemLayout="horizontal"
           loadMore={
-            floorHasMore ? (
+            floorData.hasMore ? (
               <div className="list-footer--load-more">
                 <Button
-                  loading={floorLoading}
+                  loading={floorData.loading}
                   onClick={() => {
                     vscode.postMessage({
                       command: "floor",
-                      pid,
-                      time: floorList[floorList.length - 1].time,
+                      pid: floorData.pid,
+                      time: floorData.list[floorData.list.length - 1].time,
                     });
-                    setFloorLoading(true);
+                    setFloorData({ ...floorData, loading: true });
                   }}
                 >
                   {i18n?.more}
@@ -327,7 +334,7 @@ export const CommentList = () => {
               </div>
             ) : null
           }
-          dataSource={floorList}
+          dataSource={floorData.list}
           renderItem={listItem}
         />
       </Drawer>
@@ -347,7 +354,7 @@ export const CommentList = () => {
           right: (
             <Button
               icon={<PlusOutlined />}
-              onClick={() => setReplyVisible(true)}
+              onClick={() => setReplyData({ ...replyData, visible: true })}
             >
               {i18n?.reply}
             </Button>
