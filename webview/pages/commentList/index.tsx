@@ -14,12 +14,6 @@ const { vscode, data } = window.webview;
 const { i18n, message } = data;
 const pageSize = message?.pageSize || 30;
 
-enum SortType {
-  recommendation = 1,
-  hottest = 2,
-  latest = 3,
-}
-
 export const CommentList = () => {
   const [lists, setLists] = useState([[], [], []] as CommentDetail[][]);
   const [loadings, setLoadings] = useState([true, false, false]);
@@ -48,7 +42,7 @@ export const CommentList = () => {
     }: {
       data: {
         command: "list" | "like" | "floor";
-        sortType: SortType;
+        sortType: number;
         totalCount: number;
         hasMore: boolean;
         comments: CommentDetail[];
@@ -90,7 +84,17 @@ export const CommentList = () => {
         }
       } else if (command === "floor") {
         const { totalCount, hasMore, comments } = data;
-        floorData.list.push(...comments);
+        floorData.list.push(
+          ...comments.map((comment) => {
+            if (
+              comment?.beReplied?.beRepliedCommentId ===
+              floorData.owner[0].commentId
+            ) {
+              comment.beReplied = undefined;
+            }
+            return comment;
+          })
+        );
         setFloorData({
           ...floorData,
           loading: false,
@@ -118,118 +122,207 @@ export const CommentList = () => {
     time,
     beReplied,
     replyCount,
-  }: CommentDetail) => {
-    return (
-      <List.Item
-        actions={[
-          <Button
-            type="text"
-            icon={liked ? <LikeFilled /> : <LikeOutlined />}
-            onClick={() =>
-              vscode.postMessage({
-                command: "like",
-                cid: commentId,
-                t: liked ? 0 : 1,
-              })
-            }
-          >
-            {` (${likedCount})`}
-          </Button>,
-          <Button
-            type="text"
-            onClick={() =>
-              setReplyData({ ...replyData, cid: commentId, visible: true })
-            }
-          >
-            {i18n?.reply}
-          </Button>,
-        ]}
-      >
-        <List.Item.Meta
-          avatar={
+  }: CommentDetail) => (
+    <List.Item
+      actions={[
+        <Button
+          type="text"
+          icon={liked ? <LikeFilled /> : <LikeOutlined />}
+          onClick={() =>
+            vscode.postMessage({
+              command: "like",
+              cid: commentId,
+              t: liked ? 0 : 1,
+            })
+          }
+        >
+          {` (${likedCount})`}
+        </Button>,
+        <Button
+          type="text"
+          onClick={() =>
+            setReplyData({ ...replyData, cid: commentId, visible: true })
+          }
+        >
+          {i18n?.reply}
+        </Button>,
+      ]}
+    >
+      <List.Item.Meta
+        avatar={
+          <a href="." onClick={() => usr(user.userId)}>
+            <Avatar src={user.avatarUrl} />
+          </a>
+        }
+        title={
+          <div>
             <a href="." onClick={() => usr(user.userId)}>
-              <Avatar src={user.avatarUrl} />
+              {user.nickname}
             </a>
-          }
-          title={
-            <div>
-              <a href="." onClick={() => usr(user.userId)}>
-                {user.nickname}
-              </a>
-              <span className="list-title--time">
-                {moment(time).format("YYYY-MM-DD HH:mm:ss")}
-              </span>
-            </div>
-          }
-          description={
-            <div className="flex flex-column">
-              <p>{content}</p>
-              {beReplied && (
-                <p className="list-content--beReplied">
-                  <a href="." onClick={() => usr(beReplied.user.userId)}>
-                    @{beReplied.user.nickname}
-                  </a>
-                  : {beReplied.content}
-                </p>
-              )}
-              {replyCount > 0 && (
-                <div>
-                  <a
-                    href="."
-                    onClick={() => {
-                      vscode.postMessage({
-                        command: "floor",
-                        pid: commentId,
-                      });
-                      setFloorData({
-                        ...floorData,
-                        visible: true,
-                        owner: [
-                          {
-                            commentId,
-                            user,
-                            content,
-                            liked,
-                            likedCount,
-                            time,
-                            beReplied,
-                            replyCount: 0,
-                          },
-                        ],
-                        pid: commentId,
-                      });
-                    }}
-                  >
-                    {`${replyCount} ${i18n?.reply as string}`}
-                  </a>
-                </div>
-              )}
-            </div>
-          }
-        />
-      </List.Item>
-    );
-  };
+            <span className="list-title--time">
+              {moment(time).format("YYYY-MM-DD HH:mm:ss")}
+            </span>
+          </div>
+        }
+        description={
+          <div className="flex flex-column">
+            <p>{content}</p>
+            {beReplied && (
+              <p className="list-content--beReplied">
+                <a href="." onClick={() => usr(beReplied.user.userId)}>
+                  @{beReplied.user.nickname}
+                </a>
+                : {beReplied.content}
+              </p>
+            )}
+            {replyCount > 0 && (
+              <div>
+                <a
+                  href="."
+                  onClick={() => {
+                    vscode.postMessage({
+                      command: "floor",
+                      pid: commentId,
+                    });
+                    setFloorData({
+                      ...floorData,
+                      visible: true,
+                      owner: [
+                        {
+                          commentId,
+                          user,
+                          content,
+                          liked,
+                          likedCount,
+                          time,
+                          beReplied,
+                          replyCount: 0,
+                        },
+                      ],
+                      pid: commentId,
+                    });
+                  }}
+                >
+                  {`${replyCount} ${i18n?.reply as string}`}
+                </a>
+              </div>
+            )}
+          </div>
+        }
+      />
+    </List.Item>
+  );
 
-  const tab = (sortType: SortType) => {
-    const idx = sortType - 1;
-    return (
+  const tab = (idx: number) => (
+    <List
+      size="small"
+      itemLayout="horizontal"
+      loadMore={
+        hasMores[idx] ? (
+          <div className="list-footer--load-more">
+            <Button
+              loading={loadings[idx]}
+              onClick={() => {
+                vscode.postMessage({
+                  command: "list",
+                  sortType: idx + 1,
+                  pageNo: Math.floor(lists[idx].length / pageSize) + 1,
+                });
+                loadings[idx] = true;
+                setLoadings([...loadings]);
+              }}
+            >
+              {i18n?.more}
+            </Button>
+          </div>
+        ) : null
+      }
+      dataSource={lists[idx]}
+      renderItem={listItem}
+    />
+  );
+
+  const replyPanel = () => (
+    <Drawer
+      title={i18n?.reply}
+      placement="bottom"
+      onClose={() => setReplyData({ ...replyData, visible: false })}
+      visible={replyData.visible}
+      zIndex={2000}
+      height={200}
+      footer={
+        <Button
+          type="primary"
+          disabled={replyData.content.length === 0}
+          icon={<UploadOutlined />}
+          onClick={() => {
+            vscode.postMessage({
+              command: "reply",
+              cid: replyData.cid,
+              content: replyData.content,
+            });
+            setReplyData({ ...replyData, content: "", visible: false });
+          }}
+        >
+          {i18n?.submit}
+        </Button>
+      }
+    >
+      <Input
+        defaultValue={replyData.content}
+        allowClear={true}
+        size="large"
+        bordered={false}
+        onChange={(e) =>
+          setReplyData({ ...replyData, content: e.target.value })
+        }
+      />
+    </Drawer>
+  );
+
+  const floorPanel = () => (
+    <Drawer
+      title={i18n?.reply}
+      placement="right"
+      onClose={() =>
+        setFloorData({
+          visible: false,
+          owner: [],
+          list: [],
+          loading: true,
+          hasMore: true,
+          total: 0,
+          pid: 0,
+        })
+      }
+      visible={floorData.visible}
+      zIndex={1000}
+      width={1024}
+    >
+      <List
+        size="small"
+        itemLayout="horizontal"
+        dataSource={floorData.owner}
+        renderItem={listItem}
+      />
+      <div className="tab-bar--extra-left">{`${i18n?.comment as string} (${
+        floorData.total
+      })`}</div>
       <List
         size="small"
         itemLayout="horizontal"
         loadMore={
-          hasMores[idx] ? (
+          floorData.hasMore ? (
             <div className="list-footer--load-more">
               <Button
-                loading={loadings[idx]}
+                loading={floorData.loading}
                 onClick={() => {
                   vscode.postMessage({
-                    command: "list",
-                    sortType,
-                    pageNo: Math.floor(lists[idx].length / pageSize) + 1,
+                    command: "floor",
+                    pid: floorData.pid,
+                    time: floorData.list[floorData.list.length - 1].time,
                   });
-                  loadings[idx] = true;
-                  setLoadings([...loadings]);
+                  setFloorData({ ...floorData, loading: true });
                 }}
               >
                 {i18n?.more}
@@ -237,109 +330,11 @@ export const CommentList = () => {
             </div>
           ) : null
         }
-        dataSource={lists[idx]}
+        dataSource={floorData.list}
         renderItem={listItem}
       />
-    );
-  };
-
-  const replyPanel = () => {
-    return (
-      <Drawer
-        title={i18n?.reply}
-        placement="bottom"
-        onClose={() => setReplyData({ ...replyData, visible: false })}
-        visible={replyData.visible}
-        zIndex={2000}
-        height={200}
-        footer={
-          <Button
-            type="primary"
-            disabled={replyData.content.length === 0}
-            icon={<UploadOutlined />}
-            onClick={() => {
-              vscode.postMessage({
-                command: "reply",
-                cid: replyData.cid,
-                content: replyData.content,
-              });
-              setReplyData({ ...replyData, content: "", visible: false });
-            }}
-          >
-            {i18n?.submit}
-          </Button>
-        }
-      >
-        <Input
-          defaultValue={replyData.content}
-          allowClear={true}
-          size="large"
-          bordered={false}
-          onChange={(e) =>
-            setReplyData({ ...replyData, content: e.target.value })
-          }
-        />
-      </Drawer>
-    );
-  };
-
-  const floorPanel = () => {
-    return (
-      <Drawer
-        title={i18n?.reply}
-        placement="right"
-        onClose={() =>
-          setFloorData({
-            visible: false,
-            owner: [],
-            list: [],
-            loading: true,
-            hasMore: true,
-            total: 0,
-            pid: 0,
-          })
-        }
-        visible={floorData.visible}
-        zIndex={1000}
-        width={1024}
-      >
-        <List
-          size="small"
-          itemLayout="horizontal"
-          dataSource={floorData.owner}
-          renderItem={listItem}
-        />
-        <div className="tab-bar--extra-left">{`${i18n?.comment as string} (${
-          floorData.total
-        })`}</div>
-        <List
-          size="small"
-          itemLayout="horizontal"
-          loadMore={
-            floorData.hasMore ? (
-              <div className="list-footer--load-more">
-                <Button
-                  loading={floorData.loading}
-                  onClick={() => {
-                    vscode.postMessage({
-                      command: "floor",
-                      pid: floorData.pid,
-                      time: floorData.list[floorData.list.length - 1].time,
-                    });
-                    setFloorData({ ...floorData, loading: true });
-                  }}
-                >
-                  {i18n?.more}
-                </Button>
-              </div>
-            ) : null
-          }
-          dataSource={floorData.list}
-          renderItem={listItem}
-        />
-      </Drawer>
-    );
-  };
+    </Drawer>
+  );
 
   return (
     <>
@@ -362,13 +357,13 @@ export const CommentList = () => {
         }}
       >
         <TabPane tab={i18n?.recommendation} key="1" forceRender>
-          {tab(SortType.recommendation)}
+          {tab(0)}
         </TabPane>
         <TabPane tab={i18n?.hottest} key="2" forceRender>
-          {tab(SortType.hottest)}
+          {tab(1)}
         </TabPane>
         <TabPane tab={i18n?.latest} key="3" forceRender>
-          {tab(SortType.latest)}
+          {tab(2)}
         </TabPane>
       </Tabs>
       {replyPanel()}
