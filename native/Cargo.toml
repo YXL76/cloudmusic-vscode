@@ -14,7 +14,7 @@ crate-type = ["cdylib"]
 git = "https://github.com/neon-bindings/neon"
 
 [dependencies]
-cfg-if = "0.1.10"
+cfg-if = "1.0.0"
 
 [dependencies.neon]
 git = "https://github.com/neon-bindings/neon"
