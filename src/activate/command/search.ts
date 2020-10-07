@@ -3,6 +3,7 @@ import {
   MultiStepInput,
   apiSearchAlbum,
   apiSearchArtist,
+  apiSearchDefault,
   apiSearchHotDetail,
   apiSearchPlaylist,
   apiSearchSingle,
@@ -51,7 +52,7 @@ export async function inputKeyword(
   input: MultiStepInput,
   addStep: number
 ): Promise<InputStep> {
-  const hotItems = (await apiSearchHotDetail()).map(
+  const items: QuickPickItem[] = (await apiSearchHotDetail()).map(
     ({ searchWord, content }) => ({
       label: searchWord,
       description: "$(flame)",
@@ -59,20 +60,20 @@ export async function inputKeyword(
     })
   );
 
+  items.unshift({ label: state.keyword ?? (await apiSearchDefault()) });
+
   const pick = await input.showQuickPick({
     title,
     step: 1 + addStep,
     totalSteps: totalSteps + addStep,
-    items: state.keyword
-      ? [{ label: state.keyword }].concat(hotItems)
-      : hotItems,
+    items,
     placeholder: i18n.sentence.hint.keyword,
     changeCallback: (that, value) => {
       if (value) {
         that.items = [{ label: value }].concat(that.items.slice(1));
         updateSuggestions(that, value);
       } else {
-        that.items = hotItems;
+        that.items = items;
       }
     },
   });

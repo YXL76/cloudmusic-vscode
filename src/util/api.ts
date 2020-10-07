@@ -68,6 +68,7 @@ import {
   recommend_songs,
   related_playlist,
   scrobble,
+  search_default,
   search_hot_detail,
   search_suggest,
   simi_artist,
@@ -1076,7 +1077,27 @@ export async function apiScrobble(
   sourceid: number,
   time: number
 ): Promise<void> {
-  await scrobble(Object.assign({ id, sourceid, time }, baseQuery));
+  try {
+    await scrobble(Object.assign({ id, sourceid, time }, baseQuery));
+  } catch {}
+}
+
+export async function apiSearchDefault(): Promise<string> {
+  const key = "search_default";
+  const value = apiCache.get(key);
+  if (value) {
+    return value as string;
+  }
+  try {
+    const { body, status } = await search_default(baseQuery);
+    if (status !== 200) {
+      return "";
+    }
+    const ret = (body.data as { realkeyword: string }).realkeyword;
+    apiCache.set(key, ret);
+    return ret;
+  } catch {}
+  return "";
 }
 
 export async function apiSearchSingle(
@@ -1084,7 +1105,7 @@ export async function apiSearchSingle(
   limit: number,
   offset: number
 ): Promise<SongsItem[]> {
-  const key = `search${SearchType.single}-${keywords}-${limit}-${offset}`;
+  const key = `cloudsearch${SearchType.single}-${keywords}-${limit}-${offset}`;
   const value = apiCache.get(key);
   if (value) {
     return value as SongsItem[];
@@ -1114,7 +1135,7 @@ export async function apiSearchAlbum(
   limit: number,
   offset: number
 ): Promise<AlbumsItem[]> {
-  const key = `search${SearchType.album}-${keywords}-${limit}-${offset}`;
+  const key = `cloudsearch${SearchType.album}-${keywords}-${limit}-${offset}`;
   const value = apiCache.get(key);
   if (value) {
     return value as AlbumsItem[];
@@ -1144,7 +1165,7 @@ export async function apiSearchArtist(
   limit: number,
   offset: number
 ): Promise<Artist[]> {
-  const key = `search${SearchType.artist}-${keywords}-${limit}-${offset}`;
+  const key = `cloudsearch${SearchType.artist}-${keywords}-${limit}-${offset}`;
   const value = apiCache.get(key);
   if (value) {
     return value as Artist[];
@@ -1174,7 +1195,7 @@ export async function apiSearchPlaylist(
   limit: number,
   offset: number
 ): Promise<PlaylistItem[]> {
-  const key = `search${SearchType.playlist}-${keywords}-${limit}-${offset}`;
+  const key = `cloudsearch${SearchType.playlist}-${keywords}-${limit}-${offset}`;
   const value = apiCache.get(key);
   if (value) {
     return value as PlaylistItem[];

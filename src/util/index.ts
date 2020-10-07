@@ -44,6 +44,7 @@ export {
   apiScrobble,
   apiSearchAlbum,
   apiSearchArtist,
+  apiSearchDefault,
   apiSearchHotDetail,
   apiSearchPlaylist,
   apiSearchSingle,
