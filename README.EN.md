@@ -124,7 +124,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 
 |   module    |      function      | status |
 | :---------: | :----------------: | :----: |
-| check_music |     歌曲可用性     |   ✔️   |
+| check_music |     歌曲可用性     |   ❌   |
 |    lyric    |        歌词        |   ✔️   |
 |  simi_song  |      相似歌曲      |   ✔️   |
 | song_detail |      歌曲详情      |   ✔️   |
@@ -257,8 +257,8 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |  history_recommend_songs_detail  |  历史每日推荐歌曲详情  |   ❌   |
 |              login               |        邮箱登录        |   ✔️   |
 |         login_cellphone          |        手机登录        |   ✔️   |
-|          login_refresh           |        登录刷新        |   ✔️   |
-|           login_status           |        登录状态        |   ✔️   |
+|          login_refresh           |        登录刷新        |   ❌   |
+|           login_status           |        登录状态        |   ❌   |
 |              logout              |        退出登录        |   ✔️   |
 |           msg_comments           |          评论          |        |
 |           msg_forwards           |          @我           |        |

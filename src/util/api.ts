@@ -37,7 +37,6 @@ import {
   artist_sub,
   artist_sublist,
   artists,
-  check_music,
   cloudsearch,
   comment,
   comment_floor,
@@ -47,8 +46,6 @@ import {
   fm_trash,
   like,
   likelist,
-  login_refresh,
-  login_status,
   logout,
   lyric,
   personal_fm,
@@ -434,21 +431,6 @@ export async function apiArtistSublist(): Promise<Artist[]> {
   return ret;
 }
 
-export async function apiCheckMusic(id: number, br: number): Promise<boolean> {
-  try {
-    const { status, body } = await check_music(
-      Object.assign({ id, br }, baseQuery)
-    );
-    if (status !== 200) {
-      return false;
-    }
-    const { success } = body;
-    return success as boolean;
-  } catch {
-    return false;
-  }
-}
-
 export async function apiCommentAdd(
   type: CommentType,
   id: number,
@@ -660,30 +642,6 @@ export async function apiLikelist(): Promise<number[]> {
     return ids as number[];
   } catch {
     return [];
-  }
-}
-
-export async function apiLoginRefresh(): Promise<boolean> {
-  try {
-    const { status } = await login_refresh(baseQuery);
-    if (status !== 200) {
-      return false;
-    }
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-export async function apiLoginStatus(): Promise<boolean> {
-  try {
-    const { status } = await login_status(baseQuery);
-    if (status !== 200) {
-      return false;
-    }
-    return true;
-  } catch {
-    return false;
   }
 }
 
