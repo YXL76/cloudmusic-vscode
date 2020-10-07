@@ -223,10 +223,12 @@ export const CommentList = () => {
             <Button
               loading={loadings[idx]}
               onClick={() => {
+                const len = lists[idx].length;
                 vscode.postMessage({
                   command: "list",
                   sortType: idx + 1,
-                  pageNo: Math.floor(lists[idx].length / pageSize) + 1,
+                  pageNo: Math.floor(len / pageSize) + 1,
+                  time: len > 0 ? lists[idx][len - 1].time : 0,
                 });
                 loadings[idx] = true;
                 setLoadings([...loadings]);

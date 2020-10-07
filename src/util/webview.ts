@@ -14,15 +14,10 @@ import {
 } from "../util";
 import type { CommentType } from "NeteaseCloudMusicApi";
 import type { SongsItem } from "../constant";
+import { SortType } from "../constant";
 import { SubAction } from "NeteaseCloudMusicApi";
 import type { WebviewPanel } from "vscode";
 import { i18n } from "../i18n";
-
-const enum SortType {
-  recommendation = 1,
-  hottest = 2,
-  latest = 3,
-}
 
 export class WebView {
   private static instance: WebView;
@@ -109,12 +104,12 @@ export class WebView {
       }
     );
 
-    async function list(pageNo: number, sortType: SortType) {
-      const data = await apiCommentNew(type, id, pageNo, pageSize, sortType);
-      void panel.webview.postMessage({ command: "list", sortType, ...data });
+    async function list(pageNo: number, sortType: SortType, time: number) {
+      const r = await apiCommentNew(type, id, pageNo, pageSize, sortType, time);
+      void panel.webview.postMessage({ command: "list", sortType, ...r });
     }
 
-    void list(1, SortType.recommendation);
+    void list(1, SortType.recommendation, 0);
 
     type Message = {
       command: "user" | "list" | "like" | "reply" | "floor";
@@ -134,8 +129,12 @@ export class WebView {
         const { id } = message;
         void MultiStepInput.run((input) => pickUser(input, 1, id));
       } else if (command === "list") {
-        const { pageNo, sortType } = message;
-        void list(pageNo, sortType);
+        const { pageNo, sortType, time } = message;
+        if (sortType === SortType.latest) {
+          void list(pageNo, sortType, time);
+        } else {
+          void list(pageNo, sortType, 0);
+        }
       } else if (command === "like") {
         const { cid, t } = message;
         void apiCommentLike(type, t, id, cid).then((res) => {

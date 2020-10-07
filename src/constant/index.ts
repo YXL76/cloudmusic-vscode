@@ -25,6 +25,7 @@ export {
   SimplyUserDetail,
   SongDetail,
   SongsItem,
+  SortType,
   TrackIdsItem,
   UserDetail,
 } from "./type";

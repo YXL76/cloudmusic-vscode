@@ -88,7 +88,7 @@ import {
   user_record,
 } from "NeteaseCloudMusicApi";
 import { LyricCache, apiCache } from "../util";
-import { MUSIC_QUALITY, PROXY, REAL_IP } from "../constant";
+import { MUSIC_QUALITY, PROXY, REAL_IP, SortType } from "../constant";
 import { AccountManager } from "../manager";
 
 function solveArtist(item: Artist): Artist {
@@ -538,13 +538,14 @@ export async function apiCommentNew(
   id: number,
   pageNo: number,
   pageSize: number,
-  sortType: number
+  sortType: SortType,
+  cursor: number
 ): Promise<{
   totalCount: number;
   hasMore: boolean;
   comments: CommentDetail[];
 }> {
-  const key = `comment_new${type}-${id}-${pageNo}-${pageSize}-${sortType}`;
+  const key = `comment_new${type}-${id}-${pageNo}-${pageSize}-${sortType}-${cursor}`;
   const value = apiCache.get(key);
   if (value) {
     return value as {
@@ -555,7 +556,7 @@ export async function apiCommentNew(
   }
   try {
     const { status, body } = await comment_new(
-      Object.assign({ type, id, pageNo, pageSize, sortType }, baseQuery)
+      Object.assign({ type, id, pageNo, pageSize, sortType, cursor }, baseQuery)
     );
     if (status !== 200) {
       return { totalCount: 0, hasMore: false, comments: [] };
@@ -571,7 +572,9 @@ export async function apiCommentNew(
       hasMore,
       comments: comments.map((comment) => solveComment(comment)),
     };
-    apiCache.set(key, ret);
+    if (sortType !== SortType.latest || cursor !== 0) {
+      apiCache.set(key, ret);
+    }
     return ret;
   } catch {}
   return { totalCount: 0, hasMore: false, comments: [] };

@@ -162,3 +162,9 @@ export interface NativeModule {
     callback: (err: string, res: boolean) => void
   ): void;
 }
+
+export const enum SortType {
+  recommendation = 1,
+  hottest = 2,
+  latest = 3,
+}
