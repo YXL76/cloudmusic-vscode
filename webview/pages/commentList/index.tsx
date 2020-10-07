@@ -1,6 +1,6 @@
 import "./index.scss";
 import { Avatar, Button, Drawer, Input, List, Tabs } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { CommentDetail } from "../../constant";
 import LikeFilled from "@ant-design/icons/LikeFilled";
 import LikeOutlined from "@ant-design/icons/LikeOutlined";
@@ -38,73 +38,77 @@ export const CommentList = () => {
   const [floorTotal, setFloorTotal] = useState(0);
   const [pid, setPid] = useState(0);
 
-  window.addEventListener("message", ({ data }) => {
-    const { command } = data as {
-      command: "list" | "like" | "floor";
-    };
-    if (command === "list") {
-      const { sortType, totalCount, hasMore, comments } = data as {
+  useEffect(() => {
+    const handler = ({
+      data,
+    }: {
+      data: {
+        command: "list" | "like" | "floor";
         sortType: SortType;
         totalCount: number;
         hasMore: boolean;
         comments: CommentDetail[];
-      };
-      const idx = sortType - 1;
-      if (totalCount !== total) {
-        setTotal(totalCount);
-      }
-      if (!hasMore) {
-        hasMores[idx] = hasMore;
-        setHasMores([...hasMores]);
-      }
-      setLists([
-        ...lists.slice(0, idx),
-        lists[idx].concat(comments),
-        ...lists.slice(idx + 1),
-      ]);
-      loadings[idx] = false;
-      setLoadings([...loadings]);
-    } else if (command === "like") {
-      const { liked, cid } = data as {
         liked: boolean;
         cid: number;
       };
-      if (floorVisible) {
-        const idx = floorList.findIndex((value) => value.commentId === cid);
-        if (idx >= 0) {
-          if (floorList[idx].liked !== liked) {
-            floorList[idx].liked = liked;
-            floorList[idx].likedCount += liked ? 1 : -1;
-          }
+    }) => {
+      const { command } = data;
+      if (command === "list") {
+        const { sortType, totalCount, hasMore, comments } = data;
+        const idx = sortType - 1;
+        if (totalCount !== total) {
+          setTotal(totalCount);
         }
-        setFloorList([...floorList]);
-      } else {
-        for (const list of lists) {
-          const idx = list.findIndex((value) => value.commentId === cid);
+        if (!hasMore) {
+          hasMores[idx] = hasMore;
+          setHasMores([...hasMores]);
+        }
+        setLists([
+          ...lists.slice(0, idx),
+          lists[idx].concat(comments),
+          ...lists.slice(idx + 1),
+        ]);
+        loadings[idx] = false;
+        setLoadings([...loadings]);
+      } else if (command === "like") {
+        const { liked, cid } = data;
+        if (floorVisible) {
+          const idx = floorList.findIndex((value) => value.commentId === cid);
           if (idx >= 0) {
-            if (list[idx].liked !== liked) {
-              list[idx].liked = liked;
-              list[idx].likedCount += liked ? 1 : -1;
+            if (floorList[idx].liked !== liked) {
+              floorList[idx].liked = liked;
+              floorList[idx].likedCount += liked ? 1 : -1;
             }
           }
+          setFloorList([...floorList]);
+        } else {
+          for (const list of lists) {
+            const idx = list.findIndex((value) => value.commentId === cid);
+            if (idx >= 0) {
+              if (list[idx].liked !== liked) {
+                list[idx].liked = liked;
+                list[idx].likedCount += liked ? 1 : -1;
+              }
+            }
+          }
+          setLists([...lists]);
         }
-        setLists([...lists]);
+      } else if (command === "floor") {
+        const { totalCount, hasMore, comments } = data;
+        if (!hasMore) {
+          setFloorHasMore(hasMore);
+        }
+        if (totalCount > 0 && floorTotal !== totalCount) {
+          setFloorTotal(totalCount);
+        }
+        setFloorList(floorList.concat(comments));
+        setFloorLoading(false);
       }
-    } else if (command === "floor") {
-      const { totalCount, hasMore, comments } = data as {
-        totalCount: number;
-        hasMore: boolean;
-        comments: CommentDetail[];
-      };
-      if (!hasMore) {
-        setFloorHasMore(hasMore);
-      }
-      if (totalCount > 0 && floorTotal !== totalCount) {
-        setFloorTotal(totalCount);
-      }
-      setFloorList(floorList.concat(comments));
-      setFloorLoading(false);
-    }
+    };
+    window.addEventListener("message", handler);
+    return () => {
+      window.removeEventListener("message", handler);
+    };
   });
 
   const usr = (id: number) => {

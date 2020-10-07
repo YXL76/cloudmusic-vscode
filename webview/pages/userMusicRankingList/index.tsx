@@ -1,7 +1,7 @@
 import "./index.scss";
 import "../../global.scss";
 import { Avatar, Button, List, Progress, Skeleton, Tabs } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { RecordData, SongsItem } from "../../constant";
 import LoadingOutlined from "@ant-design/icons/LoadingOutlined";
 import PlayCircleOutlined from "@ant-design/icons/PlayCircleOutlined";
@@ -27,9 +27,15 @@ export const UserMusicRankingList = () => {
     return [emptyData, emptyData];
   });
 
-  window.addEventListener("message", ({ data }) => {
-    setLists(data as RecordData[][]);
-    setLoading(false);
+  useEffect(() => {
+    const handler = ({ data }: { data: RecordData[][] }) => {
+      setLists(data);
+      setLoading(false);
+    };
+    window.addEventListener("message", handler);
+    return () => {
+      window.removeEventListener("message", handler);
+    };
   });
 
   const refresh = () => {
