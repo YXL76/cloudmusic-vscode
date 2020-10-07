@@ -99,7 +99,7 @@ export const CommentList = () => {
           ...floorData,
           loading: false,
           hasMore,
-          total: totalCount,
+          total: totalCount > 0 ? totalCount : floorData.total,
         });
       }
     };

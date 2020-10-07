@@ -6,6 +6,18 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [5.2.0] - 2020-10-07
+
+### Added
+
+- Search: add default search keyword
+- Webview: can watch floor comments and reply comment
+
+### Fixed
+
+- Refresh cache when create/delete playlist
+- Webview: will no add multi event listener
+
 ## [5.1.3] - 2020-10-02
 
 ### Fixed
