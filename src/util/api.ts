@@ -510,7 +510,7 @@ export async function apiCommentFloor(
       hasMore,
       comments: comments.map((comment) => solveComment(comment)),
     };
-    apiCache.set(key, ret);
+    apiCache.set(key, ret, 60);
     return ret;
   } catch {}
   return { totalCount: 0, hasMore: false, comments: [] };
@@ -573,7 +573,7 @@ export async function apiCommentNew(
       comments: comments.map((comment) => solveComment(comment)),
     };
     if (sortType !== SortType.latest || cursor !== 0) {
-      apiCache.set(key, ret);
+      apiCache.set(key, ret, 60);
     }
     return ret;
   } catch {}
