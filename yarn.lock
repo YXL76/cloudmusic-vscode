@@ -1993,10 +1993,10 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.11.4.tgz#bf6ea3d5f7b1504232b11acbc40e1ac4c750d3b9"
   integrity sha512-KmoLCUeW2cWKkEOQ0gQcECuqOc0g7B7zcmRPQNMT4ntNm0luKv3BTLcqIyWpTxkhLDzLTdMus11j/6DROaZdPw==
 
-"@types/node@12.12.66":
-  version "12.12.66"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.66.tgz#5a2650f5c25e9f24d8f65d06f39a4650249bd5fc"
-  integrity sha512-VwJbrfz53hQo/3uUhan/ZQJD9AQSSbmODtbtFhPmT07KTIp9zw2dVZhoV0TezZv2NZMuFdKHY6z9SosB4Vtj3A==
+"@types/node@12.12.67":
+  version "12.12.67"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.67.tgz#4f86badb292e822e3b13730a1f9713ed2377f789"
+  integrity sha512-R48tgL2izApf+9rYNH+3RBMbRpPeW3N8f0I9HMhggeq4UXwBDqumJ14SDs4ctTMhG11pIOduZ4z3QWGOiMc9Vg==
 
 "@types/node@^12.0.12":
   version "12.12.63"
