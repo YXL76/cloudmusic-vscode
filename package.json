@@ -485,7 +485,7 @@
     "babel-eslint": "10.1.0",
     "electron": "9.3.1",
     "electron-build-env": "0.2.0",
-    "eslint": "7.10.0",
+    "eslint": "7.11.0",
     "eslint-config-prettier": "6.12.0",
     "eslint-config-react-app": "6.0.0-next.98",
     "eslint-plugin-flowtype": "5.2.0",
