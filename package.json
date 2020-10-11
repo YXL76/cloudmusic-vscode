@@ -499,7 +499,7 @@
     "gulp-filter": "6.0.0",
     "gulp-typescript": "6.0.0-alpha.1",
     "neon-cli": "0.4.2",
-    "parcel": "2.0.0-nightly.416",
+    "parcel": "2.0.0-nightly.420",
     "prettier": "2.1.2",
     "sass": "1.27.0",
     "ts-loader": "8.0.4",
@@ -511,7 +511,7 @@
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
     "NeteaseCloudMusicApi": "git+https://github.com/YXL76/NeteaseCloudMusicApi.git#self-use",
-    "antd": "^4.6.6",
+    "antd": "^4.7.0",
     "array-unsort": "^1.1.6",
     "bluebird": "3.7.2",
     "cacache": "^15.0.5",
