@@ -1,34 +1,5 @@
-export {
-  AUTO_CHECK,
-  LIBRARYS,
-  LOCAL_FILE_DIR,
-  MEDIA_CONTROL,
-  MUSIC_CACHE_SIZE,
-  MUSIC_QUALITY,
-  PROXY,
-  REAL_IP,
-} from "./setting";
-export {
-  AlbumsItem,
-  AnotherSongItem,
-  Artist,
-  CommentDetail,
-  LruCacheValue,
-  Lyric,
-  LyricData,
-  NativeModule,
-  NativePlayer,
-  Player,
-  PlaylistItem,
-  RawCommentDetail,
-  RawPlaylistItem,
-  SimplyUserDetail,
-  SongDetail,
-  SongsItem,
-  SortType,
-  TrackIdsItem,
-  UserDetail,
-} from "./type";
+export * from "./setting";
+export * from "./type";
 import { homedir, platform } from "os";
 import { MUSIC_QUALITY } from "./setting";
 import type { NativeModule } from "./type";

@@ -1,2 +1,2 @@
-export { CommentList } from "./commentList";
-export { UserMusicRankingList } from "./userMusicRankingList";
+export * from "./commentList";
+export * from "./userMusicRankingList";

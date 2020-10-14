@@ -1,2 +1,2 @@
-export { PlaylistItemTreeItem, PlaylistProvider } from "./playlist";
-export { QueueItemTreeItem, QueueProvider } from "./queue";
+export * from "./playlist";
+export * from "./queue";
