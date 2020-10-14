@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [5.2.2] - 2020-10-14
+
+### Changed
+
+- Upgrade dependences and reduce build size
+
 ## [5.2.1] - 2020-10-07
 
 ### Changed

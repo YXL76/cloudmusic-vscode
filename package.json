@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "cloudmusic",
   "description": "Netease Music for VS Code",
-  "version": "5.2.1",
+  "version": "5.2.2",
   "publisher": "YXL",
   "engines": {
     "vscode": "^1.49.0"
@@ -499,7 +499,7 @@
     "gulp-filter": "6.0.0",
     "gulp-typescript": "6.0.0-alpha.1",
     "neon-cli": "0.5.0",
-    "parcel": "2.0.0-nightly.420",
+    "parcel": "2.0.0-nightly.425",
     "prettier": "2.1.2",
     "sass": "1.27.0",
     "ts-loader": "8.0.5",
