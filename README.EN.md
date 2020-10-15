@@ -139,7 +139,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |    comment_album     |      专辑评论      |   ❌   |
 |      comment_dj      |      电台评论      |   ❌   |
 |    comment_event     |    获取动态评论    |   ❌   |
-|    comment_floor     |      楼层评论      |        |
+|    comment_floor     |      楼层评论      |   ✔️   |
 |     comment_hot      |      热门评论      |   ❌   |
 | comment_hotwall_list |      云村热评      |        |
 |     comment_like     | 点赞与取消点赞评论 |   ✔️   |
