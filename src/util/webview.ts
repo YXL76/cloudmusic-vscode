@@ -11,7 +11,7 @@ import {
   pickArtist,
   pickSong,
   pickUser,
-} from "../util";
+} from ".";
 import type { CommentType } from "NeteaseCloudMusicApi";
 import type { SongsItem } from "../constant";
 import { SortType } from "../constant";

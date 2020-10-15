@@ -1,7 +1,7 @@
 import { LIBRARYS, NATIVE, PLAYER_AVAILABLE, VOLUME_KEY } from "../constant";
 import type { Lyric, NativePlayer, Player, SongsItem } from "../constant";
 import { Playing, lock } from "../state";
-import { apiLyric, apiScrobble } from "../util";
+import { apiLyric, apiScrobble } from ".";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import { commands } from "vscode";

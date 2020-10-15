@@ -32,10 +32,10 @@ import {
   apiUserFollows,
   apiUserPlaylist,
   player,
-} from "../util";
+} from ".";
 import { CommentType, SubAction } from "NeteaseCloudMusicApi";
 import { ICON, MUSIC_QUALITY, NATIVE, TMP_DIR } from "../constant";
-import type { InputStep, MultiStepInput } from "../util";
+import type { InputStep, MultiStepInput } from ".";
 import { IsLike, PersonalFm, lock } from "../state";
 import {
   PlaylistProvider,

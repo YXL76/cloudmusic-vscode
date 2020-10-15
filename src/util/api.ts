@@ -87,7 +87,7 @@ import {
   user_playlist,
   user_record,
 } from "NeteaseCloudMusicApi";
-import { LyricCache, apiCache } from "../util";
+import { LyricCache, apiCache } from ".";
 import { MUSIC_QUALITY, PROXY, REAL_IP, SortType } from "../constant";
 import { AccountManager } from "../manager";
 

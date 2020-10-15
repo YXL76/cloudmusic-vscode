@@ -8,7 +8,7 @@ import {
 import { apiCache, apiPlaylistDetail, songsItem2TreeItem } from "../util";
 import { AccountManager } from "../manager";
 import type { PlaylistItem } from "../constant";
-import type { QueueItemTreeItem } from "../provider";
+import type { QueueItemTreeItem } from ".";
 import { i18n } from "../i18n";
 
 const enum Type {
