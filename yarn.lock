@@ -2348,8 +2348,8 @@ JSONStream@^1.2.1, JSONStream@^1.3.5:
     through ">=2.2.7 <3"
 
 "NeteaseCloudMusicApi@git+https://github.com/YXL76/NeteaseCloudMusicApi.git#self-use":
-  version "3.42.4"
-  resolved "git+https://github.com/YXL76/NeteaseCloudMusicApi.git#f1598033291a3762b8e4babed469f974714cf5c8"
+  version "3.43.0"
+  resolved "git+https://github.com/YXL76/NeteaseCloudMusicApi.git#2062704a9acc543837faa2ae6eb9eb0ca360c564"
   dependencies:
     axios "^0.20.0"
 

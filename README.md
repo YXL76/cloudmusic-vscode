@@ -169,6 +169,7 @@
 |    dj_recommend_type     |     精选电台分类      |        |
 |          dj_sub          |    订阅与取消电台     |        |
 |        dj_sublist        |     订阅电台列表      |        |
+|      dj_subscriber       |      电台订阅者       |        |
 |    dj_today_perfered     |     电台今日优选      |        |
 |        dj_toplist        | 新晋电台榜/热门电台榜 |        |
 |     dj_toplist_hours     |  电台 24 小时主播榜   |        |
