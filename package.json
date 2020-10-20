@@ -494,7 +494,7 @@
     "eslint-plugin-jsx-a11y": "6.3.1",
     "eslint-plugin-prettier": "3.1.4",
     "eslint-plugin-react": "7.21.5",
-    "eslint-plugin-react-hooks": "4.1.2",
+    "eslint-plugin-react-hooks": "4.2.0",
     "gulp": "4.0.2",
     "gulp-filter": "6.0.0",
     "gulp-typescript": "6.0.0-alpha.1",
