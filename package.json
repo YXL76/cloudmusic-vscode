@@ -518,8 +518,8 @@
     "lru-cache": "^6.0.0",
     "md5-file": "^5.0.0",
     "node-cache": "^5.1.2",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
+    "react": "^17.0.0",
+    "react-dom": "^17.0.0",
     "vscode-nls": "^5.0.0"
   }
 }
