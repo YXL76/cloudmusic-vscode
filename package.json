@@ -487,7 +487,7 @@
     "electron-build-env": "0.2.0",
     "eslint": "7.11.0",
     "eslint-config-prettier": "6.13.0",
-    "eslint-config-react-app": "6.0.0-next.98",
+    "eslint-config-react-app": "6.0.0",
     "eslint-plugin-flowtype": "5.2.0",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-jest": "24.1.0",
