@@ -284,6 +284,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |             setting              |          设置          |   ❌   |
 |          share_resource          |     分享歌曲到动态     |        |
 |            simi_user             |        相似用户        |   ❌   |
+|           user_account           |      获取账号信息      |        |
 |            user_audio            |     用户创建的电台     |        |
 |           user_binding           |      用户绑定信息      |   ❌   |
 |            user_cloud            |        云盘数据        |   ❌   |
@@ -299,6 +300,15 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |           user_record            |        听歌排行        |   ✔️   |
 |          user_subcount           |        收藏计数        |   ❌   |
 |           user_update            |      编辑用户信息      |   ❌   |
+|              yunbei              |      云贝签到信息      |        |
+|           yunbei_info            |      云贝账户信息      |        |
+|           yunbei_sign            |        云贝签到        |        |
+|           yunbei_tasks           |      云贝所有任务      |        |
+|        yunbei_tasks_todo         |     云贝 todo 任务     |        |
+|       yunbei_tasks_expense       |        云贝支出        |        |
+|       yunbei_tasks_receipt       |        云贝收入        |        |
+|        yunbei_task_finish        |      云贝完成任务      |        |
+|           yunbei_today           |    云贝今日签到信息    |        |
 
 - 搜索类
 
