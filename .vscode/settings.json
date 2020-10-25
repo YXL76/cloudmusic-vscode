@@ -23,5 +23,6 @@
     "**/.parcel-cache/**": true,
     "**/dist/**": true,
     "**/native/target/**": true
-  }
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }
