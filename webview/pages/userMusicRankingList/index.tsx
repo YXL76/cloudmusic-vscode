@@ -1,8 +1,8 @@
 import "./index.scss";
 import "../../global.scss";
 import { Avatar, Button, List, Progress, Skeleton, Tabs } from "antd";
-import React, { useEffect, useState } from "react";
 import type { RecordData, SongsItem } from "../../constant";
+import { useEffect, useState } from "react";
 import LoadingOutlined from "@ant-design/icons/LoadingOutlined";
 import PlayCircleOutlined from "@ant-design/icons/PlayCircleOutlined";
 import ReloadOutlined from "@ant-design/icons/ReloadOutlined";

@@ -1,6 +1,6 @@
 import "./index.scss";
 import { Avatar, Button, Drawer, Input, List, Tabs } from "antd";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { CommentDetail } from "../../constant";
 import LikeFilled from "@ant-design/icons/LikeFilled";
 import LikeOutlined from "@ant-design/icons/LikeOutlined";
