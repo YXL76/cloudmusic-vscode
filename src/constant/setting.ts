@@ -11,7 +11,6 @@ export const LIBRARYS = librarys;
 
 export const AUTO_CHECK = conf.get("account.autoCheck") as boolean;
 
-export const PROXY: string | undefined = conf.get("music.proxy") ?? undefined;
 export const REAL_IP: string | undefined =
   conf.get("music.realIP") ?? undefined;
 

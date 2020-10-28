@@ -412,13 +412,6 @@
             "markdownDescription": "%cloudmusic.configuration.cloudmusic.cache.localDirectory.markdownDescription%",
             "scope": "window"
           },
-          "cloudmusic.music.proxy": {
-            "type": "string",
-            "default": "",
-            "format": "uri",
-            "markdownDescription": "%cloudmusic.configuration.cloudmusic.music.proxy.markdownDescription%",
-            "scope": "window"
-          },
           "cloudmusic.music.realIP": {
             "type": "string",
             "default": "",

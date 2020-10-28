@@ -2199,8 +2199,8 @@
   integrity sha512-NuHqBY1PB/D8xU6s/thBgOAiAP7HOYDQ32+BFZILJ8ivkUkAHQnWfn6WhL79Owj1qmUnoN/YPhktdIoucipkAQ==
 
 "NeteaseCloudMusicApi@git+https://github.com/YXL76/NeteaseCloudMusicApi.git#self-use":
-  version "3.45.1"
-  resolved "git+https://github.com/YXL76/NeteaseCloudMusicApi.git#df8d2cadd5635aa1bf87f9d0877012c06aed5765"
+  version "3.45.2"
+  resolved "git+https://github.com/YXL76/NeteaseCloudMusicApi.git#3f46dcf7bb54c150952689364850ff86ca1b902a"
   dependencies:
     axios "^0.20.0"
 

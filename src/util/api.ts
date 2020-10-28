@@ -88,7 +88,7 @@ import {
   user_record,
 } from "NeteaseCloudMusicApi";
 import { LyricCache, apiCache } from ".";
-import { MUSIC_QUALITY, PROXY, REAL_IP, SortType } from "../constant";
+import { MUSIC_QUALITY, REAL_IP, SortType } from "../constant";
 import { AccountManager } from "../manager";
 
 function solveArtist(item: Artist): Artist {
@@ -197,7 +197,6 @@ function solveComment(item: RawCommentDetail): CommentDetail {
 
 export const baseQuery: RequestBaseConfig = {
   cookie: {},
-  proxy: PROXY,
   realIP: REAL_IP,
 };
 

@@ -39,7 +39,6 @@
   "cloudmusic.configuration.cloudmusic.account.autoCheck.markdownDescription": "自動簽到",
   "cloudmusic.configuration.cloudmusic.cache.localDirectory.markdownDescription": "添加本地音樂。注意：開啟後會檢查每個檔案的`MD5`，會新增初始化的時間，需要保證本地檔案與服務器上的檔案相同",
   "cloudmusic.configuration.cloudmusic.cache.size.markdownDescription": "設定緩存限制 (`128 ~ 10240 MB`)",
-  "cloudmusic.configuration.cloudmusic.music.proxy.markdownDescription": "參攷 [可以使用代理](https://binaryify.github.io/NeteaseCloudMusicApi/#/?id=%e5%8f%af%e4%bb%a5%e4%bd%bf%e7%94%a8%e4%bb%a3%e7%90%86)",
   "cloudmusic.configuration.cloudmusic.music.quality.enumDescriptions.high": "極高",
   "cloudmusic.configuration.cloudmusic.music.quality.enumDescriptions.lossless": "無損",
   "cloudmusic.configuration.cloudmusic.music.quality.enumDescriptions.low": "普通",
