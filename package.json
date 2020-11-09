@@ -495,7 +495,7 @@
     "parcel": "2.0.0-nightly.433",
     "prettier": "2.1.2",
     "sass": "1.29.0",
-    "ts-loader": "8.0.10",
+    "ts-loader": "8.0.11",
     "typescript": "4.1.0-dev.20201027",
     "vscode-nls-dev": "3.3.2",
     "webpack": "5.4.0",
