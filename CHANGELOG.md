@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [5.2.3] - 2020-11-18
+
+### Changed
+
+- Upgrade dependences
+
 ## [5.2.2] - 2020-10-14
 
 ### Changed
