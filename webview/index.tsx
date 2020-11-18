@@ -1,7 +1,7 @@
+import React, { StrictMode } from "react";
 import { App } from "./App";
 import { ConfigProvider } from "antd";
 import ReactDOM from "react-dom";
-import { StrictMode } from "react";
 import enUS from "antd/es/locale/en_US";
 import zhCN from "antd/es/locale/zh_CN";
 import zhTW from "antd/es/locale/zh_TW";

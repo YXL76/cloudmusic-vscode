@@ -1,4 +1,5 @@
 import { CommentList, UserMusicRankingList } from "./pages";
+import React from "react";
 
 const { entry } = window.webview;
 

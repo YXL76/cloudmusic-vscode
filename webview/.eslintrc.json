@@ -11,8 +11,6 @@
   },
   "plugins": ["prettier"],
   "rules": {
-    "react/jsx-uses-react": "off",
-    "react/react-in-jsx-scope": "off",
     "@typescript-eslint/consistent-type-imports": "warn",
     "@typescript-eslint/lines-between-class-members": "error",
     "@typescript-eslint/member-ordering": "warn",
