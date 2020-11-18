@@ -16,16 +16,18 @@
 
 ## Table of contents
 
-- [Features](#Features)
-- [Requirements](#Requirements)
-- [Usage](#Usage)
-- [Contributions](#Contributions)
-  - [Settings](#Settings)
-  - [Commands](#Commands)
-- [Known Issues](#Known-Issues)
-- [Release Notes](#Release-Notes)
-- [API](#API)
-- [Acknowledgements](#Acknowledgements)
+- [CLOUDMUSIC](#cloudmusic)
+  - [Table of contents](#table-of-contents)
+  - [Features](#features)
+  - [Requirements](#requirements)
+  - [Usage](#usage)
+  - [Contributions](#contributions)
+    - [Settings](#settings)
+    - [Commands](#commands)
+  - [Known Issues](#known-issues)
+  - [Release Notes](#release-notes)
+  - [API](#api)
+  - [Acknowledgements](#acknowledgements)
 
 ## Features
 
@@ -113,6 +115,8 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |   artist_desc   |      歌手介绍      |        |
 |   artist_list   |      歌手分类      |   ✔️   |
 |    artist_mv    |    歌手相关 MV     |   ❌   |
+|  artist_new_mv  |    歌手最新 MV     |   ❌   |
+| artist_new_song |    歌手最新歌曲    |        |
 |  artist_songs   |    歌手所有歌曲    |   ✔️   |
 |   artist_sub    | 收藏与取消收藏歌手 |   ✔️   |
 | artist_sublist  |    关注歌手列表    |   ✔️   |
@@ -141,6 +145,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |    comment_event     |    获取动态评论    |   ❌   |
 |    comment_floor     |      楼层评论      |   ✔️   |
 |     comment_hot      |      热门评论      |   ❌   |
+|   comment_hug_list   |   评论抱一抱列表   |        |
 | comment_hotwall_list |      云村热评      |        |
 |     comment_like     | 点赞与取消点赞评论 |   ✔️   |
 |    comment_music     |      歌曲评论      |   ❌   |
@@ -148,6 +153,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |     comment_new      |      新版评论      |   ✔️   |
 |   comment_playlist   |      歌单评论      |   ❌   |
 |    comment_video     |      视频评论      |   ❌   |
+|     hug_comment      |     抱一抱评论     |        |
 
 - 电台类
 
@@ -266,6 +272,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |           msg_notices            |          通知          |        |
 |           msg_private            |          私信          |        |
 |       msg_private_history        |        私信内容        |        |
+|        msg_recentcontact         |       最近联系人       |        |
 |           personal_fm            |        私人 FM         |   ✔️   |
 |           personalized           |        推荐歌单        |   ✔️   |
 |      personalized_djprogram      |        推荐电台        |        |
@@ -280,10 +287,12 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |          resource_like           |   点赞与取消点赞资源   |        |
 |             scrobble             |        听歌打卡        |   ✔️   |
 |          send_playlist           |        私信歌单        |        |
+|            send_song             |        私信音乐        |        |
 |            send_text             |          私信          |        |
 |             setting              |          设置          |   ❌   |
 |          share_resource          |     分享歌曲到动态     |        |
 |            simi_user             |        相似用户        |   ❌   |
+|          topic_sub_list          |       收藏的专栏       |        |
 |           user_account           |      获取账号信息      |        |
 |            user_audio            |     用户创建的电台     |        |
 |           user_binding           |      用户绑定信息      |   ❌   |
