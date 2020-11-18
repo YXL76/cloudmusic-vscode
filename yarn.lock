@@ -2198,7 +2198,7 @@
 
 "NeteaseCloudMusicApi@git+https://github.com/YXL76/NeteaseCloudMusicApi.git#self-use":
   version "3.47.2"
-  resolved "git+https://github.com/YXL76/NeteaseCloudMusicApi.git#2985ebf272d8620c9d4d5112d176396a04956b8d"
+  resolved "git+https://github.com/YXL76/NeteaseCloudMusicApi.git#39cc95da1add914e874adf9dedda234ba4e9b2de"
   dependencies:
     axios "^0.20.0"
 
