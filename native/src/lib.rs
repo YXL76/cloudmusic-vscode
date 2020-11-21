@@ -1,5 +1,6 @@
 use cfg_if::cfg_if;
 use neon::prelude::*;
+use rodio::Source;
 use std::{
     fs::File,
     io::{BufReader, Write},
@@ -75,7 +76,7 @@ impl Rodio {
                 thread::spawn(move || {
                     let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
                     let sink = rodio::Sink::try_new(&handle).unwrap();
-                    sink.append(source);
+                    sink.append(source.fade_in(Duration::from_secs(2)));
                     let _ = info_tx.send(true);
                     loop {
                         match control_rx.recv() {
