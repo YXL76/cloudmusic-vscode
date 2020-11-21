@@ -1,9 +1,10 @@
 use cfg_if::cfg_if;
 use neon::prelude::*;
+use rodio::Source;
 use std::{
     fs::File,
     io::{BufReader, Write},
-    sync::{mpsc, Arc, Mutex},
+    sync::mpsc,
     thread,
     time::{Duration, Instant},
 };
@@ -75,7 +76,7 @@ impl Rodio {
                 thread::spawn(move || {
                     let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
                     let sink = rodio::Sink::try_new(&handle).unwrap();
-                    sink.append(source);
+                    sink.append(source.fade_in(Duration::from_secs(2)));
                     let _ = info_tx.send(true);
                     loop {
                         match control_rx.recv() {
@@ -198,193 +199,6 @@ declare_types! {
                 let mut this = cx.this();
                 let guard = cx.lock();
                 let mut player = this.borrow_mut(&guard);
-                player.stop();
-            };
-            Ok(cx.undefined().upcast())
-        }
-
-        method setVolume(mut cx) {
-            let level = cx.argument::<JsNumber>(0)?.value() / 100.0;
-            {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.set_volume(level as f32);
-            };
-            Ok(cx.undefined().upcast())
-        }
-
-        method empty(mut cx) {
-            let res = {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.empty()
-            };
-            Ok(cx.boolean(res).upcast())
-        }
-
-        method position(mut cx) {
-            let res = {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.position()
-            };
-            Ok(cx.number(res as f64 / 1000.0).upcast())
-        }
-    }
-}
-
-pub struct Miniaudio {
-    status: Arc<Mutex<Status>>,
-    empty: Arc<Mutex<bool>>,
-    volume: Arc<Mutex<f32>>,
-}
-
-impl Miniaudio {
-    #[inline]
-    pub fn load(&mut self, url: &str) -> bool {
-        if let Ok(mut decoder) = miniaudio::Decoder::from_file(url, None) {
-            self.status.lock().unwrap().reset();
-            *self.empty.lock().unwrap() = true;
-
-            let status = self.status.clone();
-            let empty = self.empty.clone();
-            let volume = self.volume.clone();
-
-            let (tx, rx) = mpsc::channel();
-
-            thread::spawn(move || {
-                let mut config = miniaudio::DeviceConfig::new(miniaudio::DeviceType::Playback);
-                config.playback_mut().set_format(decoder.output_format());
-                config
-                    .playback_mut()
-                    .set_channels(decoder.output_channels());
-                config.set_sample_rate(decoder.output_sample_rate());
-
-                if let Ok(mut device) = miniaudio::Device::new(None, &config) {
-                    let status_cb = status.clone();
-                    let empty_cb = empty.clone();
-                    device.set_data_callback(move |_device, output, _frames| {
-                        if let Status::Playing(_, _) = *status_cb.lock().unwrap() {
-                            if !(*empty_cb.lock().unwrap()) {
-                                let frames = decoder.read_pcm_frames(output);
-                                if frames == 0 {
-                                    *empty_cb.lock().unwrap() = true;
-                                }
-                            }
-                        }
-                    });
-                    thread::sleep(Duration::from_millis(512));
-                    if let Ok(_) = device.start() {
-                        let _ = tx.send(true);
-                        *empty.lock().unwrap() = false;
-                        status.lock().unwrap().play();
-                        while !(*empty.lock().unwrap()) {
-                            device
-                                .set_master_volume(*volume.lock().unwrap())
-                                .unwrap_or(());
-                            thread::sleep(Duration::from_millis(512));
-                        }
-                    }
-                }
-            });
-
-            if let Ok(true) = rx.recv() {
-                return true;
-            }
-        }
-        false
-    }
-
-    #[inline]
-    pub fn play(&self) -> bool {
-        match *self.status.lock().unwrap() {
-            Status::Stopped(_) => {
-                self.status.lock().unwrap().play();
-                true
-            }
-            _ => false,
-        }
-    }
-
-    #[inline]
-    pub fn pause(&self) {
-        self.status.lock().unwrap().stop()
-    }
-
-    #[inline]
-    pub fn stop(&self) {
-        self.status.lock().unwrap().reset();
-        *self.empty.lock().unwrap() = true;
-        *self.volume.lock().unwrap() = 0.0;
-    }
-
-    #[inline]
-    pub fn set_volume(&self, level: f32) {
-        *self.volume.lock().unwrap() = level;
-    }
-
-    #[inline]
-    pub fn empty(&self) -> bool {
-        *self.empty.lock().unwrap()
-    }
-
-    #[inline]
-    pub fn position(&self) -> u128 {
-        self.status.lock().unwrap().elapsed().as_millis()
-    }
-}
-
-declare_types! {
-    pub class JsMiniaudio for Miniaudio {
-        init(_) {
-            let config = miniaudio::DeviceConfig::new(miniaudio::DeviceType::Playback);
-            let _ = miniaudio::Device::new(None, &config).unwrap();
-            Ok(Miniaudio {
-                status: Arc::new(Mutex::new(Status::new())),
-                empty: Arc::new(Mutex::new(true)),
-                volume: Arc::new(Mutex::new(85.0)),
-            })
-        }
-
-        method load(mut cx) {
-            let url = cx.argument::<JsString>(0)?.value();
-            let res = {
-                let mut this = cx.this();
-                let guard = cx.lock();
-                let mut player = this.borrow_mut(&guard);
-                player.load(&url)
-            };
-            Ok(cx.boolean(res).upcast())
-        }
-
-        method play(mut cx) {
-            let res = {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.play()
-            };
-            Ok(cx.boolean(res).upcast())
-        }
-
-        method pause(mut cx) {
-            {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
-                player.pause();
-            };
-            Ok(cx.undefined().upcast())
-        }
-
-        method stop(mut cx) {
-            {
-                let this = cx.this();
-                let guard = cx.lock();
-                let player = this.borrow(&guard);
                 player.stop();
             };
             Ok(cx.undefined().upcast())
@@ -603,7 +417,6 @@ pub fn download(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 
 register_module!(mut cx, {
     cx.export_class::<JsRodio>("Rodio")?;
-    cx.export_class::<JsMiniaudio>("Miniaudio")?;
     cx.export_function("startKeyboardEvent", start_keyboard_event)?;
     cx.export_function("download", download)
 });

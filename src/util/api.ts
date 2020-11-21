@@ -222,9 +222,10 @@ export async function apiAlbum(
     };
     apiCache.set(key, ret);
     return ret;
-  } catch {
-    return { info: {} as AlbumsItem, songs: [] };
+  } catch (err) {
+    console.error(err);
   }
+  return { info: {} as AlbumsItem, songs: [] };
 }
 
 export async function apiAlbumNewest(): Promise<AlbumsItem[]> {
@@ -242,7 +243,9 @@ export async function apiAlbumNewest(): Promise<AlbumsItem[]> {
     const ret = (albums as AlbumsItem[]).map((album) => solveAlbumsItem(album));
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -267,9 +270,10 @@ export async function apiArtists(
     };
     apiCache.set(key, ret);
     return ret;
-  } catch {
-    return { info: {} as Artist, songs: [] };
+  } catch (err) {
+    console.error(err);
   }
+  return { info: {} as Artist, songs: [] };
 }
 
 export async function apiAlbumSub(id: number, t: SubAction): Promise<boolean> {
@@ -279,7 +283,9 @@ export async function apiAlbumSub(id: number, t: SubAction): Promise<boolean> {
       return false;
     }
     return true;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return false;
 }
 
@@ -304,7 +310,9 @@ export async function apiAlbumSublist(): Promise<AlbumsItem[]> {
       }
       offset += limit;
     }
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return ret;
 }
 
@@ -335,7 +343,9 @@ export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
         break;
       }
     }
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   if (ret.length > 0) {
     apiCache.set(key, ret);
   }
@@ -367,7 +377,9 @@ export async function apiArtistList(
     const ret = (artists as Artist[]).map((artist) => solveArtist(artist));
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -392,7 +404,9 @@ export async function apiArtistSongs(
     const ret = (songs as SongsItem[]).map((song) => solveSongItem(song));
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -403,7 +417,9 @@ export async function apiArtistSub(id: number, t: SubAction): Promise<boolean> {
       return false;
     }
     return true;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return false;
 }
 
@@ -426,7 +442,9 @@ export async function apiArtistSublist(): Promise<Artist[]> {
       }
       offset += limit;
     }
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return ret;
 }
 
@@ -446,7 +464,9 @@ export async function apiCommentAdd(
       return false;
     }
     return true;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return false;
 }
 
@@ -467,7 +487,9 @@ export async function apiCommentReply(
       return false;
     }
     return true;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return false;
 }
 
@@ -511,7 +533,9 @@ export async function apiCommentFloor(
     };
     apiCache.set(key, ret, 60);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return { totalCount: 0, hasMore: false, comments: [] };
 }
 
@@ -528,7 +552,9 @@ export async function apiCommentLike(
     if (status === 200) {
       return true;
     }
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return false;
 }
 
@@ -575,7 +601,9 @@ export async function apiCommentNew(
       apiCache.set(key, ret, 60);
     }
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return { totalCount: 0, hasMore: false, comments: [] };
 }
 
@@ -601,7 +629,9 @@ export async function apiDailySignin(): Promise<boolean> {
     if ((await Promise.all(tasks)).includes(true)) {
       return true;
     }
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return false;
 }
 
@@ -611,7 +641,9 @@ export async function apiFmTrash(id: number): Promise<boolean> {
     if (status === 200) {
       return true;
     }
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return false;
 }
 
@@ -627,9 +659,10 @@ export async function apiLike(
       return false;
     }
     return true;
-  } catch {
-    return false;
+  } catch (err) {
+    console.error(err);
   }
+  return false;
 }
 
 export async function apiLikelist(): Promise<number[]> {
@@ -642,9 +675,10 @@ export async function apiLikelist(): Promise<number[]> {
     }
     const { ids } = body;
     return ids as number[];
-  } catch {
-    return [];
+  } catch (err) {
+    console.error(err);
   }
+  return [];
 }
 
 export async function apiLogout(): Promise<boolean> {
@@ -654,9 +688,10 @@ export async function apiLogout(): Promise<boolean> {
       return false;
     }
     return true;
-  } catch {
-    return false;
+  } catch (err) {
+    console.error(err);
   }
+  return false;
 }
 
 export async function apiLyric(id: number): Promise<LyricData> {
@@ -693,7 +728,9 @@ export async function apiLyric(id: number): Promise<LyricData> {
     }
 
     LyricCache.put(`${id}`, { time, text });
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return { time, text };
 }
 
@@ -707,9 +744,10 @@ export async function apiPersonalFm(): Promise<SongsItem[]> {
     return (data as AnotherSongItem[]).map((song) =>
       solveAnotherSongItem(song)
     );
-  } catch {
-    return [];
+  } catch (err) {
+    console.error(err);
   }
+  return [];
 }
 
 export async function apiPersonalized(): Promise<PlaylistItem[]> {
@@ -729,7 +767,9 @@ export async function apiPersonalized(): Promise<PlaylistItem[]> {
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -750,7 +790,9 @@ export async function apiPersonalizedNewsong(): Promise<SongsItem[]> {
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -782,7 +824,9 @@ export async function apiPlaylistCatlist(): Promise<PlaylistCatlist> {
     }
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return {};
 }
 
@@ -798,7 +842,9 @@ export async function apiPlaylistCreate(
       return false;
     }
     return true;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return false;
 }
 
@@ -808,7 +854,9 @@ export async function apiPlaylistDelete(id: number): Promise<boolean> {
     if (status === 200) {
       return true;
     }
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return false;
 }
 
@@ -843,9 +891,10 @@ export async function apiPlaylistDetail(id: number): Promise<SongsItem[]> {
     const ret = await apiSongDetail(trackIds.map((trackId) => trackId.id));
     apiCache.set(key, ret);
     return ret;
-  } catch {
-    return [];
+  } catch (err) {
+    console.error(err);
   }
+  return [];
 }
 
 export async function apiHighqualityTags(): Promise<PlaylistCatlistItem[]> {
@@ -866,7 +915,9 @@ export async function apiHighqualityTags(): Promise<PlaylistCatlistItem[]> {
     }[]).map(({ name, hot }) => ({ name, hot }));
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -882,7 +933,9 @@ export async function apiPlaylistSubscribe(
       return false;
     }
     return true;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return false;
 }
 
@@ -909,7 +962,9 @@ export async function apiPlaylistSubscribers(
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -926,7 +981,9 @@ export async function apiPlaylistTracks(
       return false;
     }
     return true;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return false;
 }
 
@@ -943,7 +1000,9 @@ export async function apiPlaylistUpdate(
       return false;
     }
     return true;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return false;
 }
 
@@ -963,7 +1022,9 @@ export async function apiPlaymodeIntelligenceList(
     ret = (data as { songInfo: SongsItem }[]).map(({ songInfo }) =>
       solveSongItem(songInfo)
     );
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return ret;
 }
 
@@ -984,7 +1045,9 @@ export async function apiRecommendResource(): Promise<PlaylistItem[]> {
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1005,7 +1068,9 @@ export async function apiRecommendSongs(): Promise<SongsItem[]> {
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1028,7 +1093,9 @@ export async function apiRelatedPlaylist(id: number): Promise<PlaylistItem[]> {
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1039,7 +1106,9 @@ export async function apiScrobble(
 ): Promise<void> {
   try {
     await scrobble(Object.assign({ id, sourceid, time }, baseQuery));
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export async function apiSearchDefault(): Promise<string> {
@@ -1056,7 +1125,9 @@ export async function apiSearchDefault(): Promise<string> {
     const ret = (body.data as { realkeyword: string }).realkeyword;
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return "";
 }
 
@@ -1086,7 +1157,9 @@ export async function apiSearchSingle(
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1116,7 +1189,9 @@ export async function apiSearchAlbum(
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1146,7 +1221,9 @@ export async function apiSearchArtist(
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1176,7 +1253,9 @@ export async function apiSearchPlaylist(
     }).playlists.map((playlist) => solvePlaylistItem(playlist));
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1202,7 +1281,9 @@ export async function apiSearchHotDetail(): Promise<
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1225,7 +1306,9 @@ export async function apiSearchSuggest(keywords: string): Promise<string[]> {
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1246,9 +1329,10 @@ export async function apiSimiArtist(id: number): Promise<Artist[]> {
     const ret = (artists as Artist[]).map((artist) => solveArtist(artist));
     apiCache.set(key, ret);
     return ret;
-  } catch {
-    return [];
+  } catch (err) {
+    console.error(err);
   }
+  return [];
 }
 
 export async function apiSimiPlaylist(
@@ -1274,9 +1358,10 @@ export async function apiSimiPlaylist(
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {
-    return [];
+  } catch (err) {
+    console.error(err);
   }
+  return [];
 }
 
 export async function apiSimiSong(
@@ -1302,9 +1387,10 @@ export async function apiSimiSong(
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {
-    return [];
+  } catch (err) {
+    console.error(err);
   }
+  return [];
 }
 
 export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
@@ -1344,7 +1430,9 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
       apiCache.set(key, ret);
     }
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1377,7 +1465,9 @@ export async function apiSongUrl(trackIds: number[]): Promise<SongDetail[]> {
         result[trackIds.indexOf(song.id)] = { id, url, md5 };
         return result;
       }, []);
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1398,7 +1488,9 @@ export async function apiTopAlbum(): Promise<AlbumsItem[]> {
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1422,7 +1514,9 @@ export async function apiTopArtists(
     const ret = (artists as Artist[]).map((artist) => solveArtist(artist));
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1449,7 +1543,9 @@ export async function apiTopPlaylist(
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1476,7 +1572,9 @@ export async function apiTopPlaylistHighquality(
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1497,7 +1595,9 @@ export async function apiTopSong(type: TopSongType): Promise<SongsItem[]> {
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1518,7 +1618,9 @@ export async function apiToplist(): Promise<PlaylistItem[]> {
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1539,7 +1641,9 @@ export async function apiToplistArtist(): Promise<Artist[]> {
     );
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1561,7 +1665,9 @@ export async function apiUserDetail(
     const { profile } = body;
     const ret = solveUserDetail(profile as UserDetail);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return undefined;
 }
 
@@ -1586,7 +1692,9 @@ export async function apiUserFolloweds(
       solveUserDetail(followed)
     );
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1610,7 +1718,9 @@ export async function apiUserFollows(
     const { follow } = body;
     const ret = (follow as UserDetail[]).map((item) => solveUserDetail(item));
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1635,7 +1745,9 @@ export async function apiUserLevel(): Promise<UserLevel> {
     const ret = { progress, level };
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return {} as UserLevel;
 }
 
@@ -1660,7 +1772,9 @@ export async function apiUserPlaylist(uid: number): Promise<PlaylistItem[]> {
       apiCache.set(key, ret);
     }
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }
 
@@ -1715,6 +1829,8 @@ export async function apiUserRecord(
     const ret = await Promise.all(tasks);
     apiCache.set(key, ret);
     return ret;
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
   return [];
 }

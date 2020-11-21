@@ -153,8 +153,6 @@ export interface Player {
 export interface NativeModule {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Rodio: NativePlayer;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  Miniaudio: NativePlayer;
   startKeyboardEvent(callback: (res: string) => void): void;
   download(
     url: string,

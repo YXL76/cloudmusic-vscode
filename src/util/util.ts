@@ -36,7 +36,7 @@ import {
 import { CommentType, SubAction } from "NeteaseCloudMusicApi";
 import { ICON, MUSIC_QUALITY, NATIVE, TMP_DIR } from "../constant";
 import type { InputStep, MultiStepInput } from ".";
-import { IsLike, PersonalFm, lock } from "../state";
+import { IsLike, Loading, PersonalFm } from "../state";
 import {
   PlaylistProvider,
   QueueItemTreeItem,
@@ -56,13 +56,12 @@ export function downloadMusic(
   url: string,
   filename: string,
   path: Uri,
-  md5: string,
-  cache: boolean
+  md5: string
 ): void {
   try {
     NATIVE.download(url, path.fsPath, (_, res) => {
       if (res) {
-        if (cache) {
+        if (!PersonalFm.get()) {
           void MusicCache.put(
             filename,
             path,
@@ -73,7 +72,9 @@ export function downloadMusic(
         void window.showErrorMessage(i18n.sentence.error.network);
       }
     });
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export function songsItem2TreeItem(
@@ -102,7 +103,7 @@ const minSize = MUSIC_QUALITY === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
 const retryTimes = MUSIC_QUALITY === 999000 ? 25 : 10;
 
 export async function load(element: QueueItemTreeItem): Promise<void> {
-  lock.playerLoad.set(true);
+  Loading.set(true);
   const { pid, item } = element;
   const { id } = item;
   const idString = `${id}`;
@@ -113,7 +114,6 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
   } else {
     const { url, md5 } = (await apiSongUrl([id]))[0];
     if (!url) {
-      lock.playerLoad.set(false);
       void commands.executeCommand("cloudmusic.next");
       return;
     }
@@ -123,7 +123,7 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
       player.load(path, pid, item);
     } else {
       const tmpFileUri = Uri.joinPath(TMP_DIR, idString);
-      downloadMusic(url, idString, tmpFileUri, md5, !PersonalFm.get());
+      downloadMusic(url, idString, tmpFileUri, md5);
       let count = 0;
       const timer = setInterval(() => {
         workspace.fs.stat(tmpFileUri).then(
@@ -133,13 +133,11 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
               player.load(tmpFileUri.fsPath, pid, item);
             } else if (++count > retryTimes) {
               clearInterval(timer);
-              lock.playerLoad.set(false);
               void commands.executeCommand("cloudmusic.next");
             }
           },
           () => {
             clearInterval(timer);
-            lock.playerLoad.set(false);
           }
         );
       }, 200);
@@ -340,7 +338,7 @@ export async function pickSongMany(
     ],
   });
   if (pick.type === PickType.add) {
-    void QueueProvider.refresh(() => {
+    QueueProvider.refresh(() => {
       QueueProvider.add(songsItem2TreeItem(0, songs));
     });
   }
@@ -718,7 +716,7 @@ export async function pickPlaylist(
     return (input: MultiStepInput) => pickUser(input, step + 1, (pick as T).id);
   }
   if (pick.type === PickType.add) {
-    void QueueProvider.refresh(() => {
+    QueueProvider.refresh(() => {
       QueueProvider.add(songsItem2TreeItem(id, songs));
     });
   } else if (pick.type === PickType.comment) {

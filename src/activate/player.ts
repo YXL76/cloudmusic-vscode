@@ -2,12 +2,10 @@ import { MEDIA_CONTROL, NATIVE, PLAYER_AVAILABLE } from "../constant";
 import { commands, window } from "vscode";
 import type { ExtensionContext } from "vscode";
 import { i18n } from "../i18n";
-import { lock } from "../state";
 import { player } from "../util";
 
 export function initPlayer(context: ExtensionContext): void {
   if (!PLAYER_AVAILABLE) {
-    lock.playerLoad.set(true);
     void window.showErrorMessage(i18n.sentence.error.systemSupport);
   } else {
     player.init(context);

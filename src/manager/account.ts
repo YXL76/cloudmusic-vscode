@@ -78,10 +78,10 @@ export class AccountManager {
         LoggedIn.set(true);
         return true;
       }
-      return false;
-    } catch {
-      return false;
+    } catch (err) {
+      console.error(err);
     }
+    return false;
   }
 
   static async logout(): Promise<boolean> {
