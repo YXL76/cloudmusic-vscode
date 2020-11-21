@@ -195,16 +195,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ep-miniaudio-sys"
-version = "2.4.0"
-source = "git+https://github.com/ExPixel/miniaudio-rs#e0dfc37169f17edbeb40639cd0e4f0aaac7efa6c"
-dependencies = [
- "bitflags",
- "cc",
- "libc",
-]
-
-[[package]]
 name = "glob"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -299,15 +289,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3728d817d99e5ac407411fa471ff9800a778d88a24685968b36824eaf4bee400"
 
 [[package]]
-name = "miniaudio"
-version = "0.10.0"
-source = "git+https://github.com/ExPixel/miniaudio-rs#e0dfc37169f17edbeb40639cd0e4f0aaac7efa6c"
-dependencies = [
- "bitflags",
- "ep-miniaudio-sys",
-]
-
-[[package]]
 name = "minimp3"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -332,7 +313,6 @@ version = "0.1.0"
 dependencies = [
  "cfg-if 1.0.0",
  "curl",
- "miniaudio",
  "neon",
  "neon-build",
  "rodio",

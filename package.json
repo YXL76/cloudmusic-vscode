@@ -442,16 +442,6 @@
             "default": true,
             "markdownDescription": "%cloudmusic.configuration.cloudmusic.player.mediaControl.markdownDescription%",
             "scope": "window"
-          },
-          "cloudmusic.player.defaultLibrary": {
-            "type": "string",
-            "default": "Rodio",
-            "markdownDescription": "%cloudmusic.configuration.cloudmusic.player.defaultLibrary.markdownDescription%",
-            "enum": [
-              "Rodio",
-              "Miniaudio"
-            ],
-            "scope": "window"
           }
         }
       }

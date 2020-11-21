@@ -26,11 +26,6 @@ branch = "dev"
 default-features = false
 features = ["flac", "mp3"]
 
-[dependencies.miniaudio]
-git = "https://github.com/ExPixel/miniaudio-rs"
-default-features = false
-features = ["ma-no-wav"]
-
 [dependencies.curl]
 version = "0.4.34"
 default-features = false

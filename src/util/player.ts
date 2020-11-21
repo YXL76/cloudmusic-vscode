@@ -1,5 +1,5 @@
-import { LIBRARYS, NATIVE, PLAYER_AVAILABLE, VOLUME_KEY } from "../constant";
 import type { Lyric, NativePlayer, Player, SongsItem } from "../constant";
+import { NATIVE, PLAYER_AVAILABLE, VOLUME_KEY } from "../constant";
 import { Playing, lock } from "../state";
 import { apiLyric, apiScrobble } from ".";
 import { ButtonManager } from "../manager";
@@ -56,13 +56,7 @@ class AudioPlayer implements Player {
   private player!: NativePlayer;
 
   constructor() {
-    for (const library of LIBRARYS) {
-      try {
-        const player = NATIVE[library] as NativePlayer;
-        this.player = new player();
-        break;
-      } catch {}
-    }
+    this.player = new NATIVE.Rodio();
 
     setInterval(() => {
       if (Playing.get()) {
