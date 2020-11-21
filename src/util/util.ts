@@ -338,7 +338,7 @@ export async function pickSongMany(
     ],
   });
   if (pick.type === PickType.add) {
-    void QueueProvider.refresh(() => {
+    QueueProvider.refresh(() => {
       QueueProvider.add(songsItem2TreeItem(0, songs));
     });
   }
@@ -716,7 +716,7 @@ export async function pickPlaylist(
     return (input: MultiStepInput) => pickUser(input, step + 1, (pick as T).id);
   }
   if (pick.type === PickType.add) {
-    void QueueProvider.refresh(() => {
+    QueueProvider.refresh(() => {
       QueueProvider.add(songsItem2TreeItem(id, songs));
     });
   } else if (pick.type === PickType.comment) {

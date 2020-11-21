@@ -19,10 +19,10 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     return this.instance || (this.instance = new QueueProvider());
   }
 
-  static async refresh(action: () => Promise<void> | void): Promise<void> {
+  static refresh(action: () => void): void {
     if (!this.lock) {
       this.lock = true;
-      await action();
+      action();
       this.instance._onDidChangeTreeData.fire();
       this.lock = false;
     }

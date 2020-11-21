@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "../../manager";
-import { IsLike, PersonalFm, lock } from "../../state";
+import { IsLike, PersonalFm } from "../../state";
 import { MultiStepInput, apiLike, load, player } from "../../util";
 import type { ExtensionContext } from "vscode";
 import { QueueProvider } from "../../provider";
@@ -15,9 +15,9 @@ export function media(context: ExtensionContext): void {
         if (len === 1) {
           void load(QueueProvider.songs[0]);
         } else {
-          void QueueProvider.refresh(async () => {
-            await load(QueueProvider.songs[len]);
+          QueueProvider.refresh(() => {
             QueueProvider.shift(-1);
+            void load(QueueProvider.songs[len]);
           });
         }
       }
@@ -29,9 +29,9 @@ export function media(context: ExtensionContext): void {
       if (PersonalFm.get()) {
         void load(await PersonalFm.next());
       } else if (QueueProvider.songs.length > 1) {
-        void QueueProvider.refresh(async () => {
-          await load(QueueProvider.songs[1]);
+        QueueProvider.refresh(() => {
           QueueProvider.shift(1);
+          void load(QueueProvider.songs[1]);
         });
       } else if (QueueProvider.songs.length === 1) {
         void load(QueueProvider.songs[0]);

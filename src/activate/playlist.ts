@@ -91,7 +91,7 @@ export function initPlaylist(): void {
       PlaylistProvider.refresh({
         element,
         action: (items) => {
-          void QueueProvider.refresh(() => {
+          QueueProvider.refresh(() => {
             void PersonalFm.set(false);
             QueueProvider.clear();
             QueueProvider.add(items);
@@ -174,7 +174,7 @@ export function initPlaylist(): void {
       PlaylistProvider.refresh({
         element,
         action: (items) => {
-          void QueueProvider.refresh(() => {
+          QueueProvider.refresh(() => {
             QueueProvider.add(items);
           });
         },
@@ -199,12 +199,12 @@ export function initPlaylist(): void {
 
   commands.registerCommand(
     "cloudmusic.intelligence",
-    (element: QueueItemTreeItem) => {
+    async (element: QueueItemTreeItem) => {
+      const { pid, item } = element;
+      const { id } = item;
+      const songs = await apiPlaymodeIntelligenceList(id, pid);
       void PersonalFm.set(false);
-      void QueueProvider.refresh(async () => {
-        const { pid } = element;
-        const { id } = element.item;
-        const songs = await apiPlaymodeIntelligenceList(id, pid);
+      QueueProvider.refresh(() => {
         const elements = songsItem2TreeItem(id, songs);
         QueueProvider.clear();
         QueueProvider.add([element]);
@@ -217,7 +217,7 @@ export function initPlaylist(): void {
   commands.registerCommand(
     "cloudmusic.addSong",
     (element: QueueItemTreeItem) => {
-      void QueueProvider.refresh(() => {
+      QueueProvider.refresh(() => {
         QueueProvider.add([element]);
       });
     }
@@ -229,7 +229,7 @@ export function initPlaylist(): void {
       PlaylistProvider.refresh({
         element: PlaylistProvider.playlists.get(element.pid),
         action: (items) => {
-          void QueueProvider.refresh(() => {
+          QueueProvider.refresh(() => {
             void PersonalFm.set(false);
             QueueProvider.clear();
             QueueProvider.add(items);

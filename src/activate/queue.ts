@@ -70,7 +70,7 @@ export function initQueue(): void {
 
       const { songs } = QueueProvider;
       stop();
-      await QueueProvider.refresh(() => {
+      QueueProvider.refresh(() => {
         if (pick.type === Type.song) {
           QueueProvider.songs = songs.sort((a, b) =>
             a.item.name.localeCompare(b.item.name)
@@ -93,16 +93,16 @@ export function initQueue(): void {
   });
 
   commands.registerCommand("cloudmusic.clearQueue", () => {
-    void QueueProvider.refresh(() => {
+    QueueProvider.refresh(() => {
+      QueueProvider.clear();
       if (!PersonalFm.get()) {
         stop();
       }
-      QueueProvider.clear();
     });
   });
 
   commands.registerCommand("cloudmusic.randomQueue", () => {
-    void QueueProvider.refresh(() => {
+    QueueProvider.refresh(() => {
       QueueProvider.random();
     });
   });
@@ -112,7 +112,7 @@ export function initQueue(): void {
     async (element: QueueItemTreeItem) => {
       void PersonalFm.set(false);
       await load(element);
-      void QueueProvider.refresh(() => {
+      QueueProvider.refresh(() => {
         QueueProvider.top(element.item.id);
       });
     }
@@ -121,7 +121,7 @@ export function initQueue(): void {
   commands.registerCommand(
     "cloudmusic.deleteSong",
     (element: QueueItemTreeItem) => {
-      void QueueProvider.refresh(() => {
+      QueueProvider.refresh(() => {
         QueueProvider.delete(element.item.id);
       });
     }
@@ -132,7 +132,7 @@ export function initQueue(): void {
     (element: QueueItemTreeItem) => {
       if (QueueProvider.songs.length > 2) {
         const { id } = element.item;
-        void QueueProvider.refresh(() => {
+        QueueProvider.refresh(() => {
           const index = QueueProvider.songs.findIndex(
             (value) => value.valueOf() === id
           );
