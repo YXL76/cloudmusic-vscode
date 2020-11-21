@@ -1,10 +1,18 @@
+import { Loading, PersonalFm, Playing } from "../state";
+import {
+  LocalCache,
+  MusicCache,
+  apiLyric,
+  apiScrobble,
+  apiSongUrl,
+  downloadMusic,
+} from ".";
 import type { Lyric, NativePlayer, Player, SongsItem } from "../constant";
-import { NATIVE, PLAYER_AVAILABLE, VOLUME_KEY } from "../constant";
-import { Playing, lock } from "../state";
-import { apiLyric, apiScrobble } from ".";
+import { NATIVE, PLAYER_AVAILABLE, TMP_DIR, VOLUME_KEY } from "../constant";
+import { Uri, commands, workspace } from "vscode";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
-import { commands } from "vscode";
+import { QueueProvider } from "../provider";
 
 class NoPlayer implements Player {
   item = {} as SongsItem;
@@ -34,6 +42,28 @@ class NoPlayer implements Player {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async volume(_level: number): Promise<void> {
     //
+  }
+}
+
+async function prefetch() {
+  let id = 0;
+  if (PersonalFm.get()) {
+    if (PersonalFm.item.length > 1) {
+      id = PersonalFm.item[1].item.id;
+    }
+  } else {
+    if (QueueProvider.songs.length > 1) {
+      id = QueueProvider.songs[1].item.id;
+    }
+  }
+  const idString = `${id}`;
+
+  if (id !== 0 && !(await MusicCache.get(idString))) {
+    const { url, md5 } = (await apiSongUrl([id]))[0];
+    if (!url || LocalCache.get(md5)) {
+      return;
+    }
+    downloadMusic(url, idString, Uri.joinPath(TMP_DIR, idString), md5);
   }
 }
 
@@ -76,16 +106,29 @@ class AudioPlayer implements Player {
             void commands.executeCommand("cloudmusic.next");
           }
 
-          if (!lock.deleteTmp.get() && pos > 120 && !lock.playerLoad.get()) {
-            void (async () => {
-              lock.playerLoad.set(true);
-              await lock.deleteTmp.set(true);
-              lock.playerLoad.set(false);
-            })();
+          if (pos > 120) {
+            void prefetch();
           }
         }
       }
     }, 1000);
+
+    // 1000 * 60 * 8 = 480000
+    setInterval(() => {
+      void workspace.fs.readDirectory(TMP_DIR).then((items) => {
+        for (const item of items) {
+          if (item[0] !== `${this.item.id}`) {
+            const path = Uri.joinPath(TMP_DIR, item[0]);
+            void workspace.fs.stat(path).then(({ mtime }) => {
+              // 8 * 60 * 1000 = 960000
+              if (Date.now() - mtime > 480000) {
+                void workspace.fs.delete(Uri.joinPath(TMP_DIR, item[0]));
+              }
+            });
+          }
+        }
+      });
+    }, 480000);
   }
 
   init(context: ExtensionContext): void {
@@ -99,7 +142,6 @@ class AudioPlayer implements Player {
   }
 
   load(url: string, pid: number, item: SongsItem): void {
-    void lock.deleteTmp.set(false);
     if (this.player.load(url)) {
       this.player.setVolume(this.context.globalState.get(VOLUME_KEY) ?? 85);
       Playing.set(true);
@@ -121,12 +163,10 @@ class AudioPlayer implements Player {
 
       this.pid = pid;
       this.item = item;
-
-      lock.playerLoad.set(false);
     } else {
-      lock.playerLoad.set(false);
       void commands.executeCommand("cloudmusic.next");
     }
+    Loading.set(false, item);
   }
 
   togglePlay(): void {

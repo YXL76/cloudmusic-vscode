@@ -11,7 +11,7 @@ export function media(context: ExtensionContext): void {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.previous", () => {
       const len = QueueProvider.songs.length - 1;
-      if (!PersonalFm.get() && !lock.playerLoad.get() && len > 0) {
+      if (!PersonalFm.get() && len > 0) {
         if (len === 1) {
           void load(QueueProvider.songs[0]);
         } else {
@@ -26,9 +26,6 @@ export function media(context: ExtensionContext): void {
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.next", async () => {
-      if (lock.playerLoad.get()) {
-        return;
-      }
       if (PersonalFm.get()) {
         void load(await PersonalFm.next());
       } else if (QueueProvider.songs.length > 1) {

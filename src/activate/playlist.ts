@@ -16,10 +16,10 @@ import {
   player,
   songsItem2TreeItem,
 } from "../util";
-import { PersonalFm, lock } from "../state";
 import type { PlaylistItemTreeItem, QueueItemTreeItem } from "../provider";
 import { PlaylistProvider, QueueProvider } from "../provider";
 import { commands, window } from "vscode";
+import { PersonalFm } from "../state";
 import { i18n } from "../i18n";
 
 export function initPlaylist(): void {
@@ -95,9 +95,7 @@ export function initPlaylist(): void {
             void PersonalFm.set(false);
             QueueProvider.clear();
             QueueProvider.add(items);
-            if (!lock.playerLoad.get()) {
-              void load(QueueProvider.songs[0]);
-            }
+            void load(QueueProvider.songs[0]);
           });
         },
       });
@@ -211,9 +209,7 @@ export function initPlaylist(): void {
         QueueProvider.clear();
         QueueProvider.add([element]);
         QueueProvider.add(elements);
-        if (!lock.playerLoad.get()) {
-          void load(element);
-        }
+        void load(element);
       });
     }
   );
@@ -238,9 +234,7 @@ export function initPlaylist(): void {
             QueueProvider.clear();
             QueueProvider.add(items);
             QueueProvider.top(element.item.id);
-            if (!lock.playerLoad.get()) {
-              void load(QueueProvider.songs[0]);
-            }
+            void load(QueueProvider.songs[0]);
           });
         },
       });

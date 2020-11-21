@@ -1,7 +1,7 @@
 import { MultiStepInput, load, stop } from "../util";
-import { PersonalFm, lock } from "../state";
 import { commands, window } from "vscode";
 import { ICON } from "../constant";
+import { PersonalFm } from "../state";
 import type { QueueItemTreeItem } from "../provider";
 import { QueueProvider } from "../provider";
 import { i18n } from "../i18n";
@@ -110,13 +110,11 @@ export function initQueue(): void {
   commands.registerCommand(
     "cloudmusic.playSong",
     async (element: QueueItemTreeItem) => {
-      if (!lock.playerLoad.get()) {
-        void PersonalFm.set(false);
-        await load(element);
-        void QueueProvider.refresh(() => {
-          QueueProvider.top(element.item.id);
-        });
-      }
+      void PersonalFm.set(false);
+      await load(element);
+      void QueueProvider.refresh(() => {
+        QueueProvider.top(element.item.id);
+      });
     }
   );
 
