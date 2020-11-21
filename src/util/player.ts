@@ -90,25 +90,18 @@ class AudioPlayer implements Player {
 
     setInterval(() => {
       if (Playing.get()) {
-        if (this.player.empty()) {
+        const pos = this.player.position();
+        if (pos > 120) {
+          void prefetch();
+        }
+        if (this.player.empty() || pos > this.item.dt + 8) {
           Playing.set(false);
           void commands.executeCommand("cloudmusic.next");
         } else {
-          const pos = this.player.position();
-
           while (lyric.time[lyric.index] <= pos) {
             ++lyric.index;
           }
           ButtonManager.buttonLyric(lyric.text[lyric.index - 1]);
-
-          if (pos > this.item.dt + 8) {
-            Playing.set(false);
-            void commands.executeCommand("cloudmusic.next");
-          }
-
-          if (pos > 120) {
-            void prefetch();
-          }
         }
       }
     }, 1000);

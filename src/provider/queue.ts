@@ -1,10 +1,11 @@
 import type { Event, TreeDataProvider, TreeItemCollapsibleState } from "vscode";
 import { EventEmitter, ThemeIcon, TreeItem } from "vscode";
 import type { SongsItem } from "../constant";
-import { lock } from "../state";
 import { unsortInplace } from "array-unsort";
 
 export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
+  static lock = false;
+
   static songs: QueueItemTreeItem[] = [];
 
   private static instance: QueueProvider;
@@ -19,11 +20,11 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   }
 
   static async refresh(action: () => Promise<void> | void): Promise<void> {
-    if (!lock.queue) {
-      lock.queue = true;
+    if (!this.lock) {
+      this.lock = true;
       await action();
       this.instance._onDidChangeTreeData.fire();
-      lock.queue = false;
+      this.lock = false;
     }
   }
 
