@@ -90,7 +90,7 @@ class AudioPlayer implements Player {
 
   init(context: ExtensionContext): void {
     this.context = context;
-    void this.volume(this.context.globalState.get(VOLUME_KEY) || 85);
+    void this.volume(this.context.globalState.get(VOLUME_KEY) ?? 85);
   }
 
   stop(): void {
@@ -101,7 +101,7 @@ class AudioPlayer implements Player {
   load(url: string, pid: number, item: SongsItem): void {
     void lock.deleteTmp.set(false);
     if (this.player.load(url)) {
-      this.player.setVolume(this.context.globalState.get(VOLUME_KEY) || 85);
+      this.player.setVolume(this.context.globalState.get(VOLUME_KEY) ?? 85);
       Playing.set(true);
 
       void apiLyric(item.id).then(({ time, text }) => {
