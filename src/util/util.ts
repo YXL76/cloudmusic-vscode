@@ -72,7 +72,9 @@ export function downloadMusic(
         void window.showErrorMessage(i18n.sentence.error.network);
       }
     });
-  } catch {}
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export function songsItem2TreeItem(
