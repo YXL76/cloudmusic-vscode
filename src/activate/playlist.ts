@@ -95,7 +95,7 @@ export function initPlaylist(): void {
             void PersonalFm.set(false);
             QueueProvider.clear();
             QueueProvider.add(items);
-            void load(QueueProvider.songs[0]);
+            load(QueueProvider.songs[0]);
           });
         },
       });
@@ -209,7 +209,7 @@ export function initPlaylist(): void {
         QueueProvider.clear();
         QueueProvider.add([element]);
         QueueProvider.add(elements);
-        void load(element);
+        load(element);
       });
     }
   );
@@ -234,7 +234,7 @@ export function initPlaylist(): void {
             QueueProvider.clear();
             QueueProvider.add(items);
             QueueProvider.top(element.item.id);
-            void load(QueueProvider.songs[0]);
+            load(QueueProvider.songs[0]);
           });
         },
       });

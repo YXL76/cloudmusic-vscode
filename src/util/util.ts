@@ -102,26 +102,29 @@ export function stop(): void {
 const minSize = MUSIC_QUALITY === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
 const retryTimes = MUSIC_QUALITY === 999000 ? 25 : 10;
 
-export async function load(element: QueueItemTreeItem): Promise<void> {
+export function load(element: QueueItemTreeItem): void {
   Loading.set(true);
   const { pid, item } = element;
   const { id } = item;
   const idString = `${id}`;
-  const path = (await MusicCache.get(idString)) as string;
-
-  if (path) {
-    player.load(path, pid, item);
-  } else {
-    const { url, md5 } = (await apiSongUrl([id]))[0];
-    if (!url) {
-      void commands.executeCommand("cloudmusic.next");
-      return;
-    }
-    const path = LocalCache.get(md5) as string;
-
+  void MusicCache.get(idString).then((path) => {
     if (path) {
       player.load(path, pid, item);
-    } else {
+      return;
+    }
+    void apiSongUrl([id]).then((songs) => {
+      const { url, md5 } = songs[0];
+      if (!url) {
+        void commands.executeCommand("cloudmusic.next");
+        return;
+      }
+
+      const path = LocalCache.get(md5);
+      if (path) {
+        player.load(path, pid, item);
+        return;
+      }
+
       const tmpFileUri = Uri.joinPath(TMP_DIR, idString);
       downloadMusic(url, idString, tmpFileUri, md5);
       let count = 0;
@@ -141,8 +144,8 @@ export async function load(element: QueueItemTreeItem): Promise<void> {
           }
         );
       }, 200);
-    }
-  }
+    });
+  });
 }
 
 export async function confirmation(

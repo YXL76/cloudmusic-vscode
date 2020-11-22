@@ -109,11 +109,11 @@ export function initQueue(): void {
 
   commands.registerCommand(
     "cloudmusic.playSong",
-    async (element: QueueItemTreeItem) => {
+    (element: QueueItemTreeItem) => {
       void PersonalFm.set(false);
-      await load(element);
       QueueProvider.refresh(() => {
         QueueProvider.top(element.item.id);
+        load(element);
       });
     }
   );
