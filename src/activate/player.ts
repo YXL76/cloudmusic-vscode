@@ -10,15 +10,15 @@ export function initPlayer(context: ExtensionContext): void {
   } else {
     player.init(context);
     if (MEDIA_CONTROL) {
-      NATIVE.startKeyboardEvent((res) => {
-        if (res === "prev") {
-          void commands.executeCommand("cloudmusic.previous");
-        } else if (res === "play") {
-          void commands.executeCommand("cloudmusic.play");
-        } else if (res === "next") {
-          void commands.executeCommand("cloudmusic.next");
-        }
-      });
+      // NATIVE.startKeyboardEvent((res) => {
+      //   if (res === "prev") {
+      //     void commands.executeCommand("cloudmusic.previous");
+      //   } else if (res === "play") {
+      //     void commands.executeCommand("cloudmusic.play");
+      //   } else if (res === "next") {
+      //     void commands.executeCommand("cloudmusic.next");
+      //   }
+      // });
     }
   }
 }
