@@ -128,16 +128,7 @@ export type CommentDetail = {
   };
 };
 
-export type NativePlayer = {
-  new <T>(): T;
-  load(url: string): boolean;
-  play(): boolean;
-  pause(): void;
-  stop(): void;
-  setVolume(level: number): void;
-  empty(): boolean;
-  position(): number;
-};
+export type NativePlayer = {};
 
 export interface Player {
   item: SongsItem;
@@ -151,14 +142,22 @@ export interface Player {
 }
 
 export interface NativeModule {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  Rodio: NativePlayer;
-  startKeyboardEvent(callback: (res: string) => void): void;
   download(
     url: string,
     path: string,
     callback: (err: string, res: boolean) => void
   ): void;
+
+  startKeyboardEvent(callback: (res: string) => void): void;
+
+  playerEmpty(player: NativePlayer): boolean;
+  playerLoad(player: NativePlayer, url: string): boolean;
+  playerNew(): NativePlayer;
+  playerPause(player: NativePlayer): void;
+  playerPlay(player: NativePlayer): boolean;
+  playerPosition(player: NativePlayer): number;
+  playerSetVolume(player: NativePlayer, level: number): void;
+  playerStop(player: NativePlayer): void;
 }
 
 export const enum SortType {

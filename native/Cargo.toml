@@ -12,13 +12,16 @@ crate-type = ["cdylib"]
 
 [build-dependencies.neon-build]
 git = "https://github.com/neon-bindings/neon"
+branch = "main"
 
 [dependencies]
 cfg-if = "1.0.0"
 
 [dependencies.neon]
 git = "https://github.com/neon-bindings/neon"
-features = ["event-handler-api"]
+branch = "main"
+default-features = false
+features = ["event-handler-api", "napi-runtime"]
 
 [dependencies.rodio]
 git = "https://github.com/YXL76/rodio"
