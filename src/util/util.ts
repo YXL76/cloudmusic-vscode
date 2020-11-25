@@ -34,7 +34,7 @@ import {
   player,
 } from ".";
 import { CommentType, SubAction } from "NeteaseCloudMusicApi";
-import { ICON, MUSIC_QUALITY, NATIVE, TMP_DIR } from "../constant";
+import { ICON, MUSIC_QUALITY, TMP_DIR } from "../constant";
 import type { InputStep, MultiStepInput } from ".";
 import { IsLike, Loading, PersonalFm } from "../state";
 import {
@@ -42,39 +42,63 @@ import {
   QueueItemTreeItem,
   QueueProvider,
 } from "../provider";
-import {
-  TreeItemCollapsibleState,
-  Uri,
-  commands,
-  window,
-  workspace,
-} from "vscode";
+import { TreeItemCollapsibleState, Uri, commands, window } from "vscode";
 import type { QuickPickItem } from "vscode";
+import type { Readable } from "stream";
+import axios from "axios";
+import { createWriteStream } from "fs";
+import { Agent as httpAgent } from "http";
+import { Agent as httpsAgent } from "https";
 import { i18n } from "../i18n";
+
+const minSize = MUSIC_QUALITY === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
 
 export function downloadMusic(
   url: string,
   filename: string,
   path: Uri,
-  md5: string
+  md5: string,
+  cache: boolean,
+  pid?: number,
+  item?: SongsItem
 ): void {
-  try {
-    NATIVE.download(url, path.fsPath, (_, res) => {
-      if (res) {
-        if (!PersonalFm.get()) {
+  axios
+    .get<Readable>(url, {
+      httpAgent: new httpAgent({ keepAlive: true }),
+      httpsAgent: new httpsAgent({ keepAlive: true }),
+      responseType: "stream",
+      timeout: 1000,
+    })
+    .then(({ data }) => {
+      if (pid && item) {
+        let len = 0;
+        const onData = ({ length }) => {
+          len += length;
+          if (len > minSize) {
+            data.removeListener("data", onData);
+            player.load(path.fsPath, pid, item);
+          }
+        };
+        data.on("data", onData);
+      }
+
+      if (cache) {
+        data.on("end", () => {
           void MusicCache.put(
             filename,
             path,
             `md5-${Buffer.from(md5, "hex").toString("base64")}`
           );
-        }
-      } else {
-        void window.showErrorMessage(i18n.sentence.error.network);
+        });
       }
+
+      const file = createWriteStream(path.fsPath);
+      data.pipe(file);
+    })
+    .catch((err) => {
+      console.error(err);
+      void window.showErrorMessage(i18n.sentence.error.network);
     });
-  } catch (err) {
-    console.error(err);
-  }
 }
 
 export function songsItem2TreeItem(
@@ -99,15 +123,12 @@ export function stop(): void {
   ButtonManager.buttonLyric();
 }
 
-const minSize = MUSIC_QUALITY === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
-const retryTimes = MUSIC_QUALITY === 999000 ? 25 : 10;
-
 export function load(element: QueueItemTreeItem): void {
   Loading.set(true);
   const { pid, item } = element;
   const { id } = item;
-  const idString = `${id}`;
-  void MusicCache.get(idString).then((path) => {
+  const idS = `${id}`;
+  void MusicCache.get(idS).then((path) => {
     if (path) {
       player.load(path, pid, item);
       return;
@@ -125,25 +146,8 @@ export function load(element: QueueItemTreeItem): void {
         return;
       }
 
-      const tmpFileUri = Uri.joinPath(TMP_DIR, idString);
-      downloadMusic(url, idString, tmpFileUri, md5);
-      let count = 0;
-      const timer = setInterval(() => {
-        workspace.fs.stat(tmpFileUri).then(
-          ({ size }) => {
-            if (size > minSize) {
-              clearInterval(timer);
-              player.load(tmpFileUri.fsPath, pid, item);
-            } else if (++count > retryTimes) {
-              clearInterval(timer);
-              void commands.executeCommand("cloudmusic.next");
-            }
-          },
-          () => {
-            clearInterval(timer);
-          }
-        );
-      }, 200);
+      const tmpUri = Uri.joinPath(TMP_DIR, idS);
+      downloadMusic(url, idS, tmpUri, md5, !PersonalFm.get(), pid, item);
     });
   });
 }

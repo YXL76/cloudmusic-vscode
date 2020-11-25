@@ -142,12 +142,6 @@ export interface Player {
 }
 
 export interface NativeModule {
-  download(
-    url: string,
-    path: string,
-    callback: (err: string, res: boolean) => void
-  ): void;
-
   startKeyboardEvent(callback: (res: string) => void): void;
 
   playerEmpty(player: NativePlayer): boolean;

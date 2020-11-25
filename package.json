@@ -496,6 +496,7 @@
     "NeteaseCloudMusicApi": "git+https://github.com/YXL76/NeteaseCloudMusicApi.git#self-use",
     "antd": "^4.8.5",
     "array-unsort": "^1.1.6",
+    "axios": "^0.21.0",
     "bluebird": "3.7.2",
     "cacache": "^15.0.5",
     "lru-cache": "^6.0.0",

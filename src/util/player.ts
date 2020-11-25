@@ -63,7 +63,8 @@ async function prefetch() {
     if (!url || LocalCache.get(md5)) {
       return;
     }
-    downloadMusic(url, idString, Uri.joinPath(TMP_DIR, idString), md5);
+    const path = Uri.joinPath(TMP_DIR, idString);
+    downloadMusic(url, idString, path, md5, !PersonalFm.get());
   }
 }
 
