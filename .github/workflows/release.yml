@@ -29,9 +29,21 @@ jobs:
           sudo apt-get install -y libasound2-dev
           sudo apt-get install -y libx11-dev
 
-      - name: Install needed Windows dependencies
+      - name: Cache LLVM and Clang
         if: matrix.os == 'windows-latest'
-        run: choco install llvm
+        id: cache-llvm
+        uses: actions/cache@v2
+        with:
+          path: ${{ runner.temp }}/llvm
+          key: ${{ matrix.os }}-llvm-10.0
+
+      - name: Install LLVM and Clang
+        if: matrix.os == 'windows-latest'
+        uses: KyleMayes/install-llvm-action@v1
+        with:
+          version: "10.0"
+          directory: ${{ runner.temp }}/llvm
+          cached: ${{ steps.cache-llvm.outputs.cache-hit }}
 
       - uses: actions-rs/toolchain@v1
         with:
@@ -66,8 +78,15 @@ jobs:
       - run: yarn
 
       - name: Build
-        run: |
-          yarn build-native
+        if: matrix.os != 'windows-latest'
+        run: yarn build-native
+
+      - name: Build
+        if: matrix.os == 'windows-latest'
+        run: yarn build-native
+        env:
+          LIBCLANG_PATH: ${{ runner.temp }}/llvm/bin
+
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ matrix.filename }}
