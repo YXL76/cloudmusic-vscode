@@ -63,7 +63,8 @@ async function prefetch() {
     if (!url || LocalCache.get(md5)) {
       return;
     }
-    downloadMusic(url, idString, Uri.joinPath(TMP_DIR, idString), md5);
+    const path = Uri.joinPath(TMP_DIR, idString);
+    downloadMusic(url, idString, path, md5, !PersonalFm.get());
   }
 }
 
@@ -86,15 +87,15 @@ class AudioPlayer implements Player {
   private player!: NativePlayer;
 
   constructor() {
-    this.player = new NATIVE.Rodio();
+    this.player = NATIVE.playerNew();
 
     setInterval(() => {
       if (Playing.get()) {
-        const pos = this.player.position();
+        const pos = NATIVE.playerPosition(this.player);
         if (pos > 120) {
           void prefetch();
         }
-        if (this.player.empty() || pos > this.item.dt + 8) {
+        if (NATIVE.playerEmpty(this.player) || pos > this.item.dt + 8) {
           Playing.set(false);
           void commands.executeCommand("cloudmusic.next");
         } else {
@@ -131,12 +132,15 @@ class AudioPlayer implements Player {
 
   stop(): void {
     Playing.set(false);
-    this.player.stop();
+    NATIVE.playerStop(this.player);
   }
 
   load(url: string, pid: number, item: SongsItem): void {
-    if (this.player.load(url)) {
-      this.player.setVolume(this.context.globalState.get(VOLUME_KEY) ?? 85);
+    if (NATIVE.playerLoad(this.player, url)) {
+      NATIVE.playerSetVolume(
+        this.player,
+        this.context.globalState.get(VOLUME_KEY) ?? 85
+      );
       Playing.set(true);
 
       void apiLyric(item.id).then(({ time, text }) => {
@@ -165,10 +169,10 @@ class AudioPlayer implements Player {
   togglePlay(): void {
     if (this.item.id) {
       if (Playing.get()) {
-        this.player.pause();
+        NATIVE.playerPause(this.player);
         Playing.set(false);
       } else {
-        if (this.player.play()) {
+        if (NATIVE.playerPlay(this.player)) {
           Playing.set(true);
         }
       }
@@ -177,7 +181,7 @@ class AudioPlayer implements Player {
 
   async volume(level: number): Promise<void> {
     await this.context.globalState.update(VOLUME_KEY, level);
-    this.player.setVolume(level);
+    NATIVE.playerSetVolume(this.player, level);
     ButtonManager.buttonVolume(level);
   }
 }
