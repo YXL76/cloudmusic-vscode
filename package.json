@@ -481,7 +481,7 @@
     "gulp": "4.0.2",
     "gulp-filter": "6.0.0",
     "gulp-typescript": "6.0.0-alpha.1",
-    "neon-cli": "0.5.3",
+    "neon-cli": "0.6.0",
     "parcel": "2.0.0-nightly.476",
     "prettier": "2.2.1",
     "sass": "1.30.0",
