@@ -479,7 +479,6 @@
     "eslint-plugin-react-hooks": "4.2.0",
     "neon-cli": "0.6.0",
     "prettier": "2.2.1",
-    "sass": "1.30.0",
     "typescript": "4.1.3",
     "webpack": "5.10.1",
     "webpack-cli": "4.2.0"
@@ -490,7 +489,6 @@
     "antd": "4.9.3",
     "array-unsort": "1.1.6",
     "axios": "0.21.0",
-    "bluebird": "3.7.2",
     "cacache": "15.0.5",
     "lru-cache": "6.0.0",
     "md5-file": "5.0.0",
