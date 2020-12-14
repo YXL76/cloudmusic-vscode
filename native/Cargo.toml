@@ -14,8 +14,8 @@ crate-type = ["cdylib"]
 git = "https://github.com/neon-bindings/neon"
 branch = "main"
 
-[dependencies]
-cfg-if = "1"
+# [dependencies]
+# cfg-if = "1"
 
 [dependencies.neon]
 git = "https://github.com/neon-bindings/neon"
@@ -29,18 +29,18 @@ branch = "dev"
 default-features = false
 features = ["flac", "mp3"]
 
-[dependencies.curl]
-version = "0.4"
-default-features = false
-features = ["static-curl"]
-
-[target.'cfg(target_os = "linux")'.dependencies.x11]
-version = "2.18"
-default-features = false
-features = ["xlib"]
-
-[target.'cfg(target_os = "windows")'.dependencies]
-winapi = "0.3"
+# [dependencies.curl]
+# version = "0.4"
+# default-features = false
+# features = ["static-curl"]
+# 
+# [target.'cfg(target_os = "linux")'.dependencies.x11]
+# version = "2.18"
+# default-features = false
+# features = ["xlib"]
+# 
+# [target.'cfg(target_os = "windows")'.dependencies]
+# winapi = "0.3"
 
 [profile.release]
 lto = true
