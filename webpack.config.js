@@ -23,12 +23,6 @@ const config = {
   module: {
     rules: [
       {
-        loader: require.resolve("vscode-nls-dev/lib/webpack-loader"),
-        options: {
-          base: resolve(__dirname, "src"),
-        },
-      },
-      {
         test: /\.ts$/,
         exclude: /node_modules/,
         loader: "esbuild-loader",

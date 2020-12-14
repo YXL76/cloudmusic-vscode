@@ -22,5 +22,4 @@ native/artifacts.json
 build
 out
 dist
-**/package.nls.*.json
 **/*.vsix
