@@ -18,7 +18,6 @@ native/artifacts.json
 
 # cache and build file
 .cache
-.parcel-cache
 .artifact
 build
 out
