@@ -5,7 +5,7 @@
   "version": "5.2.3",
   "publisher": "YXL",
   "engines": {
-    "vscode": "^1.49.0"
+    "vscode": "1.49.0"
   },
   "license": "SEE LICENSE IN LICENSE",
   "categories": [
@@ -479,7 +479,7 @@
     "gulp": "4.0.2",
     "gulp-filter": "6.0.0",
     "gulp-typescript": "6.0.0-alpha.1",
-    "neon-cli": "0.5.3",
+    "neon-cli": "0.6.0",
     "prettier": "2.2.1",
     "sass": "1.30.0",
     "ts-loader": "8.0.12",
@@ -489,18 +489,18 @@
     "webpack-cli": "4.2.0"
   },
   "dependencies": {
-    "@ant-design/icons": "^4.3.0",
+    "@ant-design/icons": "4.3.0",
     "NeteaseCloudMusicApi": "git+https://github.com/YXL76/NeteaseCloudMusicApi.git#self-use",
-    "antd": "^4.9.2",
-    "array-unsort": "^1.1.6",
-    "axios": "^0.21.0",
+    "antd": "4.9.3",
+    "array-unsort": "1.1.6",
+    "axios": "0.21.0",
     "bluebird": "3.7.2",
-    "cacache": "^15.0.5",
-    "lru-cache": "^6.0.0",
-    "md5-file": "^5.0.0",
-    "node-cache": "^5.1.2",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "vscode-nls": "^5.0.0"
+    "cacache": "15.0.5",
+    "lru-cache": "6.0.0",
+    "md5-file": "5.0.0",
+    "node-cache": "5.1.2",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
+    "vscode-nls": "5.0.0"
   }
 }
