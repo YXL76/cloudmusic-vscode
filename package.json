@@ -5,7 +5,7 @@
   "version": "5.2.3",
   "publisher": "YXL",
   "engines": {
-    "vscode": "1.49.0"
+    "vscode": "1.52.0"
   },
   "license": "SEE LICENSE IN LICENSE",
   "categories": [
@@ -462,7 +462,7 @@
     "@types/node": "12.19.9",
     "@types/react": "17.0.0",
     "@types/react-dom": "17.0.0",
-    "@types/vscode": "1.49.0",
+    "@types/vscode": "1.52.0",
     "@typescript-eslint/eslint-plugin": "4.9.1",
     "@typescript-eslint/parser": "4.9.1",
     "babel-eslint": "10.1.0",
