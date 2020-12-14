@@ -1,5 +1,5 @@
 import * as crypto from "crypto";
-import { ACCOUNT_KEY, ICON } from "../../constant";
+import { ACCOUNT_KEY, ICON } from "../constant";
 import { ArtistArea, ArtistType, TopSongType } from "NeteaseCloudMusicApi";
 import {
   ButtonAction,
@@ -32,14 +32,14 @@ import {
   pickPlaylists,
   pickSongs,
   pickUser,
-} from "../../util";
+} from "../util";
 import type { ExtensionContext, QuickPickItem } from "vscode";
 import { commands, window } from "vscode";
-import { AccountManager } from "../../manager";
+import { AccountManager } from "../manager";
 import type { ArtistInitial } from "NeteaseCloudMusicApi";
-import type { InputStep } from "../../util";
-import { LoggedIn } from "../../state";
-import { i18n } from "../../i18n";
+import type { InputStep } from "../util";
+import { LoggedIn } from "../state";
+import { i18n } from "../i18n";
 import { inputKeyword } from "./search";
 
 export function account(context: ExtensionContext): void {

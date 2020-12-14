@@ -1,11 +1,11 @@
-import { AccountManager, ButtonManager } from "../../manager";
-import { IsLike, PersonalFm } from "../../state";
-import { MultiStepInput, apiLike, load, player } from "../../util";
+import { AccountManager, ButtonManager } from "../manager";
+import { IsLike, PersonalFm } from "../state";
+import { MultiStepInput, apiLike, load, player } from "../util";
 import type { ExtensionContext } from "vscode";
-import { QueueProvider } from "../../provider";
-import { VOLUME_KEY } from "../../constant";
+import { QueueProvider } from "../provider";
+import { VOLUME_KEY } from "../constant";
 import { commands } from "vscode";
-import { i18n } from "../../i18n";
+import { i18n } from "../i18n";
 
 export function media(context: ExtensionContext): void {
   context.subscriptions.push(
