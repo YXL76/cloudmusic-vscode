@@ -1,20 +1,14 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Microsoft Corporation. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
-
-//@ts-check
-
 "use strict";
 
-const { join } = require("path");
+const { ESBuildPlugin } = require("esbuild-loader");
+const { resolve } = require("path");
 
 /**@type {import('webpack').Configuration}*/
 const config = {
   target: "node",
-  entry: join(__dirname, "src", "extension.ts"),
+  entry: resolve(__dirname, "src", "extension.ts"),
   output: {
-    path: join(__dirname, "dist"),
+    path: resolve(__dirname, "dist"),
     filename: "extension.js",
     libraryTarget: "commonjs2",
     devtoolModuleFilenameTemplate: "../[resource-path]",
@@ -31,16 +25,22 @@ const config = {
       {
         loader: require.resolve("vscode-nls-dev/lib/webpack-loader"),
         options: {
-          base: join(__dirname, "src"),
+          base: resolve(__dirname, "src"),
         },
       },
       {
         test: /\.ts$/,
         exclude: /node_modules/,
-        loader: require.resolve("ts-loader"),
+        loader: "esbuild-loader",
+        options: {
+          loader: "tsx",
+          target: "es2019",
+          tsconfigRaw: require(resolve(__dirname, "src", "tsconfig.json")),
+        },
       },
     ],
   },
+  plugins: [new ESBuildPlugin()],
 };
 
-module.exports = config;
+module.exports = [config];
