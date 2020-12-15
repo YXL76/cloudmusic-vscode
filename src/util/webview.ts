@@ -113,7 +113,7 @@ export class WebView {
       pageNo: number;
       cid: number;
       pid: number;
-      like: boolean;
+      t: "like" | "unlike";
       content: string;
       time: number;
     };
@@ -131,12 +131,12 @@ export class WebView {
           void list(pageNo, sortType, 0);
         }
       } else if (command === "like") {
-        const { cid, like } = message;
+        const { cid, t } = message;
         void apiCommentLike(type, t, id, cid).then((res) => {
           if (res) {
             void panel.webview.postMessage({
               command: "like",
-              like,
+              liked: t === "like" ? true : false,
               cid,
             });
           }

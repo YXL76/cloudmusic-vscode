@@ -446,7 +446,7 @@
     "build-native": "neon build --release",
     "build-native-dev": "neon build",
     "lint": "eslint src && eslint webview",
-    "test": "tsc -p src",
+    "test": "tsc -p src && tsc -p webview",
     "vscode:prepublish": "yarn build"
   },
   "devDependencies": {
