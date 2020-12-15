@@ -12,27 +12,20 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-        include:
-          - os: macos-latest
-            filename: darwin
-          - os: ubuntu-latest
-            filename: linux
-          - os: windows-latest
-            filename: win32
 
     name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Installing needed Ubuntu dependencies
-        if: runner.os == 'ubuntu-latest'
+        if: runner.os == 'Linux'
         run: |
           sudo apt-get update
           sudo apt-get install -y libasound2-dev
           sudo apt-get install -y libx11-dev
 
       - name: Cache LLVM and Clang
-        if: runner.os == 'windows-latest'
+        if: runner.os == 'Windows'
         id: cache-llvm
         uses: actions/cache@v2
         with:
@@ -40,7 +33,7 @@ jobs:
           key: ${{ runner.os }}-llvm-10.0
 
       - name: Install LLVM and Clang
-        if: runner.os == 'windows-latest'
+        if: runner.os == 'Windows'
         uses: KyleMayes/install-llvm-action@v1
         with:
           version: "10.0"
@@ -75,7 +68,7 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            native/target/release
+            target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - run: yarn
@@ -85,12 +78,12 @@ jobs:
         run: yarn build-native
 
       - name: Build
-        if: runner.os == 'windows-latest'
+        if: runner.os == 'Windows'
         run: yarn build-native
         env:
           LIBCLANG_PATH: ${{ runner.temp }}/llvm/bin
 
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ matrix.filename }}
-          path: native/index.node
+          name: ${{ runner.os }}
+          path: index.node

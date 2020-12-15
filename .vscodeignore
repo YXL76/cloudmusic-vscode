@@ -22,16 +22,19 @@ yarn.lock
 **/.browserslistrc
 **/postcss.config.js
 **/tailwind.config.js
+Cargo.*
 
 # scoure code
-native
 src
+*.rs
 
 # cache and build file
 .cache
 .artifact
 out
 **/*.vsix
+target
+index.node
 
 # document
 doc

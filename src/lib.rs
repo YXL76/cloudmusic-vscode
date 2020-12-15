@@ -1,12 +1,13 @@
 use neon::prelude::*;
 
-// pub mod download;
-// pub mod keyboard;
-pub mod player;
-
-// use download::*;
-// use keyboard::*;
-use player::*;
+mod native {
+    pub mod player;
+    // pub mod download;
+    // pub mod keyboard;
+}
+// use native::download::*;
+// use native::keyboard::*;
+use native::player::*;
 
 #[neon::main]
 fn main(mut cx: ModuleContext) -> NeonResult<()> {

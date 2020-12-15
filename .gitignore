@@ -12,9 +12,9 @@ node_modules
 yarn-error.log
 
 # native module
-native/target
-native/index.node
-native/artifacts.json
+target
+index.node
+artifacts.json
 
 # cache and build file
 .cache
