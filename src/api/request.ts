@@ -47,7 +47,7 @@ const headerHandler = (url: string) => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     "User-Agent": allUserAgent[Math.floor(Math.random() * allUserAgent.length)],
   };
-  if (url.includes("music.163.com")) {
+  if (url.startsWith("https://music.163.com")) {
     headers["Referer"] = "https://music.163.com";
   }
   return headers;
