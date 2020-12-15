@@ -130,7 +130,7 @@ jobs:
       - name: Package
         run: |
           yarn
-          vsce package --yarn
+          vsce package --no-yarn
           echo "VSIX_PATH=$(find . -maxdepth 1 -type f -iname "*.vsix" | head -1)" >> $GITHUB_ENV
           echo "VSIX_NAME=$(basename $(find . -maxdepth 1 -type f -iname "*.vsix" | head -1))" >> $GITHUB_ENV
 
@@ -156,4 +156,4 @@ jobs:
       - name: Publish
         run: |
           yarn
-          vsce publish -p ${{ secrets.VSCE_TOKEN }} --yarn
+          vsce publish -p ${{ secrets.VSCE_TOKEN }} --no-yarn

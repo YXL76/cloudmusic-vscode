@@ -82,7 +82,7 @@ const webviewConfig = {
     new CopyPlugin({
       patterns: [
         {
-          from: resolve(antdPath, "antd*.min.css"),
+          from: resolve(antdPath, "antd.min.css"),
           to: distPath,
         },
         {

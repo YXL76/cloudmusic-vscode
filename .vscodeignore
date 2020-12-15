@@ -20,12 +20,12 @@ yarn.lock
 **/tsconfig.json
 **/.eslintrc.json
 **/.browserslistrc
+**/postcss.config.js
+**/tailwind.config.js
 
 # scoure code
-i18n
 native
 src
-webview
 
 # cache and build file
 .cache
