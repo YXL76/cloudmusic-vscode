@@ -40,12 +40,21 @@ export const base = { cookie: {} as Cookie };
 
 const csrfTokenReg = RegExp(/_csrf=([^(;|$)]+)/);
 
-const headerHandler = (url: string) => {
+const generateHeader = (url: string) => {
   const headers = {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     "Content-Type": "application/x-www-form-urlencoded",
     // eslint-disable-next-line @typescript-eslint/naming-convention
     "User-Agent": allUserAgent[Math.floor(Math.random() * allUserAgent.length)],
+  } as {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    Cookie: string;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    Referer: string;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    "Content-Type": string;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    "User-Agent": string;
   };
   if (url.startsWith("https://music.163.com")) {
     headers["Referer"] = "https://music.163.com";
@@ -84,7 +93,7 @@ export const weapiRequest = async <T = Record<string, any>>(
   data: Record<string, any>,
   os?: OS
 ) => {
-  const headers = headerHandler(url);
+  const headers = generateHeader(url);
   headers["Cookie"] = jsonToCookie({ ...base.cookie, ...(os ? { os } : {}) });
   const csrfToken = csrfTokenReg.exec(headers["Cookie"]);
   data.csrf_token = csrfToken ? csrfToken[1] : "";
@@ -115,7 +124,7 @@ export const eapiRequest = async <T = Record<string, any>>(
           _ntes_nuid: randomBytes(16).toString("hex"),
         }),
   };
-  const headers = headerHandler(url);
+  const headers = generateHeader(url);
   const header = {
     appver: "6.1.1",
     versioncode: "140",
@@ -141,7 +150,7 @@ export const linuxRequest = async <T = Record<string, any>>(
   os?: OS
 ) => {
   const cookie: Cookie = { ...base.cookie, ...(os ? { os } : {}) };
-  const headers = headerHandler(url);
+  const headers = generateHeader(url);
   headers["User-Agent"] =
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36";
   headers["Cookie"] = jsonToCookie(cookie);

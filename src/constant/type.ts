@@ -41,6 +41,8 @@ export type SongsItem = {
   al: { id: number; name: string; picUrl: string };
 };
 
+export type RecordData = SongsItem & { playCount: number };
+
 export type AnotherSongItem = {
   name: string;
   id: number;

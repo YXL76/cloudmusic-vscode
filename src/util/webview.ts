@@ -27,8 +27,8 @@ export class WebView {
 
   static initInstance(extensionUri: Uri): WebView {
     return (this.instance = new WebView(
-      Uri.joinPath(extensionUri, "dist", "index.js"),
-      Uri.joinPath(extensionUri, "dist", "index.css"),
+      Uri.joinPath(extensionUri, "dist", "webview.js"),
+      Uri.joinPath(extensionUri, "dist", "webview.css"),
       Uri.joinPath(extensionUri, "dist", "antd.min.css"),
       Uri.joinPath(extensionUri, "dist", "antd.dark.min.css"),
       Uri.joinPath(extensionUri, "media", "icon.ico")

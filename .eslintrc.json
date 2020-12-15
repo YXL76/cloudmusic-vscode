@@ -1,0 +1,66 @@
+{
+  "extends": ["plugin:prettier/recommended"],
+  "overrides": [
+    {
+      "excludedFiles": ["./src/webview/**/*.ts"],
+      "extends": [
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "prettier/@typescript-eslint",
+        "plugin:prettier/recommended"
+      ],
+      "files": ["./src/**/*.ts"],
+      "parserOptions": {
+        "ecmaVersion": 10,
+        "project": "./tsconfig.json",
+        "sourceType": "module"
+      },
+      "plugins": ["@typescript-eslint", "prettier"],
+      "rules": {
+        "@typescript-eslint/consistent-type-imports": "warn",
+        "@typescript-eslint/lines-between-class-members": "error",
+        "@typescript-eslint/member-ordering": "warn",
+        "@typescript-eslint/naming-convention": "warn",
+        "@typescript-eslint/semi": "warn"
+      }
+    },
+    {
+      "extends": [
+        "react-app",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "prettier/@typescript-eslint",
+        "plugin:prettier/recommended"
+      ],
+      "files": ["./src/webview/**/*.ts"],
+      "parserOptions": {
+        "ecmaVersion": 10,
+        "project": "./src/webview/tsconfig.json"
+      },
+      "plugins": ["@typescript-eslint", "prettier"],
+      "rules": {
+        "@typescript-eslint/consistent-type-imports": "warn",
+        "@typescript-eslint/lines-between-class-members": "error",
+        "@typescript-eslint/member-ordering": "warn",
+        "@typescript-eslint/no-var-requires": "off",
+        "@typescript-eslint/semi": "warn"
+      }
+    }
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["prettier"],
+  "rules": {
+    "curly": "warn",
+    "eqeqeq": "warn",
+    "no-throw-literal": "warn",
+    "semi": "warn",
+    "sort-imports": [
+      "warn",
+      {
+        "allowSeparatedGroups": false,
+        "ignoreCase": false,
+        "ignoreDeclarationSort": false,
+        "ignoreMemberSort": false,
+        "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
+      }
+    ]
+  }
+}

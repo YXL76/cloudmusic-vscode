@@ -2,14 +2,15 @@
   "compilerOptions": {
     "lib": ["es2019"],
     "module": "commonjs",
+    "noEmit": true,
     "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noImplicitReturns": true,
     "noUnusedParameters": true,
-    "rootDir": ".",
-    "sourceMap": true,
     "strict": true,
+    "strictNullChecks": true,
     "target": "es2019"
   },
-  "exclude": ["node_modules", ".vscode-test"]
+  "exclude": ["src/webview", "node_modules", ".vscode-test"],
+  "include": ["src"]
 }

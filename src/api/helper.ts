@@ -136,7 +136,7 @@ export const cookieToJson = (cookie: string[]): Cookie => {
   if (!cookie) {
     return {} as Cookie;
   }
-  const obj = {};
+  const obj: Record<string, string> = {};
   cookie
     .join(";")
     .split(";")

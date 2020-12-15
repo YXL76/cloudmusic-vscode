@@ -131,7 +131,7 @@ export async function load(element: QueueItemTreeItem) {
   const data = await downloadMusic(url, idS, tmpUri, md5, !PersonalFm.get());
   if (data) {
     let len = 0;
-    const onData = ({ length }) => {
+    const onData = ({ length }: { length: number }) => {
       len += length;
       if (len > minSize) {
         data.removeListener("data", onData);

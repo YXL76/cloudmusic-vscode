@@ -1,7 +1,6 @@
-import "./index.scss";
 import { Avatar, Button, Drawer, Input, List, Tabs } from "antd";
 import React, { useEffect, useState } from "react";
-import type { CommentDetail } from "../../constant";
+import type { CommentDetail } from "../../../constant";
 import LikeFilled from "@ant-design/icons/LikeFilled";
 import LikeOutlined from "@ant-design/icons/LikeOutlined";
 import PlusOutlined from "@ant-design/icons/PlusOutlined";
@@ -159,16 +158,16 @@ export const CommentList = () => {
             <a href="." onClick={() => usr(user.userId)}>
               {user.nickname}
             </a>
-            <span className="list-title--time">
+            <span className="font-sm ml-2">
               {moment(time).format("YYYY-MM-DD HH:mm:ss")}
             </span>
           </div>
         }
         description={
-          <div className="flex flex-column">
+          <div className="flex flex-col">
             <p>{content}</p>
             {beReplied && (
-              <p className="list-content--beReplied">
+              <p className="pl-3 border-0	border-l-4 border-solid	border-gray-800 bg-gray-800 bg-opacity-20">
                 <a href="." onClick={() => usr(beReplied.user.userId)}>
                   @{beReplied.user.nickname}
                 </a>
@@ -219,7 +218,7 @@ export const CommentList = () => {
       itemLayout="horizontal"
       loadMore={
         hasMores[idx] ? (
-          <div className="list-footer--load-more">
+          <div className="text-center my-3 h-8 leading-8">
             <Button
               loading={loadings[idx]}
               onClick={() => {
@@ -307,7 +306,7 @@ export const CommentList = () => {
         dataSource={floorData.owner}
         renderItem={listItem}
       />
-      <div className="tab-bar--extra-left">{`${i18n?.comment as string} (${
+      <div className="font-bold mr-8">{`${i18n?.comment as string} (${
         floorData.total
       })`}</div>
       <List
@@ -315,7 +314,7 @@ export const CommentList = () => {
         itemLayout="horizontal"
         loadMore={
           floorData.hasMore ? (
-            <div className="list-footer--load-more">
+            <div className="text-center my-3 h-8 leading-8">
               <Button
                 loading={floorData.loading}
                 onClick={() => {
@@ -341,10 +340,9 @@ export const CommentList = () => {
   return (
     <>
       <Tabs
-        className="commentList"
         tabBarExtraContent={{
           left: (
-            <div className="tab-bar--extra-left">{`${
+            <div className="font-bold mr-8">{`${
               i18n?.comment as string
             } (${total})`}</div>
           ),

@@ -1,8 +1,6 @@
-import "./index.scss";
-import "../../global.scss";
 import { Avatar, Button, List, Progress, Skeleton, Tabs } from "antd";
 import React, { useEffect, useState } from "react";
-import type { RecordData, SongsItem } from "../../constant";
+import type { RecordData, SongsItem } from "../../../constant";
 import LoadingOutlined from "@ant-design/icons/LoadingOutlined";
 import PlayCircleOutlined from "@ant-design/icons/PlayCircleOutlined";
 import ReloadOutlined from "@ant-design/icons/ReloadOutlined";
@@ -88,25 +86,25 @@ export const UserMusicRankingList = () => {
                       {alia[0] ? ` (${alia.join(" / ")})` : ""}
                     </a>
                   }
-                  description={ar.map(({ name, id }, index) => {
-                    return (
-                      <text>
-                        <a
-                          href="."
-                          onClick={() => {
-                            artist(id);
-                          }}
-                        >
-                          {name}
-                        </a>
-                        <text>{index < ar.length - 1 ? " / " : ""}</text>
-                      </text>
-                    );
-                  })}
+                  description={ar.map(({ name, id }, index) => (
+                    <div key={index} className="inline">
+                      <a
+                        href="."
+                        onClick={() => {
+                          artist(id);
+                        }}
+                      >
+                        {name}
+                      </a>
+                      <div className="inline">
+                        {index < ar.length - 1 ? " / " : ""}
+                      </div>
+                    </div>
+                  ))}
                 />
-                <div className="list-extra flex flex-row flex-space-around flex-align-center">
-                  <div className="list-extra--order">{index + 1}</div>
-                  <div className="list-extra--progress">
+                <div className="w-3/5 flex flex-row justify-around items-center">
+                  <div className="font-bold pl-1 w-16 text-xl">{index + 1}</div>
+                  <div className="flex-grow">
                     <Progress
                       percent={(playCount * 100) / max}
                       size="small"
@@ -115,7 +113,7 @@ export const UserMusicRankingList = () => {
                       strokeWidth={16}
                     />
                   </div>
-                  <div className="list-extra--count flex flex-row flex-space-around flex-align-center">
+                  <div className="flex flex-row justify-around items-center text-lg w-20 ml-4">
                     <PlayCircleOutlined />
                     {playCount}
                   </div>
@@ -128,13 +126,11 @@ export const UserMusicRankingList = () => {
     );
   };
 
-  const tabs = lists.map((list, index) => {
-    return (
-      <TabPane tab={index === 0 ? i18n?.weekly : i18n?.allTime} key={index}>
-        {tab(list, list[0].playCount)}
-      </TabPane>
-    );
-  });
+  const tabs = lists.map((list, index) => (
+    <TabPane tab={index === 0 ? i18n?.weekly : i18n?.allTime} key={index}>
+      {tab(list, list[0].playCount)}
+    </TabPane>
+  ));
 
   const OperationsSlot = {
     right: loading ? (
@@ -148,9 +144,5 @@ export const UserMusicRankingList = () => {
     ),
   };
 
-  return (
-    <Tabs className="userMusicRankingList" tabBarExtraContent={OperationsSlot}>
-      {tabs}
-    </Tabs>
-  );
+  return <Tabs tabBarExtraContent={OperationsSlot}>{tabs}</Tabs>;
 };

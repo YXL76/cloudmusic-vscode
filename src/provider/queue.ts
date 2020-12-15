@@ -52,7 +52,7 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   static add(elements: QueueItemTreeItem[]): void {
     const raw = this.songs.concat(elements);
     this.songs = [];
-    const lookup = {};
+    const lookup: Record<number, boolean> = {};
     for (const item of raw) {
       const hashed = item.valueOf();
       if (!lookup[hashed]) {
