@@ -48,52 +48,37 @@ import { i18n } from "../i18n";
 
 const minSize = MUSIC_QUALITY === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
 
-export function downloadMusic(
+export async function downloadMusic(
   url: string,
   filename: string,
   path: Uri,
   md5: string,
-  cache: boolean,
-  pid?: number,
-  item?: SongsItem
-): void {
-  axios
-    .get<Readable>(url, {
+  cache: boolean
+) {
+  try {
+    const { data } = await axios.get<Readable>(url, {
       httpAgent: new httpAgent({ keepAlive: true }),
       httpsAgent: new httpsAgent({ keepAlive: true }),
       responseType: "stream",
       timeout: 1000,
-    })
-    .then(({ data }) => {
-      if (pid && item) {
-        let len = 0;
-        const onData = ({ length }) => {
-          len += length;
-          if (len > minSize) {
-            data.removeListener("data", onData);
-            player.load(path.fsPath, pid, item);
-          }
-        };
-        data.on("data", onData);
-      }
-
-      if (cache) {
-        data.on("end", () => {
-          void MusicCache.put(
-            filename,
-            path,
-            `md5-${Buffer.from(md5, "hex").toString("base64")}`
-          );
-        });
-      }
-
-      const file = createWriteStream(path.fsPath);
-      data.pipe(file);
-    })
-    .catch((err) => {
-      console.error(err);
-      void window.showErrorMessage(i18n.sentence.error.network);
     });
+
+    if (cache) {
+      data.on("end", () => {
+        void MusicCache.put(
+          filename,
+          path,
+          `md5-${Buffer.from(md5, "hex").toString("base64")}`
+        );
+      });
+    }
+
+    return data;
+  } catch (err) {
+    console.error(err);
+    void window.showErrorMessage(i18n.sentence.error.network);
+  }
+  return undefined;
 }
 
 export function songsItem2TreeItem(
@@ -118,33 +103,50 @@ export function stop(): void {
   ButtonManager.buttonLyric();
 }
 
-export function load(element: QueueItemTreeItem): void {
+export async function load(element: QueueItemTreeItem) {
   Loading.set(true);
   const { pid, item } = element;
   const { id } = item;
   const idS = `${id}`;
-  void MusicCache.get(idS).then((path) => {
+
+  const path = await MusicCache.get(idS);
+  if (path) {
+    player.load(path, pid, item);
+    return;
+  }
+
+  const songs = await apiSongUrl([id]);
+  const { url, md5 } = songs[0];
+  if (!url || !md5) {
+    void commands.executeCommand("cloudmusic.next");
+  } else {
+    const path = LocalCache.get(md5);
     if (path) {
       player.load(path, pid, item);
       return;
     }
-    void apiSongUrl([id]).then((songs) => {
-      const { url, md5 } = songs[0];
-      if (!url) {
-        void commands.executeCommand("cloudmusic.next");
-        return;
-      }
+  }
 
-      const path = LocalCache.get(md5);
-      if (path) {
-        player.load(path, pid, item);
-        return;
+  const tmpUri = Uri.joinPath(TMP_DIR, idS);
+  const data = await downloadMusic(url, idS, tmpUri, md5, !PersonalFm.get());
+  if (data) {
+    let len = 0;
+    const onData = ({ length }) => {
+      len += length;
+      if (len > minSize) {
+        data.removeListener("data", onData);
+        player.load(tmpUri.fsPath, pid, item);
       }
-
-      const tmpUri = Uri.joinPath(TMP_DIR, idS);
-      downloadMusic(url, idS, tmpUri, md5, !PersonalFm.get(), pid, item);
+    };
+    data.on("data", onData);
+    data.on("error", (err) => {
+      console.error(err);
+      void window.showErrorMessage(i18n.sentence.error.network);
+      void commands.executeCommand("cloudmusic.next");
     });
-  });
+    const file = createWriteStream(tmpUri.fsPath);
+    data.pipe(file);
+  }
 }
 
 export async function confirmation(

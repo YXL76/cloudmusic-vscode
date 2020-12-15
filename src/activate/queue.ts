@@ -113,7 +113,7 @@ export function initQueue(): void {
       void PersonalFm.set(false);
       QueueProvider.refresh(() => {
         QueueProvider.top(element.item.id);
-        load(element);
+        void load(element);
       });
     }
   );

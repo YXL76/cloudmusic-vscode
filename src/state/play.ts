@@ -31,7 +31,7 @@ export class PersonalFm {
       this.state = newValue;
       ButtonManager.buttonPrevious(newValue);
       if (newValue) {
-        load(await this.next());
+        void load(await this.next());
       }
     }
   }

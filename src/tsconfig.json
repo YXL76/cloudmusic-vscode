@@ -6,7 +6,6 @@
     "noImplicitAny": false,
     "noImplicitReturns": true,
     "noUnusedParameters": true,
-    "outDir": "out",
     "rootDir": ".",
     "sourceMap": true,
     "strict": true,

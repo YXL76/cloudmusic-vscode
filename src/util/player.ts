@@ -7,6 +7,7 @@ import { apiLyric, apiScrobble, apiSongUrl } from "../api";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import { QueueProvider } from "../provider";
+import { createWriteStream } from "fs";
 
 class NoPlayer implements Player {
   item = {} as SongsItem;
@@ -58,7 +59,17 @@ async function prefetch() {
       return;
     }
     const path = Uri.joinPath(TMP_DIR, idString);
-    downloadMusic(url, idString, path, md5, !PersonalFm.get());
+    const data = await downloadMusic(
+      url,
+      idString,
+      path,
+      md5,
+      !PersonalFm.get()
+    );
+    if (data) {
+      const file = createWriteStream(path.fsPath);
+      data.pipe(file);
+    }
   }
 }
 

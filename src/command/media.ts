@@ -14,11 +14,11 @@ export function media(context: ExtensionContext): void {
       const len = QueueProvider.songs.length - 1;
       if (!PersonalFm.get() && len > 0) {
         if (len === 1) {
-          load(QueueProvider.songs[0]);
+          void load(QueueProvider.songs[0]);
         } else {
           QueueProvider.refresh(() => {
             QueueProvider.shift(-1);
-            load(QueueProvider.songs[len]);
+            void load(QueueProvider.songs[0]);
           });
         }
       }
@@ -28,14 +28,14 @@ export function media(context: ExtensionContext): void {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.next", async () => {
       if (PersonalFm.get()) {
-        load(await PersonalFm.next());
+        void load(await PersonalFm.next());
       } else if (QueueProvider.songs.length > 1) {
         QueueProvider.refresh(() => {
           QueueProvider.shift(1);
-          load(QueueProvider.songs[1]);
+          void load(QueueProvider.songs[0]);
         });
       } else if (QueueProvider.songs.length === 1) {
-        load(QueueProvider.songs[0]);
+        void load(QueueProvider.songs[0]);
       }
     })
   );
