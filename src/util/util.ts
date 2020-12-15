@@ -6,11 +6,9 @@ import type {
   SongsItem,
   UserDetail,
 } from "../constant";
+import { ButtonAction, LocalCache, MusicCache, WebView, player } from ".";
 import {
-  ButtonAction,
-  LocalCache,
-  MusicCache,
-  WebView,
+  CommentType,
   apiAlbum,
   apiAlbumSub,
   apiArtistAlbum,
@@ -22,7 +20,6 @@ import {
   apiPlaylistSubscribe,
   apiPlaylistSubscribers,
   apiPlaylistTracks,
-  apiRelatedPlaylist,
   apiSimiArtist,
   apiSimiPlaylist,
   apiSimiSong,
@@ -31,9 +28,7 @@ import {
   apiUserFolloweds,
   apiUserFollows,
   apiUserPlaylist,
-  player,
-} from ".";
-import { CommentType, SubAction } from "NeteaseCloudMusicApi";
+} from "../api";
 import { ICON, MUSIC_QUALITY, TMP_DIR } from "../constant";
 import type { InputStep, MultiStepInput } from ".";
 import { IsLike, Loading, PersonalFm } from "../state";
@@ -316,7 +311,7 @@ export async function pickSong(
   if (pick.type === PickType.comment) {
     WebView.getInstance().commentList(CommentType.song, id, name);
   } else if (pick.type === PickType.like) {
-    if (await apiLike(id)) {
+    if (await apiLike(id, true)) {
       AccountManager.likelist.add(id);
       if (id === player.item.id) {
         IsLike.set(true);
@@ -492,11 +487,11 @@ export async function pickArtist(
   if (pick.type === PickType.unsave) {
     return (input: MultiStepInput) =>
       confirmation(input, step + 1, async () => {
-        await apiArtistSub(id, SubAction.unsub);
+        await apiArtistSub(id, "unsub");
       });
   }
   if (pick.type === PickType.save) {
-    await apiArtistSub(id, SubAction.sub);
+    await apiArtistSub(id, "sub");
   }
   return input.pop() as InputStep;
 
@@ -609,13 +604,13 @@ export async function pickAlbum(
   if (pick.type === PickType.unsave) {
     return (input: MultiStepInput) =>
       confirmation(input, step + 1, async () => {
-        await apiAlbumSub(id, SubAction.unsub);
+        await apiAlbumSub(id, "unsub");
       });
   }
   if (pick.type === PickType.comment) {
     WebView.getInstance().commentList(CommentType.album, id, name);
   } else if (pick.type === PickType.save) {
-    await apiAlbumSub(id, SubAction.sub);
+    await apiAlbumSub(id, "sub");
   }
   return input.pop() as InputStep;
 }
@@ -690,10 +685,6 @@ export async function pickPlaylist(
         : []),
       ...pickUserDetails([creator]),
       {
-        label: `${ICON.similar} ${i18n.word.similarPlaylists}`,
-        type: PickType.similar,
-      },
-      {
         label: `${ICON.add} ${i18n.word.addToQueue}`,
         type: PickType.add,
       },
@@ -711,10 +702,6 @@ export async function pickPlaylist(
     return (input: MultiStepInput) =>
       pickSong(input, step + 1, (pick as ST).item);
   }
-  if (pick.type === PickType.similar) {
-    return async (input: MultiStepInput) =>
-      pickPlaylists(input, step + 1, await apiRelatedPlaylist(id));
-  }
   if (pick.type === PickType.subscribed) {
     return (input: MultiStepInput) =>
       pickUsers(input, step + 1, apiPlaylistSubscribers, true, 0, id);
@@ -729,7 +716,7 @@ export async function pickPlaylist(
   } else if (pick.type === PickType.comment) {
     WebView.getInstance().commentList(CommentType.playlist, id, name);
   } else if (pick.type === PickType.save) {
-    await apiPlaylistSubscribe(id, SubAction.sub);
+    await apiPlaylistSubscribe(id, "subscribe");
   }
   return input.pop() as InputStep;
 }

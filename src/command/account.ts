@@ -1,10 +1,8 @@
-import * as crypto from "crypto";
-import { ACCOUNT_KEY, ICON } from "../../constant";
-import { ArtistArea, ArtistType, TopSongType } from "NeteaseCloudMusicApi";
+import { ACCOUNT_KEY, ICON } from "../constant";
 import {
-  ButtonAction,
-  MultiStepInput,
-  WebView,
+  ArtistArea,
+  ArtistType,
+  TopSongType,
   apiAlbumNewest,
   apiAlbumSublist,
   apiArtistList,
@@ -23,6 +21,11 @@ import {
   apiToplist,
   apiToplistArtist,
   apiUserLevel,
+} from "../api";
+import {
+  ButtonAction,
+  MultiStepInput,
+  WebView,
   pickAlbums,
   pickArtist,
   pickArtistItems,
@@ -32,14 +35,16 @@ import {
   pickPlaylists,
   pickSongs,
   pickUser,
-} from "../../util";
+} from "../util";
 import type { ExtensionContext, QuickPickItem } from "vscode";
 import { commands, window } from "vscode";
-import { AccountManager } from "../../manager";
-import type { ArtistInitial } from "NeteaseCloudMusicApi";
-import type { InputStep } from "../../util";
-import { LoggedIn } from "../../state";
-import { i18n } from "../../i18n";
+import { AccountManager } from "../manager";
+import type { ArtistInitial } from "../api";
+import type { InputStep } from "../util";
+import { LoggedIn } from "../state";
+import type { LoginParameters } from "../constant";
+import { createHash } from "crypto";
+import { i18n } from "../i18n";
 import { inputKeyword } from "./search";
 
 export function account(context: ExtensionContext): void {
@@ -373,7 +378,7 @@ export function account(context: ExtensionContext): void {
           })),
         });
         cat = pick.label;
-        return (input: MultiStepInput) => pickAllHighqualityPlaylists(input, 0);
+        return (input: MultiStepInput) => pickAllHighqualityPlaylists(input);
       }
 
       async function pickPlaylistSubCategories(
@@ -423,34 +428,16 @@ export function account(context: ExtensionContext): void {
       }
 
       async function pickAllHighqualityPlaylists(
-        input: MultiStepInput,
-        offset: number
+        input: MultiStepInput
       ): Promise<InputStep> {
         const limit = 50;
-        const playlists = await apiTopPlaylistHighquality(cat, limit, offset);
-        const pick = await input.showQuickPick(
-          {
-            title: i18n.word.playlist,
-            step: 4,
-            totalSteps: 5,
-            items: pickPlaylistItems(playlists),
-          },
-          undefined,
-          {
-            previous: offset > 0,
-            next: playlists.length === limit,
-          }
-        );
-        if (pick === ButtonAction.previous) {
-          input.pop();
-          return (input: MultiStepInput) =>
-            pickAllHighqualityPlaylists(input, offset - limit);
-        }
-        if (pick === ButtonAction.next) {
-          input.pop();
-          return (input: MultiStepInput) =>
-            pickAllHighqualityPlaylists(input, offset + limit);
-        }
+        const playlists = await apiTopPlaylistHighquality(cat, limit);
+        const pick = await input.showQuickPick({
+          title: i18n.word.playlist,
+          step: 4,
+          totalSteps: 5,
+          items: pickPlaylistItems(playlists),
+        });
         return (input: MultiStepInput) => pickPlaylist(input, 5, pick.item);
       }
 
@@ -551,7 +538,7 @@ export function account(context: ExtensionContext): void {
           items: [
             {
               label: i18n.word.all,
-              type: undefined,
+              type: "" as const,
             },
             ...allInitial.map((i) => ({
               label: i as string,
@@ -638,15 +625,12 @@ export function account(context: ExtensionContext): void {
       const title = i18n.word.signIn;
       let totalSteps = 3;
 
-      type State = {
-        phone: boolean;
-        account: string;
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        md5_password: string;
-        countrycode?: string;
+      const state: LoginParameters = {
+        phone: "",
+        username: "",
+        password: "",
+        countrycode: "86",
       };
-
-      const state = { countrycode: "86" } as State;
       await MultiStepInput.run((input) => pickMethod(input));
 
       async function pickMethod(input: MultiStepInput) {
@@ -668,13 +652,12 @@ export function account(context: ExtensionContext): void {
           ],
           placeholder: i18n.sentence.hint.signIn,
         });
-        state.phone = pick.phone;
-        if (state.phone) {
+        if (pick.phone) {
           totalSteps = 4;
           return (input: MultiStepInput) => inputCountrycode(input);
         }
         totalSteps = 3;
-        return (input: MultiStepInput) => inputAccount(input);
+        return (input: MultiStepInput) => inputUsername(input);
       }
 
       async function inputCountrycode(input: MultiStepInput) {
@@ -685,15 +668,26 @@ export function account(context: ExtensionContext): void {
           value: state.countrycode,
           prompt: i18n.sentence.hint.countrycode,
         });
-        return (input: MultiStepInput) => inputAccount(input);
+        return (input: MultiStepInput) => inputPhone(input);
       }
 
-      async function inputAccount(input: MultiStepInput) {
-        state.account = await input.showInputBox({
+      async function inputPhone(input: MultiStepInput) {
+        state.phone = await input.showInputBox({
           title,
           step: totalSteps - 1,
           totalSteps,
-          value: state.account,
+          value: state.phone,
+          prompt: i18n.sentence.hint.account,
+        });
+        return (input: MultiStepInput) => inputPassword(input);
+      }
+
+      async function inputUsername(input: MultiStepInput) {
+        state.username = await input.showInputBox({
+          title,
+          step: totalSteps - 1,
+          totalSteps,
+          value: state.username,
           prompt: i18n.sentence.hint.account,
         });
         return (input: MultiStepInput) => inputPassword(input);
@@ -708,10 +702,7 @@ export function account(context: ExtensionContext): void {
           password: true,
         });
 
-        state.md5_password = crypto
-          .createHash("md5")
-          .update(password)
-          .digest("hex");
+        state.password = createHash("md5").update(password).digest("hex");
 
         if (await AccountManager.login(state)) {
           void context.globalState.update(ACCOUNT_KEY, state);

@@ -1,15 +1,9 @@
 import { Loading, PersonalFm, Playing } from "../state";
-import {
-  LocalCache,
-  MusicCache,
-  apiLyric,
-  apiScrobble,
-  apiSongUrl,
-  downloadMusic,
-} from ".";
+import { LocalCache, MusicCache, downloadMusic } from ".";
 import type { Lyric, NativePlayer, Player, SongsItem } from "../constant";
 import { NATIVE, PLAYER_AVAILABLE, TMP_DIR, VOLUME_KEY } from "../constant";
 import { Uri, commands, workspace } from "vscode";
+import { apiLyric, apiScrobble, apiSongUrl } from "../api";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import { QueueProvider } from "../provider";

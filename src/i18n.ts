@@ -1,193 +1,179 @@
-import * as nls from "vscode-nls";
+import { join } from "path";
+import { readFileSync } from "fs";
 
-nls.config({
-  messageFormat: nls.MessageFormat.bundle,
-  bundleFormat: nls.BundleFormat.standalone,
+interface VSCodeNlsConfig {
+  locale: string;
+  availableLanguages: {
+    [pack: string]: string;
+  };
+  _languagePackSupport?: boolean;
+  _languagePackId?: string;
+  _translationsConfigFile?: string;
+  _cacheRoot?: string;
+  _corruptedFile: string;
+}
+
+function isString(value: any): value is string {
+  return Object.prototype.toString.call(value) === "[object String]";
+}
+
+type AvailableLanguages = "en" | "zh-cn" | "zh-tw";
+
+const availableLanguages: AvailableLanguages[] = ["zh-cn", "zh-tw"];
+
+export const i18n = (() => {
+  let lang: AvailableLanguages = "en";
+
+  if (isString(process.env.VSCODE_NLS_CONFIG)) {
+    const { locale } = JSON.parse(
+      process.env.VSCODE_NLS_CONFIG
+    ) as VSCodeNlsConfig;
+    const idx = availableLanguages.findIndex((value) => locale === value);
+    if (idx !== -1) {
+      lang = availableLanguages[idx];
+    }
+  }
+
+  const localize = JSON.parse(
+    readFileSync(join(__dirname, "..", "i18n", `${lang}.json`)).toString()
+  ) as Record<string, string>;
+
+  return {
+    sentence: {
+      error: {
+        needSignIn: localize["sentence.error.needSignIn"],
+        network: localize["sentence.error.network"],
+        systemSupport: localize["sentence.error.systemSupport"],
+      },
+      fail: {
+        signIn: localize["sentence.fail.signIn"],
+      },
+      hint: {
+        account: localize["sentence.hint.account"],
+        button: localize["sentence.hint.button"],
+        confirmation: localize["sentence.hint.confirmation"],
+        countrycode: localize["sentence.hint.countrycode"],
+        desc: localize["sentence.hint.desc"],
+        keyword: localize["sentence.hint.keyword"],
+        lyricDelay: localize["sentence.hint.lyricDelay"],
+        name: localize["sentence.hint.name"],
+        password: localize["sentence.hint.password"],
+        search: localize["sentence.hint.search"],
+        signIn: localize["sentence.hint.signIn"],
+        trySignIn: localize["sentence.hint.trySignIn"],
+        volume: localize["sentence.hint.volume"],
+      },
+      info: {
+        alreadySignIn: localize["sentence.info.alreadySignIn"],
+      },
+      label: {
+        cellphone: localize["sentence.label.cellphone"],
+        dailyRecommendedPlaylists:
+          localize["sentence.label.dailyRecommendedPlaylists"],
+        dailyRecommendedSongs: localize["sentence.label.dailyRecommendedSongs"],
+        email: localize["sentence.label.email"],
+        lyricDelay: localize["sentence.label.lyricDelay"],
+        newsongRecommendation: localize["sentence.label.newsongRecommendation"],
+        playlistRecommendation:
+          localize["sentence.label.playlistRecommendation"],
+      },
+      success: {
+        dailyCheck: localize["sentence.success.dailyCheck"],
+        signIn: localize["sentence.success.signIn"],
+      },
+    },
+    word: {
+      account: localize["word.account"],
+      addToQueue: localize["word.addToQueue"],
+      album: localize["word.album"],
+      albumNewest: localize["word.albumNewest"],
+      all: localize["word.all"],
+      allTime: localize["word.allTime"],
+      area: localize["word.area"],
+      artist: localize["word.artist"],
+      artistList: localize["word.artistList"],
+      ascending: localize["word.ascending"],
+      band: localize["word.band"],
+      categorie: localize["word.categorie"],
+      cellphone: localize["word.cellphone"],
+      cleanCache: localize["word.cleanCache"],
+      close: localize["word.close"],
+      comment: localize["word.comment"],
+      confirmation: localize["word.confirmation"],
+      content: localize["word.content"],
+      createPlaylist: localize["word.createPlaylist"],
+      default: localize["word.default"],
+      descending: localize["word.descending"],
+      description: localize["word.description"],
+      detail: localize["word.detail"],
+      editPlaylist: localize["word.editPlaylist"],
+      email: localize["word.email"],
+      en: localize["word.en"],
+      explore: localize["word.explore"],
+      female: localize["word.female"],
+      followeds: localize["word.followeds"],
+      follows: localize["word.follows"],
+      forward: localize["word.forward"],
+      fullLyric: localize["word.fullLyric"],
+      hide: localize["word.hide"],
+      highqualityPlaylist: localize["word.highqualityPlaylist"],
+      hotSongs: localize["word.hotSongs"],
+      hottest: localize["word.hottest"],
+      initial: localize["word.initial"],
+      ja: localize["word.ja"],
+      kr: localize["word.kr"],
+      like: localize["word.like"],
+      loading: localize["word.loading"],
+      lyric: localize["word.lyric"],
+      lyricDelay: localize["word.lyricDelay"],
+      male: localize["word.male"],
+      more: localize["word.more"],
+      latest: localize["word.latest"],
+      nextPage: localize["word.nextPage"],
+      nextTrack: localize["word.nextTrack"],
+      other: localize["word.other"],
+      pause: localize["word.pause"],
+      personalFm: localize["word.personalFm"],
+      play: localize["word.play"],
+      playCount: localize["word.playCount"],
+      playlist: localize["word.playlist"],
+      previousPage: localize["word.previousPage"],
+      previousTrack: localize["word.previousTrack"],
+      private: localize["word.private"],
+      public: localize["word.public"],
+      recommendation: localize["word.recommendation"],
+      refresh: localize["word.refresh"],
+      refreshing: localize["word.refreshing"],
+      reply: localize["word.reply"],
+      save: localize["word.save"],
+      saved: localize["word.save"],
+      saveToPlaylist: localize["word.saveToPlaylist"],
+      search: localize["word.search"],
+      show: localize["word.show"],
+      signIn: localize["word.signIn"],
+      signOut: localize["word.signOut"],
+      similarArtists: localize["word.similarArtists"],
+      similarPlaylists: localize["word.similarPlaylists"],
+      similarSongs: localize["word.similarSongs"],
+      single: localize["word.single"],
+      song: localize["word.song"],
+      songList: localize["word.songList"],
+      submit: localize["word.submit"],
+      subscribedCount: localize["word.subscribedCount"],
+      topAlbums: localize["word.topAlbums"],
+      topArtists: localize["word.topArtists"],
+      toplist: localize["word.toplist"],
+      topSong: localize["word.topSong"],
+      trackCount: localize["word.trackCount"],
+      trash: localize["word.trash"],
+      type: localize["word.type"],
+      dislike: localize["word.dislike"],
+      unsave: localize["word.unsave"],
+      user: localize["word.user"],
+      userRankingList: localize["word.userRankingList"],
+      volume: localize["word.volume"],
+      weekly: localize["word.weekly"],
+      zh: localize["word.zh"],
+    },
+  };
 })();
-
-const localize = nls.loadMessageBundle();
-
-export const i18n = {
-  sentence: {
-    error: {
-      needSignIn: localize(
-        "sentence.error.needSignIn",
-        "Please operate after signing in"
-      ),
-      network: localize("sentence.error.network", "Network error"),
-      systemSupport: localize(
-        "sentence.error.systemSupport",
-        "System is not supported"
-      ),
-    },
-    fail: {
-      signIn: localize("sentence.fail.signIn", "Sign in failed"),
-    },
-    hint: {
-      account: localize("sentence.hint.account", "Please enter your account"),
-      button: localize(
-        "sentence.hint.button",
-        "Set whether the button is displayed or not"
-      ),
-      confirmation: localize(
-        "sentence.hint.confirmation",
-        'Are you sure you want to do this? Please enter "yes" to confirm (case insensitive)'
-      ),
-      countrycode: localize(
-        "sentence.hint.countrycode",
-        "Please enter your countrycode"
-      ),
-      desc: localize("sentence.hint.desc", "Please enter description"),
-      keyword: localize("sentence.hint.keyword", "Please enter keyword"),
-      lyricDelay: localize(
-        "sentence.hint.lyricDelay",
-        "Please enter lyric delay"
-      ),
-      name: localize("sentence.hint.name", "Please enter the name"),
-      password: localize(
-        "sentence.hint.password",
-        "Please enter your password"
-      ),
-      search: localize("sentence.hint.search", "Please choose search type"),
-      signIn: localize("sentence.hint.signIn", "Select the method to sign in"),
-      trySignIn: localize(
-        "sentence.hint.trySignIn",
-        "Found that you have not logged in"
-      ),
-      volume: localize("sentence.hint.volume", "Please enter volume"),
-    },
-    info: {
-      alreadySignIn: localize(
-        "sentence.info.alreadySignIn",
-        "Account already signed in"
-      ),
-    },
-    label: {
-      cellphone: localize(
-        "sentence.label.cellphone",
-        "use cellphone to sign in"
-      ),
-      dailyRecommendedPlaylists: localize(
-        "sentence.label.dailyRecommendedPlaylists",
-        "Daily recommended playlists"
-      ),
-      dailyRecommendedSongs: localize(
-        "sentence.label.dailyRecommendedSongs",
-        "Daily recommended songs"
-      ),
-      email: localize("sentence.label.email", "Use email to sign in"),
-      lyricDelay: localize("sentence.label.lyricDelay", "Set lyric delay"),
-      newsongRecommendation: localize(
-        "sentence.label.newsongRecommendation",
-        "New song recommendation"
-      ),
-      playlistRecommendation: localize(
-        "sentence.label.playlistRecommendation",
-        "Playlist recommendation"
-      ),
-    },
-    success: {
-      dailyCheck: localize(
-        "sentence.success.dailyCheck",
-        "Daily check successful"
-      ),
-      signIn: localize("sentence.success.signIn", "Sign in successful"),
-    },
-  },
-  word: {
-    account: localize("word.account", "Account"),
-    addToQueue: localize("word.addToQueue", "Add to queue"),
-    album: localize("word.album", "Album"),
-    albumNewest: localize("word.albumNewest", "Album newest"),
-    all: localize("word.all", "All"),
-    allTime: localize("word.allTime", "All time"),
-    area: localize("word.area", "Area"),
-    artist: localize("word.artist", "Artist"),
-    artistList: localize("word.artistList", "Artist list"),
-    ascending: localize("word.ascending", "Ascending"),
-    band: localize("word.band", "Band"),
-    categorie: localize("word.categorie", "Categorie"),
-    cellphone: localize("word.cellphone", "Cellphone"),
-    cleanCache: localize("word.cleanCache", "Clean cache"),
-    close: localize("word.close", "Close"),
-    comment: localize("word.comment", "Comment"),
-    confirmation: localize("word.confirmation", "Confirmation"),
-    content: localize("word.content", "Content"),
-    createPlaylist: localize("word.createPlaylist", "Create playlist"),
-    default: localize("word.default", "Default"),
-    descending: localize("word.descending", "Descending"),
-    description: localize("word.description", "Description"),
-    detail: localize("word.detail", "Detail"),
-    editPlaylist: localize("word.editPlaylist", "Edit playlist"),
-    email: localize("word.email", "Email"),
-    en: localize("word.en", "English"),
-    explore: localize("word.explore", "Explore"),
-    female: localize("word.female", "Female artist"),
-    followeds: localize("word.followeds", "Followeds"),
-    follows: localize("word.follows", "Follows"),
-    forward: localize("word.forward", "Forword"),
-    fullLyric: localize("word.fullLyric", "Full lyric"),
-    hide: localize("word.hide", "Hide"),
-    highqualityPlaylist: localize(
-      "word.highqualityPlaylist",
-      "Highquality playlist"
-    ),
-    hotSongs: localize("word.hotSongs", "Hot songs"),
-    hottest: localize("word.hottest", "Hottest"),
-    initial: localize("word.initial", "Initial"),
-    ja: localize("word.ja", "Japanese"),
-    kr: localize("word.kr", "Korean"),
-    like: localize("word.like", "Like"),
-    loading: localize("word.loading", "Loading"),
-    lyric: localize("word.lyric", "Lyric"),
-    lyricDelay: localize("word.lyricDelay", "Lyric delay"),
-    male: localize("word.male", "Male artist"),
-    more: localize("word.more", "More"),
-    latest: localize("word.latest", "Latest"),
-    nextPage: localize("word.nextPage", "Next Rage"),
-    nextTrack: localize("word.nextTrack", "Next track"),
-    other: localize("word.other", "Other"),
-    pause: localize("word.pause", "Pause"),
-    personalFm: localize("word.personalFm", "Personal FM"),
-    play: localize("word.play", "Play"),
-    playCount: localize("word.playCount", "Play count"),
-    playlist: localize("word.playlist", "Playlist"),
-    previousPage: localize("word.previousPage", "Previous page"),
-    previousTrack: localize("word.previousTrack", "Previous track"),
-    private: localize("word.private", "Private"),
-    public: localize("word.public", "Public"),
-    recommendation: localize("word.recommendation", "Recommendation"),
-    refresh: localize("word.refresh", "Refresh"),
-    refreshing: localize("word.refreshing", "Refreshing"),
-    reply: localize("word.reply", "Reply"),
-    save: localize("word.save", "Save"),
-    saved: localize("word.save", "Saved"),
-    saveToPlaylist: localize("word.saveToPlaylist", "Save to playlist"),
-    search: localize("word.search", "Search"),
-    show: localize("word.show", "Show"),
-    signIn: localize("word.signIn", "Sign in"),
-    signOut: localize("word.signOut", "Sign out"),
-    similarArtists: localize("word.similarArtists", "Similar artists"),
-    similarPlaylists: localize("word.similarPlaylists", "Similar playlists"),
-    similarSongs: localize("word.similarSongs", "Similar songs"),
-    single: localize("word.single", "Single"),
-    song: localize("word.song", "Song"),
-    songList: localize("word.songList", "Song list"),
-    submit: localize("word.submit", "Submit"),
-    subscribedCount: localize("word.subscribedCount", "Subscribed count"),
-    topAlbums: localize("word.topAlbums", "New discs on shelves"),
-    topArtists: localize("word.topArtists", "Popular artists"),
-    toplist: localize("word.toplist", "Toplist"),
-    topSong: localize("word.topSong", "New song express"),
-    trackCount: localize("word.trackCount", "Track count"),
-    trash: localize("word.trash", "Trash"),
-    type: localize("word.type", "Type"),
-    dislike: localize("word.dislike", "Dislike"),
-    unsave: localize("word.unsave", "Unsave"),
-    user: localize("word.user", "User"),
-    userRankingList: localize("word.userRankingList", "User ranking list"),
-    volume: localize("word.volume", "Volume"),
-    weekly: localize("word.weekly", "Weekly"),
-    zh: localize("word.zh", "Chinese"),
-  },
-};

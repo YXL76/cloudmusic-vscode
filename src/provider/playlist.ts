@@ -5,10 +5,11 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import { apiCache, apiPlaylistDetail, songsItem2TreeItem } from "../util";
+import { apiCache, songsItem2TreeItem } from "../util";
 import { AccountManager } from "../manager";
 import type { PlaylistItem } from "../constant";
 import type { QueueItemTreeItem } from ".";
+import { apiPlaylistDetail } from "../api";
 import { i18n } from "../i18n";
 
 const enum Type {

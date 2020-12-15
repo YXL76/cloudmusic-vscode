@@ -18,10 +18,8 @@ native/artifacts.json
 
 # cache and build file
 .cache
-.parcel-cache
 .artifact
 build
 out
 dist
-**/package.nls.*.json
 **/*.vsix

@@ -132,7 +132,7 @@ export const CommentList = () => {
             vscode.postMessage({
               command: "like",
               cid: commentId,
-              t: liked ? 0 : 1,
+              like: !liked,
             })
           }
         >

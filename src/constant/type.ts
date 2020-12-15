@@ -1,5 +1,12 @@
 import type { ExtensionContext } from "vscode";
 
+export type LoginParameters = {
+  phone: string;
+  username: string;
+  password: string;
+  countrycode: string;
+};
+
 export type PlaylistItem = {
   description: string | null;
   id: number;
@@ -152,10 +159,4 @@ export interface NativeModule {
   playerPosition(player: NativePlayer): number;
   playerSetVolume(player: NativePlayer, level: number): void;
   playerStop(player: NativePlayer): void;
-}
-
-export const enum SortType {
-  recommendation = 1,
-  hottest = 2,
-  latest = 3,
 }

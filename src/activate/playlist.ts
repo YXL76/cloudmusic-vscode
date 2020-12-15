@@ -1,13 +1,15 @@
-import { CommentType, SubAction } from "NeteaseCloudMusicApi";
 import {
-  MultiStepInput,
-  WebView,
+  CommentType,
   apiPlaylistCreate,
   apiPlaylistDelete,
   apiPlaylistSubscribe,
   apiPlaylistTracks,
   apiPlaylistUpdate,
   apiPlaymodeIntelligenceList,
+} from "../api";
+import {
+  MultiStepInput,
+  WebView,
   confirmation,
   load,
   pickAddToPlaylist,
@@ -160,7 +162,7 @@ export function initPlaylist(): void {
     (element: PlaylistItemTreeItem) => {
       void MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
-          if (await apiPlaylistSubscribe(element.item.id, SubAction.unsub)) {
+          if (await apiPlaylistSubscribe(element.item.id, "unsubscribe")) {
             PlaylistProvider.refresh({});
           }
         })
