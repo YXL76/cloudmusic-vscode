@@ -76,7 +76,7 @@ jobs:
       - run: yarn
 
       - name: Build
-        if: runner.os != 'windows-latest'
+        if: runner.os != 'Windows'
         run: yarn build-native
 
       - name: Build
