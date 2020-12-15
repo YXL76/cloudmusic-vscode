@@ -23,22 +23,22 @@ jobs:
 
     steps:
       - name: Installing needed Ubuntu dependencies
-        if: matrix.os == 'ubuntu-latest'
+        if: runner.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install -y libasound2-dev
           sudo apt-get install -y libx11-dev
 
       - name: Cache LLVM and Clang
-        if: matrix.os == 'windows-latest'
+        if: runner.os == 'windows-latest'
         id: cache-llvm
         uses: actions/cache@v2
         with:
           path: ${{ runner.temp }}/llvm
-          key: ${{ matrix.os }}-llvm-10.0
+          key: ${{ runner.os }}-llvm-10.0
 
       - name: Install LLVM and Clang
-        if: matrix.os == 'windows-latest'
+        if: runner.os == 'windows-latest'
         uses: KyleMayes/install-llvm-action@v1
         with:
           version: "10.0"
@@ -58,31 +58,32 @@ jobs:
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
       - uses: actions/cache@v2
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ matrix.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ matrix.os }}-yarn-
+            ${{ runner.os }}-yarn-
+
       - uses: actions/cache@v2
         id: cargo-cache
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            native/target
-          key: ${{ matrix.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+            native/target/release
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - run: yarn
 
       - name: Build
-        if: matrix.os != 'windows-latest'
+        if: runner.os != 'windows-latest'
         run: yarn build-native
 
       - name: Build
-        if: matrix.os == 'windows-latest'
+        if: runner.os == 'windows-latest'
         run: yarn build-native
         env:
           LIBCLANG_PATH: ${{ runner.temp }}/llvm/bin
@@ -93,11 +94,7 @@ jobs:
           path: native/index.node
 
   release:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     name: Release
     needs: build
     steps:
@@ -116,8 +113,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: "12"
-      - name: Install gulp-cli and vsce
-        run: npm i gulp-cli vsce -g
+      - name: Install vsce
+        run: npm i vsce -g
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -126,9 +123,9 @@ jobs:
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ matrix.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ matrix.os }}-yarn-
+            ${{ runner.os }}-yarn-
 
       - name: Package
         run: |

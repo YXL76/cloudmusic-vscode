@@ -7,12 +7,8 @@ on:
 
 jobs:
   test:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-
-    runs-on: ${{ matrix.os }}
-    name: Test on ${{ matrix.os }}
+    runs-on: ubuntu-latest
+    name: Test
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -20,19 +16,17 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "12"
-      - name: Install gulp-cli
-        run: npm i gulp-cli -g
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
       - uses: actions/cache@v2
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: ${{ matrix.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            ${{ matrix.os }}-yarn-
+            ${{ runner.os }}-yarn-
 
       - run: yarn
       - name: Lint
