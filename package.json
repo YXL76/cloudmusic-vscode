@@ -480,7 +480,7 @@
     "prettier": "2.2.1",
     "tailwindcss": "2.0.2",
     "typescript": "4.1.3",
-    "webpack": "5.10.1",
+    "webpack": "5.10.2",
     "webpack-cli": "4.2.0"
   },
   "dependencies": {
@@ -498,7 +498,7 @@
     "react-dom": "17.0.1"
   },
   "resolutions": {
-    "webpack": "5.10.1",
+    "webpack": "5.10.2",
     "webpack-cli": "4.2.0"
   }
 }
