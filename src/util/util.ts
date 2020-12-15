@@ -56,7 +56,7 @@ export async function downloadMusic(
   try {
     const { data } = await axios.get<Readable>(url, {
       responseType: "stream",
-      timeout: 1000,
+      timeout: 8000,
     });
 
     if (cache) {
