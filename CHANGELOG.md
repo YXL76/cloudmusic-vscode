@@ -6,9 +6,15 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
-## [6.0.2] - 2020-12-15
+## [6.0.3] - 2020-12-16
 
 ### Fixed
+
+- Player: increase download timeout
+
+## [6.0.2] - 2020-12-15
+
+### Changed
 
 - Native: revert `Neon` to `v0.5.3` to disable dynamic loading
 
