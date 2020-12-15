@@ -49,7 +49,7 @@ impl Status {
 }
 
 #[derive(Clone)]
-enum ControlEvrnt {
+enum ControlEvent {
     Play,
     Pause,
     Stop,
@@ -59,7 +59,7 @@ enum ControlEvrnt {
 
 pub struct Player {
     status: Status,
-    control_tx: mpsc::Sender<ControlEvrnt>,
+    control_tx: mpsc::Sender<ControlEvent>,
     info_rx: mpsc::Receiver<bool>,
 }
 
@@ -95,10 +95,10 @@ impl Player {
                     let _ = info_tx.send(true);
                     loop {
                         match control_rx.recv() {
-                            Ok(ControlEvrnt::Play) => sink.play(),
-                            Ok(ControlEvrnt::Pause) => sink.pause(),
-                            Ok(ControlEvrnt::Volume(level)) => sink.set_volume(level),
-                            Ok(ControlEvrnt::Empty) => {
+                            Ok(ControlEvent::Play) => sink.play(),
+                            Ok(ControlEvent::Pause) => sink.pause(),
+                            Ok(ControlEvent::Volume(level)) => sink.set_volume(level),
+                            Ok(ControlEvent::Empty) => {
                                 let _ = info_tx.send(sink.empty());
                             }
                             _ => {
@@ -121,30 +121,30 @@ impl Player {
 
     #[inline]
     fn play(&mut self) {
-        let _ = self.control_tx.send(ControlEvrnt::Play);
+        let _ = self.control_tx.send(ControlEvent::Play);
         self.status.play()
     }
 
     #[inline]
     fn pause(&mut self) {
-        let _ = self.control_tx.send(ControlEvrnt::Pause);
+        let _ = self.control_tx.send(ControlEvent::Pause);
         self.status.stop()
     }
 
     #[inline]
     fn stop(&mut self) {
-        let _ = self.control_tx.send(ControlEvrnt::Stop);
+        let _ = self.control_tx.send(ControlEvent::Stop);
         self.status.reset()
     }
 
     #[inline]
     fn set_volume(&self, level: f32) {
-        let _ = self.control_tx.send(ControlEvrnt::Volume(level));
+        let _ = self.control_tx.send(ControlEvent::Volume(level));
     }
 
     #[inline]
     fn empty(&self) -> bool {
-        if let Ok(_) = self.control_tx.send(ControlEvrnt::Empty) {
+        if let Ok(_) = self.control_tx.send(ControlEvent::Empty) {
             if let Ok(res) = self.info_rx.recv_timeout(Duration::from_millis(128)) {
                 return res;
             }

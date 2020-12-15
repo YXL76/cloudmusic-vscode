@@ -88,4 +88,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ runner.os }}
-          path: index.node
+          path: target/release/libnative.so

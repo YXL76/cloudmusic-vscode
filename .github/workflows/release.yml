@@ -84,7 +84,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ runner.os }}
-          path: index.node
+          path: target/release/libnative.so
 
   release:
     runs-on: ubuntu-latest
@@ -99,9 +99,9 @@ jobs:
       - name: Copy file
         run: |
           mkdir -p build
-          cp .artifact/macOS/index.node   build/darwin.node
-          cp .artifact/Linux/index.node   build/linux.node
-          cp .artifact/Windows/index.node build/win32.node
+          cp .artifact/macOS/libnative.so   build/darwin.node
+          cp .artifact/Linux/libnative.so   build/linux.node
+          cp .artifact/Windows/libnative.so build/win32.node
 
       - uses: actions/setup-node@v1
         with:
