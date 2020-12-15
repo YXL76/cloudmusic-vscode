@@ -3,7 +3,9 @@ name: Build
 on:
   push:
     paths:
-      - "native/*"
+      - "src/native/*"
+      - "src/lib.rs"
+      - "Cargo.*"
     branches:
       - master
 
