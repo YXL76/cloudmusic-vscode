@@ -5,7 +5,7 @@ import LikeFilled from "@ant-design/icons/LikeFilled";
 import LikeOutlined from "@ant-design/icons/LikeOutlined";
 import PlusOutlined from "@ant-design/icons/PlusOutlined";
 import UploadOutlined from "@ant-design/icons/UploadOutlined";
-import moment from "moment";
+import dayjs from "dayjs";
 
 const { TabPane } = Tabs;
 
@@ -159,7 +159,7 @@ export const CommentList = () => {
               {user.nickname}
             </a>
             <span className="font-sm ml-2">
-              {moment(time).format("YYYY-MM-DD HH:mm:ss")}
+              {dayjs(time).format("YYYY-MM-DD HH:mm:ss")}
             </span>
           </div>
         }
