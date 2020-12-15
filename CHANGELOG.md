@@ -6,6 +6,38 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [6.0.0] - 2020-12-15
+
+### Added
+
+- Native: Use `N-API` runtime
+- Player: add fade-in effect ([#46](https://github.com/YXL76/cloudmusic-vscode/issues/46))
+- Print handled error in console ([#35](https://github.com/YXL76/cloudmusic-vscode/issues/35))
+- Self-host `NeteaseCloudMusicApi`
+
+### Changed
+
+- I18n: fewer words
+- Change minimum supported vscode version to `1.52.0`
+
+### Fixed
+
+- Cache: integrity check use `md5` algorithm
+- Player: mute when volume is set to 0
+
+### Removed
+
+- API: `related_playlist`
+- Configuration: remove `cloudmusic.player.defaultLibrary` and `cloudmusic.music.realIP`
+- Player: Remove loading lock ([#148](https://github.com/YXL76/cloudmusic-vscode/issues/148))
+- Native
+  - Remove `miniaudio` support
+  - Temporarily remove file download and media control function (waiting for [neon-bindings/neon#596](https://github.com/neon-bindings/neon/issues/596))
+
+### Security
+
+- Solve [#L50](https://github.com/YXL76/cloudmusic-vscode/security/code-scanning/7?query=ref%3Arefs%2Fheads%2Fmaster) and [#L59](https://github.com/YXL76/cloudmusic-vscode/security/code-scanning/12?query=ref%3Arefs%2Fheads%2Fmaster)
+
 ## [5.2.3] - 2020-11-18
 
 ### Changed
