@@ -146,7 +146,7 @@ export async function apiCommentNew(
     }>(
       "https://music.163.com/api/v2/resource/comments",
       {
-        threadId: type + id,
+        threadId: `${resourceTypeMap[type]}${id}`,
         pageNo,
         showInner: true,
         pageSize,
