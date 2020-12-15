@@ -1,13 +1,6 @@
 import {
   ButtonAction,
   MultiStepInput,
-  apiSearchAlbum,
-  apiSearchArtist,
-  apiSearchDefault,
-  apiSearchHotDetail,
-  apiSearchPlaylist,
-  apiSearchSingle,
-  apiSearchSuggest,
   pickAlbum,
   pickAlbumItems,
   pickArtist,
@@ -19,9 +12,18 @@ import {
   pickSongMany,
 } from "../util";
 import type { ExtensionContext, QuickPick, QuickPickItem } from "vscode";
+import {
+  SearchType,
+  apiSearchAlbum,
+  apiSearchArtist,
+  apiSearchDefault,
+  apiSearchHotDetail,
+  apiSearchPlaylist,
+  apiSearchSingle,
+  apiSearchSuggest,
+} from "../api";
 import { ICON } from "../constant";
 import type { InputStep } from "../util";
-import { SearchType } from "NeteaseCloudMusicApi";
 import { commands } from "vscode";
 import { i18n } from "../i18n";
 import { throttle } from "lodash";

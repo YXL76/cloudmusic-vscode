@@ -6,9 +6,6 @@ export const MEDIA_CONTROL = conf.get("player.mediaControl") as boolean;
 
 export const AUTO_CHECK = conf.get("account.autoCheck") as boolean;
 
-export const REAL_IP: string | undefined =
-  conf.get("music.realIP") ?? undefined;
-
 export const MUSIC_QUALITY = conf.get("music.quality") as number;
 
 const localDir: string | undefined = conf.get("cache.localDirectory.path");

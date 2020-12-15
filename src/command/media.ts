@@ -1,9 +1,10 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { IsLike, PersonalFm } from "../state";
-import { MultiStepInput, apiLike, load, player } from "../util";
+import { MultiStepInput, load, player } from "../util";
 import type { ExtensionContext } from "vscode";
 import { QueueProvider } from "../provider";
 import { VOLUME_KEY } from "../constant";
+import { apiLike } from "../api";
 import { commands } from "vscode";
 import { i18n } from "../i18n";
 
@@ -49,7 +50,7 @@ export function media(context: ExtensionContext): void {
     commands.registerCommand("cloudmusic.like", async () => {
       const islike = !IsLike.get();
       const { id } = player.item;
-      if (await apiLike(id, islike ? "true" : "false")) {
+      if (await apiLike(id, islike)) {
         IsLike.set(islike);
         islike
           ? AccountManager.likelist.add(id)

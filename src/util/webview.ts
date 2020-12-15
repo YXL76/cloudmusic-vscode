@@ -1,21 +1,16 @@
 import { ColorThemeKind, Uri, ViewColumn, env, window } from "vscode";
+import { MultiStepInput, pickAlbum, pickArtist, pickSong, pickUser } from ".";
 import {
-  MultiStepInput,
+  SortType,
   apiCommentAdd,
   apiCommentFloor,
   apiCommentLike,
   apiCommentNew,
   apiCommentReply,
   apiUserRecord,
-  pickAlbum,
-  pickArtist,
-  pickSong,
-  pickUser,
-} from ".";
-import type { CommentType } from "NeteaseCloudMusicApi";
+} from "../api";
+import type { CommentType } from "../api";
 import type { SongsItem } from "../constant";
-import { SortType } from "../constant";
-import { SubAction } from "NeteaseCloudMusicApi";
 import type { WebviewPanel } from "vscode";
 import { i18n } from "../i18n";
 
@@ -118,7 +113,7 @@ export class WebView {
       pageNo: number;
       cid: number;
       pid: number;
-      t: SubAction;
+      like: boolean;
       content: string;
       time: number;
     };
@@ -136,12 +131,12 @@ export class WebView {
           void list(pageNo, sortType, 0);
         }
       } else if (command === "like") {
-        const { cid, t } = message;
+        const { cid, like } = message;
         void apiCommentLike(type, t, id, cid).then((res) => {
           if (res) {
             void panel.webview.postMessage({
               command: "like",
-              liked: t === SubAction.sub ? true : false,
+              like,
               cid,
             });
           }

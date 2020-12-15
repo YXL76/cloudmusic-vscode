@@ -1,6 +1,7 @@
 import type { ExtensionContext, QuickPickItem } from "vscode";
-import { LyricCache, MultiStepInput, apiFmTrash, lyric, player } from "../util";
+import { LyricCache, MultiStepInput, lyric, player } from "../util";
 import { ButtonManager } from "../manager";
+import { apiFmTrash } from "../api";
 import { commands } from "vscode";
 import { i18n } from "../i18n";
 

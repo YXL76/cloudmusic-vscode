@@ -16,7 +16,7 @@ export const NATIVE: NativeModule = __non_webpack_require__(
   join("..", "build", `${PLATFORM}.node`)
 ) as NativeModule;
 
-export const ACCOUNT_KEY = "account";
+export const ACCOUNT_KEY = "cloudmusicAccount";
 export const BUTTON_KEY = "button";
 export const VOLUME_KEY = "volume";
 
