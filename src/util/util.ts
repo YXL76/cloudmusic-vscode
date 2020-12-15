@@ -42,8 +42,6 @@ import type { QuickPickItem } from "vscode";
 import type { Readable } from "stream";
 import axios from "axios";
 import { createWriteStream } from "fs";
-import { Agent as httpAgent } from "http";
-import { Agent as httpsAgent } from "https";
 import { i18n } from "../i18n";
 
 const minSize = MUSIC_QUALITY === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
@@ -57,8 +55,6 @@ export async function downloadMusic(
 ) {
   try {
     const { data } = await axios.get<Readable>(url, {
-      httpAgent: new httpAgent({ keepAlive: true }),
-      httpsAgent: new httpsAgent({ keepAlive: true }),
       responseType: "stream",
       timeout: 1000,
     });

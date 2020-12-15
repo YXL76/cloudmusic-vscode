@@ -1,10 +1,10 @@
-import * as http from "http";
-import * as https from "https";
-import * as queryString from "querystring";
 import type { Cookie, OS } from ".";
 import { anonymousToken, eapi, jsonToCookie, linuxapi, weapi } from ".";
 import axios from "axios";
+import { Agent as httpAgent } from "http";
+import { Agent as httpsAgent } from "https";
 import { randomBytes } from "crypto";
+import { stringify } from "querystring";
 
 export const userAgentList = {
   mobile: [
@@ -68,17 +68,13 @@ const responseHandler = async <T>(
   data: any,
   eapi?: boolean
 ) => {
-  const res = await axios.post<{ code?: number } & T>(
-    url,
-    queryString.stringify(data),
-    {
-      withCredentials: true,
-      headers,
-      httpAgent: new http.Agent({ keepAlive: true }),
-      httpsAgent: new https.Agent({ keepAlive: true }),
-      ...(eapi ? { encoding: null } : {}),
-    }
-  );
+  const res = await axios.post<{ code?: number } & T>(url, stringify(data), {
+    withCredentials: true,
+    headers,
+    httpAgent: new httpAgent({ keepAlive: true }),
+    httpsAgent: new httpsAgent({ keepAlive: true }),
+    ...(eapi ? { encoding: null } : {}),
+  });
 
   const status = res.data.code || res.status;
 

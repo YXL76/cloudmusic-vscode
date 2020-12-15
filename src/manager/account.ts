@@ -1,4 +1,3 @@
-import * as queryString from "querystring";
 import type { LoginParameters, PlaylistItem } from "../constant";
 import {
   apiDailySignin,
@@ -14,6 +13,7 @@ import type { Cookie } from "../api";
 import { LoggedIn } from "../state";
 import axios from "axios";
 import { i18n } from "../i18n";
+import { stringify } from "querystring";
 import { window } from "vscode";
 
 export class AccountManager {
@@ -71,7 +71,7 @@ export class AccountManager {
       const res = await axios.post<{
         code?: number;
         profile: { userId: number; nickname: string };
-      }>(url, queryString.stringify(data), { headers });
+      }>(url, stringify(data), { headers });
 
       if (res.data.code || res.status === 200) {
         const { userId, nickname } = res.data.profile;
