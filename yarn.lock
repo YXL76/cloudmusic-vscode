@@ -1460,7 +1460,7 @@ __metadata:
     copy-webpack-plugin: 7.0.0
     cssnano: 4.1.10
     dayjs: 1.9.7
-    esbuild-loader: 2.6.2
+    esbuild-loader: 2.6.3
     eslint: 7.15.0
     eslint-config-prettier: 7.0.0
     eslint-config-react-app: 6.0.0
@@ -2272,19 +2272,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-loader@npm:2.6.2":
-  version: 2.6.2
-  resolution: "esbuild-loader@npm:2.6.2"
+"esbuild-loader@npm:2.6.3":
+  version: 2.6.3
+  resolution: "esbuild-loader@npm:2.6.3"
   dependencies:
     esbuild: ^0.8.17
     loader-utils: ^2.0.0
     type-fest: ^0.20.2
-    webpack: ^4.44.2
     webpack-sources: ^2.2.0
-    webpack5: "npm:webpack@^5.0.0"
   peerDependencies:
     webpack: ^4.40.0 || ^5.0.0
-  checksum: 7f8536a1b9073e945ce53d0ab35ad63d28ee01e3e0528f8d2640d428fbf812c960452a69a1e84344079d96833184d557786157dbb89b5d7b7e73ffcd4fae2b7e
+  checksum: bb32b891e733d6754f2e2acad9e7ce527f132a745523f896f34fd58eef0b8f84c1128b620a6e5759f631ab0151f3d3f72afe3b6d5e4228b01de7ffa03e4955bb
   languageName: node
   linkType: hard
 
@@ -6999,7 +6997,7 @@ typescript@4.1.3:
   languageName: node
   linkType: hard
 
-"webpack5@npm:webpack@^5.0.0, webpack@npm:5.10.1":
+"webpack@npm:5.10.1":
   version: 5.10.1
   resolution: "webpack@npm:5.10.1"
   dependencies:
