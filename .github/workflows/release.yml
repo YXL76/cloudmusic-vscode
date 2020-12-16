@@ -28,23 +28,15 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ runner.temp }}/llvm
-          key: ${{ runner.os }}-llvm-10.0
+          key: ${{ runner.os }}-llvm-10
 
       - name: Install LLVM and Clang
         if: runner.os == 'Windows'
         uses: KyleMayes/install-llvm-action@v1
         with:
-          version: "10.0"
+          version: "10"
           directory: ${{ runner.temp }}/llvm
           cached: ${{ steps.cache-llvm.outputs.cache-hit }}
-
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          override: true
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "12"
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -114,9 +106,6 @@ jobs:
           cp .artifact/Linux/libnative.so    build/linux.node
           cp .artifact/Windows/native.dll    build/win32.node
 
-      - uses: actions/setup-node@v2
-        with:
-          node-version: "12"
       - name: Install vsce
         run: npm i vsce -g
 
