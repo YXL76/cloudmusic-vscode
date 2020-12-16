@@ -22,21 +22,12 @@ jobs:
           sudo apt-get install -y libasound2-dev
           sudo apt-get install -y libx11-dev
 
-      - name: Cache LLVM and Clang
-        if: runner.os == 'Windows'
-        id: cache-llvm
-        uses: actions/cache@v2
-        with:
-          path: ${{ runner.temp }}/llvm
-          key: ${{ runner.os }}-llvm-10
-
       - name: Install LLVM and Clang
         if: runner.os == 'Windows'
         uses: KyleMayes/install-llvm-action@v1
         with:
-          version: "10"
+          version: "11"
           directory: ${{ runner.temp }}/llvm
-          cached: ${{ steps.cache-llvm.outputs.cache-hit }}
 
       - name: Checkout
         uses: actions/checkout@v2
