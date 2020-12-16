@@ -42,7 +42,7 @@ jobs:
         with:
           toolchain: stable
           override: true
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: "12"
 
@@ -114,7 +114,7 @@ jobs:
           cp .artifact/Linux/libnative.so    build/linux.node
           cp .artifact/Windows/native.dll    build/win32.node
 
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2
         with:
           node-version: "12"
       - name: Install vsce
