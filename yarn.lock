@@ -845,9 +845,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"antd@npm:4.9.3":
-  version: 4.9.3
-  resolution: "antd@npm:4.9.3"
+"antd@npm:4.9.4":
+  version: 4.9.4
+  resolution: "antd@npm:4.9.4"
   dependencies:
     "@ant-design/colors": ^5.0.0
     "@ant-design/icons": ^4.3.0
@@ -894,7 +894,7 @@ __metadata:
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: a513fc55306942625cddaf793825784d827a766cfbb152526c5c5797c84f0ae4f20bc473719a2866b20cb3a29253157691a6866e88e9bc21b6a303691d153118
+  checksum: 5977ca610fbc441c3149630a8b898f710ac2edbd9cf16f51877a6b216ec3a03f68c86f12fa5295385bd49a46575e466c19868955f92e2ba4914cada70b2a8542
   languageName: node
   linkType: hard
 
@@ -1405,7 +1405,7 @@ __metadata:
     "@types/vscode": 1.52.0
     "@typescript-eslint/eslint-plugin": 4.10.0
     "@typescript-eslint/parser": 4.10.0
-    antd: 4.9.3
+    antd: 4.9.4
     array-unsort: 1.1.6
     axios: 0.21.0
     babel-eslint: 10.1.0
