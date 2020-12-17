@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [6.0.4] - 2020-12-17
+
+### Fixed
+
+- Engines version
+
 ## [6.0.3] - 2020-12-16
 
 ### Fixed

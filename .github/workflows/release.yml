@@ -97,9 +97,6 @@ jobs:
           cp .artifact/Linux/libnative.so    build/linux.node
           cp .artifact/Windows/native.dll    build/win32.node
 
-      - name: Install vsce
-        run: npm i vsce -g
-
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
@@ -114,7 +111,7 @@ jobs:
       - name: Package
         run: |
           yarn
-          vsce package --no-yarn
+          yarn dlx vsce package --no-yarn
           echo "VSIX_PATH=$(find . -maxdepth 1 -type f -iname "*.vsix" | head -1)" >> $GITHUB_ENV
           echo "VSIX_NAME=$(basename $(find . -maxdepth 1 -type f -iname "*.vsix" | head -1))" >> $GITHUB_ENV
 
@@ -140,4 +137,4 @@ jobs:
       - name: Publish
         run: |
           yarn
-          vsce publish -p ${{ secrets.VSCE_TOKEN }} --no-yarn
+          yarn dlx vsce publish -p ${{ secrets.VSCE_TOKEN }} --no-yarn
