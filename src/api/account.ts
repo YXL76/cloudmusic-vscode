@@ -118,7 +118,7 @@ export async function apiPersonalized(): Promise<PlaylistItem[]> {
   }
   try {
     const { result } = await weapiRequest<{ result: RawPlaylistItem[] }>(
-      "https://music.163.com/weapi/personalized/playlis",
+      "https://music.163.com/weapi/personalized/playlist",
       { limit: 30, total: true, n: 1000 }
     );
     const ret = result.map((playlist) => solvePlaylistItem(playlist));
