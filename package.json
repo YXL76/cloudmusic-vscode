@@ -464,7 +464,7 @@
     "cssnano": "4.1.10",
     "esbuild-loader": "2.6.3",
     "eslint": "7.15.0",
-    "eslint-config-prettier": "7.0.0",
+    "eslint-config-prettier": "7.1.0",
     "eslint-config-react-app": "6.0.0",
     "eslint-plugin-flowtype": "5.2.0",
     "eslint-plugin-import": "2.22.1",
