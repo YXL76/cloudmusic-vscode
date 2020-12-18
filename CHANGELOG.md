@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [6.0.5] - 2020-12-18
+
+### Fixed
+
+- API: personalized playlist url
+- Player: prefetch keep running
+
 ## [6.0.4] - 2020-12-17
 
 ### Fixed
