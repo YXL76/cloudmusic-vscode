@@ -41,36 +41,31 @@ class NoPlayer implements Player {
 }
 
 async function prefetch() {
-  let id = 0;
-  if (PersonalFm.get()) {
-    if (PersonalFm.item.length > 1) {
-      id = PersonalFm.item[1].item.id;
-    }
-  } else {
-    if (QueueProvider.songs.length > 1) {
-      id = QueueProvider.songs[1].item.id;
-    }
-  }
-  const idString = `${id}`;
+  try {
+    const { id } = PersonalFm.get()
+      ? PersonalFm.item[1].item
+      : QueueProvider.songs[1].item;
+    const idString = `${id}`;
 
-  if (id !== 0 && !(await MusicCache.get(idString))) {
-    const { url, md5 } = (await apiSongUrl([id]))[0];
-    if (!url || LocalCache.get(md5)) {
-      return;
+    if (id !== 0 && !(await MusicCache.get(idString))) {
+      const { url, md5 } = await apiSongUrl(id);
+      if (!url || !md5 || LocalCache.get(md5)) {
+        return;
+      }
+      const path = Uri.joinPath(TMP_DIR, idString);
+      const data = await downloadMusic(
+        url,
+        idString,
+        path,
+        md5,
+        !PersonalFm.get()
+      );
+      if (data) {
+        const file = createWriteStream(path.fsPath);
+        data.pipe(file);
+      }
     }
-    const path = Uri.joinPath(TMP_DIR, idString);
-    const data = await downloadMusic(
-      url,
-      idString,
-      path,
-      md5,
-      !PersonalFm.get()
-    );
-    if (data) {
-      const file = createWriteStream(path.fsPath);
-      data.pipe(file);
-    }
-  }
+  } catch {}
 }
 
 export const lyric: Lyric = {
@@ -91,13 +86,16 @@ class AudioPlayer implements Player {
 
   private player!: NativePlayer;
 
+  private prefetchLock = false;
+
   constructor() {
     this.player = NATIVE.playerNew();
 
     setInterval(() => {
       if (Playing.get()) {
         const pos = NATIVE.playerPosition(this.player);
-        if (pos > 120) {
+        if (pos > 120 && !this.prefetchLock) {
+          this.prefetchLock = true;
           void prefetch();
         }
         if (NATIVE.playerEmpty(this.player) || pos > this.item.dt + 8) {
@@ -165,6 +163,7 @@ class AudioPlayer implements Player {
 
       this.pid = pid;
       this.item = item;
+      this.prefetchLock = false;
     } else {
       void commands.executeCommand("cloudmusic.next");
     }

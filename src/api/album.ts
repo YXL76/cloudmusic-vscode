@@ -1,18 +1,4 @@
-import type {
-  AlbumsItem,
-  AnotherSongItem,
-  Artist,
-  CommentDetail,
-  LyricData,
-  PlaylistItem,
-  RawCommentDetail,
-  RawPlaylistItem,
-  SimplyUserDetail,
-  SongDetail,
-  SongsItem,
-  TrackIdsItem,
-  UserDetail,
-} from "../constant";
+import type { AlbumsItem, SongsItem } from "../constant";
 import { solveAlbumsItem, solveSongItem, weapiRequest } from ".";
 import { apiCache } from "../util";
 

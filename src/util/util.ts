@@ -60,13 +60,7 @@ export async function downloadMusic(
     });
 
     if (cache) {
-      data.on("end", () => {
-        void MusicCache.put(
-          filename,
-          path,
-          `md5-${Buffer.from(md5, "hex").toString("base64")}`
-        );
-      });
+      data.on("end", () => void MusicCache.put(filename, path, md5));
     }
 
     return data;
@@ -111,8 +105,7 @@ export async function load(element: QueueItemTreeItem) {
     return;
   }
 
-  const songs = await apiSongUrl([id]);
-  const { url, md5 } = songs[0];
+  const { url, md5 } = await apiSongUrl(id);
   if (!url || !md5) {
     void commands.executeCommand("cloudmusic.next");
   } else {

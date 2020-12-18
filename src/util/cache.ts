@@ -62,7 +62,10 @@ export class MusicCache {
         MUSIC_CACHE_DIR.fsPath,
         key,
         await workspace.fs.readFile(path),
-        { integrity: md5, algorithms: ["md5"] }
+        {
+          integrity: `md5-${Buffer.from(md5, "hex").toString("base64")}`,
+          algorithms: ["md5"],
+        }
       );
       const { integrity, size } = await cacache.get.info(
         MUSIC_CACHE_DIR.fsPath,
