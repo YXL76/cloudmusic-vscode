@@ -1414,7 +1414,7 @@ __metadata:
     copy-webpack-plugin: 7.0.0
     cssnano: 4.1.10
     dayjs: 1.9.7
-    esbuild-loader: 2.6.3
+    esbuild-loader: 2.7.0
     eslint: 7.15.0
     eslint-config-prettier: 7.0.0
     eslint-config-react-app: 6.0.0
@@ -2204,9 +2204,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-loader@npm:2.6.3":
-  version: 2.6.3
-  resolution: "esbuild-loader@npm:2.6.3"
+"esbuild-loader@npm:2.7.0":
+  version: 2.7.0
+  resolution: "esbuild-loader@npm:2.7.0"
   dependencies:
     esbuild: ^0.8.17
     loader-utils: ^2.0.0
@@ -2214,7 +2214,7 @@ __metadata:
     webpack-sources: ^2.2.0
   peerDependencies:
     webpack: ^4.40.0 || ^5.0.0
-  checksum: bb32b891e733d6754f2e2acad9e7ce527f132a745523f896f34fd58eef0b8f84c1128b620a6e5759f631ab0151f3d3f72afe3b6d5e4228b01de7ffa03e4955bb
+  checksum: 667600b27393001f21324d75de0b97480d670ba384a48d5f66b962b6e942c3bc6dc71ff8e9e04bfe9c4bae71f396d01c093a3bf238487b9ca08c3af28fd8847f
   languageName: node
   linkType: hard
 
