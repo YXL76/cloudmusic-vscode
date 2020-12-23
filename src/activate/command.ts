@@ -29,13 +29,11 @@ export function initCommand(context: ExtensionContext): void {
     commands.registerCommand("cloudmusic.next", async () => {
       if (PersonalFm.get()) {
         void load(await PersonalFm.next());
-      } else if (QueueProvider.songs.length > 1) {
+      } else {
         QueueProvider.refresh(() => {
           QueueProvider.shift(1);
           void load(QueueProvider.songs[0]);
         });
-      } else if (QueueProvider.songs.length === 1) {
-        void load(QueueProvider.songs[0]);
       }
     })
   );

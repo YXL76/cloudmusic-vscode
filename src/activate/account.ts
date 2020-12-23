@@ -140,34 +140,31 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           ],
         });
 
-        if (pick.type === Type.user) {
-          return (input: MultiStepInput) =>
-            pickUser(input, 2, AccountManager.uid);
-        }
-        if (pick.type === Type.level) {
-          return input.pop();
-        }
-        if (pick.type === Type.search) {
-          return (input: MultiStepInput) => inputKeyword(input, 1);
-        }
-        if (pick.type === Type.recommendation) {
-          return (input: MultiStepInput) => pickRecommend(input);
-        }
-        if (pick.type === Type.toplist) {
-          return (input: MultiStepInput) => pickToplist(input);
-        }
-        if (pick.type === Type.explore) {
-          return (input: MultiStepInput) => pickExplore(input);
-        }
-        if (pick.type === Type.save) {
-          return (input: MultiStepInput) => pickSave(input);
-        }
-        if (pick.type === Type.fm) {
-          void commands.executeCommand("cloudmusic.personalFM");
-        } else if (pick.type === Type.userMusicRankingList) {
-          webview.userMusicRankingList();
-        } else if (pick.type === Type.signOut) {
-          void commands.executeCommand("cloudmusic.signout");
+        switch (pick.type) {
+          case Type.user:
+            return (input: MultiStepInput) =>
+              pickUser(input, 2, AccountManager.uid);
+          case Type.level:
+            return input.pop();
+          case Type.search:
+            return (input: MultiStepInput) => inputKeyword(input, 1);
+          case Type.recommendation:
+            return (input: MultiStepInput) => pickRecommend(input);
+          case Type.toplist:
+            return (input: MultiStepInput) => pickToplist(input);
+          case Type.explore:
+            return (input: MultiStepInput) => pickExplore(input);
+          case Type.save:
+            return (input: MultiStepInput) => pickSave(input);
+          case Type.fm:
+            void commands.executeCommand("cloudmusic.personalFM");
+            break;
+          case Type.userMusicRankingList:
+            webview.userMusicRankingList();
+            break;
+          case Type.signOut:
+            void commands.executeCommand("cloudmusic.signout");
+            break;
         }
         return;
       }
@@ -203,23 +200,20 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
             },
           ],
         });
-        if (pick.type === Type.dailyPlaylist) {
-          return async (input: MultiStepInput) =>
-            pickPlaylists(input, 3, await apiRecommendResource());
+        switch (pick.type) {
+          case Type.dailyPlaylist:
+            return async (input: MultiStepInput) =>
+              pickPlaylists(input, 3, await apiRecommendResource());
+          case Type.dailySong:
+            return async (input: MultiStepInput) =>
+              pickSongs(input, 3, await apiRecommendSongs());
+          case Type.playlist:
+            return async (input: MultiStepInput) =>
+              pickPlaylists(input, 3, await apiPersonalized());
+          case Type.song:
+            return async (input: MultiStepInput) =>
+              pickSongs(input, 3, await apiPersonalizedNewsong());
         }
-        if (pick.type === Type.dailySong) {
-          return async (input: MultiStepInput) =>
-            pickSongs(input, 3, await apiRecommendSongs());
-        }
-        if (pick.type === Type.playlist) {
-          return async (input: MultiStepInput) =>
-            pickPlaylists(input, 3, await apiPersonalized());
-        }
-        if (pick.type === Type.song) {
-          return async (input: MultiStepInput) =>
-            pickSongs(input, 3, await apiPersonalizedNewsong());
-        }
-        return;
       }
 
       async function pickToplist(input: MultiStepInput) {
@@ -243,15 +237,14 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
             },
           ],
         });
-        if (pick.type === Type.song) {
-          return async (input: MultiStepInput) =>
-            pickPlaylists(input, 3, await apiToplist());
+        switch (pick.type) {
+          case Type.song:
+            return async (input: MultiStepInput) =>
+              pickPlaylists(input, 3, await apiToplist());
+          case Type.artist:
+            return async (input: MultiStepInput) =>
+              pickArtists(input, 3, await apiToplistArtist());
         }
-        if (pick.type === Type.artist) {
-          return async (input: MultiStepInput) =>
-            pickArtists(input, 3, await apiToplistArtist());
-        }
-        return;
       }
 
       async function pickExplore(input: MultiStepInput) {
@@ -299,32 +292,26 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
             },
           ],
         });
-        if (pick.type === Type.playlist) {
-          return (input: MultiStepInput) => pickPlaylistCategories(input);
+        switch (pick.type) {
+          case Type.playlist:
+            return (input: MultiStepInput) => pickPlaylistCategories(input);
+          case Type.highqualityPlaylist:
+            return (input: MultiStepInput) =>
+              pickHighqualitPlaylistCategories(input);
+          case Type.artist:
+            return (input: MultiStepInput) => pickArtistType(input);
+          case Type.topAlbums:
+            return async (input: MultiStepInput) =>
+              pickAlbums(input, 3, await apiTopAlbum());
+          case Type.topArtists:
+            return async (input: MultiStepInput) =>
+              pickArtists(input, 3, await apiTopArtists(50, 0));
+          case Type.topSongs:
+            return (input: MultiStepInput) => pickTopSongs(input);
+          case Type.albumNewest:
+            return async (input: MultiStepInput) =>
+              pickAlbums(input, 3, await apiAlbumNewest());
         }
-        if (pick.type === Type.highqualityPlaylist) {
-          return (input: MultiStepInput) =>
-            pickHighqualitPlaylistCategories(input);
-        }
-        if (pick.type === Type.artist) {
-          return (input: MultiStepInput) => pickArtistType(input);
-        }
-        if (pick.type === Type.topAlbums) {
-          return async (input: MultiStepInput) =>
-            pickAlbums(input, 3, await apiTopAlbum());
-        }
-        if (pick.type === Type.topArtists) {
-          return async (input: MultiStepInput) =>
-            pickArtists(input, 3, await apiTopArtists(50, 0));
-        }
-        if (pick.type === Type.topSongs) {
-          return (input: MultiStepInput) => pickTopSongs(input);
-        }
-        if (pick.type === Type.albumNewest) {
-          return async (input: MultiStepInput) =>
-            pickAlbums(input, 3, await apiAlbumNewest());
-        }
-        return;
       }
 
       async function pickTopSongs(input: MultiStepInput) {
@@ -610,15 +597,14 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
             },
           ],
         });
-        if (pick.type === Type.album) {
-          return async (input: MultiStepInput) =>
-            pickAlbums(input, 3, await apiAlbumSublist());
+        switch (pick.type) {
+          case Type.album:
+            return async (input: MultiStepInput) =>
+              pickAlbums(input, 3, await apiAlbumSublist());
+          case Type.artist:
+            return async (input: MultiStepInput) =>
+              pickArtists(input, 3, await apiArtistSublist());
         }
-        if (pick.type === Type.artist) {
-          return async (input: MultiStepInput) =>
-            pickArtists(input, 3, await apiArtistSublist());
-        }
-        return;
       }
     })
   );

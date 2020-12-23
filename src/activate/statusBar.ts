@@ -43,14 +43,13 @@ export async function initStatusBar(context: ExtensionContext): Promise<void> {
           },
         ],
       });
-      if (pick.type === Type.delay) {
-        return (input: MultiStepInput) => inputDelay(input);
-      }
-      if (pick.type === Type.full) {
-        return (input: MultiStepInput) => pickLyric(input);
-      }
-      if (pick.type === Type.cache) {
-        LyricCache.clear();
+      switch (pick.type) {
+        case Type.delay:
+          return (input: MultiStepInput) => inputDelay(input);
+        case Type.full:
+          return (input: MultiStepInput) => pickLyric(input);
+        case Type.cache:
+          LyricCache.clear();
       }
       return;
     }

@@ -55,31 +55,33 @@ export class WebView {
     void (async () => {
       void panel.webview.postMessage(await apiUserRecord());
     })();
+
+    type RecvMessage = {
+      command: "refresh" | "song" | "album" | "artist";
+      item: SongsItem;
+      id: number;
+    };
     panel.webview.onDidReceiveMessage(
-      async (message: {
-        command: "refresh" | "song" | "album" | "artist";
-        item: SongsItem;
-        id: number;
-      }) => {
-        const { command } = message;
-        if (command === "refresh") {
-          void panel.webview.postMessage(await apiUserRecord(true));
-        } else if (command === "song") {
-          const { item } = message;
-          void MultiStepInput.run((input) => pickSong(input, 1, item));
-        } else if (command === "album") {
-          const { id } = message;
-          void MultiStepInput.run((input) => pickAlbum(input, 1, id));
-        } else if (command === "artist") {
-          const { id } = message;
-          void MultiStepInput.run((input) => pickArtist(input, 1, id));
+      async ({ command, item, id }: RecvMessage) => {
+        switch (command) {
+          case "refresh":
+            void panel.webview.postMessage(await apiUserRecord(true));
+            break;
+          case "song":
+            void MultiStepInput.run((input) => pickSong(input, 1, item));
+            break;
+          case "album":
+            void MultiStepInput.run((input) => pickAlbum(input, 1, id));
+            break;
+          case "artist":
+            void MultiStepInput.run((input) => pickArtist(input, 1, id));
         }
       }
     );
     return panel;
   }
 
-  commentList(type: CommentType, id: number, title: string): WebviewPanel {
+  commentList(type: CommentType, gid: number, title: string): WebviewPanel {
     const pageSize = 30;
 
     const panel = this.getWebviewPanel(
@@ -100,8 +102,11 @@ export class WebView {
     );
 
     async function list(pageNo: number, sortType: SortType, time: number) {
-      const r = await apiCommentNew(type, id, pageNo, pageSize, sortType, time);
-      void panel.webview.postMessage({ command: "list", sortType, ...r });
+      void panel.webview.postMessage({
+        command: "list",
+        sortType,
+        ...(await apiCommentNew(type, gid, pageNo, pageSize, sortType, time)),
+      });
     }
 
     void list(1, SortType.recommendation, 0);
@@ -118,43 +123,55 @@ export class WebView {
       time: number;
     };
 
-    panel.webview.onDidReceiveMessage((message: Message) => {
-      const { command } = message;
-      if (command === "user") {
-        const { id } = message;
-        void MultiStepInput.run((input) => pickUser(input, 1, id));
-      } else if (command === "list") {
-        const { pageNo, sortType, time } = message;
-        if (sortType === SortType.latest) {
-          void list(pageNo, sortType, time);
-        } else {
-          void list(pageNo, sortType, 0);
-        }
-      } else if (command === "like") {
-        const { cid, t } = message;
-        void apiCommentLike(type, t, id, cid).then((res) => {
-          if (res) {
-            void panel.webview.postMessage({
-              command: "like",
-              liked: t === "like" ? true : false,
-              cid,
+    panel.webview.onDidReceiveMessage(
+      ({
+        command,
+        id,
+        pageNo,
+        sortType,
+        time,
+        cid,
+        t,
+        content,
+        pid,
+      }: Message) => {
+        switch (command) {
+          case "user":
+            void MultiStepInput.run((input) => pickUser(input, 1, id));
+            break;
+          case "list":
+            if (sortType === SortType.latest) {
+              void list(pageNo, sortType, time);
+            } else {
+              void list(pageNo, sortType, 0);
+            }
+            break;
+          case "like":
+            void apiCommentLike(type, t, gid, cid).then((res) => {
+              if (res) {
+                void panel.webview.postMessage({
+                  command: "like",
+                  liked: t === "like" ? true : false,
+                  cid,
+                });
+              }
             });
-          }
-        });
-      } else if (command === "reply") {
-        const { content, cid } = message;
-        if (cid === 0) {
-          void apiCommentAdd(type, id, content);
-        } else {
-          void apiCommentReply(type, id, content, cid);
+            break;
+          case "reply":
+            if (cid === 0) {
+              void apiCommentAdd(type, gid, content);
+            } else {
+              void apiCommentReply(type, gid, content, cid);
+            }
+            break;
+          case "floor":
+            void apiCommentFloor(type, gid, pid, pageSize, time).then(
+              (data) =>
+                void panel.webview.postMessage({ command: "floor", ...data })
+            );
         }
-      } else if (command === "floor") {
-        const { pid, time } = message;
-        void apiCommentFloor(type, id, pid, pageSize, time).then((data) => {
-          void panel.webview.postMessage({ command: "floor", ...data });
-        });
       }
-    });
+    );
     return panel;
   }
 

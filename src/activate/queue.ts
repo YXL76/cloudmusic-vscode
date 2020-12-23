@@ -68,21 +68,23 @@ export function initQueue(): void {
         ],
       });
 
-      const { songs } = QueueProvider;
       stop();
       QueueProvider.refresh(() => {
-        if (pick.type === Type.song) {
-          QueueProvider.songs = songs.sort((a, b) =>
-            a.item.name.localeCompare(b.item.name)
-          );
-        } else if (pick.type === Type.album) {
-          QueueProvider.songs = songs.sort((a, b) =>
-            a.item.al.name.localeCompare(b.item.al.name)
-          );
-        } else if (pick.type === Type.artist) {
-          QueueProvider.songs = songs.sort((a, b) =>
-            a.item.ar[0].name.localeCompare(b.item.ar[0].name)
-          );
+        switch (pick.type) {
+          case Type.song:
+            QueueProvider.songs.sort((a, b) =>
+              a.item.name.localeCompare(b.item.name)
+            );
+            break;
+          case Type.album:
+            QueueProvider.songs.sort((a, b) =>
+              a.item.al.name.localeCompare(b.item.al.name)
+            );
+            break;
+          case Type.artist:
+            QueueProvider.songs.sort((a, b) =>
+              a.item.ar[0].name.localeCompare(b.item.ar[0].name)
+            );
         }
         if (pick.order === Order.descending) {
           QueueProvider.songs.reverse();

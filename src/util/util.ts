@@ -282,36 +282,35 @@ export async function pickSong(
       },
     ],
   });
-  if (pick.type === PickType.album) {
-    return (input: MultiStepInput) =>
-      pickAlbum(input, step + 1, (pick as T).id);
-  }
-  if (pick.type === PickType.artist) {
-    return (input: MultiStepInput) =>
-      pickArtist(input, step + 1, (pick as T).id);
-  }
-  if (pick.type === PickType.save) {
-    return (input: MultiStepInput) => pickAddToPlaylist(input, step + 1, id);
-  }
-  if (pick.type === PickType.similar) {
-    if (pick.label === `${ICON.similar} ${i18n.word.similarSongs}`) {
-      return (input: MultiStepInput) => pickSimiSong(input, step + 1, id, 0);
-    }
-    return (input: MultiStepInput) => pickSimiPlaylists(input, step + 1, id, 0);
-  }
-  if (pick.type === PickType.comment) {
-    WebView.getInstance().commentList(CommentType.song, id, name);
-  } else if (pick.type === PickType.like) {
-    if (await apiLike(id, true)) {
-      AccountManager.likelist.add(id);
-      if (id === player.item.id) {
-        IsLike.set(true);
+  switch (pick.type) {
+    case PickType.album:
+      return (input: MultiStepInput) =>
+        pickAlbum(input, step + 1, (pick as T).id);
+    case PickType.artist:
+      return (input: MultiStepInput) =>
+        pickArtist(input, step + 1, (pick as T).id);
+    case PickType.save:
+      return (input: MultiStepInput) => pickAddToPlaylist(input, step + 1, id);
+    case PickType.similar:
+      if (pick.label === `${ICON.similar} ${i18n.word.similarSongs}`) {
+        return (input: MultiStepInput) => pickSimiSong(input, step + 1, id, 0);
       }
-    }
-  } else if (pick.type === PickType.add) {
-    const element = songsItem2TreeItem(0, [item])[0];
-    void commands.executeCommand("cloudmusic.addSong", element);
+      return (input: MultiStepInput) =>
+        pickSimiPlaylists(input, step + 1, id, 0);
+    case PickType.comment:
+      WebView.getInstance().commentList(CommentType.song, id, name);
+      break;
+    case PickType.like:
+      if (await apiLike(id, true)) {
+        AccountManager.likelist.add(id);
+        IsLike.set(id === player.item.id);
+      }
+      break;
+    case PickType.add:
+      const element = songsItem2TreeItem(0, [item])[0];
+      void commands.executeCommand("cloudmusic.addSong", element);
   }
+
   return input.pop() as InputStep;
 }
 
@@ -460,30 +459,27 @@ export async function pickArtist(
       ...pickSongItems(songs),
     ],
   });
-  if (pick.type === PickType.albums) {
-    return async (input: MultiStepInput) =>
-      pickAlbums(input, step + 1, await apiArtistAlbum(pick.id as number));
+  switch (pick.type) {
+    case PickType.albums:
+      return async (input: MultiStepInput) =>
+        pickAlbums(input, step + 1, await apiArtistAlbum(pick.id as number));
+    case PickType.song:
+      return (input: MultiStepInput) =>
+        pickSong(input, step + 1, (pick as ST).item);
+    case PickType.songs:
+      return (input: MultiStepInput) => pickAllSongs(input, step + 1, id, 0);
+    case PickType.similar:
+      return async (input: MultiStepInput) =>
+        pickArtists(input, step + 1, await apiSimiArtist(id));
+    case PickType.unsave:
+      return (input: MultiStepInput) =>
+        confirmation(input, step + 1, async () => {
+          await apiArtistSub(id, "unsub");
+        });
+    case PickType.save:
+      await apiArtistSub(id, "sub");
   }
-  if (pick.type === PickType.song) {
-    return (input: MultiStepInput) =>
-      pickSong(input, step + 1, (pick as ST).item);
-  }
-  if (pick.type === PickType.songs) {
-    return (input: MultiStepInput) => pickAllSongs(input, step + 1, id, 0);
-  }
-  if (pick.type === PickType.similar) {
-    return async (input: MultiStepInput) =>
-      pickArtists(input, step + 1, await apiSimiArtist(id));
-  }
-  if (pick.type === PickType.unsave) {
-    return (input: MultiStepInput) =>
-      confirmation(input, step + 1, async () => {
-        await apiArtistSub(id, "unsub");
-      });
-  }
-  if (pick.type === PickType.save) {
-    await apiArtistSub(id, "sub");
-  }
+
   return input.pop() as InputStep;
 
   async function pickAllSongs(
@@ -584,25 +580,25 @@ export async function pickAlbum(
       ...pickSongItems(songs),
     ],
   });
-  if (pick.type === PickType.artist) {
-    return (input: MultiStepInput) =>
-      pickArtist(input, step + 1, (pick as T).id);
+  switch (pick.type) {
+    case PickType.artist:
+      return (input: MultiStepInput) =>
+        pickArtist(input, step + 1, (pick as T).id);
+    case PickType.song:
+      return (input: MultiStepInput) =>
+        pickSong(input, step + 1, (pick as ST).item);
+    case PickType.unsave:
+      return (input: MultiStepInput) =>
+        confirmation(input, step + 1, async () => {
+          await apiAlbumSub(id, "unsub");
+        });
+    case PickType.comment:
+      WebView.getInstance().commentList(CommentType.album, id, name);
+      break;
+    case PickType.save:
+      await apiAlbumSub(id, "sub");
   }
-  if (pick.type === PickType.song) {
-    return (input: MultiStepInput) =>
-      pickSong(input, step + 1, (pick as ST).item);
-  }
-  if (pick.type === PickType.unsave) {
-    return (input: MultiStepInput) =>
-      confirmation(input, step + 1, async () => {
-        await apiAlbumSub(id, "unsub");
-      });
-  }
-  if (pick.type === PickType.comment) {
-    WebView.getInstance().commentList(CommentType.album, id, name);
-  } else if (pick.type === PickType.save) {
-    await apiAlbumSub(id, "sub");
-  }
+
   return input.pop() as InputStep;
 }
 
@@ -689,25 +685,26 @@ export async function pickPlaylist(
       ...pickSongItems(songs),
     ],
   });
-  if (pick.type === PickType.song) {
-    return (input: MultiStepInput) =>
-      pickSong(input, step + 1, (pick as ST).item);
-  }
-  if (pick.type === PickType.subscribed) {
-    return (input: MultiStepInput) =>
-      pickUsers(input, step + 1, apiPlaylistSubscribers, true, 0, id);
-  }
-  if (pick.type === PickType.user) {
-    return (input: MultiStepInput) => pickUser(input, step + 1, (pick as T).id);
-  }
-  if (pick.type === PickType.add) {
-    QueueProvider.refresh(() => {
-      QueueProvider.add(songsItem2TreeItem(id, songs));
-    });
-  } else if (pick.type === PickType.comment) {
-    WebView.getInstance().commentList(CommentType.playlist, id, name);
-  } else if (pick.type === PickType.save) {
-    await apiPlaylistSubscribe(id, "subscribe");
+  switch (pick.type) {
+    case PickType.song:
+      return (input: MultiStepInput) =>
+        pickSong(input, step + 1, (pick as ST).item);
+    case PickType.subscribed:
+      return (input: MultiStepInput) =>
+        pickUsers(input, step + 1, apiPlaylistSubscribers, true, 0, id);
+    case PickType.user:
+      return (input: MultiStepInput) =>
+        pickUser(input, step + 1, (pick as T).id);
+    case PickType.add:
+      QueueProvider.refresh(() => {
+        QueueProvider.add(songsItem2TreeItem(id, songs));
+      });
+      break;
+    case PickType.comment:
+      WebView.getInstance().commentList(CommentType.playlist, id, name);
+      break;
+    case PickType.save:
+      await apiPlaylistSubscribe(id, "subscribe");
   }
   return input.pop() as InputStep;
 }
@@ -830,17 +827,16 @@ export async function pickUser(
       ),
     ],
   });
-  if (pick.type === PickType.followeds) {
-    return (input: MultiStepInput) =>
-      pickUsers(input, step + 1, apiUserFolloweds, false, 0, uid);
-  }
-  if (pick.type === PickType.follows) {
-    return (input: MultiStepInput) =>
-      pickUsers(input, step + 1, apiUserFollows, true, 0, uid);
-  }
-  if (pick.type === PickType.playlist) {
-    return (input: MultiStepInput) =>
-      pickPlaylist(input, step + 1, pick.item as PlaylistItem);
+  switch (pick.type) {
+    case PickType.followeds:
+      return (input: MultiStepInput) =>
+        pickUsers(input, step + 1, apiUserFolloweds, false, 0, uid);
+    case PickType.follows:
+      return (input: MultiStepInput) =>
+        pickUsers(input, step + 1, apiUserFollows, true, 0, uid);
+    case PickType.playlist:
+      return (input: MultiStepInput) =>
+        pickPlaylist(input, step + 1, pick.item as PlaylistItem);
   }
   return input.pop() as InputStep;
 }
