@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/naming-convention
+declare const __non_webpack_require__: (_: string) => unknown;
+
 declare module "array-unsort" {
   export function unsortInplace<T>(items: T[]): T[];
 }
