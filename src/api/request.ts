@@ -122,7 +122,7 @@ export const eapiRequest = async <T = Record<string, any>>(
   };
   const headers = generateHeader(url);
   const header = {
-    appver: "6.1.1",
+    appver: "8.0.0",
     versioncode: "140",
     buildver: Date.now().toString().substr(0, 10),
     resolution: "1920x1080",

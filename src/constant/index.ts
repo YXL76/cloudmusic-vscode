@@ -10,7 +10,9 @@ export const PLATFORM = platform();
 export const PLAYER_AVAILABLE =
   PLATFORM === "win32" || PLATFORM === "linux" || PLATFORM === "darwin";
 
-export const NATIVE: NativeModule = __non_webpack_require__(
+// eslint-disable-next-line @typescript-eslint/naming-convention
+declare function __non_webpack_require__(_: string): unknown;
+export const NATIVE = __non_webpack_require__(
   join("..", "build", `${PLATFORM}.node`)
 ) as NativeModule;
 

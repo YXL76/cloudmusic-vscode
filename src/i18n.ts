@@ -1,5 +1,8 @@
 import { join } from "path";
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
+declare function __non_webpack_require__(_: string): unknown;
+
 interface VSCodeNlsConfig {
   locale: string;
   availableLanguages: {
