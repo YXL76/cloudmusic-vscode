@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [6.1.0] - 2020-12-25
+
+### Added
+
+- Update `appver` ([Binaryify/NeteaseCloudMusicApi#1060](https://github.com/Binaryify/NeteaseCloudMusicApi/issues/1060))
+- Set `X-Real-IP` in request headers for foreign users ([#210](https://github.com/YXL76/cloudmusic-vscode/issues/210))
+
 ## [6.0.5] - 2020-12-18
 
 ### Fixed
