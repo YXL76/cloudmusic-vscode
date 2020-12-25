@@ -30,7 +30,6 @@ export const userAgentList = {
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0",
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.30 Safari/537.36",
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/13.10586",
-    // Linux 就算了
   ],
 };
 
@@ -41,11 +40,17 @@ export const base = { cookie: {} as Cookie };
 const csrfTokenReg = RegExp(/_csrf=([^(;|$)]+)/);
 
 const generateHeader = (url: string) => {
-  const headers = {
+  return {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     "Content-Type": "application/x-www-form-urlencoded",
     // eslint-disable-next-line @typescript-eslint/naming-convention
     "User-Agent": allUserAgent[Math.floor(Math.random() * allUserAgent.length)],
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    "X-Real-IP": "118.88.88.88",
+    ...(url.startsWith("https://music.163.com/")
+      ? // eslint-disable-next-line @typescript-eslint/naming-convention
+        { Referer: "https://music.163.com" }
+      : {}),
   } as {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     Cookie: string;
@@ -55,11 +60,9 @@ const generateHeader = (url: string) => {
     "Content-Type": string;
     // eslint-disable-next-line @typescript-eslint/naming-convention
     "User-Agent": string;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    "X-Real-IP": string;
   };
-  if (url.startsWith("https://music.163.com/")) {
-    headers["Referer"] = "https://music.163.com";
-  }
-  return headers;
 };
 
 const responseHandler = async <T>(
