@@ -24,10 +24,11 @@ export async function activate(context: ExtensionContext) {
       initPlaylist,
       initCache,
       initStatusBar,
-      initAccount,
       initCommand,
     ].map((step) => step(context))
   );
+
+  await initAccount(context);
 
   if (!LoggedIn.get()) {
     void window
