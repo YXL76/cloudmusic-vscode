@@ -5,9 +5,8 @@ import { apiFmTrash } from "../api";
 import { commands } from "vscode";
 import { i18n } from "../i18n";
 
-export async function initStatusBar(context: ExtensionContext): Promise<void> {
-  void (await ButtonManager.init(context));
-  ButtonManager.show();
+export function initStatusBar(context: ExtensionContext): void {
+  ButtonManager.init(context);
 
   commands.registerCommand("cloudmusic.lyric", async () => {
     const totalSteps = 2;

@@ -65,7 +65,7 @@ export class ButtonManager {
 
   private static context: ExtensionContext;
 
-  static async init(context: ExtensionContext): Promise<void> {
+  static init(context: ExtensionContext): void {
     this.context = context;
     for (let i = 0; i < this.buttons.length; ++i) {
       this.buttons[i].text = this.buttonText[i];
@@ -73,7 +73,7 @@ export class ButtonManager {
       this.buttons[i].command = this.buttonCommand[i];
     }
     this.buttons[0].show();
-    this.buttonShow = (await this.context.globalState.get(BUTTON_KEY)) || [
+    this.buttonShow = this.context.globalState.get(BUTTON_KEY) || [
       true,
       true,
       true,
@@ -83,6 +83,7 @@ export class ButtonManager {
       true,
       false,
     ];
+    this.show();
   }
 
   static toggle(): void {

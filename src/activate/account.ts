@@ -47,14 +47,7 @@ import { createHash } from "crypto";
 import { i18n } from "../i18n";
 import { inputKeyword } from ".";
 
-export async function initAccount(context: ExtensionContext): Promise<void> {
-  const info: LoginParameters | undefined = context.globalState.get(
-    ACCOUNT_KEY
-  );
-  if (info && (await AccountManager.login(info)) && AUTO_CHECK) {
-    await AccountManager.dailySignin().catch();
-  }
-
+export function initAccount(context: ExtensionContext): void {
   const webview = WebView.initInstance(context.extensionUri);
 
   context.subscriptions.push(
@@ -720,4 +713,33 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
       }
     })
   );
+
+  const showHint = () => {
+    void window
+      .showInformationMessage(i18n.sentence.hint.trySignIn, i18n.word.signIn)
+      .then((result) => {
+        if (result === i18n.word.signIn) {
+          void commands.executeCommand("cloudmusic.signin");
+        }
+      });
+  };
+
+  const info: LoginParameters | undefined = context.globalState.get(
+    ACCOUNT_KEY
+  );
+  if (!info) {
+    showHint();
+    return;
+  }
+  void AccountManager.login(info)
+    .then((res) => {
+      if (res) {
+        if (AUTO_CHECK) {
+          void AccountManager.dailySignin().catch();
+        }
+      } else {
+        showHint();
+      }
+    })
+    .catch();
 }
