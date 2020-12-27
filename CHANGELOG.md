@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [6.1.1] - 2020-12-27
+
+### Fixed
+
+- Activation sequence
+
 ## [6.1.0] - 2020-12-25
 
 ### Added
