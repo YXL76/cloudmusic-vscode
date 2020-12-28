@@ -6,7 +6,7 @@ import {
   apiUserPlaylist,
   base,
   cookieToJson,
-  userAgentList,
+  generateHeader,
   weapi,
 } from "../api";
 import type { Cookie } from "../api";
@@ -48,17 +48,8 @@ export class AccountManager {
       const url = usePhone
         ? "https://music.163.com/weapi/login/cellphone"
         : "https://music.163.com/weapi/login";
-      const headers = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Referer: "https://music.163.com",
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Cookie: `os=pc`,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        "Content-Type": "application/x-www-form-urlencoded",
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        "User-Agent":
-          userAgentList.pc[Math.floor(Math.random() * userAgentList.pc.length)],
-      };
+      const headers = generateHeader(url);
+      headers.Cookie = "os=pc";
 
       const data = weapi({
         // eslint-disable-next-line @typescript-eslint/naming-convention
