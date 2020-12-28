@@ -1491,7 +1491,7 @@ __metadata:
     react-dom: 17.0.1
     tailwindcss: 2.0.2
     typescript: 4.1.3
-    webpack: 5.11.0
+    webpack: 5.11.1
     webpack-cli: 4.3.0
   languageName: unknown
   linkType: soft
@@ -6686,9 +6686,9 @@ typescript@4.1.3:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.11.0":
-  version: 5.11.0
-  resolution: "webpack@npm:5.11.0"
+"webpack@npm:5.11.1":
+  version: 5.11.1
+  resolution: "webpack@npm:5.11.1"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.45
@@ -6719,7 +6719,7 @@ typescript@4.1.3:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 573cdf80bd1cc2ef27a6abbf47b132898a6cd8b1514e7884a4788c521f307dd8c287888a36a40f8402cba5555a553d5a681c7932fed23b654bd922152117691a
+  checksum: c3130daeaa37c5acde0e8d75462d41914349522f8c85d20e7da669aa7997eb3ba3b051d3f25fc2c7ff76e87c8dab25f09a791fbad66c696e09cb2dd0fbcda0ad
   languageName: node
   linkType: hard
 
