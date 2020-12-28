@@ -6,6 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [6.1.1] - 2020-12-28
+
+### Changed
+
+- API: choose `user-agent` only once
+
+### Fixed
+
+- Command: `Search` command not found ([#210](https://github.com/YXL76/cloudmusic-vscode/issues/210))
+
 ## [6.1.1] - 2020-12-27
 
 ### Fixed
