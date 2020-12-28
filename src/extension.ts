@@ -7,6 +7,7 @@ import {
   initPlayer,
   initPlaylist,
   initQueue,
+  initSearch,
   initStatusBar,
 } from "./activate";
 import type { ExtensionContext } from "vscode";
@@ -21,6 +22,7 @@ export async function activate(context: ExtensionContext) {
   initCommand(context);
   initStatusBar(context);
   initAccount(context);
+  initSearch(context);
   await initCache();
 }
 
