@@ -480,7 +480,7 @@
     "tailwindcss": "2.0.2",
     "typescript": "4.1.3",
     "webpack": "5.11.1",
-    "webpack-cli": "4.3.0"
+    "webpack-cli": "4.3.1"
   },
   "dependencies": {
     "@ant-design/icons": "4.3.0",
