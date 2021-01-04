@@ -17,25 +17,25 @@ class NoPlayer implements Player {
   time = Date.now();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  init(_context: ExtensionContext): void {
+  init(_context: ExtensionContext) {
     //
   }
 
-  stop(): void {
-    //
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  load(_a: string, _b: number, _c: SongsItem): void {
-    //
-  }
-
-  togglePlay(): void {
+  stop() {
     //
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async volume(_level: number): Promise<void> {
+  load(_a: string, _b: number, _c: SongsItem) {
+    //
+  }
+
+  togglePlay() {
+    //
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async volume(_level: number) {
     //
   }
 }
@@ -128,17 +128,17 @@ class AudioPlayer implements Player {
     }, 480000);
   }
 
-  init(context: ExtensionContext): void {
+  init(context: ExtensionContext) {
     this.context = context;
     void this.volume(this.context.globalState.get(VOLUME_KEY) ?? 85);
   }
 
-  stop(): void {
+  stop() {
     Playing.set(false);
     NATIVE.playerStop(this.player);
   }
 
-  load(url: string, pid: number, item: SongsItem): void {
+  load(url: string, pid: number, item: SongsItem) {
     if (NATIVE.playerLoad(this.player, url)) {
       NATIVE.playerSetVolume(
         this.player,
@@ -170,7 +170,7 @@ class AudioPlayer implements Player {
     Loading.set(false, item);
   }
 
-  togglePlay(): void {
+  togglePlay() {
     if (this.item.id) {
       if (Playing.get()) {
         NATIVE.playerPause(this.player);
@@ -183,7 +183,7 @@ class AudioPlayer implements Player {
     }
   }
 
-  async volume(level: number): Promise<void> {
+  async volume(level: number) {
     await this.context.globalState.update(VOLUME_KEY, level);
     NATIVE.playerSetVolume(this.player, level);
     ButtonManager.buttonVolume(level);

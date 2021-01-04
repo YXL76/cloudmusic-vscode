@@ -25,21 +25,21 @@ export class WebView {
     private readonly iconUri: Uri
   ) {}
 
-  static initInstance(extensionUri: Uri): WebView {
-    return (this.instance = new WebView(
+  static initInstance(extensionUri: Uri) {
+    this.instance = new WebView(
       Uri.joinPath(extensionUri, "dist", "webview.js"),
       Uri.joinPath(extensionUri, "dist", "webview.css"),
       Uri.joinPath(extensionUri, "dist", "antd.min.css"),
       Uri.joinPath(extensionUri, "dist", "antd.dark.min.css"),
       Uri.joinPath(extensionUri, "media", "icon.ico")
-    ));
+    );
   }
 
-  static getInstance(): WebView {
+  static getInstance() {
     return this.instance;
   }
 
-  userMusicRankingList(): WebviewPanel {
+  userMusicRankingList() {
     const panel = this.getWebviewPanel(
       "userMusicRankingList",
       i18n.word.userRankingList,
@@ -81,7 +81,7 @@ export class WebView {
     return panel;
   }
 
-  commentList(type: CommentType, gid: number, title: string): WebviewPanel {
+  commentList(type: CommentType, gid: number, title: string) {
     const pageSize = 30;
 
     const panel = this.getWebviewPanel(
@@ -182,7 +182,7 @@ export class WebView {
       i18n?: Record<string, string>;
       message?: unknown;
     } = {}
-  ): WebviewPanel {
+  ) {
     const panel = window.createWebviewPanel(
       "cloudmusic",
       title,
@@ -235,7 +235,7 @@ export class WebView {
   }
 }
 
-function getNonce(): string {
+function getNonce() {
   let text = "";
   const possible =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

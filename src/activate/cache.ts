@@ -2,7 +2,7 @@ import { CACHE_DIR, MUSIC_QUALITY } from "../constant";
 import { LocalCache, MusicCache } from "../util";
 import { Uri, workspace } from "vscode";
 
-export async function initCache(): Promise<void> {
+export async function initCache() {
   try {
     const musicCache = Uri.joinPath(CACHE_DIR, "music");
     const items = await workspace.fs.readDirectory(musicCache);

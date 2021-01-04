@@ -5,11 +5,11 @@ import { commands } from "vscode";
 export class LoggedIn {
   private static state = false;
 
-  static get(): boolean {
+  static get() {
     return this.state;
   }
 
-  static set(newValue: boolean): void {
+  static set(newValue: boolean) {
     if (newValue !== this.state) {
       this.state = newValue;
       if (newValue) {

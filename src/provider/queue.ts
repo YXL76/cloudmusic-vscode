@@ -15,11 +15,11 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
   readonly onDidChangeTreeData: Event<QueueItemTreeItem | void> = this
     ._onDidChangeTreeData.event;
 
-  static getInstance(): QueueProvider {
+  static getInstance() {
     return this.instance || (this.instance = new QueueProvider());
   }
 
-  static refresh(action: () => void): void {
+  static refresh(action: () => void) {
     if (!this.lock) {
       this.lock = true;
       action();
@@ -28,19 +28,19 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     }
   }
 
-  static clear(): void {
+  static clear() {
     this.songs = [];
   }
 
-  static random(): void {
+  static random() {
     this.songs = [this.songs[0]].concat(unsortInplace(this.songs.slice(1)));
   }
 
-  static top(id: number): void {
+  static top(id: number) {
     this.shift(this.songs.findIndex((value) => value.valueOf() === id));
   }
 
-  static shift(index: number): void {
+  static shift(index: number) {
     if (index) {
       while (index < 0) {
         index += this.songs.length;
@@ -49,7 +49,7 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     }
   }
 
-  static add(elements: QueueItemTreeItem[]): void {
+  static add(elements: QueueItemTreeItem[]) {
     const raw = this.songs.concat(elements);
     this.songs = [];
     const lookup: Record<number, boolean> = {};
@@ -62,18 +62,18 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
     }
   }
 
-  static delete(id: number): void {
+  static delete(id: number) {
     const index = this.songs.findIndex((value) => value.valueOf() === id);
     if (index >= 0) {
       this.songs.splice(index, 1);
     }
   }
 
-  getTreeItem(element: QueueItemTreeItem): TreeItem {
+  getTreeItem(element: QueueItemTreeItem) {
     return element;
   }
 
-  getChildren(): QueueItemTreeItem[] {
+  getChildren() {
     return QueueProvider.songs;
   }
 }
@@ -100,7 +100,7 @@ export class QueueItemTreeItem extends TreeItem {
     super(label, collapsibleState);
   }
 
-  valueOf(): number {
+  valueOf() {
     return this.item.id;
   }
 }

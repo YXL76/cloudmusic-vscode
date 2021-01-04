@@ -1,13 +1,10 @@
-import type { ExtensionContext, QuickPickItem } from "vscode";
 import { LyricCache, MultiStepInput, lyric, player } from "../util";
-import { ButtonManager } from "../manager";
+import type { QuickPickItem } from "vscode";
 import { apiFmTrash } from "../api";
 import { commands } from "vscode";
 import { i18n } from "../i18n";
 
-export function initStatusBar(context: ExtensionContext): void {
-  ButtonManager.init(context);
-
+export function initStatusBar() {
   commands.registerCommand("cloudmusic.lyric", async () => {
     const totalSteps = 2;
     const title = i18n.word.lyric;

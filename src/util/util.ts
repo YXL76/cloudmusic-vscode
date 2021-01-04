@@ -71,10 +71,7 @@ export async function downloadMusic(
   return undefined;
 }
 
-export function songsItem2TreeItem(
-  id: number,
-  songs: Readonly<SongsItem[]>
-): QueueItemTreeItem[] {
+export function songsItem2TreeItem(id: number, songs: Readonly<SongsItem[]>) {
   return songs.map(
     (song) =>
       new QueueItemTreeItem(
@@ -86,7 +83,7 @@ export function songsItem2TreeItem(
   );
 }
 
-export function stop(): void {
+export function stop() {
   player.item = { id: 0 } as SongsItem;
   player.stop();
   ButtonManager.buttonSong();
@@ -155,7 +152,7 @@ export async function confirmation(
   return input.pop();
 }
 
-export function splitLine(content: string): string {
+export function splitLine(content: string) {
   return `>>>>>>>>        ${content.toUpperCase()}        <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<`;
 }
 

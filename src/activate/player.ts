@@ -4,7 +4,7 @@ import type { ExtensionContext } from "vscode";
 import { i18n } from "../i18n";
 import { player } from "../util";
 
-export function initPlayer(context: ExtensionContext): void {
+export function initPlayer(context: ExtensionContext) {
   if (!PLAYER_AVAILABLE) {
     void window.showErrorMessage(i18n.sentence.error.systemSupport);
   } else {

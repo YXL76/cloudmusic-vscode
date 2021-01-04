@@ -2,9 +2,7 @@ import type { AlbumsItem, SongsItem } from "../constant";
 import { solveAlbumsItem, solveSongItem, weapiRequest } from ".";
 import { apiCache } from "../util";
 
-export async function apiAlbum(
-  id: number
-): Promise<{ info: AlbumsItem; songs: SongsItem[] }> {
+export async function apiAlbum(id: number) {
   const key = `album${id}`;
   const value = apiCache.get(key);
   if (value) {
@@ -28,7 +26,7 @@ export async function apiAlbum(
   return { info: {} as AlbumsItem, songs: [] };
 }
 
-export async function apiAlbumNewest(): Promise<AlbumsItem[]> {
+export async function apiAlbumNewest() {
   const key = "album_newest";
   const value = apiCache.get(key);
   if (value) {
@@ -48,10 +46,7 @@ export async function apiAlbumNewest(): Promise<AlbumsItem[]> {
   return [];
 }
 
-export async function apiAlbumSub(
-  id: number,
-  t: "sub" | "unsub"
-): Promise<boolean> {
+export async function apiAlbumSub(id: number, t: "sub" | "unsub") {
   try {
     await weapiRequest(`https://music.163.com/api/album/${t}`, {
       id,
@@ -63,7 +58,7 @@ export async function apiAlbumSub(
   return false;
 }
 
-export async function apiAlbumSublist(): Promise<AlbumsItem[]> {
+export async function apiAlbumSublist() {
   const limit = 100;
   let offset = 0;
   let ret: AlbumsItem[] = [];
@@ -85,7 +80,7 @@ export async function apiAlbumSublist(): Promise<AlbumsItem[]> {
   return ret;
 }
 
-export async function apiTopAlbum(): Promise<AlbumsItem[]> {
+export async function apiTopAlbum() {
   const key = "top_album";
   const value = apiCache.get(key);
   if (value) {

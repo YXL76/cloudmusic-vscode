@@ -261,7 +261,7 @@ async function pickSearchPlaylist(
   return (input: MultiStepInput) => pickPlaylist(input, 4 + addStep, pick.item);
 }
 
-export function initSearch(context: ExtensionContext): void {
+export function initSearch(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.search", () => {
       void MultiStepInput.run((input) => inputKeyword(input, 0));

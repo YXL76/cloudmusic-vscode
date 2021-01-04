@@ -16,7 +16,7 @@ import {
 import { AccountManager } from "../manager";
 import { apiCache } from "../util";
 
-export async function apiDailySignin(): Promise<boolean> {
+export async function apiDailySignin() {
   const tasks: Promise<void>[] = [];
   tasks.push(
     new Promise((resolve, reject) => {
@@ -71,7 +71,7 @@ export async function apiLike(trackId: number, like: boolean) {
   return false;
 }
 
-export async function apiLikelist(): Promise<number[]> {
+export async function apiLikelist() {
   try {
     const { ids } = await weapiRequest<{ ids: number[] }>(
       "https://music.163.com/weapi/song/like/get",
@@ -132,7 +132,7 @@ export async function apiLoginStatus() {
   return undefined;
 }
 
-export async function apiLogout(): Promise<boolean> {
+export async function apiLogout() {
   try {
     await weapiRequest("https://music.163.com/weapi/logout", {});
     return true;
@@ -142,7 +142,7 @@ export async function apiLogout(): Promise<boolean> {
   return false;
 }
 
-export async function apiPersonalFm(): Promise<SongsItem[]> {
+export async function apiPersonalFm() {
   try {
     const { data } = await weapiRequest<{ data: AnotherSongItem[] }>(
       "https://music.163.com/weapi/v1/radio/get",
@@ -155,7 +155,7 @@ export async function apiPersonalFm(): Promise<SongsItem[]> {
   return [];
 }
 
-export async function apiPersonalized(): Promise<PlaylistItem[]> {
+export async function apiPersonalized() {
   const key = "personalized";
   const value = apiCache.get(key);
   if (value) {
@@ -175,7 +175,7 @@ export async function apiPersonalized(): Promise<PlaylistItem[]> {
   return [];
 }
 
-export async function apiPersonalizedNewsong(): Promise<SongsItem[]> {
+export async function apiPersonalizedNewsong() {
   const key = "personalized_newsong";
   const value = apiCache.get(key);
   if (value) {
@@ -198,7 +198,7 @@ export async function apiPersonalizedNewsong(): Promise<SongsItem[]> {
   return [];
 }
 
-export async function apiRecommendResource(): Promise<PlaylistItem[]> {
+export async function apiRecommendResource() {
   const key = "recommend_resource";
   const value = apiCache.get(key);
   if (value) {
@@ -218,7 +218,7 @@ export async function apiRecommendResource(): Promise<PlaylistItem[]> {
   return [];
 }
 
-export async function apiRecommendSongs(): Promise<SongsItem[]> {
+export async function apiRecommendSongs() {
   const key = "recommend_songs";
   const value = apiCache.get(key);
   if (value) {
@@ -238,11 +238,7 @@ export async function apiRecommendSongs(): Promise<SongsItem[]> {
   return [];
 }
 
-export async function apiScrobble(
-  id: number,
-  sourceId: number,
-  time: number
-): Promise<void> {
+export async function apiScrobble(id: number, sourceId: number, time: number) {
   try {
     await weapiRequest("https://music.163.com/weapi/feedback/weblog", {
       logs: JSON.stringify([
@@ -265,9 +261,7 @@ export async function apiScrobble(
   }
 }
 
-export async function apiUserDetail(
-  uid: number
-): Promise<UserDetail | undefined> {
+export async function apiUserDetail(uid: number) {
   const key = `user_detail${uid}`;
   const value = apiCache.get(key);
   if (value) {
@@ -286,10 +280,7 @@ export async function apiUserDetail(
   return undefined;
 }
 
-export async function apiUserFolloweds(
-  userId: number,
-  limit: number
-): Promise<UserDetail[]> {
+export async function apiUserFolloweds(userId: number, limit: number) {
   const key = `user_followeds${userId}-${limit}`;
   const value = apiCache.get(key);
   if (value) {
@@ -313,7 +304,7 @@ export async function apiUserFollows(
   uid: number,
   limit: number,
   offset: number
-): Promise<UserDetail[]> {
+) {
   const key = `user_follows${uid}-${limit}-${offset}`;
   const value = apiCache.get(key);
   if (value) {
@@ -341,7 +332,7 @@ type UserLevel = {
   level: number;
 };
 
-export async function apiUserLevel(): Promise<UserLevel> {
+export async function apiUserLevel() {
   const key = "user_level";
   const value = apiCache.get(key);
   if (value) {
@@ -363,7 +354,7 @@ export async function apiUserLevel(): Promise<UserLevel> {
   return {} as UserLevel;
 }
 
-export async function apiUserPlaylist(uid: number): Promise<PlaylistItem[]> {
+export async function apiUserPlaylist(uid: number) {
   const key = `user_playlist${uid}`;
   const value = apiCache.get(key);
   if (value) {
@@ -389,9 +380,7 @@ export async function apiUserPlaylist(uid: number): Promise<PlaylistItem[]> {
   return [];
 }
 
-export async function apiUserRecord(
-  refresh?: true
-): Promise<(SongsItem & { playCount: number })[][]> {
+export async function apiUserRecord(refresh?: true) {
   const key = "user_record";
   let value: (SongsItem & { playCount: number })[][] | undefined;
   if (!refresh && (value = apiCache.get(key))) {

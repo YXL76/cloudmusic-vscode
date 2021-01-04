@@ -19,7 +19,7 @@ type PlaylistCatlistItem = { name: string; category?: number; hot: boolean };
 
 type PlaylistCatlist = Record<string, PlaylistCatlistItem[]>;
 
-export async function apiPlaylistCatlist(): Promise<PlaylistCatlist> {
+export async function apiPlaylistCatlist() {
   const key = "playlist_catlist";
   const value = apiCache.get(key);
   if (value) {
@@ -44,10 +44,7 @@ export async function apiPlaylistCatlist(): Promise<PlaylistCatlist> {
   return {};
 }
 
-export async function apiPlaylistCreate(
-  name: string,
-  privacy: 0 | 10
-): Promise<boolean> {
+export async function apiPlaylistCreate(name: string, privacy: 0 | 10) {
   try {
     await weapiRequest(
       "https://music.163.com/api/playlist/create",
@@ -65,7 +62,7 @@ export async function apiPlaylistCreate(
   return false;
 }
 
-export async function apiPlaylistDelete(id: number): Promise<boolean> {
+export async function apiPlaylistDelete(id: number) {
   try {
     await weapiRequest(
       `https://music.163.com/weapi/playlist/remove`,
@@ -81,7 +78,7 @@ export async function apiPlaylistDelete(id: number): Promise<boolean> {
   return false;
 }
 
-export async function apiPlaylistDetail(id: number): Promise<SongsItem[]> {
+export async function apiPlaylistDetail(id: number) {
   const key = `playlist_detail${id}`;
   const value = apiCache.get(key);
   if (value) {
@@ -118,7 +115,7 @@ export async function apiPlaylistDetail(id: number): Promise<SongsItem[]> {
   return [];
 }
 
-export async function apiHighqualityTags(): Promise<PlaylistCatlistItem[]> {
+export async function apiHighqualityTags() {
   const key = "playlist_highquality_tags";
   const value = apiCache.get(key);
   if (value) {
@@ -143,7 +140,7 @@ export async function apiHighqualityTags(): Promise<PlaylistCatlistItem[]> {
 export async function apiPlaylistSubscribe(
   id: number,
   t: "subscribe" | "unsubscribe"
-): Promise<boolean> {
+) {
   try {
     await weapiRequest(`https://music.163.com/weapi/playlist/${t}`, {
       id,
@@ -159,7 +156,7 @@ export async function apiPlaylistSubscribers(
   id: number,
   limit: number,
   offset: number
-): Promise<UserDetail[]> {
+) {
   const key = `playlist_subscribers${id}-${limit}-${offset}`;
   const value = apiCache.get(key);
   if (value) {
@@ -186,7 +183,7 @@ export async function apiPlaylistTracks(
   op: "add" | "del",
   pid: number,
   tracks: number[]
-): Promise<boolean> {
+) {
   try {
     await weapiRequest(
       "https://music.163.com/api/playlist/manipulate/tracks",
@@ -209,7 +206,7 @@ export async function apiPlaylistUpdate(
   id: number,
   name: string,
   desc: string
-): Promise<boolean> {
+) {
   try {
     await weapiRequest(
       "https://music.163.com/weapi/batch",
@@ -229,7 +226,7 @@ export async function apiPlaylistUpdate(
 export async function apiPlaymodeIntelligenceList(
   songId: number,
   playlistId: number
-): Promise<SongsItem[]> {
+) {
   let ret: SongsItem[] = [];
   try {
     const { data } = await weapiRequest<{ data: { songInfo: SongsItem }[] }>(
@@ -253,7 +250,7 @@ export async function apiSimiPlaylist(
   songid: number,
   limit: number,
   offset: number
-): Promise<PlaylistItem[]> {
+) {
   const key = `simi_playlist${songid}-${limit}-${offset}`;
   const value = apiCache.get(key);
   if (value) {
@@ -277,7 +274,7 @@ export async function apiTopPlaylist(
   cat: string,
   limit: number,
   offset: number
-): Promise<PlaylistItem[]> {
+) {
   const key = `top_playlist${cat}-${limit}-${offset}`;
   const value = apiCache.get(key);
   if (value) {
@@ -303,10 +300,7 @@ export async function apiTopPlaylist(
   return [];
 }
 
-export async function apiTopPlaylistHighquality(
-  cat: string,
-  limit: number
-): Promise<PlaylistItem[]> {
+export async function apiTopPlaylistHighquality(cat: string, limit: number) {
   const key = `top_playlist_highquality${cat}-${limit}`;
   const value = apiCache.get(key);
   if (value) {
@@ -331,7 +325,7 @@ export async function apiTopPlaylistHighquality(
   return [];
 }
 
-export async function apiToplist(): Promise<PlaylistItem[]> {
+export async function apiToplist() {
   const key = "toplist";
   const value = apiCache.get(key);
   if (value) {

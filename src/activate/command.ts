@@ -8,7 +8,7 @@ import { apiLike } from "../api";
 import { commands } from "vscode";
 import { i18n } from "../i18n";
 
-export function initCommand(context: ExtensionContext): void {
+export function initCommand(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.previous", () => {
       const len = QueueProvider.songs.length - 1;

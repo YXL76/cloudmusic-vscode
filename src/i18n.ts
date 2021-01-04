@@ -1,23 +1,8 @@
+import { env } from "vscode";
 import { join } from "path";
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 declare function __non_webpack_require__(_: string): unknown;
-
-interface VSCodeNlsConfig {
-  locale: string;
-  availableLanguages: {
-    [pack: string]: string;
-  };
-  _languagePackSupport?: boolean;
-  _languagePackId?: string;
-  _translationsConfigFile?: string;
-  _cacheRoot?: string;
-  _corruptedFile: string;
-}
-
-function isString(value: any): value is string {
-  return Object.prototype.toString.call(value) === "[object String]";
-}
 
 type AvailableLanguages = "en" | "zh-cn" | "zh-tw";
 
@@ -26,14 +11,9 @@ const availableLanguages: AvailableLanguages[] = ["zh-cn", "zh-tw"];
 export const i18n = (() => {
   let lang: AvailableLanguages = "en";
 
-  if (isString(process.env.VSCODE_NLS_CONFIG)) {
-    const { locale } = JSON.parse(
-      process.env.VSCODE_NLS_CONFIG
-    ) as VSCodeNlsConfig;
-    const idx = availableLanguages.findIndex((value) => locale === value);
-    if (idx !== -1) {
-      lang = availableLanguages[idx];
-    }
+  const idx = availableLanguages.findIndex((value) => env.language === value);
+  if (idx !== -1) {
+    lang = availableLanguages[idx];
   }
 
   return __non_webpack_require__(

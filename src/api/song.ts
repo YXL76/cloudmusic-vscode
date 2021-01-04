@@ -15,7 +15,7 @@ import {
 import { MUSIC_QUALITY } from "../constant";
 import type { TopSongType } from ".";
 
-export async function apiLyric(id: number): Promise<LyricData> {
+export async function apiLyric(id: number) {
   const lyricCache = await LyricCache.get(`${id}`);
   if (lyricCache) {
     return lyricCache;
@@ -63,7 +63,7 @@ export async function apiSimiSong(
   songid: number,
   limit: number,
   offset: number
-): Promise<SongsItem[]> {
+) {
   const key = `simi_song${songid}-${limit}-${offset}`;
   const value = apiCache.get(key);
   if (value) {
@@ -83,7 +83,7 @@ export async function apiSimiSong(
   return [];
 }
 
-export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
+export async function apiSongDetail(trackIds: number[]) {
   const key = `song_detail${trackIds[0]}`;
   if (trackIds.length === 1) {
     const value = apiCache.get(key);
@@ -129,7 +129,7 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
   return [];
 }
 
-export async function apiSongUrl(trackId: number): Promise<SongDetail> {
+export async function apiSongUrl(trackId: number) {
   try {
     const { data } = await eapiRequest<{ data: SongDetail[] }>(
       "https://interface3.music.163.com/eapi/song/enhance/player/url",
@@ -148,7 +148,7 @@ export async function apiSongUrl(trackId: number): Promise<SongDetail> {
   return {} as SongDetail;
 }
 
-export async function apiTopSong(areaId: TopSongType): Promise<SongsItem[]> {
+export async function apiTopSong(areaId: TopSongType) {
   const key = `top_song${areaId}`;
   const value = apiCache.get(key);
   if (value) {

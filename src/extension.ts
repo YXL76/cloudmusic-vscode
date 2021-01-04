@@ -1,4 +1,5 @@
-import { LyricCache, MusicCache, player } from "./util";
+import { AccountManager, ButtonManager } from "./manager";
+import { LyricCache, MusicCache, WebView, player } from "./util";
 import { SETTING_DIR, TMP_DIR } from "./constant";
 import {
   initAccount,
@@ -16,11 +17,14 @@ import { workspace } from "vscode";
 export async function activate(context: ExtensionContext) {
   await workspace.fs.createDirectory(SETTING_DIR);
   await workspace.fs.createDirectory(TMP_DIR);
+  AccountManager.context = context;
+  WebView.initInstance(context.extensionUri);
+  ButtonManager.init(context);
   initPlayer(context);
   initQueue();
   initPlaylist();
   initCommand(context);
-  initStatusBar(context);
+  initStatusBar();
   initAccount(context);
   initSearch(context);
   await initCache();

@@ -6,7 +6,7 @@ import type { QueueItemTreeItem } from "../provider";
 import { QueueProvider } from "../provider";
 import { i18n } from "../i18n";
 
-export function initQueue(): void {
+export function initQueue() {
   const queueProvider = QueueProvider.getInstance();
   window.registerTreeDataProvider("queue", queueProvider);
 

@@ -49,10 +49,7 @@ import { createHash } from "crypto";
 import { i18n } from "../i18n";
 import { inputKeyword } from ".";
 
-export function initAccount(context: ExtensionContext): void {
-  AccountManager.context = context;
-  const webview = WebView.initInstance(context.extensionUri);
-
+export function initAccount(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.account", async () => {
       if (!LoggedIn.get()) {
@@ -156,7 +153,7 @@ export function initAccount(context: ExtensionContext): void {
             void commands.executeCommand("cloudmusic.personalFM");
             break;
           case Type.userMusicRankingList:
-            webview.userMusicRankingList();
+            WebView.getInstance().userMusicRankingList();
             break;
           case Type.signOut:
             void commands.executeCommand("cloudmusic.signout");
