@@ -6,6 +6,18 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [6.2.0] - 2021-01-04
+
+### Added
+
+- API: QR Code login
+
+### Changed
+
+- State: store cookie
+- API: use `api` instead of `linuxapi` (significant speed increase)
+- Automatic check-in is only executed once a day
+
 ## [6.1.1] - 2020-12-28
 
 ### Changed

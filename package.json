@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "cloudmusic",
   "description": "Netease Music for VS Code",
-  "version": "6.1.2",
+  "version": "6.2.0",
   "publisher": "YXL",
   "engines": {
     "vscode": "^1.52.1"
@@ -495,7 +495,7 @@
     "md5-file": "5.0.0",
     "node-cache": "5.1.2",
     "qrcode": "1.4.4",
-    "react": "17.0.1",
-    "react-dom": "17.0.1"
+    "react": "16.14.0",
+    "react-dom": "16.14.0"
   }
 }
