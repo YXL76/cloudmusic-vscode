@@ -33,7 +33,7 @@ export class MusicCache {
     noDisposeOnSet: true,
   });
 
-  static async init(): Promise<void> {
+  static async init() {
     try {
       const res = await cacache.ls(MUSIC_CACHE_DIR.fsPath);
       for (const item in res) {
@@ -43,26 +43,29 @@ export class MusicCache {
     } catch {}
   }
 
-  static verify(): void {
+  static verify() {
     void cacache.verify(MUSIC_CACHE_DIR.fsPath);
   }
 
-  static async get(key: string): Promise<string | undefined> {
+  static async get(key: string) {
     try {
       const { path } = await cacache.get.info(MUSIC_CACHE_DIR.fsPath, key);
       this.lruCache.get(key);
       return path;
     } catch {}
-    return undefined;
+    return;
   }
 
-  static async put(key: string, path: Uri, md5: string): Promise<void> {
+  static async put(key: string, path: Uri, md5: string) {
     try {
       await cacache.put(
         MUSIC_CACHE_DIR.fsPath,
         key,
         await workspace.fs.readFile(path),
-        { integrity: md5, algorithms: ["md5"] }
+        {
+          integrity: `md5-${Buffer.from(md5, "hex").toString("base64")}`,
+          algorithms: ["md5"],
+        }
       );
       const { integrity, size } = await cacache.get.info(
         MUSIC_CACHE_DIR.fsPath,
@@ -74,15 +77,15 @@ export class MusicCache {
 }
 
 export class LyricCache {
-  static verify(): void {
+  static verify() {
     void cacache.verify(LYRIC_CACHE_DIR.fsPath);
   }
 
-  static clear(): void {
+  static clear() {
     void cacache.rm.all(LYRIC_CACHE_DIR.fsPath);
   }
 
-  static async get(key: string): Promise<LyricData | undefined> {
+  static async get(key: string) {
     try {
       const { path, time, integrity } = await cacache.get.info(
         LYRIC_CACHE_DIR.fsPath,
@@ -98,10 +101,10 @@ export class LyricCache {
         void cacache.rm.content(LYRIC_CACHE_DIR.fsPath, integrity);
       }
     } catch {}
-    return undefined;
+    return;
   }
 
-  static put(key: string, data: LyricData): void {
+  static put(key: string, data: LyricData) {
     void cacache.put(LYRIC_CACHE_DIR.fsPath, key, JSON.stringify(data));
   }
 }
@@ -116,7 +119,7 @@ export class LocalCache {
     maxKeys: -1,
   });
 
-  static async init(): Promise<void> {
+  static async init() {
     if (LOCAL_FILE_DIR) {
       try {
         const items = await workspace.fs.readDirectory(LOCAL_FILE_DIR);
@@ -135,11 +138,11 @@ export class LocalCache {
     }
   }
 
-  static get(key: string): string | undefined {
+  static get(key: string) {
     const path = this.cache.get<string>(key);
     if (path) {
       return path;
     }
-    return undefined;
+    return;
   }
 }

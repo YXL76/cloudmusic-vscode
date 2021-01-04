@@ -45,21 +45,21 @@ export class PlaylistProvider
 
   constructor(private type: Type) {}
 
-  static getUserInstance(): PlaylistProvider {
+  static getUserInstance() {
     return (
       this.userInstance ||
       (this.userInstance = new PlaylistProvider(Type.userInstance))
     );
   }
 
-  static getFavoriteInstance(): PlaylistProvider {
+  static getFavoriteInstance() {
     return (
       this.favoriteInstance ||
       (this.favoriteInstance = new PlaylistProvider(Type.favoriteInstance))
     );
   }
 
-  static refresh({ element, refresh, action }: RefreshPara): void {
+  static refresh({ element, refresh, action }: RefreshPara) {
     if (element) {
       this.action = action;
       const { id } = element.item;
@@ -86,21 +86,17 @@ export class PlaylistProvider
     }
   }
 
-  private static async getPlaylistContent(
-    id: number
-  ): Promise<QueueItemTreeItem[]> {
+  private static async getPlaylistContent(id: number) {
     const songs = await apiPlaylistDetail(id);
     const ret = songsItem2TreeItem(id, songs);
     return ret;
   }
 
-  getTreeItem(element: PlaylistItemTreeItem | QueueItemTreeItem): TreeItem {
+  getTreeItem(element: PlaylistItemTreeItem | QueueItemTreeItem) {
     return element;
   }
 
-  async getChildren(
-    element?: PlaylistItemTreeItem
-  ): Promise<PlaylistItemTreeItem[] | QueueItemTreeItem[]> {
+  async getChildren(element?: PlaylistItemTreeItem) {
     if (element) {
       const { id } = element.item;
       const ret = await PlaylistProvider.getPlaylistContent(id);
@@ -114,7 +110,7 @@ export class PlaylistProvider
     return await this.getPlaylistItem();
   }
 
-  private async getPlaylistItem(): Promise<PlaylistItemTreeItem[]> {
+  private async getPlaylistItem() {
     let playlists: PlaylistItem[];
     if (this.type === Type.userInstance) {
       playlists = await AccountManager.userPlaylist();
@@ -157,7 +153,7 @@ ${i18n.word.subscribedCount}: ${subscribedCount}
     super(label, collapsibleState);
   }
 
-  valueOf(): number {
+  valueOf() {
     return this.item.id;
   }
 }

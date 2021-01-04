@@ -182,6 +182,7 @@ export const CommentList = () => {
                     vscode.postMessage({
                       command: "floor",
                       pid: commentId,
+                      time: -1,
                     });
                     setFloorData({
                       ...floorData,

@@ -7,12 +7,15 @@ import {
   apiCommentLike,
   apiCommentNew,
   apiCommentReply,
+  apiLoginQrCheck,
+  apiLoginQrKey,
   apiUserRecord,
 } from "../api";
+import { AccountManager } from "../manager";
 import type { CommentType } from "../api";
 import type { SongsItem } from "../constant";
-import type { WebviewPanel } from "vscode";
 import { i18n } from "../i18n";
+import { toDataURL } from "qrcode";
 
 export class WebView {
   private static instance: WebView;
@@ -25,21 +28,90 @@ export class WebView {
     private readonly iconUri: Uri
   ) {}
 
-  static initInstance(extensionUri: Uri): WebView {
-    return (this.instance = new WebView(
+  static initInstance(extensionUri: Uri) {
+    this.instance = new WebView(
       Uri.joinPath(extensionUri, "dist", "webview.js"),
       Uri.joinPath(extensionUri, "dist", "webview.css"),
       Uri.joinPath(extensionUri, "dist", "antd.min.css"),
       Uri.joinPath(extensionUri, "dist", "antd.dark.min.css"),
       Uri.joinPath(extensionUri, "media", "icon.ico")
-    ));
+    );
   }
 
-  static getInstance(): WebView {
+  static getInstance() {
     return this.instance;
   }
 
-  userMusicRankingList(): WebviewPanel {
+  async login() {
+    const key = await apiLoginQrKey();
+    if (!key) {
+      return;
+    }
+    const imgSrc = await toDataURL(
+      `https://music.163.com/login?codekey=${key}`
+    );
+
+    const panel = window.createWebviewPanel(
+      "cloudmusic",
+      i18n.word.signIn,
+      ViewColumn.One,
+      { retainContextWhenHidden: true }
+    );
+
+    panel.iconPath = this.iconUri;
+
+    panel.webview.html = `
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>${i18n.word.signIn}</title>
+  <style>
+    #root {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #qrcode {
+      height: 256px;
+      width: 256px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root">
+    <img id="qrcode" src="${imgSrc}"/>
+  </div>
+</body>
+
+</html>`;
+
+    const timer = setInterval(() => {
+      apiLoginQrCheck(key)
+        .then((code) => {
+          if (code === 803) {
+            panel.dispose();
+            void AccountManager.login();
+            void window.showInformationMessage(i18n.sentence.success.signIn);
+          } else if (code === 800) {
+            panel.dispose();
+            void window.showErrorMessage(i18n.sentence.fail.signIn);
+          }
+        })
+        .catch(() => {});
+    }, 512);
+
+    panel.onDidDispose(() => {
+      clearInterval(timer);
+    });
+  }
+
+  userMusicRankingList() {
     const panel = this.getWebviewPanel(
       "userMusicRankingList",
       i18n.word.userRankingList,
@@ -55,31 +127,33 @@ export class WebView {
     void (async () => {
       void panel.webview.postMessage(await apiUserRecord());
     })();
+
+    type RecvMessage = {
+      command: "refresh" | "song" | "album" | "artist";
+      item: SongsItem;
+      id: number;
+    };
     panel.webview.onDidReceiveMessage(
-      async (message: {
-        command: "refresh" | "song" | "album" | "artist";
-        item: SongsItem;
-        id: number;
-      }) => {
-        const { command } = message;
-        if (command === "refresh") {
-          void panel.webview.postMessage(await apiUserRecord(true));
-        } else if (command === "song") {
-          const { item } = message;
-          void MultiStepInput.run((input) => pickSong(input, 1, item));
-        } else if (command === "album") {
-          const { id } = message;
-          void MultiStepInput.run((input) => pickAlbum(input, 1, id));
-        } else if (command === "artist") {
-          const { id } = message;
-          void MultiStepInput.run((input) => pickArtist(input, 1, id));
+      async ({ command, item, id }: RecvMessage) => {
+        switch (command) {
+          case "refresh":
+            void panel.webview.postMessage(await apiUserRecord(true));
+            break;
+          case "song":
+            void MultiStepInput.run((input) => pickSong(input, 1, item));
+            break;
+          case "album":
+            void MultiStepInput.run((input) => pickAlbum(input, 1, id));
+            break;
+          case "artist":
+            void MultiStepInput.run((input) => pickArtist(input, 1, id));
         }
       }
     );
     return panel;
   }
 
-  commentList(type: CommentType, id: number, title: string): WebviewPanel {
+  commentList(type: CommentType, gid: number, title: string) {
     const pageSize = 30;
 
     const panel = this.getWebviewPanel(
@@ -100,8 +174,11 @@ export class WebView {
     );
 
     async function list(pageNo: number, sortType: SortType, time: number) {
-      const r = await apiCommentNew(type, id, pageNo, pageSize, sortType, time);
-      void panel.webview.postMessage({ command: "list", sortType, ...r });
+      void panel.webview.postMessage({
+        command: "list",
+        sortType,
+        ...(await apiCommentNew(type, gid, pageNo, pageSize, sortType, time)),
+      });
     }
 
     void list(1, SortType.recommendation, 0);
@@ -118,43 +195,55 @@ export class WebView {
       time: number;
     };
 
-    panel.webview.onDidReceiveMessage((message: Message) => {
-      const { command } = message;
-      if (command === "user") {
-        const { id } = message;
-        void MultiStepInput.run((input) => pickUser(input, 1, id));
-      } else if (command === "list") {
-        const { pageNo, sortType, time } = message;
-        if (sortType === SortType.latest) {
-          void list(pageNo, sortType, time);
-        } else {
-          void list(pageNo, sortType, 0);
-        }
-      } else if (command === "like") {
-        const { cid, t } = message;
-        void apiCommentLike(type, t, id, cid).then((res) => {
-          if (res) {
-            void panel.webview.postMessage({
-              command: "like",
-              liked: t === "like" ? true : false,
-              cid,
+    panel.webview.onDidReceiveMessage(
+      ({
+        command,
+        id,
+        pageNo,
+        sortType,
+        time,
+        cid,
+        t,
+        content,
+        pid,
+      }: Message) => {
+        switch (command) {
+          case "user":
+            void MultiStepInput.run((input) => pickUser(input, 1, id));
+            break;
+          case "list":
+            if (sortType === SortType.latest) {
+              void list(pageNo, sortType, time);
+            } else {
+              void list(pageNo, sortType, 0);
+            }
+            break;
+          case "like":
+            void apiCommentLike(type, t, gid, cid).then((res) => {
+              if (res) {
+                void panel.webview.postMessage({
+                  command: "like",
+                  liked: t === "like" ? true : false,
+                  cid,
+                });
+              }
             });
-          }
-        });
-      } else if (command === "reply") {
-        const { content, cid } = message;
-        if (cid === 0) {
-          void apiCommentAdd(type, id, content);
-        } else {
-          void apiCommentReply(type, id, content, cid);
+            break;
+          case "reply":
+            if (cid === 0) {
+              void apiCommentAdd(type, gid, content);
+            } else {
+              void apiCommentReply(type, gid, content, cid);
+            }
+            break;
+          case "floor":
+            void apiCommentFloor(type, gid, pid, pageSize, time).then(
+              (data) =>
+                void panel.webview.postMessage({ command: "floor", ...data })
+            );
         }
-      } else if (command === "floor") {
-        const { pid, time } = message;
-        void apiCommentFloor(type, id, pid, pageSize, time).then((data) => {
-          void panel.webview.postMessage({ command: "floor", ...data });
-        });
       }
-    });
+    );
     return panel;
   }
 
@@ -165,7 +254,7 @@ export class WebView {
       i18n?: Record<string, string>;
       message?: unknown;
     } = {}
-  ): WebviewPanel {
+  ) {
     const panel = window.createWebviewPanel(
       "cloudmusic",
       title,
@@ -218,7 +307,7 @@ export class WebView {
   }
 }
 
-function getNonce(): string {
+function getNonce() {
   let text = "";
   const possible =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";

@@ -24,7 +24,7 @@ import { commands, window } from "vscode";
 import { PersonalFm } from "../state";
 import { i18n } from "../i18n";
 
-export function initPlaylist(): void {
+export function initPlaylist() {
   const userPlaylistProvider = PlaylistProvider.getUserInstance();
   const favoritePlaylistProvider = PlaylistProvider.getFavoriteInstance();
   window.registerTreeDataProvider("userPlaylist", userPlaylistProvider);

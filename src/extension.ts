@@ -1,25 +1,33 @@
-import { LyricCache, MusicCache, player } from "./util";
+import { AccountManager, ButtonManager } from "./manager";
+import { LyricCache, MusicCache, WebView, player } from "./util";
 import { SETTING_DIR, TMP_DIR } from "./constant";
-import { commands, window, workspace } from "vscode";
+import {
+  initAccount,
+  initCache,
+  initCommand,
+  initPlayer,
+  initPlaylist,
+  initQueue,
+  initSearch,
+  initStatusBar,
+} from "./activate";
 import type { ExtensionContext } from "vscode";
-import { LoggedIn } from "./state";
-import { i18n } from "./i18n";
-import { steps } from "./activate";
+import { workspace } from "vscode";
 
 export async function activate(context: ExtensionContext) {
   await workspace.fs.createDirectory(SETTING_DIR);
   await workspace.fs.createDirectory(TMP_DIR);
-  await Promise.all(steps.map((step) => step(context)));
-
-  if (!LoggedIn.get()) {
-    void window
-      .showInformationMessage(i18n.sentence.hint.trySignIn, i18n.word.signIn)
-      .then((result) => {
-        if (result === i18n.word.signIn) {
-          void commands.executeCommand("cloudmusic.signin");
-        }
-      });
-  }
+  AccountManager.context = context;
+  WebView.initInstance(context.extensionUri);
+  ButtonManager.init(context);
+  initPlayer(context);
+  initQueue();
+  initPlaylist();
+  initCommand(context);
+  initStatusBar();
+  initAccount(context);
+  initSearch(context);
+  await initCache();
 }
 
 export function deactivate(): void {

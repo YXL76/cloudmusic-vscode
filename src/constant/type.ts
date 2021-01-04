@@ -1,6 +1,6 @@
 import type { ExtensionContext } from "vscode";
 
-export type LoginParameters = {
+export type Account = {
   phone: string;
   username: string;
   password: string;
@@ -62,7 +62,7 @@ export type AlbumsItem = {
 };
 
 export type SongDetail = {
-  id: number;
+  // id: number;
   url: string;
   md5: string;
 };

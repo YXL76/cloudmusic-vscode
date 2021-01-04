@@ -1,51 +1,41 @@
 import type { Cookie, OS } from ".";
-import { anonymousToken, eapi, jsonToCookie, linuxapi, weapi } from ".";
+import { anonymousToken, cookieToJson, eapi, jsonToCookie, weapi } from ".";
 import axios from "axios";
 import { Agent as httpAgent } from "http";
 import { Agent as httpsAgent } from "https";
 import { randomBytes } from "crypto";
 import { stringify } from "querystring";
 
-export const userAgentList = {
-  mobile: [
-    // iOS 13.5.1 14.0 beta with safari
-    "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.1 Mobile/15E148 Safari/604.1",
-    "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.",
-    // iOS with qq micromsg
-    "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/602.1.50 (KHTML like Gecko) Mobile/14A456 QQ/6.5.7.408 V1_IPH_SQ_6.5.7_1_APP_A Pixel/750 Core/UIWebView NetType/4G Mem/103",
-    "Mozilla/5.0 (iPhone; CPU iPhone OS 13_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/7.0.15(0x17000f27) NetType/WIFI Language/zh",
-    // Android -> Huawei Xiaomi
-    "Mozilla/5.0 (Linux; Android 9; PCT-AL10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.64 HuaweiBrowser/10.0.3.311 Mobile Safari/537.36",
-    "Mozilla/5.0 (Linux; U; Android 9; zh-cn; Redmi Note 8 Build/PKQ1.190616.001) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/71.0.3578.141 Mobile Safari/537.36 XiaoMi/MiuiBrowser/12.5.22",
-    // Android + qq micromsg
-    "Mozilla/5.0 (Linux; Android 10; YAL-AL00 Build/HUAWEIYAL-AL00; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/78.0.3904.62 XWEB/2581 MMWEBSDK/200801 Mobile Safari/537.36 MMWEBID/3027 MicroMessenger/7.0.18.1740(0x27001235) Process/toolsmp WeChat/arm64 NetType/WIFI Language/zh_CN ABI/arm64",
-    "Mozilla/5.0 (Linux; U; Android 8.1.0; zh-cn; BKK-AL10 Build/HONORBKK-AL10) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/66.0.3359.126 MQQBrowser/10.6 Mobile Safari/537.36",
-  ],
-  pc: [
-    // macOS 10.15.6  Firefox / Chrome / Safari
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:80.0) Gecko/20100101 Firefox/80.0",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.30 Safari/537.36",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15",
-    // Windows 10 Firefox / Chrome / Edge
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.30 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/13.10586",
-    // Linux 就算了
-  ],
-};
+const userAgentList = [
+  // macOS 10.15.6  Firefox / Chrome / Safari
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:80.0) Gecko/20100101 Firefox/80.0",
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.30 Safari/537.36",
+  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15",
+  // Windows 10 Firefox / Chrome / Edge
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0",
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.30 Safari/537.36",
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/13.10586",
+];
 
-const allUserAgent = userAgentList.mobile.concat(userAgentList.pc);
+const userAgent =
+  userAgentList[Math.floor(Math.random() * userAgentList.length)];
 
 export const base = { cookie: {} as Cookie };
 
 const csrfTokenReg = RegExp(/_csrf=([^(;|$)]+)/);
 
-const generateHeader = (url: string) => {
-  const headers = {
+export const generateHeader = (url: string) => {
+  return {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     "Content-Type": "application/x-www-form-urlencoded",
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    "User-Agent": allUserAgent[Math.floor(Math.random() * allUserAgent.length)],
+    "User-Agent": userAgent,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    "X-Real-IP": "118.88.88.88",
+    ...(url.startsWith("https://music.163.com/")
+      ? // eslint-disable-next-line @typescript-eslint/naming-convention
+        { Referer: "https://music.163.com" }
+      : {}),
   } as {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     Cookie: string;
@@ -55,11 +45,9 @@ const generateHeader = (url: string) => {
     "Content-Type": string;
     // eslint-disable-next-line @typescript-eslint/naming-convention
     "User-Agent": string;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    "X-Real-IP": string;
   };
-  if (url.startsWith("https://music.163.com/")) {
-    headers["Referer"] = "https://music.163.com";
-  }
-  return headers;
 };
 
 const responseHandler = async <T>(
@@ -78,7 +66,17 @@ const responseHandler = async <T>(
 
   const status = res.data.code || res.status;
 
-  if (status === 200) {
+  if ([200, 800, 803].includes(status)) {
+    if ("set-cookie" in res.headers) {
+      base.cookie = {
+        ...base.cookie,
+        ...cookieToJson(
+          (res.headers as { "set-cookie": string[] })["set-cookie"].map((x) =>
+            x.replace(/\s*Domain=[^(;|$)]+;*/, "")
+          )
+        ),
+      };
+    }
     return res.data;
   }
   throw status;
@@ -122,7 +120,7 @@ export const eapiRequest = async <T = Record<string, any>>(
   };
   const headers = generateHeader(url);
   const header = {
-    appver: "6.1.1",
+    appver: "8.0.0",
     versioncode: "140",
     buildver: Date.now().toString().substr(0, 10),
     resolution: "1920x1080",
@@ -140,24 +138,11 @@ export const eapiRequest = async <T = Record<string, any>>(
   return responseHandler<T>(url.replace(/\w*api/, "eapi"), headers, data, true);
 };
 
-export const linuxRequest = async <T = Record<string, any>>(
+export const apiRequest = async <T = Record<string, any>>(
   url: string,
-  data: Record<string, any>,
-  os?: OS
+  data: Record<string, any>
 ) => {
-  const cookie: Cookie = { ...base.cookie, ...(os ? { os } : {}) };
   const headers = generateHeader(url);
-  headers["User-Agent"] =
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36";
-  headers["Cookie"] = jsonToCookie(cookie);
-  data = linuxapi({
-    method: "POST",
-    url: url.replace(/\w*api/, "api"),
-    params: data,
-  });
-  return responseHandler<T>(
-    "https://music.163.com/api/linux/forward",
-    headers,
-    data
-  );
+  headers["Cookie"] = jsonToCookie(base.cookie);
+  return responseHandler<T>(url, headers, data);
 };

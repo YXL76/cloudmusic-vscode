@@ -5,11 +5,11 @@ import { apiPersonalFm } from "../api";
 export class Playing {
   private static state = false;
 
-  static get(): boolean {
+  static get() {
     return this.state;
   }
 
-  static set(newValue: boolean): void {
+  static set(newValue: boolean) {
     if (newValue !== this.state) {
       this.state = newValue;
       ButtonManager.buttonPlay(newValue);
@@ -22,11 +22,11 @@ export class PersonalFm {
 
   private static state = false;
 
-  static get(): boolean {
+  static get() {
     return this.state;
   }
 
-  static async set(newValue: boolean): Promise<void> {
+  static async set(newValue: boolean) {
     if (newValue !== this.state) {
       this.state = newValue;
       ButtonManager.buttonPrevious(newValue);
@@ -36,7 +36,7 @@ export class PersonalFm {
     }
   }
 
-  static async next(): Promise<QueueItemTreeItem> {
+  static async next() {
     if (this.item.length === 0) {
       const songs = await apiPersonalFm();
       this.item = songsItem2TreeItem(0, songs);

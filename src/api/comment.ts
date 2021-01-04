@@ -13,7 +13,7 @@ export async function apiCommentAdd(
   type: CommentType,
   id: number,
   content: string
-): Promise<boolean> {
+) {
   try {
     await weapiRequest(
       `https://music.163.com/weapi/resource/comments/add`,
@@ -32,7 +32,7 @@ export async function apiCommentReply(
   id: number,
   content: string,
   commentId: number
-): Promise<boolean> {
+) {
   try {
     await weapiRequest(
       `https://music.163.com/weapi/resource/comments/reply`,
@@ -99,7 +99,7 @@ export async function apiCommentLike(
   t: "like" | "unlike",
   id: number,
   commentId: number
-): Promise<boolean> {
+) {
   try {
     await weapiRequest(
       `https://music.163.com/weapi/v1/comment/${t}`,

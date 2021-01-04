@@ -158,16 +158,21 @@ export class MultiStepInput {
           ];
           disposables.push(
             input.onDidTriggerButton((item) => {
-              if (item === QuickInputButtons.Back) {
-                reject(InputFlowAction.back);
-              } else if (item === pickButtons.forward) {
-                reject(InputFlowAction.forward);
-              } else if (item === pickButtons.previous) {
-                resolve(ButtonAction.previous);
-              } else if (item === pickButtons.next) {
-                resolve(ButtonAction.next);
-              } else {
-                input.hide();
+              switch (item) {
+                case QuickInputButtons.Back:
+                  reject(InputFlowAction.back);
+                  break;
+                case pickButtons.forward:
+                  reject(InputFlowAction.forward);
+                  break;
+                case pickButtons.previous:
+                  resolve(ButtonAction.previous);
+                  break;
+                case pickButtons.next:
+                  resolve(ButtonAction.next);
+                  break;
+                default:
+                  input.hide();
               }
             }),
             input.onDidAccept(() => {
@@ -229,12 +234,16 @@ export class MultiStepInput {
         input.password = password || false;
         disposables.push(
           input.onDidTriggerButton((item) => {
-            if (item === QuickInputButtons.Back) {
-              reject(InputFlowAction.back);
-            } else if (item === pickButtons.forward) {
-              reject(InputFlowAction.forward);
-            } else {
-              input.hide();
+            switch (item) {
+              case QuickInputButtons.Back:
+                reject(InputFlowAction.back);
+                break;
+              case pickButtons.forward:
+                reject(InputFlowAction.forward);
+                break;
+              default:
+                input.hide();
+                break;
             }
           }),
           input.onDidAccept(() => {
@@ -282,17 +291,22 @@ export class MultiStepInput {
           this.steps.push(step);
         }
       } catch (err) {
-        if (err === InputFlowAction.back) {
-          --this.step;
-          step = this.steps[this.step - 1];
-        } else if (err === InputFlowAction.forward) {
-          ++this.step;
-          step = this.steps[this.step - 1];
-        } else if (err === InputFlowAction.cancel) {
-          step = undefined;
-        } else {
-          step = undefined;
-          console.error(err);
+        switch (err) {
+          case InputFlowAction.back:
+            --this.step;
+            step = this.steps[this.step - 1];
+            break;
+          case InputFlowAction.forward:
+            ++this.step;
+            step = this.steps[this.step - 1];
+            break;
+          case InputFlowAction.cancel:
+            step = undefined;
+            break;
+          default:
+            step = undefined;
+            console.error(err);
+            break;
         }
       }
     }

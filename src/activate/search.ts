@@ -108,17 +108,15 @@ async function pickType(input: MultiStepInput, addStep: number) {
     ],
     placeholder: i18n.sentence.hint.search,
   });
-  if (pick.type === SearchType.single) {
-    return (input: MultiStepInput) => pickSearchSingle(input, addStep, 0);
-  }
-  if (pick.type === SearchType.album) {
-    return (input: MultiStepInput) => pickSearchAlbum(input, addStep, 0);
-  }
-  if (pick.type === SearchType.artist) {
-    return (input: MultiStepInput) => pickSearchArtist(input, addStep, 0);
-  }
-  if (pick.type === SearchType.playlist) {
-    return (input: MultiStepInput) => pickSearchPlaylist(input, addStep, 0);
+  switch (pick.type) {
+    case SearchType.single:
+      return (input: MultiStepInput) => pickSearchSingle(input, addStep, 0);
+    case SearchType.album:
+      return (input: MultiStepInput) => pickSearchAlbum(input, addStep, 0);
+    case SearchType.artist:
+      return (input: MultiStepInput) => pickSearchArtist(input, addStep, 0);
+    case SearchType.playlist:
+      return (input: MultiStepInput) => pickSearchPlaylist(input, addStep, 0);
   }
   return (input: MultiStepInput) => pickSearchSingle(input, addStep, 0);
 }
@@ -263,7 +261,7 @@ async function pickSearchPlaylist(
   return (input: MultiStepInput) => pickPlaylist(input, 4 + addStep, pick.item);
 }
 
-export function search(context: ExtensionContext): void {
+export function initSearch(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.search", () => {
       void MultiStepInput.run((input) => inputKeyword(input, 0));

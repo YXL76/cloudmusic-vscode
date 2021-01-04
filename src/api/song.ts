@@ -6,8 +6,8 @@ import type {
 } from "../constant";
 import { LyricCache, apiCache } from "../util";
 import {
+  apiRequest,
   eapiRequest,
-  linuxRequest,
   solveAnotherSongItem,
   solveSongItem,
   weapiRequest,
@@ -15,25 +15,24 @@ import {
 import { MUSIC_QUALITY } from "../constant";
 import type { TopSongType } from ".";
 
-export async function apiLyric(id: number): Promise<LyricData> {
+export async function apiLyric(id: number) {
   const lyricCache = await LyricCache.get(`${id}`);
   if (lyricCache) {
     return lyricCache;
   }
-  const time: number[] = [0];
-  const text: string[] = ["Lyric"];
+  const time = [0];
+  const text = ["Lyric"];
   try {
     const {
       lrc: { lyric },
-    } = await linuxRequest<{ lrc: { lyric: string } }>(
+    } = await apiRequest<{ lrc: { lyric: string } }>(
       "https://music.163.com/api/song/lyric",
       {
         id,
         lv: -1,
         kv: -1,
         tv: -1,
-      },
-      "pc"
+      }
     );
     const lines = lyric.split("\n");
     let prev = 0;
@@ -56,9 +55,7 @@ export async function apiLyric(id: number): Promise<LyricData> {
     }
 
     LyricCache.put(`${id}`, { time, text });
-  } catch (err) {
-    console.error(err);
-  }
+  } catch {}
   return { time, text };
 }
 
@@ -66,7 +63,7 @@ export async function apiSimiSong(
   songid: number,
   limit: number,
   offset: number
-): Promise<SongsItem[]> {
+) {
   const key = `simi_song${songid}-${limit}-${offset}`;
   const value = apiCache.get(key);
   if (value) {
@@ -86,7 +83,7 @@ export async function apiSimiSong(
   return [];
 }
 
-export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
+export async function apiSongDetail(trackIds: number[]) {
   const key = `song_detail${trackIds[0]}`;
   if (trackIds.length === 1) {
     const value = apiCache.get(key);
@@ -132,43 +129,26 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
   return [];
 }
 
-export async function apiSongUrl(trackIds: number[]): Promise<SongDetail[]> {
-  const limit = 1000;
-  const tasks: Promise<SongDetail[]>[] = [];
-  for (let i = 0; i < trackIds.length; i += limit) {
-    tasks.push(
-      new Promise((resolve, reject) => {
-        eapiRequest<{ data: SongDetail[] }>(
-          "https://interface3.music.163.com/eapi/song/enhance/player/url",
-          {
-            ids: `[${trackIds.slice(i, i + limit).join(",")}]`,
-            br: MUSIC_QUALITY,
-          },
-          "/api/song/enhance/player/url",
-          "pc"
-        )
-          .then(({ data }) => {
-            resolve(data);
-          })
-          .catch(reject);
-      })
-    );
-  }
+export async function apiSongUrl(trackId: number) {
   try {
-    return (await Promise.all(tasks))
-      .flat()
-      .reduce((result: SongDetail[], song) => {
-        const { id, url, md5 } = song;
-        result[trackIds.indexOf(song.id)] = { id, url, md5 };
-        return result;
-      }, []);
+    const { data } = await eapiRequest<{ data: SongDetail[] }>(
+      "https://interface3.music.163.com/eapi/song/enhance/player/url",
+      {
+        ids: `[${trackId}]`,
+        br: MUSIC_QUALITY,
+      },
+      "/api/song/enhance/player/url",
+      "pc"
+    );
+    const { url, md5 } = data[0];
+    return { url, md5 };
   } catch (err) {
     console.error(err);
   }
-  return [];
+  return {} as SongDetail;
 }
 
-export async function apiTopSong(areaId: TopSongType): Promise<SongsItem[]> {
+export async function apiTopSong(areaId: TopSongType) {
   const key = `top_song${areaId}`;
   const value = apiCache.get(key);
   if (value) {

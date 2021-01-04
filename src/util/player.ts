@@ -17,60 +17,55 @@ class NoPlayer implements Player {
   time = Date.now();
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  init(_context: ExtensionContext): void {
+  init(_context: ExtensionContext) {
     //
   }
 
-  stop(): void {
-    //
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  load(_a: string, _b: number, _c: SongsItem): void {
-    //
-  }
-
-  togglePlay(): void {
+  stop() {
     //
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async volume(_level: number): Promise<void> {
+  load(_a: string, _b: number, _c: SongsItem) {
+    //
+  }
+
+  togglePlay() {
+    //
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async volume(_level: number) {
     //
   }
 }
 
 async function prefetch() {
-  let id = 0;
-  if (PersonalFm.get()) {
-    if (PersonalFm.item.length > 1) {
-      id = PersonalFm.item[1].item.id;
-    }
-  } else {
-    if (QueueProvider.songs.length > 1) {
-      id = QueueProvider.songs[1].item.id;
-    }
-  }
-  const idString = `${id}`;
+  try {
+    const { id } = PersonalFm.get()
+      ? PersonalFm.item[1].item
+      : QueueProvider.songs[1].item;
+    const idString = `${id}`;
 
-  if (id !== 0 && !(await MusicCache.get(idString))) {
-    const { url, md5 } = (await apiSongUrl([id]))[0];
-    if (!url || LocalCache.get(md5)) {
-      return;
+    if (id !== 0 && !(await MusicCache.get(idString))) {
+      const { url, md5 } = await apiSongUrl(id);
+      if (!url || !md5 || LocalCache.get(md5)) {
+        return;
+      }
+      const path = Uri.joinPath(TMP_DIR, idString);
+      const data = await downloadMusic(
+        url,
+        idString,
+        path,
+        md5,
+        !PersonalFm.get()
+      );
+      if (data) {
+        const file = createWriteStream(path.fsPath);
+        data.pipe(file);
+      }
     }
-    const path = Uri.joinPath(TMP_DIR, idString);
-    const data = await downloadMusic(
-      url,
-      idString,
-      path,
-      md5,
-      !PersonalFm.get()
-    );
-    if (data) {
-      const file = createWriteStream(path.fsPath);
-      data.pipe(file);
-    }
-  }
+  } catch {}
 }
 
 export const lyric: Lyric = {
@@ -91,13 +86,16 @@ class AudioPlayer implements Player {
 
   private player!: NativePlayer;
 
+  private prefetchLock = false;
+
   constructor() {
     this.player = NATIVE.playerNew();
 
     setInterval(() => {
       if (Playing.get()) {
         const pos = NATIVE.playerPosition(this.player);
-        if (pos > 120) {
+        if (pos > 120 && !this.prefetchLock) {
+          this.prefetchLock = true;
           void prefetch();
         }
         if (NATIVE.playerEmpty(this.player) || pos > this.item.dt + 8) {
@@ -130,17 +128,17 @@ class AudioPlayer implements Player {
     }, 480000);
   }
 
-  init(context: ExtensionContext): void {
+  init(context: ExtensionContext) {
     this.context = context;
     void this.volume(this.context.globalState.get(VOLUME_KEY) ?? 85);
   }
 
-  stop(): void {
+  stop() {
     Playing.set(false);
     NATIVE.playerStop(this.player);
   }
 
-  load(url: string, pid: number, item: SongsItem): void {
+  load(url: string, pid: number, item: SongsItem) {
     if (NATIVE.playerLoad(this.player, url)) {
       NATIVE.playerSetVolume(
         this.player,
@@ -165,13 +163,14 @@ class AudioPlayer implements Player {
 
       this.pid = pid;
       this.item = item;
+      this.prefetchLock = false;
     } else {
       void commands.executeCommand("cloudmusic.next");
     }
     Loading.set(false, item);
   }
 
-  togglePlay(): void {
+  togglePlay() {
     if (this.item.id) {
       if (Playing.get()) {
         NATIVE.playerPause(this.player);
@@ -184,7 +183,7 @@ class AudioPlayer implements Player {
     }
   }
 
-  async volume(level: number): Promise<void> {
+  async volume(level: number) {
     await this.context.globalState.update(VOLUME_KEY, level);
     NATIVE.playerSetVolume(this.player, level);
     ButtonManager.buttonVolume(level);

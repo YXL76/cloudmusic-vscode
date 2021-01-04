@@ -6,6 +6,42 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [6.1.1] - 2020-12-28
+
+### Changed
+
+- API: choose `user-agent` only once
+
+### Fixed
+
+- Command: `Search` command not found ([#210](https://github.com/YXL76/cloudmusic-vscode/issues/210))
+
+## [6.1.1] - 2020-12-27
+
+### Fixed
+
+- Activation sequence
+
+## [6.1.0] - 2020-12-25
+
+### Added
+
+- Update `appver` ([Binaryify/NeteaseCloudMusicApi#1060](https://github.com/Binaryify/NeteaseCloudMusicApi/issues/1060))
+- Set `X-Real-IP` in request headers for foreign users ([#210](https://github.com/YXL76/cloudmusic-vscode/issues/210))
+
+## [6.0.5] - 2020-12-18
+
+### Fixed
+
+- API: personalized playlist url
+- Player: prefetch keep running
+
+## [6.0.4] - 2020-12-17
+
+### Fixed
+
+- Engines version
+
 ## [6.0.3] - 2020-12-16
 
 ### Fixed

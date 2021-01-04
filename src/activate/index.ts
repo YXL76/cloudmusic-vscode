@@ -1,18 +1,8 @@
-import type { ExtensionContext } from "vscode";
-import { initAccount } from "./account";
-import { initCache } from "./cache";
-import { initCommand } from "../command";
-import { initPlayer } from "./player";
-import { initPlaylist } from "./playlist";
-import { initQueue } from "./queue";
-import { initStatusBar } from "./statusBar";
-
-export const steps: ((context: ExtensionContext) => Promise<void> | void)[] = [
-  initPlayer,
-  initCommand,
-  initQueue,
-  initPlaylist,
-  initStatusBar,
-  initAccount,
-  initCache,
-];
+export * from "./account";
+export * from "./cache";
+export * from "./command";
+export * from "./player";
+export * from "./playlist";
+export * from "./queue";
+export * from "./search";
+export * from "./statusBar";
