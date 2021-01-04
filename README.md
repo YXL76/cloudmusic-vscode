@@ -253,6 +253,7 @@
 |           captcha_sent           |       发送验证码       |   ❌   |
 |          captcha_verify          |       校验验证码       |   ❌   |
 |    cellphone_existence_check     | 检测手机号码是否已注册 |   ❌   |
+|              cloud               |        云盘上传        |   ❌   |
 |           daily_signin           |          签到          |   ✔️   |
 |      digitalAlbum_ordering       |      购买数字专辑      |   ❌   |
 |      digitalAlbum_purchased      |      我的数字专辑      |   ❌   |
@@ -265,6 +266,9 @@
 |  history_recommend_songs_detail  |  历史每日推荐歌曲详情  |   ❌   |
 |              login               |        邮箱登录        |   ✔️   |
 |         login_cellphone          |        手机登录        |   ✔️   |
+|          login_qr_check          |     二维码扫码状态     |        |
+|         login_qr_create          |       二维码生成       |        |
+|           login_qr_key           |    二维码 key 生成     |        |
 |          login_refresh           |        登录刷新        |   ❌   |
 |           login_status           |        登录状态        |   ❌   |
 |              logout              |        退出登录        |   ✔️   |
@@ -333,26 +337,28 @@
 
 - 杂项
 
-|        module        |       function        | status |
-| :------------------: | :-------------------: | :----: |
-|        banner        |      首页轮播图       |   ❌   |
-|        batch         |     批量请求接口      |        |
-|       calendar       |       音乐日历        |        |
-| countries_code_list  |     国家编码列表      |        |
-|      dj_banner       |      电台 banner      |   ❌   |
-| homepage_block_page  | 首页-发现 block page  |   ❌   |
-| homepage_dragon_ball | 首页-发现 dragon ball |   ❌   |
-|      hot_topic       |       热门话题        |   ❌   |
-|  program_recommend   |       推荐节目        |        |
-|      top_album       |       新碟上架        |   ✔️   |
-|     top_artists      |       热门歌手        |   ✔️   |
-|       top_list       |        排行榜         |   ❌   |
-|        top_mv        |       MV 排行榜       |   ❌   |
-|       top_song       |       新歌速递        |   ✔️   |
-|       toplist        |     所有榜单介绍      |   ✔️   |
-|    toplist_artist    |        歌手榜         |   ✔️   |
-|    toplist_detail    |   所有榜单内容摘要    |   ❌   |
-|        weblog        |       操作记录        |        |
+|         module         |       function        | status |
+| :--------------------: | :-------------------: | :----: |
+|         banner         |      首页轮播图       |   ❌   |
+|         batch          |     批量请求接口      |   ❌   |
+|        calendar        |       音乐日历        |   ❌   |
+|  countries_code_list   |     国家编码列表      |   ❌   |
+|       dj_banner        |      电台 banner      |   ❌   |
+|  homepage_block_page   | 首页-发现 block page  |   ❌   |
+|  homepage_dragon_ball  | 首页-发现 dragon ball |   ❌   |
+|       hot_topic        |       热门话题        |   ❌   |
+|   program_recommend    |       推荐节目        |        |
+|       top_album        |       新碟上架        |   ✔️   |
+|      top_artists       |       热门歌手        |   ✔️   |
+|        top_list        |        排行榜         |   ❌   |
+|         top_mv         |       MV 排行榜       |   ❌   |
+|        top_song        |       新歌速递        |   ✔️   |
+|      topic_detail      |       话题详情        |   ❌   |
+| topic_detail_event_hot |   话题详情热门动态    |   ❌   |
+|        toplist         |     所有榜单介绍      |   ✔️   |
+|     toplist_artist     |        歌手榜         |   ✔️   |
+|     toplist_detail     |   所有榜单内容摘要    |   ❌   |
+|         weblog         |       操作记录        |   ❌   |
 
 ## Acknowledgements
 

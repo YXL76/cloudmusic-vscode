@@ -1844,17 +1844,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dayjs@npm:1.10.1":
+"dayjs@npm:1.10.1, dayjs@npm:^1.8.30":
   version: 1.10.1
   resolution: "dayjs@npm:1.10.1"
   checksum: bf29476120e9cde34ce376663f52348847fc04bb6b36538a7aa40b378375d3d0a4bc144af6733c2df4f26daf811fc5f55fae5b16bb19e38af2354da6e07ffde9
-  languageName: node
-  linkType: hard
-
-"dayjs@npm:^1.8.30":
-  version: 1.9.8
-  resolution: "dayjs@npm:1.9.8"
-  checksum: bae85991d0a7a113b7d1b22c89a6c82382a48fb5277a933b43e1c79fd240288cf82fc33144bed3d2e71583f619578b941c22a18d8e9712a31375fa7f3dc82082
   languageName: node
   linkType: hard
 
@@ -5399,23 +5392,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"rc-tree@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "rc-tree@npm:4.0.0"
-  dependencies:
-    "@babel/runtime": ^7.10.1
-    classnames: 2.x
-    rc-motion: ^2.0.1
-    rc-util: ^5.0.0
-    rc-virtual-list: ^3.0.1
-  peerDependencies:
-    react: "*"
-    react-dom: "*"
-  checksum: 2158f030fbd86cadc60c674208e1ee77bb7507e3a54901c4e6f041c74fa376480166b047ea2d73cfbe3bcd4d635976357c078dfedefdc1d1161c95e7819aeaed
-  languageName: node
-  linkType: hard
-
-"rc-tree@npm:~4.1.0":
+"rc-tree@npm:^4.0.0, rc-tree@npm:~4.1.0":
   version: 4.1.1
   resolution: "rc-tree@npm:4.1.1"
   dependencies:
@@ -5458,20 +5435,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"rc-util@npm:^5.0.0, rc-util@npm:^5.0.1, rc-util@npm:^5.0.5, rc-util@npm:^5.0.6, rc-util@npm:^5.0.7, rc-util@npm:^5.1.0, rc-util@npm:^5.2.0, rc-util@npm:^5.2.1, rc-util@npm:^5.3.0, rc-util@npm:^5.4.0, rc-util@npm:^5.5.0":
-  version: 5.5.1
-  resolution: "rc-util@npm:5.5.1"
-  dependencies:
-    react-is: ^16.12.0
-    shallowequal: ^1.1.0
-  peerDependencies:
-    react: ">=16.9.0"
-    react-dom: ">=16.9.0"
-  checksum: dcfc0f5126b30994f98556a70cd4acd7ace56a406ba4b44fd2a5ccd67d6b681e15527bb24d08ef244f7dfdf866db0d570a7683ebdf91d83cd109d591f3c9a214
-  languageName: node
-  linkType: hard
-
-"rc-util@npm:^5.5.1":
+"rc-util@npm:^5.0.0, rc-util@npm:^5.0.1, rc-util@npm:^5.0.5, rc-util@npm:^5.0.6, rc-util@npm:^5.0.7, rc-util@npm:^5.1.0, rc-util@npm:^5.2.0, rc-util@npm:^5.2.1, rc-util@npm:^5.3.0, rc-util@npm:^5.4.0, rc-util@npm:^5.5.0, rc-util@npm:^5.5.1":
   version: 5.6.2
   resolution: "rc-util@npm:5.6.2"
   dependencies:
