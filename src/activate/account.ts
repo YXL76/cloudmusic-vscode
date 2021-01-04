@@ -1,4 +1,10 @@
-import { ACCOUNT_KEY, AUTO_CHECK, COOKIE_KEY, ICON } from "../constant";
+import {
+  ACCOUNT_KEY,
+  AUTO_CHECK,
+  CHECK_KEY,
+  COOKIE_KEY,
+  ICON,
+} from "../constant";
 import {
   ArtistArea,
   ArtistType,
@@ -723,7 +729,13 @@ export function initAccount(context: ExtensionContext) {
     base.cookie = context.globalState.get(COOKIE_KEY) || {};
     if (await AccountManager.login(context.globalState.get(ACCOUNT_KEY))) {
       if (AUTO_CHECK) {
-        void commands.executeCommand("cloudmusic.dailyCheck");
+        const date = new Date();
+        const lasttime = context.globalState.get(CHECK_KEY);
+        const currenttime = `${date.getMonth()}-${date.getDate()}`;
+        if (currenttime !== lasttime) {
+          void commands.executeCommand("cloudmusic.dailyCheck");
+          void context.globalState.update(CHECK_KEY, currenttime);
+        }
       }
       return;
     }

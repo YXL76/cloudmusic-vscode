@@ -16,10 +16,11 @@ export const NATIVE = __non_webpack_require__(
   join("..", "build", `${PLATFORM}.node`)
 ) as NativeModule;
 
-export const ACCOUNT_KEY = "cloudmusicAccount";
-export const COOKIE_KEY = "cloudmusicCookie";
+export const ACCOUNT_KEY = "account";
+export const COOKIE_KEY = "cookie";
 export const BUTTON_KEY = "button";
 export const VOLUME_KEY = "volume";
+export const CHECK_KEY = "check";
 
 export const SETTING_DIR = Uri.joinPath(Uri.file(homedir()), ".cloudmusic");
 export const TMP_DIR = Uri.joinPath(SETTING_DIR, "tmp");
