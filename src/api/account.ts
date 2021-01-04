@@ -45,7 +45,7 @@ export async function apiDailySignin(): Promise<boolean> {
   return false;
 }
 
-export async function apiFmTrash(songId: number): Promise<boolean> {
+export async function apiFmTrash(songId: number) {
   try {
     await weapiRequest(
       `https://music.163.com/weapi/radio/trash/add?alg=RT&songId=${songId}&time=25`,
@@ -58,10 +58,7 @@ export async function apiFmTrash(songId: number): Promise<boolean> {
   return false;
 }
 
-export async function apiLike(
-  trackId: number,
-  like: boolean
-): Promise<boolean> {
+export async function apiLike(trackId: number, like: boolean) {
   try {
     await weapiRequest(
       `https://music.163.com/weapi/radio/like?alg=itembased&trackId=${trackId}&time=25`,
@@ -85,6 +82,54 @@ export async function apiLikelist(): Promise<number[]> {
     console.error(err);
   }
   return [];
+}
+
+export async function apiLogin(username: string, password: string) {
+  try {
+    const { profile } = await weapiRequest<{
+      profile: { userId: number; nickname: string };
+    }>(
+      "https://music.163.com/weapi/login",
+      { username, password, rememberLogin: "true" },
+      "pc"
+    );
+    return profile;
+  } catch (err) {
+    console.error(err);
+  }
+  return undefined;
+}
+
+export async function apiLoginCellphone(
+  phone: string,
+  countrycode: string,
+  password: string
+) {
+  try {
+    const { profile } = await weapiRequest<{
+      profile: { userId: number; nickname: string };
+    }>(
+      "https://music.163.com/weapi/login/cellphone",
+      { phone, countrycode, password, rememberLogin: "true" },
+      "pc"
+    );
+    return profile;
+  } catch (err) {
+    console.error(err);
+  }
+  return undefined;
+}
+
+export async function apiLoginStatus() {
+  try {
+    const { profile } = await weapiRequest<{
+      profile: { userId: number; nickname: string };
+    }>("https://music.163.com/weapi/w/nuser/account/get", {});
+    if (profile && "userId" in profile && "nickname" in profile) return profile;
+  } catch (err) {
+    console.error(err);
+  }
+  return undefined;
 }
 
 export async function apiLogout(): Promise<boolean> {

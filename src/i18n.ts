@@ -63,9 +63,6 @@ export const i18n = (() => {
         trySignIn: string;
         volume: string;
       };
-      info: {
-        alreadySignIn: string;
-      };
       label: {
         cellphone: string;
         dailyRecommendedPlaylists: string;

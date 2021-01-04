@@ -23,9 +23,6 @@
       "trySignIn": "Found that you have not logged in",
       "volume": "Please enter volume"
     },
-    "info": {
-      "alreadySignIn": "Account already signed in"
-    },
     "label": {
       "cellphone": "Use cellphone to sign in",
       "dailyRecommendedPlaylists": "Daily recommended playlists",

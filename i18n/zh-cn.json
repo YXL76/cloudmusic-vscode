@@ -23,9 +23,6 @@
       "trySignIn": "发现到您还没登录",
       "volume": "请输入音量"
     },
-    "info": {
-      "alreadySignIn": "帐号已登录"
-    },
     "label": {
       "cellphone": "使用手机登录",
       "dailyRecommendedPlaylists": "每日推荐歌单",

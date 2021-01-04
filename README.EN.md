@@ -270,7 +270,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |         login_qr_create          |       二维码生成       |        |
 |           login_qr_key           |    二维码 key 生成     |        |
 |          login_refresh           |        登录刷新        |   ❌   |
-|           login_status           |        登录状态        |   ❌   |
+|           login_status           |        登录状态        |   ✔️   |
 |              logout              |        退出登录        |   ✔️   |
 |           msg_comments           |          评论          |        |
 |           msg_forwards           |          @我           |        |

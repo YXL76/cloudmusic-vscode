@@ -17,6 +17,7 @@ export const NATIVE = __non_webpack_require__(
 ) as NativeModule;
 
 export const ACCOUNT_KEY = "cloudmusicAccount";
+export const COOKIE_KEY = "cloudmusicCookie";
 export const BUTTON_KEY = "button";
 export const VOLUME_KEY = "volume";
 

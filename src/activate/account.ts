@@ -1,4 +1,4 @@
-import { ACCOUNT_KEY, AUTO_CHECK, ICON } from "../constant";
+import { ACCOUNT_KEY, AUTO_CHECK, COOKIE_KEY, ICON } from "../constant";
 import {
   ArtistArea,
   ArtistType,
@@ -7,6 +7,7 @@ import {
   apiAlbumSublist,
   apiArtistList,
   apiArtistSublist,
+  apiDailySignin,
   apiHighqualityTags,
   apiPersonalized,
   apiPersonalizedNewsong,
@@ -21,6 +22,7 @@ import {
   apiToplist,
   apiToplistArtist,
   apiUserLevel,
+  base,
 } from "../api";
 import {
   ButtonAction,
@@ -38,16 +40,17 @@ import {
 } from "../util";
 import type { ExtensionContext, QuickPickItem } from "vscode";
 import { commands, window } from "vscode";
+import type { Account } from "../constant";
 import { AccountManager } from "../manager";
 import type { ArtistInitial } from "../api";
 import type { InputStep } from "../util";
 import { LoggedIn } from "../state";
-import type { LoginParameters } from "../constant";
 import { createHash } from "crypto";
 import { i18n } from "../i18n";
 import { inputKeyword } from ".";
 
 export function initAccount(context: ExtensionContext): void {
+  AccountManager.context = context;
   const webview = WebView.initInstance(context.extensionUri);
 
   context.subscriptions.push(
@@ -611,7 +614,7 @@ export function initAccount(context: ExtensionContext): void {
       const title = i18n.word.signIn;
       let totalSteps = 3;
 
-      const state: LoginParameters = {
+      const state: Account = {
         phone: "",
         username: "",
         password: "",
@@ -665,6 +668,7 @@ export function initAccount(context: ExtensionContext): void {
           value: state.phone,
           prompt: i18n.sentence.hint.account,
         });
+        state.username = "";
         return (input: MultiStepInput) => inputPassword(input);
       }
 
@@ -676,6 +680,7 @@ export function initAccount(context: ExtensionContext): void {
           value: state.username,
           prompt: i18n.sentence.hint.account,
         });
+        state.phone = "";
         return (input: MultiStepInput) => inputPassword(input);
       }
 
@@ -691,7 +696,6 @@ export function initAccount(context: ExtensionContext): void {
         state.password = createHash("md5").update(password).digest("hex");
 
         if (await AccountManager.login(state)) {
-          void context.globalState.update(ACCOUNT_KEY, state);
           void window.showInformationMessage(i18n.sentence.success.signIn);
         } else {
           void window.showErrorMessage(i18n.sentence.fail.signIn);
@@ -701,45 +705,38 @@ export function initAccount(context: ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    commands.registerCommand("cloudmusic.dailyCheck", () => {
-      void AccountManager.dailySignin();
+    commands.registerCommand("cloudmusic.dailyCheck", async () => {
+      if (LoggedIn.get()) {
+        if (await apiDailySignin()) {
+          void window.showInformationMessage(i18n.sentence.success.dailyCheck);
+        }
+      } else {
+        void window.showErrorMessage(i18n.sentence.error.needSignIn);
+      }
     })
   );
 
   context.subscriptions.push(
-    commands.registerCommand("cloudmusic.signout", async () => {
-      if (await AccountManager.logout()) {
-        void context.globalState.update(ACCOUNT_KEY, undefined);
-      }
+    commands.registerCommand("cloudmusic.signout", () => {
+      void AccountManager.logout();
     })
   );
 
-  const showHint = () => {
-    void window
-      .showInformationMessage(i18n.sentence.hint.trySignIn, i18n.word.signIn)
-      .then((result) => {
-        if (result === i18n.word.signIn) {
-          void commands.executeCommand("cloudmusic.signin");
-        }
-      });
-  };
-
-  const info: LoginParameters | undefined = context.globalState.get(
-    ACCOUNT_KEY
-  );
-  if (!info) {
-    showHint();
-    return;
-  }
-  void AccountManager.login(info)
-    .then((res) => {
-      if (res) {
-        if (AUTO_CHECK) {
-          void AccountManager.dailySignin().catch();
-        }
-      } else {
-        showHint();
+  void (async () => {
+    base.cookie = context.globalState.get(COOKIE_KEY) || {};
+    if (await AccountManager.login(context.globalState.get(ACCOUNT_KEY))) {
+      if (AUTO_CHECK) {
+        void commands.executeCommand("cloudmusic.dailyCheck");
       }
-    })
-    .catch();
+      return;
+    }
+    if (
+      (await window.showInformationMessage(
+        i18n.sentence.hint.trySignIn,
+        i18n.word.signIn
+      )) === i18n.word.signIn
+    ) {
+      void commands.executeCommand("cloudmusic.signin");
+    }
+  })().catch();
 }

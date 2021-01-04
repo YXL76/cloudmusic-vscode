@@ -1,20 +1,17 @@
-import type { LoginParameters, PlaylistItem } from "../constant";
+import { ACCOUNT_KEY, COOKIE_KEY } from "../constant";
 import {
-  apiDailySignin,
   apiLikelist,
+  apiLogin,
+  apiLoginCellphone,
+  apiLoginStatus,
   apiLogout,
   apiUserPlaylist,
   base,
-  cookieToJson,
-  generateHeader,
-  weapi,
 } from "../api";
+import type { Account } from "../constant";
 import type { Cookie } from "../api";
+import type { ExtensionContext } from "vscode";
 import { LoggedIn } from "../state";
-import axios from "axios";
-import { i18n } from "../i18n";
-import { stringify } from "querystring";
-import { window } from "vscode";
 
 export class AccountManager {
   static uid = 0;
@@ -23,59 +20,36 @@ export class AccountManager {
 
   static likelist: Set<number> = new Set<number>();
 
-  static async dailySignin(): Promise<void> {
-    if (LoggedIn.get()) {
-      if (await apiDailySignin()) {
-        void window.showInformationMessage(i18n.sentence.success.dailyCheck);
-      }
-    } else {
-      void window.showErrorMessage(i18n.sentence.error.needSignIn);
-    }
-  }
+  static context: ExtensionContext;
 
-  static async login({
-    phone,
-    username,
-    password,
-    countrycode = "86",
-  }: LoginParameters): Promise<boolean> {
+  static async login(account?: Account) {
     if (LoggedIn.get()) {
-      void window.showInformationMessage(i18n.sentence.info.alreadySignIn);
       return true;
     }
-    const usePhone = phone.length > 0;
     try {
-      const url = usePhone
-        ? "https://music.163.com/weapi/login/cellphone"
-        : "https://music.163.com/weapi/login";
-      const headers = generateHeader(url);
-      headers.Cookie = "os=pc";
+      const res = account
+        ? account.phone.length > 0
+          ? await apiLoginCellphone(
+              account.phone,
+              account.countrycode,
+              account.password
+            )
+          : await apiLogin(account.username, account.password)
+        : await apiLoginStatus();
 
-      const data = weapi({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        csrf_token: "",
-        password,
-        rememberLogin: "true",
-        ...(usePhone ? { phone, countrycode } : { username }),
-      });
-
-      const res = await axios.post<{
-        code?: number;
-        profile: { userId: number; nickname: string };
-      }>(url, stringify(data), { headers });
-
-      if (res.data.code || res.status === 200) {
-        const { userId, nickname } = res.data.profile;
-        base.cookie = cookieToJson(
-          (
-            (res.headers as { "set-cookie"?: string[] })["set-cookie"] || []
-          ).map((x) => x.replace(/\s*Domain=[^(;|$)]+;*/, ""))
-        );
+      if (res) {
+        const { userId, nickname } = res;
         this.uid = userId;
         this.nickname = nickname;
-        const ids = await apiLikelist();
-        ids.forEach((id) => this.likelist.add(id));
         LoggedIn.set(true);
+
+        void this.context.globalState.update(ACCOUNT_KEY, account);
+        void this.context.globalState.update(COOKIE_KEY, base.cookie);
+
+        void apiLikelist().then((ids) => {
+          this.likelist = new Set<number>(ids);
+        });
+
         return true;
       }
     } catch (err) {
@@ -84,19 +58,23 @@ export class AccountManager {
     return false;
   }
 
-  static async logout(): Promise<boolean> {
+  static async logout() {
     if (await apiLogout()) {
+      void this.context.globalState.update(ACCOUNT_KEY, undefined);
+      void this.context.globalState.update(COOKIE_KEY, undefined);
+
       base.cookie = {} as Cookie;
       this.uid = 0;
       this.nickname = "";
       this.likelist.clear();
       LoggedIn.set(false);
+
       return true;
     }
     return false;
   }
 
-  static async userPlaylist(): Promise<PlaylistItem[]> {
+  static async userPlaylist() {
     if (this.uid === 0) {
       return [];
     }
@@ -104,7 +82,7 @@ export class AccountManager {
     return lists.filter((list) => list.creator.userId === this.uid);
   }
 
-  static async favoritePlaylist(): Promise<PlaylistItem[]> {
+  static async favoritePlaylist() {
     if (this.uid === 0) {
       return [];
     }

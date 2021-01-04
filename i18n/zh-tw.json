@@ -23,9 +23,6 @@
       "trySignIn": "發現到您還沒登入",
       "volume": "請輸入音量"
     },
-    "info": {
-      "alreadySignIn": "帳號已登入"
-    },
     "label": {
       "cellphone": "使用手機登入",
       "dailyRecommendedPlaylists": "每日推薦歌單",

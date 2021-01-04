@@ -1,5 +1,5 @@
 import type { Cookie, OS } from ".";
-import { anonymousToken, eapi, jsonToCookie, weapi } from ".";
+import { anonymousToken, cookieToJson, eapi, jsonToCookie, weapi } from ".";
 import axios from "axios";
 import { Agent as httpAgent } from "http";
 import { Agent as httpsAgent } from "https";
@@ -67,6 +67,16 @@ const responseHandler = async <T>(
   const status = res.data.code || res.status;
 
   if (status === 200) {
+    if ("set-cookie" in res.headers) {
+      base.cookie = {
+        ...base.cookie,
+        ...cookieToJson(
+          (res.headers as { "set-cookie": string[] })["set-cookie"].map((x) =>
+            x.replace(/\s*Domain=[^(;|$)]+;*/, "")
+          )
+        ),
+      };
+    }
     return res.data;
   }
   throw status;

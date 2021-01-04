@@ -1,6 +1,6 @@
 import type { ExtensionContext } from "vscode";
 
-export type LoginParameters = {
+export type Account = {
   phone: string;
   username: string;
   password: string;
