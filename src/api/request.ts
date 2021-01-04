@@ -66,7 +66,7 @@ const responseHandler = async <T>(
 
   const status = res.data.code || res.status;
 
-  if (status === 200) {
+  if ([200, 800, 803].includes(status)) {
     if ("set-cookie" in res.headers) {
       base.cookie = {
         ...base.cookie,

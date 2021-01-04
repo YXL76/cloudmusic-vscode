@@ -32,22 +32,22 @@ export const MUSIC_CACHE_DIR = Uri.joinPath(
 );
 export const LYRIC_CACHE_DIR = Uri.joinPath(CACHE_DIR, "lyric");
 
-export const ICON = {
-  album: "$(circuit-board)",
-  artist: "$(account)",
-  comment: "$(comment)",
-  description: "$(markdown)",
-  fm: "$(radio-tower)",
-  level: "$(graph)",
-  like: "$(heart)",
-  name: "$(link)",
-  number: "$(symbol-number)",
-  playlist: "$(list-unordered)",
-  rankinglist: "$(list-ordered)",
-  save: "$(diff-added)",
-  unsave: "$(diff-removed)",
-  add: "$(add)",
-  search: "$(search)",
-  similar: "$(library)",
-  song: "$(zap)",
-};
+export const enum ICON {
+  album = "$(circuit-board)",
+  artist = "$(account)",
+  comment = "$(comment)",
+  description = "$(markdown)",
+  fm = "$(radio-tower)",
+  level = "$(graph)",
+  like = "$(heart)",
+  name = "$(link)",
+  number = "$(symbol-number)",
+  playlist = "$(list-unordered)",
+  rankinglist = "$(list-ordered)",
+  save = "$(diff-added)",
+  unsave = "$(diff-removed)",
+  add = "$(add)",
+  search = "$(search)",
+  similar = "$(library)",
+  song = "$(zap)",
+}

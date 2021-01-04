@@ -7,12 +7,15 @@ import {
   apiCommentLike,
   apiCommentNew,
   apiCommentReply,
+  apiLoginQrCheck,
+  apiLoginQrKey,
   apiUserRecord,
 } from "../api";
+import { AccountManager } from "../manager";
 import type { CommentType } from "../api";
 import type { SongsItem } from "../constant";
-import type { WebviewPanel } from "vscode";
 import { i18n } from "../i18n";
+import { toDataURL } from "qrcode";
 
 export class WebView {
   private static instance: WebView;
@@ -37,6 +40,75 @@ export class WebView {
 
   static getInstance() {
     return this.instance;
+  }
+
+  async login() {
+    const key = await apiLoginQrKey();
+    if (!key) {
+      return;
+    }
+    const imgSrc = await toDataURL(
+      `https://music.163.com/login?codekey=${key}`
+    );
+
+    const panel = window.createWebviewPanel(
+      "cloudmusic",
+      i18n.word.signIn,
+      ViewColumn.One,
+      { retainContextWhenHidden: true }
+    );
+
+    panel.iconPath = this.iconUri;
+
+    panel.webview.html = `
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>${i18n.word.signIn}</title>
+  <style>
+    #root {
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #qrcode {
+      height: 256px;
+      width: 256px;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="root">
+    <img id="qrcode" src="${imgSrc}"/>
+  </div>
+</body>
+
+</html>`;
+
+    const timer = setInterval(() => {
+      apiLoginQrCheck(key)
+        .then((code) => {
+          if (code === 803) {
+            panel.dispose();
+            void AccountManager.login();
+            void window.showInformationMessage(i18n.sentence.success.signIn);
+          } else if (code === 800) {
+            panel.dispose();
+            void window.showErrorMessage(i18n.sentence.fail.signIn);
+          }
+        })
+        .catch(() => {});
+    }, 512);
+
+    panel.onDidDispose(() => {
+      clearInterval(timer);
+    });
   }
 
   userMusicRankingList() {

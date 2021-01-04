@@ -68,7 +68,7 @@ export async function downloadMusic(
     console.error(err);
     void window.showErrorMessage(i18n.sentence.error.network);
   }
-  return undefined;
+  return;
 }
 
 export function songsItem2TreeItem(id: number, songs: Readonly<SongsItem[]>) {

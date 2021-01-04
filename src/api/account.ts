@@ -97,7 +97,7 @@ export async function apiLogin(username: string, password: string) {
   } catch (err) {
     console.error(err);
   }
-  return undefined;
+  return;
 }
 
 export async function apiLoginCellphone(
@@ -117,7 +117,31 @@ export async function apiLoginCellphone(
   } catch (err) {
     console.error(err);
   }
-  return undefined;
+  return;
+}
+
+export async function apiLoginQrCheck(key: string) {
+  try {
+    const { code } = await weapiRequest<{ code: number }>(
+      "https://music.163.com/weapi/login/qrcode/client/login",
+      { key, type: 1 }
+    );
+    return code;
+  } catch {}
+  return;
+}
+
+export async function apiLoginQrKey() {
+  try {
+    const { unikey } = await weapiRequest<{ unikey: string }>(
+      "https://music.163.com/weapi/login/qrcode/unikey",
+      {
+        type: 1,
+      }
+    );
+    return unikey;
+  } catch (err) {}
+  return;
 }
 
 export async function apiLoginStatus() {
@@ -129,7 +153,7 @@ export async function apiLoginStatus() {
   } catch (err) {
     console.error(err);
   }
-  return undefined;
+  return;
 }
 
 export async function apiLogout() {
@@ -277,7 +301,7 @@ export async function apiUserDetail(uid: number) {
   } catch (err) {
     console.error(err);
   }
-  return undefined;
+  return;
 }
 
 export async function apiUserFolloweds(userId: number, limit: number) {

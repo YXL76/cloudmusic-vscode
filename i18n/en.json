@@ -30,7 +30,8 @@
       "email": "Use email to sign in",
       "lyricDelay": "Set lyric delay",
       "newsongRecommendation": "New song recommendation",
-      "playlistRecommendation": "Playlist recommendation"
+      "playlistRecommendation": "Playlist recommendation",
+      "qrcode": "Use QR Code to sign in"
     },
     "success": {
       "dailyCheck": "Daily check successful",
@@ -97,6 +98,7 @@
     "previousTrack": "Previous track",
     "private": "Private",
     "public": "Public",
+    "qrcode": "QR Code",
     "recommendation": "Recommendation",
     "refresh": "Refresh",
     "refreshing": "Refreshing",

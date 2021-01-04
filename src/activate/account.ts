@@ -625,6 +625,12 @@ export function initAccount(context: ExtensionContext) {
       };
       await MultiStepInput.run((input) => pickMethod(input));
 
+      const enum Type {
+        emial,
+        phone,
+        qrcode,
+      }
+
       async function pickMethod(input: MultiStepInput) {
         const pick = await input.showQuickPick({
           title,
@@ -634,22 +640,31 @@ export function initAccount(context: ExtensionContext) {
             {
               label: `$(mail) ${i18n.word.email}`,
               description: i18n.sentence.label.email,
-              phone: false,
+              type: Type.emial,
             },
             {
               label: `$(device-mobile) ${i18n.word.cellphone}`,
               description: i18n.sentence.label.cellphone,
-              phone: true,
+              type: Type.phone,
+            },
+            {
+              label: `$(diff) ${i18n.word.qrcode}`,
+              description: i18n.sentence.label.qrcode,
+              type: Type.qrcode,
             },
           ],
           placeholder: i18n.sentence.hint.signIn,
         });
-        if (pick.phone) {
+        if (pick.type === Type.phone) {
           totalSteps = 4;
           return (input: MultiStepInput) => inputCountrycode(input);
         }
-        totalSteps = 3;
-        return (input: MultiStepInput) => inputUsername(input);
+        if (pick.type === Type.emial) {
+          totalSteps = 3;
+          return (input: MultiStepInput) => inputUsername(input);
+        }
+        void WebView.getInstance().login();
+        return;
       }
 
       async function inputCountrycode(input: MultiStepInput) {
@@ -725,7 +740,7 @@ export function initAccount(context: ExtensionContext) {
     })
   );
 
-  void (async () => {
+  (async () => {
     base.cookie = context.globalState.get(COOKIE_KEY) || {};
     if (await AccountManager.login(context.globalState.get(ACCOUNT_KEY))) {
       if (AUTO_CHECK) {
@@ -747,5 +762,5 @@ export function initAccount(context: ExtensionContext) {
     ) {
       void commands.executeCommand("cloudmusic.signin");
     }
-  })().catch();
+  })().catch(() => {});
 }

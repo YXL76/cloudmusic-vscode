@@ -53,7 +53,7 @@ export class MusicCache {
       this.lruCache.get(key);
       return path;
     } catch {}
-    return undefined;
+    return;
   }
 
   static async put(key: string, path: Uri, md5: string) {
@@ -101,7 +101,7 @@ export class LyricCache {
         void cacache.rm.content(LYRIC_CACHE_DIR.fsPath, integrity);
       }
     } catch {}
-    return undefined;
+    return;
   }
 
   static put(key: string, data: LyricData) {
@@ -143,6 +143,6 @@ export class LocalCache {
     if (path) {
       return path;
     }
-    return undefined;
+    return;
   }
 }

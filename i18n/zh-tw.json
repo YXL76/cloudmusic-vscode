@@ -30,7 +30,8 @@
       "email": "使用郵箱登錄",
       "lyricDelay": "設定歌詞延遲",
       "newsongRecommendation": "新歌推薦",
-      "playlistRecommendation": "歌單推薦"
+      "playlistRecommendation": "歌單推薦",
+      "qrcode": "使用二維碼登錄"
     },
     "success": {
       "dailyCheck": "簽到成功",
@@ -97,6 +98,7 @@
     "previousTrack": "前一首",
     "private": "私密",
     "public": "公開",
+    "qrcode": "二維碼",
     "recommendation": "推薦",
     "refresh": "重繪",
     "refreshing": "重繪中",

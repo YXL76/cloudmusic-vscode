@@ -266,9 +266,9 @@
 |  history_recommend_songs_detail  |  历史每日推荐歌曲详情  |   ❌   |
 |              login               |        邮箱登录        |   ✔️   |
 |         login_cellphone          |        手机登录        |   ✔️   |
-|          login_qr_check          |     二维码扫码状态     |        |
-|         login_qr_create          |       二维码生成       |        |
-|           login_qr_key           |    二维码 key 生成     |        |
+|          login_qr_check          |     二维码扫码状态     |   ✔️   |
+|         login_qr_create          |       二维码生成       |   ✔️   |
+|           login_qr_key           |    二维码 key 生成     |   ✔️   |
 |          login_refresh           |        登录刷新        |   ❌   |
 |           login_status           |        登录状态        |   ✔️   |
 |              logout              |        退出登录        |   ✔️   |

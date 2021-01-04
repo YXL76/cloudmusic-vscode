@@ -51,6 +51,7 @@ export const i18n = (() => {
         lyricDelay: string;
         newsongRecommendation: string;
         playlistRecommendation: string;
+        qrcode: string;
       };
       success: {
         dailyCheck: string;
@@ -116,6 +117,7 @@ export const i18n = (() => {
       previousTrack: string;
       private: string;
       public: string;
+      qrcode: string;
       recommendation: string;
       refresh: string;
       refreshing: string;
