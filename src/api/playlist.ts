@@ -6,7 +6,7 @@ import type {
   UserDetail,
 } from "../constant";
 import {
-  linuxRequest,
+  apiRequest,
   solvePlaylistItem,
   solveSongItem,
   solveUserDetail,
@@ -91,7 +91,7 @@ export async function apiPlaylistDetail(id: number): Promise<SongsItem[]> {
     const {
       playlist: { tracks, trackIds },
       privileges,
-    } = await linuxRequest<{
+    } = await apiRequest<{
       playlist: { tracks: SongsItem[]; trackIds: TrackIdsItem[] };
       privileges: { st: number }[];
     }>("https://music.163.com/api/v6/playlist/detail", {
@@ -338,7 +338,7 @@ export async function apiToplist(): Promise<PlaylistItem[]> {
     return value as PlaylistItem[];
   }
   try {
-    const { list } = await linuxRequest<{ list: RawPlaylistItem[] }>(
+    const { list } = await apiRequest<{ list: RawPlaylistItem[] }>(
       "https://music.163.com/api/toplist",
       {}
     );

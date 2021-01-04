@@ -1,5 +1,5 @@
 import type { Cookie, OS } from ".";
-import { anonymousToken, eapi, jsonToCookie, linuxapi, weapi } from ".";
+import { anonymousToken, eapi, jsonToCookie, weapi } from ".";
 import axios from "axios";
 import { Agent as httpAgent } from "http";
 import { Agent as httpsAgent } from "https";
@@ -128,24 +128,11 @@ export const eapiRequest = async <T = Record<string, any>>(
   return responseHandler<T>(url.replace(/\w*api/, "eapi"), headers, data, true);
 };
 
-export const linuxRequest = async <T = Record<string, any>>(
+export const apiRequest = async <T = Record<string, any>>(
   url: string,
-  data: Record<string, any>,
-  os?: OS
+  data: Record<string, any>
 ) => {
-  const cookie: Cookie = { ...base.cookie, ...(os ? { os } : {}) };
   const headers = generateHeader(url);
-  headers["User-Agent"] =
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.90 Safari/537.36";
-  headers["Cookie"] = jsonToCookie(cookie);
-  data = linuxapi({
-    method: "POST",
-    url: url.replace(/\w*api/, "api"),
-    params: data,
-  });
-  return responseHandler<T>(
-    "https://music.163.com/api/linux/forward",
-    headers,
-    data
-  );
+  headers["Cookie"] = jsonToCookie(base.cookie);
+  return responseHandler<T>(url, headers, data);
 };

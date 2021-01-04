@@ -6,8 +6,8 @@ import type {
 } from "../constant";
 import { LyricCache, apiCache } from "../util";
 import {
+  apiRequest,
   eapiRequest,
-  linuxRequest,
   solveAnotherSongItem,
   solveSongItem,
   weapiRequest,
@@ -20,20 +20,19 @@ export async function apiLyric(id: number): Promise<LyricData> {
   if (lyricCache) {
     return lyricCache;
   }
-  const time: number[] = [0];
-  const text: string[] = ["Lyric"];
+  const time = [0];
+  const text = ["Lyric"];
   try {
     const {
       lrc: { lyric },
-    } = await linuxRequest<{ lrc: { lyric: string } }>(
+    } = await apiRequest<{ lrc: { lyric: string } }>(
       "https://music.163.com/api/song/lyric",
       {
         id,
         lv: -1,
         kv: -1,
         tv: -1,
-      },
-      "pc"
+      }
     );
     const lines = lyric.split("\n");
     let prev = 0;
