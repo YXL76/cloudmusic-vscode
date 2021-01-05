@@ -21,7 +21,7 @@ version = "0.5"
 [dependencies.neon]
 # git = "https://github.com/neon-bindings/neon"
 # branch = "main"
-version = "0.5"
+version = "0.7"
 default-features = false
 features = ["napi-runtime"]
 
