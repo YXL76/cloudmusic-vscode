@@ -13,7 +13,7 @@ crate-type = ["cdylib"]
 [build-dependencies.neon-build]
 # git = "https://github.com/neon-bindings/neon"
 # branch = "main"
-version = "0.5"
+version = "0.7"
 
 # [dependencies]
 # cfg-if = "1"

@@ -734,7 +734,7 @@ name = "native"
 version = "0.1.0"
 dependencies = [
  "neon",
- "neon-build",
+ "neon-build 0.7.0",
  "rodio",
 ]
 
@@ -808,7 +808,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ed5c7d2adba1e3aeae2dd4a5e2897c198893b053c6aff8b36a252f28e146bb73"
 dependencies = [
  "cslice",
- "neon-build",
+ "neon-build 0.5.3",
  "neon-macros",
  "neon-runtime",
  "semver",
@@ -825,6 +825,12 @@ dependencies = [
  "cfg-if 0.1.10",
  "ureq 1.5.4",
 ]
+
+[[package]]
+name = "neon-build"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "69c4ddb734e07eeb082b1db7e94b47efd385a3672229ca758a2e2c128263db7f"
 
 [[package]]
 name = "neon-macros"
