@@ -490,7 +490,7 @@
     "axios": "0.21.1",
     "bluebird": "3.7.2",
     "cacache": "15.0.5",
-    "dayjs": "1.10.1",
+    "dayjs": "1.10.2",
     "lru-cache": "6.0.0",
     "md5-file": "5.0.0",
     "node-cache": "5.1.2",
