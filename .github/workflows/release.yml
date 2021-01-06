@@ -65,20 +65,9 @@ jobs:
           LIBCLANG_PATH: ${{ runner.temp }}/llvm/bin
 
       - uses: actions/upload-artifact@v2
-        if: runner.os == 'Linux'
         with:
           name: ${{ runner.os }}
-          path: target/release/libnative.so
-      - uses: actions/upload-artifact@v2
-        if: runner.os == 'Windows'
-        with:
-          name: ${{ runner.os }}
-          path: target/release/native.dll
-      - uses: actions/upload-artifact@v2
-        if: runner.os == 'macOS'
-        with:
-          name: ${{ runner.os }}
-          path: target/release/libnative.dylib
+          path: index.node
 
   release:
     runs-on: ubuntu-latest
@@ -93,9 +82,9 @@ jobs:
       - name: Copy file
         run: |
           mkdir -p build
-          cp .artifact/macOS/libnative.dylib build/darwin.node
-          cp .artifact/Linux/libnative.so    build/linux.node
-          cp .artifact/Windows/native.dll    build/win32.node
+          cp .artifact/macOS/index.node   build/darwin.node
+          cp .artifact/Linux/index.node   build/linux.node
+          cp .artifact/Windows/index.node build/win32.node
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
