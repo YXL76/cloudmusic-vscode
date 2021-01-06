@@ -11,19 +11,17 @@ name = "native"
 crate-type = ["cdylib"]
 
 [build-dependencies.neon-build]
-# git = "https://github.com/neon-bindings/neon"
-# branch = "main"
-version = "0.5"
+git = "https://github.com/neon-bindings/neon"
+branch = "main"
 
 # [dependencies]
 # cfg-if = "1"
 
 [dependencies.neon]
-# git = "https://github.com/neon-bindings/neon"
-# branch = "main"
-version = "0.5"
+git = "https://github.com/neon-bindings/neon"
+branch = "main"
 default-features = false
-features = ["napi-runtime"]
+features = ["napi-5"]
 
 [dependencies.rodio]
 git = "https://github.com/YXL76/rodio"
