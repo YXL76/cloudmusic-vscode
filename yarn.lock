@@ -1507,7 +1507,7 @@ __metadata:
     lru-cache: 6.0.0
     md5-file: 5.0.0
     node-cache: 5.1.2
-    postcss: 8.2.2
+    postcss: 8.2.3
     postcss-cli: 8.3.1
     postcss-import: 14.0.0
     prettier: 2.2.1
@@ -4964,14 +4964,14 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"postcss@npm:8.2.2, postcss@npm:^8.1.6, postcss@npm:^8.2.1":
-  version: 8.2.2
-  resolution: "postcss@npm:8.2.2"
+"postcss@npm:8.2.3":
+  version: 8.2.3
+  resolution: "postcss@npm:8.2.3"
   dependencies:
     colorette: ^1.2.1
     nanoid: ^3.1.20
     source-map: ^0.6.1
-  checksum: c661b093d245ef8e3b0340958f672e3abeb89627afa7064771dafafa49c80742f0b6e05c55ee5ab14aa1da2095aebfd69325778df8a90d4e41fdf685a76993f2
+  checksum: b1317f33d919b3304e82dc3680b1ace678cf3e037d9c8b66dc2c2d9b9709ab42fb86a552f4cb7ecf3bdfb73e9afb85e9ae56fc0e8ecaa4bcba74a82182fc1298
   languageName: node
   linkType: hard
 
@@ -4994,6 +4994,17 @@ fsevents@~2.1.2:
     source-map: ^0.6.1
     supports-color: ^6.1.0
   checksum: 8a979ea9799dd48399337708a395ddb8cf0e328515201ed35c99f5ba5eaa7688eae65764c570bf49b5be0b106226e2f222abc210de068b3d3da9a9a3bbb70567
+  languageName: node
+  linkType: hard
+
+"postcss@npm:^8.1.6, postcss@npm:^8.2.1":
+  version: 8.2.2
+  resolution: "postcss@npm:8.2.2"
+  dependencies:
+    colorette: ^1.2.1
+    nanoid: ^3.1.20
+    source-map: ^0.6.1
+  checksum: c661b093d245ef8e3b0340958f672e3abeb89627afa7064771dafafa49c80742f0b6e05c55ee5ab14aa1da2095aebfd69325778df8a90d4e41fdf685a76993f2
   languageName: node
   linkType: hard
 
