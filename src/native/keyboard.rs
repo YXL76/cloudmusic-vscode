@@ -137,9 +137,9 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
             thread::sleep(SLEEP_DURATION);
 
             unsafe {
-                let state1 = CGEventSourceKeyState(0, 98) != 0;
-                let state2 = CGEventSourceKeyState(0, 100) != 0;
-                let state3 = CGEventSourceKeyState(0, 101) != 0;
+                let state1 = CGEventSourceKeyState(0, 98);
+                let state2 = CGEventSourceKeyState(0, 100);
+                let state3 = CGEventSourceKeyState(0, 101);
 
                 if prev != 0 {
                     if !state1 && !state2 && !state3 {

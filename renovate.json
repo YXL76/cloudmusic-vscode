@@ -1,4 +1,5 @@
 {
   "extends": ["config:base"],
-  "ignoreDeps": ["@types/node"]
+  "ignoreDeps": ["@types/node"],
+  "postUpdateOptions": ["yarnDedupeHighest"]
 }
