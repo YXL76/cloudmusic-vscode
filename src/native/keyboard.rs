@@ -65,7 +65,9 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 }
 
 #[cfg(target_os = "windows")]
-use winapi::um::winuser::GetAsyncKeyState;
+use winapi::um::winuser::{
+    GetAsyncKeyState, VK_MEDIA_NEXT_TRACK, VK_MEDIA_PLAY_PAUSE, VK_MEDIA_PREV_TRACK,
+};
 
 #[cfg(target_os = "windows")]
 pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
@@ -81,9 +83,9 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
             thread::sleep(SLEEP_DURATION);
 
             unsafe {
-                let state1 = GetAsyncKeyState(177) & -32768 != 0;
-                let state2 = GetAsyncKeyState(179) & -32768 != 0;
-                let state3 = GetAsyncKeyState(176) & -32768 != 0;
+                let state1 = GetAsyncKeyState(VK_MEDIA_PREV_TRACK) as u32 & 0x8000 != 0;
+                let state2 = GetAsyncKeyState(VK_MEDIA_PLAY_PAUSE) as u32 & 0x8000 != 0;
+                let state3 = GetAsyncKeyState(VK_MEDIA_NEXT_TRACK) as u32 & 0x8000 != 0;
 
                 if prev != 0 {
                     if !state1 && !state2 && !state3 {

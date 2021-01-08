@@ -56,11 +56,11 @@ jobs:
 
       - name: Build
         if: runner.os != 'Windows'
-        run: yarn build-native
+        run: cargo build --release
 
       - name: Build
         if: runner.os == 'Windows'
-        run: yarn build-native
+        run: cargo build --release
         env:
           LIBCLANG_PATH: ${{ runner.temp }}/llvm/bin
 
