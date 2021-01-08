@@ -9,8 +9,8 @@ export function initPlayer(context: ExtensionContext) {
     void window.showErrorMessage(i18n.sentence.error.systemSupport);
   } else {
     player.init(context);
-    if (MEDIA_CONTROL) {
-      function handler(res: number) {
+    /* if (MEDIA_CONTROL) {
+      const handler = (res: number) => {
         switch (res) {
           case 0:
             break;
@@ -25,9 +25,9 @@ export function initPlayer(context: ExtensionContext) {
             break;
         }
         NATIVE.startKeyboardEvent(handler, res);
-      }
+      };
 
       NATIVE.startKeyboardEvent(handler, 0);
-    }
+    } */
   }
 }

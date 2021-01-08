@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [6.3.1] - 2021-01-08
+
+- Native: disable media control (memory leak)
+
 ## [6.3.0] - 2021-01-08
 
 ### Added
