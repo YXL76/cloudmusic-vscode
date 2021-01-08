@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "cloudmusic",
   "description": "Netease Music for VS Code",
-  "version": "6.2.0",
+  "version": "6.3.0",
   "publisher": "YXL",
   "engines": {
     "vscode": "^1.52.1"
@@ -444,8 +444,6 @@
     "generate-css": "postcss src/webview/global.css -o dist/webview.css",
     "build": "yarn generate-css && webpack --mode production",
     "build-dev": "webpack --mode development",
-    "build-native": "cargo build --release",
-    "build-native-dev": "cargo build",
     "lint": "eslint src",
     "test": "tsc -p tsconfig.json && tsc -p src/webview/tsconfig.json",
     "vscode:prepublish": "yarn build"

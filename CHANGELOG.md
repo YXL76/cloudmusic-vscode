@@ -6,6 +6,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [6.3.0] - 2021-01-08
+
+### Added
+
+- Native
+  - Support media control again
+  - Dynamic loading
+
 ## [6.2.0] - 2021-01-04
 
 ### Added
