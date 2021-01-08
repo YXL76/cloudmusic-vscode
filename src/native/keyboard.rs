@@ -127,6 +127,7 @@ extern "C" {
 #[cfg(target_os = "macos")]
 pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     let callback = cx.argument::<JsFunction>(0)?.root(&mut cx);
+    let prev = cx.argument::<JsNumber>(1)?.value(&mut cx) as i32;
     let queue = cx.queue();
 
     thread::spawn(move || {
