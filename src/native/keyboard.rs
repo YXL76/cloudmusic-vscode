@@ -4,9 +4,7 @@ use std::{thread, time::Duration};
 static SLEEP_DURATION: Duration = Duration::from_millis(16);
 
 #[cfg(target_os = "linux")]
-use std::ptr;
-#[cfg(target_os = "linux")]
-use std::slice::from_raw_parts;
+use std::{os::raw::c_char, ptr, slice::from_raw_parts};
 #[cfg(target_os = "linux")]
 use x11::xlib::{XOpenDisplay, XQueryKeymap};
 
@@ -19,7 +17,8 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     thread::spawn(move || {
         // let keys = [5, 4, 3];
         let mut active = 0;
-        let keymap: *mut i8 = [0; 32].as_mut_ptr();
+        let keymap: *mut c_char = [0; 32].as_mut_ptr();
+
         unsafe {
             let disp = XOpenDisplay(ptr::null());
 
@@ -120,6 +119,7 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 }
 
 #[cfg(target_os = "macos")]
+#[link(name = "AppKit", kind = "framework")]
 extern "C" {
     fn CGEventSourceKeyState(state: i32, keycode: u16) -> bool;
 }
