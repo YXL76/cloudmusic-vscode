@@ -1,19 +1,19 @@
 use neon::prelude::*;
 
 mod native {
-    pub mod player;
     // pub mod download;
-    // pub mod keyboard;
+    pub mod keyboard;
+    pub mod player;
 }
 // use native::download::*;
-// use native::keyboard::*;
+use native::keyboard::*;
 use native::player::*;
 
 #[neon::main]
 fn main(mut cx: ModuleContext) -> NeonResult<()> {
     // cx.export_function("download", download)?;
 
-    // cx.export_function("startKeyboardEvent", start_keyboard_event)?;
+    cx.export_function("startKeyboardEvent", start_keyboard_event)?;
 
     cx.export_function("playerEmpty", player_empty)?;
     cx.export_function("playerLoad", player_load)?;

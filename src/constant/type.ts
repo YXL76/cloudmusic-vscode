@@ -151,7 +151,7 @@ export interface Player {
 }
 
 export interface NativeModule {
-  startKeyboardEvent(callback: (res: string) => void): void;
+  startKeyboardEvent(callback: (res: number) => void, prev: number): void;
 
   playerEmpty(player: NativePlayer): boolean;
   playerLoad(player: NativePlayer, url: string): boolean;
