@@ -1507,7 +1507,7 @@ __metadata:
     lru-cache: 6.0.0
     md5-file: 5.0.0
     node-cache: 5.1.2
-    postcss: 8.2.3
+    postcss: 8.2.4
     postcss-cli: 8.3.1
     postcss-import: 14.0.0
     prettier: 2.2.1
@@ -4964,14 +4964,14 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"postcss@npm:8.2.3, postcss@npm:^8.1.6, postcss@npm:^8.2.1":
-  version: 8.2.3
-  resolution: "postcss@npm:8.2.3"
+"postcss@npm:8.2.4, postcss@npm:^8.1.6, postcss@npm:^8.2.1":
+  version: 8.2.4
+  resolution: "postcss@npm:8.2.4"
   dependencies:
     colorette: ^1.2.1
     nanoid: ^3.1.20
     source-map: ^0.6.1
-  checksum: b1317f33d919b3304e82dc3680b1ace678cf3e037d9c8b66dc2c2d9b9709ab42fb86a552f4cb7ecf3bdfb73e9afb85e9ae56fc0e8ecaa4bcba74a82182fc1298
+  checksum: fb06b52d515c6768f5e372b3cec3d902cc0f37dd5128657739ab524ccc155655a6b2adf2f44cf670ad38cbccddae79d72d21093aecd1a7b023609ef548d71d6d
   languageName: node
   linkType: hard
 
