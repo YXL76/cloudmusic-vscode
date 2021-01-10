@@ -138,6 +138,7 @@ export const cookieToJson = (cookie: string[]): Cookie => {
   }
   const obj: Record<string, string> = {};
   cookie
+    .map((x) => x.replace(/\s*Domain=[^(;|$)]+;*/, ""))
     .join(";")
     .split(";")
     .forEach((i) => {

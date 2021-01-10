@@ -71,9 +71,7 @@ const responseHandler = async <T>(
       base.cookie = {
         ...base.cookie,
         ...cookieToJson(
-          (res.headers as { "set-cookie": string[] })["set-cookie"].map((x) =>
-            x.replace(/\s*Domain=[^(;|$)]+;*/, "")
-          )
+          (res.headers as { "set-cookie": string[] })["set-cookie"]
         ),
       };
     }

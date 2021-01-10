@@ -29,6 +29,7 @@ import {
   apiToplistArtist,
   apiUserLevel,
   base,
+  cookieToJson,
 } from "../api";
 import {
   ButtonAction,
@@ -629,6 +630,7 @@ export function initAccount(context: ExtensionContext) {
         emial,
         phone,
         qrcode,
+        cookie,
       }
 
       async function pickMethod(input: MultiStepInput) {
@@ -652,6 +654,10 @@ export function initAccount(context: ExtensionContext) {
               description: i18n.sentence.label.qrcode,
               type: Type.qrcode,
             },
+            {
+              label: "$(database) Cookie",
+              type: Type.cookie,
+            },
           ],
           placeholder: i18n.sentence.hint.signIn,
         });
@@ -662,6 +668,10 @@ export function initAccount(context: ExtensionContext) {
         if (pick.type === Type.emial) {
           totalSteps = 3;
           return (input: MultiStepInput) => inputUsername(input);
+        }
+        if (pick.type === Type.cookie) {
+          totalSteps = 2;
+          return (input: MultiStepInput) => inputCookie(input);
         }
         void WebView.getInstance().login();
         return;
@@ -700,6 +710,24 @@ export function initAccount(context: ExtensionContext) {
         });
         state.phone = "";
         return (input: MultiStepInput) => inputPassword(input);
+      }
+
+      async function inputCookie(input: MultiStepInput) {
+        base.cookie = cookieToJson([
+          await input.showInputBox({
+            title,
+            step: totalSteps,
+            totalSteps,
+            value: state.username,
+            prompt: i18n.sentence.hint.account,
+          }),
+        ]);
+
+        if (await AccountManager.login()) {
+          void window.showInformationMessage(i18n.sentence.success.signIn);
+        } else {
+          void window.showErrorMessage(i18n.sentence.fail.signIn);
+        }
       }
 
       async function inputPassword(input: MultiStepInput) {
