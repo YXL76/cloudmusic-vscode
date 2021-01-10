@@ -194,6 +194,7 @@
 |      playlist_create       |           创建歌单            |   ✔️   |
 |      playlist_delete       |           删除歌单            |   ✔️   |
 |      playlist_detail       |           歌单详情            |   ✔️   |
+|  playlist_detail_dynamic   |         歌单详情动态          |        |
 |    playlist_desc_update    |         更新歌单描述          |   ❌   |
 | playlist_highquality_tags  |         精品歌单标签          |   ✔️   |
 |        playlist_hot        |         热门歌单分类          |   ❌   |
