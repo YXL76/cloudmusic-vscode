@@ -104,6 +104,12 @@ jobs:
           echo "VSIX_PATH=$(find . -maxdepth 1 -type f -iname "*.vsix" | head -1)" >> $GITHUB_ENV
           echo "VSIX_NAME=$(basename $(find . -maxdepth 1 -type f -iname "*.vsix" | head -1))" >> $GITHUB_ENV
 
+      - name: Publish to Visual Studio Marketplace
+        run: yarn dlx vsce publish --packagePath ${{ env.VSIX_PATH }} -p ${{ secrets.VSCE_TOKEN }} --no-yarn
+
+      - name: Publish to Open VSX Registry
+        run: yarn dlx ovsx publish ${{ env.VSIX_PATH }} -p ${{ secrets.OVSX_TOKEN }}
+
       - uses: actions/create-release@v1
         id: create_release
         env:
@@ -123,9 +129,3 @@ jobs:
           asset_path: ${{ env.VSIX_PATH }}
           asset_name: ${{ env.VSIX_NAME }}
           asset_content_type: application/zip
-
-      - name: Publish to Visual Studio Marketplace
-        run: yarn dlx vsce publish ${{ env.VSIX_PATH }} -p ${{ secrets.VSCE_TOKEN }}
-
-      - name: Publish to Open VSX Registry
-        run: yarn dlx ovsx publish ${{ env.VSIX_PATH }} -p ${{ secrets.OVSX_TOKEN }}

@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [6.3.2] - 2021-01-10
+
+### Added
+
+- Publish to Open VSX Registry
+- Support using cookie to sign in
+
 ## [6.3.1] - 2021-01-08
 
 - Native: disable media control (memory leak)
