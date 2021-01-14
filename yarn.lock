@@ -1484,7 +1484,7 @@ __metadata:
     react-dom: 16.14.0
     tailwindcss: 2.0.2
     typescript: 4.1.3
-    webpack: 5.13.0
+    webpack: 5.14.0
     webpack-cli: 4.3.1
   languageName: unknown
   linkType: soft
@@ -2137,13 +2137,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"enhanced-resolve@npm:^5.6.0":
-  version: 5.6.0
-  resolution: "enhanced-resolve@npm:5.6.0"
+"enhanced-resolve@npm:^5.7.0":
+  version: 5.7.0
+  resolution: "enhanced-resolve@npm:5.7.0"
   dependencies:
     graceful-fs: ^4.2.4
     tapable: ^2.2.0
-  checksum: c43bc831c7b8173b948148ede388501174474dcf8cc7c1888b7d13e58bf59aab52f5976625ec016ca821f6ff4ba140e57f0a4416e48a8347b46271b077d9f178
+  checksum: 545cfa659e9cdccf1240bccbbd1791db7ec589979d71b35df5aeaf872dd8d13fab379ad73fa960f4cb32963b85492792c0fb0866f484043740014824ae6088b9
   languageName: node
   linkType: hard
 
@@ -2224,6 +2224,13 @@ __metadata:
     string.prototype.trimend: ^1.0.1
     string.prototype.trimstart: ^1.0.1
   checksum: f1e37567e49a54c09050aa3371cac601a789441f4fa9730f2c2d386aadad547d6c303bb41e7f5cb5286b616104d6c13450f33b712f664939a09729dd5e45c963
+  languageName: node
+  linkType: hard
+
+"es-module-lexer@npm:^0.3.26":
+  version: 0.3.26
+  resolution: "es-module-lexer@npm:0.3.26"
+  checksum: f6a6bfb5f38e7ecdb3fb5e530a9998dcf988356757460cb5f3b86240f6150bf5084aa651984a295d820c0532d097ab5296dad73f408f70e846ad566b733910fa
   languageName: node
   linkType: hard
 
@@ -6805,9 +6812,9 @@ typescript@4.1.3:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.13.0":
-  version: 5.13.0
-  resolution: "webpack@npm:5.13.0"
+"webpack@npm:5.14.0":
+  version: 5.14.0
+  resolution: "webpack@npm:5.14.0"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.45
@@ -6817,7 +6824,8 @@ typescript@4.1.3:
     acorn: ^8.0.4
     browserslist: ^4.14.5
     chrome-trace-event: ^1.0.2
-    enhanced-resolve: ^5.6.0
+    enhanced-resolve: ^5.7.0
+    es-module-lexer: ^0.3.26
     eslint-scope: ^5.1.1
     events: ^3.2.0
     glob-to-regexp: ^0.4.1
@@ -6837,7 +6845,7 @@ typescript@4.1.3:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 2967f16f9444389139a2d48b9607f1fc651634ffc7934aaaa94228e44f4a0d4fe3dcb88478d7f8399005ee9c3af674366b40f05bf7b7d9e077fa27c90072e30d
+  checksum: e2edf306cb12b7b0a0e25c90569ceb8826c3ba580f8a7956af8914cb198637d22727f4b89fe881d93571aacacc229f1c3b616c264deed3b87942422fd7c00218
   languageName: node
   linkType: hard
 
