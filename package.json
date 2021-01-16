@@ -462,7 +462,7 @@
     "copy-webpack-plugin": "7.0.0",
     "cssnano": "4.1.10",
     "esbuild-loader": "2.7.0",
-    "eslint": "7.17.0",
+    "eslint": "7.18.0",
     "eslint-config-prettier": "7.1.0",
     "eslint-config-react-app": "6.0.0",
     "eslint-plugin-flowtype": "5.2.0",
