@@ -20,7 +20,7 @@ import {
 } from "../util";
 import type { PlaylistItemTreeItem, QueueItemTreeItem } from "../provider";
 import { PlaylistProvider, QueueProvider } from "../provider";
-import { commands, window } from "vscode";
+import { commands, env, window } from "vscode";
 import { PersonalFm } from "../state";
 import { i18n } from "../i18n";
 
@@ -200,6 +200,15 @@ export function initPlaylist() {
   );
 
   commands.registerCommand(
+    "cloudmusic.copyPlaylistLink",
+    (element: PlaylistItemTreeItem) => {
+      void env.clipboard.writeText(
+        `https://music.163.com/#/playlist?id=${element.item.id}`
+      );
+    }
+  );
+
+  commands.registerCommand(
     "cloudmusic.intelligence",
     async (element: QueueItemTreeItem) => {
       const { pid, item } = element;
@@ -283,6 +292,15 @@ export function initPlaylist() {
     (element: QueueItemTreeItem) => {
       const { id, name } = element.item;
       WebView.getInstance().commentList(CommentType.song, id, name);
+    }
+  );
+
+  commands.registerCommand(
+    "cloudmusic.copySongLink",
+    (element: QueueItemTreeItem) => {
+      void env.clipboard.writeText(
+        `https://music.163.com/#/song?id=${element.item.id}`
+      );
     }
   );
 }

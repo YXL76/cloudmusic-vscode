@@ -37,7 +37,7 @@ import {
   QueueItemTreeItem,
   QueueProvider,
 } from "../provider";
-import { TreeItemCollapsibleState, Uri, commands, window } from "vscode";
+import { TreeItemCollapsibleState, Uri, commands, env, window } from "vscode";
 import type { QuickPickItem } from "vscode";
 import type { Readable } from "stream";
 import axios from "axios";
@@ -173,6 +173,7 @@ const enum PickType {
   followeds,
   follows,
   comment,
+  copy,
 }
 interface T extends QuickPickItem {
   id: number;
@@ -246,6 +247,10 @@ export async function pickSong(
         label: `${ICON.name} ${name}`,
         detail: alia.join("/"),
       },
+      {
+        label: `${ICON.copy} ${i18n.word.copyLink}`,
+        type: PickType.copy,
+      },
       ...pickArtistItems(ar),
       {
         label: `${ICON.album} ${i18n.word.album}`,
@@ -280,6 +285,11 @@ export async function pickSong(
     ],
   });
   switch (pick.type) {
+    case PickType.copy:
+      void env.clipboard.writeText(
+        `https://music.163.com/#/song?id=${item.id}`
+      );
+      break;
     case PickType.album:
       return (input: MultiStepInput) =>
         pickAlbum(input, step + 1, (pick as T).id);
@@ -639,6 +649,10 @@ export async function pickPlaylist(
         detail: description || "",
       },
       {
+        label: `${ICON.copy} ${i18n.word.copyLink}`,
+        type: PickType.copy,
+      },
+      {
         label: `${ICON.comment} ${i18n.word.comment}`,
         type: PickType.comment,
       },
@@ -683,6 +697,11 @@ export async function pickPlaylist(
     ],
   });
   switch (pick.type) {
+    case PickType.copy:
+      void env.clipboard.writeText(
+        `https://music.163.com/#/playlist?id=${item.id}`
+      );
+      break;
     case PickType.song:
       return (input: MultiStepInput) =>
         pickSong(input, step + 1, (pick as ST).item);

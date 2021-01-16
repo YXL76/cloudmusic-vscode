@@ -237,6 +237,14 @@
       {
         "command": "cloudmusic.fmTrash",
         "title": "%cloudmusic.commands.cloudmusic.fmTrash.title%"
+      },
+      {
+        "command": "cloudmusic.copySongLink",
+        "title": "%cloudmusic.commands.cloudmusic.copySongLink.title%"
+      },
+      {
+        "command": "cloudmusic.copyPlaylistLink",
+        "title": "%cloudmusic.commands.cloudmusic.copyPlaylistLink.title%"
       }
     ],
     "menus": {
@@ -383,6 +391,14 @@
         },
         {
           "command": "cloudmusic.playlistComment",
+          "when": "viewItem == PlaylistItemTreeItem"
+        },
+        {
+          "command": "cloudmusic.copySongLink",
+          "when": "viewItem == QueueItemTreeItem"
+        },
+        {
+          "command": "cloudmusic.copyPlaylistLink",
           "when": "viewItem == PlaylistItemTreeItem"
         }
       ]

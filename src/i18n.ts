@@ -77,6 +77,7 @@ export const i18n = (() => {
       comment: string;
       confirmation: string;
       content: string;
+      copyLink: string;
       createPlaylist: string;
       default: string;
       descending: string;
