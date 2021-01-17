@@ -22,7 +22,8 @@ export const BUTTON_KEY = "button";
 export const VOLUME_KEY = "volume";
 export const CHECK_KEY = "check";
 
-export const SETTING_DIR = Uri.joinPath(Uri.file(homedir()), ".cloudmusic");
+export const HOME_DIR = Uri.file(homedir());
+export const SETTING_DIR = Uri.joinPath(HOME_DIR, ".cloudmusic");
 export const TMP_DIR = Uri.joinPath(SETTING_DIR, "tmp");
 export const CACHE_DIR = Uri.joinPath(SETTING_DIR, "cache");
 export const MUSIC_CACHE_DIR = Uri.joinPath(
@@ -38,6 +39,7 @@ export const enum ICON {
   comment = "$(comment)",
   copy = "$(link)",
   description = "$(markdown)",
+  download = "$(cloud-download)",
   fm = "$(radio-tower)",
   level = "$(graph)",
   like = "$(heart)",

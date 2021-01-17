@@ -245,6 +245,10 @@
       {
         "command": "cloudmusic.copyPlaylistLink",
         "title": "%cloudmusic.commands.cloudmusic.copyPlaylistLink.title%"
+      },
+      {
+        "command": "cloudmusic.downloadSong",
+        "title": "%cloudmusic.commands.cloudmusic.downloadSong.title%"
       }
     ],
     "menus": {
@@ -400,6 +404,10 @@
         {
           "command": "cloudmusic.copyPlaylistLink",
           "when": "viewItem == PlaylistItemTreeItem"
+        },
+        {
+          "command": "cloudmusic.downloadSong",
+          "when": "viewItem == QueueItemTreeItem"
         }
       ]
     },

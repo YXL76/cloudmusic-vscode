@@ -83,6 +83,7 @@ export const i18n = (() => {
       descending: string;
       description: string;
       detail: string;
+      download: string;
       editPlaylist: string;
       email: string;
       en: string;

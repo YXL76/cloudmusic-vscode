@@ -10,6 +10,7 @@
   "cloudmusic.commands.cloudmusic.deleteFromPlaylist.title": "删除",
   "cloudmusic.commands.cloudmusic.deletePlaylist.title": "删除",
   "cloudmusic.commands.cloudmusic.deleteSong.title": "删除",
+  "cloudmusic.commands.cloudmusic.downloadSong.title": "下載",
   "cloudmusic.commands.cloudmusic.editPlaylist.title": "編輯",
   "cloudmusic.commands.cloudmusic.fmTrash.title": "垃圾箱",
   "cloudmusic.commands.cloudmusic.intelligence.title": "心動模式",

@@ -140,8 +140,8 @@ export async function apiSongUrl(trackId: number) {
       "/api/song/enhance/player/url",
       "pc"
     );
-    const { url, md5 } = data[0];
-    return { url, md5 };
+    const { url, md5, type } = data[0];
+    return { url, md5, type };
   } catch (err) {
     console.error(err);
   }

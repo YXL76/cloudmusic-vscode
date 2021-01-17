@@ -10,6 +10,7 @@
   "cloudmusic.commands.cloudmusic.deleteFromPlaylist.title": "Delete",
   "cloudmusic.commands.cloudmusic.deletePlaylist.title": "Delete",
   "cloudmusic.commands.cloudmusic.deleteSong.title": "Delete",
+  "cloudmusic.commands.cloudmusic.downloadSong.title": "Download",
   "cloudmusic.commands.cloudmusic.editPlaylist.title": "Edit",
   "cloudmusic.commands.cloudmusic.fmTrash.title": "Fm trash",
   "cloudmusic.commands.cloudmusic.intelligence.title": "Intelligence mode",

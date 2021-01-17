@@ -174,6 +174,7 @@ const enum PickType {
   follows,
   comment,
   copy,
+  download,
 }
 interface T extends QuickPickItem {
   id: number;
@@ -251,6 +252,10 @@ export async function pickSong(
         label: `${ICON.copy} ${i18n.word.copyLink}`,
         type: PickType.copy,
       },
+      {
+        label: `${ICON.download} ${i18n.word.download}`,
+        type: PickType.download,
+      },
       ...pickArtistItems(ar),
       {
         label: `${ICON.album} ${i18n.word.album}`,
@@ -289,6 +294,9 @@ export async function pickSong(
       void env.clipboard.writeText(
         `https://music.163.com/#/song?id=${item.id}`
       );
+      break;
+    case PickType.download:
+      void commands.executeCommand("cloudmusic.downloadSong", { item });
       break;
     case PickType.album:
       return (input: MultiStepInput) =>

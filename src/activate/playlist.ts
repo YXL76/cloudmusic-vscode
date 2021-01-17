@@ -6,11 +6,13 @@ import {
   apiPlaylistTracks,
   apiPlaylistUpdate,
   apiPlaymodeIntelligenceList,
+  apiSongUrl,
 } from "../api";
 import {
   MultiStepInput,
   WebView,
   confirmation,
+  downloadMusic,
   load,
   pickAddToPlaylist,
   pickPlaylist,
@@ -20,8 +22,11 @@ import {
 } from "../util";
 import type { PlaylistItemTreeItem, QueueItemTreeItem } from "../provider";
 import { PlaylistProvider, QueueProvider } from "../provider";
-import { commands, env, window } from "vscode";
+import { Uri, commands, env, window } from "vscode";
+import { basename, dirname } from "path";
+import { HOME_DIR } from "../constant";
 import { PersonalFm } from "../state";
+import { createWriteStream } from "fs";
 import { i18n } from "../i18n";
 
 export function initPlaylist() {
@@ -301,6 +306,36 @@ export function initPlaylist() {
       void env.clipboard.writeText(
         `https://music.163.com/#/song?id=${element.item.id}`
       );
+    }
+  );
+
+  commands.registerCommand(
+    "cloudmusic.downloadSong",
+    async ({ item: { id, name } }: QueueItemTreeItem) => {
+      const { url, md5, type } = await apiSongUrl(id);
+      const uri = await window.showSaveDialog({
+        defaultUri: Uri.joinPath(HOME_DIR, `${name}.${type}`),
+        filters: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          Music: [type],
+        },
+      });
+      if (uri && uri.scheme === "file") {
+        const filename = basename(uri.fsPath);
+        const data = await downloadMusic(url, filename, uri, md5, false);
+        if (data) {
+          data.on("error", (err) => {
+            console.error(err);
+            void window.showErrorMessage(i18n.sentence.error.network);
+            void commands.executeCommand("cloudmusic.next");
+          });
+          data.on("close", () => {
+            void env.openExternal(Uri.file(dirname(uri.fsPath)));
+          });
+          const file = createWriteStream(uri.fsPath);
+          data.pipe(file);
+        }
+      }
     }
   );
 }
