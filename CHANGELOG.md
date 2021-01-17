@@ -6,6 +6,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [6.4.0] - 2021-01-17
+
+### Added
+
+- Commands
+  - `cloudmusic.copySongLink` and `cloudmusic.copyPlaylistLink` ([#241](https://github.com/YXL76/cloudmusic-vscode/issues/241))
+  - `cloudmusic.downloadSong` ([#244](https://github.com/YXL76/cloudmusic-vscode/issues/244))
+
 ## [6.3.2] - 2021-01-10
 
 ### Added
