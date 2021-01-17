@@ -111,10 +111,10 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.deletePlaylist",
-    (element: PlaylistItemTreeItem) => {
+    ({ item: { id } }: PlaylistItemTreeItem) => {
       void MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
-          if (await apiPlaylistDelete(element.item.id)) {
+          if (await apiPlaylistDelete(id)) {
             PlaylistProvider.refresh({});
           }
         })
@@ -124,15 +124,9 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.editPlaylist",
-    (element: PlaylistItemTreeItem) => {
-      type State = {
-        name: string;
-        desc: string;
-      };
-      const state: State = {
-        name: element.item.name,
-        desc: element.item.description || "",
-      };
+    ({ item: { id, name, description } }: PlaylistItemTreeItem) => {
+      type State = { name: string; desc: string };
+      const state: State = { name, desc: description || "" };
 
       void MultiStepInput.run((input) => inputName(input));
 
@@ -155,7 +149,7 @@ export function initPlaylist() {
           value: state.desc,
           prompt: i18n.sentence.hint.desc,
         });
-        if (await apiPlaylistUpdate(element.item.id, state.name, state.desc)) {
+        if (await apiPlaylistUpdate(id, state.name, state.desc)) {
           PlaylistProvider.refresh({});
         }
       }
@@ -164,10 +158,10 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.unsavePlaylist",
-    (element: PlaylistItemTreeItem) => {
+    ({ item: { id } }: PlaylistItemTreeItem) => {
       void MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
-          if (await apiPlaylistSubscribe(element.item.id, "unsubscribe")) {
+          if (await apiPlaylistSubscribe(id, "unsubscribe")) {
             PlaylistProvider.refresh({});
           }
         })
@@ -191,25 +185,22 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.playlistDetail",
-    (element: PlaylistItemTreeItem) => {
-      void MultiStepInput.run((input) => pickPlaylist(input, 1, element.item));
+    ({ item }: PlaylistItemTreeItem) => {
+      void MultiStepInput.run((input) => pickPlaylist(input, 1, item));
     }
   );
 
   commands.registerCommand(
     "cloudmusic.playlistComment",
-    (element: PlaylistItemTreeItem) => {
-      const { id, name } = element.item;
+    ({ item: { id, name } }: PlaylistItemTreeItem) => {
       WebView.getInstance().commentList(CommentType.playlist, id, name);
     }
   );
 
   commands.registerCommand(
     "cloudmusic.copyPlaylistLink",
-    (element: PlaylistItemTreeItem) => {
-      void env.clipboard.writeText(
-        `https://music.163.com/#/playlist?id=${element.item.id}`
-      );
+    ({ item: { id } }: PlaylistItemTreeItem) => {
+      void env.clipboard.writeText(`https://music.163.com/#/playlist?id=${id}`);
     }
   );
 
@@ -241,15 +232,15 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.playSongWithPlaylist",
-    (element: QueueItemTreeItem) => {
+    ({ item: { id }, pid }: QueueItemTreeItem) => {
       PlaylistProvider.refresh({
-        element: PlaylistProvider.playlists.get(element.pid),
+        element: PlaylistProvider.playlists.get(pid),
         action: (items) => {
           QueueProvider.refresh(() => {
             void PersonalFm.set(false);
             QueueProvider.clear();
             QueueProvider.add(items);
-            QueueProvider.top(element.item.id);
+            QueueProvider.top(id);
             void load(QueueProvider.songs[0]);
           });
         },
@@ -259,12 +250,12 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.deleteFromPlaylist",
-    (element: QueueItemTreeItem) => {
+    ({ item: { id }, pid }: QueueItemTreeItem) => {
       void MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
-          if (await apiPlaylistTracks("del", element.pid, [element.item.id])) {
+          if (await apiPlaylistTracks("del", pid, [id])) {
             PlaylistProvider.refresh({
-              element: PlaylistProvider.playlists.get(element.pid),
+              element: PlaylistProvider.playlists.get(pid),
               refresh: true,
             });
           }
@@ -275,17 +266,15 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.saveToPlaylist",
-    (element: QueueItemTreeItem) => {
-      void MultiStepInput.run((input) =>
-        pickAddToPlaylist(input, 1, element.item.id)
-      );
+    ({ item: { id } }: QueueItemTreeItem) => {
+      void MultiStepInput.run((input) => pickAddToPlaylist(input, 1, id));
     }
   );
 
   commands.registerCommand(
     "cloudmusic.songDetail",
-    (element?: QueueItemTreeItem) => {
-      const item = element ? element.item : player.item;
+    ({ item }: QueueItemTreeItem) => {
+      item = item ? item : player.item;
       if (item) {
         void MultiStepInput.run((input) => pickSong(input, 1, item));
       }
@@ -294,18 +283,15 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.songComment",
-    (element: QueueItemTreeItem) => {
-      const { id, name } = element.item;
+    ({ item: { id, name } }: QueueItemTreeItem) => {
       WebView.getInstance().commentList(CommentType.song, id, name);
     }
   );
 
   commands.registerCommand(
     "cloudmusic.copySongLink",
-    (element: QueueItemTreeItem) => {
-      void env.clipboard.writeText(
-        `https://music.163.com/#/song?id=${element.item.id}`
-      );
+    ({ item: { id } }: QueueItemTreeItem) => {
+      void env.clipboard.writeText(`https://music.163.com/#/song?id=${id}`);
     }
   );
 

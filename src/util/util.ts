@@ -291,9 +291,7 @@ export async function pickSong(
   });
   switch (pick.type) {
     case PickType.copy:
-      void env.clipboard.writeText(
-        `https://music.163.com/#/song?id=${item.id}`
-      );
+      void commands.executeCommand("cloudmusic.copySongLink", { item });
       break;
     case PickType.download:
       void commands.executeCommand("cloudmusic.downloadSong", { item });
@@ -706,9 +704,7 @@ export async function pickPlaylist(
   });
   switch (pick.type) {
     case PickType.copy:
-      void env.clipboard.writeText(
-        `https://music.163.com/#/playlist?id=${item.id}`
-      );
+      void commands.executeCommand("cloudmusic.copyPlaylistLink", { item });
       break;
     case PickType.song:
       return (input: MultiStepInput) =>

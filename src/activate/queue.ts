@@ -122,18 +122,17 @@ export function initQueue() {
 
   commands.registerCommand(
     "cloudmusic.deleteSong",
-    (element: QueueItemTreeItem) => {
+    ({ item: { id } }: QueueItemTreeItem) => {
       QueueProvider.refresh(() => {
-        QueueProvider.delete(element.item.id);
+        QueueProvider.delete(id);
       });
     }
   );
 
   commands.registerCommand(
     "cloudmusic.playNext",
-    (element: QueueItemTreeItem) => {
+    ({ item: { id } }: QueueItemTreeItem) => {
       if (QueueProvider.songs.length > 2) {
-        const { id } = element.item;
         QueueProvider.refresh(() => {
           const index = QueueProvider.songs.findIndex(
             (value) => value.valueOf() === id
