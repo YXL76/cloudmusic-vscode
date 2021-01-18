@@ -839,9 +839,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"antd@npm:4.10.2":
-  version: 4.10.2
-  resolution: "antd@npm:4.10.2"
+"antd@npm:4.10.3":
+  version: 4.10.3
+  resolution: "antd@npm:4.10.3"
   dependencies:
     "@ant-design/colors": ^5.0.0
     "@ant-design/icons": ^4.3.0
@@ -852,7 +852,6 @@ __metadata:
     copy-to-clipboard: ^3.2.0
     lodash: ^4.17.20
     moment: ^2.25.3
-    omit.js: ^2.0.2
     rc-cascader: ~1.4.0
     rc-checkbox: ~2.3.0
     rc-collapse: ~3.1.0
@@ -882,13 +881,13 @@ __metadata:
     rc-tree: ~4.1.0
     rc-tree-select: ~4.3.0
     rc-upload: ~3.3.4
-    rc-util: ^5.6.6
+    rc-util: ^5.7.0
     scroll-into-view-if-needed: ^2.2.25
     warning: ^4.0.3
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: 89ad4cca131804fff82581780242730020dbb61d00f4165b4e3d16ff5e619c965bd88bf54e7f4ff0d26204b12df28c8c6e5daa45be041aa45e9787096782a4b1
+  checksum: 4decd8e156dd2b762d6d21a30ae08a64abb2f7876ef48fc75bdbefcc658601997c16988679dd789b215f3982ac6bea3b6fcd9178e0824058cb3cd8f1e2ac2c93
   languageName: node
   linkType: hard
 
@@ -1452,7 +1451,7 @@ __metadata:
     "@types/vscode": 1.52.0
     "@typescript-eslint/eslint-plugin": 4.13.0
     "@typescript-eslint/parser": 4.13.0
-    antd: 4.10.2
+    antd: 4.10.3
     array-unsort: 1.1.6
     axios: 0.21.1
     babel-eslint: 10.1.0
@@ -4234,7 +4233,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"omit.js@npm:^2.0.0, omit.js@npm:^2.0.2":
+"omit.js@npm:^2.0.0":
   version: 2.0.2
   resolution: "omit.js@npm:2.0.2"
   checksum: 4827dab2a5e97a9679dc3fe4ac77650e628a6ae889f78a74b82d7f57bfe87936111986c1d49c70a04de9dd174f1957b68a9636facd8b9624b5215d4cc6e27fca
@@ -5582,9 +5581,9 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"rc-util@npm:^5.0.0, rc-util@npm:^5.0.1, rc-util@npm:^5.0.5, rc-util@npm:^5.0.6, rc-util@npm:^5.0.7, rc-util@npm:^5.2.0, rc-util@npm:^5.2.1, rc-util@npm:^5.3.0, rc-util@npm:^5.4.0, rc-util@npm:^5.5.0, rc-util@npm:^5.5.1, rc-util@npm:^5.6.1, rc-util@npm:^5.6.2, rc-util@npm:^5.6.6":
-  version: 5.6.6
-  resolution: "rc-util@npm:5.6.6"
+"rc-util@npm:^5.0.0, rc-util@npm:^5.0.1, rc-util@npm:^5.0.5, rc-util@npm:^5.0.6, rc-util@npm:^5.0.7, rc-util@npm:^5.2.0, rc-util@npm:^5.2.1, rc-util@npm:^5.3.0, rc-util@npm:^5.4.0, rc-util@npm:^5.5.0, rc-util@npm:^5.5.1, rc-util@npm:^5.6.1, rc-util@npm:^5.6.2, rc-util@npm:^5.7.0":
+  version: 5.7.0
+  resolution: "rc-util@npm:5.7.0"
   dependencies:
     "@babel/runtime": ^7.12.5
     react-is: ^16.12.0
@@ -5592,7 +5591,7 @@ fsevents@~2.1.2:
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: 4cac255417e6d0ee963c2f1b2d0dbf647509ad93e26225b6a6bf568f7dc1bd72e14f50e65d76259a45f891f3e083745d5dff11227101ccf40c62af0d16e04669
+  checksum: b15423c992dea44d3ed1e00b497d19fa0ef7d55a83a559cca1c914802f44b94996b0a2a2794a84ea8fbea38f934dc15caa6f14d267fc494771ab343f5dc87e9b
   languageName: node
   linkType: hard
 
