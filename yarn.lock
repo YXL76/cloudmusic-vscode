@@ -1460,7 +1460,7 @@ __metadata:
     copy-webpack-plugin: 7.0.0
     cssnano: 4.1.10
     dayjs: 1.10.3
-    esbuild-loader: 2.7.0
+    esbuild-loader: 2.8.0
     eslint: 7.18.0
     eslint-config-prettier: 7.1.0
     eslint-config-react-app: 6.0.0
@@ -2244,26 +2244,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-loader@npm:2.7.0":
-  version: 2.7.0
-  resolution: "esbuild-loader@npm:2.7.0"
+"esbuild-loader@npm:2.8.0":
+  version: 2.8.0
+  resolution: "esbuild-loader@npm:2.8.0"
   dependencies:
-    esbuild: ^0.8.17
+    esbuild: ^0.8.33
     loader-utils: ^2.0.0
     type-fest: ^0.20.2
     webpack-sources: ^2.2.0
   peerDependencies:
     webpack: ^4.40.0 || ^5.0.0
-  checksum: 667600b27393001f21324d75de0b97480d670ba384a48d5f66b962b6e942c3bc6dc71ff8e9e04bfe9c4bae71f396d01c093a3bf238487b9ca08c3af28fd8847f
+  checksum: 2e40d2a9b19bddd3820b0ca1642a2011fd2b7155c0d4df645c455f4cb226eed602af68dee129d88b6431306f0a7f8c8874fa34087d67a2de3a57103b7a0aa282
   languageName: node
   linkType: hard
 
-"esbuild@npm:^0.8.17":
-  version: 0.8.29
-  resolution: "esbuild@npm:0.8.29"
+"esbuild@npm:^0.8.33":
+  version: 0.8.33
+  resolution: "esbuild@npm:0.8.33"
   bin:
     esbuild: bin/esbuild
-  checksum: 44600db4dd589bf49c3cdd390ebc3178f5c01ca8282299fda03e6723e806f2878703cc76488bf7caeeb0ac7183c526c6539d173478dd05a88d3f0a23ff132d11
+  checksum: 956e4935701806a5c9ebf0931e9ad4513cf7450123b613bc5e29eb29f4617799e6eb2768691dac8e40d6dd1cd503a967439996ce6c9e9a917ff2083c244413da
   languageName: node
   linkType: hard
 
