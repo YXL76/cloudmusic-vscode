@@ -1480,7 +1480,7 @@ __metadata:
     cacache: 15.0.5
     copy-webpack-plugin: 7.0.0
     cssnano: 4.1.10
-    dayjs: 1.10.3
+    dayjs: 1.10.4
     esbuild-loader: 2.8.0
     eslint: 7.18.0
     eslint-config-prettier: 7.2.0
@@ -1919,10 +1919,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dayjs@npm:1.10.3, dayjs@npm:^1.8.30":
-  version: 1.10.3
-  resolution: "dayjs@npm:1.10.3"
-  checksum: df7d13e99a2932c12efb3fc9c36e537ee6722ed1763fb2b74559bf9a864828b3d3eac6d3ae59f0c1dbef8dae52444059d8c8bc540c7edb13d665fcd2b08028e6
+"dayjs@npm:1.10.4, dayjs@npm:^1.8.30":
+  version: 1.10.4
+  resolution: "dayjs@npm:1.10.4"
+  checksum: 3b7bb2232fff808209870bc72d4b2000941a1aa45f0226e2907f9dd1dda306d4b3a1eb9058450fd2c324b01a007a37809ac6f9b525806a86902c55e2934cd5d5
   languageName: node
   linkType: hard
 
