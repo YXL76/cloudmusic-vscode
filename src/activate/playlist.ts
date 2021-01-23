@@ -273,8 +273,8 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.songDetail",
-    ({ item }: QueueItemTreeItem) => {
-      item = item ? item : player.item;
+    (element?: QueueItemTreeItem) => {
+      const { item } = element ? element : player;
       if (item) {
         void MultiStepInput.run((input) => pickSong(input, 1, item));
       }
