@@ -1,7 +1,7 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { PlaylistProvider } from "../provider";
-import { apiCache } from "../util";
-import { apiUserLevel } from "../api";
+import { PlaylistProvider, QueueProvider } from "../provider";
+import { apiCache, songsItem2TreeItem } from "../util";
+import { apiRecommendSongs, apiUserLevel } from "../api";
 import { commands } from "vscode";
 
 export class LoggedIn {
@@ -19,10 +19,19 @@ export class LoggedIn {
         ButtonManager.buttonAccountAccount(AccountManager.nickname);
         ButtonManager.show();
         PlaylistProvider.refresh({ refresh: true });
+        apiRecommendSongs()
+          .then((songs) => {
+            QueueProvider.refresh(() => {
+              QueueProvider.clear();
+              QueueProvider.add(songsItem2TreeItem(0, songs));
+            });
+          })
+          .catch(() => {});
       } else {
         apiCache.del("user_level");
         ButtonManager.buttonAccountSignin();
         ButtonManager.hide();
+        QueueProvider.clear();
       }
       void commands.executeCommand("cloudmusic.clearQueue");
     }
