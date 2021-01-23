@@ -6,6 +6,20 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [6.5.0] - 2021-01-23
+
+### Added
+
+- load recommended songs after logging in ([#254](https://github.com/YXL76/cloudmusic-vscode/issues/254), [#160](https://github.com/YXL76/cloudmusic-vscode/issues/160))
+
+### Changed
+
+- Permanently cache user level
+
+### Fixed
+
+- Commands: fail to execute `cloudmusic.songDetail`
+
 ## [6.4.0] - 2021-01-17
 
 ### Added
