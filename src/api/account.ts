@@ -370,7 +370,7 @@ export async function apiUserLevel() {
       {}
     );
     const ret = { progress, level };
-    apiCache.set(key, ret);
+    apiCache.set(key, ret, 0);
     return ret;
   } catch (err) {
     console.error(err);

@@ -1,5 +1,7 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { PlaylistProvider } from "../provider";
+import { apiCache } from "../util";
+import { apiUserLevel } from "../api";
 import { commands } from "vscode";
 
 export class LoggedIn {
@@ -13,10 +15,12 @@ export class LoggedIn {
     if (newValue !== this.state) {
       this.state = newValue;
       if (newValue) {
+        void apiUserLevel();
         ButtonManager.buttonAccountAccount(AccountManager.nickname);
         ButtonManager.show();
         PlaylistProvider.refresh({ refresh: true });
       } else {
+        apiCache.del("user_level");
         ButtonManager.buttonAccountSignin();
         ButtonManager.hide();
       }
