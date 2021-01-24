@@ -21,7 +21,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ant-design/icons@npm:4.4.0, @ant-design/icons@npm:^4.3.0":
+"@ant-design/icons@npm:4.4.0, @ant-design/icons@npm:^4.4.0":
   version: 4.4.0
   resolution: "@ant-design/icons@npm:4.4.0"
   dependencies:
@@ -849,12 +849,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"antd@npm:4.10.3":
-  version: 4.10.3
-  resolution: "antd@npm:4.10.3"
+"antd@npm:4.11.1":
+  version: 4.11.1
+  resolution: "antd@npm:4.11.1"
   dependencies:
     "@ant-design/colors": ^5.0.0
-    "@ant-design/icons": ^4.3.0
+    "@ant-design/icons": ^4.4.0
     "@ant-design/react-slick": ~0.28.1
     "@babel/runtime": ^7.11.2
     array-tree-filter: ^2.1.0
@@ -868,8 +868,8 @@ __metadata:
     rc-dialog: ~8.5.1
     rc-drawer: ~4.2.0
     rc-dropdown: ~3.2.0
-    rc-field-form: ~1.17.3
-    rc-image: ~5.0.2
+    rc-field-form: ~1.18.0
+    rc-image: ~5.1.1
     rc-input-number: ~6.1.0
     rc-mentions: ~1.5.0
     rc-menu: ~8.10.0
@@ -897,7 +897,7 @@ __metadata:
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: 4decd8e156dd2b762d6d21a30ae08a64abb2f7876ef48fc75bdbefcc658601997c16988679dd789b215f3982ac6bea3b6fcd9178e0824058cb3cd8f1e2ac2c93
+  checksum: 5d56a62acabaeec18a589872d61fe531849eedadde48dd5512940a7cf2fbe2157bdce3029646df48ca605610dc73ac4fe807ae9d525a7df6190dc1b9727e8365
   languageName: node
   linkType: hard
 
@@ -1472,7 +1472,7 @@ __metadata:
     "@types/vscode": 1.52.0
     "@typescript-eslint/eslint-plugin": 4.14.0
     "@typescript-eslint/parser": 4.14.0
-    antd: 4.10.3
+    antd: 4.11.1
     array-unsort: 1.1.6
     axios: 0.21.1
     babel-eslint: 10.1.0
@@ -5207,7 +5207,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"rc-dialog@npm:~8.5.1":
+"rc-dialog@npm:~8.5.0, rc-dialog@npm:~8.5.1":
   version: 8.5.1
   resolution: "rc-dialog@npm:8.5.1"
   dependencies:
@@ -5250,31 +5250,32 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"rc-field-form@npm:~1.17.3":
-  version: 1.17.3
-  resolution: "rc-field-form@npm:1.17.3"
+"rc-field-form@npm:~1.18.0":
+  version: 1.18.1
+  resolution: "rc-field-form@npm:1.18.1"
   dependencies:
     "@babel/runtime": ^7.8.4
     async-validator: ^3.0.3
     rc-util: ^5.0.0
   peerDependencies:
     react: ">= 16.9.0"
-  checksum: a4ccf57a8d5f77f380534cddb2cd166d515958651c7e0bbb2719ff562425ad4676aef00b34b97f80a264e507a4c744dc4e07c460d7ad4f2b53b857ab04fab64c
+    react-dom: ">= 16.9.0"
+  checksum: a055f33618ca8f357384446f5eb9c64d27960cc5a20c23e3d93455bdfbc33219ed6ab151b0280cc9c1621e3e1aa6a50b7c4126b6e497bf8345e8ccd93d20b09f
   languageName: node
   linkType: hard
 
-"rc-image@npm:~5.0.2":
-  version: 5.0.2
-  resolution: "rc-image@npm:5.0.2"
+"rc-image@npm:~5.1.1":
+  version: 5.1.4
+  resolution: "rc-image@npm:5.1.4"
   dependencies:
     "@babel/runtime": ^7.11.2
     classnames: ^2.2.6
-    rc-dialog: ~8.5.1
+    rc-dialog: ~8.5.0
     rc-util: ^5.0.6
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: 16bf696e9982aaf20622fa2fd6e2792f1522ffd76def0ce497202e78cbcc39b05c7461fcc0e0d938dc2e57abab6ae8d34d182bee736fb7a0594e3d55b406e05f
+  checksum: 3ba1f0616e85d14b108f4e1a3016369a2260bb829308b124facf9aa9d02249d55b4101cf94d8cd0828ca287cfeb7a9d4419c46b87c295c79bcdb26e6e9b7551f
   languageName: node
   linkType: hard
 
