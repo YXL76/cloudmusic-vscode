@@ -507,7 +507,7 @@
   },
   "dependencies": {
     "@ant-design/icons": "4.4.0",
-    "antd": "4.11.1",
+    "antd": "4.11.2",
     "array-unsort": "1.1.6",
     "axios": "0.21.1",
     "bluebird": "3.7.2",
