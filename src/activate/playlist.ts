@@ -297,18 +297,21 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.downloadSong",
-    async ({ item: { id, name } }: QueueItemTreeItem) => {
-      const { url, md5, type } = await apiSongUrl(id);
+    async ({ item }: QueueItemTreeItem) => {
+      const { url, type } = await apiSongUrl(item);
+      if (!url) {
+        return;
+      }
       const uri = await window.showSaveDialog({
-        defaultUri: Uri.joinPath(HOME_DIR, `${name}.${type}`),
+        defaultUri: Uri.joinPath(HOME_DIR, `${item.name}.${type || "mp3"}`),
         filters: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          Music: [type],
+          Music: [type || "mp3"],
         },
       });
       if (uri && uri.scheme === "file") {
         const filename = basename(uri.fsPath);
-        const data = await downloadMusic(url, filename, uri, md5, false);
+        const data = await downloadMusic(url, filename, uri, false);
         if (data) {
           data.on("error", (err) => {
             console.error(err);

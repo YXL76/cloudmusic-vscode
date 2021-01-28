@@ -454,6 +454,12 @@
             ],
             "scope": "window"
           },
+          "cloudmusic.music.unlock": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "%cloudmusic.configuration.cloudmusic.music.unlock.markdownDescription%",
+            "scope": "window"
+          },
           "cloudmusic.player.mediaControl": {
             "type": "boolean",
             "default": true,

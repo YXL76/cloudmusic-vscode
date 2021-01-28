@@ -1,10 +1,6 @@
-import type {
-  AnotherSongItem,
-  LyricData,
-  SongDetail,
-  SongsItem,
-} from "../constant";
+import type { AnotherSongItem, SongDetail, SongsItem } from "../constant";
 import { LyricCache, apiCache } from "../util";
+import { MUSIC_QUALITY, UNLOCK_MUSIC, unplayable } from "../constant";
 import {
   apiRequest,
   eapiRequest,
@@ -12,8 +8,8 @@ import {
   solveSongItem,
   weapiRequest,
 } from ".";
-import { MUSIC_QUALITY } from "../constant";
 import type { TopSongType } from ".";
+import unlock from "../unlock";
 
 export async function apiLyric(id: number) {
   const lyricCache = await LyricCache.get(`${id}`);
@@ -105,6 +101,14 @@ export async function apiSongDetail(trackIds: number[]) {
           ids: `[${ids.join(",")}]`,
         })
           .then(({ songs, privileges }) => {
+            if (UNLOCK_MUSIC) {
+              for (let i = 0; i < privileges.length; ++i) {
+                if (privileges[i].st < 0) {
+                  unplayable.add(songs[i].id);
+                }
+              }
+              resolve(songs);
+            }
             const ret: SongsItem[] = [];
             for (let i = 0; i < privileges.length; ++i) {
               if (privileges[i].st >= 0) {
@@ -129,23 +133,31 @@ export async function apiSongDetail(trackIds: number[]) {
   return [];
 }
 
-export async function apiSongUrl(trackId: number) {
+export async function apiSongUrl(song: SongsItem) {
   try {
+    if (UNLOCK_MUSIC && unplayable.has(song.id)) {
+      const data = await unlock(song);
+      if (data) {
+        return data;
+      }
+      return {};
+    }
     const { data } = await eapiRequest<{ data: SongDetail[] }>(
       "https://interface3.music.163.com/eapi/song/enhance/player/url",
       {
-        ids: `[${trackId}]`,
+        ids: `[${song.id}]`,
         br: MUSIC_QUALITY,
       },
       "/api/song/enhance/player/url",
       "pc"
     );
     const { url, md5, type } = data[0];
+
     return { url, md5, type };
   } catch (err) {
     console.error(err);
   }
-  return {} as SongDetail;
+  return {};
 }
 
 export async function apiTopSong(areaId: TopSongType) {

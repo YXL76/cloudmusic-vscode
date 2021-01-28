@@ -6,5 +6,6 @@ export * from "./album";
 export * from "./artist";
 export * from "./comment";
 export * from "./playlist";
+export * from "./request";
 export * from "./search";
 export * from "./song";

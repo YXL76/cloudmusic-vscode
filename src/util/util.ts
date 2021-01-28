@@ -37,7 +37,7 @@ import {
   QueueItemTreeItem,
   QueueProvider,
 } from "../provider";
-import { TreeItemCollapsibleState, Uri, commands, env, window } from "vscode";
+import { TreeItemCollapsibleState, Uri, commands, window } from "vscode";
 import type { QuickPickItem } from "vscode";
 import type { Readable } from "stream";
 import axios from "axios";
@@ -50,8 +50,8 @@ export async function downloadMusic(
   url: string,
   filename: string,
   path: Uri,
-  md5: string,
-  cache: boolean
+  cache: boolean,
+  md5?: string
 ) {
   try {
     const { data } = await axios.get<Readable>(url, {
@@ -96,25 +96,24 @@ export async function load(element: QueueItemTreeItem) {
   const { id } = item;
   const idS = `${id}`;
 
-  const path = await MusicCache.get(idS);
+  let path = await MusicCache.get(idS);
   if (path) {
     player.load(path, pid, item);
     return;
   }
 
-  const { url, md5 } = await apiSongUrl(id);
-  if (!url || !md5) {
+  const { url, md5 } = await apiSongUrl(item);
+  if (!url) {
     void commands.executeCommand("cloudmusic.next");
-  } else {
-    const path = LocalCache.get(md5);
-    if (path) {
-      player.load(path, pid, item);
-      return;
-    }
+    return;
+  }
+  if (md5 && (path = LocalCache.get(md5))) {
+    player.load(path, pid, item);
+    return;
   }
 
   const tmpUri = Uri.joinPath(TMP_DIR, idS);
-  const data = await downloadMusic(url, idS, tmpUri, md5, !PersonalFm.get());
+  const data = await downloadMusic(url, idS, tmpUri, !PersonalFm.get(), md5);
   if (data) {
     let len = 0;
     const onData = ({ length }: { length: number }) => {

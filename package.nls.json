@@ -48,6 +48,7 @@
   "cloudmusic.configuration.cloudmusic.music.quality.enumDescriptions.medium": "Medium Quality",
   "cloudmusic.configuration.cloudmusic.music.quality.markdownDescription": "Choose your prefer music quality",
   "cloudmusic.configuration.cloudmusic.player.mediaControl.markdownDescription": "Enable media control",
+  "cloudmusic.configuration.cloudmusic.music.unlock.markdownDescription": "Unlock music",
   "cloudmusic.views.cloudmusic.favoritePlaylist.name": "Favorite playlist",
   "cloudmusic.views.cloudmusic.queue.name": "Queue",
   "cloudmusic.views.cloudmusic.userPlaylist.name": "User playlist",

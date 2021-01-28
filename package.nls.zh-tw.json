@@ -48,6 +48,7 @@
   "cloudmusic.configuration.cloudmusic.music.quality.enumDescriptions.medium": "較高",
   "cloudmusic.configuration.cloudmusic.music.quality.markdownDescription": "選擇優先播放的音質",
   "cloudmusic.configuration.cloudmusic.player.mediaControl.markdownDescription": "開啟媒體控制",
+  "cloudmusic.configuration.cloudmusic.music.unlock.markdownDescription": "解鎖音樂",
   "cloudmusic.views.cloudmusic.favoritePlaylist.name": "收藏歌單",
   "cloudmusic.views.cloudmusic.queue.name": "隊列",
   "cloudmusic.views.cloudmusic.userPlaylist.name": "用戶歌單",

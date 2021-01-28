@@ -42,14 +42,14 @@ class NoPlayer implements Player {
 
 async function prefetch() {
   try {
-    const { id } = PersonalFm.get()
-      ? PersonalFm.item[1].item
-      : QueueProvider.songs[1].item;
-    const idString = `${id}`;
+    const { item } = PersonalFm.get()
+      ? PersonalFm.item[1]
+      : QueueProvider.songs[1];
+    const idString = `${item.id}`;
 
-    if (id !== 0 && !(await MusicCache.get(idString))) {
-      const { url, md5 } = await apiSongUrl(id);
-      if (!url || !md5 || LocalCache.get(md5)) {
+    if (idString !== "0" && !(await MusicCache.get(idString))) {
+      const { url, md5 } = await apiSongUrl(item);
+      if (!url || (md5 && LocalCache.get(md5))) {
         return;
       }
       const path = Uri.joinPath(TMP_DIR, idString);
@@ -57,8 +57,8 @@ async function prefetch() {
         url,
         idString,
         path,
-        md5,
-        !PersonalFm.get()
+        !PersonalFm.get(),
+        md5
       );
       if (data) {
         const file = createWriteStream(path.fsPath);

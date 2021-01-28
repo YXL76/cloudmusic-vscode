@@ -56,16 +56,18 @@ export class MusicCache {
     return;
   }
 
-  static async put(key: string, path: Uri, md5: string) {
+  static async put(key: string, path: Uri, md5?: string) {
     try {
       await cacache.put(
         MUSIC_CACHE_DIR.fsPath,
         key,
         await workspace.fs.readFile(path),
-        {
-          integrity: `md5-${Buffer.from(md5, "hex").toString("base64")}`,
-          algorithms: ["md5"],
-        }
+        md5
+          ? {
+              integrity: `md5-${Buffer.from(md5, "hex").toString("base64")}`,
+              algorithms: ["md5"],
+            }
+          : undefined
       );
       const { integrity, size } = await cacache.get.info(
         MUSIC_CACHE_DIR.fsPath,

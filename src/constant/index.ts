@@ -6,6 +6,8 @@ import type { NativeModule } from "./type";
 import { Uri } from "vscode";
 import { join } from "path";
 
+export const unplayable = new Set<number>();
+
 export const PLATFORM = platform();
 export const PLAYER_AVAILABLE =
   PLATFORM === "win32" || PLATFORM === "linux" || PLATFORM === "darwin";
