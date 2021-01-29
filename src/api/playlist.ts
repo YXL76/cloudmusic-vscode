@@ -104,7 +104,7 @@ export async function apiPlaylistDetail(id: number) {
             unplayable.add(tracks[i].id);
           }
         }
-        return tracks;
+        return tracks.map(solveSongItem);
       }
       const ret: SongsItem[] = [];
       for (let i = 0; i < privileges.length; ++i) {
@@ -115,7 +115,7 @@ export async function apiPlaylistDetail(id: number) {
       apiCache.set(key, ret);
       return ret;
     }
-    const ret = await apiSongDetail(trackIds.map((trackId) => trackId.id));
+    const ret = await apiSongDetail(trackIds.map(({ id }) => id));
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -179,7 +179,7 @@ export async function apiPlaylistSubscribers(
       limit,
       offset,
     });
-    const ret = subscribers.map((subscriber) => solveUserDetail(subscriber));
+    const ret = subscribers.map(solveUserDetail);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -270,7 +270,7 @@ export async function apiSimiPlaylist(
       "https://music.163.com/weapi/discovery/simiPlaylist",
       { songid, limit, offset }
     );
-    const ret = playlists.map((playlist) => solvePlaylistItem(playlist));
+    const ret = playlists.map(solvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -300,7 +300,7 @@ export async function apiTopPlaylist(
         total: true,
       }
     );
-    const ret = playlists.map((playlist) => solvePlaylistItem(playlist));
+    const ret = playlists.map(solvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -325,7 +325,7 @@ export async function apiTopPlaylistHighquality(cat: string, limit: number) {
         total: true,
       }
     );
-    const ret = playlists.map((playlist) => solvePlaylistItem(playlist));
+    const ret = playlists.map(solvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -345,7 +345,7 @@ export async function apiToplist() {
       "https://music.163.com/api/toplist",
       {}
     );
-    const ret = list.map((item) => solvePlaylistItem(item));
+    const ret = list.map(solvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {

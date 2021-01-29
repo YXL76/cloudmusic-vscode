@@ -84,7 +84,7 @@ export async function apiCommentFloor(
     const ret = {
       totalCount,
       hasMore,
-      comments: comments.map((comment) => solveComment(comment)),
+      comments: comments.map(solveComment),
     };
     apiCache.set(key, ret, 60);
     return ret;
@@ -159,7 +159,7 @@ export async function apiCommentNew(
     const ret = {
       totalCount,
       hasMore,
-      comments: comments.map((comment) => solveComment(comment)),
+      comments: comments.map(solveComment),
     };
     if (sortType !== SortType.latest || cursor !== 0) {
       apiCache.set(key, ret, 60);

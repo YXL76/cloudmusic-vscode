@@ -172,7 +172,7 @@ export async function apiPersonalFm() {
       "https://music.163.com/weapi/v1/radio/get",
       {}
     );
-    return data.map((song) => solveAnotherSongItem(song));
+    return data.map(solveAnotherSongItem);
   } catch (err) {
     console.error(err);
   }
@@ -190,7 +190,7 @@ export async function apiPersonalized() {
       "https://music.163.com/weapi/personalized/playlist",
       { limit: 30, total: true, n: 1000 }
     );
-    const ret = result.map((playlist) => solvePlaylistItem(playlist));
+    const ret = result.map(solvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -233,7 +233,7 @@ export async function apiRecommendResource() {
       "https://music.163.com/weapi/v1/discovery/recommend/resource",
       {}
     );
-    const ret = recommend.map((playlist) => solvePlaylistItem(playlist));
+    const ret = recommend.map(solvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -253,7 +253,7 @@ export async function apiRecommendSongs() {
       "https://music.163.com/api/v3/discovery/recommend/songs",
       {}
     );
-    const ret = data.dailySongs.map((song) => solveSongItem(song));
+    const ret = data.dailySongs.map(solveSongItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -316,7 +316,7 @@ export async function apiUserFolloweds(userId: number, limit: number) {
       { userId, time: -1, limit },
       "/api/user/getfolloweds"
     );
-    const ret = followeds.map((followed) => solveUserDetail(followed));
+    const ret = followeds.map(solveUserDetail);
     return ret;
   } catch (err) {
     console.error(err);
@@ -343,7 +343,7 @@ export async function apiUserFollows(
         order: true,
       }
     );
-    const ret = follow.map((item) => solveUserDetail(item));
+    const ret = follow.map(solveUserDetail);
     return ret;
   } catch (err) {
     console.error(err);
@@ -393,7 +393,7 @@ export async function apiUserPlaylist(uid: number) {
       offset: 0,
       includeVideo: true,
     });
-    const ret = playlist.map((playlist) => solvePlaylistItem(playlist));
+    const ret = playlist.map(solvePlaylistItem);
     if (ret.length > 0) {
       apiCache.set(key, ret);
     }

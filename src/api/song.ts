@@ -70,7 +70,7 @@ export async function apiSimiSong(
       "https://music.163.com/weapi/v1/discovery/simiSong",
       { songid, limit, offset }
     );
-    const ret = songs.map((song) => solveAnotherSongItem(song));
+    const ret = songs.map(solveAnotherSongItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -107,7 +107,7 @@ export async function apiSongDetail(trackIds: number[]) {
                   unplayable.add(songs[i].id);
                 }
               }
-              resolve(songs);
+              resolve(songs.map(solveSongItem));
             }
             const ret: SongsItem[] = [];
             for (let i = 0; i < privileges.length; ++i) {
@@ -176,7 +176,7 @@ export async function apiTopSong(areaId: TopSongType) {
         total: true,
       }
     );
-    const ret = data.map((item) => solveAnotherSongItem(item));
+    const ret = data.map(solveAnotherSongItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {

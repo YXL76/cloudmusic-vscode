@@ -16,7 +16,7 @@ export async function apiAlbum(id: number) {
     const info = solveAlbumsItem(album);
     const ret = {
       info,
-      songs: songs.map((song) => solveSongItem(song)),
+      songs: songs.map(solveSongItem),
     };
     apiCache.set(key, ret);
     return ret;
@@ -37,7 +37,7 @@ export async function apiAlbumNewest() {
       "https://music.163.com/api/discovery/newAlbum",
       {}
     );
-    const ret = albums.map((album) => solveAlbumsItem(album));
+    const ret = albums.map(solveAlbumsItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -68,7 +68,7 @@ export async function apiAlbumSublist() {
         "https://music.163.com/weapi/album/sublist",
         { limit, offset, total: true }
       );
-      ret = ret.concat(data.map((item) => solveAlbumsItem(item)));
+      ret = ret.concat(data.map(solveAlbumsItem));
       if (data.length < limit) {
         break;
       }
@@ -101,7 +101,7 @@ export async function apiTopAlbum() {
         rcmd: true,
       }
     );
-    const ret = monthData.map((item) => solveAlbumsItem(item));
+    const ret = monthData.map(solveAlbumsItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {

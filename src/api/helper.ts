@@ -165,7 +165,7 @@ export const solveArtist = (item: Artist): Artist => {
 export const solveAlbumsItem = (item: AlbumsItem): AlbumsItem => {
   const { artists, alias, company, description, name, id } = item;
   return {
-    artists: artists.map((artist: Artist) => solveArtist(artist)),
+    artists: artists.map(solveArtist),
     alias,
     company,
     description,

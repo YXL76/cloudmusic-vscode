@@ -61,7 +61,7 @@ export async function apiSearchSingle(
         total: true,
       }
     );
-    const ret = songs.map((song) => solveSongItem(song));
+    const ret = songs.map(solveSongItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -93,7 +93,7 @@ export async function apiSearchAlbum(
         total: true,
       }
     );
-    const ret = albums.map((album) => solveAlbumsItem(album));
+    const ret = albums.map(solveAlbumsItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -159,7 +159,7 @@ export async function apiSearchPlaylist(
         total: true,
       }
     );
-    const ret = playlists.map((playlist) => solvePlaylistItem(playlist));
+    const ret = playlists.map(solvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
