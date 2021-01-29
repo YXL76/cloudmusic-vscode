@@ -127,7 +127,7 @@ async function songUrl({ copyrightId, mp3 }: MiguSongItem) {
   return undefined;
 }
 
-export default async function kuwo(song: SongsItem) {
+export default async function migu(song: SongsItem) {
   let list = await search(song.name);
   const filters = [
     (list: MiguSongItem[]) => list.filter(({ title }) => title === song.name),
