@@ -152,7 +152,9 @@ export interface Player {
 }
 
 export interface NativeModule {
-  startKeyboardEvent(callback: (res: number) => void, prev: number): void;
+  // startKeyboardEvent(callback: (res: number) => void, prev: number): void;
+
+  kuwoCrypt(msg: string): Buffer;
 
   playerEmpty(player: NativePlayer): boolean;
   playerLoad(player: NativePlayer, url: string): boolean;

@@ -1,7 +1,6 @@
-import { MUSIC_QUALITY } from "../constant";
+import { MUSIC_QUALITY, NATIVE } from "../constant";
 import type { SongsItem } from "../constant";
 import axios from "axios";
-import encrypt from "./kuwoDES";
 import { extname } from "path";
 
 interface SearchResult {
@@ -74,9 +73,9 @@ async function songUrl({ musicrid }: KuwoSongItem) {
     if (MUSIC_QUALITY > 128000) {
       const id = musicrid.split("_").pop() || "";
       const { data } = await axios.get<string>(
-        `http://mobi.kuwo.cn/mobi.s?f=kuwo&q=${encrypt(
+        `http://mobi.kuwo.cn/mobi.s?f=kuwo&q=${NATIVE.kuwoCrypt(
           `corp=kuwo&p2p=1&type=convert_url2&sig=0&format=${format}&rid=${id}`
-        )}`,
+        ).toString("base64")}`,
         { headers: { "user-agent": "okhttp/3.10.0" } }
       );
       const obj: Record<string, string> = {};
