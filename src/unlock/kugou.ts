@@ -1,7 +1,8 @@
-import type { SongsItem } from "../constant";
+import type { SongsItem, UnlockSongItem } from "../constant";
 import axios from "axios";
 import { createHash } from "crypto";
 import { extname } from "path";
+import filter from "./filter";
 
 interface SearchResult {
   data: {
@@ -23,13 +24,6 @@ interface SearchResult {
     }[];
   };
 }
-
-type KugouSongItem = {
-  album: string;
-  artist: string[];
-  name: string;
-  hash: string;
-};
 
 // const format = MUSIC_QUALITY === 999000 ? 0 : MUSIC_QUALITY === 320000 ? 1 : 2;
 
@@ -60,8 +54,9 @@ async function search(keyword: string) {
       }) => ({
         album: AlbumName,
         artist: SingerName.split("、"),
+        dt: 0,
+        id: FileHash,
         name: SongName,
-        hash: FileHash,
         /* ...[
           { hash: SQFileHash, type: SQExtName },
           { hash: HQFileHash, type: HQExtName },
@@ -75,37 +70,22 @@ async function search(keyword: string) {
   return [];
 }
 
-async function songUrl({ hash }: KugouSongItem) {
+async function songUrl({ id }: UnlockSongItem) {
   try {
     const {
       data: { url },
     } = await axios.get<{ url: string[] }>(
       `http://trackercdn.kugou.com/i/v2/?key=${createHash("md5")
-        .update(`${hash}kgcloudv2`)
-        .digest("hex")}&hash=${hash}&pid=2&cmd=25&behavior=play`
+        .update(`${id}kgcloudv2`)
+        .digest("hex")}&hash=${id}&pid=2&cmd=25&behavior=play`
     );
-    return { url: url[0], type: extname(url[0]), md5: undefined };
+    return { url: url[0], type: extname(url[0]).split(".").pop(), md5: id };
   } catch {}
   return undefined;
 }
 
 export default async function kugou(song: SongsItem) {
-  let list = await search(song.name);
-  const filters = [
-    (list: KugouSongItem[]) => list.filter(({ name }) => name === song.name),
-    (list: KugouSongItem[]) =>
-      list.filter(({ album }) => song.al.name === album),
-    (list: KugouSongItem[]) =>
-      list.filter(({ artist }) =>
-        song.ar.map(({ name }) => artist.includes(name)).includes(true)
-      ),
-  ];
-  filters.forEach((filter) => {
-    const newList = filter(list);
-    if (newList.length > 0) {
-      list = newList;
-    }
-  });
-  const selected = list.shift();
+  const list = await search(song.name);
+  const selected = filter(list, song);
   return selected ? await songUrl(selected) : undefined;
 }

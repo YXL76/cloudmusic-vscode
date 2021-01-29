@@ -1,7 +1,8 @@
 import { MUSIC_QUALITY, NATIVE } from "../constant";
-import type { SongsItem } from "../constant";
+import type { SongsItem, UnlockSongItem } from "../constant";
 import axios from "axios";
 import { extname } from "path";
+import filter from "./filter";
 
 interface SearchResult {
   data: {
@@ -14,14 +15,6 @@ interface SearchResult {
     }[];
   };
 }
-
-type KuwoSongItem = {
-  album: string;
-  artist: string[];
-  musicrid: string;
-  name: string;
-  songTimeMinutes: number;
-};
 
 async function search(keyword: string) {
   keyword = encodeURIComponent(keyword);
@@ -55,9 +48,9 @@ async function search(keyword: string) {
       return {
         album,
         artist: artist.split("&"),
-        musicrid,
+        dt: (dt[0] * 60 + dt[1]) * 1000,
+        id: musicrid,
         name,
-        songTimeMinutes: (dt[0] * 60 + dt[1]) * 1000,
       };
     });
   } catch {}
@@ -68,10 +61,10 @@ const format = ["flac", "mp3"]
   .slice(MUSIC_QUALITY === 999000 ? 0 : 1)
   .join("|");
 
-async function songUrl({ musicrid }: KuwoSongItem) {
+async function songUrl({ id }: UnlockSongItem) {
   try {
     if (MUSIC_QUALITY > 128000) {
-      const id = musicrid.split("_").pop() || "";
+      id = id.split("_").pop() || "";
       const { data } = await axios.get<string>(
         `http://mobi.kuwo.cn/mobi.s?f=kuwo&q=${NATIVE.kuwoCrypt(
           `corp=kuwo&p2p=1&type=convert_url2&sig=0&format=${format}&rid=${id}`
@@ -83,16 +76,16 @@ async function songUrl({ musicrid }: KuwoSongItem) {
         const [key, value] = line.split("=");
         obj[key] = value;
       });
-      return { url: obj["url"], type: obj["format"], md5: undefined };
+      return { url: obj["url"], type: obj["format"], md5: "" };
     } else {
       const { data } = await axios.get<string>(
-        `http://antiserver.kuwo.cn/anti.s?type=convert_url&format=mp3&response=url&rid=${musicrid}`,
+        `http://antiserver.kuwo.cn/anti.s?type=convert_url&format=mp3&response=url&rid=${id}`,
         { headers: { "user-agent": "okhttp/3.10.0" } }
       );
       return {
         url: data,
         type: extname(data).split(".").pop(),
-        md5: undefined,
+        md5: "",
       };
     }
   } catch {}
@@ -100,26 +93,7 @@ async function songUrl({ musicrid }: KuwoSongItem) {
 }
 
 export default async function kuwo(song: SongsItem) {
-  let list = await search(song.name);
-  const filters = [
-    (list: KuwoSongItem[]) => list.filter(({ name }) => name === song.name),
-    (list: KuwoSongItem[]) =>
-      list.filter(({ album }) => song.al.name === album),
-    (list: KuwoSongItem[]) =>
-      list.filter(
-        ({ songTimeMinutes }) => Math.abs(songTimeMinutes - song.dt) < 10000
-      ),
-    (list: KuwoSongItem[]) =>
-      list.filter(({ artist }) =>
-        song.ar.map(({ name }) => artist.includes(name)).includes(true)
-      ),
-  ];
-  filters.forEach((filter) => {
-    const newList = filter(list);
-    if (newList.length > 0) {
-      list = newList;
-    }
-  });
-  const selected = list.shift();
+  const list = await search(song.name);
+  const selected = filter(list, song);
   return selected ? await songUrl(selected) : undefined;
 }

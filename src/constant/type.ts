@@ -68,6 +68,14 @@ export type SongDetail = {
   type: string;
 };
 
+export type UnlockSongItem = {
+  album: string;
+  artist: string[];
+  dt: number;
+  id: string;
+  name: string;
+};
+
 export type UserDetail = {
   userId: number;
   nickname: string;

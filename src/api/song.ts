@@ -140,7 +140,7 @@ export async function apiSongUrl(song: SongsItem) {
       if (data) {
         return data;
       }
-      return {};
+      return {} as Partial<SongDetail>;
     }
     const { data } = await eapiRequest<{ data: SongDetail[] }>(
       "https://interface3.music.163.com/eapi/song/enhance/player/url",
@@ -157,7 +157,7 @@ export async function apiSongUrl(song: SongsItem) {
   } catch (err) {
     console.error(err);
   }
-  return {};
+  return {} as Partial<SongDetail>;
 }
 
 export async function apiTopSong(areaId: TopSongType) {

@@ -1,3 +1,4 @@
+import type { SongsItem, UnlockSongItem } from "../constant";
 import {
   constants,
   createCipheriv,
@@ -6,9 +7,9 @@ import {
   randomBytes,
 } from "crypto";
 import { MUSIC_QUALITY } from "../constant";
-import type { SongsItem } from "../constant";
 import axios from "axios";
 import { extname } from "path";
+import filter from "./filter";
 import { stringify } from "querystring";
 
 interface SearchResult {
@@ -22,14 +23,6 @@ interface SearchResult {
     mp3: string;
   }[];
 }
-
-type MiguSongItem = {
-  album: string;
-  artist: string[];
-  copyrightId: string;
-  title: string;
-  mp3: string;
-};
 
 async function search(keyword: string) {
   keyword = encodeURIComponent(keyword);
@@ -48,8 +41,9 @@ async function search(keyword: string) {
     return musics.map(({ albumName, singerName, copyrightId, title, mp3 }) => ({
       album: albumName,
       artist: singerName.split(", "),
-      copyrightId,
-      title,
+      dt: 0,
+      id: copyrightId,
+      name: title,
       mp3,
     }));
   } catch {}
@@ -94,9 +88,13 @@ function encrypt(data: Record<string, unknown>) {
 
 const format = MUSIC_QUALITY === 999000 ? 3 : MUSIC_QUALITY === 320000 ? 2 : 1;
 
-async function songUrl({ copyrightId, mp3 }: MiguSongItem) {
+async function songUrl({ id, mp3 }: UnlockSongItem & { mp3?: string }) {
   if (MUSIC_QUALITY === 128000 && mp3) {
-    return mp3;
+    return {
+      url: mp3,
+      type: extname(mp3).split(".").pop(),
+      md5: undefined,
+    };
   }
   try {
     const {
@@ -105,7 +103,7 @@ async function songUrl({ copyrightId, mp3 }: MiguSongItem) {
       },
     } = await axios.get<{ data: { playUrl: string } }>(
       `http://music.migu.cn/v3/api/music/audioPlayer/getPlayInfo?dataType=2&${encrypt(
-        { copyrightId, type: format }
+        { copyrightId: id, type: format }
       )}`,
       {
         headers: {
@@ -120,7 +118,7 @@ async function songUrl({ copyrightId, mp3 }: MiguSongItem) {
           type: extname(playUrl.split("?").shift() || "")
             .split(".")
             .pop(),
-          md5: undefined,
+          md5: "",
         }
       : undefined;
   } catch {}
@@ -128,22 +126,7 @@ async function songUrl({ copyrightId, mp3 }: MiguSongItem) {
 }
 
 export default async function migu(song: SongsItem) {
-  let list = await search(song.name);
-  const filters = [
-    (list: MiguSongItem[]) => list.filter(({ title }) => title === song.name),
-    (list: MiguSongItem[]) =>
-      list.filter(({ album }) => song.al.name === album),
-    (list: MiguSongItem[]) =>
-      list.filter(({ artist }) =>
-        song.ar.map(({ name }) => artist.includes(name)).includes(true)
-      ),
-  ];
-  filters.forEach((filter) => {
-    const newList = filter(list);
-    if (newList.length > 0) {
-      list = newList;
-    }
-  });
-  const selected = list.shift();
+  const list = await search(song.name);
+  const selected = filter(list, song);
   return selected ? await songUrl(selected) : undefined;
 }
