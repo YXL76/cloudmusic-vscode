@@ -89,7 +89,11 @@ async function songUrl({ musicrid }: KuwoSongItem) {
         `http://antiserver.kuwo.cn/anti.s?type=convert_url&format=mp3&response=url&rid=${musicrid}`,
         { headers: { "user-agent": "okhttp/3.10.0" } }
       );
-      return { url: data, type: extname(data), md5: undefined };
+      return {
+        url: data,
+        type: extname(data).split(".").pop(),
+        md5: undefined,
+      };
     }
   } catch {}
   return undefined;
