@@ -1,5 +1,6 @@
 const { ESBuildPlugin, ESBuildMinifyPlugin } = require("esbuild-loader");
 const CopyPlugin = require("copy-webpack-plugin");
+const ESLintPlugin = require("eslint-webpack-plugin");
 const { resolve } = require("path");
 
 const antdPath = resolve(__dirname, "node_modules", "antd", "dist");
@@ -54,7 +55,14 @@ module.exports = (_, options) => {
         },
       ],
     },
-    plugins: [new ESBuildPlugin()],
+    plugins: [
+      new ESBuildPlugin(),
+      new ESLintPlugin({
+        extensions: ["ts"],
+        emitError: true,
+        emitWarning: true,
+      }),
+    ],
   };
 
   /**@type {import('webpack').Configuration}*/
@@ -94,6 +102,11 @@ module.exports = (_, options) => {
             to: distPath,
           },
         ],
+      }),
+      new ESLintPlugin({
+        extensions: ["ts", "tsx"],
+        emitError: true,
+        emitWarning: true,
       }),
     ],
   };
