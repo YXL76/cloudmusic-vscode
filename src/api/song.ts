@@ -101,7 +101,7 @@ export async function apiSongDetail(trackIds: number[]) {
           ids: `[${ids.join(",")}]`,
         })
           .then(({ songs, privileges }) => {
-            if (UNLOCK_MUSIC) {
+            if (UNLOCK_MUSIC.enabled) {
               for (let i = 0; i < privileges.length; ++i) {
                 if (privileges[i].st < 0) {
                   unplayable.add(songs[i].id);
@@ -135,7 +135,7 @@ export async function apiSongDetail(trackIds: number[]) {
 
 export async function apiSongUrl(song: SongsItem) {
   try {
-    if (UNLOCK_MUSIC && unplayable.has(song.id)) {
+    if (UNLOCK_MUSIC.enabled && unplayable.has(song.id)) {
       const data = await unlock(song);
       if (data) {
         return data;

@@ -98,7 +98,7 @@ export async function apiPlaylistDetail(id: number) {
       s: 8,
     });
     if (tracks.length === trackIds.length) {
-      if (UNLOCK_MUSIC) {
+      if (UNLOCK_MUSIC.enabled) {
         for (let i = 0; i < privileges.length; ++i) {
           if (privileges[i].st < 0) {
             unplayable.add(tracks[i].id);

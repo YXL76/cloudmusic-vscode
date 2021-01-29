@@ -454,10 +454,28 @@
             ],
             "scope": "window"
           },
-          "cloudmusic.music.unlock": {
+          "cloudmusic.music.unlock.kuwo": {
             "type": "boolean",
             "default": false,
-            "markdownDescription": "%cloudmusic.configuration.cloudmusic.music.unlock.markdownDescription%",
+            "markdownDescription": "[https://kuwo.cn/](https://kuwo.cn/)",
+            "scope": "window"
+          },
+          "cloudmusic.music.unlock.migu": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "[https://www.migu.cn/](https://www.migu.cn/)",
+            "scope": "window"
+          },
+          "cloudmusic.music.unlock.kugou": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "[https://www.kugou.com/](https://www.kugou.com/)",
+            "scope": "window"
+          },
+          "cloudmusic.music.unlock.joox": {
+            "type": "boolean",
+            "default": false,
+            "markdownDescription": "[https://www.joox.com/](https://www.joox.com/)",
             "scope": "window"
           },
           "cloudmusic.player.mediaControl": {
