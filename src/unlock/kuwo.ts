@@ -41,7 +41,7 @@ async function search(keyword: string) {
         data: { list },
       },
     } = await axios.get<SearchResult>(
-      `http://www.kuwo.cn/api/www/search/searchMusicBykeyWord?key=${keyword}pn=1&rn=8`,
+      `http://www.kuwo.cn/api/www/search/searchMusicBykeyWord?key=${keyword}&pn=1&rn=8`,
       {
         headers: {
           referer: `http://www.kuwo.cn/search/list?key=${keyword}`,
