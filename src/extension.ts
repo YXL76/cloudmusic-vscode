@@ -5,6 +5,7 @@ import {
   initAccount,
   initCache,
   initCommand,
+  initLocal,
   initPlayer,
   initPlaylist,
   initQueue,
@@ -28,6 +29,7 @@ export async function activate(context: ExtensionContext) {
   initAccount(context);
   initSearch(context);
   await initCache();
+  initLocal(context);
 }
 
 export function deactivate(): void {

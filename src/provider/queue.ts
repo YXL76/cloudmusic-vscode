@@ -79,13 +79,7 @@ export class QueueProvider implements TreeDataProvider<QueueItemTreeItem> {
 }
 
 export class QueueItemTreeItem extends TreeItem {
-  description = (() => {
-    const arName: string[] = [];
-    for (const i of this.item.ar) {
-      arName.push(i.name);
-    }
-    return arName.join("/");
-  })();
+  description = (() => this.item.ar.map(({ name }) => name).join("/"))();
 
   iconPath = new ThemeIcon("zap");
 

@@ -50,6 +50,10 @@
     "views": {
       "cloudmusic": [
         {
+          "id": "local",
+          "name": "%cloudmusic.views.cloudmusic.local.name%"
+        },
+        {
           "id": "userPlaylist",
           "name": "%cloudmusic.views.cloudmusic.userPlaylist.name%"
         },
