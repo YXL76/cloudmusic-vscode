@@ -1,4 +1,4 @@
-import type { SongsItem } from "../constant";
+/* import type { SongsItem } from "../constant";
 import axios from "axios";
 import { userAgent } from "../api";
 
@@ -97,6 +97,7 @@ async function songUrl(mid: string) {
 }
 
 export async function qq(song: SongsItem) {
-  /* const list = await search(song.name);
-  const url = await songUrl(list[0].mid); */
+  const list = await search(song.name);
+  const url = await songUrl(list[0].mid);
 }
+ */
