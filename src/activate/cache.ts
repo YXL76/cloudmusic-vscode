@@ -1,6 +1,6 @@
 import { CACHE_DIR, MUSIC_QUALITY } from "../constant";
-import { LocalCache, MusicCache } from "../util";
 import { Uri, workspace } from "vscode";
+import { MusicCache } from "../util";
 
 export async function initCache() {
   try {
@@ -16,5 +16,4 @@ export async function initCache() {
     }
   } catch {}
   await MusicCache.init();
-  await LocalCache.init();
 }

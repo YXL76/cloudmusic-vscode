@@ -40,7 +40,6 @@
   "cloudmusic.commands.cloudmusic.unsavePlaylist.title": "取消收藏歌单",
   "cloudmusic.commands.cloudmusic.volume.title": "音量",
   "cloudmusic.configuration.cloudmusic.account.autoCheck.markdownDescription": "自动签到",
-  "cloudmusic.configuration.cloudmusic.cache.localDirectory.markdownDescription": "添加本地音乐。注意：开启后会检查每个文件的`MD5`，会增加初始化的时间，需要保证本地文件与服务器上的文件相同",
   "cloudmusic.configuration.cloudmusic.cache.size.markdownDescription": "设置缓存限制 (`128 ~ 10240 MB`)",
   "cloudmusic.configuration.cloudmusic.music.quality.enumDescriptions.high": "极高",
   "cloudmusic.configuration.cloudmusic.music.quality.enumDescriptions.lossless": "无损",

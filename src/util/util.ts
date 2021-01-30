@@ -6,7 +6,7 @@ import type {
   SongsItem,
   UserDetail,
 } from "../constant";
-import { ButtonAction, LocalCache, MusicCache, WebView, player } from ".";
+import { ButtonAction, MusicCache, WebView, player } from ".";
 import {
   CommentType,
   apiAlbum,
@@ -96,7 +96,7 @@ export async function load(element: QueueItemTreeItem) {
   const { id } = item;
   const idS = `${id}`;
 
-  let path = await MusicCache.get(idS);
+  const path = await MusicCache.get(idS);
   if (path) {
     player.load(path, pid, item);
     return;
@@ -105,10 +105,6 @@ export async function load(element: QueueItemTreeItem) {
   const { url, md5 } = await apiSongUrl(item);
   if (!url) {
     void commands.executeCommand("cloudmusic.next");
-    return;
-  }
-  if (md5 && (path = LocalCache.get(md5))) {
-    player.load(path, pid, item);
     return;
   }
 

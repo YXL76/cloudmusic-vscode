@@ -1,4 +1,4 @@
-import { Uri, workspace } from "vscode";
+import { workspace } from "vscode";
 
 const conf = workspace.getConfiguration("cloudmusic");
 
@@ -28,12 +28,6 @@ export const UNLOCK_MUSIC = {
   kugou: UNLOCK_MUSIC_KUGOU,
   joox: UNLOCK_MUSIC_JOOX,
 };
-
-const localDir: string | undefined = conf.get("cache.localDirectory");
-
-export const LOCAL_FILE_DIR: Uri | undefined = localDir
-  ? Uri.file(localDir)
-  : undefined;
 
 export const MUSIC_CACHE_SIZE =
   (conf.get("cache.size") as number) * 1024 * 1024;

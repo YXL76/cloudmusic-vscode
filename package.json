@@ -429,13 +429,6 @@
             "markdownDescription": "%cloudmusic.configuration.cloudmusic.cache.size.markdownDescription%",
             "scope": "window"
           },
-          "cloudmusic.cache.localDirectory": {
-            "type": "string",
-            "default": "",
-            "format": "uri",
-            "markdownDescription": "%cloudmusic.configuration.cloudmusic.cache.localDirectory.markdownDescription%",
-            "scope": "window"
-          },
           "cloudmusic.music.quality": {
             "type": "number",
             "default": 192000,
@@ -538,8 +531,8 @@
     "bluebird": "3.7.2",
     "cacache": "15.0.5",
     "dayjs": "1.10.4",
+    "file-type": "16.2.0",
     "lru-cache": "6.0.0",
-    "md5-file": "5.0.0",
     "node-cache": "5.1.2",
     "qrcode": "1.4.4",
     "react": "16.14.0",

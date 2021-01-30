@@ -1,15 +1,13 @@
 import * as LRU from "lru-cache";
 import * as NodeCache from "node-cache";
 import * as cacache from "cacache";
-import * as md5File from "md5-file";
-import { FileType, Uri, workspace } from "vscode";
 import {
-  LOCAL_FILE_DIR,
   LYRIC_CACHE_DIR,
   MUSIC_CACHE_DIR,
   MUSIC_CACHE_SIZE,
 } from "../constant";
 import type { LruCacheValue, LyricData } from "../constant";
+import { Uri, workspace } from "vscode";
 
 export const apiCache = new NodeCache({
   stdTTL: 300,
@@ -108,43 +106,5 @@ export class LyricCache {
 
   static put(key: string, data: LyricData) {
     void cacache.put(LYRIC_CACHE_DIR.fsPath, key, JSON.stringify(data));
-  }
-}
-
-export class LocalCache {
-  private static cache = new NodeCache({
-    stdTTL: 0,
-    checkperiod: 0,
-    useClones: false,
-    deleteOnExpire: false,
-    enableLegacyCallbacks: false,
-    maxKeys: -1,
-  });
-
-  static async init() {
-    if (LOCAL_FILE_DIR) {
-      try {
-        const items = await workspace.fs.readDirectory(LOCAL_FILE_DIR);
-        for (const item of items) {
-          if (item[1] === FileType.File) {
-            const path = Uri.joinPath(LOCAL_FILE_DIR, item[0]).fsPath;
-            this.cache.set(
-              `md5-${Buffer.from(md5File.sync(path), "hex").toString(
-                "base64"
-              )}`,
-              path
-            );
-          }
-        }
-      } catch {}
-    }
-  }
-
-  static get(key: string) {
-    const path = this.cache.get<string>(key);
-    if (path) {
-      return path;
-    }
-    return;
   }
 }

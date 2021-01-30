@@ -1,6 +1,6 @@
 import { Loading, PersonalFm, Playing } from "../state";
-import { LocalCache, MusicCache, downloadMusic } from ".";
 import type { Lyric, NativePlayer, Player, SongsItem } from "../constant";
+import { MusicCache, downloadMusic } from ".";
 import { NATIVE, PLAYER_AVAILABLE, TMP_DIR, VOLUME_KEY } from "../constant";
 import { Uri, commands, workspace } from "vscode";
 import { apiLyric, apiScrobble, apiSongUrl } from "../api";
@@ -49,7 +49,7 @@ async function prefetch() {
 
     if (idString !== "0" && !(await MusicCache.get(idString))) {
       const { url, md5 } = await apiSongUrl(item);
-      if (!url || (md5 && LocalCache.get(md5))) {
+      if (!url) {
         return;
       }
       const path = Uri.joinPath(TMP_DIR, idString);

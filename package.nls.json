@@ -40,7 +40,6 @@
   "cloudmusic.commands.cloudmusic.unsavePlaylist.title": "Unsave playlist",
   "cloudmusic.commands.cloudmusic.volume.title": "Volume",
   "cloudmusic.configuration.cloudmusic.account.autoCheck.markdownDescription": "Auto check when extension is active",
-  "cloudmusic.configuration.cloudmusic.cache.localDirectory.markdownDescription": "Add local music. Note: after enable, the `MD5` of each file will be checked, and the initialization time will be increased. It is necessary to ensure that the local file is the same as the file on the server",
   "cloudmusic.configuration.cloudmusic.cache.size.markdownDescription": "Set maximum cache size (`128 ~ 10240 MB`)",
   "cloudmusic.configuration.cloudmusic.music.quality.enumDescriptions.high": "High Quality",
   "cloudmusic.configuration.cloudmusic.music.quality.enumDescriptions.lossless": "Lossless Quality",
