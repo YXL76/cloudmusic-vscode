@@ -124,7 +124,7 @@ export async function load(element: QueueItemTreeItem) {
       }
     };
     data.on("data", onData);
-    data.on("error", (err) => {
+    data.once("error", (err) => {
       console.error(err);
       void window.showErrorMessage(i18n.sentence.error.network);
       void commands.executeCommand("cloudmusic.next");
