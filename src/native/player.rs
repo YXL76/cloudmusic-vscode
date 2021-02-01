@@ -219,5 +219,5 @@ pub fn player_position(mut cx: FunctionContext) -> JsResult<JsNumber> {
     let player = cx.argument::<JsBox<RefCell<Player>>>(0)?;
     let res = player.borrow().position();
 
-    Ok(cx.number(res as f64 / 1000.0))
+    Ok(cx.number(res as f64))
 }

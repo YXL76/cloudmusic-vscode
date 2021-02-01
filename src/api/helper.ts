@@ -176,7 +176,7 @@ export const solveAlbumsItem = (item: AlbumsItem): AlbumsItem => {
 
 export const solveSongItem = (item: SongsItem): SongsItem => {
   const { name, id, dt, alia, ar, al } = item;
-  return { name, id, dt: dt / 1000, alia: alia ?? [""], ar, al };
+  return { name, id, dt, alia: alia ?? [""], ar, al };
 };
 
 export const solveAnotherSongItem = (item: AnotherSongItem): SongsItem => {
@@ -184,7 +184,7 @@ export const solveAnotherSongItem = (item: AnotherSongItem): SongsItem => {
   return {
     name,
     id,
-    dt: duration / 1000,
+    dt: duration,
     alia: alias,
     ar: artists.map(({ id, name }) => ({ id, name })),
     al: album,

@@ -31,7 +31,7 @@ import {
 } from "../api";
 import { ICON, MUSIC_QUALITY, TMP_DIR } from "../constant";
 import type { InputStep, MultiStepInput } from ".";
-import { IsLike, Loading, PersonalFm } from "../state";
+import { IsLike, Loading, PersonalFm, Playing } from "../state";
 import {
   PlaylistProvider,
   QueueItemTreeItem,
@@ -85,8 +85,9 @@ export function songsItem2TreeItem(id: number, songs: Readonly<SongsItem[]>) {
 }
 
 export function stop() {
-  Player.item = {} as SongsItem;
   Player.stop();
+  Player.item = {} as SongsItem;
+  Playing.set(false);
   ButtonManager.buttonSong();
   ButtonManager.buttonLyric();
 }

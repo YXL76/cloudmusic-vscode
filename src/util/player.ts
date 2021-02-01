@@ -63,11 +63,11 @@ export class Player {
     setInterval(() => {
       if (Playing.get()) {
         const pos = NATIVE.playerPosition(this.player);
-        if (pos > 120 && !this.prefetchLock) {
+        if (pos > 120000 && !this.prefetchLock) {
           this.prefetchLock = true;
           void prefetch();
         }
-        if (NATIVE.playerEmpty(this.player) || pos > this.item.dt + 8) {
+        if (NATIVE.playerEmpty(this.player) || pos > this.item.dt + 8000) {
           Playing.set(false);
           void commands.executeCommand("cloudmusic.next");
         } else {
@@ -98,7 +98,6 @@ export class Player {
   }
 
   static stop() {
-    Playing.set(false);
     NATIVE.playerStop(this.player);
   }
 
@@ -123,8 +122,8 @@ export class Player {
       if (this.item.id !== 0) {
         const diff = this.time - pTime;
         const { id, dt } = this.item;
-        if (diff > 60000 && dt > 60) {
-          void apiScrobble(id, this.pid, Math.floor(Math.min(diff / 1000, dt)));
+        if (diff > 60000 && dt > 60000) {
+          void apiScrobble(id, this.pid, Math.floor(Math.min(diff, dt)) / 1000);
         }
       }
 

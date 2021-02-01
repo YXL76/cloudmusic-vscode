@@ -67,6 +67,9 @@ export class ButtonManager {
     this.buttons[0].show();
     this.buttonShow =
       this.context.globalState.get(BUTTON_KEY) || this.buttonShow;
+    while (this.buttonShow.length < this.buttons.length) {
+      this.buttonShow.push(true);
+    }
     this.show();
   }
 
