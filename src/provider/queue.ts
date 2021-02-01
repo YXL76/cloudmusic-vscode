@@ -86,6 +86,12 @@ export class QueueItemTreeItem extends TreeItem {
 
   contextValue = "QueueItemTreeItem";
 
+  command = {
+    title: "Detail",
+    command: "cloudmusic.songDetail",
+    arguments: [this],
+  };
+
   constructor(
     public readonly label: string,
     public readonly item: SongsItem,
