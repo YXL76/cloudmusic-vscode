@@ -143,12 +143,12 @@ export async function apiSongUrl(song: SongsItem) {
       return {} as Partial<SongDetail>;
     }
     const { data } = await eapiRequest<{ data: SongDetail[] }>(
-      "https://interface3.music.163.com/eapi/song/enhance/player/url",
+      "https://interface3.music.163.com/eapi/song/enhance/Player/url",
       {
         ids: `[${song.id}]`,
         br: MUSIC_QUALITY,
       },
-      "/api/song/enhance/player/url",
+      "/api/song/enhance/Player/url",
       "pc"
     );
     const { url, md5, type } = data[0];

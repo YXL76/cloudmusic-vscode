@@ -31,18 +31,17 @@ export class WebView {
     private readonly iconUri: Uri
   ) {}
 
-  static init() {
-    this.instance = new WebView(
-      Uri.joinPath(this.context.extensionUri, "dist", "webview.js"),
-      Uri.joinPath(this.context.extensionUri, "dist", "webview.css"),
-      Uri.joinPath(this.context.extensionUri, "dist", "antd.min.css"),
-      Uri.joinPath(this.context.extensionUri, "dist", "antd.dark.min.css"),
-      Uri.joinPath(this.context.extensionUri, "media", "icon.ico")
-    );
-  }
-
   static getInstance() {
-    return this.instance;
+    return (
+      this.instance ||
+      (this.instance = new WebView(
+        Uri.joinPath(this.context.extensionUri, "dist", "webview.js"),
+        Uri.joinPath(this.context.extensionUri, "dist", "webview.css"),
+        Uri.joinPath(this.context.extensionUri, "dist", "antd.min.css"),
+        Uri.joinPath(this.context.extensionUri, "dist", "antd.dark.min.css"),
+        Uri.joinPath(this.context.extensionUri, "media", "icon.ico")
+      ))
+    );
   }
 
   async login() {

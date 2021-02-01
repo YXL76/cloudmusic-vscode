@@ -1,15 +1,9 @@
-import { MEDIA_CONTROL, NATIVE, PLAYER_AVAILABLE } from "../constant";
-import { commands, window } from "vscode";
-import type { ExtensionContext } from "vscode";
-import { i18n } from "../i18n";
-import { player } from "../util";
+import { Player } from "../util";
 
-export function initPlayer(context: ExtensionContext) {
-  if (!PLAYER_AVAILABLE) {
-    void window.showErrorMessage(i18n.sentence.error.systemSupport);
-  } else {
-    player.init(context);
-    /* if (MEDIA_CONTROL) {
+export function initPlayer() {
+  Player.init();
+
+  /* if (MEDIA_CONTROL) {
       const handler = (res: number) => {
         switch (res) {
           case 0:
@@ -29,5 +23,4 @@ export function initPlayer(context: ExtensionContext) {
 
       NATIVE.startKeyboardEvent(handler, 0);
     } */
-  }
 }

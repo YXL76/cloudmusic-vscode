@@ -10,6 +10,7 @@ import {
 } from "../api";
 import {
   MultiStepInput,
+  Player,
   WebView,
   confirmation,
   downloadMusic,
@@ -17,7 +18,6 @@ import {
   pickAddToPlaylist,
   pickPlaylist,
   pickSong,
-  player,
   songsItem2TreeItem,
 } from "../util";
 import type { PlaylistItemTreeItem, QueueItemTreeItem } from "../provider";
@@ -266,7 +266,7 @@ export function initPlaylist() {
   commands.registerCommand(
     "cloudmusic.songDetail",
     (element?: QueueItemTreeItem) => {
-      const { item } = element ? element : player;
+      const { item } = element ? element : Player;
       if (item) {
         void MultiStepInput.run((input) => pickSong(input, 1, item));
       }

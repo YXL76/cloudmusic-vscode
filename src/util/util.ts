@@ -6,7 +6,7 @@ import type {
   SongsItem,
   UserDetail,
 } from "../constant";
-import { ButtonAction, MusicCache, WebView, player } from ".";
+import { ButtonAction, MusicCache, Player, WebView } from ".";
 import {
   CommentType,
   apiAlbum,
@@ -85,8 +85,8 @@ export function songsItem2TreeItem(id: number, songs: Readonly<SongsItem[]>) {
 }
 
 export function stop() {
-  player.item = {} as SongsItem;
-  player.stop();
+  Player.item = {} as SongsItem;
+  Player.stop();
   ButtonManager.buttonSong();
   ButtonManager.buttonLyric();
 }
@@ -94,7 +94,7 @@ export function stop() {
 export async function load(element: QueueItemTreeItem | LocalFileTreeItem) {
   Loading.set(true);
   if (element instanceof LocalFileTreeItem) {
-    player.load(element.tooltip, 0, {
+    Player.load(element.tooltip, 0, {
       name: element.label,
       id: 0,
       dt: 4800000,
@@ -110,7 +110,7 @@ export async function load(element: QueueItemTreeItem | LocalFileTreeItem) {
 
   const path = await MusicCache.get(idS);
   if (path) {
-    player.load(path, pid, item);
+    Player.load(path, pid, item);
     return;
   }
 
@@ -128,7 +128,7 @@ export async function load(element: QueueItemTreeItem | LocalFileTreeItem) {
       len += length;
       if (len > minSize) {
         data.removeListener("data", onData);
-        player.load(tmpUri.fsPath, pid, item);
+        Player.load(tmpUri.fsPath, pid, item);
       }
     };
     data.on("data", onData);
@@ -323,7 +323,7 @@ export async function pickSong(
     case PickType.like:
       if (await apiLike(id, true)) {
         AccountManager.likelist.add(id);
-        IsLike.set(id === player.item.id);
+        IsLike.set(id === Player.item.id);
       }
       break;
     case PickType.add:

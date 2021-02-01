@@ -148,28 +148,17 @@ export type CommentDetail = {
 
 export type NativePlayer = {};
 
-export interface Player {
-  item: SongsItem;
-  pid: number;
-  time: number;
-  init(context: ExtensionContext): void;
-  stop(): void;
-  load(url: string, pid: number, item: SongsItem): void;
-  togglePlay(): void;
-  volume(level: number): Promise<void>;
-}
-
 export interface NativeModule {
   // startKeyboardEvent(callback: (res: number) => void, prev: number): void;
 
   kuwoCrypt(msg: string): Buffer;
 
-  playerEmpty(player: NativePlayer): boolean;
-  playerLoad(player: NativePlayer, url: string): boolean;
+  playerEmpty(Player: NativePlayer): boolean;
+  playerLoad(Player: NativePlayer, url: string): boolean;
   playerNew(): NativePlayer;
-  playerPause(player: NativePlayer): void;
-  playerPlay(player: NativePlayer): boolean;
-  playerPosition(player: NativePlayer): number;
-  playerSetVolume(player: NativePlayer, level: number): void;
-  playerStop(player: NativePlayer): void;
+  playerPause(Player: NativePlayer): void;
+  playerPlay(Player: NativePlayer): boolean;
+  playerPosition(Player: NativePlayer): number;
+  playerSetVolume(Player: NativePlayer, level: number): void;
+  playerStop(Player: NativePlayer): void;
 }

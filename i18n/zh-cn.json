@@ -2,8 +2,7 @@
   "sentence": {
     "error": {
       "needSignIn": "请在登录后操作",
-      "network": "网络错误",
-      "systemSupport": "不支持的系统"
+      "network": "网络错误"
     },
     "fail": {
       "signIn": "登录失败"

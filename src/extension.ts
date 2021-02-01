@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "./manager";
-import { LyricCache, MusicCache, WebView, player } from "./util";
+import { LyricCache, MusicCache, Player, WebView } from "./util";
 import { SETTING_DIR, TMP_DIR } from "./constant";
 import {
   initAccount,
@@ -20,9 +20,8 @@ export async function activate(context: ExtensionContext) {
   AccountManager.context = context;
   ButtonManager.context = context;
   WebView.context = context;
-  WebView.init();
-  ButtonManager.init();
-  initPlayer(context);
+  Player.context = context;
+  initPlayer();
   initQueue();
   initPlaylist();
   initCommand(context);
@@ -33,7 +32,7 @@ export async function activate(context: ExtensionContext) {
 }
 
 export function deactivate(): void {
-  player.stop();
+  Player.stop();
   MusicCache.verify();
   LyricCache.verify();
   void workspace.fs.delete(TMP_DIR, { recursive: true, useTrash: false });

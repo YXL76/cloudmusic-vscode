@@ -1,44 +1,13 @@
 import { Loading, PersonalFm, Playing } from "../state";
 import { LocalFileTreeItem, QueueProvider } from "../provider";
-import type { Lyric, NativePlayer, Player, SongsItem } from "../constant";
+import type { Lyric, SongsItem } from "../constant";
 import { MusicCache, downloadMusic } from ".";
-import { NATIVE, PLAYER_AVAILABLE, TMP_DIR, VOLUME_KEY } from "../constant";
+import { NATIVE, TMP_DIR, VOLUME_KEY } from "../constant";
 import { Uri, commands, workspace } from "vscode";
 import { apiLyric, apiScrobble, apiSongUrl } from "../api";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import { createWriteStream } from "fs";
-
-class NoPlayer implements Player {
-  item = {} as SongsItem;
-
-  pid = 0;
-
-  time = Date.now();
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  init(_context: ExtensionContext) {
-    //
-  }
-
-  stop() {
-    //
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  load(_a: string, _b: number, _c: SongsItem) {
-    //
-  }
-
-  togglePlay() {
-    //
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async volume(_level: number) {
-    //
-  }
-}
 
 async function prefetch() {
   if (QueueProvider.songs[1] instanceof LocalFileTreeItem) return;
@@ -75,21 +44,21 @@ export const lyric: Lyric = {
   text: ["Lyric"],
 };
 
-class AudioPlayer implements Player {
-  item = {} as SongsItem;
+export class Player {
+  static item = {} as SongsItem;
 
-  pid = 0;
+  static pid = 0;
 
-  time = Date.now();
+  static time = Date.now();
 
-  private context!: ExtensionContext;
+  static context: ExtensionContext;
 
-  private player!: NativePlayer;
+  private static player = NATIVE.playerNew();
 
-  private prefetchLock = false;
+  private static prefetchLock = false;
 
-  constructor() {
-    this.player = NATIVE.playerNew();
+  static init() {
+    void this.volume(this.context.globalState.get(VOLUME_KEY) ?? 85);
 
     setInterval(() => {
       if (Playing.get()) {
@@ -128,17 +97,12 @@ class AudioPlayer implements Player {
     }, 480000);
   }
 
-  init(context: ExtensionContext) {
-    this.context = context;
-    void this.volume(this.context.globalState.get(VOLUME_KEY) ?? 85);
-  }
-
-  stop() {
+  static stop() {
     Playing.set(false);
     NATIVE.playerStop(this.player);
   }
 
-  load(url: string, pid: number, item: SongsItem) {
+  static load(url: string, pid: number, item: SongsItem) {
     if (NATIVE.playerLoad(this.player, url)) {
       NATIVE.playerSetVolume(
         this.player,
@@ -173,7 +137,7 @@ class AudioPlayer implements Player {
     }
   }
 
-  togglePlay() {
+  static togglePlay() {
     if (this.item.id) {
       if (Playing.get()) {
         NATIVE.playerPause(this.player);
@@ -186,11 +150,9 @@ class AudioPlayer implements Player {
     }
   }
 
-  async volume(level: number) {
+  static async volume(level: number) {
     await this.context.globalState.update(VOLUME_KEY, level);
     NATIVE.playerSetVolume(this.player, level);
     ButtonManager.buttonVolume(level);
   }
 }
-
-export const player = PLAYER_AVAILABLE ? new AudioPlayer() : new NoPlayer();

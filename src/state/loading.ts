@@ -1,7 +1,7 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { IsLike } from ".";
+import { Player } from "../util";
 import { i18n } from "../i18n";
-import { player } from "../util";
 
 export class Loading {
   private static state = false;
@@ -14,7 +14,7 @@ export class Loading {
           `$(loading) ${i18n.word.song}: ${i18n.word.loading}`
         );
       } else {
-        const { name, ar, id } = player.item;
+        const { name, ar, id } = Player.item;
         ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
         IsLike.set(AccountManager.likelist.has(id));
       }

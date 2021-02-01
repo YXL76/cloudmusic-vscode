@@ -23,7 +23,6 @@ export const i18n = (() => {
       error: {
         needSignIn: string;
         network: string;
-        systemSupport: string;
       };
       fail: {
         signIn: string;

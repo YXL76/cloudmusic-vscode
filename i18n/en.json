@@ -2,8 +2,7 @@
   "sentence": {
     "error": {
       "needSignIn": "Please operate after signing in",
-      "network": "Network error",
-      "systemSupport": "System is not supported"
+      "network": "Network error"
     },
     "fail": {
       "signIn": "Sign in failed"

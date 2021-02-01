@@ -1,6 +1,6 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { IsLike, PersonalFm } from "../state";
-import { MultiStepInput, load, player } from "../util";
+import { MultiStepInput, Player, load } from "../util";
 import type { ExtensionContext } from "vscode";
 import { QueueProvider } from "../provider";
 import { VOLUME_KEY } from "../constant";
@@ -40,14 +40,14 @@ export function initCommand(context: ExtensionContext) {
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.play", () => {
-      player.togglePlay();
+      Player.togglePlay();
     })
   );
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.like", async () => {
       const islike = !IsLike.get();
-      const { id } = player.item;
+      const { id } = Player.item;
       if (id && (await apiLike(id, islike))) {
         IsLike.set(islike);
         islike
@@ -70,7 +70,7 @@ export function initCommand(context: ExtensionContext) {
           prompt: `${i18n.sentence.hint.volume} (0~100)`,
         });
         if (/^[1-9]\d$|^\d$|^100$/.exec(level)) {
-          await player.volume(parseInt(level));
+          await Player.volume(parseInt(level));
         }
         return input.pop();
       }

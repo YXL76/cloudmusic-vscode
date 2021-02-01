@@ -1,10 +1,13 @@
-import { LyricCache, MultiStepInput, lyric, player } from "../util";
+import { LyricCache, MultiStepInput, Player, lyric } from "../util";
+import { ButtonManager } from "../manager";
 import type { QuickPickItem } from "vscode";
 import { apiFmTrash } from "../api";
 import { commands } from "vscode";
 import { i18n } from "../i18n";
 
 export function initStatusBar() {
+  ButtonManager.init();
+
   commands.registerCommand("cloudmusic.lyric", async () => {
     const totalSteps = 2;
     const title = i18n.word.lyric;
@@ -98,6 +101,6 @@ export function initStatusBar() {
   });
 
   commands.registerCommand("cloudmusic.fmTrash", () => {
-    if (player.item.id) void apiFmTrash(player.item.id);
+    if (Player.item.id) void apiFmTrash(Player.item.id);
   });
 }
