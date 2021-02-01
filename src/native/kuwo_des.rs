@@ -161,7 +161,7 @@ fn bit_transform(arr: &[isize], n: usize, l: i64) -> i64 {
     l2
 }
 
-fn des64(longs: [i64; 16], l: i64) -> i64 {
+fn des64(longs: &[i64], l: i64) -> i64 {
     let mut p_r: [usize; 8] = [0, 0, 0, 0, 0, 0, 0, 0];
     let mut out = bit_transform(&ARRAY_IP, 64, l);
     let mut p_source = [out & 0xffffffff, (out & -4294967296) >> 32];
@@ -217,14 +217,14 @@ pub fn kuwo_crypt(mut cx: FunctionContext) -> JsResult<JsBuffer> {
 
     let mut arr3: Vec<i64> = Vec::with_capacity(m + 1);
     for i in arr2 {
-        arr3.push(des64(arr1, i));
+        arr3.push(des64(&arr1, i));
     }
 
     let mut l: i64 = 0;
     for i in 0..(msg.len() % 8) {
         l |= (msg[m * 8 + i] as i64) << (i * 8);
     }
-    arr3.push(des64(arr1, l));
+    arr3.push(des64(&arr1, l));
 
     let mut bytes: Vec<u8> = Vec::with_capacity(m + 8);
     for i in arr3 {
