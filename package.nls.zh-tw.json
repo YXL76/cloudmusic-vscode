@@ -39,7 +39,6 @@
   "commands.refreshPlaylist.title": "重繪",
   "commands.refreshPlaylistContent.title": "重繪",
   "commands.saveToPlaylist.title": "添加到歌單",
-  "commands.search.title": "搜索",
   "commands.signin.title": "登入",
   "commands.signout.title": "登出",
   "commands.songComment.title": "評論",

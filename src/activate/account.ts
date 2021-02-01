@@ -147,7 +147,7 @@ export function initAccount(context: ExtensionContext) {
           case Type.level:
             return input.pop();
           case Type.search:
-            return (input: MultiStepInput) => inputKeyword(input, 1);
+            return (input: MultiStepInput) => inputKeyword(input);
           case Type.recommendation:
             return (input: MultiStepInput) => pickRecommend(input);
           case Type.toplist:

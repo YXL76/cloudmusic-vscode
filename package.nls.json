@@ -39,7 +39,6 @@
   "commands.refreshPlaylist.title": "Refresh",
   "commands.refreshPlaylistContent.title": "Refresh",
   "commands.saveToPlaylist.title": "Save to playlist",
-  "commands.search.title": "Search",
   "commands.signin.title": "Sign in",
   "commands.signout.title": "Sign Out",
   "commands.songComment.title": "Comment",

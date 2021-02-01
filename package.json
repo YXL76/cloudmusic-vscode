@@ -124,11 +124,6 @@
         "category": "Cloudmusic"
       },
       {
-        "command": "cloudmusic.search",
-        "title": "%commands.search.title%",
-        "category": "Cloudmusic"
-      },
-      {
         "command": "cloudmusic.newLocalLibrary",
         "title": "%commands.newLocalLibrary.title%",
         "icon": "$(add)"

@@ -17,6 +17,8 @@ const enum ButtonLabel {
 }
 
 export class ButtonManager {
+  static context: ExtensionContext;
+
   private static buttons: StatusBarItem[] = [
     window.createStatusBarItem(StatusBarAlignment.Left, -128),
     window.createStatusBarItem(StatusBarAlignment.Left, -129),
@@ -63,10 +65,7 @@ export class ButtonManager {
     "cloudmusic.lyric",
   ];
 
-  private static context: ExtensionContext;
-
-  static init(context: ExtensionContext) {
-    this.context = context;
+  static init() {
     for (let i = 0; i < this.buttons.length; ++i) {
       this.buttons[i].text = this.buttonText[i];
       this.buttons[i].tooltip = this.buttonTooltip[i];

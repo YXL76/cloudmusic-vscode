@@ -1,6 +1,5 @@
 import {
   ButtonAction,
-  MultiStepInput,
   pickAlbum,
   pickAlbumItems,
   pickArtist,
@@ -11,7 +10,8 @@ import {
   pickSongItems,
   pickSongMany,
 } from "../util";
-import type { ExtensionContext, QuickPick, QuickPickItem } from "vscode";
+import type { InputStep, MultiStepInput } from "../util";
+import type { QuickPick, QuickPickItem } from "vscode";
 import {
   SearchType,
   apiSearchAlbum,
@@ -23,13 +23,11 @@ import {
   apiSearchSuggest,
 } from "../api";
 import { ICON } from "../constant";
-import type { InputStep } from "../util";
-import { commands } from "vscode";
 import { i18n } from "../i18n";
 import { throttle } from "lodash";
 
 const title = i18n.word.search;
-const totalSteps = 3;
+const totalSteps = 4;
 const limit = 30;
 
 type State = {
@@ -50,10 +48,7 @@ const updateSuggestions = throttle((that: QuickPick<QuickPickItem>, value) => {
   });
 }, 256);
 
-export async function inputKeyword(
-  input: MultiStepInput,
-  addStep: number
-): Promise<InputStep> {
+export async function inputKeyword(input: MultiStepInput): Promise<InputStep> {
   const items: QuickPickItem[] = (await apiSearchHotDetail()).map(
     ({ searchWord, content }) => ({
       label: searchWord,
@@ -66,8 +61,8 @@ export async function inputKeyword(
 
   const pick = await input.showQuickPick({
     title,
-    step: 1 + addStep,
-    totalSteps: totalSteps + addStep,
+    step: 2,
+    totalSteps,
     items,
     placeholder: i18n.sentence.hint.keyword,
     changeCallback: (that, value) => {
@@ -80,14 +75,14 @@ export async function inputKeyword(
     },
   });
   state.keyword = pick.label;
-  return (input: MultiStepInput) => pickType(input, addStep);
+  return (input: MultiStepInput) => pickType(input);
 }
 
-async function pickType(input: MultiStepInput, addStep: number) {
+async function pickType(input: MultiStepInput) {
   const pick = await input.showQuickPick({
     title,
-    step: 2 + addStep,
-    totalSteps: totalSteps + addStep,
+    step: 3,
+    totalSteps,
     items: [
       {
         label: `${ICON.song} ${i18n.word.single}`,
@@ -110,28 +105,27 @@ async function pickType(input: MultiStepInput, addStep: number) {
   });
   switch (pick.type) {
     case SearchType.single:
-      return (input: MultiStepInput) => pickSearchSingle(input, addStep, 0);
+      return (input: MultiStepInput) => pickSearchSingle(input, 0);
     case SearchType.album:
-      return (input: MultiStepInput) => pickSearchAlbum(input, addStep, 0);
+      return (input: MultiStepInput) => pickSearchAlbum(input, 0);
     case SearchType.artist:
-      return (input: MultiStepInput) => pickSearchArtist(input, addStep, 0);
+      return (input: MultiStepInput) => pickSearchArtist(input, 0);
     case SearchType.playlist:
-      return (input: MultiStepInput) => pickSearchPlaylist(input, addStep, 0);
+      return (input: MultiStepInput) => pickSearchPlaylist(input, 0);
   }
-  return (input: MultiStepInput) => pickSearchSingle(input, addStep, 0);
+  return (input: MultiStepInput) => pickSearchSingle(input, 0);
 }
 
 async function pickSearchSingle(
   input: MultiStepInput,
-  addStep: number,
   offset: number
 ): Promise<InputStep | void> {
   const songs = await apiSearchSingle(state.keyword, limit, offset);
   const pick = await input.showQuickPick(
     {
       title,
-      step: 3 + addStep,
-      totalSteps: totalSteps + addStep,
+      step: 4,
+      totalSteps,
       items: pickSongItems(songs),
     },
     true,
@@ -142,40 +136,36 @@ async function pickSearchSingle(
   );
   if (pick === ButtonAction.previous) {
     input.pop();
-    return (input: MultiStepInput) =>
-      pickSearchSingle(input, addStep, offset - limit);
+    return (input: MultiStepInput) => pickSearchSingle(input, offset - limit);
   }
   if (pick === ButtonAction.next) {
     input.pop();
-    return (input: MultiStepInput) =>
-      pickSearchSingle(input, addStep, offset + limit);
+    return (input: MultiStepInput) => pickSearchSingle(input, offset + limit);
   }
   if (pick.length === 0) {
     return input.pop();
   }
   if (pick.length === 1) {
-    return (input: MultiStepInput) =>
-      pickSong(input, 4 + addStep, pick[0].item);
+    return (input: MultiStepInput) => pickSong(input, 5, pick[0].item);
   }
   return (input: MultiStepInput) =>
     pickSongMany(
       input,
-      4 + addStep,
+      5,
       pick.map(({ item }) => item)
     );
 }
 
 async function pickSearchAlbum(
   input: MultiStepInput,
-  addStep: number,
   offset: number
 ): Promise<InputStep> {
   const albums = await apiSearchAlbum(state.keyword, limit, offset);
   const pick = await input.showQuickPick(
     {
       title,
-      step: 3 + addStep,
-      totalSteps: totalSteps + addStep,
+      step: 4,
+      totalSteps,
       items: pickAlbumItems(albums),
     },
     undefined,
@@ -186,28 +176,25 @@ async function pickSearchAlbum(
   );
   if (pick === ButtonAction.previous) {
     input.pop();
-    return (input: MultiStepInput) =>
-      pickSearchAlbum(input, addStep, offset - limit);
+    return (input: MultiStepInput) => pickSearchAlbum(input, offset - limit);
   }
   if (pick === ButtonAction.next) {
     input.pop();
-    return (input: MultiStepInput) =>
-      pickSearchAlbum(input, addStep, offset + limit);
+    return (input: MultiStepInput) => pickSearchAlbum(input, offset + limit);
   }
-  return (input: MultiStepInput) => pickAlbum(input, 4 + addStep, pick.id);
+  return (input: MultiStepInput) => pickAlbum(input, 5, pick.id);
 }
 
 async function pickSearchArtist(
   input: MultiStepInput,
-  addStep: number,
   offset: number
 ): Promise<InputStep> {
   const artists = await apiSearchArtist(state.keyword, limit, offset);
   const pick = await input.showQuickPick(
     {
       title,
-      step: 3 + addStep,
-      totalSteps: totalSteps + addStep,
+      step: 4,
+      totalSteps,
       items: pickArtistItems(artists),
     },
     undefined,
@@ -218,28 +205,25 @@ async function pickSearchArtist(
   );
   if (pick === ButtonAction.previous) {
     input.pop();
-    return (input: MultiStepInput) =>
-      pickSearchArtist(input, addStep, offset - limit);
+    return (input: MultiStepInput) => pickSearchArtist(input, offset - limit);
   }
   if (pick === ButtonAction.next) {
     input.pop();
-    return (input: MultiStepInput) =>
-      pickSearchArtist(input, addStep, offset + limit);
+    return (input: MultiStepInput) => pickSearchArtist(input, offset + limit);
   }
-  return (input: MultiStepInput) => pickArtist(input, 4 + addStep, pick.id);
+  return (input: MultiStepInput) => pickArtist(input, 5, pick.id);
 }
 
 async function pickSearchPlaylist(
   input: MultiStepInput,
-  addStep: number,
   offset: number
 ): Promise<InputStep> {
   const playlists = await apiSearchPlaylist(state.keyword, limit, offset);
   const pick = await input.showQuickPick(
     {
       title,
-      step: 3 + addStep,
-      totalSteps: totalSteps + addStep,
+      step: 4,
+      totalSteps,
       items: pickPlaylistItems(playlists),
     },
     undefined,
@@ -250,21 +234,11 @@ async function pickSearchPlaylist(
   );
   if (pick === ButtonAction.previous) {
     input.pop();
-    return (input: MultiStepInput) =>
-      pickSearchPlaylist(input, addStep, offset - limit);
+    return (input: MultiStepInput) => pickSearchPlaylist(input, offset - limit);
   }
   if (pick === ButtonAction.next) {
     input.pop();
-    return (input: MultiStepInput) =>
-      pickSearchPlaylist(input, addStep, offset + limit);
+    return (input: MultiStepInput) => pickSearchPlaylist(input, offset + limit);
   }
-  return (input: MultiStepInput) => pickPlaylist(input, 4 + addStep, pick.item);
-}
-
-export function initSearch(context: ExtensionContext) {
-  context.subscriptions.push(
-    commands.registerCommand("cloudmusic.search", () => {
-      void MultiStepInput.run((input) => inputKeyword(input, 0));
-    })
-  );
+  return (input: MultiStepInput) => pickPlaylist(input, 5, pick.item);
 }

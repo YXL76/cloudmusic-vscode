@@ -13,11 +13,14 @@ import {
 } from "../api";
 import { AccountManager } from "../manager";
 import type { CommentType } from "../api";
+import type { ExtensionContext } from "vscode";
 import type { SongsItem } from "../constant";
 import { i18n } from "../i18n";
 import { toDataURL } from "qrcode";
 
 export class WebView {
+  static context: ExtensionContext;
+
   private static instance: WebView;
 
   constructor(
@@ -28,13 +31,13 @@ export class WebView {
     private readonly iconUri: Uri
   ) {}
 
-  static initInstance(extensionUri: Uri) {
+  static init() {
     this.instance = new WebView(
-      Uri.joinPath(extensionUri, "dist", "webview.js"),
-      Uri.joinPath(extensionUri, "dist", "webview.css"),
-      Uri.joinPath(extensionUri, "dist", "antd.min.css"),
-      Uri.joinPath(extensionUri, "dist", "antd.dark.min.css"),
-      Uri.joinPath(extensionUri, "media", "icon.ico")
+      Uri.joinPath(this.context.extensionUri, "dist", "webview.js"),
+      Uri.joinPath(this.context.extensionUri, "dist", "webview.css"),
+      Uri.joinPath(this.context.extensionUri, "dist", "antd.min.css"),
+      Uri.joinPath(this.context.extensionUri, "dist", "antd.dark.min.css"),
+      Uri.joinPath(this.context.extensionUri, "media", "icon.ico")
     );
   }
 

@@ -9,7 +9,6 @@ import {
   initPlayer,
   initPlaylist,
   initQueue,
-  initSearch,
   initStatusBar,
 } from "./activate";
 import type { ExtensionContext } from "vscode";
@@ -19,15 +18,16 @@ export async function activate(context: ExtensionContext) {
   await workspace.fs.createDirectory(SETTING_DIR);
   await workspace.fs.createDirectory(TMP_DIR);
   AccountManager.context = context;
-  WebView.initInstance(context.extensionUri);
-  ButtonManager.init(context);
+  ButtonManager.context = context;
+  WebView.context = context;
+  WebView.init();
+  ButtonManager.init();
   initPlayer(context);
   initQueue();
   initPlaylist();
   initCommand(context);
   initStatusBar();
   initAccount(context);
-  initSearch(context);
   await initCache();
   initLocal(context);
 }
