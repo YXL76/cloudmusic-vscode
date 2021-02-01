@@ -1,6 +1,6 @@
+import { BUTTON_KEY, LYRIC_KEY } from "../constant";
 import type { ExtensionContext, QuickPickItem, StatusBarItem } from "vscode";
 import { StatusBarAlignment, window } from "vscode";
-import { BUTTON_KEY } from "../constant";
 import { LoggedIn } from "../state";
 import { MultiStepInput } from "../util";
 import { i18n } from "../i18n";
@@ -19,6 +19,8 @@ const enum ButtonLabel {
 export class ButtonManager {
   static context: ExtensionContext;
 
+  static showLyric = false;
+
   private static buttons: StatusBarItem[] = [
     window.createStatusBarItem(StatusBarAlignment.Left, -128),
     window.createStatusBarItem(StatusBarAlignment.Left, -129),
@@ -33,6 +35,8 @@ export class ButtonManager {
   private static buttonShow = [true, true, true, true, true, true, true, true];
 
   static init() {
+    this.showLyric = this.context.globalState.get(LYRIC_KEY) || this.showLyric;
+
     this.buttons[0].text = "$(account)";
     this.buttons[1].text = "$(chevron-left)";
     this.buttons[2].text = "$(play)";
@@ -40,7 +44,7 @@ export class ButtonManager {
     this.buttons[4].text = "$(star)";
     this.buttons[5].text = "$(unmute)";
     this.buttons[6].text = "$(flame)";
-    this.buttons[7].text = "$(text-size)";
+    this.buttons[7].text = this.showLyric ? "$(text-size)" : i18n.word.disabled;
 
     this.buttons[0].tooltip = i18n.word.account;
     this.buttons[1].tooltip = i18n.word.previousTrack;
@@ -168,7 +172,16 @@ export class ButtonManager {
     }
   }
 
+  static toggleLyric() {
+    this.showLyric = !this.showLyric;
+    void this.context.globalState.update(LYRIC_KEY, this.showLyric);
+  }
+
   static buttonLyric(text?: string) {
-    this.buttons[ButtonLabel.lyric].text = text ?? "$(text-size)";
+    if (this.showLyric) {
+      this.buttons[ButtonLabel.lyric].text = text ?? "$(text-size)";
+    } else {
+      this.buttons[ButtonLabel.lyric].text = i18n.word.disabled;
+    }
   }
 }

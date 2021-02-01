@@ -82,9 +82,13 @@ export const i18n = (() => {
       descending: string;
       description: string;
       detail: string;
+      disable: string;
+      disabled: string;
+      dislike: string;
       download: string;
       editPlaylist: string;
       email: string;
+      enable: string;
       en: string;
       explore: string;
       female: string;
@@ -145,7 +149,6 @@ export const i18n = (() => {
       trackCount: string;
       trash: string;
       type: string;
-      dislike: string;
       unsave: string;
       user: string;
       userRankingList: string;

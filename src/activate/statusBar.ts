@@ -17,12 +17,13 @@ export function initStatusBar() {
       delay,
       full,
       cache,
+      disable,
     }
 
     await MultiStepInput.run((input) => pickMthod(input));
 
     async function pickMthod(input: MultiStepInput) {
-      const pick = await input.showQuickPick({
+      const { type } = await input.showQuickPick({
         title,
         step: 1,
         totalSteps,
@@ -40,17 +41,26 @@ export function initStatusBar() {
             label: `$(trash) ${i18n.word.cleanCache}`,
             type: Type.cache,
           },
+          {
+            label: `$(trash) ${
+              ButtonManager.showLyric ? i18n.word.disable : i18n.word.enable
+            }`,
+            type: Type.disable,
+          },
         ],
       });
-      switch (pick.type) {
+      switch (type) {
         case Type.delay:
           return (input: MultiStepInput) => inputDelay(input);
         case Type.full:
           return (input: MultiStepInput) => pickLyric(input);
         case Type.cache:
           LyricCache.clear();
+          return;
+        case Type.disable:
+          ButtonManager.toggleLyric();
+          return;
       }
-      return;
     }
 
     async function inputDelay(input: MultiStepInput) {

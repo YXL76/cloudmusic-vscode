@@ -22,6 +22,7 @@ export const ACCOUNT_KEY = "account";
 export const COOKIE_KEY = "cookie";
 export const BUTTON_KEY = "button";
 export const VOLUME_KEY = "volume";
+export const LYRIC_KEY = "lyric";
 export const CHECK_KEY = "check";
 export const LOCAL_FOLDER_KEY = "localFolder";
 
