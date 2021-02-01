@@ -38,6 +38,7 @@ import {
   QueueProvider,
 } from "../provider";
 import { TreeItemCollapsibleState, Uri, commands, window } from "vscode";
+import { LocalFileTreeItem } from "../provider";
 import type { QuickPickItem } from "vscode";
 import type { Readable } from "stream";
 import axios from "axios";
@@ -84,14 +85,25 @@ export function songsItem2TreeItem(id: number, songs: Readonly<SongsItem[]>) {
 }
 
 export function stop() {
-  player.item = { id: 0 } as SongsItem;
+  player.item = {} as SongsItem;
   player.stop();
   ButtonManager.buttonSong();
   ButtonManager.buttonLyric();
 }
 
-export async function load(element: QueueItemTreeItem) {
+export async function load(element: QueueItemTreeItem | LocalFileTreeItem) {
   Loading.set(true);
+  if (element instanceof LocalFileTreeItem) {
+    player.load(element.tooltip, 0, {
+      name: element.label,
+      id: 0,
+      dt: 4800000,
+      alia: [],
+      ar: [],
+      al: { id: 0, name: "" },
+    });
+    return;
+  }
   const { pid, item } = element;
   const { id } = item;
   const idS = `${id}`;
@@ -785,10 +797,11 @@ export async function pickAddToPlaylist(
     })),
   });
   if (await apiPlaylistTracks("add", pick.id, [id])) {
-    PlaylistProvider.refresh({
-      element: PlaylistProvider.playlists.get(pick.id),
-      refresh: true,
-    });
+    PlaylistProvider.refresh(
+      PlaylistProvider.playlists.get(pick.id),
+      undefined,
+      true
+    );
   }
   input.pop();
   return input.pop();

@@ -611,9 +611,7 @@ export function initAccount(context: ExtensionContext) {
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.signin", async () => {
-      if (LoggedIn.get()) {
-        return;
-      }
+      if (LoggedIn.get()) return;
 
       const title = i18n.word.signIn;
       let totalSteps = 3;

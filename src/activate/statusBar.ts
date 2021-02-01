@@ -98,6 +98,6 @@ export function initStatusBar() {
   });
 
   commands.registerCommand("cloudmusic.fmTrash", () => {
-    void apiFmTrash(player.item.id);
+    if (player.item.id) void apiFmTrash(player.item.id);
   });
 }

@@ -1,8 +1,8 @@
+import type { LocalFileTreeItem, QueueItemTreeItem } from "../provider";
 import { MultiStepInput, load, stop } from "../util";
 import { commands, window } from "vscode";
 import { ICON } from "../constant";
 import { PersonalFm } from "../state";
-import type { QueueItemTreeItem } from "../provider";
 import { QueueProvider } from "../provider";
 import { i18n } from "../i18n";
 
@@ -72,13 +72,11 @@ export function initQueue() {
       QueueProvider.refresh(() => {
         switch (pick.type) {
           case Type.song:
-            QueueProvider.songs.sort((a, b) =>
-              a.item.name.localeCompare(b.item.name)
-            );
+            QueueProvider.songs.sort((a, b) => a.label.localeCompare(b.label));
             break;
           case Type.album:
             QueueProvider.songs.sort((a, b) =>
-              a.item.al.name.localeCompare(b.item.al.name)
+              a.item.al.name.localeCompare(b?.item.al.name)
             );
             break;
           case Type.artist:
@@ -111,10 +109,10 @@ export function initQueue() {
 
   commands.registerCommand(
     "cloudmusic.playSong",
-    (element: QueueItemTreeItem) => {
+    (element: QueueItemTreeItem | LocalFileTreeItem) => {
       void PersonalFm.set(false);
       QueueProvider.refresh(() => {
-        QueueProvider.top(element.item.id);
+        QueueProvider.top(element.valueOf());
         void load(element);
       });
     }
@@ -122,20 +120,20 @@ export function initQueue() {
 
   commands.registerCommand(
     "cloudmusic.deleteSong",
-    ({ item: { id } }: QueueItemTreeItem) => {
+    (element: QueueItemTreeItem | LocalFileTreeItem) => {
       QueueProvider.refresh(() => {
-        QueueProvider.delete(id);
+        QueueProvider.delete(element.valueOf());
       });
     }
   );
 
   commands.registerCommand(
     "cloudmusic.playNext",
-    ({ item: { id } }: QueueItemTreeItem) => {
+    (element: QueueItemTreeItem | LocalFileTreeItem) => {
       if (QueueProvider.songs.length > 2) {
         QueueProvider.refresh(() => {
           const index = QueueProvider.songs.findIndex(
-            (value) => value.valueOf() === id
+            (value) => value.valueOf() === element.valueOf()
           );
           if (index >= 2) {
             QueueProvider.songs = [

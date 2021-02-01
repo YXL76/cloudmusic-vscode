@@ -48,7 +48,7 @@ export function initCommand(context: ExtensionContext) {
     commands.registerCommand("cloudmusic.like", async () => {
       const islike = !IsLike.get();
       const { id } = player.item;
-      if (await apiLike(id, islike)) {
+      if (id && (await apiLike(id, islike))) {
         IsLike.set(islike);
         islike
           ? AccountManager.likelist.add(id)

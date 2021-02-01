@@ -18,7 +18,7 @@ export class LoggedIn {
         void apiUserLevel();
         ButtonManager.buttonAccountAccount(AccountManager.nickname);
         ButtonManager.show();
-        PlaylistProvider.refresh({ refresh: true });
+        PlaylistProvider.refresh();
         apiRecommendSongs()
           .then((songs) => {
             QueueProvider.refresh(() => {

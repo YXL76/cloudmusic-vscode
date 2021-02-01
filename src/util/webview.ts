@@ -44,9 +44,8 @@ export class WebView {
 
   async login() {
     const key = await apiLoginQrKey();
-    if (!key) {
-      return;
-    }
+    if (!key) return;
+
     const imgSrc = await toDataURL(
       `https://music.163.com/login?codekey=${key}`
     );

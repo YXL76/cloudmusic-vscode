@@ -1,4 +1,3 @@
-import type { Event, TreeDataProvider } from "vscode";
 import {
   EventEmitter,
   ThemeIcon,
@@ -9,6 +8,7 @@ import { apiCache, songsItem2TreeItem } from "../util";
 import { AccountManager } from "../manager";
 import type { PlaylistItem } from "../constant";
 import type { QueueItemTreeItem } from ".";
+import type { TreeDataProvider } from "vscode";
 import { apiPlaylistDetail } from "../api";
 import { i18n } from "../i18n";
 
@@ -16,13 +16,6 @@ const enum Type {
   userInstance,
   favoriteInstance,
 }
-
-type RefreshPara = {
-  element?: PlaylistItemTreeItem;
-  refresh?: true;
-  action?: (items: QueueItemTreeItem[]) => void;
-};
-
 export class PlaylistProvider
   implements TreeDataProvider<PlaylistItemTreeItem | QueueItemTreeItem> {
   static playlists = new Map<number, PlaylistItemTreeItem>();
@@ -35,13 +28,11 @@ export class PlaylistProvider
 
   private static action?: (items: QueueItemTreeItem[]) => void;
 
-  _onDidChangeTreeData: EventEmitter<
+  _onDidChangeTreeData = new EventEmitter<
     PlaylistItemTreeItem | undefined | void
-  > = new EventEmitter<PlaylistItemTreeItem | undefined | void>();
+  >();
 
-  readonly onDidChangeTreeData: Event<
-    PlaylistItemTreeItem | undefined | void
-  > = this._onDidChangeTreeData.event;
+  readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
   constructor(private type: Type) {}
 
@@ -59,25 +50,23 @@ export class PlaylistProvider
     );
   }
 
-  static refresh({ element, refresh, action }: RefreshPara) {
+  static refresh(
+    element?: PlaylistItemTreeItem,
+    action?: (items: QueueItemTreeItem[]) => void,
+    refresh?: true
+  ) {
     if (element) {
-      this.action = action;
       const { id } = element.item;
       if (refresh) {
         apiCache.del(`playlist_detail${id}`);
       }
-      const type = this.belongsTo.get(id);
-      if (type === Type.userInstance) {
+      this.action = action;
+      if (this.belongsTo.get(id) === Type.userInstance) {
         this.userInstance._onDidChangeTreeData.fire(element);
-      } else if (type === Type.favoriteInstance) {
+      } else {
         this.favoriteInstance._onDidChangeTreeData.fire(element);
       }
     } else {
-      if (refresh) {
-        for (const id of this.belongsTo.keys()) {
-          apiCache.del(`playlist_detail${id}`);
-        }
-      }
       apiCache.del(`user_playlist${AccountManager.uid}`);
       this.belongsTo.clear();
       this.playlists.clear();

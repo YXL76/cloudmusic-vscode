@@ -1,4 +1,5 @@
 import { Loading, PersonalFm, Playing } from "../state";
+import { LocalFileTreeItem, QueueProvider } from "../provider";
 import type { Lyric, NativePlayer, Player, SongsItem } from "../constant";
 import { MusicCache, downloadMusic } from ".";
 import { NATIVE, PLAYER_AVAILABLE, TMP_DIR, VOLUME_KEY } from "../constant";
@@ -6,7 +7,6 @@ import { Uri, commands, workspace } from "vscode";
 import { apiLyric, apiScrobble, apiSongUrl } from "../api";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
-import { QueueProvider } from "../provider";
 import { createWriteStream } from "fs";
 
 class NoPlayer implements Player {
@@ -41,6 +41,7 @@ class NoPlayer implements Player {
 }
 
 async function prefetch() {
+  if (QueueProvider.songs[1] instanceof LocalFileTreeItem) return;
   try {
     const { item } = PersonalFm.get()
       ? PersonalFm.item[1]
@@ -49,9 +50,8 @@ async function prefetch() {
 
     if (idString !== "0" && !(await MusicCache.get(idString))) {
       const { url, md5 } = await apiSongUrl(item);
-      if (!url) {
-        return;
-      }
+      if (!url) return;
+
       const path = Uri.joinPath(TMP_DIR, idString);
       const data = await downloadMusic(
         url,
@@ -146,28 +146,31 @@ class AudioPlayer implements Player {
       );
       Playing.set(true);
 
-      void apiLyric(item.id).then(({ time, text }) => {
-        lyric.index = 0;
-        lyric.time = time;
-        lyric.text = text;
-      });
+      if (item.id !== 0) {
+        void apiLyric(item.id).then(({ time, text }) => {
+          lyric.index = 0;
+          lyric.time = time;
+          lyric.text = text;
+        });
+      }
 
       const pTime = this.time;
       this.time = Date.now();
-
-      const diff = this.time - pTime;
-      const { id, dt } = this.item;
-      if (diff > 60000 && dt > 60) {
-        void apiScrobble(id, this.pid, Math.floor(Math.min(diff / 1000, dt)));
+      if (this.item.id !== 0) {
+        const diff = this.time - pTime;
+        const { id, dt } = this.item;
+        if (diff > 60000 && dt > 60) {
+          void apiScrobble(id, this.pid, Math.floor(Math.min(diff / 1000, dt)));
+        }
       }
 
-      this.pid = pid;
       this.item = item;
+      this.pid = pid;
       this.prefetchLock = false;
+      Loading.set(false);
     } else {
       void commands.executeCommand("cloudmusic.next");
     }
-    Loading.set(false, item);
   }
 
   togglePlay() {

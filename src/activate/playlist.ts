@@ -36,7 +36,7 @@ export function initPlaylist() {
   window.registerTreeDataProvider("favoritePlaylist", favoritePlaylistProvider);
 
   commands.registerCommand("cloudmusic.refreshPlaylist", () => {
-    PlaylistProvider.refresh({ refresh: true });
+    PlaylistProvider.refresh();
   });
 
   commands.registerCommand("cloudmusic.createPlaylist", () => {
@@ -81,7 +81,7 @@ export function initPlaylist() {
         name &&
         (await apiPlaylistCreate(name, pick.type === Type.public ? 0 : 10))
       ) {
-        PlaylistProvider.refresh({});
+        PlaylistProvider.refresh();
       }
     }
   });
@@ -89,22 +89,19 @@ export function initPlaylist() {
   commands.registerCommand(
     "cloudmusic.refreshPlaylistContent",
     (element: PlaylistItemTreeItem) =>
-      PlaylistProvider.refresh({ element, refresh: true })
+      PlaylistProvider.refresh(element, undefined, true)
   );
 
   commands.registerCommand(
     "cloudmusic.playPlaylist",
     (element: PlaylistItemTreeItem) => {
-      PlaylistProvider.refresh({
-        element,
-        action: (items) => {
-          QueueProvider.refresh(() => {
-            void PersonalFm.set(false);
-            QueueProvider.clear();
-            QueueProvider.add(items);
-            void load(QueueProvider.songs[0]);
-          });
-        },
+      PlaylistProvider.refresh(element, (items) => {
+        QueueProvider.refresh(() => {
+          void PersonalFm.set(false);
+          QueueProvider.clear();
+          QueueProvider.add(items);
+          void load(QueueProvider.songs[0]);
+        });
       });
     }
   );
@@ -115,7 +112,7 @@ export function initPlaylist() {
       void MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
           if (await apiPlaylistDelete(id)) {
-            PlaylistProvider.refresh({});
+            PlaylistProvider.refresh();
           }
         })
       );
@@ -150,7 +147,7 @@ export function initPlaylist() {
           prompt: i18n.sentence.hint.desc,
         });
         if (await apiPlaylistUpdate(id, state.name, state.desc)) {
-          PlaylistProvider.refresh({});
+          PlaylistProvider.refresh();
         }
       }
     }
@@ -162,7 +159,7 @@ export function initPlaylist() {
       void MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
           if (await apiPlaylistSubscribe(id, "unsubscribe")) {
-            PlaylistProvider.refresh({});
+            PlaylistProvider.refresh();
           }
         })
       );
@@ -172,13 +169,10 @@ export function initPlaylist() {
   commands.registerCommand(
     "cloudmusic.addPlaylist",
     (element: PlaylistItemTreeItem) => {
-      PlaylistProvider.refresh({
-        element,
-        action: (items) => {
-          QueueProvider.refresh(() => {
-            QueueProvider.add(items);
-          });
-        },
+      PlaylistProvider.refresh(element, (items) => {
+        QueueProvider.refresh(() => {
+          QueueProvider.add(items);
+        });
       });
     }
   );
@@ -233,17 +227,14 @@ export function initPlaylist() {
   commands.registerCommand(
     "cloudmusic.playSongWithPlaylist",
     ({ item: { id }, pid }: QueueItemTreeItem) => {
-      PlaylistProvider.refresh({
-        element: PlaylistProvider.playlists.get(pid),
-        action: (items) => {
-          QueueProvider.refresh(() => {
-            void PersonalFm.set(false);
-            QueueProvider.clear();
-            QueueProvider.add(items);
-            QueueProvider.top(id);
-            void load(QueueProvider.songs[0]);
-          });
-        },
+      PlaylistProvider.refresh(PlaylistProvider.playlists.get(pid), (items) => {
+        QueueProvider.refresh(() => {
+          void PersonalFm.set(false);
+          QueueProvider.clear();
+          QueueProvider.add(items);
+          QueueProvider.top(id);
+          void load(QueueProvider.songs[0]);
+        });
       });
     }
   );
@@ -254,10 +245,11 @@ export function initPlaylist() {
       void MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
           if (await apiPlaylistTracks("del", pid, [id])) {
-            PlaylistProvider.refresh({
-              element: PlaylistProvider.playlists.get(pid),
-              refresh: true,
-            });
+            PlaylistProvider.refresh(
+              PlaylistProvider.playlists.get(pid),
+              undefined,
+              true
+            );
           }
         })
       );
@@ -299,9 +291,8 @@ export function initPlaylist() {
     "cloudmusic.downloadSong",
     async ({ item }: QueueItemTreeItem) => {
       const { url, type } = await apiSongUrl(item);
-      if (!url) {
-        return;
-      }
+      if (!url) return;
+
       const uri = await window.showSaveDialog({
         defaultUri: Uri.joinPath(HOME_DIR, `${item.name}.${type || "mp3"}`),
         filters: {

@@ -1,12 +1,12 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { IsLike } from ".";
-import type { SongsItem } from "../constant";
 import { i18n } from "../i18n";
+import { player } from "../util";
 
 export class Loading {
   private static state = false;
 
-  static set(newValue: boolean, item?: SongsItem) {
+  static set(newValue: boolean) {
     if (newValue !== this.state) {
       this.state = newValue;
       if (newValue) {
@@ -14,7 +14,7 @@ export class Loading {
           `$(loading) ${i18n.word.song}: ${i18n.word.loading}`
         );
       } else {
-        const { name, ar, id } = item as SongsItem;
+        const { name, ar, id } = player.item;
         ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
         IsLike.set(AccountManager.likelist.has(id));
       }
