@@ -236,7 +236,6 @@ export async function apiPlaymodeIntelligenceList(
   songId: number,
   playlistId: number
 ) {
-  let ret: SongsItem[] = [];
   try {
     const { data } = await weapiRequest<{ data: { songInfo: SongsItem }[] }>(
       "https://music.163.com/weapi/playmode/intelligence/list",
@@ -248,11 +247,11 @@ export async function apiPlaymodeIntelligenceList(
         count: 1,
       }
     );
-    ret = data.map(({ songInfo }) => solveSongItem(songInfo));
+    return data.map(({ songInfo }) => solveSongItem(songInfo));
   } catch (err) {
     console.error(err);
   }
-  return ret;
+  return [];
 }
 
 export async function apiSimiPlaylist(

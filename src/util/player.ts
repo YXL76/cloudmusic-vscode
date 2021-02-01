@@ -53,7 +53,7 @@ export class Player {
 
   static context: ExtensionContext;
 
-  private static player = NATIVE.playerNew();
+  private static readonly player = NATIVE.playerNew();
 
   private static prefetchLock = false;
 

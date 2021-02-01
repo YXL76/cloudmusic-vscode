@@ -30,58 +30,39 @@ export class ButtonManager {
     window.createStatusBarItem(StatusBarAlignment.Left, -135),
   ];
 
-  private static buttonShow = [true, true, true, true, true, true, true, false];
-
-  private static buttonText = [
-    "$(account)",
-    "$(chevron-left)",
-    "$(play)",
-    "$(chevron-right)",
-    "$(star)",
-    "$(unmute)",
-    "$(flame)",
-    "$(text-size)",
-  ];
-
-  private static buttonTooltip = [
-    i18n.word.account,
-    i18n.word.previousTrack,
-    i18n.word.play,
-    i18n.word.nextTrack,
-    i18n.word.like,
-    i18n.word.volume,
-    i18n.word.song,
-    i18n.word.lyric,
-  ];
-
-  private static buttonCommand = [
-    "cloudmusic.signin",
-    "cloudmusic.previous",
-    "cloudmusic.play",
-    "cloudmusic.next",
-    "cloudmusic.like",
-    "cloudmusic.volume",
-    "cloudmusic.songDetail",
-    "cloudmusic.lyric",
-  ];
+  private static buttonShow = [true, true, true, true, true, true, true, true];
 
   static init() {
-    for (let i = 0; i < this.buttons.length; ++i) {
-      this.buttons[i].text = this.buttonText[i];
-      this.buttons[i].tooltip = this.buttonTooltip[i];
-      this.buttons[i].command = this.buttonCommand[i];
-    }
+    this.buttons[0].text = "$(account)";
+    this.buttons[1].text = "$(chevron-left)";
+    this.buttons[2].text = "$(play)";
+    this.buttons[3].text = "$(chevron-right)";
+    this.buttons[4].text = "$(star)";
+    this.buttons[5].text = "$(unmute)";
+    this.buttons[6].text = "$(flame)";
+    this.buttons[7].text = "$(text-size)";
+
+    this.buttons[0].tooltip = i18n.word.account;
+    this.buttons[1].tooltip = i18n.word.previousTrack;
+    this.buttons[2].tooltip = i18n.word.play;
+    this.buttons[3].tooltip = i18n.word.nextTrack;
+    this.buttons[4].tooltip = i18n.word.like;
+    this.buttons[5].tooltip = i18n.word.volume;
+    this.buttons[6].tooltip = i18n.word.song;
+    this.buttons[7].tooltip = i18n.word.lyric;
+
+    this.buttons[0].command = "cloudmusic.signin";
+    this.buttons[1].command = "cloudmusic.previous";
+    this.buttons[2].command = "cloudmusic.play";
+    this.buttons[3].command = "cloudmusic.next";
+    this.buttons[4].command = "cloudmusic.like";
+    this.buttons[5].command = "cloudmusic.volume";
+    this.buttons[6].command = "cloudmusic.songDetail";
+    this.buttons[7].command = "cloudmusic.lyric";
+
     this.buttons[0].show();
-    this.buttonShow = this.context.globalState.get(BUTTON_KEY) || [
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      true,
-      false,
-    ];
+    this.buttonShow =
+      this.context.globalState.get(BUTTON_KEY) || this.buttonShow;
     this.show();
   }
 
@@ -94,7 +75,9 @@ export class ButtonManager {
       const items: T[] = [];
       for (let id = 1; id < this.buttons.length; ++id) {
         items.push({
-          label: `${this.buttonText[id]} ${this.buttonTooltip[id]}`,
+          label: `${this.buttons[id].text} ${
+            this.buttons[id].tooltip as string
+          }`,
           description: this.buttonShow[id] ? i18n.word.show : i18n.word.hide,
           id,
         });
@@ -149,15 +132,9 @@ export class ButtonManager {
       this.buttons[ButtonLabel.previous].tooltip = i18n.word.trash;
       this.buttons[ButtonLabel.previous].command = "cloudmusic.fmTrash";
     } else {
-      this.buttons[ButtonLabel.previous].text = this.buttonText[
-        ButtonLabel.previous
-      ];
-      this.buttons[ButtonLabel.previous].tooltip = this.buttonTooltip[
-        ButtonLabel.previous
-      ];
-      this.buttons[ButtonLabel.previous].command = this.buttonCommand[
-        ButtonLabel.previous
-      ];
+      this.buttons[ButtonLabel.previous].text = "$(chevron-left)";
+      this.buttons[ButtonLabel.previous].tooltip = i18n.word.previousTrack;
+      this.buttons[ButtonLabel.previous].command = "cloudmusic.previous";
     }
   }
 
@@ -186,15 +163,12 @@ export class ButtonManager {
       this.buttons[ButtonLabel.song].text = name;
       this.buttons[ButtonLabel.song].tooltip = ar ? `${name} - ${ar}` : name;
     } else {
-      this.buttons[ButtonLabel.song].text = this.buttonText[ButtonLabel.song];
-      this.buttons[ButtonLabel.song].tooltip = this.buttonTooltip[
-        ButtonLabel.song
-      ];
+      this.buttons[ButtonLabel.song].text = "$(flame)";
+      this.buttons[ButtonLabel.song].tooltip = i18n.word.song;
     }
   }
 
   static buttonLyric(text?: string) {
-    this.buttons[ButtonLabel.lyric].text =
-      text ?? this.buttonText[ButtonLabel.lyric];
+    this.buttons[ButtonLabel.lyric].text = text ?? "$(text-size)";
   }
 }

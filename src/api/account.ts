@@ -17,25 +17,22 @@ import { AccountManager } from "../manager";
 import { apiCache } from "../util";
 
 export async function apiDailySignin() {
-  const tasks: Promise<void>[] = [];
-  tasks.push(
+  const tasks: Promise<void>[] = [
     new Promise((resolve, reject) => {
       weapiRequest("https://music.163.com/weapi/point/dailyTask", {
         type: 0,
       })
         .then(() => resolve)
         .catch(reject);
-    })
-  );
-  tasks.push(
+    }),
     new Promise((resolve, reject) => {
       weapiRequest("https://music.163.com/weapi/point/dailyTask", {
         type: 1,
       })
         .then(() => resolve)
         .catch(reject);
-    })
-  );
+    }),
+  ];
   try {
     await Promise.all(tasks);
     return true;
@@ -410,8 +407,7 @@ export async function apiUserRecord(refresh?: true) {
   if (!refresh && (value = apiCache.get(key))) {
     return value;
   }
-  const tasks: Promise<(SongsItem & { playCount: number })[]>[] = [];
-  tasks.push(
+  const tasks: Promise<(SongsItem & { playCount: number })[]>[] = [
     new Promise((resolve, reject) => {
       weapiRequest<{
         weekData: { playCount: number; song: SongsItem }[];
@@ -428,10 +424,7 @@ export async function apiUserRecord(refresh?: true) {
           );
         })
         .catch(reject);
-    })
-  );
-
-  tasks.push(
+    }),
     new Promise((resolve, reject) => {
       weapiRequest<{
         allData: { playCount: number; song: SongsItem }[];
@@ -448,8 +441,9 @@ export async function apiUserRecord(refresh?: true) {
           );
         })
         .catch(reject);
-    })
-  );
+    }),
+  ];
+
   try {
     const ret = await Promise.all(tasks);
     apiCache.set(key, ret);
