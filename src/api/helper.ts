@@ -4,8 +4,11 @@ import type {
   Artist,
   CommentDetail,
   PlaylistItem,
+  ProgramDetail,
+  RadioDetail,
   RawCommentDetail,
   RawPlaylistItem,
+  RawProgramDetail,
   SimplyUserDetail,
   SongsItem,
   UserDetail,
@@ -260,5 +263,31 @@ export const solveComment = (item: RawCommentDetail): CommentDetail => {
           user: solveSimplyUserDetail(beReplied[0].user),
         }
       : undefined,
+  };
+};
+
+export const solveRadioDetail = (item: RadioDetail): RadioDetail => {
+  const { name, desc, id, subCount, programCount, playCount, dj } = item;
+  return {
+    name,
+    desc,
+    id,
+    subCount,
+    programCount,
+    playCount,
+    dj: solveUserDetail(dj),
+  };
+};
+
+export const solveProgramDetail = (item: RawProgramDetail): ProgramDetail => {
+  const { mainSong, dj, radio, description, id } = item;
+  return {
+    mainSong: {
+      ...solveAnotherSongItem(mainSong),
+      ar: [{ name: dj.nickname, id: 0 }],
+      al: { name: radio.name, id: 0 },
+    },
+    description,
+    id,
   };
 };

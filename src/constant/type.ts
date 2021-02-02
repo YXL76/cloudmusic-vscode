@@ -1,5 +1,3 @@
-import type { ExtensionContext } from "vscode";
-
 export type Account = {
   phone: string;
   username: string;
@@ -144,6 +142,30 @@ export type CommentDetail = {
     content: string;
     user: SimplyUserDetail;
   };
+};
+
+export type RadioDetail = {
+  name: string;
+  desc?: string;
+  id: number;
+  subCount: number;
+  programCount: number;
+  playCount: number;
+  dj: UserDetail;
+};
+
+export type ProgramDetail = {
+  mainSong: SongsItem;
+  description: string;
+  id: number;
+};
+
+export type RawProgramDetail = {
+  mainSong: AnotherSongItem;
+  dj: UserDetail;
+  radio: Omit<RadioDetail, "dj">;
+  description: string;
+  id: number;
 };
 
 export type NativePlayer = {};

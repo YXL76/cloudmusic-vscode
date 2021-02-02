@@ -1,7 +1,10 @@
 import type {
   AnotherSongItem,
   PlaylistItem,
+  ProgramDetail,
+  RadioDetail,
   RawPlaylistItem,
+  RawProgramDetail,
   SongsItem,
   UserDetail,
 } from "../constant";
@@ -9,6 +12,8 @@ import {
   eapiRequest,
   solveAnotherSongItem,
   solvePlaylistItem,
+  solveProgramDetail,
+  solveRadioDetail,
   solveSongItem,
   solveUserDetail,
   weapiRequest,
@@ -40,6 +45,26 @@ export async function apiDailySignin() {
     console.error(err);
   }
   return false;
+}
+
+export async function apiDjPersonalizeRecommend() {
+  const key = "dj_personalize_recommend";
+  const value = apiCache.get(key);
+  if (value) {
+    return value as RadioDetail[];
+  }
+  try {
+    const { data } = await weapiRequest<{ data: RadioDetail[] }>(
+      "https://music.163.com/api/djradio/personalize/rcmd",
+      { limit: 10 }
+    );
+    const ret = data.map(solveRadioDetail);
+    apiCache.set(key, ret);
+    return ret;
+  } catch (err) {
+    console.error(err);
+  }
+  return [];
 }
 
 export async function apiFmTrash(songId: number) {
@@ -188,6 +213,25 @@ export async function apiPersonalized() {
       { limit: 30, total: true, n: 1000 }
     );
     const ret = result.map(solvePlaylistItem);
+    apiCache.set(key, ret);
+    return ret;
+  } catch (err) {
+    console.error(err);
+  }
+  return [];
+}
+
+export async function apiPersonalizedDjprogram() {
+  const key = "personalized_djprogram";
+  const value = apiCache.get(key);
+  if (value) {
+    return value as ProgramDetail[];
+  }
+  try {
+    const { result } = await weapiRequest<{
+      result: { program: RawProgramDetail }[];
+    }>("https://music.163.com/weapi/personalized/djprogram", {});
+    const ret = result.map(({ program }) => solveProgramDetail(program));
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
