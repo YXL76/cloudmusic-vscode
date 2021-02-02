@@ -38,104 +38,71 @@
     "main": false
   },
   "contributes": {
-    "viewsContainers": {
-      "activitybar": [
-        {
-          "id": "cloudmusic",
-          "title": "%viewsContainers.activitybar.title%",
-          "icon": "media/disc.svg"
-        }
-      ]
-    },
-    "views": {
-      "cloudmusic": [
-        {
-          "id": "local",
-          "name": "%views.local.name%"
-        },
-        {
-          "id": "userPlaylist",
-          "name": "%views.userPlaylist.name%"
-        },
-        {
-          "id": "favoritePlaylist",
-          "name": "%views.favoritePlaylist.name%"
-        },
-        {
-          "id": "djradio",
-          "name": "%views.djradio.name%"
-        },
-        {
-          "id": "queue",
-          "name": "%views.queue.name%"
-        }
-      ]
-    },
     "commands": [
       {
+        "category": "Cloudmusic",
         "command": "cloudmusic.signin",
-        "title": "%commands.signin.title%",
-        "category": "Cloudmusic"
+        "title": "%commands.signin.title%"
       },
       {
+        "category": "Cloudmusic",
         "command": "cloudmusic.signout",
-        "title": "%commands.signout.title%",
-        "category": "Cloudmusic"
+        "title": "%commands.signout.title%"
       },
       {
+        "category": "Cloudmusic",
         "command": "cloudmusic.dailyCheck",
-        "title": "%commands.dailyCheck.title%",
-        "category": "Cloudmusic"
+        "title": "%commands.dailyCheck.title%"
       },
       {
+        "category": "Cloudmusic",
         "command": "cloudmusic.account",
-        "title": "%commands.account.title%",
-        "category": "Cloudmusic"
+        "title": "%commands.account.title%"
       },
       {
+        "category": "Cloudmusic",
         "command": "cloudmusic.previous",
-        "title": "%commands.previous.title%",
-        "category": "Cloudmusic"
+        "title": "%commands.previous.title%"
       },
       {
+        "category": "Cloudmusic",
         "command": "cloudmusic.next",
-        "title": "%commands.next.title%",
-        "category": "Cloudmusic"
+        "title": "%commands.next.title%"
       },
       {
+        "category": "Cloudmusic",
         "command": "cloudmusic.play",
-        "title": "%commands.play.title%",
-        "category": "Cloudmusic"
+        "title": "%commands.play.title%"
       },
       {
+        "category": "Cloudmusic",
         "command": "cloudmusic.like",
-        "title": "%commands.like.title%",
-        "category": "Cloudmusic"
+        "title": "%commands.like.title%"
       },
       {
+        "category": "Cloudmusic",
         "command": "cloudmusic.volume",
-        "title": "%commands.volume.title%",
-        "category": "Cloudmusic"
+        "title": "%commands.volume.title%"
       },
       {
+        "category": "Cloudmusic",
         "command": "cloudmusic.toggleButton",
-        "title": "%commands.toggleButton.title%",
-        "category": "Cloudmusic"
+        "title": "%commands.toggleButton.title%"
       },
       {
+        "category": "Cloudmusic",
         "command": "cloudmusic.personalFM",
-        "title": "%commands.personalFM.title%",
-        "category": "Cloudmusic"
+        "title": "%commands.personalFM.title%"
       },
       {
         "command": "cloudmusic.newLocalLibrary",
-        "title": "%commands.newLocalLibrary.title%",
-        "icon": "$(add)"
+        "icon": "$(add)",
+        "title": "%commands.newLocalLibrary.title%"
       },
       {
         "command": "cloudmusic.refreshLocalLibrary",
-        "title": "%commands.refreshLocalLibrary.title%",
-        "icon": "$(refresh)"
+        "icon": "$(refresh)",
+        "title": "%commands.refreshLocalLibrary.title%"
       },
       {
         "command": "cloudmusic.deleteLocalLibrary",
@@ -147,53 +114,53 @@
       },
       {
         "command": "cloudmusic.playLocalLibrary",
-        "title": "%commands.playLocalLibrary.title%",
-        "icon": "$(play)"
+        "icon": "$(play)",
+        "title": "%commands.playLocalLibrary.title%"
       },
       {
         "command": "cloudmusic.addLocalLibrary",
-        "title": "%commands.addLocalLibrary.title%",
-        "icon": "$(add)"
+        "icon": "$(add)",
+        "title": "%commands.addLocalLibrary.title%"
       },
       {
         "command": "cloudmusic.refreshLocalFile",
-        "title": "%commands.refreshLocalFile.title%",
-        "icon": "$(refresh)"
+        "icon": "$(refresh)",
+        "title": "%commands.refreshLocalFile.title%"
       },
       {
         "command": "cloudmusic.addLocalFile",
-        "title": "%commands.addLocalFile.title%",
-        "icon": "$(add)"
+        "icon": "$(add)",
+        "title": "%commands.addLocalFile.title%"
       },
       {
         "command": "cloudmusic.playLocalFile",
-        "title": "%commands.playLocalFile.title%",
-        "icon": "$(play)"
+        "icon": "$(play)",
+        "title": "%commands.playLocalFile.title%"
       },
       {
         "command": "cloudmusic.refreshPlaylist",
-        "title": "%commands.refreshPlaylist.title%",
-        "icon": "$(refresh)"
+        "icon": "$(refresh)",
+        "title": "%commands.refreshPlaylist.title%"
       },
       {
         "command": "cloudmusic.createPlaylist",
-        "title": "%commands.createPlaylist.title%",
-        "icon": "$(add)"
+        "icon": "$(add)",
+        "title": "%commands.createPlaylist.title%"
       },
       {
         "command": "cloudmusic.refreshPlaylistContent",
-        "title": "%commands.refreshPlaylistContent.title%",
-        "icon": "$(refresh)"
+        "icon": "$(refresh)",
+        "title": "%commands.refreshPlaylistContent.title%"
       },
       {
         "command": "cloudmusic.playPlaylist",
-        "title": "%commands.playPlaylist.title%",
-        "icon": "$(play)"
+        "icon": "$(play)",
+        "title": "%commands.playPlaylist.title%"
       },
       {
         "command": "cloudmusic.addPlaylist",
-        "title": "%commands.addPlaylist.title%",
-        "icon": "$(plus)"
+        "icon": "$(plus)",
+        "title": "%commands.addPlaylist.title%"
       },
       {
         "command": "cloudmusic.deletePlaylist",
@@ -209,48 +176,48 @@
       },
       {
         "command": "cloudmusic.sortQueue",
-        "title": "%commands.sortQueue.title%",
-        "icon": "$(ungroup-by-ref-type)"
+        "icon": "$(ungroup-by-ref-type)",
+        "title": "%commands.sortQueue.title%"
       },
       {
         "command": "cloudmusic.clearQueue",
-        "title": "%commands.clearQueue.title%",
-        "icon": "$(clear-all)"
+        "icon": "$(clear-all)",
+        "title": "%commands.clearQueue.title%"
       },
       {
         "command": "cloudmusic.randomQueue",
-        "title": "%commands.randomQueue.title%",
-        "icon": "$(sort-precedence)"
+        "icon": "$(sort-precedence)",
+        "title": "%commands.randomQueue.title%"
       },
       {
         "command": "cloudmusic.intelligence",
-        "title": "%commands.intelligence.title%",
-        "icon": "$(pulse)"
+        "icon": "$(pulse)",
+        "title": "%commands.intelligence.title%"
       },
       {
         "command": "cloudmusic.addSong",
-        "title": "%commands.addSong.title%",
-        "icon": "$(add)"
+        "icon": "$(add)",
+        "title": "%commands.addSong.title%"
       },
       {
         "command": "cloudmusic.playSongWithPlaylist",
-        "title": "%commands.playSongWithPlaylist.title%",
-        "icon": "$(play)"
+        "icon": "$(play)",
+        "title": "%commands.playSongWithPlaylist.title%"
       },
       {
         "command": "cloudmusic.playSong",
-        "title": "%commands.playSong.title%",
-        "icon": "$(play)"
+        "icon": "$(play)",
+        "title": "%commands.playSong.title%"
       },
       {
         "command": "cloudmusic.deleteSong",
-        "title": "%commands.deleteSong.title%",
-        "icon": "$(remove)"
+        "icon": "$(remove)",
+        "title": "%commands.deleteSong.title%"
       },
       {
         "command": "cloudmusic.playNext",
-        "title": "%commands.playNext.title%",
-        "icon": "$(arrow-up)"
+        "icon": "$(arrow-up)",
+        "title": "%commands.playNext.title%"
       },
       {
         "command": "cloudmusic.deleteFromPlaylist",
@@ -297,49 +264,81 @@
         "title": "%commands.downloadSong.title%"
       }
     ],
+    "configuration": [
+      {
+        "properties": {
+          "cloudmusic.account.autoCheck": {
+            "default": false,
+            "markdownDescription": "%configuration.account.autoCheck.markdownDescription%",
+            "scope": "window",
+            "type": "boolean"
+          },
+          "cloudmusic.cache.size": {
+            "default": 1024,
+            "markdownDescription": "%configuration.cache.size.markdownDescription%",
+            "maximum": 10240,
+            "minimum": 128,
+            "scope": "window",
+            "type": "number"
+          },
+          "cloudmusic.music.quality": {
+            "default": 192000,
+            "enum": [
+              128000,
+              192000,
+              320000,
+              999000
+            ],
+            "enumDescriptions": [
+              "%configuration.music.quality.enumDescriptions.low%",
+              "%configuration.music.quality.enumDescriptions.medium%",
+              "%configuration.music.quality.enumDescriptions.high%",
+              "%configuration.music.quality.enumDescriptions.lossless%"
+            ],
+            "markdownDescription": "%configuration.music.quality.markdownDescription%",
+            "scope": "window",
+            "type": "number"
+          },
+          "cloudmusic.music.unlock.joox": {
+            "default": false,
+            "markdownDescription": "[https://www.joox.com/](https://www.joox.com/)",
+            "scope": "window",
+            "type": "boolean"
+          },
+          "cloudmusic.music.unlock.kugou": {
+            "default": false,
+            "markdownDescription": "[https://www.kugou.com/](https://www.kugou.com/)",
+            "scope": "window",
+            "type": "boolean"
+          },
+          "cloudmusic.music.unlock.kuwo": {
+            "default": false,
+            "markdownDescription": "[https://kuwo.cn/](https://kuwo.cn/)",
+            "scope": "window",
+            "type": "boolean"
+          },
+          "cloudmusic.music.unlock.migu": {
+            "default": false,
+            "markdownDescription": "[https://www.migu.cn/](https://www.migu.cn/)",
+            "scope": "window",
+            "type": "boolean"
+          },
+          "cloudmusic.player.mediaControl": {
+            "default": true,
+            "markdownDescription": "%configuration.player.mediaControl.markdownDescription%",
+            "scope": "window",
+            "type": "boolean"
+          }
+        },
+        "title": "Cloudmusic"
+      }
+    ],
     "menus": {
-      "view/title": [
-        {
-          "command": "cloudmusic.newLocalLibrary",
-          "when": "view == local",
-          "group": "navigation"
-        },
-        {
-          "command": "cloudmusic.refreshLocalLibrary",
-          "when": "view == local",
-          "group": "navigation"
-        },
-        {
-          "command": "cloudmusic.refreshPlaylist",
-          "when": "view == userPlaylist || view == favoritePlaylist",
-          "group": "navigation"
-        },
-        {
-          "command": "cloudmusic.createPlaylist",
-          "when": "view == userPlaylist",
-          "group": "navigation"
-        },
-        {
-          "command": "cloudmusic.sortQueue",
-          "when": "view == queue",
-          "group": "navigation"
-        },
-        {
-          "command": "cloudmusic.clearQueue",
-          "when": "view == queue",
-          "group": "navigation"
-        },
-        {
-          "command": "cloudmusic.randomQueue",
-          "when": "view == queue",
-          "group": "navigation"
-        }
-      ],
       "view/item/context": [
         {
           "command": "cloudmusic.refreshLocalFile",
-          "when": "viewItem == LocalLibraryTreeItem",
-          "group": "inline"
+          "group": "inline",
+          "when": "viewItem == LocalLibraryTreeItem"
         },
         {
           "command": "cloudmusic.deleteLocalLibrary",
@@ -351,38 +350,38 @@
         },
         {
           "command": "cloudmusic.playLocalLibrary",
-          "when": "viewItem == LocalLibraryTreeItem",
-          "group": "inline"
+          "group": "inline",
+          "when": "viewItem == LocalLibraryTreeItem"
         },
         {
           "command": "cloudmusic.addLocalLibrary",
-          "when": "viewItem == LocalLibraryTreeItem",
-          "group": "inline"
+          "group": "inline",
+          "when": "viewItem == LocalLibraryTreeItem"
         },
         {
           "command": "cloudmusic.addLocalFile",
-          "when": "viewItem == LocalFileTreeItem",
-          "group": "inline"
+          "group": "inline",
+          "when": "viewItem == LocalFileTreeItem"
         },
         {
           "command": "cloudmusic.playLocalFile",
-          "when": "viewItem == LocalFileTreeItem",
-          "group": "inline"
+          "group": "inline",
+          "when": "viewItem == LocalFileTreeItem"
         },
         {
           "command": "cloudmusic.refreshPlaylistContent",
-          "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem || view == favoritePlaylist && viewItem == PlaylistItemTreeItem",
-          "group": "inline"
+          "group": "inline",
+          "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem || view == favoritePlaylist && viewItem == PlaylistItemTreeItem"
         },
         {
           "command": "cloudmusic.playPlaylist",
-          "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem || view == favoritePlaylist && viewItem == PlaylistItemTreeItem",
-          "group": "inline"
+          "group": "inline",
+          "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem || view == favoritePlaylist && viewItem == PlaylistItemTreeItem"
         },
         {
           "command": "cloudmusic.addPlaylist",
-          "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem || view == favoritePlaylist && viewItem == PlaylistItemTreeItem",
-          "group": "inline"
+          "group": "inline",
+          "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem || view == favoritePlaylist && viewItem == PlaylistItemTreeItem"
         },
         {
           "command": "cloudmusic.deletePlaylist",
@@ -398,8 +397,8 @@
         },
         {
           "command": "cloudmusic.addSong",
-          "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem",
-          "group": "inline"
+          "group": "inline",
+          "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem"
         },
         {
           "command": "cloudmusic.addSong",
@@ -411,23 +410,23 @@
         },
         {
           "command": "cloudmusic.playSongWithPlaylist",
-          "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem",
-          "group": "inline"
+          "group": "inline",
+          "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem"
         },
         {
           "command": "cloudmusic.playSong",
-          "when": "view == queue && viewItem == QueueItemTreeItem",
-          "group": "inline"
+          "group": "inline",
+          "when": "view == queue && viewItem == QueueItemTreeItem"
         },
         {
           "command": "cloudmusic.deleteSong",
-          "when": "view == queue && viewItem == QueueItemTreeItem",
-          "group": "inline"
+          "group": "inline",
+          "when": "view == queue && viewItem == QueueItemTreeItem"
         },
         {
           "command": "cloudmusic.playNext",
-          "when": "view == queue && viewItem == QueueItemTreeItem",
-          "group": "inline"
+          "group": "inline",
+          "when": "view == queue && viewItem == QueueItemTreeItem"
         },
         {
           "command": "cloudmusic.deleteFromPlaylist",
@@ -461,77 +460,78 @@
           "command": "cloudmusic.downloadSong",
           "when": "viewItem == QueueItemTreeItem"
         }
+      ],
+      "view/title": [
+        {
+          "command": "cloudmusic.newLocalLibrary",
+          "group": "navigation",
+          "when": "view == local"
+        },
+        {
+          "command": "cloudmusic.refreshLocalLibrary",
+          "group": "navigation",
+          "when": "view == local"
+        },
+        {
+          "command": "cloudmusic.refreshPlaylist",
+          "group": "navigation",
+          "when": "view == userPlaylist || view == favoritePlaylist"
+        },
+        {
+          "command": "cloudmusic.createPlaylist",
+          "group": "navigation",
+          "when": "view == userPlaylist"
+        },
+        {
+          "command": "cloudmusic.sortQueue",
+          "group": "navigation",
+          "when": "view == queue"
+        },
+        {
+          "command": "cloudmusic.clearQueue",
+          "group": "navigation",
+          "when": "view == queue"
+        },
+        {
+          "command": "cloudmusic.randomQueue",
+          "group": "navigation",
+          "when": "view == queue"
+        }
       ]
     },
-    "configuration": [
-      {
-        "title": "Cloudmusic",
-        "properties": {
-          "cloudmusic.account.autoCheck": {
-            "type": "boolean",
-            "default": false,
-            "markdownDescription": "%configuration.account.autoCheck.markdownDescription%",
-            "scope": "window"
-          },
-          "cloudmusic.cache.size": {
-            "type": "number",
-            "default": 1024,
-            "minimum": 128,
-            "maximum": 10240,
-            "markdownDescription": "%configuration.cache.size.markdownDescription%",
-            "scope": "window"
-          },
-          "cloudmusic.music.quality": {
-            "type": "number",
-            "default": 192000,
-            "markdownDescription": "%configuration.music.quality.markdownDescription%",
-            "enum": [
-              128000,
-              192000,
-              320000,
-              999000
-            ],
-            "enumDescriptions": [
-              "%configuration.music.quality.enumDescriptions.low%",
-              "%configuration.music.quality.enumDescriptions.medium%",
-              "%configuration.music.quality.enumDescriptions.high%",
-              "%configuration.music.quality.enumDescriptions.lossless%"
-            ],
-            "scope": "window"
-          },
-          "cloudmusic.music.unlock.kuwo": {
-            "type": "boolean",
-            "default": false,
-            "markdownDescription": "[https://kuwo.cn/](https://kuwo.cn/)",
-            "scope": "window"
-          },
-          "cloudmusic.music.unlock.migu": {
-            "type": "boolean",
-            "default": false,
-            "markdownDescription": "[https://www.migu.cn/](https://www.migu.cn/)",
-            "scope": "window"
-          },
-          "cloudmusic.music.unlock.kugou": {
-            "type": "boolean",
-            "default": false,
-            "markdownDescription": "[https://www.kugou.com/](https://www.kugou.com/)",
-            "scope": "window"
-          },
-          "cloudmusic.music.unlock.joox": {
-            "type": "boolean",
-            "default": false,
-            "markdownDescription": "[https://www.joox.com/](https://www.joox.com/)",
-            "scope": "window"
-          },
-          "cloudmusic.player.mediaControl": {
-            "type": "boolean",
-            "default": true,
-            "markdownDescription": "%configuration.player.mediaControl.markdownDescription%",
-            "scope": "window"
-          }
+    "views": {
+      "cloudmusic": [
+        {
+          "id": "local",
+          "name": "%views.local.name%"
+        },
+        {
+          "id": "userPlaylist",
+          "name": "%views.userPlaylist.name%"
+        },
+        {
+          "id": "favoritePlaylist",
+          "name": "%views.favoritePlaylist.name%"
+        },
+        {
+          "id": "djradio",
+          "name": "%views.djradio.name%"
+        },
+        {
+          "id": "queue",
+          "name": "%views.queue.name%"
         }
-      }
-    ]
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "icon": "media/disc.svg",
+          "id": "cloudmusic",
+          "title": "%viewsContainers.activitybar.title%"
+        }
+      ]
+    }
   },
   "scripts": {
     "generate-css": "postcss src/webview/global.css -o dist/webview.css",
