@@ -380,7 +380,195 @@
       }
     ],
     "menus": {
-      "commandPalette": [],
+      "commandPalette": [
+        {
+          "command": "cloudmusic.newLocalLibrary",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.refreshLocalLibrary",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.deleteLocalLibrary",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.openLocalLibrary",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.playLocalLibrary",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.addLocalLibrary",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.refreshLocalFile",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.addLocalFile",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.playLocalFile",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.refreshPlaylist",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.createPlaylist",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.refreshPlaylistContent",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.playPlaylist",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.addPlaylist",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.deletePlaylist",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.editPlaylist",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.unsavePlaylist",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.sortQueue",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.clearQueue",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.randomQueue",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.intelligence",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.addSong",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.playSongWithPlaylist",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.playSong",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.deleteSong",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.playNext",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.deleteFromPlaylist",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.saveToPlaylist",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.songDetail",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.playlistDetail",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.songComment",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.playlistComment",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.refreshRadio",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.refreshRadioContent",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.playRadio",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.addRadio",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.unsubRadio",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.playProgram",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.addProgram",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.lyric",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.fmTrash",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.copySongLink",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.copyPlaylistLink",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.copyRadioLink",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.programComment",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.copyProgramLink",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.downloadSong"
+        }
+      ],
       "view/item/context": [
         {
           "command": "cloudmusic.refreshLocalFile",
