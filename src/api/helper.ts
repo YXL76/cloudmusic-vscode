@@ -280,12 +280,12 @@ export const solveRadioDetail = (item: RadioDetail): RadioDetail => {
 };
 
 export const solveProgramDetail = (item: RawProgramDetail): ProgramDetail => {
-  const { mainSong, dj, radio, description, id } = item;
+  const { mainSong, dj, radio, coverUrl, description, id } = item;
   return {
     mainSong: {
       ...solveAnotherSongItem(mainSong),
       ar: [{ name: dj.nickname, id: 0 }],
-      al: { name: radio.name, id: 0 },
+      al: { name: radio.name, id: 0, picUrl: coverUrl },
     },
     description,
     id,

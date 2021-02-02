@@ -36,7 +36,7 @@ export type SongsItem = {
   dt: number;
   alia: string[];
   ar: { id: number; name: string }[];
-  al: { id: number; name: string };
+  al: { id: number; name: string; picUrl: string };
 };
 
 export type RecordData = SongsItem & { playCount: number };
@@ -47,7 +47,7 @@ export type AnotherSongItem = {
   duration: number;
   alias: string[];
   artists: { id: number; name: string }[];
-  album: { id: number; name: string };
+  album: { id: number; name: string; picUrl: string };
 };
 
 export type AlbumsItem = {
@@ -164,6 +164,7 @@ export type RawProgramDetail = {
   mainSong: AnotherSongItem;
   dj: UserDetail;
   radio: Omit<RadioDetail, "dj">;
+  coverUrl: string;
   description: string;
   id: number;
 };

@@ -65,11 +65,9 @@ export function initLocal(context: ExtensionContext) {
   commands.registerCommand(
     "cloudmusic.addLocalLibrary",
     ({ label }: LocalLibraryTreeItem) =>
-      QueueProvider.refresh(() => {
-        QueueProvider.add(
-          LocalProvider.files.get(label) as LocalFileTreeItem[]
-        );
-      })
+      QueueProvider.refresh(() =>
+        QueueProvider.add(LocalProvider.files.get(label) as LocalFileTreeItem[])
+      )
   );
 
   commands.registerCommand(
@@ -80,9 +78,7 @@ export function initLocal(context: ExtensionContext) {
   commands.registerCommand(
     "cloudmusic.addLocalFile",
     (element: LocalFileTreeItem) =>
-      QueueProvider.refresh(() => {
-        QueueProvider.add([element]);
-      })
+      QueueProvider.refresh(() => QueueProvider.add([element]))
   );
 
   commands.registerCommand(

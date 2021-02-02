@@ -92,50 +92,42 @@ export function initQueue() {
     }
   });
 
-  commands.registerCommand("cloudmusic.clearQueue", () => {
+  commands.registerCommand("cloudmusic.clearQueue", () =>
     QueueProvider.refresh(() => {
       QueueProvider.clear();
-      if (!PersonalFm.get()) {
-        stop();
-      }
-    });
-  });
+      if (!PersonalFm.get()) stop();
+    })
+  );
 
-  commands.registerCommand("cloudmusic.randomQueue", () => {
-    QueueProvider.refresh(() => {
-      QueueProvider.random();
-    });
-  });
+  commands.registerCommand("cloudmusic.randomQueue", () =>
+    QueueProvider.refresh(() => QueueProvider.random())
+  );
 
   commands.registerCommand(
     "cloudmusic.playSong",
-    (element: QueueItemTreeItem | LocalFileTreeItem) => {
-      void PersonalFm.set(false);
+    (element: QueueItemTreeItem | LocalFileTreeItem) =>
       QueueProvider.refresh(() => {
+        void PersonalFm.set(false);
         QueueProvider.top(element.valueOf());
         void load(element);
-      });
-    }
+      })
   );
 
   commands.registerCommand(
     "cloudmusic.deleteSong",
-    (element: QueueItemTreeItem | LocalFileTreeItem) => {
-      QueueProvider.refresh(() => {
-        QueueProvider.delete(element.valueOf());
-      });
-    }
+    (element: QueueItemTreeItem | LocalFileTreeItem) =>
+      QueueProvider.refresh(() => QueueProvider.delete(element.valueOf()))
   );
 
   commands.registerCommand(
     "cloudmusic.playNext",
     (element: QueueItemTreeItem | LocalFileTreeItem) => {
-      if (QueueProvider.songs.length > 2) {
+      if (QueueProvider.songs.length > 2)
         QueueProvider.refresh(() => {
           const index = QueueProvider.songs.findIndex(
             (value) => value.valueOf() === element.valueOf()
           );
-          if (index >= 2) {
+          if (index >= 2)
             QueueProvider.songs = [
               QueueProvider.songs[0],
               QueueProvider.songs[index],
@@ -143,9 +135,7 @@ export function initQueue() {
               QueueProvider.songs.slice(1, index),
               QueueProvider.songs.slice(index + 1)
             );
-          }
         });
-      }
     }
   );
 }

@@ -72,10 +72,6 @@ export async function downloadMusic(
   return;
 }
 
-export function songsItem2TreeItem(id: number, songs: Readonly<SongsItem[]>) {
-  return songs.map((song) => new QueueItemTreeItem(song, id));
-}
-
 export function stop() {
   Player.stop();
   Player.item = {} as SongsItem;
@@ -93,7 +89,7 @@ export async function load(element: QueueItemTreeItem | LocalFileTreeItem) {
       dt: 4800000,
       alia: [],
       ar: [],
-      al: { id: 0, name: "" },
+      al: { id: 0, name: "", picUrl: "" },
     });
     return;
   }
@@ -138,7 +134,7 @@ export async function load(element: QueueItemTreeItem | LocalFileTreeItem) {
 export async function confirmation(
   input: MultiStepInput,
   step: number,
-  action: () => Promise<void>
+  action: () => Promise<any>
 ): Promise<InputStep | undefined> {
   const i = await input.showInputBox({
     title: i18n.word.confirmation,
@@ -320,7 +316,7 @@ export async function pickSong(
       }
       break;
     case PickType.add:
-      const element = songsItem2TreeItem(0, [item])[0];
+      const element = new QueueItemTreeItem(item, 0);
       void commands.executeCommand("cloudmusic.addSong", element);
   }
 
@@ -343,9 +339,9 @@ export async function pickSongMany(
     ],
   });
   if (pick.type === PickType.add) {
-    QueueProvider.refresh(() => {
-      QueueProvider.add(songsItem2TreeItem(0, songs));
-    });
+    QueueProvider.refresh(() =>
+      QueueProvider.add(songs.map((song) => new QueueItemTreeItem(song, 0)))
+    );
   }
   input.pop();
   return input.pop() as InputStep;
@@ -486,9 +482,11 @@ export async function pickArtist(
         pickArtists(input, step + 1, await apiSimiArtist(id));
     case PickType.unsave:
       return (input: MultiStepInput) =>
-        confirmation(input, step + 1, async () => {
-          await apiArtistSub(id, "unsub");
-        });
+        confirmation(
+          input,
+          step + 1,
+          async () => await apiArtistSub(id, "unsub")
+        );
     case PickType.save:
       await apiArtistSub(id, "sub");
   }
@@ -602,9 +600,11 @@ export async function pickAlbum(
         pickSong(input, step + 1, (pick as ST).item);
     case PickType.unsave:
       return (input: MultiStepInput) =>
-        confirmation(input, step + 1, async () => {
-          await apiAlbumSub(id, "unsub");
-        });
+        confirmation(
+          input,
+          step + 1,
+          async () => await apiAlbumSub(id, "unsub")
+        );
     case PickType.comment:
       WebView.getInstance().commentList(CommentType.album, id, name);
       break;
@@ -716,9 +716,9 @@ export async function pickPlaylist(
       return (input: MultiStepInput) =>
         pickUser(input, step + 1, (pick as T).id);
     case PickType.add:
-      QueueProvider.refresh(() => {
-        QueueProvider.add(songsItem2TreeItem(id, songs));
-      });
+      QueueProvider.refresh(() =>
+        QueueProvider.add(songs.map((song) => new QueueItemTreeItem(song, id)))
+      );
       break;
     case PickType.comment:
       WebView.getInstance().commentList(CommentType.playlist, id, name);

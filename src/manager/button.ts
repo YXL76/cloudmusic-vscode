@@ -109,7 +109,7 @@ export class ButtonManager {
       return input.pop();
     };
 
-    void MultiStepInput.run((input) => pickButton(input));
+    void MultiStepInput.run(pickButton);
   }
 
   static show() {

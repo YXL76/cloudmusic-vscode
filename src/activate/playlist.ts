@@ -8,14 +8,8 @@ import {
   apiPlaymodeIntelligenceList,
   apiSongUrl,
 } from "../api";
-import type {
-  LocalFileTreeItem,
-  PlaylistItemTreeItem,
-  QueueItemTreeItem,
-} from "../treeview";
 import {
   MultiStepInput,
-  Player,
   WebView,
   confirmation,
   downloadMusic,
@@ -23,13 +17,17 @@ import {
   pickAddToPlaylist,
   pickPlaylist,
   pickSong,
-  songsItem2TreeItem,
 } from "../util";
-import { PlaylistProvider, QueueProvider } from "../treeview";
+import {
+  PlaylistProvider,
+  QueueItemTreeItem,
+  QueueProvider,
+} from "../treeview";
 import { Uri, commands, env, window } from "vscode";
 import { basename, dirname } from "path";
 import { HOME_DIR } from "../constant";
 import { PersonalFm } from "../state";
+import type { PlaylistItemTreeItem } from "../treeview";
 import { createWriteStream } from "fs";
 import { i18n } from "../i18n";
 
@@ -39,9 +37,9 @@ export function initPlaylist() {
   window.registerTreeDataProvider("userPlaylist", userPlaylistProvider);
   window.registerTreeDataProvider("favoritePlaylist", favoritePlaylistProvider);
 
-  commands.registerCommand("cloudmusic.refreshPlaylist", () => {
-    PlaylistProvider.refresh();
-  });
+  commands.registerCommand("cloudmusic.refreshPlaylist", () =>
+    PlaylistProvider.refresh()
+  );
 
   commands.registerCommand("cloudmusic.createPlaylist", () => {
     let name: undefined | string = undefined;
@@ -97,29 +95,25 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.playPlaylist",
-    (element: PlaylistItemTreeItem) => {
-      PlaylistProvider.refresh(element, (items) => {
+    (element: PlaylistItemTreeItem) =>
+      PlaylistProvider.refresh(element, (items) =>
         QueueProvider.refresh(() => {
           void PersonalFm.set(false);
           QueueProvider.clear();
           QueueProvider.add(items);
           void load(QueueProvider.songs[0]);
-        });
-      });
-    }
+        })
+      )
   );
 
   commands.registerCommand(
     "cloudmusic.deletePlaylist",
-    ({ item: { id } }: PlaylistItemTreeItem) => {
+    ({ item: { id } }: PlaylistItemTreeItem) =>
       void MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
-          if (await apiPlaylistDelete(id)) {
-            PlaylistProvider.refresh();
-          }
+          if (await apiPlaylistDelete(id)) PlaylistProvider.refresh();
         })
-      );
-    }
+      )
   );
 
   commands.registerCommand(
@@ -149,56 +143,47 @@ export function initPlaylist() {
           value: state.desc,
           prompt: i18n.sentence.hint.desc,
         });
-        if (await apiPlaylistUpdate(id, state.name, state.desc)) {
+        if (await apiPlaylistUpdate(id, state.name, state.desc))
           PlaylistProvider.refresh();
-        }
       }
     }
   );
 
   commands.registerCommand(
     "cloudmusic.unsavePlaylist",
-    ({ item: { id } }: PlaylistItemTreeItem) => {
+    ({ item: { id } }: PlaylistItemTreeItem) =>
       void MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
-          if (await apiPlaylistSubscribe(id, "unsubscribe")) {
+          if (await apiPlaylistSubscribe(id, "unsubscribe"))
             PlaylistProvider.refresh();
-          }
         })
-      );
-    }
+      )
   );
 
   commands.registerCommand(
     "cloudmusic.addPlaylist",
-    (element: PlaylistItemTreeItem) => {
-      PlaylistProvider.refresh(element, (items) => {
-        QueueProvider.refresh(() => {
-          QueueProvider.add(items);
-        });
-      });
-    }
+    (element: PlaylistItemTreeItem) =>
+      PlaylistProvider.refresh(element, (items) =>
+        QueueProvider.refresh(() => QueueProvider.add(items))
+      )
   );
 
   commands.registerCommand(
     "cloudmusic.playlistDetail",
-    ({ item }: PlaylistItemTreeItem) => {
-      void MultiStepInput.run((input) => pickPlaylist(input, 1, item));
-    }
+    ({ item }: PlaylistItemTreeItem) =>
+      void MultiStepInput.run((input) => pickPlaylist(input, 1, item))
   );
 
   commands.registerCommand(
     "cloudmusic.playlistComment",
-    ({ item: { id, name } }: PlaylistItemTreeItem) => {
-      WebView.getInstance().commentList(CommentType.playlist, id, name);
-    }
+    ({ item: { id, name } }: PlaylistItemTreeItem) =>
+      WebView.getInstance().commentList(CommentType.playlist, id, name)
   );
 
   commands.registerCommand(
     "cloudmusic.copyPlaylistLink",
-    ({ item: { id } }: PlaylistItemTreeItem) => {
-      void env.clipboard.writeText(`https://music.163.com/#/playlist?id=${id}`);
-    }
+    ({ item: { id } }: PlaylistItemTreeItem) =>
+      void env.clipboard.writeText(`https://music.163.com/#/playlist?id=${id}`)
   );
 
   commands.registerCommand(
@@ -209,7 +194,7 @@ export function initPlaylist() {
       const songs = await apiPlaymodeIntelligenceList(id, pid);
       void PersonalFm.set(false);
       QueueProvider.refresh(() => {
-        const elements = songsItem2TreeItem(id, songs);
+        const elements = songs.map((song) => new QueueItemTreeItem(song, pid));
         QueueProvider.clear();
         QueueProvider.add([element]);
         QueueProvider.add(elements);
@@ -218,71 +203,59 @@ export function initPlaylist() {
     }
   );
 
-  commands.registerCommand(
-    "cloudmusic.addSong",
-    (element: QueueItemTreeItem) => {
-      QueueProvider.refresh(() => {
-        QueueProvider.add([element]);
-      });
-    }
+  commands.registerCommand("cloudmusic.addSong", (element: QueueItemTreeItem) =>
+    QueueProvider.refresh(() => QueueProvider.add([element]))
   );
 
   commands.registerCommand(
     "cloudmusic.playSongWithPlaylist",
-    ({ item: { id }, pid }: QueueItemTreeItem) => {
-      PlaylistProvider.refresh(PlaylistProvider.playlists.get(pid), (items) => {
+    ({ item: { id }, pid }: QueueItemTreeItem) =>
+      PlaylistProvider.refresh(PlaylistProvider.playlists.get(pid), (items) =>
         QueueProvider.refresh(() => {
           void PersonalFm.set(false);
           QueueProvider.clear();
           QueueProvider.add(items);
           QueueProvider.top(id);
           void load(QueueProvider.songs[0]);
-        });
-      });
-    }
+        })
+      )
   );
 
   commands.registerCommand(
     "cloudmusic.deleteFromPlaylist",
-    ({ item: { id }, pid }: QueueItemTreeItem) => {
+    ({ item: { id }, pid }: QueueItemTreeItem) =>
       void MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
-          if (await apiPlaylistTracks("del", pid, [id])) {
+          if (await apiPlaylistTracks("del", pid, [id]))
             PlaylistProvider.refresh(PlaylistProvider.playlists.get(pid));
-          }
         })
-      );
-    }
+      )
   );
 
   commands.registerCommand(
     "cloudmusic.saveToPlaylist",
-    ({ item: { id } }: QueueItemTreeItem) => {
-      void MultiStepInput.run((input) => pickAddToPlaylist(input, 1, id));
-    }
+    ({ item: { id } }: QueueItemTreeItem) =>
+      void MultiStepInput.run((input) => pickAddToPlaylist(input, 1, id))
   );
 
   commands.registerCommand(
     "cloudmusic.songDetail",
     ({ item }: QueueItemTreeItem) => {
-      if (item?.id) {
+      if (item?.id)
         void MultiStepInput.run((input) => pickSong(input, 1, item));
-      }
     }
   );
 
   commands.registerCommand(
     "cloudmusic.songComment",
-    ({ item: { id, name } }: QueueItemTreeItem) => {
-      WebView.getInstance().commentList(CommentType.song, id, name);
-    }
+    ({ item: { id, name } }: QueueItemTreeItem) =>
+      WebView.getInstance().commentList(CommentType.song, id, name)
   );
 
   commands.registerCommand(
     "cloudmusic.copySongLink",
-    ({ item: { id } }: QueueItemTreeItem) => {
-      void env.clipboard.writeText(`https://music.163.com/#/song?id=${id}`);
-    }
+    ({ item: { id } }: QueueItemTreeItem) =>
+      void env.clipboard.writeText(`https://music.163.com/#/song?id=${id}`)
   );
 
   commands.registerCommand(
@@ -307,9 +280,10 @@ export function initPlaylist() {
             void window.showErrorMessage(i18n.sentence.error.network);
             void commands.executeCommand("cloudmusic.next");
           });
-          data.on("close", () => {
-            void env.openExternal(Uri.file(dirname(uri.fsPath)));
-          });
+          data.on(
+            "close",
+            () => void env.openExternal(Uri.file(dirname(uri.fsPath)))
+          );
           const file = createWriteStream(uri.fsPath);
           data.pipe(file);
         }

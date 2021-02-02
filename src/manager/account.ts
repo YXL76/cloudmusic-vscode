@@ -53,9 +53,9 @@ export class AccountManager {
         void this.context.globalState.update(ACCOUNT_KEY, account);
         void this.context.globalState.update(COOKIE_KEY, this.cookie);
 
-        void apiLikelist().then((ids) => {
-          this.likelist = new Set<number>(ids);
-        });
+        void apiLikelist().then(
+          (ids) => (this.likelist = new Set<number>(ids))
+        );
 
         return true;
       }

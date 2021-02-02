@@ -71,30 +71,28 @@ export class Player {
           Playing.set(false);
           void commands.executeCommand("cloudmusic.next");
         } else {
-          while (lyric.time[lyric.index] <= pos) {
-            ++lyric.index;
-          }
+          while (lyric.time[lyric.index] <= pos) ++lyric.index;
           ButtonManager.buttonLyric(lyric.text[lyric.index - 1]);
         }
       }
     }, 1000);
 
     // 1000 * 60 * 8 = 480000
-    setInterval(() => {
-      void workspace.fs.readDirectory(TMP_DIR).then((items) => {
-        for (const item of items) {
-          if (item[0] !== `${this.item.id}`) {
-            const path = Uri.joinPath(TMP_DIR, item[0]);
-            void workspace.fs.stat(path).then(({ mtime }) => {
-              // 8 * 60 * 1000 = 960000
-              if (Date.now() - mtime > 480000) {
-                void workspace.fs.delete(Uri.joinPath(TMP_DIR, item[0]));
-              }
-            });
-          }
-        }
-      });
-    }, 480000);
+    setInterval(
+      () =>
+        void workspace.fs.readDirectory(TMP_DIR).then((items) => {
+          for (const item of items)
+            if (item[0] !== `${this.item.id}`) {
+              const path = Uri.joinPath(TMP_DIR, item[0]);
+              void workspace.fs.stat(path).then(({ mtime }) => {
+                // 8 * 60 * 1000 = 960000
+                if (Date.now() - mtime > 480000)
+                  void workspace.fs.delete(Uri.joinPath(TMP_DIR, item[0]));
+              });
+            }
+        }),
+      480000
+    );
   }
 
   static stop() {

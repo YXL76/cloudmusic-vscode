@@ -1,7 +1,12 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { RadioProvider, PlaylistProvider, QueueProvider } from "../treeview";
-import { apiCache, songsItem2TreeItem } from "../util";
+import {
+  PlaylistProvider,
+  QueueItemTreeItem,
+  QueueProvider,
+  RadioProvider,
+} from "../treeview";
 import { apiRecommendSongs, apiUserLevel } from "../api";
+import { apiCache } from "../util";
 import { commands } from "vscode";
 
 export class LoggedIn {
@@ -21,14 +26,14 @@ export class LoggedIn {
         void apiUserLevel();
         ButtonManager.buttonAccountAccount(AccountManager.nickname);
         ButtonManager.show();
-        apiRecommendSongs()
-          .then((songs) => {
-            QueueProvider.refresh(() => {
-              QueueProvider.clear();
-              QueueProvider.add(songsItem2TreeItem(0, songs));
-            });
-          })
-          .catch(() => {});
+        void apiRecommendSongs().then((songs) => {
+          QueueProvider.refresh(() => {
+            QueueProvider.clear();
+            QueueProvider.add(
+              songs.map((song) => new QueueItemTreeItem(song, 0))
+            );
+          });
+        });
       } else {
         ButtonManager.buttonAccountSignin();
         ButtonManager.hide();

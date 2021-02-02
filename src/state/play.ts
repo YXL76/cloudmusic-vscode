@@ -1,7 +1,8 @@
-import { load, songsItem2TreeItem } from "../util";
 import { ButtonManager } from "../manager";
-import type { QueueItemTreeItem } from "../treeview";
+import { QueueItemTreeItem } from "../treeview";
 import { apiPersonalFm } from "../api";
+import { load } from "../util";
+
 export class Playing {
   private static state = false;
 
@@ -39,7 +40,7 @@ export class PersonalFm {
   static async next() {
     if (this.item.length === 0) {
       const songs = await apiPersonalFm();
-      this.item = songsItem2TreeItem(0, songs);
+      this.item = songs.map((song) => new QueueItemTreeItem(song, 0));
     }
 
     return this.item.splice(0, 1)[0];

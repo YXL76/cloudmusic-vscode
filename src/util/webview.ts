@@ -92,9 +92,9 @@ export class WebView {
 
 </html>`;
 
-    const timer = setInterval(() => {
-      apiLoginQrCheck(key)
-        .then((code) => {
+    const timer = setInterval(
+      () =>
+        void apiLoginQrCheck(key).then((code) => {
           if (code === 803) {
             panel.dispose();
             void AccountManager.login();
@@ -103,13 +103,11 @@ export class WebView {
             panel.dispose();
             void window.showErrorMessage(i18n.sentence.fail.signIn);
           }
-        })
-        .catch(() => {});
-    }, 512);
+        }),
+      512
+    );
 
-    panel.onDidDispose(() => {
-      clearInterval(timer);
-    });
+    panel.onDidDispose(() => clearInterval(timer));
   }
 
   userMusicRankingList() {
@@ -125,9 +123,7 @@ export class WebView {
         },
       }
     );
-    void (async () => {
-      void panel.webview.postMessage(await apiUserRecord());
-    })();
+    void (async () => void panel.webview.postMessage(await apiUserRecord()))();
 
     type RecvMessage = {
       command: "refresh" | "song" | "album" | "artist";
@@ -221,13 +217,12 @@ export class WebView {
             break;
           case "like":
             void apiCommentLike(type, t, gid, cid).then((res) => {
-              if (res) {
+              if (res)
                 void panel.webview.postMessage({
                   command: "like",
                   liked: t === "like" ? true : false,
                   cid,
                 });
-              }
             });
             break;
           case "reply":

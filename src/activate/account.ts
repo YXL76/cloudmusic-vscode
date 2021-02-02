@@ -56,9 +56,8 @@ export function initAccount(context: ExtensionContext) {
           i18n.sentence.error.needSignIn,
           i18n.word.signIn
         );
-        if (result === i18n.word.signIn) {
+        if (result === i18n.word.signIn)
           void commands.executeCommand("cloudmusic.signin");
-        }
         return;
       }
       let cat = "";
@@ -731,11 +730,9 @@ export function initAccount(context: ExtensionContext) {
 
         state.password = createHash("md5").update(password).digest("hex");
 
-        if (await AccountManager.login(state)) {
+        if (await AccountManager.login(state))
           void window.showInformationMessage(i18n.sentence.success.signIn);
-        } else {
-          void window.showErrorMessage(i18n.sentence.fail.signIn);
-        }
+        else void window.showErrorMessage(i18n.sentence.fail.signIn);
       }
     })
   );
@@ -743,12 +740,9 @@ export function initAccount(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.dailyCheck", async () => {
       if (LoggedIn.get()) {
-        if (await AccountManager.dailyCheck()) {
+        if (await AccountManager.dailyCheck())
           void window.showInformationMessage(i18n.sentence.success.dailyCheck);
-        }
-      } else {
-        void window.showErrorMessage(i18n.sentence.error.needSignIn);
-      }
+      } else void window.showErrorMessage(i18n.sentence.error.needSignIn);
     })
   );
 
@@ -761,9 +755,7 @@ export function initAccount(context: ExtensionContext) {
   (async () => {
     AccountManager.cookie = context.globalState.get(COOKIE_KEY) || {};
     if (await AccountManager.login(context.globalState.get(ACCOUNT_KEY))) {
-      if (AUTO_CHECK) {
-        void AccountManager.dailyCheck();
-      }
+      if (AUTO_CHECK) void AccountManager.dailyCheck();
       return;
     }
     if (
@@ -771,8 +763,7 @@ export function initAccount(context: ExtensionContext) {
         i18n.sentence.hint.trySignIn,
         i18n.word.signIn
       )) === i18n.word.signIn
-    ) {
+    )
       void commands.executeCommand("cloudmusic.signin");
-    }
   })().catch(() => {});
 }

@@ -31,9 +31,7 @@ export const UserMusicRankingList = () => {
       setLoading(false);
     };
     window.addEventListener("message", handler);
-    return () => {
-      window.removeEventListener("message", handler);
-    };
+    return () => window.removeEventListener("message", handler);
   });
 
   const refresh = () => {
@@ -41,17 +39,12 @@ export const UserMusicRankingList = () => {
     vscode.postMessage({ command: "refresh" });
   };
 
-  const song = (item: SongsItem) => {
+  const song = (item: SongsItem) =>
     vscode.postMessage({ command: "song", item });
-  };
 
-  const album = (id: number) => {
-    vscode.postMessage({ command: "album", id });
-  };
+  const album = (id: number) => vscode.postMessage({ command: "album", id });
 
-  const artist = (id: number) => {
-    vscode.postMessage({ command: "artist", id });
-  };
+  const artist = (id: number) => vscode.postMessage({ command: "artist", id });
 
   const tab = (list: RecordData[], max: number) => {
     return (
@@ -66,34 +59,19 @@ export const UserMusicRankingList = () => {
               <Skeleton avatar title={false} loading={loading} active>
                 <List.Item.Meta
                   avatar={
-                    <a
-                      href="."
-                      onClick={() => {
-                        album(al.id);
-                      }}
-                    >
+                    <a href="." onClick={() => album(al.id)}>
                       <Avatar src={al.picUrl} />
                     </a>
                   }
                   title={
-                    <a
-                      href="."
-                      onClick={() => {
-                        song(item);
-                      }}
-                    >
+                    <a href="." onClick={() => song(item)}>
                       {name}
                       {alia[0] ? ` (${alia.join(" / ")})` : ""}
                     </a>
                   }
                   description={ar.map(({ name, id }, index) => (
                     <div key={index} className="inline">
-                      <a
-                        href="."
-                        onClick={() => {
-                          artist(id);
-                        }}
-                      >
+                      <a href="." onClick={() => artist(id)}>
                         {name}
                       </a>
                       <div className="inline">

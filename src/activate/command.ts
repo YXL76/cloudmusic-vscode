@@ -13,35 +13,29 @@ export function initCommand(context: ExtensionContext) {
     commands.registerCommand("cloudmusic.previous", () => {
       const len = QueueProvider.songs.length - 1;
       if (!PersonalFm.get() && len > 0) {
-        if (len === 1) {
-          void load(QueueProvider.songs[0]);
-        } else {
+        if (len === 1) void load(QueueProvider.songs[0]);
+        else
           QueueProvider.refresh(() => {
             QueueProvider.shift(-1);
             void load(QueueProvider.songs[0]);
           });
-        }
       }
     })
   );
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.next", async () => {
-      if (PersonalFm.get()) {
-        void load(await PersonalFm.next());
-      } else {
+      if (PersonalFm.get()) void load(await PersonalFm.next());
+      else
         QueueProvider.refresh(() => {
           QueueProvider.shift(1);
           void load(QueueProvider.songs[0]);
         });
-      }
     })
   );
 
   context.subscriptions.push(
-    commands.registerCommand("cloudmusic.play", () => {
-      Player.togglePlay();
-    })
+    commands.registerCommand("cloudmusic.play", () => Player.togglePlay())
   );
 
   context.subscriptions.push(
@@ -69,23 +63,24 @@ export function initCommand(context: ExtensionContext) {
           value: `${context.globalState.get<number>(VOLUME_KEY) ?? 85}`,
           prompt: `${i18n.sentence.hint.volume} (0~100)`,
         });
-        if (/^[1-9]\d$|^\d$|^100$/.exec(level)) {
+        if (/^[1-9]\d$|^\d$|^100$/.exec(level))
           await Player.volume(parseInt(level));
-        }
         return input.pop();
       }
     })
   );
 
   context.subscriptions.push(
-    commands.registerCommand("cloudmusic.toggleButton", () => {
-      void ButtonManager.toggle();
-    })
+    commands.registerCommand(
+      "cloudmusic.toggleButton",
+      () => void ButtonManager.toggle()
+    )
   );
 
   context.subscriptions.push(
-    commands.registerCommand("cloudmusic.personalFM", () => {
-      void PersonalFm.set(true);
-    })
+    commands.registerCommand(
+      "cloudmusic.personalFM",
+      () => void PersonalFm.set(true)
+    )
   );
 }

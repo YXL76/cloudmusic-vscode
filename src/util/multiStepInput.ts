@@ -175,14 +175,12 @@ export class MultiStepInput {
                   input.hide();
               }
             }),
-            input.onDidAccept(() => {
+            input.onDidAccept(() =>
               resolve(
                 canSelectMany ? input.selectedItems : input.selectedItems[0]
-              );
-            }),
-            input.onDidHide(() => {
-              reject(InputFlowAction.cancel);
-            })
+              )
+            ),
+            input.onDidHide(() => reject(InputFlowAction.cancel))
           );
           if (changeCallback) {
             disposables.push(
@@ -250,9 +248,7 @@ export class MultiStepInput {
             const value = input.value;
             resolve(value);
           }),
-          input.onDidHide(() => {
-            reject(InputFlowAction.cancel);
-          })
+          input.onDidHide(() => reject(InputFlowAction.cancel))
         );
         if (changeCallback) {
           disposables.push(

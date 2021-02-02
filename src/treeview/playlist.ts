@@ -4,11 +4,11 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import { apiCache, songsItem2TreeItem } from "../util";
 import { AccountManager } from "../manager";
 import type { PlaylistItem } from "../constant";
-import type { QueueItemTreeItem } from ".";
+import { QueueItemTreeItem } from ".";
 import type { TreeDataProvider } from "vscode";
+import { apiCache } from "../util";
 import { apiPlaylistDetail } from "../api";
 import { i18n } from "../i18n";
 
@@ -76,7 +76,7 @@ export class PlaylistProvider
 
   private static async getPlaylistContent(id: number) {
     const songs = await apiPlaylistDetail(id);
-    const ret = songsItem2TreeItem(id, songs);
+    const ret = songs.map((song) => new QueueItemTreeItem(song, id));
     return ret;
   }
 

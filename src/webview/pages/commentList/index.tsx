@@ -103,14 +103,10 @@ export const CommentList = () => {
       }
     };
     window.addEventListener("message", handler);
-    return () => {
-      window.removeEventListener("message", handler);
-    };
+    return () => window.removeEventListener("message", handler);
   });
 
-  const usr = (id: number) => {
-    vscode.postMessage({ command: "user", id });
-  };
+  const usr = (id: number) => vscode.postMessage({ command: "user", id });
 
   const listItem = ({
     commentId,
