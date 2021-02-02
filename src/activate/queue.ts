@@ -1,4 +1,8 @@
-import type { LocalFileTreeItem, QueueItemTreeItem } from "../treeview";
+import type {
+  LocalFileTreeItem,
+  ProgramTreeItem,
+  QueueItemTreeItem,
+} from "../treeview";
 import { MultiStepInput, load, stop } from "../util";
 import { commands, window } from "vscode";
 import { ICON } from "../constant";
@@ -105,7 +109,7 @@ export function initQueue() {
 
   commands.registerCommand(
     "cloudmusic.playSong",
-    (element: QueueItemTreeItem | LocalFileTreeItem) =>
+    (element: QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem) =>
       QueueProvider.refresh(() => {
         void PersonalFm.set(false);
         QueueProvider.top(element.valueOf());
@@ -115,13 +119,13 @@ export function initQueue() {
 
   commands.registerCommand(
     "cloudmusic.deleteSong",
-    (element: QueueItemTreeItem | LocalFileTreeItem) =>
+    (element: QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem) =>
       QueueProvider.refresh(() => QueueProvider.delete(element.valueOf()))
   );
 
   commands.registerCommand(
     "cloudmusic.playNext",
-    (element: QueueItemTreeItem | LocalFileTreeItem) => {
+    (element: QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem) => {
       if (QueueProvider.songs.length > 2)
         QueueProvider.refresh(() => {
           const index = QueueProvider.songs.findIndex(

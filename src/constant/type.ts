@@ -176,12 +176,12 @@ export interface NativeModule {
 
   kuwoCrypt(msg: string): Buffer;
 
-  playerEmpty(Player: NativePlayer): boolean;
-  playerLoad(Player: NativePlayer, url: string): boolean;
+  playerEmpty(player: NativePlayer): boolean;
+  playerLoad(player: NativePlayer, url: string): boolean;
   playerNew(): NativePlayer;
-  playerPause(Player: NativePlayer): void;
-  playerPlay(Player: NativePlayer): boolean;
-  playerPosition(Player: NativePlayer): number;
-  playerSetVolume(Player: NativePlayer, level: number): void;
-  playerStop(Player: NativePlayer): void;
+  playerPause(player: NativePlayer): void;
+  playerPlay(player: NativePlayer): boolean;
+  playerPosition(player: NativePlayer): number;
+  playerSetVolume(player: NativePlayer, level: number): void;
+  playerStop(player: NativePlayer): void;
 }

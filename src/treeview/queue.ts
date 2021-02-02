@@ -1,24 +1,24 @@
-import {
-  EventEmitter,
-  ThemeIcon,
-  TreeItem,
-  TreeItemCollapsibleState,
-} from "vscode";
-import type { LocalFileTreeItem } from ".";
+import { EventEmitter, ThemeIcon, TreeItem } from "vscode";
+import type { LocalFileTreeItem, ProgramTreeItem } from ".";
 import type { SongsItem } from "../constant";
 import type { TreeDataProvider } from "vscode";
 import { unsortInplace } from "array-unsort";
 
 export class QueueProvider
-  implements TreeDataProvider<QueueItemTreeItem | LocalFileTreeItem> {
+  implements
+    TreeDataProvider<QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem> {
   static lock = false;
 
-  static songs: (QueueItemTreeItem | LocalFileTreeItem)[] = [];
+  static songs: (
+    | QueueItemTreeItem
+    | LocalFileTreeItem
+    | ProgramTreeItem
+  )[] = [];
 
   private static instance: QueueProvider;
 
   _onDidChangeTreeData = new EventEmitter<
-    QueueItemTreeItem | LocalFileTreeItem | void
+    QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem | void
   >();
 
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
@@ -57,7 +57,9 @@ export class QueueProvider
     }
   }
 
-  static add(elements: (QueueItemTreeItem | LocalFileTreeItem)[]) {
+  static add(
+    elements: (QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem)[]
+  ) {
     const raw = this.songs.concat(elements);
     this.songs = [];
     const lookup = new Set<string | number>();
@@ -77,7 +79,9 @@ export class QueueProvider
     }
   }
 
-  getTreeItem(element: QueueItemTreeItem | LocalFileTreeItem) {
+  getTreeItem(
+    element: QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem
+  ) {
     return element;
   }
 

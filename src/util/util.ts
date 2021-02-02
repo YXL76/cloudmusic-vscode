@@ -33,12 +33,13 @@ import { ICON, MUSIC_QUALITY, TMP_DIR } from "../constant";
 import type { InputStep, MultiStepInput } from ".";
 import { IsLike, Loading, PersonalFm, Playing } from "../state";
 import {
+  LocalFileTreeItem,
   PlaylistProvider,
   QueueItemTreeItem,
   QueueProvider,
 } from "../treeview";
 import { Uri, commands, window } from "vscode";
-import { LocalFileTreeItem } from "../treeview";
+import type { ProgramTreeItem } from "../treeview";
 import type { QuickPickItem } from "vscode";
 import type { Readable } from "stream";
 import axios from "axios";
@@ -80,7 +81,9 @@ export function stop() {
   ButtonManager.buttonLyric();
 }
 
-export async function load(element: QueueItemTreeItem | LocalFileTreeItem) {
+export async function load(
+  element: QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem
+) {
   Loading.set(true);
   if (element instanceof LocalFileTreeItem) {
     Player.load(element.tooltip, 0, {
@@ -93,6 +96,7 @@ export async function load(element: QueueItemTreeItem | LocalFileTreeItem) {
     });
     return;
   }
+
   const { pid, item } = element;
   const { id } = item;
   const idS = `${id}`;

@@ -105,11 +105,6 @@
         "title": "%commands.refreshLocalLibrary.title%"
       },
       {
-        "command": "cloudmusic.refreshDjradio",
-        "icon": "$(refresh)",
-        "title": "%commands.refreshLocalLibrary.title%"
-      },
-      {
         "command": "cloudmusic.deleteLocalLibrary",
         "title": "%commands.deleteLocalLibrary.title%"
       },
@@ -249,6 +244,40 @@
         "title": "%commands.playlistComment.title%"
       },
       {
+        "command": "cloudmusic.refreshRadio",
+        "icon": "$(refresh)",
+        "title": "%commands.refreshRadio.title%"
+      },
+      {
+        "command": "cloudmusic.refreshRadioContent",
+        "icon": "$(refresh)",
+        "title": "%commands.refreshRadioContent.title%"
+      },
+      {
+        "command": "cloudmusic.playRadio",
+        "icon": "$(play)",
+        "title": "%commands.playRadio.title%"
+      },
+      {
+        "command": "cloudmusic.addRadio",
+        "icon": "$(add)",
+        "title": "%commands.addRadio.title%"
+      },
+      {
+        "command": "cloudmusic.unsubRadio",
+        "title": "%commands.unsubRadio.title%"
+      },
+      {
+        "command": "cloudmusic.playProgram",
+        "icon": "$(play)",
+        "title": "%commands.playProgram.title%"
+      },
+      {
+        "command": "cloudmusic.addProgram",
+        "icon": "$(add)",
+        "title": "%commands.addProgram.title%"
+      },
+      {
         "command": "cloudmusic.lyric",
         "title": "%commands.lyric.title%"
       },
@@ -263,6 +292,18 @@
       {
         "command": "cloudmusic.copyPlaylistLink",
         "title": "%commands.copyPlaylistLink.title%"
+      },
+      {
+        "command": "cloudmusic.copyRadioLink",
+        "title": "%commands.copyRadioLink.title%"
+      },
+      {
+        "command": "cloudmusic.programComment",
+        "title": "%commands.programComment.title%"
+      },
+      {
+        "command": "cloudmusic.copyProgramLink",
+        "title": "%commands.copyProgramLink.title%"
       },
       {
         "command": "cloudmusic.downloadSong",
@@ -339,39 +380,40 @@
       }
     ],
     "menus": {
+      "commandPalette": [],
       "view/item/context": [
         {
           "command": "cloudmusic.refreshLocalFile",
           "group": "inline",
-          "when": "viewItem == LocalLibraryTreeItem"
+          "when": "view == local && viewItem == LocalLibraryTreeItem"
         },
         {
           "command": "cloudmusic.deleteLocalLibrary",
-          "when": "viewItem == LocalLibraryTreeItem"
+          "when": "view == local && viewItem == LocalLibraryTreeItem"
         },
         {
           "command": "cloudmusic.openLocalLibrary",
-          "when": "viewItem == LocalLibraryTreeItem"
+          "when": "view == local && viewItem == LocalLibraryTreeItem"
         },
         {
           "command": "cloudmusic.playLocalLibrary",
           "group": "inline",
-          "when": "viewItem == LocalLibraryTreeItem"
+          "when": "view == local && viewItem == LocalLibraryTreeItem"
         },
         {
           "command": "cloudmusic.addLocalLibrary",
           "group": "inline",
-          "when": "viewItem == LocalLibraryTreeItem"
+          "when": "view == local && viewItem == LocalLibraryTreeItem"
         },
         {
           "command": "cloudmusic.addLocalFile",
           "group": "inline",
-          "when": "viewItem == LocalFileTreeItem"
+          "when": "view == local && viewItem == LocalFileTreeItem"
         },
         {
           "command": "cloudmusic.playLocalFile",
           "group": "inline",
-          "when": "viewItem == LocalFileTreeItem"
+          "when": "view == local && viewItem == LocalFileTreeItem"
         },
         {
           "command": "cloudmusic.refreshPlaylistContent",
@@ -406,11 +448,8 @@
           "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem"
         },
         {
-          "command": "cloudmusic.addSong",
-          "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem"
-        },
-        {
           "command": "cloudmusic.intelligence",
+          "group": "inline",
           "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem"
         },
         {
@@ -421,21 +460,21 @@
         {
           "command": "cloudmusic.playSong",
           "group": "inline",
-          "when": "view == queue && viewItem == QueueItemTreeItem"
+          "when": "view == queue && viewItem == QueueItemTreeItem || view == queue && viewItem == LocalFileTreeItem || view == queue && viewItem == ProgramTreeItem"
         },
         {
           "command": "cloudmusic.deleteSong",
           "group": "inline",
-          "when": "view == queue && viewItem == QueueItemTreeItem"
+          "when": "view == queue && viewItem == QueueItemTreeItem || view == queue && viewItem == LocalFileTreeItem || view == queue && viewItem == ProgramTreeItem"
         },
         {
           "command": "cloudmusic.playNext",
           "group": "inline",
-          "when": "view == queue && viewItem == QueueItemTreeItem"
+          "when": "view == queue && viewItem == QueueItemTreeItem || view == queue && viewItem == LocalFileTreeItem || view == queue && viewItem == ProgramTreeItem"
         },
         {
           "command": "cloudmusic.deleteFromPlaylist",
-          "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem"
+          "when": "view == userPlaylist && viewItem == QueueItemTreeItem"
         },
         {
           "command": "cloudmusic.saveToPlaylist",
@@ -462,8 +501,49 @@
           "when": "viewItem == PlaylistItemTreeItem"
         },
         {
+          "command": "cloudmusic.copyRadioLink",
+          "when": "viewItem == RadioTreeItem"
+        },
+        {
+          "command": "cloudmusic.programComment",
+          "when": "viewItem == ProgramTreeItem"
+        },
+        {
+          "command": "cloudmusic.copyProgramLink",
+          "when": "viewItem == ProgramTreeItem"
+        },
+        {
           "command": "cloudmusic.downloadSong",
-          "when": "viewItem == QueueItemTreeItem"
+          "when": "viewItem == QueueItemTreeItem || viewItem == ProgramTreeItem"
+        },
+        {
+          "command": "cloudmusic.refreshRadioContent",
+          "group": "inline",
+          "when": "view == radio && viewItem == RadioTreeItem"
+        },
+        {
+          "command": "cloudmusic.playRadio",
+          "group": "inline",
+          "when": "view == radio && viewItem == RadioTreeItem"
+        },
+        {
+          "command": "cloudmusic.addRadio",
+          "group": "inline",
+          "when": "view == radio && viewItem == RadioTreeItem"
+        },
+        {
+          "command": "cloudmusic.unsubRadio",
+          "when": "view == radio && viewItem == RadioTreeItem"
+        },
+        {
+          "command": "cloudmusic.playProgram",
+          "group": "inline",
+          "when": "view == radio && viewItem == ProgramTreeItem"
+        },
+        {
+          "command": "cloudmusic.addProgram",
+          "group": "inline",
+          "when": "view == radio && viewItem == ProgramTreeItem"
         }
       ],
       "view/title": [
@@ -486,6 +566,11 @@
           "command": "cloudmusic.createPlaylist",
           "group": "navigation",
           "when": "view == userPlaylist"
+        },
+        {
+          "command": "cloudmusic.refreshRadio",
+          "group": "navigation",
+          "when": "view == radio"
         },
         {
           "command": "cloudmusic.sortQueue",

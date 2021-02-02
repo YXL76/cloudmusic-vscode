@@ -4,7 +4,7 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import type { ProgramDetail, RadioDetail } from "../constant";
+import type { RadioDetail, SongsItem } from "../constant";
 import { AccountManager } from "../manager";
 import type { TreeDataProvider } from "vscode";
 import { apiCache } from "../util";
@@ -13,6 +13,8 @@ import { i18n } from "../i18n";
 
 export class RadioProvider
   implements TreeDataProvider<RadioTreeItem | ProgramTreeItem> {
+  static readonly radios = new Map<number, RadioTreeItem>();
+
   private static instance: RadioProvider;
 
   private static action?: (items: ProgramTreeItem[]) => void;
@@ -36,7 +38,10 @@ export class RadioProvider
         apiCache.del(`dj_program${element.item.id}`);
         this.action = action;
       }
-    } else apiCache.del("dj_sublist");
+    } else {
+      this.radios.clear();
+      apiCache.del("dj_sublist");
+    }
     this.instance._onDidChangeTreeData.fire(element);
   }
 
@@ -46,9 +51,12 @@ export class RadioProvider
 
   async getChildren(element?: RadioTreeItem) {
     if (element) {
+      const pid = element.valueOf();
       const programs = (
         await apiDjProgram(element.item.id, element.item.programCount)
-      ).map((program) => new ProgramTreeItem(program));
+      ).map(
+        (program) => new ProgramTreeItem(program.mainSong, program.id, pid)
+      );
       const localAction = RadioProvider.action;
       if (localAction) {
         RadioProvider.action = undefined;
@@ -57,7 +65,11 @@ export class RadioProvider
       return programs;
     }
     const radios = await AccountManager.djradio();
-    return radios.map((radio) => new RadioTreeItem(radio));
+    return radios.map((radio) => {
+      const item = new RadioTreeItem(radio);
+      RadioProvider.radios.set(radio.id, item);
+      return item;
+    });
   }
 }
 
@@ -86,7 +98,7 @@ export class ProgramTreeItem extends TreeItem {
   readonly label!: string;
 
   readonly description = (() =>
-    this.item.mainSong.ar.map(({ name }) => name).join("/"))();
+    this.item.ar.map(({ name }) => name).join("/"))();
 
   readonly iconPath = new ThemeIcon("radio-tower");
 
@@ -98,11 +110,15 @@ export class ProgramTreeItem extends TreeItem {
   //   arguments: [this],
   // };
 
-  constructor(public readonly item: ProgramDetail) {
-    super(item.mainSong.name);
+  constructor(
+    public readonly item: SongsItem,
+    public readonly bid: number,
+    public readonly pid: number
+  ) {
+    super(item.name);
   }
 
   valueOf() {
-    return this.item.mainSong.id;
+    return this.item.id;
   }
 }

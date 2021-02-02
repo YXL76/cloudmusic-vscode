@@ -13,9 +13,9 @@ import { resolve } from "path";
 
 export class LocalProvider
   implements TreeDataProvider<LocalFileTreeItem | LocalLibraryTreeItem> {
-  static folders: string[];
+  static readonly folders: string[];
 
-  static files = new Map<string, LocalFileTreeItem[]>();
+  static readonly files = new Map<string, LocalFileTreeItem[]>();
 
   private static instance: LocalProvider;
 

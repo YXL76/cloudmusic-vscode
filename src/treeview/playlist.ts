@@ -18,13 +18,13 @@ const enum Type {
 }
 export class PlaylistProvider
   implements TreeDataProvider<PlaylistItemTreeItem | QueueItemTreeItem> {
-  static playlists = new Map<number, PlaylistItemTreeItem>();
+  static readonly playlists = new Map<number, PlaylistItemTreeItem>();
 
   private static userInstance: PlaylistProvider;
 
   private static favoriteInstance: PlaylistProvider;
 
-  private static belongsTo = new Map<number, Type>();
+  private static readonly belongsTo = new Map<number, Type>();
 
   private static action?: (items: QueueItemTreeItem[]) => void;
 

@@ -18,6 +18,7 @@ import {
   pickPlaylist,
   pickSong,
 } from "../util";
+import type { PlaylistItemTreeItem, ProgramTreeItem } from "../treeview";
 import {
   PlaylistProvider,
   QueueItemTreeItem,
@@ -27,7 +28,6 @@ import { Uri, commands, env, window } from "vscode";
 import { basename, dirname } from "path";
 import { HOME_DIR } from "../constant";
 import { PersonalFm } from "../state";
-import type { PlaylistItemTreeItem } from "../treeview";
 import { createWriteStream } from "fs";
 import { i18n } from "../i18n";
 
@@ -260,7 +260,7 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.downloadSong",
-    async ({ item }: QueueItemTreeItem) => {
+    async ({ item }: QueueItemTreeItem | ProgramTreeItem) => {
       const { url, type } = await apiSongUrl(item);
       if (!url) return;
 
