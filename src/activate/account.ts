@@ -1,10 +1,4 @@
-import {
-  ACCOUNT_KEY,
-  AUTO_CHECK,
-  CHECK_KEY,
-  COOKIE_KEY,
-  ICON,
-} from "../constant";
+import { ACCOUNT_KEY, AUTO_CHECK, COOKIE_KEY, ICON } from "../constant";
 import {
   ArtistArea,
   ArtistType,
@@ -13,7 +7,6 @@ import {
   apiAlbumSublist,
   apiArtistList,
   apiArtistSublist,
-  apiDailySignin,
   apiHighqualityTags,
   apiPersonalized,
   apiPersonalizedNewsong,
@@ -751,7 +744,7 @@ export function initAccount(context: ExtensionContext) {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.dailyCheck", async () => {
       if (LoggedIn.get()) {
-        if (await apiDailySignin()) {
+        if (await AccountManager.dailyCheck()) {
           void window.showInformationMessage(i18n.sentence.success.dailyCheck);
         }
       } else {
@@ -770,13 +763,7 @@ export function initAccount(context: ExtensionContext) {
     base.cookie = context.globalState.get(COOKIE_KEY) || {};
     if (await AccountManager.login(context.globalState.get(ACCOUNT_KEY))) {
       if (AUTO_CHECK) {
-        const date = new Date();
-        const lasttime = context.globalState.get(CHECK_KEY);
-        const currenttime = `${date.getMonth()}-${date.getDate()}`;
-        if (currenttime !== lasttime) {
-          void commands.executeCommand("cloudmusic.dailyCheck");
-          void context.globalState.update(CHECK_KEY, currenttime);
-        }
+        void commands.executeCommand("cloudmusic.dailyCheck");
       }
       return;
     }

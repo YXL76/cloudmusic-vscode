@@ -21,30 +21,24 @@ import {
 import { AccountManager } from "../manager";
 import { apiCache } from "../util";
 
-export async function apiDailySignin() {
-  const tasks: Promise<void>[] = [
-    new Promise((resolve, reject) => {
-      weapiRequest("https://music.163.com/weapi/point/dailyTask", {
-        type: 0,
-      })
-        .then(() => resolve)
-        .catch(reject);
-    }),
-    new Promise((resolve, reject) => {
-      weapiRequest("https://music.163.com/weapi/point/dailyTask", {
-        type: 1,
-      })
-        .then(() => resolve)
-        .catch(reject);
-    }),
-  ];
+export async function apiDailySigninAndroid() {
   try {
-    await Promise.all(tasks);
-    return true;
+    await weapiRequest("https://music.163.com/weapi/point/dailyTask", {
+      type: 0,
+    });
   } catch (err) {
     console.error(err);
   }
-  return false;
+}
+
+export async function apiDailySigninWeb() {
+  try {
+    await weapiRequest("https://music.163.com/weapi/point/dailyTask", {
+      type: 1,
+    });
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 export async function apiDjPersonalizeRecommend() {
@@ -473,4 +467,40 @@ export async function apiUserRecord(refresh?: true) {
     console.error(err);
   }
   return [];
+}
+
+export async function apiYunbeiInfo() {
+  try {
+    const { mobileSign, pcSign } = await weapiRequest<{
+      mobileSign: boolean;
+      pcSign: boolean;
+    }>("https://music.163.com/api/v1/user/info", {});
+    return { mobileSign, pcSign };
+  } catch (err) {
+    console.error(err);
+  }
+  return { mobileSign: false, pcSign: false };
+}
+
+export async function apiYunbeiSign() {
+  try {
+    await weapiRequest("https://music.163.com/api/point/dailyTask", {
+      type: 0,
+    });
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+export async function apiYunbeiToday() {
+  try {
+    const { code } = await weapiRequest<{ code: number }>(
+      "https://music.163.com/api/point/today/get",
+      {}
+    );
+    if (code === 400) return false;
+  } catch (err) {
+    console.error(err);
+  }
+  return true;
 }

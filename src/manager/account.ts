@@ -1,11 +1,16 @@
 import { ACCOUNT_KEY, COOKIE_KEY } from "../constant";
 import {
+  apiDailySigninAndroid,
+  apiDailySigninWeb,
   apiLikelist,
   apiLogin,
   apiLoginCellphone,
   apiLoginStatus,
   apiLogout,
   apiUserPlaylist,
+  apiYunbeiInfo,
+  apiYunbeiSign,
+  apiYunbeiToday,
   base,
 } from "../api";
 import type { Account } from "../constant";
@@ -71,6 +76,22 @@ export class AccountManager {
 
       return true;
     }
+    return false;
+  }
+
+  static async dailyCheck() {
+    try {
+      const actions = [];
+      const [yunbei, { mobileSign, pcSign }] = await Promise.all([
+        apiYunbeiToday(),
+        apiYunbeiInfo(),
+      ]);
+      if (!yunbei) actions.push(apiYunbeiSign());
+      if (!mobileSign) actions.push(apiDailySigninAndroid());
+      if (!pcSign) actions.push(apiDailySigninWeb());
+      await Promise.all(actions);
+      return true;
+    } catch {}
     return false;
   }
 
