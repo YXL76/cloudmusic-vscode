@@ -18,10 +18,8 @@ import { apiCache } from "../util";
 
 export async function apiSearchDefault() {
   const key = "search_default";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as string;
-  }
+  const value = apiCache.get<string>(key);
+  if (value) return value;
   try {
     const {
       data: { realkeyword },
@@ -44,10 +42,8 @@ export async function apiSearchSingle(
   offset: number
 ) {
   const key = `cloudsearch${SearchType.single}-${keywords}-${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as SongsItem[];
-  }
+  const value = apiCache.get<SongsItem[]>(key);
+  if (value) return value;
   try {
     const {
       result: { songs },
@@ -76,10 +72,8 @@ export async function apiSearchAlbum(
   offset: number
 ) {
   const key = `cloudsearch${SearchType.album}-${keywords}-${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as AlbumsItem[];
-  }
+  const value = apiCache.get<AlbumsItem[]>(key);
+  if (value) return value;
   try {
     const {
       result: { albums },
@@ -108,10 +102,8 @@ export async function apiSearchArtist(
   offset: number
 ) {
   const key = `cloudsearch${SearchType.artist}-${keywords}-${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as Artist[];
-  }
+  const value = apiCache.get<Artist[]>(key);
+  if (value) return value;
   try {
     const {
       result: { artists },
@@ -142,10 +134,8 @@ export async function apiSearchPlaylist(
   offset: number
 ) {
   const key = `cloudsearch${SearchType.playlist}-${keywords}-${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as PlaylistItem[];
-  }
+  const value = apiCache.get<PlaylistItem[]>(key);
+  if (value) return value;
   try {
     const {
       result: { playlists },
@@ -172,10 +162,8 @@ export async function apiSearchHotDetail(): Promise<
   { searchWord: string; content: string }[]
 > {
   const key = "search_hot_detail";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as { searchWord: string; content: string }[];
-  }
+  const value = apiCache.get<{ searchWord: string; content: string }[]>(key);
+  if (value) return value;
   try {
     const { data } = await weapiRequest<{
       data: { searchWord: string; content: string }[];
@@ -194,10 +182,8 @@ export async function apiSearchHotDetail(): Promise<
 
 export async function apiSearchSuggest(keywords: string) {
   const key = `search_suggest${keywords}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as string[];
-  }
+  const value = apiCache.get<string[]>(key);
+  if (value) return value;
   try {
     const {
       result: { allMatch },

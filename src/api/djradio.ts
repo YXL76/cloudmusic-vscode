@@ -10,10 +10,8 @@ import { solveUserDetail } from "./helper";
 
 export async function apiDjCategoryRecommend() {
   const key = "dj_category_recommend";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as { name: string; id: number }[];
-  }
+  const value = apiCache.get<{ name: string; id: number }[]>(key);
+  if (value) return value;
   try {
     const { categories } = await weapiRequest<{
       categories: { name: string; id: number }[];
@@ -29,10 +27,8 @@ export async function apiDjCategoryRecommend() {
 
 export async function apiDjCatelist() {
   const key = "dj_catelist";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as { name: string; id: number }[];
-  }
+  const value = apiCache.get<{ name: string; id: number }[]>(key);
+  if (value) return value;
   try {
     const { categories } = await weapiRequest<{
       categories: { name: string; id: number }[];
@@ -48,10 +44,8 @@ export async function apiDjCatelist() {
 
 export async function apiDjDetail(id: number) {
   const key = `dj_detail${id}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as RadioDetail;
-  }
+  const value = apiCache.get<RadioDetail>(key);
+  if (value) return value;
   try {
     const { data } = await weapiRequest<{ data: RadioDetail }>(
       "https://music.163.com/api/djradio/v2/get",
@@ -68,10 +62,8 @@ export async function apiDjDetail(id: number) {
 
 export async function apiDjHot(limit: number, offset: number) {
   const key = `dj_hot${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as RadioDetail[];
-  }
+  const value = apiCache.get<RadioDetail[]>(key);
+  if (value) return value;
   try {
     const { djRadios } = await weapiRequest<{ djRadios: RadioDetail[] }>(
       "https://music.163.com/weapi/djradio/hot/v1",
@@ -88,10 +80,8 @@ export async function apiDjHot(limit: number, offset: number) {
 
 export async function apiDjProgram(radioId: number, limit: number) {
   const key = `dj_program${radioId}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as ProgramDetail[];
-  }
+  const value = apiCache.get<ProgramDetail[]>(key);
+  if (value) return value;
   try {
     const { programs } = await weapiRequest<{ programs: RawProgramDetail[] }>(
       "https://music.163.com/weapi/dj/program/byradio",
@@ -108,10 +98,8 @@ export async function apiDjProgram(radioId: number, limit: number) {
 
 export async function apiDjProgramDetail(id: number) {
   const key = `dj_program_detail${id}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as ProgramDetail;
-  }
+  const value = apiCache.get<ProgramDetail>(key);
+  if (value) return value;
   try {
     const { program } = await weapiRequest<{ program: RawProgramDetail }>(
       "https://music.163.com/api/dj/program/detail",
@@ -128,10 +116,8 @@ export async function apiDjProgramDetail(id: number) {
 
 export async function apiDjProgramToplist(limit: number, offset: number) {
   const key = `dj_program_toplist${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as ProgramDetail[];
-  }
+  const value = apiCache.get<ProgramDetail[]>(key);
+  if (value) return value;
   try {
     const { toplist } = await weapiRequest<{
       toplist: { program: RawProgramDetail }[];
@@ -147,10 +133,8 @@ export async function apiDjProgramToplist(limit: number, offset: number) {
 
 export async function apiDjProgramToplistHours() {
   const key = "dj_program_toplist_hours";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as ProgramDetail[];
-  }
+  const value = apiCache.get<ProgramDetail[]>(key);
+  if (value) return value;
   try {
     const {
       data: { list },
@@ -173,10 +157,8 @@ export async function apiDjRadioHot(
   offset: number
 ) {
   const key = `dj_radio_hot${cateId}-${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as RadioDetail[];
-  }
+  const value = apiCache.get<RadioDetail[]>(key);
+  if (value) return value;
   try {
     const { djRadios } = await weapiRequest<{ djRadios: RadioDetail[] }>(
       "https://music.163.com/api/djradio/hot",
@@ -193,10 +175,8 @@ export async function apiDjRadioHot(
 
 export async function apiDjRecommend() {
   const key = "dj_recommend";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as RadioDetail[];
-  }
+  const value = apiCache.get<RadioDetail[]>(key);
+  if (value) return value;
   try {
     const { djRadios } = await weapiRequest<{ djRadios: RadioDetail[] }>(
       "https://music.163.com/weapi/djradio/recommend/v1",
@@ -213,10 +193,8 @@ export async function apiDjRecommend() {
 
 export async function apiDjRecommendType(cateId: number) {
   const key = `dj_recommend_type${cateId}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as RadioDetail[];
-  }
+  const value = apiCache.get<RadioDetail[]>(key);
+  if (value) return value;
   try {
     const { djRadios } = await weapiRequest<{ djRadios: RadioDetail[] }>(
       "https://music.163.com/weapi/djradio/recommend",
@@ -233,10 +211,8 @@ export async function apiDjRecommendType(cateId: number) {
 
 export async function apiProgramRecommend(limit: number, offset: number) {
   const key = `program_recommend${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as ProgramDetail[];
-  }
+  const value = apiCache.get<ProgramDetail[]>(key);
+  if (value) return value;
   try {
     const { programs } = await weapiRequest<{
       programs: RawProgramDetail[];
@@ -264,10 +240,8 @@ export async function apiDjSub(id: number, t: "sub" | "unsub") {
 
 export async function apiDjSublist() {
   const key = "dj_sublist";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as RadioDetail[];
-  }
+  const value = apiCache.get<RadioDetail[]>(key);
+  if (value) return value;
   try {
     const { djRadios } = await weapiRequest<{
       djRadios: RadioDetail[];
@@ -296,10 +270,8 @@ export async function apiDjSubscriber(
     hasMore: boolean;
   };
   const key = `dj_subscriber${id}-${limit}-${lasttime}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as Ret;
-  }
+  const value = apiCache.get<Ret>(key);
+  if (value) return value;
   try {
     const { subscribers, time, hasMore } = await weapiRequest<Ret>(
       "https://music.163.com/api/djradio/subscriber",
@@ -321,8 +293,8 @@ export async function apiDjSubscriber(
 // 0: 新晋, 1: 热门
 export async function apiDjToplist(type: 0 | 1, limit: number, offset: number) {
   const key = `dj_toplist${type}-${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) return value as RadioDetail[];
+  const value = apiCache.get<RadioDetail[]>(key);
+  if (value) return value;
   try {
     const { toplist } = await weapiRequest<{
       toplist: RadioDetail[];

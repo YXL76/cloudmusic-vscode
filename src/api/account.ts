@@ -49,10 +49,8 @@ export async function apiDailySignin() {
 
 export async function apiDjPersonalizeRecommend() {
   const key = "dj_personalize_recommend";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as RadioDetail[];
-  }
+  const value = apiCache.get<RadioDetail[]>(key);
+  if (value) return value;
   try {
     const { data } = await weapiRequest<{ data: RadioDetail[] }>(
       "https://music.163.com/api/djradio/personalize/rcmd",
@@ -203,10 +201,8 @@ export async function apiPersonalFm() {
 
 export async function apiPersonalized() {
   const key = "personalized";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as PlaylistItem[];
-  }
+  const value = apiCache.get<PlaylistItem[]>(key);
+  if (value) return value;
   try {
     const { result } = await weapiRequest<{ result: RawPlaylistItem[] }>(
       "https://music.163.com/weapi/personalized/playlist",
@@ -223,10 +219,8 @@ export async function apiPersonalized() {
 
 export async function apiPersonalizedDjprogram() {
   const key = "personalized_djprogram";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as ProgramDetail[];
-  }
+  const value = apiCache.get<ProgramDetail[]>(key);
+  if (value) return value;
   try {
     const { result } = await weapiRequest<{
       result: { program: RawProgramDetail }[];
@@ -242,10 +236,8 @@ export async function apiPersonalizedDjprogram() {
 
 export async function apiPersonalizedNewsong() {
   const key = "personalized_newsong";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as SongsItem[];
-  }
+  const value = apiCache.get<SongsItem[]>(key);
+  if (value) return value;
   try {
     const { result } = await weapiRequest<{
       result: { song: AnotherSongItem }[];
@@ -265,10 +257,8 @@ export async function apiPersonalizedNewsong() {
 
 export async function apiRecommendResource() {
   const key = "recommend_resource";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as PlaylistItem[];
-  }
+  const value = apiCache.get<PlaylistItem[]>(key);
+  if (value) return value;
   try {
     const { recommend } = await weapiRequest<{ recommend: RawPlaylistItem[] }>(
       "https://music.163.com/weapi/v1/discovery/recommend/resource",
@@ -285,10 +275,8 @@ export async function apiRecommendResource() {
 
 export async function apiRecommendSongs() {
   const key = "recommend_songs";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as SongsItem[];
-  }
+  const value = apiCache.get<SongsItem[]>(key);
+  if (value) return value;
   try {
     const { data } = await weapiRequest<{ data: { dailySongs: SongsItem[] } }>(
       "https://music.163.com/api/v3/discovery/recommend/songs",
@@ -328,10 +316,8 @@ export async function apiScrobble(id: number, sourceId: number, time: number) {
 
 export async function apiUserDetail(uid: number) {
   const key = `user_detail${uid}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as UserDetail;
-  }
+  const value = apiCache.get<UserDetail>(key);
+  if (value) return value;
   try {
     const { profile } = await weapiRequest<{ profile: UserDetail }>(
       `https://music.163.com/weapi/v1/user/detail/${uid}`,
@@ -347,10 +333,8 @@ export async function apiUserDetail(uid: number) {
 
 export async function apiUserFolloweds(userId: number, limit: number) {
   const key = `user_followeds${userId}-${limit}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as UserDetail[];
-  }
+  const value = apiCache.get<UserDetail[]>(key);
+  if (value) return value;
   try {
     const { followeds } = await eapiRequest<{ followeds: UserDetail[] }>(
       `https://music.163.com/eapi/user/getfolloweds/${userId}`,
@@ -371,10 +355,8 @@ export async function apiUserFollows(
   offset: number
 ) {
   const key = `user_follows${uid}-${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as UserDetail[];
-  }
+  const value = apiCache.get<UserDetail[]>(key);
+  if (value) return value;
   try {
     const { follow } = await weapiRequest<{ follow: UserDetail[] }>(
       `https://music.163.com/weapi/user/getfollows/${uid}`,
@@ -392,17 +374,14 @@ export async function apiUserFollows(
   return [];
 }
 
-type UserLevel = {
-  progress: number;
-  level: number;
-};
-
 export async function apiUserLevel() {
+  type UserLevel = {
+    progress: number;
+    level: number;
+  };
   const key = "user_level";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as UserLevel;
-  }
+  const value = apiCache.get<UserLevel>(key);
+  if (value) return value;
   try {
     const {
       data: { progress, level },
@@ -421,10 +400,8 @@ export async function apiUserLevel() {
 
 export async function apiUserPlaylist(uid: number) {
   const key = `user_playlist${uid}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as PlaylistItem[];
-  }
+  const value = apiCache.get<PlaylistItem[]>(key);
+  if (value) return value;
   try {
     const { playlist } = await weapiRequest<{
       playlist: RawPlaylistItem[];

@@ -5,11 +5,8 @@ import { apiCache } from "../util";
 
 export async function apiArtists(id: number) {
   const key = `artists${id}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as { info: Artist; songs: SongsItem[] };
-  }
-
+  const value = apiCache.get<{ info: Artist; songs: SongsItem[] }>(key);
+  if (value) return value;
   try {
     const { artist, hotSongs } = await weapiRequest<{
       artist: Artist;
@@ -29,10 +26,8 @@ export async function apiArtists(id: number) {
 
 export async function apiArtistAlbum(id: number) {
   const key = `artist_album${id}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as AlbumsItem[];
-  }
+  const value = apiCache.get<AlbumsItem[]>(key);
+  if (value) return value;
   let ret: AlbumsItem[] = [];
   const limit = 50;
   let offset = 0;
@@ -72,10 +67,8 @@ export async function apiArtistList(
   const key = `artist_album${type}-${area}-${
     initial as string
   }-${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as Artist[];
-  }
+  const value = apiCache.get<Artist[]>(key);
+  if (value) return value;
   try {
     const { artists } = await weapiRequest<{ artists: Artist[] }>(
       "https://music.163.com/api/v1/artist/list",
@@ -103,10 +96,8 @@ export async function apiArtistSongs(
   offset: number
 ) {
   const key = `artist_songs${id}-${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as SongsItem[];
-  }
+  const value = apiCache.get<SongsItem[]>(key);
+  if (value) return value;
   try {
     const { songs } = await weapiRequest<{ songs: SongsItem[] }>(
       "https://music.163.com/api/v1/artist/songs",
@@ -172,10 +163,8 @@ export async function apiArtistSublist() {
 
 export async function apiSimiArtist(artistid: number) {
   const key = `simi_artist${artistid}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as Artist[];
-  }
+  const value = apiCache.get<Artist[]>(key);
+  if (value) return value;
   try {
     const { artists } = await weapiRequest<{ artists: Artist[] }>(
       "https://music.163.com/weapi/discovery/simiArtist",
@@ -192,10 +181,8 @@ export async function apiSimiArtist(artistid: number) {
 
 export async function apiTopArtists(limit: number, offset: number) {
   const key = `top_artists${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as Artist[];
-  }
+  const value = apiCache.get<Artist[]>(key);
+  if (value) return value;
   try {
     const { artists } = await weapiRequest<{ artists: Artist[] }>(
       "https://music.163.com/weapi/artist/top",
@@ -212,10 +199,8 @@ export async function apiTopArtists(limit: number, offset: number) {
 
 export async function apiToplistArtist() {
   const key = "toplist_artist";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as Artist[];
-  }
+  const value = apiCache.get<Artist[]>(key);
+  if (value) return value;
   try {
     const {
       list: { artists },

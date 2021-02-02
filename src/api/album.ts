@@ -4,10 +4,8 @@ import { apiCache } from "../util";
 
 export async function apiAlbum(id: number) {
   const key = `album${id}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as { info: AlbumsItem; songs: SongsItem[] };
-  }
+  const value = apiCache.get<{ info: AlbumsItem; songs: SongsItem[] }>(key);
+  if (value) return value;
   try {
     const { album, songs } = await weapiRequest<{
       album: AlbumsItem;
@@ -28,10 +26,8 @@ export async function apiAlbum(id: number) {
 
 export async function apiAlbumNewest() {
   const key = "album_newest";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as AlbumsItem[];
-  }
+  const value = apiCache.get<AlbumsItem[]>(key);
+  if (value) return value;
   try {
     const { albums } = await weapiRequest<{ albums: AlbumsItem[] }>(
       "https://music.163.com/api/discovery/newAlbum",
@@ -82,10 +78,8 @@ export async function apiAlbumSublist() {
 
 export async function apiTopAlbum() {
   const key = "top_album";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as AlbumsItem[];
-  }
+  const value = apiCache.get<AlbumsItem[]>(key);
+  if (value) return value;
   const date = new Date();
   try {
     const { monthData } = await weapiRequest<{ monthData: AlbumsItem[] }>(

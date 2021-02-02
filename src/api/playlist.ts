@@ -22,10 +22,8 @@ type PlaylistCatlist = Record<string, PlaylistCatlistItem[]>;
 
 export async function apiPlaylistCatlist() {
   const key = "playlist_catlist";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as PlaylistCatlist;
-  }
+  const value = apiCache.get<PlaylistCatlist>(key);
+  if (value) return value;
   try {
     const { sub, categories } = await weapiRequest<{
       sub: PlaylistCatlistItem[];
@@ -81,10 +79,8 @@ export async function apiPlaylistDelete(id: number) {
 
 export async function apiPlaylistDetail(id: number) {
   const key = `playlist_detail${id}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as SongsItem[];
-  }
+  const value = apiCache.get<SongsItem[]>(key);
+  if (value) return value;
   try {
     const {
       playlist: { tracks, trackIds },
@@ -126,10 +122,8 @@ export async function apiPlaylistDetail(id: number) {
 
 export async function apiHighqualityTags() {
   const key = "playlist_highquality_tags";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as PlaylistCatlistItem[];
-  }
+  const value = apiCache.get<PlaylistCatlistItem[]>(key);
+  if (value) return value;
   try {
     const { tags } = await weapiRequest<{
       tags: {
@@ -167,10 +161,8 @@ export async function apiPlaylistSubscribers(
   offset: number
 ) {
   const key = `playlist_subscribers${id}-${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as UserDetail[];
-  }
+  const value = apiCache.get<UserDetail[]>(key);
+  if (value) return value;
   try {
     const { subscribers } = await weapiRequest<{
       subscribers: UserDetail[];
@@ -260,10 +252,8 @@ export async function apiSimiPlaylist(
   offset: number
 ) {
   const key = `simi_playlist${songid}-${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as PlaylistItem[];
-  }
+  const value = apiCache.get<PlaylistItem[]>(key);
+  if (value) return value;
   try {
     const { playlists } = await weapiRequest<{ playlists: RawPlaylistItem[] }>(
       "https://music.163.com/weapi/discovery/simiPlaylist",
@@ -284,10 +274,8 @@ export async function apiTopPlaylist(
   offset: number
 ) {
   const key = `top_playlist${cat}-${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as PlaylistItem[];
-  }
+  const value = apiCache.get<PlaylistItem[]>(key);
+  if (value) return value;
   try {
     const { playlists } = await weapiRequest<{ playlists: PlaylistItem[] }>(
       "https://music.163.com/weapi/playlist/list",
@@ -310,10 +298,8 @@ export async function apiTopPlaylist(
 
 export async function apiTopPlaylistHighquality(cat: string, limit: number) {
   const key = `top_playlist_highquality${cat}-${limit}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as PlaylistItem[];
-  }
+  const value = apiCache.get<PlaylistItem[]>(key);
+  if (value) return value;
   try {
     const { playlists } = await weapiRequest<{ playlists: PlaylistItem[] }>(
       "https://music.163.com/api/playlist/highquality/list",
@@ -335,10 +321,8 @@ export async function apiTopPlaylistHighquality(cat: string, limit: number) {
 
 export async function apiToplist() {
   const key = "toplist";
-  const value = apiCache.get(key);
-  if (value) {
-    return value as PlaylistItem[];
-  }
+  const value = apiCache.get<PlaylistItem[]>(key);
+  if (value) return value;
   try {
     const { list } = await apiRequest<{ list: RawPlaylistItem[] }>(
       "https://music.163.com/api/toplist",

@@ -52,20 +52,14 @@ export async function apiCommentFloor(
   parentCommentId: number,
   limit: number,
   time: number
-): Promise<{
-  totalCount: number;
-  hasMore: boolean;
-  comments: CommentDetail[];
-}> {
+) {
   const key = `comment_floor${type}-${id}-${parentCommentId}-${limit}-${time}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as {
-      totalCount: number;
-      hasMore: boolean;
-      comments: CommentDetail[];
-    };
-  }
+  const value = apiCache.get<{
+    totalCount: number;
+    hasMore: boolean;
+    comments: CommentDetail[];
+  }>(key);
+  if (value) return value;
   try {
     const {
       data: { totalCount, hasMore, comments },
@@ -120,20 +114,14 @@ export async function apiCommentNew(
   pageSize: number,
   sortType: SortType,
   cursor: number
-): Promise<{
-  totalCount: number;
-  hasMore: boolean;
-  comments: CommentDetail[];
-}> {
+) {
   const key = `comment_new${type}-${id}-${pageNo}-${pageSize}-${sortType}-${cursor}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as {
-      totalCount: number;
-      hasMore: boolean;
-      comments: CommentDetail[];
-    };
-  }
+  const value = apiCache.get<{
+    totalCount: number;
+    hasMore: boolean;
+    comments: CommentDetail[];
+  }>(key);
+  if (value) return value;
   try {
     const {
       data: { totalCount, hasMore, comments },

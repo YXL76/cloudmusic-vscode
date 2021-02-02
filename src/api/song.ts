@@ -61,10 +61,8 @@ export async function apiSimiSong(
   offset: number
 ) {
   const key = `simi_song${songid}-${limit}-${offset}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as SongsItem[];
-  }
+  const value = apiCache.get<SongsItem[]>(key);
+  if (value) return value;
   try {
     const { songs } = await weapiRequest<{ songs: AnotherSongItem[] }>(
       "https://music.163.com/weapi/v1/discovery/simiSong",
@@ -82,10 +80,8 @@ export async function apiSimiSong(
 export async function apiSongDetail(trackIds: number[]) {
   const key = `song_detail${trackIds[0]}`;
   if (trackIds.length === 1) {
-    const value = apiCache.get(key);
-    if (value) {
-      return value as SongsItem[];
-    }
+    const value = apiCache.get<SongsItem[]>(key);
+    if (value) return value;
   }
   const limit = 1000;
   const tasks: Promise<SongsItem[]>[] = [];
@@ -162,10 +158,8 @@ export async function apiSongUrl(song: SongsItem) {
 
 export async function apiTopSong(areaId: TopSongType) {
   const key = `top_song${areaId}`;
-  const value = apiCache.get(key);
-  if (value) {
-    return value as SongsItem[];
-  }
+  const value = apiCache.get<SongsItem[]>(key);
+  if (value) return value;
   try {
     const { data } = await weapiRequest<{ data: AnotherSongItem[] }>(
       "https://music.163.com/weapi/v1/discovery/new/songs",
