@@ -1,5 +1,6 @@
 import type { Cookie, OS } from ".";
 import { anonymousToken, cookieToJson, eapi, jsonToCookie, weapi } from ".";
+import { AccountManager } from "../manager";
 import axios from "axios";
 import { Agent as httpAgent } from "http";
 import { Agent as httpsAgent } from "https";
@@ -19,8 +20,6 @@ const userAgentList = [
 
 export const userAgent =
   userAgentList[Math.floor(Math.random() * userAgentList.length)];
-
-export const base = { cookie: {} as Cookie };
 
 const csrfTokenReg = RegExp(/_csrf=([^(;|$)]+)/);
 
@@ -68,8 +67,8 @@ const responseHandler = async <T>(
 
   if ([200, 800, 803].includes(status)) {
     if ("set-cookie" in res.headers) {
-      base.cookie = {
-        ...base.cookie,
+      AccountManager.cookie = {
+        ...AccountManager.cookie,
         ...cookieToJson(
           (res.headers as { "set-cookie": string[] })["set-cookie"]
         ),
@@ -86,7 +85,10 @@ export const weapiRequest = async <T = Record<string, any>>(
   os?: OS
 ) => {
   const headers = generateHeader(url);
-  headers["Cookie"] = jsonToCookie({ ...base.cookie, ...(os ? { os } : {}) });
+  headers["Cookie"] = jsonToCookie({
+    ...AccountManager.cookie,
+    ...(os ? { os } : {}),
+  });
   const csrfToken = csrfTokenReg.exec(headers["Cookie"]);
   data.csrf_token = csrfToken ? csrfToken[1] : "";
   data = weapi(data);
@@ -104,11 +106,11 @@ export const eapiRequest = async <T = Record<string, any>>(
   os?: OS
 ) => {
   const cookie: Cookie = {
-    ...base.cookie,
+    ...AccountManager.cookie,
     ...(os ? { os } : {}),
-    ...("MUSIC_U" in base.cookie
+    ...("MUSIC_U" in AccountManager.cookie
       ? // eslint-disable-next-line @typescript-eslint/naming-convention
-        { MUSIC_U: base.cookie.MUSIC_U }
+        { MUSIC_U: AccountManager.cookie.MUSIC_U }
       : {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           MUSIC_A: anonymousToken,
@@ -141,6 +143,6 @@ export const apiRequest = async <T = Record<string, any>>(
   data: Record<string, any>
 ) => {
   const headers = generateHeader(url);
-  headers["Cookie"] = jsonToCookie(base.cookie);
+  headers["Cookie"] = jsonToCookie(AccountManager.cookie);
   return responseHandler<T>(url, headers, data);
 };

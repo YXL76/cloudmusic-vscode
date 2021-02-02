@@ -21,7 +21,6 @@ import {
   apiToplist,
   apiToplistArtist,
   apiUserLevel,
-  base,
   cookieToJson,
 } from "../api";
 import {
@@ -704,7 +703,7 @@ export function initAccount(context: ExtensionContext) {
       }
 
       async function inputCookie(input: MultiStepInput) {
-        base.cookie = cookieToJson([
+        AccountManager.cookie = cookieToJson([
           await input.showInputBox({
             title,
             step: totalSteps,
@@ -760,7 +759,7 @@ export function initAccount(context: ExtensionContext) {
   );
 
   (async () => {
-    base.cookie = context.globalState.get(COOKIE_KEY) || {};
+    AccountManager.cookie = context.globalState.get(COOKIE_KEY) || {};
     if (await AccountManager.login(context.globalState.get(ACCOUNT_KEY))) {
       if (AUTO_CHECK) {
         void AccountManager.dailyCheck();

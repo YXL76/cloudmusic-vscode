@@ -12,7 +12,6 @@ import {
   apiYunbeiInfo,
   apiYunbeiSign,
   apiYunbeiToday,
-  base,
 } from "../api";
 import type { Account } from "../constant";
 import type { Cookie } from "../api";
@@ -27,6 +26,8 @@ export class AccountManager {
   static likelist: Set<number> = new Set<number>();
 
   static context: ExtensionContext;
+
+  static cookie = {} as Cookie;
 
   static async login(account?: Account) {
     if (LoggedIn.get()) {
@@ -50,7 +51,7 @@ export class AccountManager {
         LoggedIn.set(true);
 
         void this.context.globalState.update(ACCOUNT_KEY, account);
-        void this.context.globalState.update(COOKIE_KEY, base.cookie);
+        void this.context.globalState.update(COOKIE_KEY, this.cookie);
 
         void apiLikelist().then((ids) => {
           this.likelist = new Set<number>(ids);
@@ -69,7 +70,7 @@ export class AccountManager {
       void this.context.globalState.update(ACCOUNT_KEY, undefined);
       void this.context.globalState.update(COOKIE_KEY, undefined);
 
-      base.cookie = {} as Cookie;
+      this.cookie = {} as Cookie;
       this.uid = 0;
       this.nickname = "";
       this.likelist.clear();
