@@ -1,9 +1,9 @@
-import type { LocalFileTreeItem, QueueItemTreeItem } from "../provider";
+import type { LocalFileTreeItem, QueueItemTreeItem } from "../treeview";
 import { MultiStepInput, load, stop } from "../util";
 import { commands, window } from "vscode";
 import { ICON } from "../constant";
 import { PersonalFm } from "../state";
-import { QueueProvider } from "../provider";
+import { QueueProvider } from "../treeview";
 import { i18n } from "../i18n";
 
 export function initQueue() {

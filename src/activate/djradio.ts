@@ -1,4 +1,4 @@
-import { DjRadioProvider } from "../provider";
+import { DjRadioProvider } from "../treeview";
 import { window } from "vscode";
 
 export function initDjradio() {

@@ -12,7 +12,7 @@ import type {
   LocalFileTreeItem,
   PlaylistItemTreeItem,
   QueueItemTreeItem,
-} from "../provider";
+} from "../treeview";
 import {
   MultiStepInput,
   Player,
@@ -25,7 +25,7 @@ import {
   pickSong,
   songsItem2TreeItem,
 } from "../util";
-import { PlaylistProvider, QueueProvider } from "../provider";
+import { PlaylistProvider, QueueProvider } from "../treeview";
 import { Uri, commands, env, window } from "vscode";
 import { basename, dirname } from "path";
 import { HOME_DIR } from "../constant";

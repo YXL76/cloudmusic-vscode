@@ -1,6 +1,6 @@
 import { FileType, Uri, commands, env, window, workspace } from "vscode";
-import type { LocalFileTreeItem, LocalLibraryTreeItem } from "../provider";
-import { LocalProvider, QueueProvider } from "../provider";
+import type { LocalFileTreeItem, LocalLibraryTreeItem } from "../treeview";
+import { LocalProvider, QueueProvider } from "../treeview";
 import type { ExtensionContext } from "vscode";
 import { LOCAL_FOLDER_KEY } from "../constant";
 import { PersonalFm } from "../state";

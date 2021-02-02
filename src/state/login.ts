@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { DjRadioProvider, PlaylistProvider, QueueProvider } from "../provider";
+import { DjRadioProvider, PlaylistProvider, QueueProvider } from "../treeview";
 import { apiCache, songsItem2TreeItem } from "../util";
 import { apiRecommendSongs, apiUserLevel } from "../api";
 import { commands } from "vscode";

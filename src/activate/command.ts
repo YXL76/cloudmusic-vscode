@@ -2,7 +2,7 @@ import { AccountManager, ButtonManager } from "../manager";
 import { IsLike, PersonalFm } from "../state";
 import { MultiStepInput, Player, load } from "../util";
 import type { ExtensionContext } from "vscode";
-import { QueueProvider } from "../provider";
+import { QueueProvider } from "../treeview";
 import { VOLUME_KEY } from "../constant";
 import { apiLike } from "../api";
 import { commands } from "vscode";

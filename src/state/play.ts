@@ -1,6 +1,6 @@
 import { load, songsItem2TreeItem } from "../util";
 import { ButtonManager } from "../manager";
-import type { QueueItemTreeItem } from "../provider";
+import type { QueueItemTreeItem } from "../treeview";
 import { apiPersonalFm } from "../api";
 export class Playing {
   private static state = false;

@@ -36,9 +36,9 @@ import {
   PlaylistProvider,
   QueueItemTreeItem,
   QueueProvider,
-} from "../provider";
+} from "../treeview";
 import { Uri, commands, window } from "vscode";
-import { LocalFileTreeItem } from "../provider";
+import { LocalFileTreeItem } from "../treeview";
 import type { QuickPickItem } from "vscode";
 import type { Readable } from "stream";
 import axios from "axios";

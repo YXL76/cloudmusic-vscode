@@ -1,5 +1,5 @@
 import { Loading, PersonalFm, Playing } from "../state";
-import { LocalFileTreeItem, QueueProvider } from "../provider";
+import { LocalFileTreeItem, QueueProvider } from "../treeview";
 import type { Lyric, SongsItem } from "../constant";
 import { MusicCache, downloadMusic } from ".";
 import { NATIVE, TMP_DIR, VOLUME_KEY } from "../constant";
