@@ -160,29 +160,28 @@
 
 |          module          |       function        | status |
 | :----------------------: | :-------------------: | :----: |
-|  dj_category_excludehot  |    电台非热门类型     |        |
-|  dj_category_recommend   |     电台推荐类型      |        |
-|       dj_catelist        |     电台分类列表      |        |
-|        dj_detail         |       电台详情        |        |
-|          dj_hot          |       热门电台        |        |
-|        dj_paygift        |       付费电台        |        |
-| dj_personalize_recommend |     电台个性推荐      |        |
-|        dj_program        |     电台节目列表      |        |
-|    dj_program_detail     |     电台节目详情      |        |
-|    dj_program_toplist    |      电台节目榜       |        |
-| dj_program_toplist_hours |  电台 24 小时节目榜   |        |
-|       dj_radio_hot       |     类别热门电台      |        |
-|       dj_recommend       |       精选电台        |        |
-|    dj_recommend_type     |     精选电台分类      |        |
-|          dj_sub          |    订阅与取消电台     |        |
-|        dj_sublist        |     订阅电台列表      |        |
-|      dj_subscriber       |      电台订阅者       |        |
-|    dj_today_perfered     |     电台今日优选      |        |
-|        dj_toplist        | 新晋电台榜/热门电台榜 |        |
-|     dj_toplist_hours     |  电台 24 小时主播榜   |        |
-|   dj_toplist_newcomer    |      电台新人榜       |        |
+|  dj_category_excludehot  |    电台非热门类型     |   ❌   |
+|  dj_category_recommend   |     电台推荐类型      |   ✔️   |
+|       dj_catelist        |     电台分类列表      |   ✔️   |
+|        dj_detail         |       电台详情        |   ✔️   |
+|          dj_hot          |       热门电台        |   ✔️   |
+|        dj_paygift        |       付费电台        |   ❌   |
+|        dj_program        |     电台节目列表      |   ✔️   |
+|    dj_program_detail     |     电台节目详情      |   ✔️   |
+|    dj_program_toplist    |      电台节目榜       |   ✔️   |
+| dj_program_toplist_hours |  电台 24 小时节目榜   |   ✔️   |
+|       dj_radio_hot       |     类别热门电台      |   ✔️   |
+|       dj_recommend       |       精选电台        |   ✔️   |
+|    dj_recommend_type     |     精选电台分类      |   ✔️   |
+|          dj_sub          |    订阅与取消电台     |   ✔️   |
+|        dj_sublist        |     订阅电台列表      |   ✔️   |
+|      dj_subscriber       |      电台订阅者       |   ✔️   |
+|    dj_today_perfered     |     电台今日优选      |   ❌   |
+|        dj_toplist        | 新晋电台榜/热门电台榜 |   ✔️   |
+|     dj_toplist_hours     |  电台 24 小时主播榜   |   ❌   |
+|   dj_toplist_newcomer    |      电台新人榜       |   ❌   |
 |      dj_toplist_pay      |       付费精品        |   ❌   |
-|    dj_toplist_popular    |    电台最热主播榜     |        |
+|    dj_toplist_popular    |    电台最热主播榜     |   ❌   |
 
 - 歌单类
 
@@ -258,6 +257,7 @@
 |           daily_signin           |          签到          |   ✔️   |
 |      digitalAlbum_ordering       |      购买数字专辑      |   ❌   |
 |      digitalAlbum_purchased      |      我的数字专辑      |   ❌   |
+|     dj_personalize_recommend     |      电台个性推荐      |   ✔️   |
 |              event               |          动态          |        |
 |            event_del             |        删除动态        |        |
 |          event_forward           |        转发动态        |        |
@@ -281,7 +281,7 @@
 |        msg_recentcontact         |       最近联系人       |        |
 |           personal_fm            |        私人 FM         |   ✔️   |
 |           personalized           |        推荐歌单        |   ✔️   |
-|      personalized_djprogram      |        推荐电台        |        |
+|      personalized_djprogram      |        推荐电台        |   ✔️   |
 |         personalized_mv          |        推荐 MV         |   ❌   |
 |       personalized_newsong       |        推荐新歌        |   ✔️   |
 |   personalized_privatecontent    |        独家放送        |   ❌   |
@@ -299,7 +299,7 @@
 |          share_resource          |     分享歌曲到动态     |        |
 |            simi_user             |        相似用户        |   ❌   |
 |          topic_sub_list          |       收藏的专栏       |        |
-|           user_account           |      获取账号信息      |        |
+|           user_account           |      获取账号信息      |   ❌   |
 |            user_audio            |     用户创建的电台     |        |
 |           user_binding           |      用户绑定信息      |   ❌   |
 |            user_cloud            |        云盘数据        |   ❌   |
@@ -315,15 +315,15 @@
 |           user_record            |        听歌排行        |   ✔️   |
 |          user_subcount           |        收藏计数        |   ❌   |
 |           user_update            |      编辑用户信息      |   ❌   |
-|              yunbei              |      云贝签到信息      |        |
-|           yunbei_info            |      云贝账户信息      |        |
-|           yunbei_sign            |        云贝签到        |        |
-|           yunbei_tasks           |      云贝所有任务      |        |
-|        yunbei_tasks_todo         |     云贝 todo 任务     |        |
-|       yunbei_tasks_expense       |        云贝支出        |        |
-|       yunbei_tasks_receipt       |        云贝收入        |        |
-|        yunbei_task_finish        |      云贝完成任务      |        |
-|           yunbei_today           |    云贝今日签到信息    |        |
+|              yunbei              |      云贝签到信息      |   ❌   |
+|           yunbei_info            |      云贝账户信息      |   ✔️   |
+|           yunbei_sign            |        云贝签到        |   ✔️   |
+|           yunbei_tasks           |      云贝所有任务      |   ❌   |
+|        yunbei_tasks_todo         |     云贝 todo 任务     |   ❌   |
+|       yunbei_tasks_expense       |        云贝支出        |   ❌   |
+|       yunbei_tasks_receipt       |        云贝收入        |   ❌   |
+|        yunbei_task_finish        |      云贝完成任务      |   ❌   |
+|           yunbei_today           |    云贝今日签到信息    |   ✔️   |
 
 - 搜索类
 
@@ -348,7 +348,7 @@
 |  homepage_block_page   | 首页-发现 block page  |   ❌   |
 |  homepage_dragon_ball  | 首页-发现 dragon ball |   ❌   |
 |       hot_topic        |       热门话题        |   ❌   |
-|   program_recommend    |       推荐节目        |        |
+|   program_recommend    |       推荐节目        |   ✔️   |
 |       top_album        |       新碟上架        |   ✔️   |
 |      top_artists       |       热门歌手        |   ✔️   |
 |        top_list        |        排行榜         |   ❌   |
