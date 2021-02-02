@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { PlaylistProvider, QueueProvider } from "../provider";
+import { DjRadioProvider, PlaylistProvider, QueueProvider } from "../provider";
 import { apiCache, songsItem2TreeItem } from "../util";
 import { apiRecommendSongs, apiUserLevel } from "../api";
 import { commands } from "vscode";
@@ -14,11 +14,13 @@ export class LoggedIn {
   static set(newValue: boolean) {
     if (newValue !== this.state) {
       this.state = newValue;
+      apiCache.flushAll();
+      PlaylistProvider.refresh();
+      DjRadioProvider.refresh();
       if (newValue) {
         void apiUserLevel();
         ButtonManager.buttonAccountAccount(AccountManager.nickname);
         ButtonManager.show();
-        PlaylistProvider.refresh();
         apiRecommendSongs()
           .then((songs) => {
             QueueProvider.refresh(() => {
@@ -28,12 +30,10 @@ export class LoggedIn {
           })
           .catch(() => {});
       } else {
-        apiCache.del("user_level");
         ButtonManager.buttonAccountSignin();
         ButtonManager.hide();
-        QueueProvider.clear();
+        void commands.executeCommand("cloudmusic.clearQueue");
       }
-      void commands.executeCommand("cloudmusic.clearQueue");
     }
   }
 }

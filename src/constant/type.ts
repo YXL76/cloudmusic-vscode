@@ -146,7 +146,7 @@ export type CommentDetail = {
 
 export type RadioDetail = {
   name: string;
-  desc?: string;
+  desc: string;
   id: number;
   subCount: number;
   programCount: number;

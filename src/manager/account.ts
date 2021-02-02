@@ -2,6 +2,7 @@ import { ACCOUNT_KEY, COOKIE_KEY } from "../constant";
 import {
   apiDailySigninAndroid,
   apiDailySigninWeb,
+  apiDjSublist,
   apiLikelist,
   apiLogin,
   apiLoginCellphone,
@@ -109,5 +110,12 @@ export class AccountManager {
     }
     const lists = await apiUserPlaylist(this.uid);
     return lists.filter((list) => list.creator.userId !== this.uid);
+  }
+
+  static async djradio() {
+    if (this.uid === 0) {
+      return [];
+    }
+    return await apiDjSublist();
   }
 }

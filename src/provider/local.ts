@@ -62,12 +62,7 @@ export class LocalProvider
           )
           .map(
             ({ filename, ext }) =>
-              new LocalFileTreeItem(
-                filename,
-                ext,
-                resolve(label, filename),
-                TreeItemCollapsibleState.None
-              )
+              new LocalFileTreeItem(filename, ext, resolve(label, filename))
           );
         LocalProvider.files.set(label, items);
         return items;
@@ -75,26 +70,24 @@ export class LocalProvider
       return [];
     }
     return LocalProvider.folders.map(
-      (folder) =>
-        new LocalLibraryTreeItem(folder, TreeItemCollapsibleState.Collapsed)
+      (folder) => new LocalLibraryTreeItem(folder)
     );
   }
 }
 
 export class LocalFileTreeItem extends TreeItem {
-  iconPath = new ThemeIcon("file-media");
+  readonly iconPath = new ThemeIcon("file-media");
 
-  item = { al: { name: "" }, ar: [{ name: "" }] };
+  readonly item = { al: { name: "" }, ar: [{ name: "" }] };
 
-  contextValue = "LocalFileTreeItem";
+  readonly contextValue = "LocalFileTreeItem";
 
   constructor(
     public readonly label: string,
     public readonly description: string,
-    public readonly tooltip: string,
-    public readonly collapsibleState: TreeItemCollapsibleState
+    public readonly tooltip: string
   ) {
-    super(label, collapsibleState);
+    super(label);
   }
 
   valueOf() {
@@ -103,15 +96,15 @@ export class LocalFileTreeItem extends TreeItem {
 }
 
 export class LocalLibraryTreeItem extends TreeItem {
-  tooltip = this.label;
+  readonly tooltip = this.label;
 
-  iconPath = new ThemeIcon("file-directory");
+  readonly iconPath = new ThemeIcon("file-directory");
 
-  contextValue = "LocalLibraryTreeItem";
+  readonly contextValue = "LocalLibraryTreeItem";
 
   constructor(
     public readonly label: string,
-    public readonly collapsibleState: TreeItemCollapsibleState
+    public readonly collapsibleState = TreeItemCollapsibleState.Collapsed
   ) {
     super(label, collapsibleState);
   }

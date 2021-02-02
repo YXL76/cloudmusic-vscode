@@ -62,6 +62,10 @@
           "name": "%views.favoritePlaylist.name%"
         },
         {
+          "id": "djradio",
+          "name": "%views.djradio.name%"
+        },
+        {
           "id": "queue",
           "name": "%views.queue.name%"
         }

@@ -763,7 +763,7 @@ export function initAccount(context: ExtensionContext) {
     base.cookie = context.globalState.get(COOKIE_KEY) || {};
     if (await AccountManager.login(context.globalState.get(ACCOUNT_KEY))) {
       if (AUTO_CHECK) {
-        void commands.executeCommand("cloudmusic.dailyCheck");
+        void AccountManager.dailyCheck();
       }
       return;
     }

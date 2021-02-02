@@ -8,6 +8,11 @@ import {
   apiPlaymodeIntelligenceList,
   apiSongUrl,
 } from "../api";
+import type {
+  LocalFileTreeItem,
+  PlaylistItemTreeItem,
+  QueueItemTreeItem,
+} from "../provider";
 import {
   MultiStepInput,
   Player,
@@ -20,7 +25,6 @@ import {
   pickSong,
   songsItem2TreeItem,
 } from "../util";
-import type { PlaylistItemTreeItem, QueueItemTreeItem } from "../provider";
 import { PlaylistProvider, QueueProvider } from "../provider";
 import { Uri, commands, env, window } from "vscode";
 import { basename, dirname } from "path";
@@ -88,8 +92,7 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.refreshPlaylistContent",
-    (element: PlaylistItemTreeItem) =>
-      PlaylistProvider.refresh(element, undefined, true)
+    (element: PlaylistItemTreeItem) => PlaylistProvider.refresh(element)
   );
 
   commands.registerCommand(
@@ -245,11 +248,7 @@ export function initPlaylist() {
       void MultiStepInput.run((input) =>
         confirmation(input, 1, async () => {
           if (await apiPlaylistTracks("del", pid, [id])) {
-            PlaylistProvider.refresh(
-              PlaylistProvider.playlists.get(pid),
-              undefined,
-              true
-            );
+            PlaylistProvider.refresh(PlaylistProvider.playlists.get(pid));
           }
         })
       );
@@ -265,9 +264,8 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.songDetail",
-    (element?: QueueItemTreeItem) => {
-      const { item } = element ? element : Player;
-      if (item) {
+    ({ item }: QueueItemTreeItem) => {
+      if (item?.id) {
         void MultiStepInput.run((input) => pickSong(input, 1, item));
       }
     }

@@ -1,7 +1,12 @@
-import { EventEmitter, ThemeIcon, TreeItem } from "vscode";
-import type { TreeDataProvider, TreeItemCollapsibleState } from "vscode";
+import {
+  EventEmitter,
+  ThemeIcon,
+  TreeItem,
+  TreeItemCollapsibleState,
+} from "vscode";
 import type { LocalFileTreeItem } from ".";
 import type { SongsItem } from "../constant";
+import type { TreeDataProvider } from "vscode";
 import { unsortInplace } from "array-unsort";
 
 export class QueueProvider
@@ -12,7 +17,9 @@ export class QueueProvider
 
   private static instance: QueueProvider;
 
-  _onDidChangeTreeData = new EventEmitter<QueueItemTreeItem | void>();
+  _onDidChangeTreeData = new EventEmitter<
+    QueueItemTreeItem | LocalFileTreeItem | void
+  >();
 
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
@@ -80,25 +87,23 @@ export class QueueProvider
 }
 
 export class QueueItemTreeItem extends TreeItem {
-  description = (() => this.item.ar.map(({ name }) => name).join("/"))();
+  readonly label!: string;
 
-  iconPath = new ThemeIcon("zap");
+  readonly description = (() =>
+    this.item.ar.map(({ name }) => name).join("/"))();
 
-  contextValue = "QueueItemTreeItem";
+  readonly iconPath = new ThemeIcon("zap");
 
-  command = {
+  readonly contextValue = "QueueItemTreeItem";
+
+  readonly command = {
     title: "Detail",
     command: "cloudmusic.songDetail",
     arguments: [this],
   };
 
-  constructor(
-    public readonly label: string,
-    public readonly item: SongsItem,
-    public readonly pid: number,
-    public readonly collapsibleState: TreeItemCollapsibleState
-  ) {
-    super(label, collapsibleState);
+  constructor(public readonly item: SongsItem, public readonly pid: number) {
+    super(`${item.name}${item.alia[0] ? ` (${item.alia.join("/")})` : ""}`);
   }
 
   valueOf() {

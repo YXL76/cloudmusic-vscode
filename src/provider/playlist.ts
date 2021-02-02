@@ -52,15 +52,14 @@ export class PlaylistProvider
 
   static refresh(
     element?: PlaylistItemTreeItem,
-    action?: (items: QueueItemTreeItem[]) => void,
-    refresh?: true
+    action?: (items: QueueItemTreeItem[]) => void
   ) {
     if (element) {
       const { id } = element.item;
-      if (refresh) {
+      if (action) {
         apiCache.del(`playlist_detail${id}`);
+        this.action = action;
       }
-      this.action = action;
       if (this.belongsTo.get(id) === Type.userInstance) {
         this.userInstance._onDidChangeTreeData.fire(element);
       } else {
@@ -108,11 +107,7 @@ export class PlaylistProvider
     }
     return playlists.map((playlist) => {
       PlaylistProvider.belongsTo.set(playlist.id, this.type);
-      const item = new PlaylistItemTreeItem(
-        playlist.name,
-        playlist,
-        TreeItemCollapsibleState.Collapsed
-      );
+      const item = new PlaylistItemTreeItem(playlist);
       PlaylistProvider.playlists.set(playlist.id, item);
       return item;
     });
@@ -120,21 +115,22 @@ export class PlaylistProvider
 }
 
 export class PlaylistItemTreeItem extends TreeItem {
-  tooltip = `${i18n.word.description}: ${this.item.description || ""}
+  readonly label!: string;
+
+  readonly tooltip = `${i18n.word.description}: ${this.item.description || ""}
 ${i18n.word.trackCount}: ${this.item.trackCount}
 ${i18n.word.playCount}: ${this.item.playCount}
 ${i18n.word.subscribedCount}: ${this.item.subscribedCount}`;
 
-  iconPath = new ThemeIcon("selection");
+  readonly iconPath = new ThemeIcon("selection");
 
-  contextValue = "PlaylistItemTreeItem";
+  readonly contextValue = "PlaylistItemTreeItem";
 
   constructor(
-    public readonly label: string,
     public readonly item: PlaylistItem,
-    public readonly collapsibleState: TreeItemCollapsibleState
+    public readonly collapsibleState = TreeItemCollapsibleState.Collapsed
   ) {
-    super(label, collapsibleState);
+    super(item.name, collapsibleState);
   }
 
   valueOf() {

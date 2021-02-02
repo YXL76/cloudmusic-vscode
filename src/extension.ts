@@ -5,6 +5,7 @@ import {
   initAccount,
   initCache,
   initCommand,
+  initDjradio,
   initLocal,
   initPlayer,
   initPlaylist,
@@ -24,10 +25,11 @@ export async function activate(context: ExtensionContext) {
   initPlayer();
   initQueue();
   initPlaylist();
+  initDjradio();
   initCommand(context);
   initStatusBar();
   initAccount(context);
-  await initCache();
+  initCache();
   initLocal(context);
 }
 

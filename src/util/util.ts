@@ -37,7 +37,7 @@ import {
   QueueItemTreeItem,
   QueueProvider,
 } from "../provider";
-import { TreeItemCollapsibleState, Uri, commands, window } from "vscode";
+import { Uri, commands, window } from "vscode";
 import { LocalFileTreeItem } from "../provider";
 import type { QuickPickItem } from "vscode";
 import type { Readable } from "stream";
@@ -73,15 +73,7 @@ export async function downloadMusic(
 }
 
 export function songsItem2TreeItem(id: number, songs: Readonly<SongsItem[]>) {
-  return songs.map(
-    (song) =>
-      new QueueItemTreeItem(
-        `${song.name}${song.alia[0] ? ` (${song.alia.join("/")})` : ""}`,
-        song,
-        id,
-        TreeItemCollapsibleState.None
-      )
-  );
+  return songs.map((song) => new QueueItemTreeItem(song, id));
 }
 
 export function stop() {
@@ -798,11 +790,7 @@ export async function pickAddToPlaylist(
     })),
   });
   if (await apiPlaylistTracks("add", pick.id, [id])) {
-    PlaylistProvider.refresh(
-      PlaylistProvider.playlists.get(pick.id),
-      undefined,
-      true
-    );
+    PlaylistProvider.refresh(PlaylistProvider.playlists.get(pick.id));
   }
   input.pop();
   return input.pop();

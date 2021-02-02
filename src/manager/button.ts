@@ -1,8 +1,8 @@
 import { BUTTON_KEY, LYRIC_KEY } from "../constant";
 import type { ExtensionContext, QuickPickItem, StatusBarItem } from "vscode";
+import { MultiStepInput, Player } from "../util";
 import { StatusBarAlignment, window } from "vscode";
 import { LoggedIn } from "../state";
-import { MultiStepInput } from "../util";
 import { i18n } from "../i18n";
 
 const enum ButtonLabel {
@@ -61,7 +61,11 @@ export class ButtonManager {
     this.buttons[3].command = "cloudmusic.next";
     this.buttons[4].command = "cloudmusic.like";
     this.buttons[5].command = "cloudmusic.volume";
-    this.buttons[6].command = "cloudmusic.songDetail";
+    this.buttons[6].command = {
+      title: "Detail",
+      command: "cloudmusic.songDetail",
+      arguments: [{ item: Player.item }],
+    };
     this.buttons[7].command = "cloudmusic.lyric";
 
     this.buttons[0].show();
