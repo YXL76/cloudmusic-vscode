@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { DjRadioProvider, PlaylistProvider, QueueProvider } from "../treeview";
+import { RadioProvider, PlaylistProvider, QueueProvider } from "../treeview";
 import { apiCache, songsItem2TreeItem } from "../util";
 import { apiRecommendSongs, apiUserLevel } from "../api";
 import { commands } from "vscode";
@@ -16,7 +16,7 @@ export class LoggedIn {
       this.state = newValue;
       apiCache.flushAll();
       PlaylistProvider.refresh();
-      DjRadioProvider.refresh();
+      RadioProvider.refresh();
       if (newValue) {
         void apiUserLevel();
         ButtonManager.buttonAccountAccount(AccountManager.nickname);

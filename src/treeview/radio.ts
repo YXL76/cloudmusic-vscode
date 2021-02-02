@@ -11,9 +11,9 @@ import { apiCache } from "../util";
 import { apiDjProgram } from "../api";
 import { i18n } from "../i18n";
 
-export class DjRadioProvider
+export class RadioProvider
   implements TreeDataProvider<RadioTreeItem | ProgramTreeItem> {
-  private static instance: DjRadioProvider;
+  private static instance: RadioProvider;
 
   private static action?: (items: ProgramTreeItem[]) => void;
 
@@ -24,7 +24,7 @@ export class DjRadioProvider
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
   static getInstance() {
-    return this.instance || (this.instance = new DjRadioProvider());
+    return this.instance || (this.instance = new RadioProvider());
   }
 
   static refresh(
@@ -49,9 +49,9 @@ export class DjRadioProvider
       const programs = (
         await apiDjProgram(element.item.id, element.item.programCount)
       ).map((program) => new ProgramTreeItem(program));
-      const localAction = DjRadioProvider.action;
+      const localAction = RadioProvider.action;
       if (localAction) {
-        DjRadioProvider.action = undefined;
+        RadioProvider.action = undefined;
         localAction(programs);
       }
       return programs;

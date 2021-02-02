@@ -5,11 +5,11 @@ import {
   initAccount,
   initCache,
   initCommand,
-  initDjradio,
   initLocal,
   initPlayer,
   initPlaylist,
   initQueue,
+  initRadio,
   initStatusBar,
 } from "./activate";
 import type { ExtensionContext } from "vscode";
@@ -25,7 +25,7 @@ export async function activate(context: ExtensionContext) {
   initPlayer();
   initQueue();
   initPlaylist();
-  initDjradio();
+  initRadio();
   initCommand(context);
   initStatusBar();
   initAccount(context);

@@ -105,6 +105,11 @@
         "title": "%commands.refreshLocalLibrary.title%"
       },
       {
+        "command": "cloudmusic.refreshDjradio",
+        "icon": "$(refresh)",
+        "title": "%commands.refreshLocalLibrary.title%"
+      },
+      {
         "command": "cloudmusic.deleteLocalLibrary",
         "title": "%commands.deleteLocalLibrary.title%"
       },
@@ -514,8 +519,8 @@
           "name": "%views.favoritePlaylist.name%"
         },
         {
-          "id": "djradio",
-          "name": "%views.djradio.name%"
+          "id": "radio",
+          "name": "%views.radio.name%"
         },
         {
           "id": "queue",

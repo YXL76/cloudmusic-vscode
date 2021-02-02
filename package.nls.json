@@ -56,7 +56,7 @@
   "configuration.music.quality.markdownDescription": "Choose your prefer music quality",
   "configuration.music.unlock.markdownDescription": "Unlock music",
   "configuration.player.mediaControl.markdownDescription": "Enable media control",
-  "views.djradio.name": "Radio",
+  "views.radio.name": "Radio",
   "views.favoritePlaylist.name": "Favorite playlist",
   "views.local.name": "Local library",
   "views.queue.name": "Queue",

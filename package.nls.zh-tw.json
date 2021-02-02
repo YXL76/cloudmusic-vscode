@@ -56,7 +56,7 @@
   "configuration.music.quality.markdownDescription": "選擇優先播放的音質",
   "configuration.music.unlock.markdownDescription": "解鎖音樂",
   "configuration.player.mediaControl.markdownDescription": "開啟媒體控制",
-  "views.djradio.name": "播單",
+  "views.radio.name": "播單",
   "views.favoritePlaylist.name": "收藏歌單",
   "views.local.name": "本地曲庫",
   "views.queue.name": "隊列",
