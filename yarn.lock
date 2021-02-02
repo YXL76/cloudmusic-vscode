@@ -1513,7 +1513,7 @@ __metadata:
     react-dom: 16.14.0
     tailwindcss: 2.0.2
     typescript: 4.1.3
-    webpack: 5.19.0
+    webpack: 5.20.0
     webpack-cli: 4.4.0
   languageName: unknown
   linkType: soft
@@ -2785,16 +2785,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"find-up@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "find-up@npm:5.0.0"
-  dependencies:
-    locate-path: ^6.0.0
-    path-exists: ^4.0.0
-  checksum: cd0b77415bc59e5af31e4e1b29c6ff8d965d9ca3c60a4b74161f8f116c0d1ad8d35bc6e53bf8f92c69e704e98183f1628a363ed7d519eb28eff54378b8f167a7
-  languageName: node
-  linkType: hard
-
 "flat-cache@npm:^3.0.4":
   version: 3.0.4
   resolution: "flat-cache@npm:3.0.4"
@@ -3781,15 +3771,6 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"locate-path@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "locate-path@npm:6.0.0"
-  dependencies:
-    p-locate: ^5.0.0
-  checksum: 4c379638152e0e5fda9a8cc07005702f81fcb9899db0f66d691ac1e64193dea670af14e96c50f14d82d45959daa4c400cb712c158cffe22ae265bfc1b1e3a221
-  languageName: node
-  linkType: hard
-
 "lodash.difference@npm:^4.5.0":
   version: 4.5.0
   resolution: "lodash.difference@npm:4.5.0"
@@ -4395,15 +4376,6 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"p-locate@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "p-locate@npm:5.0.0"
-  dependencies:
-    p-limit: ^3.0.2
-  checksum: a233d775c870e00c734adabd29f66f93824df076683c0d5a2dc16e5285b02d80c1bf3bab43b9881e4a5b16b37bb86f1922aebb094674703d30a4973041d5c0f6
-  languageName: node
-  linkType: hard
-
 "p-map@npm:^4.0.0":
   version: 4.0.0
   resolution: "p-map@npm:4.0.0"
@@ -4554,15 +4526,6 @@ fsevents@~2.1.2:
   dependencies:
     find-up: ^4.0.0
   checksum: 1956ebf3cf5cc36a5d20e93851fcadd5a786774eb08667078561e72e0ab8ace91fc36a028d5305f0bfe7c89f9bf51886e2a3c8cb2c2620accfa3feb8da3c256b
-  languageName: node
-  linkType: hard
-
-"pkg-dir@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "pkg-dir@npm:5.0.0"
-  dependencies:
-    find-up: ^5.0.0
-  checksum: 86f6ecee1787d8fe1606fd831f823f967c6ea0d760ce714af6afd2fec076ce71fbedcb57b339d93b84edf90ccdd81d4e6e2c10fcde21684ef3ffee5e05fd37dc
   languageName: node
   linkType: hard
 
@@ -6895,9 +6858,9 @@ typescript@4.1.3:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.19.0":
-  version: 5.19.0
-  resolution: "webpack@npm:5.19.0"
+"webpack@npm:5.20.0":
+  version: 5.20.0
+  resolution: "webpack@npm:5.20.0"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.46
@@ -6917,7 +6880,6 @@ typescript@4.1.3:
     loader-runner: ^4.2.0
     mime-types: ^2.1.27
     neo-async: ^2.6.2
-    pkg-dir: ^5.0.0
     schema-utils: ^3.0.0
     tapable: ^2.1.1
     terser-webpack-plugin: ^5.1.1
@@ -6928,7 +6890,7 @@ typescript@4.1.3:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: db179047c437b1e2880a818f0e674f7988ad1f622f270e109a3531742d89254f1b042678d7cb7e4662519c834d842c81eb21cb1e53b020e57792a99bf66944a8
+  checksum: d09966de7e5e62a18cf44d92b83417f6ae6d0690ac70e3072fc3997b5f36dedcbf9981ed715814ada27ea1cf9b379aac52541fc417bc7935af9d5c74ab3a3fb4
   languageName: node
   linkType: hard
 
