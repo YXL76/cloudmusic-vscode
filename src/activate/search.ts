@@ -23,7 +23,7 @@ import {
   apiSearchSuggest,
 } from "../api";
 import { ICON } from "../constant";
-import { i18n } from "../i18n";
+import i18n from "../i18n";
 import { throttle } from "lodash";
 
 const title = i18n.word.search;

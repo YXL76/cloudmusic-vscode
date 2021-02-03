@@ -3,7 +3,7 @@ import type { ExtensionContext, QuickPickItem, StatusBarItem } from "vscode";
 import { StatusBarAlignment, window } from "vscode";
 import { LoggedIn } from "../state";
 import { MultiStepInput } from "../util";
-import { i18n } from "../i18n";
+import i18n from "../i18n";
 
 const enum ButtonLabel {
   account,

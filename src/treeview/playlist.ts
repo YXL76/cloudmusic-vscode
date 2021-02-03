@@ -10,7 +10,7 @@ import { QueueItemTreeItem } from ".";
 import type { TreeDataProvider } from "vscode";
 import { apiCache } from "../util";
 import { apiPlaylistDetail } from "../api";
-import { i18n } from "../i18n";
+import i18n from "../i18n";
 
 const enum Type {
   userInstance,

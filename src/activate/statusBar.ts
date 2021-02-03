@@ -3,7 +3,7 @@ import { ButtonManager } from "../manager";
 import type { QuickPickItem } from "vscode";
 import { apiFmTrash } from "../api";
 import { commands } from "vscode";
-import { i18n } from "../i18n";
+import i18n from "../i18n";
 
 export function initStatusBar() {
   ButtonManager.init();

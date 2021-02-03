@@ -45,7 +45,7 @@ import type { ArtistInitial } from "../api";
 import type { InputStep } from "../util";
 import { LoggedIn } from "../state";
 import { createHash } from "crypto";
-import { i18n } from "../i18n";
+import i18n from "../i18n";
 import { inputKeyword } from ".";
 
 export function initAccount(context: ExtensionContext) {

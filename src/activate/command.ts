@@ -6,7 +6,7 @@ import type { ExtensionContext } from "vscode";
 import { VOLUME_KEY } from "../constant";
 import { apiLike } from "../api";
 import { commands } from "vscode";
-import { i18n } from "../i18n";
+import i18n from "../i18n";
 
 export function initCommand(context: ExtensionContext) {
   context.subscriptions.push(

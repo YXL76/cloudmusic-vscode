@@ -50,7 +50,7 @@ import type { QuickPickItem } from "vscode";
 import type { Readable } from "stream";
 import axios from "axios";
 import { createWriteStream } from "fs";
-import { i18n } from "../i18n";
+import i18n from "../i18n";
 
 const minSize = MUSIC_QUALITY === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
 
@@ -455,10 +455,6 @@ export async function pickProgram(
       },
       ...pickUserDetails([dj]),
       ...pickRadioDetails(radio ? [radio] : []),
-      {
-        label: `${ICON.comment} ${i18n.word.comment}`,
-        type: PickType.comment,
-      },
       {
         label: `${ICON.comment} ${i18n.word.comment}`,
         type: PickType.comment,

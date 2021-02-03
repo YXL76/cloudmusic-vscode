@@ -4,7 +4,7 @@ import { ICON } from "../constant";
 import { PersonalFm } from "../state";
 import type { QueueContent } from "../treeview";
 import { QueueProvider } from "../treeview";
-import { i18n } from "../i18n";
+import i18n from "../i18n";
 
 export function initQueue() {
   const queueProvider = QueueProvider.getInstance();

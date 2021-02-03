@@ -1,7 +1,7 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { IsLike } from ".";
 import { Player } from "../util";
-import { i18n } from "../i18n";
+import i18n from "../i18n";
 
 export class Loading {
   private static state = false;

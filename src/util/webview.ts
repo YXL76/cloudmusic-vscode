@@ -15,7 +15,7 @@ import { AccountManager } from "../manager";
 import type { CommentType } from "../api";
 import type { ExtensionContext } from "vscode";
 import type { SongsItem } from "../constant";
-import { i18n } from "../i18n";
+import i18n from "../i18n";
 import { toDataURL } from "qrcode";
 
 export class WebView {
