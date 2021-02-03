@@ -179,7 +179,14 @@ export const solveAlbumsItem = (item: AlbumsItem): AlbumsItem => {
 
 export const solveSongItem = (item: SongsItem): SongsItem => {
   const { name, id, dt, alia, ar, al } = item;
-  return { name, id, dt, alia: alia ?? [""], ar, al };
+  return {
+    name,
+    id,
+    dt,
+    alia: alia ?? [""],
+    ar: ar.map(({ id, name }) => ({ id, name })),
+    al: { id: al.id, name: al.name, picUrl: al.picUrl },
+  };
 };
 
 export const solveAnotherSongItem = (item: AnotherSongItem): SongsItem => {
@@ -190,7 +197,7 @@ export const solveAnotherSongItem = (item: AnotherSongItem): SongsItem => {
     dt: duration,
     alia: alias,
     ar: artists.map(({ id, name }) => ({ id, name })),
-    al: album,
+    al: { id: album.id, name: album.name, picUrl: album.picUrl },
   };
 };
 
