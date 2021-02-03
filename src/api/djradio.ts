@@ -8,7 +8,7 @@ import { solveProgramDetail, solveRadioDetail, weapiRequest } from ".";
 import { apiCache } from "../util";
 import { solveUserDetail } from "./helper";
 
-export async function apiDjCategoryRecommend() {
+/* export async function apiDjCategoryRecommend() {
   const key = "dj_category_recommend";
   const value = apiCache.get<{ name: string; id: number }[]>(key);
   if (value) return value;
@@ -23,7 +23,7 @@ export async function apiDjCategoryRecommend() {
     console.error(err);
   }
   return [];
-}
+} */
 
 export async function apiDjCatelist() {
   const key = "dj_catelist";
@@ -140,7 +140,7 @@ export async function apiDjProgramToplistHours() {
       data: { list },
     } = await weapiRequest<{ data: { list: { program: RawProgramDetail }[] } }>(
       "https://music.163.com/api/djprogram/toplist/hours",
-      { offset: 100 }
+      { limit: 100 }
     );
     const ret = list.map(({ program }) => solveProgramDetail(program));
     apiCache.set(key, ret);
@@ -323,5 +323,5 @@ export async function apiDjToplist(type: 0 | 1, limit: number, offset: number) {
   } catch (err) {
     console.error(err);
   }
-  return { subscribers: [], time: -1, hasMore: false };
+  return [];
 }

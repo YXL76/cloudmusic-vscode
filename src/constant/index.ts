@@ -56,4 +56,6 @@ export const enum ICON {
   search = "$(search)",
   similar = "$(library)",
   song = "$(zap)",
+  radio = "$(rss)",
+  program = "$(radio-tower)",
 }

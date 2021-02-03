@@ -1,4 +1,5 @@
 import { ACCOUNT_KEY, AUTO_CHECK, COOKIE_KEY, ICON } from "../constant";
+import type { Account, RadioDetail } from "../constant";
 import {
   ArtistArea,
   ArtistType,
@@ -7,8 +8,17 @@ import {
   apiAlbumSublist,
   apiArtistList,
   apiArtistSublist,
+  apiDjCatelist,
+  apiDjHot,
+  apiDjProgramToplist,
+  apiDjProgramToplistHours,
+  apiDjRadioHot,
+  apiDjRecommend,
+  apiDjRecommendType,
+  apiDjToplist,
   apiHighqualityTags,
   apiPersonalized,
+  apiPersonalizedDjprogram,
   apiPersonalizedNewsong,
   apiPlaylistCatlist,
   apiRecommendResource,
@@ -34,12 +44,13 @@ import {
   pickPlaylist,
   pickPlaylistItems,
   pickPlaylists,
+  pickPrograms,
+  pickRadios,
   pickSongs,
   pickUser,
 } from "../util";
 import type { ExtensionContext, QuickPickItem } from "vscode";
 import { commands, window } from "vscode";
-import type { Account } from "../constant";
 import { AccountManager } from "../manager";
 import type { ArtistInitial } from "../api";
 import type { InputStep } from "../util";
@@ -164,6 +175,8 @@ export function initAccount(context: ExtensionContext) {
           dailySong,
           playlist,
           song,
+          radio,
+          program,
         }
 
         const pick = await input.showQuickPick({
@@ -187,6 +200,14 @@ export function initAccount(context: ExtensionContext) {
               label: `${ICON.song} ${i18n.sentence.label.newsongRecommendation}`,
               type: Type.song,
             },
+            {
+              label: `${ICON.radio} ${i18n.sentence.label.radioRecommendation}`,
+              type: Type.radio,
+            },
+            {
+              label: `${ICON.program} ${i18n.sentence.label.programRecommendation}`,
+              type: Type.program,
+            },
           ],
         });
         switch (pick.type) {
@@ -202,13 +223,46 @@ export function initAccount(context: ExtensionContext) {
           case Type.song:
             return async (input: MultiStepInput) =>
               pickSongs(input, 3, await apiPersonalizedNewsong());
+          case Type.radio:
+            return async (input: MultiStepInput) =>
+              pickRadioType(input, 3, apiDjRecommend, apiDjRecommendType);
+          case Type.program:
+            return async (input: MultiStepInput) =>
+              pickPrograms(input, 3, await apiPersonalizedDjprogram());
         }
+      }
+
+      async function pickRadioType(
+        input: MultiStepInput,
+        step: number,
+        allFunc: (...args: number[]) => Promise<RadioDetail[]>,
+        typeFunc: (id: number, ...args: number[]) => Promise<RadioDetail[]>
+      ) {
+        const types = await apiDjCatelist();
+        const pick = await input.showQuickPick({
+          title: i18n.word.type,
+          step,
+          totalSteps: step + 1,
+          items: [
+            { label: i18n.word.all, id: -1 },
+            ...types.map(({ name, id }) => ({ label: name, id })),
+          ],
+        });
+        if (pick.id === -1)
+          return async (input: MultiStepInput) =>
+            pickRadios(input, 3, await allFunc(100, 0));
+        return async (input: MultiStepInput) =>
+          pickRadios(input, 3, await typeFunc(pick.id, 100, 0));
       }
 
       async function pickToplist(input: MultiStepInput) {
         const enum Type {
           song,
           artist,
+          radioNew,
+          radioHot,
+          program,
+          program24,
         }
 
         const pick = await input.showQuickPick({
@@ -224,6 +278,22 @@ export function initAccount(context: ExtensionContext) {
               label: `${ICON.artist} ${i18n.word.artistList}`,
               type: Type.artist,
             },
+            {
+              label: `${ICON.radio} ${i18n.word.radio} (${i18n.word.new})`,
+              type: Type.radioNew,
+            },
+            {
+              label: `${ICON.radio} ${i18n.word.radio} (${i18n.word.hot})`,
+              type: Type.radioHot,
+            },
+            {
+              label: `${ICON.program} ${i18n.word.program}`,
+              type: Type.program,
+            },
+            {
+              label: `${ICON.program} ${i18n.word.program} (${i18n.word.today})`,
+              type: Type.program24,
+            },
           ],
         });
         switch (pick.type) {
@@ -233,6 +303,18 @@ export function initAccount(context: ExtensionContext) {
           case Type.artist:
             return async (input: MultiStepInput) =>
               pickArtists(input, 3, await apiToplistArtist());
+          case Type.radioNew:
+            return async (input: MultiStepInput) =>
+              pickRadios(input, 3, await apiDjToplist(0, 100, 0));
+          case Type.radioHot:
+            return async (input: MultiStepInput) =>
+              pickRadios(input, 3, await apiDjToplist(1, 100, 0));
+          case Type.program:
+            return async (input: MultiStepInput) =>
+              pickPrograms(input, 3, await apiDjProgramToplist(100, 0));
+          case Type.program24:
+            return async (input: MultiStepInput) =>
+              pickPrograms(input, 3, await apiDjProgramToplistHours());
         }
       }
 
@@ -245,6 +327,7 @@ export function initAccount(context: ExtensionContext) {
           topArtists,
           topSongs,
           albumNewest,
+          radioHot,
         }
         const pick = await input.showQuickPick({
           title: i18n.word.explore,
@@ -279,6 +362,10 @@ export function initAccount(context: ExtensionContext) {
               label: `${ICON.album} ${i18n.word.albumNewest}`,
               type: Type.albumNewest,
             },
+            {
+              label: `${ICON.radio} ${i18n.word.radioHot}`,
+              type: Type.radioHot,
+            },
           ],
         });
         switch (pick.type) {
@@ -300,6 +387,9 @@ export function initAccount(context: ExtensionContext) {
           case Type.albumNewest:
             return async (input: MultiStepInput) =>
               pickAlbums(input, 3, await apiAlbumNewest());
+          case Type.radioHot:
+            return async (input: MultiStepInput) =>
+              pickRadioType(input, 3, apiDjHot, apiDjRadioHot);
         }
       }
 

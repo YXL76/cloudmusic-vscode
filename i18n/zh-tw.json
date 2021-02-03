@@ -30,7 +30,9 @@
       "lyricDelay": "設定歌詞延遲",
       "newsongRecommendation": "新歌推薦",
       "playlistRecommendation": "歌單推薦",
-      "qrcode": "使用二維碼登錄"
+      "programRecommendation": "推薦節目",
+      "qrcode": "使用二維碼登錄",
+      "radioRecommendation": "精選播單"
     },
     "success": {
       "dailyCheck": "簽到成功",
@@ -78,6 +80,7 @@
     "fullLyric": "全部歌詞",
     "hide": "隱藏",
     "highqualityPlaylist": "精品歌單",
+    "hot": "熱門",
     "hotSongs": "熱門歌曲",
     "hottest": "熱門",
     "initial": "起始",
@@ -90,6 +93,7 @@
     "lyricDelay": "歌詞延遲",
     "male": "男歌手",
     "more": "更多",
+    "new": "新晉",
     "nextPage": "下一頁",
     "nextTrack": "下一首",
     "other": "其他",
@@ -105,6 +109,7 @@
     "public": "公開",
     "qrcode": "二維碼",
     "radio": "播單",
+    "radioHot": "熱門播單",
     "recommendation": "推薦",
     "refresh": "重繪",
     "refreshing": "重繪中",
@@ -124,6 +129,7 @@
     "songList": "音樂榜",
     "submit": "提交",
     "subscribedCount": "收藏數",
+    "today": "24小時",
     "topAlbums": "新碟上架",
     "topArtists": "熱門歌手",
     "toplist": "排行榜",

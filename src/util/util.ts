@@ -222,7 +222,7 @@ interface RDT extends T {
 
 export const pickRadioDetails = (radios: RadioDetail[]): RDT[] =>
   radios.map((item) => ({
-    label: `${ICON.album} ${item.name}`,
+    label: `${ICON.radio} ${item.name}`,
     description: item.dj.nickname,
     id: item.id,
     item,
@@ -235,7 +235,7 @@ interface PDT extends T {
 
 export const pickProgramDetails = (programs: ProgramDetail[]): PDT[] =>
   programs.map((item) => ({
-    label: `${ICON.song} ${item.mainSong.name}`,
+    label: `${ICON.program} ${item.mainSong.name}`,
     description: item.mainSong.ar.map(({ name }) => name).join("/"),
     id: item.id,
     item,
@@ -412,12 +412,10 @@ export async function pickSongs(
     },
     true
   );
-  if (pick.length === 0) {
-    return input.stay();
-  }
-  if (pick.length === 1) {
+  if (pick.length === 0) return input.stay();
+  if (pick.length === 1)
     return (input: MultiStepInput) => pickSong(input, step + 1, pick[0].item);
-  }
+
   return (input: MultiStepInput) =>
     pickSongMany(
       input,
@@ -492,7 +490,7 @@ export async function pickProgramMany(
   programs: ProgramDetail[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
-    title: i18n.word.song,
+    title: i18n.word.program,
     step,
     items: [
       {
@@ -589,6 +587,19 @@ export async function pickRadio(
   }
 
   return input.stay();
+}
+
+export async function pickRadios(
+  input: MultiStepInput,
+  step: number,
+  radios: RadioDetail[]
+): Promise<InputStep> {
+  const { item } = await input.showQuickPick({
+    title: i18n.word.radio,
+    step,
+    items: pickRadioDetails(radios),
+  });
+  return (input: MultiStepInput) => pickRadio(input, step + 1, item);
 }
 
 export async function pickArtist(

@@ -49,7 +49,9 @@ export default __non_webpack_require__(
       lyricDelay: string;
       newsongRecommendation: string;
       playlistRecommendation: string;
+      programRecommendation: string;
       qrcode: string;
+      radioRecommendation: string;
     };
     success: {
       dailyCheck: string;
@@ -97,6 +99,7 @@ export default __non_webpack_require__(
     fullLyric: string;
     hide: string;
     highqualityPlaylist: string;
+    hot: string;
     hotSongs: string;
     hottest: string;
     initial: string;
@@ -109,6 +112,7 @@ export default __non_webpack_require__(
     male: string;
     more: string;
     latest: string;
+    new: string;
     nextPage: string;
     nextTrack: string;
     other: string;
@@ -124,6 +128,7 @@ export default __non_webpack_require__(
     public: string;
     qrcode: string;
     radio: string;
+    radioHot: string;
     recommendation: string;
     refresh: string;
     refreshing: string;
@@ -143,6 +148,7 @@ export default __non_webpack_require__(
     songList: string;
     submit: string;
     subscribedCount: string;
+    today: string;
     topAlbums: string;
     topArtists: string;
     toplist: string;
