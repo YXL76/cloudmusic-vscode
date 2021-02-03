@@ -121,8 +121,10 @@ export const i18n = (() => {
       previousPage: string;
       previousTrack: string;
       private: string;
+      program: string;
       public: string;
       qrcode: string;
+      radio: string;
       recommendation: string;
       refresh: string;
       refreshing: string;

@@ -287,7 +287,9 @@ export const solveProgramDetail = (item: RawProgramDetail): ProgramDetail => {
       ar: [{ name: dj.nickname, id: 0 }],
       al: { name: radio.name, id: 0, picUrl: coverUrl },
     },
+    dj: solveUserDetail(dj),
     description,
     id,
+    rid: radio.id,
   };
 };

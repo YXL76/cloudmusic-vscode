@@ -1,12 +1,8 @@
-import type {
-  LocalFileTreeItem,
-  ProgramTreeItem,
-  QueueItemTreeItem,
-} from "../treeview";
 import { MultiStepInput, load, stop } from "../util";
 import { commands, window } from "vscode";
 import { ICON } from "../constant";
 import { PersonalFm } from "../state";
+import type { QueueContent } from "../treeview";
 import { QueueProvider } from "../treeview";
 import { i18n } from "../i18n";
 
@@ -107,39 +103,32 @@ export function initQueue() {
     QueueProvider.refresh(() => QueueProvider.random())
   );
 
-  commands.registerCommand(
-    "cloudmusic.playSong",
-    (element: QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem) =>
+  commands.registerCommand("cloudmusic.playSong", (element: QueueContent) =>
+    QueueProvider.refresh(() => {
+      void PersonalFm.set(false);
+      QueueProvider.top(element.valueOf());
+      void load(element);
+    })
+  );
+
+  commands.registerCommand("cloudmusic.deleteSong", (element: QueueContent) =>
+    QueueProvider.refresh(() => QueueProvider.delete(element.valueOf()))
+  );
+
+  commands.registerCommand("cloudmusic.playNext", (element: QueueContent) => {
+    if (QueueProvider.songs.length > 2)
       QueueProvider.refresh(() => {
-        void PersonalFm.set(false);
-        QueueProvider.top(element.valueOf());
-        void load(element);
-      })
-  );
-
-  commands.registerCommand(
-    "cloudmusic.deleteSong",
-    (element: QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem) =>
-      QueueProvider.refresh(() => QueueProvider.delete(element.valueOf()))
-  );
-
-  commands.registerCommand(
-    "cloudmusic.playNext",
-    (element: QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem) => {
-      if (QueueProvider.songs.length > 2)
-        QueueProvider.refresh(() => {
-          const index = QueueProvider.songs.findIndex(
-            (value) => value.valueOf() === element.valueOf()
+        const index = QueueProvider.songs.findIndex(
+          (value) => value.valueOf() === element.valueOf()
+        );
+        if (index >= 2)
+          QueueProvider.songs = [
+            QueueProvider.songs[0],
+            QueueProvider.songs[index],
+          ].concat(
+            QueueProvider.songs.slice(1, index),
+            QueueProvider.songs.slice(index + 1)
           );
-          if (index >= 2)
-            QueueProvider.songs = [
-              QueueProvider.songs[0],
-              QueueProvider.songs[index],
-            ].concat(
-              QueueProvider.songs.slice(1, index),
-              QueueProvider.songs.slice(index + 1)
-            );
-        });
-    }
-  );
+      });
+  });
 }

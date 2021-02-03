@@ -259,7 +259,7 @@ export async function apiDjSublist() {
   return [];
 }
 
-export async function apiDjSubscriber(
+/* export async function apiDjSubscriber(
   id: number,
   limit: number,
   lasttime = -1
@@ -288,6 +288,24 @@ export async function apiDjSubscriber(
     console.error(err);
   }
   return { subscribers: [], time: -1, hasMore: false };
+} */
+
+export async function apiDjSubscriber(id: number, limit: number) {
+  const key = `dj_subscriber${id}-${limit}`;
+  const value = apiCache.get<UserDetail[]>(key);
+  if (value) return value;
+  try {
+    const { subscribers } = await weapiRequest<{ subscribers: UserDetail[] }>(
+      "https://music.163.com/api/djradio/subscriber",
+      { time: -1, id, limit, total: "true" }
+    );
+    const ret = subscribers.map(solveUserDetail);
+    apiCache.set(key, ret);
+    return ret;
+  } catch (err) {
+    console.error(err);
+  }
+  return [];
 }
 
 // 0: 新晋, 1: 热门

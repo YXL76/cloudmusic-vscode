@@ -56,15 +56,13 @@ export class PlaylistProvider
   ) {
     if (element) {
       const { id } = element.item;
-      if (action) {
-        apiCache.del(`playlist_detail${id}`);
-        this.action = action;
-      }
-      if (this.belongsTo.get(id) === Type.userInstance) {
+
+      if (action) this.action = action;
+      else apiCache.del(`playlist_detail${id}`);
+
+      if (this.belongsTo.get(id) === Type.userInstance)
         this.userInstance._onDidChangeTreeData.fire(element);
-      } else {
-        this.favoriteInstance._onDidChangeTreeData.fire(element);
-      }
+      else this.favoriteInstance._onDidChangeTreeData.fire(element);
     } else {
       apiCache.del(`user_playlist${AccountManager.uid}`);
       this.belongsTo.clear();

@@ -156,8 +156,10 @@ export type RadioDetail = {
 
 export type ProgramDetail = {
   mainSong: SongsItem;
+  dj: UserDetail;
   description: string;
   id: number;
+  rid: number;
 };
 
 export type RawProgramDetail = {

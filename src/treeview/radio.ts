@@ -4,7 +4,7 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import type { RadioDetail, SongsItem } from "../constant";
+import type { ProgramDetail, RadioDetail } from "../constant";
 import { AccountManager } from "../manager";
 import type { TreeDataProvider } from "vscode";
 import { apiCache } from "../util";
@@ -34,10 +34,8 @@ export class RadioProvider
     action?: (items: ProgramTreeItem[]) => void
   ) {
     if (element) {
-      if (action) {
-        apiCache.del(`dj_program${element.item.id}`);
-        this.action = action;
-      }
+      if (action) this.action = action;
+      else apiCache.del(`dj_program${element.item.id}`);
     } else {
       this.radios.clear();
       apiCache.del("dj_sublist");
@@ -54,9 +52,7 @@ export class RadioProvider
       const pid = element.valueOf();
       const programs = (
         await apiDjProgram(element.item.id, element.item.programCount)
-      ).map(
-        (program) => new ProgramTreeItem(program.mainSong, program.id, pid)
-      );
+      ).map((program) => new ProgramTreeItem(program, pid));
       const localAction = RadioProvider.action;
       if (localAction) {
         RadioProvider.action = undefined;
@@ -97,6 +93,10 @@ ${i18n.word.subscribedCount}: ${this.item.subCount}`;
 export class ProgramTreeItem extends TreeItem {
   readonly label!: string;
 
+  readonly tooltip = this.program.description;
+
+  readonly item = this.program.mainSong;
+
   readonly description = (() =>
     this.item.ar.map(({ name }) => name).join("/"))();
 
@@ -104,18 +104,17 @@ export class ProgramTreeItem extends TreeItem {
 
   readonly contextValue = "ProgramTreeItem";
 
-  // command = {
-  //   title: "Detail",
-  //   command: "cloudmusic.songDetail",
-  //   arguments: [this],
-  // };
+  command = {
+    title: "Detail",
+    command: "cloudmusic.songDetail",
+    arguments: [this],
+  };
 
   constructor(
-    public readonly item: SongsItem,
-    public readonly bid: number,
+    public readonly program: ProgramDetail,
     public readonly pid: number
   ) {
-    super(item.name);
+    super(program.mainSong.name);
   }
 
   valueOf() {

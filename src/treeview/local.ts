@@ -7,17 +7,20 @@ import {
   Uri,
   workspace,
 } from "vscode";
+import type { SongsItem } from "../constant";
 import type { TreeDataProvider } from "vscode";
 import { fromFile } from "file-type";
 import { resolve } from "path";
 
 export class LocalProvider
   implements TreeDataProvider<LocalFileTreeItem | LocalLibraryTreeItem> {
-  static readonly folders: string[];
+  static readonly folders: string[] = [];
 
   static readonly files = new Map<string, LocalFileTreeItem[]>();
 
   private static instance: LocalProvider;
+
+  private static action?: (items: LocalFileTreeItem[]) => void;
 
   _onDidChangeTreeData = new EventEmitter<LocalLibraryTreeItem | void>();
 
@@ -27,9 +30,13 @@ export class LocalProvider
     return this.instance || (this.instance = new LocalProvider());
   }
 
-  static refresh(element?: LocalLibraryTreeItem) {
+  static refresh(
+    element?: LocalLibraryTreeItem,
+    action?: (items: LocalFileTreeItem[]) => void
+  ) {
     if (element) {
-      this.files.delete(element.label);
+      if (action) this.action = action;
+      else this.files.delete(element.label);
     }
     this.instance._onDidChangeTreeData.fire(element);
   }
@@ -40,34 +47,40 @@ export class LocalProvider
 
   async getChildren(element?: LocalLibraryTreeItem) {
     if (element) {
+      let items: LocalFileTreeItem[] = [];
       const { label } = element;
-      if (LocalProvider.files.has(label)) {
-        return LocalProvider.files.get(label);
+      if (LocalProvider.files.has(label))
+        items = LocalProvider.files.get(label) as LocalFileTreeItem[];
+      else {
+        try {
+          const files = await workspace.fs.readDirectory(Uri.file(label));
+          items = (
+            await Promise.all(
+              files
+                .filter(([_, type]) => type === FileType.File)
+                .map(async ([filename]) => ({
+                  filename,
+                  ...(await fromFile(resolve(label, filename))),
+                }))
+            )
+          )
+            .filter(
+              ({ mime }) =>
+                mime && (mime === "audio/x-flac" || mime === "audio/mpeg")
+            )
+            .map(
+              ({ filename, ext }) =>
+                new LocalFileTreeItem(filename, ext, resolve(label, filename))
+            );
+          LocalProvider.files.set(label, items);
+        } catch {}
       }
-      try {
-        const files = await workspace.fs.readDirectory(Uri.file(label));
-        const items = (
-          await Promise.all(
-            files
-              .filter(([_, type]) => type === FileType.File)
-              .map(async ([filename]) => ({
-                filename,
-                ...(await fromFile(resolve(label, filename))),
-              }))
-          )
-        )
-          .filter(
-            ({ mime }) =>
-              mime && (mime === "audio/x-flac" || mime === "audio/mpeg")
-          )
-          .map(
-            ({ filename, ext }) =>
-              new LocalFileTreeItem(filename, ext, resolve(label, filename))
-          );
-        LocalProvider.files.set(label, items);
-        return items;
-      } catch {}
-      return [];
+      const localAction = LocalProvider.action;
+      if (localAction) {
+        LocalProvider.action = undefined;
+        localAction(items);
+      }
+      return items;
     }
     return LocalProvider.folders.map(
       (folder) => new LocalLibraryTreeItem(folder)
@@ -78,7 +91,14 @@ export class LocalProvider
 export class LocalFileTreeItem extends TreeItem {
   readonly iconPath = new ThemeIcon("file-media");
 
-  readonly item = { al: { name: "" }, ar: [{ name: "" }] };
+  readonly item: SongsItem = {
+    name: this.label,
+    alia: [],
+    id: 0,
+    al: { id: 0, name: "", picUrl: "" },
+    ar: [{ id: 0, name: "" }],
+    dt: 4800000,
+  };
 
   readonly contextValue = "LocalFileTreeItem";
 
@@ -102,10 +122,7 @@ export class LocalLibraryTreeItem extends TreeItem {
 
   readonly contextValue = "LocalLibraryTreeItem";
 
-  constructor(
-    public readonly label: string,
-    public readonly collapsibleState = TreeItemCollapsibleState.Collapsed
-  ) {
-    super(label, collapsibleState);
+  constructor(public readonly label: string) {
+    super(label, TreeItemCollapsibleState.Collapsed);
   }
 }

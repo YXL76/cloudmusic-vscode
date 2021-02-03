@@ -8,19 +8,21 @@ import {
   apiPlaymodeIntelligenceList,
   apiSongUrl,
 } from "../api";
+import type { LocalFileTreeItem, PlaylistItemTreeItem } from "../treeview";
 import {
   MultiStepInput,
+  Player,
   WebView,
-  confirmation,
   downloadMusic,
   load,
   pickAddToPlaylist,
   pickPlaylist,
+  pickProgram,
   pickSong,
 } from "../util";
-import type { PlaylistItemTreeItem, ProgramTreeItem } from "../treeview";
 import {
   PlaylistProvider,
+  ProgramTreeItem,
   QueueItemTreeItem,
   QueueProvider,
 } from "../treeview";
@@ -108,12 +110,17 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.deletePlaylist",
-    ({ item: { id } }: PlaylistItemTreeItem) =>
-      void MultiStepInput.run((input) =>
-        confirmation(input, 1, async () => {
-          if (await apiPlaylistDelete(id)) PlaylistProvider.refresh();
-        })
+    async ({ item: { id } }: PlaylistItemTreeItem) => {
+      if (
+        (await window.showWarningMessage(
+          i18n.sentence.hint.confirmation,
+          { modal: true },
+          i18n.word.confirmation
+        )) &&
+        (await apiPlaylistDelete(id))
       )
+        PlaylistProvider.refresh();
+    }
   );
 
   commands.registerCommand(
@@ -151,13 +158,17 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.unsavePlaylist",
-    ({ item: { id } }: PlaylistItemTreeItem) =>
-      void MultiStepInput.run((input) =>
-        confirmation(input, 1, async () => {
-          if (await apiPlaylistSubscribe(id, "unsubscribe"))
-            PlaylistProvider.refresh();
-        })
+    async ({ item: { id } }: PlaylistItemTreeItem) => {
+      if (
+        (await window.showWarningMessage(
+          i18n.sentence.hint.confirmation,
+          { modal: true },
+          i18n.word.confirmation
+        )) &&
+        (await apiPlaylistSubscribe(id, "unsubscribe"))
       )
+        PlaylistProvider.refresh();
+    }
   );
 
   commands.registerCommand(
@@ -223,13 +234,17 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.deleteFromPlaylist",
-    ({ item: { id }, pid }: QueueItemTreeItem) =>
-      void MultiStepInput.run((input) =>
-        confirmation(input, 1, async () => {
-          if (await apiPlaylistTracks("del", pid, [id]))
-            PlaylistProvider.refresh(PlaylistProvider.playlists.get(pid));
-        })
+    async ({ item: { id }, pid }: QueueItemTreeItem) => {
+      if (
+        (await window.showWarningMessage(
+          i18n.sentence.hint.confirmation,
+          { modal: true },
+          i18n.word.confirmation
+        )) &&
+        (await apiPlaylistTracks("del", pid, [id]))
       )
+        PlaylistProvider.refresh(PlaylistProvider.playlists.get(pid));
+    }
   );
 
   commands.registerCommand(
@@ -240,9 +255,16 @@ export function initPlaylist() {
 
   commands.registerCommand(
     "cloudmusic.songDetail",
-    ({ item }: QueueItemTreeItem) => {
-      if (item?.id)
-        void MultiStepInput.run((input) => pickSong(input, 1, item));
+    (element?: QueueItemTreeItem | ProgramTreeItem | LocalFileTreeItem) => {
+      element = element ?? Player.treeitem;
+      if (element instanceof QueueItemTreeItem)
+        void MultiStepInput.run((input) =>
+          pickSong(input, 1, (element as QueueItemTreeItem).item)
+        );
+      else if (element instanceof ProgramTreeItem)
+        void MultiStepInput.run((input) =>
+          pickProgram(input, 1, (element as ProgramTreeItem).program)
+        );
     }
   );
 

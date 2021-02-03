@@ -1,7 +1,7 @@
 import { CommentType, apiDjSub } from "../api";
+import { MultiStepInput, WebView, load, pickRadio } from "../util";
 import type { ProgramTreeItem, RadioTreeItem } from "../treeview";
 import { QueueProvider, RadioProvider } from "../treeview";
-import { WebView, load } from "../util";
 import { commands, env, window } from "vscode";
 import { PersonalFm } from "../state";
 
@@ -41,6 +41,12 @@ export function initRadio() {
   );
 
   commands.registerCommand(
+    "cloudmusic.radioDetail",
+    ({ item }: RadioTreeItem) =>
+      void MultiStepInput.run((input) => pickRadio(input, 1, item))
+  );
+
+  commands.registerCommand(
     "cloudmusic.playProgram",
     ({ item: { id }, pid }: ProgramTreeItem) =>
       RadioProvider.refresh(RadioProvider.radios.get(pid), (items) =>
@@ -68,13 +74,13 @@ export function initRadio() {
 
   commands.registerCommand(
     "cloudmusic.programComment",
-    ({ bid, item: { name } }: ProgramTreeItem) =>
-      WebView.getInstance().commentList(CommentType.dj, bid, name)
+    ({ program: { id }, item: { name } }: ProgramTreeItem) =>
+      WebView.getInstance().commentList(CommentType.dj, id, name)
   );
 
   commands.registerCommand(
     "cloudmusic.copyProgramLink",
-    ({ bid }: ProgramTreeItem) =>
-      void env.clipboard.writeText(`https://music.163.com/#/program?id=${bid}`)
+    ({ program: { id } }: ProgramTreeItem) =>
+      void env.clipboard.writeText(`https://music.163.com/#/program?id=${id}`)
   );
 }

@@ -13,9 +13,9 @@ export class Loading {
         ButtonManager.buttonSong(
           `$(loading) ${i18n.word.song}: ${i18n.word.loading}`
         );
-      } else {
-        const { name, ar, id } = Player.item;
-        ButtonManager.buttonSong(name, ar.map((i) => i.name).join("/"));
+      } else if (Player.treeitem) {
+        const { name, ar, id } = Player.treeitem.item;
+        ButtonManager.buttonSong(name, ar.map(({ name }) => name).join("/"));
         IsLike.set(AccountManager.likelist.has(id));
       }
     }

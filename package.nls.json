@@ -40,6 +40,7 @@
   "commands.playSongWithPlaylist.title": "Play",
   "commands.previous.title": "Previous",
   "commands.programComment.title": "Comment",
+  "commands.radioDetail.title": "Detail",
   "commands.randomQueue.title": "Shuffle",
   "commands.refreshLocalFile.title": "Refresh",
   "commands.refreshLocalLibrary.title": "Refresh",

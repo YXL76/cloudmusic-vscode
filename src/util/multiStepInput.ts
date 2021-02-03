@@ -88,6 +88,10 @@ export class MultiStepInput {
     return this.steps.pop();
   }
 
+  stay() {
+    return this.steps[this.step - 1];
+  }
+
   async showQuickPick<T extends QuickPickItem>(
     _: QuickPickParameters<T>
   ): Promise<T>;
@@ -280,9 +284,7 @@ export class MultiStepInput {
       try {
         step = await step(this);
         if (step) {
-          while (this.steps.length > this.step) {
-            this.steps.pop();
-          }
+          while (this.steps.length > this.step) this.steps.pop();
           ++this.step;
           this.steps.push(step);
         }
@@ -306,8 +308,6 @@ export class MultiStepInput {
         }
       }
     }
-    if (this.current) {
-      this.current.dispose();
-    }
+    if (this.current) this.current.dispose();
   }
 }

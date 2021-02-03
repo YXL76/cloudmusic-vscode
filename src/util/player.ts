@@ -1,12 +1,17 @@
 import { Loading, PersonalFm, Playing } from "../state";
-import { LocalFileTreeItem, QueueProvider } from "../treeview";
-import type { Lyric, SongsItem } from "../constant";
+import {
+  LocalFileTreeItem,
+  QueueItemTreeItem,
+  QueueProvider,
+} from "../treeview";
 import { MusicCache, downloadMusic } from ".";
 import { NATIVE, TMP_DIR, VOLUME_KEY } from "../constant";
 import { Uri, commands, workspace } from "vscode";
 import { apiLyric, apiScrobble, apiSongUrl } from "../api";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
+import type { Lyric } from "../constant";
+import type { QueueContent } from "../treeview";
 import { createWriteStream } from "fs";
 
 async function prefetch() {
@@ -45,7 +50,7 @@ export const lyric: Lyric = {
 };
 
 export class Player {
-  static item = {} as SongsItem;
+  static treeitem?: QueueContent;
 
   static pid = 0;
 
@@ -67,7 +72,10 @@ export class Player {
           this.prefetchLock = true;
           void prefetch();
         }
-        if (NATIVE.playerEmpty(this.player) || pos > this.item.dt + 8000) {
+        if (
+          NATIVE.playerEmpty(this.player) ||
+          pos > (this.treeitem?.item.dt || 4800000) + 8000
+        ) {
           Playing.set(false);
           void commands.executeCommand("cloudmusic.next");
         } else {
@@ -82,7 +90,7 @@ export class Player {
       () =>
         void workspace.fs.readDirectory(TMP_DIR).then((items) => {
           for (const item of items)
-            if (item[0] !== `${this.item.id}`) {
+            if (item[0] !== `${this.treeitem?.id || 0}`) {
               const path = Uri.joinPath(TMP_DIR, item[0]);
               void workspace.fs.stat(path).then(({ mtime }) => {
                 // 8 * 60 * 1000 = 960000
@@ -99,7 +107,7 @@ export class Player {
     NATIVE.playerStop(this.player);
   }
 
-  static load(url: string, pid: number, item: SongsItem) {
+  static load(url: string, pid: number, treeitem: QueueContent) {
     if (NATIVE.playerLoad(this.player, url)) {
       NATIVE.playerSetVolume(
         this.player,
@@ -107,8 +115,8 @@ export class Player {
       );
       Playing.set(true);
 
-      if (item.id !== 0) {
-        void apiLyric(item.id).then(({ time, text }) => {
+      if (treeitem instanceof QueueItemTreeItem) {
+        void apiLyric(treeitem.item.id).then(({ time, text }) => {
           lyric.index = 0;
           lyric.time = time;
           lyric.text = text;
@@ -117,15 +125,15 @@ export class Player {
 
       const pTime = this.time;
       this.time = Date.now();
-      if (this.item.id !== 0) {
+      if (this.treeitem instanceof QueueItemTreeItem) {
         const diff = this.time - pTime;
-        const { id, dt } = this.item;
+        const { id, dt } = this.treeitem.item;
         if (diff > 60000 && dt > 60000) {
           void apiScrobble(id, this.pid, Math.floor(Math.min(diff, dt)) / 1000);
         }
       }
 
-      this.item = item;
+      this.treeitem = treeitem;
       this.pid = pid;
       this.prefetchLock = false;
       Loading.set(false);
@@ -135,7 +143,7 @@ export class Player {
   }
 
   static togglePlay() {
-    if (this.item.id) {
+    if (this.treeitem?.item.id) {
       if (Playing.get()) {
         NATIVE.playerPause(this.player);
         Playing.set(false);

@@ -4,22 +4,19 @@ import type { SongsItem } from "../constant";
 import type { TreeDataProvider } from "vscode";
 import { unsortInplace } from "array-unsort";
 
-export class QueueProvider
-  implements
-    TreeDataProvider<QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem> {
+export type QueueContent =
+  | QueueItemTreeItem
+  | LocalFileTreeItem
+  | ProgramTreeItem;
+
+export class QueueProvider implements TreeDataProvider<QueueContent> {
   static lock = false;
 
-  static songs: (
-    | QueueItemTreeItem
-    | LocalFileTreeItem
-    | ProgramTreeItem
-  )[] = [];
+  static songs: QueueContent[] = [];
 
   private static instance: QueueProvider;
 
-  _onDidChangeTreeData = new EventEmitter<
-    QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem | void
-  >();
+  _onDidChangeTreeData = new EventEmitter<QueueContent | void>();
 
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
@@ -57,9 +54,7 @@ export class QueueProvider
     }
   }
 
-  static add(
-    elements: (QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem)[]
-  ) {
+  static add(elements: QueueContent[]) {
     const raw = this.songs.concat(elements);
     this.songs = [];
     const lookup = new Set<string | number>();
@@ -79,9 +74,7 @@ export class QueueProvider
     }
   }
 
-  getTreeItem(
-    element: QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem
-  ) {
+  getTreeItem(element: QueueContent) {
     return element;
   }
 

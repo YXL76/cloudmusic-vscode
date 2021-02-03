@@ -3,6 +3,8 @@ import type {
   AlbumsItem,
   Artist,
   PlaylistItem,
+  ProgramDetail,
+  RadioDetail,
   SongsItem,
   UserDetail,
 } from "../constant";
@@ -15,6 +17,9 @@ import {
   apiArtistSongs,
   apiArtistSub,
   apiArtists,
+  apiDjDetail,
+  apiDjProgram,
+  apiDjSubscriber,
   apiLike,
   apiPlaylistDetail,
   apiPlaylistSubscribe,
@@ -35,11 +40,12 @@ import { IsLike, Loading, PersonalFm, Playing } from "../state";
 import {
   LocalFileTreeItem,
   PlaylistProvider,
+  ProgramTreeItem,
   QueueItemTreeItem,
   QueueProvider,
 } from "../treeview";
 import { Uri, commands, window } from "vscode";
-import type { ProgramTreeItem } from "../treeview";
+import type { QueueContent } from "../treeview";
 import type { QuickPickItem } from "vscode";
 import type { Readable } from "stream";
 import axios from "axios";
@@ -75,25 +81,16 @@ export async function downloadMusic(
 
 export function stop() {
   Player.stop();
-  Player.item = {} as SongsItem;
+  Player.treeitem = undefined;
   Playing.set(false);
   ButtonManager.buttonSong();
   ButtonManager.buttonLyric();
 }
 
-export async function load(
-  element: QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem
-) {
+export async function load(element: QueueContent) {
   Loading.set(true);
   if (element instanceof LocalFileTreeItem) {
-    Player.load(element.tooltip, 0, {
-      name: element.label,
-      id: 0,
-      dt: 4800000,
-      alia: [],
-      ar: [],
-      al: { id: 0, name: "", picUrl: "" },
-    });
+    Player.load(element.tooltip, 0, element);
     return;
   }
 
@@ -103,7 +100,7 @@ export async function load(
 
   const path = await MusicCache.get(idS);
   if (path) {
-    Player.load(path, pid, item);
+    Player.load(path, pid, element);
     return;
   }
 
@@ -121,7 +118,7 @@ export async function load(
       len += length;
       if (len > minSize) {
         data.removeListener("data", onData);
-        Player.load(tmpUri.fsPath, pid, item);
+        Player.load(tmpUri.fsPath, pid, element);
       }
     };
     data.on("data", onData);
@@ -133,23 +130,6 @@ export async function load(
     const file = createWriteStream(tmpUri.fsPath);
     data.pipe(file);
   }
-}
-
-export async function confirmation(
-  input: MultiStepInput,
-  step: number,
-  action: () => Promise<any>
-): Promise<InputStep | undefined> {
-  const i = await input.showInputBox({
-    title: i18n.word.confirmation,
-    step,
-    prompt: i18n.sentence.hint.confirmation,
-  });
-  if (i.toLowerCase() === "yes") {
-    await action();
-  }
-  input.pop();
-  return input.pop();
 }
 
 export function splitLine(content: string) {
@@ -175,6 +155,9 @@ const enum PickType {
   comment,
   copy,
   download,
+  program,
+  programs,
+  radio,
 }
 interface T extends QuickPickItem {
   id: number;
@@ -226,11 +209,37 @@ export const pickPlaylistItems = (playlists: PlaylistItem[]): PT[] =>
   }));
 
 export const pickUserDetails = (users: UserDetail[]): T[] =>
-  users.map((user) => ({
-    label: `${ICON.artist} ${user.nickname}`,
-    detail: user.signature,
-    id: user.userId,
+  users.map(({ nickname, signature, userId }) => ({
+    label: `${ICON.artist} ${nickname}`,
+    detail: signature,
+    id: userId,
     type: PickType.user,
+  }));
+
+interface RDT extends T {
+  item: RadioDetail;
+}
+
+export const pickRadioDetails = (radios: RadioDetail[]): RDT[] =>
+  radios.map((item) => ({
+    label: `${ICON.album} ${item.name}`,
+    description: item.dj.nickname,
+    id: item.id,
+    item,
+    type: PickType.radio,
+  }));
+
+interface PDT extends T {
+  item: ProgramDetail;
+}
+
+export const pickProgramDetails = (programs: ProgramDetail[]): PDT[] =>
+  programs.map((item) => ({
+    label: `${ICON.song} ${item.mainSong.name}`,
+    description: item.mainSong.ar.map(({ name }) => name).join("/"),
+    id: item.id,
+    item,
+    type: PickType.program,
   }));
 
 export async function pickSong(
@@ -316,7 +325,7 @@ export async function pickSong(
     case PickType.like:
       if (await apiLike(id, true)) {
         AccountManager.likelist.add(id);
-        IsLike.set(id === Player.item.id);
+        IsLike.set(id === Player.treeitem?.item.id);
       }
       break;
     case PickType.add:
@@ -324,7 +333,7 @@ export async function pickSong(
       void commands.executeCommand("cloudmusic.addSong", element);
   }
 
-  return input.pop() as InputStep;
+  return input.stay();
 }
 
 export async function pickSongMany(
@@ -348,7 +357,7 @@ export async function pickSongMany(
     );
   }
   input.pop();
-  return input.pop() as InputStep;
+  return input.stay();
 }
 
 async function pickSimiSong(
@@ -382,7 +391,7 @@ async function pickSimiSong(
       pickSimiSong(input, step, id, offset + limit);
   }
   if (pick.length === 0) {
-    return input.pop() as InputStep;
+    return input.stay();
   }
   if (pick.length === 1) {
     return (input: MultiStepInput) => pickSong(input, step + 1, pick[0].item);
@@ -409,7 +418,7 @@ export async function pickSongs(
     true
   );
   if (pick.length === 0) {
-    return input.pop() as InputStep;
+    return input.stay();
   }
   if (pick.length === 1) {
     return (input: MultiStepInput) => pickSong(input, step + 1, pick[0].item);
@@ -420,6 +429,176 @@ export async function pickSongs(
       step + 1,
       pick.map(({ item }) => item)
     );
+}
+
+export async function pickProgram(
+  input: MultiStepInput,
+  step: number,
+  item: ProgramDetail
+): Promise<InputStep> {
+  const { mainSong, dj, id, rid } = item;
+  const { name } = mainSong;
+  const radio = await apiDjDetail(rid);
+
+  const pick = await input.showQuickPick({
+    title: `${i18n.word.program}-${i18n.word.detail}`,
+    step,
+    items: [
+      { label: `${ICON.name} ${name}` },
+      {
+        label: `${ICON.copy} ${i18n.word.copyLink}`,
+        type: PickType.copy,
+      },
+      {
+        label: `${ICON.download} ${i18n.word.download}`,
+        type: PickType.download,
+      },
+      ...pickUserDetails([dj]),
+      ...pickRadioDetails(radio ? [radio] : []),
+      {
+        label: `${ICON.comment} ${i18n.word.comment}`,
+        type: PickType.comment,
+      },
+      {
+        label: `${ICON.comment} ${i18n.word.comment}`,
+        type: PickType.comment,
+      },
+      {
+        label: `${ICON.add} ${i18n.word.addToQueue}`,
+        type: PickType.add,
+      },
+    ],
+  });
+  switch (pick.type) {
+    case PickType.copy:
+      void commands.executeCommand("cloudmusic.copyProgramLink", { id });
+      break;
+    case PickType.download:
+      void commands.executeCommand("cloudmusic.downloadSong", {
+        item: mainSong,
+      });
+      break;
+    case PickType.user:
+      return (input: MultiStepInput) =>
+        pickUser(input, step + 1, (pick as T).id);
+    case PickType.radio:
+      return (input: MultiStepInput) =>
+        pickRadio(input, step + 1, radio as RadioDetail);
+    case PickType.comment:
+      WebView.getInstance().commentList(CommentType.dj, id, name);
+      break;
+    case PickType.add:
+      const element = new QueueItemTreeItem(mainSong, 0);
+      void commands.executeCommand("cloudmusic.addSong", element);
+  }
+
+  return input.stay();
+}
+
+export async function pickProgramMany(
+  input: MultiStepInput,
+  step: number,
+  programs: ProgramDetail[]
+): Promise<InputStep> {
+  const pick = await input.showQuickPick({
+    title: i18n.word.song,
+    step,
+    items: [
+      {
+        label: `${ICON.add} ${i18n.word.addToQueue}`,
+        type: PickType.add,
+      },
+    ],
+  });
+  if (pick.type === PickType.add) {
+    QueueProvider.refresh(() =>
+      QueueProvider.add(
+        programs.map((program) => new ProgramTreeItem(program, 0))
+      )
+    );
+  }
+  input.pop();
+  return input.stay();
+}
+
+export async function pickPrograms(
+  input: MultiStepInput,
+  step: number,
+  programs: ProgramDetail[]
+): Promise<InputStep> {
+  const pick = await input.showQuickPick(
+    {
+      title: i18n.word.program,
+      step,
+      items: pickProgramDetails(programs),
+    },
+    true
+  );
+  if (pick.length === 0) {
+    return input.stay();
+  }
+  if (pick.length === 1) {
+    return (input: MultiStepInput) =>
+      pickProgram(input, step + 1, pick[0].item);
+  }
+  return (input: MultiStepInput) =>
+    pickProgramMany(
+      input,
+      step + 1,
+      pick.map(({ item }) => item)
+    );
+}
+
+export async function pickRadio(
+  input: MultiStepInput,
+  step: number,
+  item: RadioDetail
+): Promise<InputStep> {
+  const { name, desc, id, subCount, programCount, playCount, dj } = item;
+
+  const pick = await input.showQuickPick({
+    title: `${i18n.word.radio}-${i18n.word.detail}`,
+    step,
+    items: [
+      { label: `${ICON.name} ${name}` },
+      { label: `${ICON.description} ${desc}` },
+      {
+        label: `${ICON.copy} ${i18n.word.copyLink}`,
+        type: PickType.copy,
+      },
+      ...pickUserDetails([dj]),
+      {
+        label: `${ICON.number} ${i18n.word.playCount}`,
+        description: `${playCount}`,
+      },
+      {
+        label: `${ICON.number} ${i18n.word.subscribedCount}`,
+        description: `${subCount}`,
+        type: PickType.subscribed,
+      },
+      {
+        label: `${ICON.number} ${i18n.word.trackCount}`,
+        description: `${programCount}`,
+        type: PickType.programs,
+      },
+    ],
+  });
+  switch (pick.type) {
+    case PickType.copy:
+      void commands.executeCommand("cloudmusic.copyRadioLink", { id });
+      break;
+    case PickType.user:
+      return (input: MultiStepInput) =>
+        pickUser(input, step + 1, (pick as T).id);
+    case PickType.subscribed:
+      return async (input: MultiStepInput) =>
+        pickUsers(input, step + 1, apiDjSubscriber, false, -1, id);
+    case PickType.programs:
+      return async (input: MultiStepInput) =>
+        pickPrograms(input, step + 1, await apiDjProgram(id, programCount));
+  }
+
+  return input.stay();
 }
 
 export async function pickArtist(
@@ -485,17 +664,20 @@ export async function pickArtist(
       return async (input: MultiStepInput) =>
         pickArtists(input, step + 1, await apiSimiArtist(id));
     case PickType.unsave:
-      return (input: MultiStepInput) =>
-        confirmation(
-          input,
-          step + 1,
-          async () => await apiArtistSub(id, "unsub")
-        );
+      if (
+        await window.showWarningMessage(
+          i18n.sentence.hint.confirmation,
+          { modal: true },
+          i18n.word.confirmation
+        )
+      )
+        await apiArtistSub(id, "unsub");
+      break;
     case PickType.save:
       await apiArtistSub(id, "sub");
   }
 
-  return input.pop() as InputStep;
+  return input.stay();
 
   async function pickAllSongs(
     input: MultiStepInput,
@@ -528,7 +710,7 @@ export async function pickArtist(
         pickAllSongs(input, step, id, offset + limit);
     }
     if (pick.length === 0) {
-      return input.pop() as InputStep;
+      return input.stay();
     }
     if (pick.length === 1) {
       return (input: MultiStepInput) => pickSong(input, step + 1, pick[0].item);
@@ -603,12 +785,15 @@ export async function pickAlbum(
       return (input: MultiStepInput) =>
         pickSong(input, step + 1, (pick as ST).item);
     case PickType.unsave:
-      return (input: MultiStepInput) =>
-        confirmation(
-          input,
-          step + 1,
-          async () => await apiAlbumSub(id, "unsub")
-        );
+      if (
+        await window.showWarningMessage(
+          i18n.sentence.hint.confirmation,
+          { modal: true },
+          i18n.word.confirmation
+        )
+      )
+        await apiAlbumSub(id, "unsub");
+      break;
     case PickType.comment:
       WebView.getInstance().commentList(CommentType.album, id, name);
       break;
@@ -616,7 +801,7 @@ export async function pickAlbum(
       await apiAlbumSub(id, "sub");
   }
 
-  return input.pop() as InputStep;
+  return input.stay();
 }
 
 export async function pickAlbums(
@@ -730,7 +915,7 @@ export async function pickPlaylist(
     case PickType.save:
       await apiPlaylistSubscribe(id, "subscribe");
   }
-  return input.pop() as InputStep;
+  return input.stay();
 }
 
 async function pickSimiPlaylists(
@@ -808,7 +993,7 @@ export async function pickUser(
   const user = await apiUserDetail(uid);
   if (!user) {
     input.pop();
-    return input.pop() as InputStep;
+    return input.stay();
   }
   const playlists = await apiUserPlaylist(uid);
   const pick = await input.showQuickPick({
@@ -859,7 +1044,7 @@ export async function pickUser(
       return (input: MultiStepInput) =>
         pickPlaylist(input, step + 1, pick.item as PlaylistItem);
   }
-  return input.pop() as InputStep;
+  return input.stay();
 }
 
 const limit = 50;
@@ -882,10 +1067,9 @@ export async function pickUsers(
       items: pickUserDetails(users),
     },
     undefined,
-    {
-      previous: offset > 0,
-      next: users.length === limit,
-    }
+    pagination
+      ? { previous: offset > 0, next: users.length === limit }
+      : { previous: false, next: false }
   );
   if (pick === ButtonAction.previous) {
     input.pop();

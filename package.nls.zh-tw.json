@@ -40,6 +40,7 @@
   "commands.playSongWithPlaylist.title": "播放",
   "commands.previous.title": "前一首",
   "commands.programComment.title": "評論",
+  "commands.radioDetail.title": "詳情",
   "commands.randomQueue.title": "隨機播放",
   "commands.refreshLocalFile.title": "重繪",
   "commands.refreshLocalLibrary.title": "重繪",
