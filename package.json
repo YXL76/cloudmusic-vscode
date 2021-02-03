@@ -527,7 +527,7 @@
     "prettier": "2.2.1",
     "tailwindcss": "2.0.2",
     "typescript": "4.1.3",
-    "webpack": "5.20.0",
+    "webpack": "5.20.1",
     "webpack-cli": "4.5.0"
   },
   "dependencies": {
