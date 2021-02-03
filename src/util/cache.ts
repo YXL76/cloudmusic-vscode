@@ -31,7 +31,7 @@ export class MusicCache {
     noDisposeOnSet: true,
   });
 
-  static async init() {
+  static async init(): Promise<void> {
     try {
       const res = await cacache.ls(MUSIC_CACHE_DIR.fsPath);
       for (const item in res) {
@@ -41,11 +41,11 @@ export class MusicCache {
     } catch {}
   }
 
-  static verify() {
+  static verify(): void {
     void cacache.verify(MUSIC_CACHE_DIR.fsPath);
   }
 
-  static async get(key: string) {
+  static async get(key: string): Promise<string | void> {
     try {
       const { path } = await cacache.get.info(MUSIC_CACHE_DIR.fsPath, key);
       this.lruCache.get(key);
@@ -54,7 +54,7 @@ export class MusicCache {
     return;
   }
 
-  static async put(key: string, path: Uri, md5?: string) {
+  static async put(key: string, path: Uri, md5?: string): Promise<void> {
     try {
       await cacache.put(
         MUSIC_CACHE_DIR.fsPath,
@@ -77,15 +77,15 @@ export class MusicCache {
 }
 
 export class LyricCache {
-  static verify() {
+  static verify(): void {
     void cacache.verify(LYRIC_CACHE_DIR.fsPath);
   }
 
-  static clear() {
+  static clear(): void {
     void cacache.rm.all(LYRIC_CACHE_DIR.fsPath);
   }
 
-  static async get(key: string) {
+  static async get(key: string): Promise<LyricData | void> {
     try {
       const { path, time, integrity } = await cacache.get.info(
         LYRIC_CACHE_DIR.fsPath,
@@ -104,7 +104,7 @@ export class LyricCache {
     return;
   }
 
-  static put(key: string, data: LyricData) {
+  static put(key: string, data: LyricData): void {
     void cacache.put(LYRIC_CACHE_DIR.fsPath, key, JSON.stringify(data));
   }
 }

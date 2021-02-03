@@ -1,4 +1,4 @@
-import type { SongsItem, UnlockSongItem } from "../constant";
+import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
 import axios from "axios";
 import { extname } from "path";
 
@@ -69,10 +69,12 @@ async function songUrl({ id }: UnlockSongItem) {
       ? { url, type: extname(url).split(".").pop(), md5: "" }
       : undefined;
   } catch {}
-  return undefined;
+  return;
 }
 
-export default async function joox(song: SongsItem) {
+export default async function joox(
+  song: SongsItem
+): Promise<SongDetail | void> {
   const list = await search(song.name);
   const selected = list.shift();
   return selected ? await songUrl(selected) : undefined;

@@ -1,6 +1,6 @@
 import { Player } from "../util";
 
-export function initPlayer() {
+export function initPlayer(): void {
   Player.init();
 
   /* if (MEDIA_CONTROL) {

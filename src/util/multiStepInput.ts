@@ -83,7 +83,7 @@ export class MultiStepInput {
     return input.stepThrough(start);
   }
 
-  stay(step?: InputStep) {
+  stay(step?: InputStep): InputStep {
     if (step) this.steps[this.step - 1] = step;
     return this.steps[this.step - 1];
   }

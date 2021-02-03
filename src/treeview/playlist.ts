@@ -36,14 +36,14 @@ export class PlaylistProvider
 
   constructor(private type: Type) {}
 
-  static getUserInstance() {
+  static getUserInstance(): PlaylistProvider {
     return (
       this.userInstance ||
       (this.userInstance = new PlaylistProvider(Type.userInstance))
     );
   }
 
-  static getFavoriteInstance() {
+  static getFavoriteInstance(): PlaylistProvider {
     return (
       this.favoriteInstance ||
       (this.favoriteInstance = new PlaylistProvider(Type.favoriteInstance))
@@ -53,7 +53,7 @@ export class PlaylistProvider
   static refresh(
     element?: PlaylistItemTreeItem,
     action?: (items: QueueItemTreeItem[]) => void
-  ) {
+  ): void {
     if (element) {
       const { id } = element.item;
 
@@ -78,11 +78,15 @@ export class PlaylistProvider
     return ret;
   }
 
-  getTreeItem(element: PlaylistItemTreeItem | QueueItemTreeItem) {
+  getTreeItem(
+    element: PlaylistItemTreeItem | QueueItemTreeItem
+  ): PlaylistItemTreeItem | QueueItemTreeItem {
     return element;
   }
 
-  async getChildren(element?: PlaylistItemTreeItem) {
+  async getChildren(
+    element?: PlaylistItemTreeItem
+  ): Promise<(PlaylistItemTreeItem | QueueItemTreeItem)[]> {
     if (element) {
       const { id } = element.item;
       const ret = await PlaylistProvider.getPlaylistContent(id);
@@ -131,7 +135,7 @@ ${i18n.word.subscribedCount}: ${this.item.subscribedCount}`;
     super(item.name, collapsibleState);
   }
 
-  valueOf() {
+  valueOf(): number {
     return this.item.id;
   }
 }

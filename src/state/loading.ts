@@ -6,7 +6,7 @@ import i18n from "../i18n";
 export class Loading {
   private static state = false;
 
-  static set(newValue: boolean) {
+  static set(newValue: boolean): void {
     if (newValue !== this.state) {
       this.state = newValue;
       if (newValue) {

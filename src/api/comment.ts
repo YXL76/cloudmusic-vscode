@@ -9,11 +9,17 @@ import {
 import type { CommentType } from ".";
 import { apiCache } from "../util";
 
+type CommentRet = {
+  totalCount: number;
+  hasMore: boolean;
+  comments: CommentDetail[];
+};
+
 export async function apiCommentAdd(
   type: CommentType,
   id: number,
   content: string
-) {
+): Promise<boolean> {
   try {
     await weapiRequest(
       `https://music.163.com/weapi/resource/comments/add`,
@@ -32,7 +38,7 @@ export async function apiCommentReply(
   id: number,
   content: string,
   commentId: number
-) {
+): Promise<boolean> {
   try {
     await weapiRequest(
       `https://music.163.com/weapi/resource/comments/reply`,
@@ -52,13 +58,9 @@ export async function apiCommentFloor(
   parentCommentId: number,
   limit: number,
   time: number
-) {
+): Promise<CommentRet> {
   const key = `comment_floor${type}-${id}-${parentCommentId}-${limit}-${time}`;
-  const value = apiCache.get<{
-    totalCount: number;
-    hasMore: boolean;
-    comments: CommentDetail[];
-  }>(key);
+  const value = apiCache.get<CommentRet>(key);
   if (value) return value;
   try {
     const {
@@ -93,7 +95,7 @@ export async function apiCommentLike(
   t: "like" | "unlike",
   id: number,
   commentId: number
-) {
+): Promise<boolean> {
   try {
     await weapiRequest(
       `https://music.163.com/weapi/v1/comment/${t}`,
@@ -114,7 +116,7 @@ export async function apiCommentNew(
   pageSize: number,
   sortType: SortType,
   cursor: number
-) {
+): Promise<CommentRet> {
   const key = `comment_new${type}-${id}-${pageNo}-${pageSize}-${sortType}-${cursor}`;
   const value = apiCache.get<{
     totalCount: number;

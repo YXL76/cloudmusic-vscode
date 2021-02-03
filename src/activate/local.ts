@@ -6,7 +6,7 @@ import { LOCAL_FOLDER_KEY } from "../constant";
 import { PersonalFm } from "../state";
 import { load } from "../util";
 
-export function initLocal(context: ExtensionContext) {
+export function initLocal(context: ExtensionContext): void {
   context.globalState
     .get<string[]>(LOCAL_FOLDER_KEY)
     ?.forEach((folder) => LocalProvider.folders.push(folder));

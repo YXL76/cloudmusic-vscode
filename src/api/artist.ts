@@ -3,7 +3,9 @@ import type { ArtistArea, ArtistInitial, ArtistType } from ".";
 import { solveAlbumsItem, solveArtist, solveSongItem, weapiRequest } from ".";
 import { apiCache } from "../util";
 
-export async function apiArtists(id: number) {
+export async function apiArtists(
+  id: number
+): Promise<{ info: Artist; songs: SongsItem[] }> {
   const key = `artists${id}`;
   const value = apiCache.get<{ info: Artist; songs: SongsItem[] }>(key);
   if (value) return value;
@@ -24,7 +26,7 @@ export async function apiArtists(id: number) {
   return { info: {} as Artist, songs: [] };
 }
 
-export async function apiArtistAlbum(id: number) {
+export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
   const key = `artist_album${id}`;
   const value = apiCache.get<AlbumsItem[]>(key);
   if (value) return value;
@@ -63,7 +65,7 @@ export async function apiArtistList(
   initial: ArtistInitial,
   limit: number,
   offset: number
-) {
+): Promise<Artist[]> {
   const key = `artist_album${type}-${area}-${
     initial as string
   }-${limit}-${offset}`;
@@ -94,7 +96,7 @@ export async function apiArtistSongs(
   id: number,
   limit: number,
   offset: number
-) {
+): Promise<SongsItem[]> {
   const key = `artist_songs${id}-${limit}-${offset}`;
   const value = apiCache.get<SongsItem[]>(key);
   if (value) return value;
@@ -122,7 +124,10 @@ export async function apiArtistSongs(
   return [];
 }
 
-export async function apiArtistSub(id: number, t: "sub" | "unsub") {
+export async function apiArtistSub(
+  id: number,
+  t: "sub" | "unsub"
+): Promise<boolean> {
   try {
     await weapiRequest(`https://music.163.com/weapi/artist/${t}`, {
       artistId: id,
@@ -135,7 +140,7 @@ export async function apiArtistSub(id: number, t: "sub" | "unsub") {
   return false;
 }
 
-export async function apiArtistSublist() {
+export async function apiArtistSublist(): Promise<Artist[]> {
   const limit = 100;
   let offset = 0;
   let ret: Artist[] = [];
@@ -161,7 +166,7 @@ export async function apiArtistSublist() {
   return ret;
 }
 
-export async function apiSimiArtist(artistid: number) {
+export async function apiSimiArtist(artistid: number): Promise<Artist[]> {
   const key = `simi_artist${artistid}`;
   const value = apiCache.get<Artist[]>(key);
   if (value) return value;
@@ -179,7 +184,10 @@ export async function apiSimiArtist(artistid: number) {
   return [];
 }
 
-export async function apiTopArtists(limit: number, offset: number) {
+export async function apiTopArtists(
+  limit: number,
+  offset: number
+): Promise<Artist[]> {
   const key = `top_artists${limit}-${offset}`;
   const value = apiCache.get<Artist[]>(key);
   if (value) return value;
@@ -197,7 +205,7 @@ export async function apiTopArtists(limit: number, offset: number) {
   return [];
 }
 
-export async function apiToplistArtist() {
+export async function apiToplistArtist(): Promise<Artist[]> {
   const key = "toplist_artist";
   const value = apiCache.get<Artist[]>(key);
   if (value) return value;

@@ -324,7 +324,7 @@
             "type": "boolean"
           },
           "cloudmusic.cache.size": {
-            "default": 1024,
+            "default": 4096,
             "markdownDescription": "%configuration.cache.size.markdownDescription%",
             "maximum": 10240,
             "minimum": 128,

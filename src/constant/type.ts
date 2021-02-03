@@ -63,7 +63,7 @@ export type SongDetail = {
   // id: number;
   url: string;
   md5: string;
-  type: string;
+  type?: string;
 };
 
 export type UnlockSongItem = {
@@ -171,7 +171,7 @@ export type RawProgramDetail = {
   id: number;
 };
 
-export type NativePlayer = {};
+export type NativePlayer = unknown;
 
 export interface NativeModule {
   // startKeyboardEvent(callback: (res: number) => void, prev: number): void;

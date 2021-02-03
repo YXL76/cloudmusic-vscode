@@ -25,14 +25,14 @@ export class RadioProvider
 
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-  static getInstance() {
+  static getInstance(): RadioProvider {
     return this.instance || (this.instance = new RadioProvider());
   }
 
   static refresh(
     element?: RadioTreeItem,
     action?: (items: ProgramTreeItem[]) => void
-  ) {
+  ): void {
     if (element) {
       if (action) this.action = action;
       else apiCache.del(`dj_program${element.item.id}`);
@@ -43,11 +43,15 @@ export class RadioProvider
     this.instance._onDidChangeTreeData.fire(element);
   }
 
-  getTreeItem(element: RadioTreeItem | ProgramTreeItem) {
+  getTreeItem(
+    element: RadioTreeItem | ProgramTreeItem
+  ): RadioTreeItem | ProgramTreeItem {
     return element;
   }
 
-  async getChildren(element?: RadioTreeItem) {
+  async getChildren(
+    element?: RadioTreeItem
+  ): Promise<(RadioTreeItem | ProgramTreeItem)[]> {
     if (element) {
       const pid = element.valueOf();
       const programs = (
@@ -85,7 +89,7 @@ ${i18n.word.subscribedCount}: ${this.item.subCount}`;
     super(item.name, TreeItemCollapsibleState.Collapsed);
   }
 
-  valueOf() {
+  valueOf(): number {
     return this.item.id;
   }
 }
@@ -117,7 +121,7 @@ export class ProgramTreeItem extends TreeItem {
     super(program.mainSong.name);
   }
 
-  valueOf() {
+  valueOf(): number {
     return this.item.id;
   }
 }

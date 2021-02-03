@@ -33,7 +33,7 @@ import { PersonalFm } from "../state";
 import { createWriteStream } from "fs";
 import i18n from "../i18n";
 
-export function initPlaylist() {
+export function initPlaylist(): void {
   const userPlaylistProvider = PlaylistProvider.getUserInstance();
   const favoritePlaylistProvider = PlaylistProvider.getFavoriteInstance();
   window.registerTreeDataProvider("userPlaylist", userPlaylistProvider);

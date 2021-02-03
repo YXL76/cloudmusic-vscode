@@ -26,14 +26,14 @@ export class LocalProvider
 
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-  static getInstance() {
+  static getInstance(): LocalProvider {
     return this.instance || (this.instance = new LocalProvider());
   }
 
   static refresh(
     element?: LocalLibraryTreeItem,
     action?: (items: LocalFileTreeItem[]) => void
-  ) {
+  ): void {
     if (element) {
       if (action) this.action = action;
       else this.files.delete(element.label);
@@ -41,11 +41,15 @@ export class LocalProvider
     this.instance._onDidChangeTreeData.fire(element);
   }
 
-  getTreeItem(element: LocalFileTreeItem | LocalLibraryTreeItem) {
+  getTreeItem(
+    element: LocalFileTreeItem | LocalLibraryTreeItem
+  ): LocalFileTreeItem | LocalLibraryTreeItem {
     return element;
   }
 
-  async getChildren(element?: LocalLibraryTreeItem) {
+  async getChildren(
+    element?: LocalLibraryTreeItem
+  ): Promise<(LocalFileTreeItem | LocalLibraryTreeItem)[]> {
     if (element) {
       let items: LocalFileTreeItem[] = [];
       const { label } = element;
@@ -57,7 +61,7 @@ export class LocalProvider
           items = (
             await Promise.all(
               files
-                .filter(([_, type]) => type === FileType.File)
+                .filter(([, type]) => type === FileType.File)
                 .map(async ([filename]) => ({
                   filename,
                   ...(await fromFile(resolve(label, filename))),
@@ -110,7 +114,7 @@ export class LocalFileTreeItem extends TreeItem {
     super(label);
   }
 
-  valueOf() {
+  valueOf(): string {
     return this.tooltip;
   }
 }

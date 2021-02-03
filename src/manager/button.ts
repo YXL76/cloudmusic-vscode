@@ -34,7 +34,7 @@ export class ButtonManager {
 
   private static buttonShow = [true, true, true, true, true, true, true, true];
 
-  static init() {
+  static init(): void {
     this.showLyric = this.context.globalState.get(LYRIC_KEY) || this.showLyric;
 
     this.buttons[0].text = "$(account)";
@@ -73,7 +73,7 @@ export class ButtonManager {
     this.show();
   }
 
-  static toggle() {
+  static toggle(): void {
     const pickButton = async (input: MultiStepInput) => {
       interface T extends QuickPickItem {
         id: number;
@@ -108,7 +108,7 @@ export class ButtonManager {
     void MultiStepInput.run(pickButton);
   }
 
-  static show() {
+  static show(): void {
     for (let i = 1; i < this.buttons.length; ++i) {
       if (this.buttonShow[i]) {
         this.buttons[i].show();
@@ -118,22 +118,22 @@ export class ButtonManager {
     }
   }
 
-  static hide() {
+  static hide(): void {
     for (let i = 1; i < this.buttons.length; ++i) {
       this.buttons[i].hide();
     }
   }
 
-  static buttonAccountAccount(tooltip: string) {
+  static buttonAccountAccount(tooltip: string): void {
     this.buttons[ButtonLabel.account].tooltip = tooltip;
     this.buttons[ButtonLabel.account].command = "cloudmusic.account";
   }
 
-  static buttonAccountSignin() {
+  static buttonAccountSignin(): void {
     this.buttons[ButtonLabel.account].command = "cloudmusic.signin";
   }
 
-  static buttonPrevious(personalFm: boolean) {
+  static buttonPrevious(personalFm: boolean): void {
     if (personalFm) {
       this.buttons[ButtonLabel.previous].text = "$(trash)";
       this.buttons[ButtonLabel.previous].tooltip = i18n.word.trash;
@@ -145,7 +145,7 @@ export class ButtonManager {
     }
   }
 
-  static buttonPlay(playing: boolean) {
+  static buttonPlay(playing: boolean): void {
     this.buttons[ButtonLabel.play].text = playing
       ? "$(debug-pause)"
       : "$(play)";
@@ -154,18 +154,18 @@ export class ButtonManager {
       : i18n.word.play;
   }
 
-  static buttonLike(islike: boolean) {
+  static buttonLike(islike: boolean): void {
     this.buttons[ButtonLabel.like].text = islike ? "$(star-full)" : "$(star)";
     this.buttons[ButtonLabel.like].tooltip = islike
       ? i18n.word.dislike
       : i18n.word.like;
   }
 
-  static buttonVolume(level: number) {
+  static buttonVolume(level: number): void {
     this.buttons[ButtonLabel.volume].tooltip = `${i18n.word.volume}: ${level}`;
   }
 
-  static buttonSong(name?: string, ar?: string) {
+  static buttonSong(name?: string, ar?: string): void {
     if (name) {
       this.buttons[ButtonLabel.song].text = name;
       this.buttons[ButtonLabel.song].tooltip = ar ? `${name} - ${ar}` : name;
@@ -175,12 +175,12 @@ export class ButtonManager {
     }
   }
 
-  static toggleLyric() {
+  static toggleLyric(): void {
     this.showLyric = !this.showLyric;
     void this.context.globalState.update(LYRIC_KEY, this.showLyric);
   }
 
-  static buttonLyric(text?: string) {
+  static buttonLyric(text?: string): void {
     if (this.showLyric) {
       this.buttons[ButtonLabel.lyric].text = text ?? "$(text-size)";
     } else {

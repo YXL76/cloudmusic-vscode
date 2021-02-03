@@ -1,6 +1,9 @@
 import type { SongsItem, UnlockSongItem } from "../constant";
 
-export default function filter(list: UnlockSongItem[], song: SongsItem) {
+export default function filter(
+  list: UnlockSongItem[],
+  song: SongsItem
+): UnlockSongItem | undefined {
   let newList = list.filter(({ name }) => name === song.name);
   if (newList.length > 0) {
     list = newList;

@@ -25,7 +25,7 @@ import { solveUserDetail } from "./helper";
   return [];
 } */
 
-export async function apiDjCatelist() {
+export async function apiDjCatelist(): Promise<{ name: string; id: number }[]> {
   const key = "dj_catelist";
   const value = apiCache.get<{ name: string; id: number }[]>(key);
   if (value) return value;
@@ -42,7 +42,7 @@ export async function apiDjCatelist() {
   return [];
 }
 
-export async function apiDjDetail(id: number) {
+export async function apiDjDetail(id: number): Promise<RadioDetail | void> {
   const key = `dj_detail${id}`;
   const value = apiCache.get<RadioDetail>(key);
   if (value) return value;
@@ -57,10 +57,13 @@ export async function apiDjDetail(id: number) {
   } catch (err) {
     console.error(err);
   }
-  return undefined;
+  return;
 }
 
-export async function apiDjHot(limit: number, offset: number) {
+export async function apiDjHot(
+  limit: number,
+  offset: number
+): Promise<RadioDetail[]> {
   const key = `dj_hot${limit}-${offset}`;
   const value = apiCache.get<RadioDetail[]>(key);
   if (value) return value;
@@ -78,7 +81,10 @@ export async function apiDjHot(limit: number, offset: number) {
   return [];
 }
 
-export async function apiDjProgram(radioId: number, limit: number) {
+export async function apiDjProgram(
+  radioId: number,
+  limit: number
+): Promise<ProgramDetail[]> {
   const key = `dj_program${radioId}`;
   const value = apiCache.get<ProgramDetail[]>(key);
   if (value) return value;
@@ -96,7 +102,9 @@ export async function apiDjProgram(radioId: number, limit: number) {
   return [];
 }
 
-export async function apiDjProgramDetail(id: number) {
+export async function apiDjProgramDetail(
+  id: number
+): Promise<ProgramDetail | void> {
   const key = `dj_program_detail${id}`;
   const value = apiCache.get<ProgramDetail>(key);
   if (value) return value;
@@ -111,10 +119,13 @@ export async function apiDjProgramDetail(id: number) {
   } catch (err) {
     console.error(err);
   }
-  return undefined;
+  return;
 }
 
-export async function apiDjProgramToplist(limit: number, offset: number) {
+export async function apiDjProgramToplist(
+  limit: number,
+  offset: number
+): Promise<ProgramDetail[]> {
   const key = `dj_program_toplist${limit}-${offset}`;
   const value = apiCache.get<ProgramDetail[]>(key);
   if (value) return value;
@@ -131,7 +142,7 @@ export async function apiDjProgramToplist(limit: number, offset: number) {
   return [];
 }
 
-export async function apiDjProgramToplistHours() {
+export async function apiDjProgramToplistHours(): Promise<ProgramDetail[]> {
   const key = "dj_program_toplist_hours";
   const value = apiCache.get<ProgramDetail[]>(key);
   if (value) return value;
@@ -155,7 +166,7 @@ export async function apiDjRadioHot(
   cateId: number,
   limit: number,
   offset: number
-) {
+): Promise<RadioDetail[]> {
   const key = `dj_radio_hot${cateId}-${limit}-${offset}`;
   const value = apiCache.get<RadioDetail[]>(key);
   if (value) return value;
@@ -173,7 +184,7 @@ export async function apiDjRadioHot(
   return [];
 }
 
-export async function apiDjRecommend() {
+export async function apiDjRecommend(): Promise<RadioDetail[]> {
   const key = "dj_recommend";
   const value = apiCache.get<RadioDetail[]>(key);
   if (value) return value;
@@ -191,7 +202,9 @@ export async function apiDjRecommend() {
   return [];
 }
 
-export async function apiDjRecommendType(cateId: number) {
+export async function apiDjRecommendType(
+  cateId: number
+): Promise<RadioDetail[]> {
   const key = `dj_recommend_type${cateId}`;
   const value = apiCache.get<RadioDetail[]>(key);
   if (value) return value;
@@ -209,7 +222,10 @@ export async function apiDjRecommendType(cateId: number) {
   return [];
 }
 
-export async function apiProgramRecommend(limit: number, offset: number) {
+export async function apiProgramRecommend(
+  limit: number,
+  offset: number
+): Promise<ProgramDetail[]> {
   const key = `program_recommend${limit}-${offset}`;
   const value = apiCache.get<ProgramDetail[]>(key);
   if (value) return value;
@@ -226,7 +242,10 @@ export async function apiProgramRecommend(limit: number, offset: number) {
   return [];
 }
 
-export async function apiDjSub(id: number, t: "sub" | "unsub") {
+export async function apiDjSub(
+  id: number,
+  t: "sub" | "unsub"
+): Promise<boolean> {
   try {
     await weapiRequest<{
       djRadios: RadioDetail[];
@@ -238,7 +257,7 @@ export async function apiDjSub(id: number, t: "sub" | "unsub") {
   return false;
 }
 
-export async function apiDjSublist() {
+export async function apiDjSublist(): Promise<RadioDetail[]> {
   const key = "dj_sublist";
   const value = apiCache.get<RadioDetail[]>(key);
   if (value) return value;
@@ -290,7 +309,10 @@ export async function apiDjSublist() {
   return { subscribers: [], time: -1, hasMore: false };
 } */
 
-export async function apiDjSubscriber(id: number, limit: number) {
+export async function apiDjSubscriber(
+  id: number,
+  limit: number
+): Promise<UserDetail[]> {
   const key = `dj_subscriber${id}-${limit}`;
   const value = apiCache.get<UserDetail[]>(key);
   if (value) return value;
@@ -309,7 +331,11 @@ export async function apiDjSubscriber(id: number, limit: number) {
 }
 
 // 0: 新晋, 1: 热门
-export async function apiDjToplist(type: 0 | 1, limit: number, offset: number) {
+export async function apiDjToplist(
+  type: 0 | 1,
+  limit: number,
+  offset: number
+): Promise<RadioDetail[]> {
   const key = `dj_toplist${type}-${limit}-${offset}`;
   const value = apiCache.get<RadioDetail[]>(key);
   if (value) return value;

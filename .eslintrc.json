@@ -4,12 +4,10 @@
   "overrides": [
     {
       "extends": [
-        "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "prettier/@typescript-eslint",
-        "plugin:prettier/recommended",
-        "plugin:react/recommended",
-        "plugin:jsx-a11y/recommended"
+        "plugin:prettier/recommended"
       ],
       "files": ["./src/**/*.ts", "./src/**/*.tsx"],
       "parserOptions": {
@@ -23,7 +21,8 @@
         "@typescript-eslint/lines-between-class-members": "error",
         "@typescript-eslint/member-ordering": "warn",
         "@typescript-eslint/naming-convention": "warn",
-        "@typescript-eslint/semi": "warn"
+        "@typescript-eslint/semi": "warn",
+        "no-empty": ["error", { "allowEmptyCatch": true }]
       },
       "settings": {
         // refer to https://github.com/preactjs/eslint-config-preact/blob/master/index.js
@@ -39,6 +38,7 @@
   "rules": {
     "curly": "warn",
     "eqeqeq": "warn",
+    "no-empty": ["error", { "allowEmptyCatch": true }],
     "no-throw-literal": "warn",
     "semi": "warn",
     "sort-imports": [

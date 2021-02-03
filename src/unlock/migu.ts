@@ -1,4 +1,4 @@
-import type { SongsItem, UnlockSongItem } from "../constant";
+import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
 import {
   constants,
   createCipheriv,
@@ -93,7 +93,7 @@ async function songUrl({ id, mp3 }: UnlockSongItem & { mp3?: string }) {
     return {
       url: mp3,
       type: extname(mp3).split(".").pop(),
-      md5: undefined,
+      md5: "",
     };
   }
   try {
@@ -122,10 +122,12 @@ async function songUrl({ id, mp3 }: UnlockSongItem & { mp3?: string }) {
         }
       : undefined;
   } catch {}
-  return undefined;
+  return;
 }
 
-export default async function migu(song: SongsItem) {
+export default async function migu(
+  song: SongsItem
+): Promise<SongDetail | void> {
   const list = await search(song.name);
   const selected = filter(list, song);
   return selected ? await songUrl(selected) : undefined;

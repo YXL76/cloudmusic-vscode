@@ -1,5 +1,5 @@
 import { MUSIC_QUALITY, NATIVE } from "../constant";
-import type { SongsItem, UnlockSongItem } from "../constant";
+import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
 import axios from "axios";
 import { extname } from "path";
 import filter from "./filter";
@@ -89,10 +89,12 @@ async function songUrl({ id }: UnlockSongItem) {
       };
     }
   } catch {}
-  return undefined;
+  return;
 }
 
-export default async function kuwo(song: SongsItem) {
+export default async function kuwo(
+  song: SongsItem
+): Promise<SongDetail | void> {
   const list = await search(song.name);
   const selected = filter(list, song);
   return selected ? await songUrl(selected) : undefined;

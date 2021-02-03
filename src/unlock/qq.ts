@@ -93,7 +93,7 @@ async function songUrl(mid: string) {
 
     return `${sip[0]}${midurlinfo[0].purl}`;
   } catch {}
-  return undefined;
+  return;
 }
 
 export async function qq(song: SongsItem) {

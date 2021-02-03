@@ -5,7 +5,7 @@ import { QueueProvider, RadioProvider } from "../treeview";
 import { commands, env, window } from "vscode";
 import { PersonalFm } from "../state";
 
-export function initRadio() {
+export function initRadio(): void {
   const djRadioProvider = RadioProvider.getInstance();
   window.registerTreeDataProvider("radio", djRadioProvider);
 

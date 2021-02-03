@@ -13,11 +13,9 @@ import {
   initStatusBar,
 } from "./activate";
 import type { ExtensionContext } from "vscode";
-import { html } from "./test";
 import { workspace } from "vscode";
 
-export async function activate(context: ExtensionContext) {
-  console.log(html);
+export async function activate(context: ExtensionContext): Promise<void> {
   await workspace.fs.createDirectory(SETTING_DIR);
   await workspace.fs.createDirectory(TMP_DIR);
   AccountManager.context = context;

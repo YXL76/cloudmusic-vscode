@@ -2,7 +2,7 @@ import { CACHE_DIR, MUSIC_QUALITY } from "../constant";
 import { Uri, workspace } from "vscode";
 import { MusicCache } from "../util";
 
-export function initCache() {
+export function initCache(): void {
   void (async () => {
     try {
       const musicCache = Uri.joinPath(CACHE_DIR, "music");

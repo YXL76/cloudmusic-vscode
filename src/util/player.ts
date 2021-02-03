@@ -62,7 +62,7 @@ export class Player {
 
   private static prefetchLock = false;
 
-  static init() {
+  static init(): void {
     void this.volume(this.context.globalState.get(VOLUME_KEY) ?? 85);
 
     setInterval(() => {
@@ -103,11 +103,11 @@ export class Player {
     );
   }
 
-  static stop() {
+  static stop(): void {
     NATIVE.playerStop(this.player);
   }
 
-  static load(url: string, pid: number, treeitem: QueueContent) {
+  static load(url: string, pid: number, treeitem: QueueContent): void {
     if (NATIVE.playerLoad(this.player, url)) {
       NATIVE.playerSetVolume(
         this.player,
@@ -142,7 +142,7 @@ export class Player {
     }
   }
 
-  static togglePlay() {
+  static togglePlay(): void {
     if (this.treeitem?.item.id) {
       if (Playing.get()) {
         NATIVE.playerPause(this.player);
@@ -155,7 +155,7 @@ export class Player {
     }
   }
 
-  static async volume(level: number) {
+  static async volume(level: number): Promise<void> {
     await this.context.globalState.update(VOLUME_KEY, level);
     NATIVE.playerSetVolume(this.player, level);
     ButtonManager.buttonVolume(level);

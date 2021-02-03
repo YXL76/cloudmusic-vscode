@@ -59,7 +59,7 @@ import { createHash } from "crypto";
 import i18n from "../i18n";
 import { inputKeyword } from ".";
 
-export function initAccount(context: ExtensionContext) {
+export function initAccount(context: ExtensionContext): void {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.account", async () => {
       if (!LoggedIn.get()) {
@@ -836,7 +836,7 @@ export function initAccount(context: ExtensionContext) {
     })
   );
 
-  (async () => {
+  void (async () => {
     AccountManager.cookie = context.globalState.get(COOKIE_KEY) || {};
     if (await AccountManager.login(context.globalState.get(ACCOUNT_KEY))) {
       if (AUTO_CHECK) void AccountManager.dailyCheck();
@@ -849,5 +849,5 @@ export function initAccount(context: ExtensionContext) {
       )) === i18n.word.signIn
     )
       void commands.executeCommand("cloudmusic.signin");
-  })().catch(() => {});
+  })();
 }

@@ -1,4 +1,5 @@
 import { ColorThemeKind, Uri, ViewColumn, env, window } from "vscode";
+import type { ExtensionContext, WebviewPanel } from "vscode";
 import { MultiStepInput, pickAlbum, pickArtist, pickSong, pickUser } from ".";
 import {
   SortType,
@@ -13,7 +14,6 @@ import {
 } from "../api";
 import { AccountManager } from "../manager";
 import type { CommentType } from "../api";
-import type { ExtensionContext } from "vscode";
 import type { SongsItem } from "../constant";
 import i18n from "../i18n";
 import { toDataURL } from "qrcode";
@@ -31,7 +31,7 @@ export class WebView {
     private readonly iconUri: Uri
   ) {}
 
-  static getInstance() {
+  static getInstance(): WebView {
     return (
       this.instance ||
       (this.instance = new WebView(
@@ -44,7 +44,7 @@ export class WebView {
     );
   }
 
-  async login() {
+  async login(): Promise<void> {
     const key = await apiLoginQrKey();
     if (!key) return;
 
@@ -110,7 +110,7 @@ export class WebView {
     panel.onDidDispose(() => clearInterval(timer));
   }
 
-  userMusicRankingList() {
+  userMusicRankingList(): WebviewPanel {
     const panel = this.getWebviewPanel(
       "userMusicRankingList",
       i18n.word.userRankingList,
@@ -150,7 +150,7 @@ export class WebView {
     return panel;
   }
 
-  commentList(type: CommentType, gid: number, title: string) {
+  commentList(type: CommentType, gid: number, title: string): WebviewPanel {
     const pageSize = 30;
 
     const panel = this.getWebviewPanel(

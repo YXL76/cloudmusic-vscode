@@ -1,4 +1,5 @@
 import { ACCOUNT_KEY, COOKIE_KEY } from "../constant";
+import type { Account, PlaylistItem, RadioDetail } from "../constant";
 import {
   apiDailySigninAndroid,
   apiDailySigninWeb,
@@ -13,7 +14,6 @@ import {
   apiYunbeiSign,
   apiYunbeiToday,
 } from "../api";
-import type { Account } from "../constant";
 import type { Cookie } from "../api";
 import type { ExtensionContext } from "vscode";
 import { LoggedIn } from "../state";
@@ -29,7 +29,7 @@ export class AccountManager {
 
   static cookie = {} as Cookie;
 
-  static async login(account?: Account) {
+  static async login(account?: Account): Promise<boolean> {
     if (LoggedIn.get()) {
       return true;
     }
@@ -65,7 +65,7 @@ export class AccountManager {
     return false;
   }
 
-  static async logout() {
+  static async logout(): Promise<boolean> {
     if (await apiLogout()) {
       void this.context.globalState.update(ACCOUNT_KEY, undefined);
       void this.context.globalState.update(COOKIE_KEY, undefined);
@@ -81,7 +81,7 @@ export class AccountManager {
     return false;
   }
 
-  static async dailyCheck() {
+  static async dailyCheck(): Promise<boolean> {
     try {
       const actions = [];
       const [yunbei, { mobileSign, pcSign }] = await Promise.all([
@@ -97,7 +97,7 @@ export class AccountManager {
     return false;
   }
 
-  static async userPlaylist() {
+  static async userPlaylist(): Promise<PlaylistItem[]> {
     if (this.uid === 0) {
       return [];
     }
@@ -105,7 +105,7 @@ export class AccountManager {
     return lists.filter((list) => list.creator.userId === this.uid);
   }
 
-  static async favoritePlaylist() {
+  static async favoritePlaylist(): Promise<PlaylistItem[]> {
     if (this.uid === 0) {
       return [];
     }
@@ -113,7 +113,7 @@ export class AccountManager {
     return lists.filter((list) => list.creator.userId !== this.uid);
   }
 
-  static async djradio() {
+  static async djradio(): Promise<RadioDetail[]> {
     if (this.uid === 0) {
       return [];
     }

@@ -30,7 +30,9 @@ const rsaEncrypt = (buffer: Uint8Array) => {
   );
 };
 
-export const weapi = (object: Record<string, any>) => {
+export const weapi = (
+  object: Record<string, unknown>
+): { params: string; encSecKey: string } => {
   const text = JSON.stringify(object);
   const secretKey = randomBytes(16).map((n) =>
     base62.charAt(n % 62).charCodeAt(0)
@@ -48,7 +50,10 @@ export const weapi = (object: Record<string, any>) => {
   };
 };
 
-export const eapi = (url: string, object: Record<string, any>) => {
+export const eapi = (
+  url: string,
+  object: Record<string, unknown>
+): { params: string } => {
   const text = JSON.stringify(object);
   const message = `nobody${url}use${text}md5forencrypt`;
   const digest = createHash("md5").update(message).digest("hex");

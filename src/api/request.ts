@@ -1,6 +1,7 @@
 import type { Cookie, OS } from ".";
 import { anonymousToken, cookieToJson, eapi, jsonToCookie, weapi } from ".";
 import { AccountManager } from "../manager";
+import type { ParsedUrlQueryInput } from "querystring";
 import axios from "axios";
 import { Agent as httpAgent } from "http";
 import { Agent as httpsAgent } from "https";
@@ -23,8 +24,23 @@ export const userAgent =
 
 const csrfTokenReg = RegExp(/_csrf=([^(;|$)]+)/);
 
-export const generateHeader = (url: string) => {
+type Headers = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Cookie: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Referer?: string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  "Content-Type": string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  "User-Agent": string;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  "X-Real-IP": string;
+};
+
+export const generateHeader = (url: string): Headers => {
   return {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    Cookie: "",
     // eslint-disable-next-line @typescript-eslint/naming-convention
     "Content-Type": "application/x-www-form-urlencoded",
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -35,26 +51,15 @@ export const generateHeader = (url: string) => {
       ? // eslint-disable-next-line @typescript-eslint/naming-convention
         { Referer: "https://music.163.com" }
       : {}),
-  } as {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    Cookie: string;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    Referer: string;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    "Content-Type": string;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    "User-Agent": string;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    "X-Real-IP": string;
   };
 };
 
 const responseHandler = async <T>(
   url: string,
-  headers: Record<string, any>,
-  data: any,
+  headers: Headers,
+  data: ParsedUrlQueryInput,
   eapi?: boolean
-) => {
+): Promise<T> => {
   const res = await axios.post<{ code?: number } & T>(url, stringify(data), {
     withCredentials: true,
     headers,
@@ -79,11 +84,11 @@ const responseHandler = async <T>(
   throw status;
 };
 
-export const weapiRequest = async <T = Record<string, any>>(
+export const weapiRequest = async <T = ParsedUrlQueryInput>(
   url: string,
-  data: Record<string, any>,
+  data: ParsedUrlQueryInput,
   os?: OS
-) => {
+): Promise<T> => {
   const headers = generateHeader(url);
   headers["Cookie"] = jsonToCookie({
     ...AccountManager.cookie,
@@ -91,20 +96,19 @@ export const weapiRequest = async <T = Record<string, any>>(
   });
   const csrfToken = csrfTokenReg.exec(headers["Cookie"]);
   data.csrf_token = csrfToken ? csrfToken[1] : "";
-  data = weapi(data);
   return await responseHandler<T>(
     url.replace(/\w*api/, "weapi"),
     headers,
-    data
+    weapi(data)
   );
 };
 
-export const eapiRequest = async <T = Record<string, any>>(
+export const eapiRequest = async <T = ParsedUrlQueryInput>(
   url: string,
-  data: Record<string, any>,
+  data: ParsedUrlQueryInput & { header?: ParsedUrlQueryInput },
   encryptUrl: string,
   os?: OS
-) => {
+): Promise<T> => {
   const cookie: Cookie = {
     ...AccountManager.cookie,
     ...(os ? { os } : {}),
@@ -134,14 +138,18 @@ export const eapiRequest = async <T = Record<string, any>>(
   };
   headers["Cookie"] = jsonToCookie(header);
   data.header = header;
-  data = eapi(encryptUrl, data);
-  return responseHandler<T>(url.replace(/\w*api/, "eapi"), headers, data, true);
+  return responseHandler<T>(
+    url.replace(/\w*api/, "eapi"),
+    headers,
+    eapi(encryptUrl, data),
+    true
+  );
 };
 
-export const apiRequest = async <T = Record<string, any>>(
+export const apiRequest = async <T = ParsedUrlQueryInput>(
   url: string,
-  data: Record<string, any>
-) => {
+  data: ParsedUrlQueryInput
+): Promise<T> => {
   const headers = generateHeader(url);
   headers["Cookie"] = jsonToCookie(AccountManager.cookie);
   return responseHandler<T>(url, headers, data);

@@ -5,7 +5,7 @@ import { apiFmTrash } from "../api";
 import { commands } from "vscode";
 import i18n from "../i18n";
 
-export function initStatusBar() {
+export function initStatusBar(): void {
   ButtonManager.init();
 
   commands.registerCommand("cloudmusic.lyric", async () => {

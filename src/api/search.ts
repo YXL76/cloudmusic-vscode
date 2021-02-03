@@ -16,7 +16,7 @@ import {
 } from ".";
 import { apiCache } from "../util";
 
-export async function apiSearchDefault() {
+export async function apiSearchDefault(): Promise<string> {
   const key = "search_default";
   const value = apiCache.get<string>(key);
   if (value) return value;
@@ -40,7 +40,7 @@ export async function apiSearchSingle(
   keywords: string,
   limit: number,
   offset: number
-) {
+): Promise<SongsItem[]> {
   const key = `cloudsearch${SearchType.single}-${keywords}-${limit}-${offset}`;
   const value = apiCache.get<SongsItem[]>(key);
   if (value) return value;
@@ -70,7 +70,7 @@ export async function apiSearchAlbum(
   keywords: string,
   limit: number,
   offset: number
-) {
+): Promise<AlbumsItem[]> {
   const key = `cloudsearch${SearchType.album}-${keywords}-${limit}-${offset}`;
   const value = apiCache.get<AlbumsItem[]>(key);
   if (value) return value;
@@ -100,7 +100,7 @@ export async function apiSearchArtist(
   keywords: string,
   limit: number,
   offset: number
-) {
+): Promise<Artist[]> {
   const key = `cloudsearch${SearchType.artist}-${keywords}-${limit}-${offset}`;
   const value = apiCache.get<Artist[]>(key);
   if (value) return value;
@@ -132,7 +132,7 @@ export async function apiSearchPlaylist(
   keywords: string,
   limit: number,
   offset: number
-) {
+): Promise<PlaylistItem[]> {
   const key = `cloudsearch${SearchType.playlist}-${keywords}-${limit}-${offset}`;
   const value = apiCache.get<PlaylistItem[]>(key);
   if (value) return value;
@@ -180,7 +180,7 @@ export async function apiSearchHotDetail(): Promise<
   return [];
 }
 
-export async function apiSearchSuggest(keywords: string) {
+export async function apiSearchSuggest(keywords: string): Promise<string[]> {
   const key = `search_suggest${keywords}`;
   const value = apiCache.get<string[]>(key);
   if (value) return value;

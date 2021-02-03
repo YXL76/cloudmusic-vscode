@@ -151,7 +151,7 @@ export const cookieToJson = (cookie: string[]): Cookie => {
   return obj as Cookie;
 };
 
-export const jsonToCookie = (json: Cookie) => {
+export const jsonToCookie = (json: Cookie): string => {
   return Object.entries(json)
     .map(
       ([key, value]) =>

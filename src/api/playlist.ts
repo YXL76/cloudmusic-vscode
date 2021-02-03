@@ -20,7 +20,7 @@ type PlaylistCatlistItem = { name: string; category?: number; hot: boolean };
 
 type PlaylistCatlist = Record<string, PlaylistCatlistItem[]>;
 
-export async function apiPlaylistCatlist() {
+export async function apiPlaylistCatlist(): Promise<PlaylistCatlist> {
   const key = "playlist_catlist";
   const value = apiCache.get<PlaylistCatlist>(key);
   if (value) return value;
@@ -43,7 +43,10 @@ export async function apiPlaylistCatlist() {
   return {};
 }
 
-export async function apiPlaylistCreate(name: string, privacy: 0 | 10) {
+export async function apiPlaylistCreate(
+  name: string,
+  privacy: 0 | 10
+): Promise<boolean> {
   try {
     await weapiRequest(
       "https://music.163.com/api/playlist/create",
@@ -61,7 +64,7 @@ export async function apiPlaylistCreate(name: string, privacy: 0 | 10) {
   return false;
 }
 
-export async function apiPlaylistDelete(id: number) {
+export async function apiPlaylistDelete(id: number): Promise<boolean> {
   try {
     await weapiRequest(
       `https://music.163.com/weapi/playlist/remove`,
@@ -77,7 +80,7 @@ export async function apiPlaylistDelete(id: number) {
   return false;
 }
 
-export async function apiPlaylistDetail(id: number) {
+export async function apiPlaylistDetail(id: number): Promise<SongsItem[]> {
   const key = `playlist_detail${id}`;
   const value = apiCache.get<SongsItem[]>(key);
   if (value) return value;
@@ -120,7 +123,7 @@ export async function apiPlaylistDetail(id: number) {
   return [];
 }
 
-export async function apiHighqualityTags() {
+export async function apiHighqualityTags(): Promise<PlaylistCatlistItem[]> {
   const key = "playlist_highquality_tags";
   const value = apiCache.get<PlaylistCatlistItem[]>(key);
   if (value) return value;
@@ -143,7 +146,7 @@ export async function apiHighqualityTags() {
 export async function apiPlaylistSubscribe(
   id: number,
   t: "subscribe" | "unsubscribe"
-) {
+): Promise<boolean> {
   try {
     await weapiRequest(`https://music.163.com/weapi/playlist/${t}`, {
       id,
@@ -159,7 +162,7 @@ export async function apiPlaylistSubscribers(
   id: number,
   limit: number,
   offset: number
-) {
+): Promise<UserDetail[]> {
   const key = `playlist_subscribers${id}-${limit}-${offset}`;
   const value = apiCache.get<UserDetail[]>(key);
   if (value) return value;
@@ -184,7 +187,7 @@ export async function apiPlaylistTracks(
   op: "add" | "del",
   pid: number,
   tracks: number[]
-) {
+): Promise<boolean> {
   try {
     await weapiRequest(
       "https://music.163.com/api/playlist/manipulate/tracks",
@@ -207,7 +210,7 @@ export async function apiPlaylistUpdate(
   id: number,
   name: string,
   desc: string
-) {
+): Promise<boolean> {
   try {
     await weapiRequest(
       "https://music.163.com/weapi/batch",
@@ -227,7 +230,7 @@ export async function apiPlaylistUpdate(
 export async function apiPlaymodeIntelligenceList(
   songId: number,
   playlistId: number
-) {
+): Promise<SongsItem[]> {
   try {
     const { data } = await weapiRequest<{ data: { songInfo: SongsItem }[] }>(
       "https://music.163.com/weapi/playmode/intelligence/list",
@@ -250,7 +253,7 @@ export async function apiSimiPlaylist(
   songid: number,
   limit: number,
   offset: number
-) {
+): Promise<PlaylistItem[]> {
   const key = `simi_playlist${songid}-${limit}-${offset}`;
   const value = apiCache.get<PlaylistItem[]>(key);
   if (value) return value;
@@ -272,7 +275,7 @@ export async function apiTopPlaylist(
   cat: string,
   limit: number,
   offset: number
-) {
+): Promise<PlaylistItem[]> {
   const key = `top_playlist${cat}-${limit}-${offset}`;
   const value = apiCache.get<PlaylistItem[]>(key);
   if (value) return value;
@@ -296,7 +299,10 @@ export async function apiTopPlaylist(
   return [];
 }
 
-export async function apiTopPlaylistHighquality(cat: string, limit: number) {
+export async function apiTopPlaylistHighquality(
+  cat: string,
+  limit: number
+): Promise<PlaylistItem[]> {
   const key = `top_playlist_highquality${cat}-${limit}`;
   const value = apiCache.get<PlaylistItem[]>(key);
   if (value) return value;
@@ -319,7 +325,7 @@ export async function apiTopPlaylistHighquality(cat: string, limit: number) {
   return [];
 }
 
-export async function apiToplist() {
+export async function apiToplist(): Promise<PlaylistItem[]> {
   const key = "toplist";
   const value = apiCache.get<PlaylistItem[]>(key);
   if (value) return value;

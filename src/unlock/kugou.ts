@@ -1,4 +1,4 @@
-import type { SongsItem, UnlockSongItem } from "../constant";
+import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
 import axios from "axios";
 import { createHash } from "crypto";
 import { extname } from "path";
@@ -81,10 +81,12 @@ async function songUrl({ id }: UnlockSongItem) {
     );
     return { url: url[0], type: extname(url[0]).split(".").pop(), md5: id };
   } catch {}
-  return undefined;
+  return;
 }
 
-export default async function kugou(song: SongsItem) {
+export default async function kugou(
+  song: SongsItem
+): Promise<SongDetail | void> {
   const list = await search(song.name);
   const selected = filter(list, song);
   return selected ? await songUrl(selected) : undefined;

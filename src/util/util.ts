@@ -60,7 +60,7 @@ export async function downloadMusic(
   path: Uri,
   cache: boolean,
   md5?: string
-) {
+): Promise<Readable | void> {
   try {
     const { data } = await axios.get<Readable>(url, {
       responseType: "stream",
@@ -79,7 +79,7 @@ export async function downloadMusic(
   return;
 }
 
-export function stop() {
+export function stop(): void {
   Player.stop();
   Player.treeitem = undefined;
   Playing.set(false);
@@ -87,7 +87,7 @@ export function stop() {
   ButtonManager.buttonLyric();
 }
 
-export async function load(element: QueueContent) {
+export async function load(element: QueueContent): Promise<void> {
   Loading.set(true);
   if (element instanceof LocalFileTreeItem) {
     Player.load(element.tooltip, 0, element);
@@ -326,8 +326,10 @@ export async function pickSong(
       }
       break;
     case PickType.add:
-      const element = new QueueItemTreeItem(item, 0);
-      void commands.executeCommand("cloudmusic.addSong", element);
+      void commands.executeCommand(
+        "cloudmusic.addSong",
+        new QueueItemTreeItem(item, 0)
+      );
   }
 
   return input.stay();
@@ -474,8 +476,10 @@ export async function pickProgram(
       WebView.getInstance().commentList(CommentType.dj, id, name);
       break;
     case PickType.add:
-      const element = new QueueItemTreeItem(mainSong, 0);
-      void commands.executeCommand("cloudmusic.addSong", element);
+      void commands.executeCommand(
+        "cloudmusic.addSong",
+        new QueueItemTreeItem(mainSong, 0)
+      );
   }
 
   return input.stay();
@@ -894,10 +898,14 @@ export async function pickPlaylist(
       return (input: MultiStepInput) =>
         pickUser(input, step + 1, (pick as T).id);
     case PickType.add:
-      const songs = await apiPlaylistDetail(id);
-      QueueProvider.refresh(() =>
-        QueueProvider.add(songs.map((song) => new QueueItemTreeItem(song, id)))
-      );
+      {
+        const songs = await apiPlaylistDetail(id);
+        QueueProvider.refresh(() =>
+          QueueProvider.add(
+            songs.map((song) => new QueueItemTreeItem(song, id))
+          )
+        );
+      }
       break;
     case PickType.comment:
       WebView.getInstance().commentList(CommentType.playlist, id, name);
@@ -956,7 +964,7 @@ export async function pickAddToPlaylist(
   input: MultiStepInput,
   step: number,
   id: number
-): Promise<InputStep | undefined> {
+): Promise<InputStep | void> {
   const lists = await AccountManager.userPlaylist();
   const pick = await input.showQuickPick({
     title: i18n.word.saveToPlaylist,
