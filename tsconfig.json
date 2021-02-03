@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
     "lib": ["es2019"],
     "module": "commonjs",
     "noEmit": true,
@@ -11,6 +13,6 @@
     "strictNullChecks": true,
     "target": "es2019"
   },
-  "exclude": ["src/webview", "node_modules", ".vscode-test"],
+  "exclude": ["node_modules", ".vscode-test"],
   "include": ["src"]
 }

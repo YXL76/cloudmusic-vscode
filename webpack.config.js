@@ -1,115 +1,65 @@
 const { ESBuildPlugin, ESBuildMinifyPlugin } = require("esbuild-loader");
-const CopyPlugin = require("copy-webpack-plugin");
 const ESLintPlugin = require("eslint-webpack-plugin");
 const { resolve } = require("path");
 
-const antdPath = resolve(__dirname, "node_modules", "antd", "dist");
 const distPath = resolve(__dirname, "dist");
 const srcPath = resolve(__dirname, "src");
 
-module.exports = (_, options) => {
+module.exports = (_, options) =>
   /**@type {import('webpack').Configuration}*/
-  const baseConfig = {
-    performance: {
-      hints: false,
+  ({
+    devtool: "source-map",
+    entry: resolve(srcPath, "extension.ts"),
+    externals: {
+      vscode: "commonjs vscode",
+    },
+    module: {
+      rules: [
+        {
+          exclude: /node_modules/,
+          include: resolve(srcPath),
+          loader: "esbuild-loader",
+          options: {
+            loader: "tsx",
+            target: "es2019",
+            tsconfigRaw: require(resolve(__dirname, "tsconfig.json")),
+          },
+          test: /\.tsx?$/,
+        },
+      ],
     },
     optimization: {
-      minimize: true,
+      minimize: options.mode === "production",
       minimizer:
         options.mode === "production"
           ? [new ESBuildMinifyPlugin({ target: "es2019" })]
           : [],
     },
-    devtool: "source-map",
-    externals: {
-      vscode: "commonjs vscode",
-    },
-    resolve: {
-      extensions: [".ts", ".js", ".tsx", ".jsx"],
-    },
-  };
-
-  /**@type {import('webpack').Configuration}*/
-  const extensionConfig = {
-    ...baseConfig,
-    target: "node",
-    entry: resolve(srcPath, "extension.ts"),
     output: {
-      path: distPath,
+      devtoolModuleFilenameTemplate: "../[resource-path]",
       filename: "extension.js",
       libraryTarget: "commonjs2",
-      devtoolModuleFilenameTemplate: "../[resource-path]",
-    },
-    module: {
-      rules: [
-        {
-          test: /\.ts$/,
-          include: resolve(srcPath),
-          exclude: /node_modules/,
-          loader: "esbuild-loader",
-          options: {
-            loader: "ts",
-            target: "es2019",
-            tsconfigRaw: require(resolve(__dirname, "tsconfig.json")),
-          },
-        },
-      ],
-    },
-    plugins: [
-      new ESBuildPlugin(),
-      new ESLintPlugin({
-        extensions: ["ts"],
-        emitError: true,
-        emitWarning: true,
-      }),
-    ],
-  };
-
-  /**@type {import('webpack').Configuration}*/
-  const webviewConfig = {
-    ...baseConfig,
-    // target: "node",
-    entry: resolve(srcPath, "webview", "index.tsx"),
-    output: {
       path: distPath,
-      filename: "webview.js",
-      devtoolModuleFilenameTemplate: "../[resource-path]",
     },
-    module: {
-      rules: [
-        {
-          test: /\.tsx?$/,
-          exclude: /node_modules/,
-          loader: "esbuild-loader",
-          options: {
-            loader: "tsx",
-            target: "chrome83",
-            tsconfigRaw: require(resolve(srcPath, "webview", "tsconfig.json")),
-          },
-        },
-      ],
+    performance: {
+      hints: false,
     },
     plugins: [
       new ESBuildPlugin(),
-      new CopyPlugin({
-        patterns: [
-          {
-            from: resolve(antdPath, "antd.min.css"),
-            to: distPath,
-          },
-          {
-            from: resolve(antdPath, "antd.dark.min.css"),
-            to: distPath,
-          },
-        ],
-      }),
       new ESLintPlugin({
-        extensions: ["ts", "tsx"],
         emitError: true,
         emitWarning: true,
+        extensions: ["ts", "tsx"],
+        fix: true,
       }),
     ],
-  };
-
-  return [extensionConfig, webviewConfig];
-};
+    resolve: {
+      extensions: [".ts", ".js", ".tsx", ".jsx"],
+      alias: {
+        react: "preact/compat",
+        "react-dom": "preact/compat",
+        "react-dom/test-utils": "preact/test-utils",
+      },
+    },
+    target: "node",
+  });
