@@ -58,4 +58,5 @@ export const enum ICON {
   song = "$(zap)",
   radio = "$(rss)",
   program = "$(radio-tower)",
+  hot = "$(flame)",
 }

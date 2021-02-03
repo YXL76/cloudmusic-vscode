@@ -434,7 +434,7 @@ export function initAccount(context: ExtensionContext) {
             input,
             categories[pick.label].map(({ name, hot }) => ({
               label: name,
-              description: hot ? "$(flame)" : undefined,
+              description: hot ? ICON.hot : undefined,
             }))
           );
       }
@@ -447,7 +447,7 @@ export function initAccount(context: ExtensionContext) {
           totalSteps: 5,
           items: categories.map(({ name, hot }) => ({
             label: name,
-            description: hot ? "$(flame)" : undefined,
+            description: hot ? ICON.hot : undefined,
           })),
         });
         cat = pick.label;

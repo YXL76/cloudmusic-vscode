@@ -52,7 +52,7 @@ export async function inputKeyword(input: MultiStepInput): Promise<InputStep> {
   const items: QuickPickItem[] = (await apiSearchHotDetail()).map(
     ({ searchWord, content }) => ({
       label: searchWord,
-      description: "$(flame)",
+      description: ICON.hot,
       detail: content,
     })
   );

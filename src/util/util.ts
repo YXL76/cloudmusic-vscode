@@ -132,10 +132,6 @@ export async function load(element: QueueContent) {
   }
 }
 
-export function splitLine(content: string) {
-  return `>>>>>>>>        ${content.toUpperCase()}        <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<`;
-}
-
 const enum PickType {
   artist,
   album,
@@ -158,6 +154,7 @@ const enum PickType {
   program,
   programs,
   radio,
+  hot,
 }
 interface T extends QuickPickItem {
   id: number;
@@ -629,6 +626,11 @@ export async function pickArtist(
         type: PickType.albums,
       },
       {
+        label: `${ICON.hot} ${i18n.word.hotSongs}`,
+        description: `${songs.length}`,
+        type: PickType.hot,
+      },
+      {
         label: `${ICON.number} ${i18n.word.trackCount}`,
         description: `${musicSize}`,
         id,
@@ -646,19 +648,14 @@ export async function pickArtist(
         label: `${ICON.unsave} ${i18n.word.unsave}`,
         type: PickType.unsave,
       },
-      {
-        label: splitLine(i18n.word.hotSongs),
-      },
-      ...pickSongItems(songs),
     ],
   });
   switch (pick.type) {
     case PickType.albums:
       return async (input: MultiStepInput) =>
         pickAlbums(input, step + 1, await apiArtistAlbum(pick.id as number));
-    case PickType.song:
-      return (input: MultiStepInput) =>
-        pickSong(input, step + 1, (pick as ST).item);
+    case PickType.hot:
+      return (input: MultiStepInput) => pickSongs(input, step + 1, songs);
     case PickType.songs:
       return (input: MultiStepInput) => pickAllSongs(input, step + 1, id, 0);
     case PickType.similar:
@@ -756,6 +753,10 @@ export async function pickAlbum(
         detail: description,
       },
       {
+        label: `${ICON.song} ${i18n.word.content}`,
+        type: PickType.songs,
+      },
+      {
         label: `${ICON.comment} ${i18n.word.comment}`,
         type: PickType.comment,
       },
@@ -768,19 +769,14 @@ export async function pickAlbum(
         label: `${ICON.unsave} ${i18n.word.unsave}`,
         type: PickType.unsave,
       },
-      {
-        label: splitLine(i18n.word.content),
-      },
-      ...pickSongItems(songs),
     ],
   });
   switch (pick.type) {
     case PickType.artist:
       return (input: MultiStepInput) =>
         pickArtist(input, step + 1, (pick as T).id);
-    case PickType.song:
-      return (input: MultiStepInput) =>
-        pickSong(input, step + 1, (pick as ST).item);
+    case PickType.songs:
+      return (input: MultiStepInput) => pickSongs(input, step + 1, songs);
     case PickType.unsave:
       if (
         await window.showWarningMessage(
@@ -828,7 +824,6 @@ export async function pickPlaylist(
     trackCount,
     creator,
   } = item;
-  const songs = await apiPlaylistDetail(id);
   const pick = await input.showQuickPick({
     title: i18n.word.playlist,
     step,
@@ -870,6 +865,7 @@ export async function pickPlaylist(
             {
               label: `${ICON.number} ${i18n.word.trackCount}`,
               description: `${trackCount}`,
+              type: PickType.songs,
             },
           ]
         : []),
@@ -882,19 +878,15 @@ export async function pickPlaylist(
         label: `${ICON.save} ${i18n.word.save}`,
         type: PickType.save,
       },
-      {
-        label: splitLine(i18n.word.content),
-      },
-      ...pickSongItems(songs),
     ],
   });
   switch (pick.type) {
     case PickType.copy:
       void commands.executeCommand("cloudmusic.copyPlaylistLink", { item });
       break;
-    case PickType.song:
-      return (input: MultiStepInput) =>
-        pickSong(input, step + 1, (pick as ST).item);
+    case PickType.songs:
+      return async (input: MultiStepInput) =>
+        pickSongs(input, step + 1, await apiPlaylistDetail(id));
     case PickType.subscribed:
       return (input: MultiStepInput) =>
         pickUsers(input, step + 1, apiPlaylistSubscribers, true, 0, id);
@@ -902,6 +894,7 @@ export async function pickPlaylist(
       return (input: MultiStepInput) =>
         pickUser(input, step + 1, (pick as T).id);
     case PickType.add:
+      const songs = await apiPlaylistDetail(id);
       QueueProvider.refresh(() =>
         QueueProvider.add(songs.map((song) => new QueueItemTreeItem(song, id)))
       );
@@ -1011,14 +1004,14 @@ export async function pickUser(
         item: 0,
       },
       {
-        label: splitLine(i18n.word.playlist),
+        label: `>>>>    ${i18n.word.playlist}`,
         item: 0,
       },
       ...pickPlaylistItems(
         playlists.filter((playlist) => playlist.creator.userId === uid)
       ),
       {
-        label: splitLine(i18n.word.saved),
+        label: `>>>>    ${i18n.word.saved}`,
         item: 0,
       },
       ...pickPlaylistItems(
