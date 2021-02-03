@@ -849,14 +849,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"antd@npm:4.11.2":
-  version: 4.11.2
-  resolution: "antd@npm:4.11.2"
+"antd@npm:4.12.0":
+  version: 4.12.0
+  resolution: "antd@npm:4.12.0"
   dependencies:
     "@ant-design/colors": ^5.0.0
     "@ant-design/icons": ^4.4.0
     "@ant-design/react-slick": ~0.28.1
-    "@babel/runtime": ^7.11.2
+    "@babel/runtime": ^7.12.5
     array-tree-filter: ^2.1.0
     classnames: ^2.2.6
     copy-to-clipboard: ^3.2.0
@@ -869,8 +869,8 @@ __metadata:
     rc-drawer: ~4.2.0
     rc-dropdown: ~3.2.0
     rc-field-form: ~1.18.0
-    rc-image: ~5.1.1
-    rc-input-number: ~6.1.0
+    rc-image: ~5.2.0
+    rc-input-number: ~6.2.0
     rc-mentions: ~1.5.0
     rc-menu: ~8.10.0
     rc-motion: ^2.4.0
@@ -884,7 +884,7 @@ __metadata:
     rc-slider: ~9.7.1
     rc-steps: ~4.1.0
     rc-switch: ~3.2.0
-    rc-table: ~7.12.0
+    rc-table: ~7.13.0
     rc-tabs: ~11.7.0
     rc-textarea: ~0.3.0
     rc-tooltip: ~5.0.0
@@ -898,7 +898,7 @@ __metadata:
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: 9d2a5324094a061ca9926138792653f8ce8f5d11aaeb36ec719ae34ceecad8571b50e9f104f8b314f3a09caf17387870b96b821ee27c0c033fe4b533a3462f5d
+  checksum: 2503fd0c5d84095573e3eb8a5b081db924b625a4791fd3fc1610e78c7a8fbdc73bbf08790364cd52cba83d2a969cd60f10191f6d892bc3670a3e9eace916cde7
   languageName: node
   linkType: hard
 
@@ -1480,7 +1480,7 @@ __metadata:
     "@types/vscode": 1.52.0
     "@typescript-eslint/eslint-plugin": 4.14.2
     "@typescript-eslint/parser": 4.14.2
-    antd: 4.11.2
+    antd: 4.12.0
     array-unsort: 1.1.6
     axios: 0.21.1
     babel-eslint: 10.1.0
@@ -5289,9 +5289,9 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"rc-image@npm:~5.1.1":
-  version: 5.1.4
-  resolution: "rc-image@npm:5.1.4"
+"rc-image@npm:~5.2.0":
+  version: 5.2.0
+  resolution: "rc-image@npm:5.2.0"
   dependencies:
     "@babel/runtime": ^7.11.2
     classnames: ^2.2.6
@@ -5300,13 +5300,13 @@ fsevents@~2.1.2:
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: 3ba1f0616e85d14b108f4e1a3016369a2260bb829308b124facf9aa9d02249d55b4101cf94d8cd0828ca287cfeb7a9d4419c46b87c295c79bcdb26e6e9b7551f
+  checksum: 43bebf8e38af81dd45137b10278c5ab371f88ae5d887a63ec350ada7150eebf7e17ba3776508a3135151dcfcff4f144f01099c63d3d263c569ac24037d107005
   languageName: node
   linkType: hard
 
-"rc-input-number@npm:~6.1.0":
-  version: 6.1.2
-  resolution: "rc-input-number@npm:6.1.2"
+"rc-input-number@npm:~6.2.0":
+  version: 6.2.0
+  resolution: "rc-input-number@npm:6.2.0"
   dependencies:
     "@babel/runtime": ^7.10.1
     classnames: ^2.2.5
@@ -5314,7 +5314,7 @@ fsevents@~2.1.2:
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: eb53ff39b151a70c43c8882cf292c20966675d892427b0257e6351b78b6e937da0113d132727e5161db2f0a4a5e9c13fbda2c2bc8df51800c063e6ef2d79ab58
+  checksum: 24676ac285b38ab52218831866e40bd72ad742a792f14fe62b577ab661474a64f8508f0c17ae74f30a83e0cde199e96663753573cb4f8feff283837472b2e939
   languageName: node
   linkType: hard
 
@@ -5534,9 +5534,9 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"rc-table@npm:~7.12.0":
-  version: 7.12.3
-  resolution: "rc-table@npm:7.12.3"
+"rc-table@npm:~7.13.0":
+  version: 7.13.1
+  resolution: "rc-table@npm:7.13.1"
   dependencies:
     "@babel/runtime": ^7.10.1
     classnames: ^2.2.5
@@ -5546,7 +5546,7 @@ fsevents@~2.1.2:
   peerDependencies:
     react: ">=16.9.0"
     react-dom: ">=16.9.0"
-  checksum: 5eae6c33653fddd05963a971898c00d60e72e4843c2fa615395003d3fd19f12c27e6040c414a53411857c1abce4a39112a9dbedf33289c062b53c4c94c76e477
+  checksum: 22bc89528e9e45b61d6104728cdb328adee10c29dd820d6d9a192a378529b0c857ed528d714a860a07312c7480ed29792e89f8bb84855063d89ece52d6e95053
   languageName: node
   linkType: hard
 
