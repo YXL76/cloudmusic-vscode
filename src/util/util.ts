@@ -356,7 +356,6 @@ export async function pickSongMany(
       QueueProvider.add(songs.map((song) => new QueueItemTreeItem(song, 0)))
     );
   }
-  input.pop();
   return input.stay();
 }
 
@@ -380,22 +379,18 @@ async function pickSimiSong(
       next: songs.length === limit,
     }
   );
-  if (pick === ButtonAction.previous) {
-    input.pop();
-    return (input: MultiStepInput) =>
-      pickSimiSong(input, step, id, offset - limit);
-  }
-  if (pick === ButtonAction.next) {
-    input.pop();
-    return (input: MultiStepInput) =>
-      pickSimiSong(input, step, id, offset + limit);
-  }
-  if (pick.length === 0) {
-    return input.stay();
-  }
-  if (pick.length === 1) {
+  if (pick === ButtonAction.previous)
+    return input.stay((input: MultiStepInput) =>
+      pickSimiSong(input, step, id, offset - limit)
+    );
+  if (pick === ButtonAction.next)
+    return input.stay((input: MultiStepInput) =>
+      pickSimiSong(input, step, id, offset + limit)
+    );
+  if (pick.length === 0) return input.stay();
+  if (pick.length === 1)
     return (input: MultiStepInput) => pickSong(input, step + 1, pick[0].item);
-  }
+
   return (input: MultiStepInput) =>
     pickSongMany(
       input,
@@ -513,7 +508,6 @@ export async function pickProgramMany(
       )
     );
   }
-  input.pop();
   return input.stay();
 }
 
@@ -695,22 +689,18 @@ export async function pickArtist(
         next: songs.length === limit,
       }
     );
-    if (pick === ButtonAction.previous) {
-      input.pop();
-      return (input: MultiStepInput) =>
-        pickAllSongs(input, step, id, offset - limit);
-    }
-    if (pick === ButtonAction.next) {
-      input.pop();
-      return (input: MultiStepInput) =>
-        pickAllSongs(input, step, id, offset + limit);
-    }
-    if (pick.length === 0) {
-      return input.stay();
-    }
-    if (pick.length === 1) {
+    if (pick === ButtonAction.previous)
+      return input.stay((input: MultiStepInput) =>
+        pickAllSongs(input, step, id, offset - limit)
+      );
+    if (pick === ButtonAction.next)
+      return input.stay((input: MultiStepInput) =>
+        pickAllSongs(input, step, id, offset + limit)
+      );
+    if (pick.length === 0) return input.stay();
+    if (pick.length === 1)
       return (input: MultiStepInput) => pickSong(input, step + 1, pick[0].item);
-    }
+
     return (input: MultiStepInput) =>
       pickSongMany(
         input,
@@ -934,16 +924,14 @@ async function pickSimiPlaylists(
       next: playlists.length === limit,
     }
   );
-  if (pick === ButtonAction.previous) {
-    input.pop();
-    return (input: MultiStepInput) =>
-      pickSimiPlaylists(input, step, id, offset - limit);
-  }
-  if (pick === ButtonAction.next) {
-    input.pop();
-    return (input: MultiStepInput) =>
-      pickSimiPlaylists(input, step, id, offset + limit);
-  }
+  if (pick === ButtonAction.previous)
+    return input.stay((input: MultiStepInput) =>
+      pickSimiPlaylists(input, step, id, offset - limit)
+    );
+  if (pick === ButtonAction.next)
+    return input.stay((input: MultiStepInput) =>
+      pickSimiPlaylists(input, step, id, offset + limit)
+    );
   return (input: MultiStepInput) => pickPlaylist(input, step + 1, pick.item);
 }
 
@@ -977,8 +965,7 @@ export async function pickAddToPlaylist(
   if (await apiPlaylistTracks("add", pick.id, [id])) {
     PlaylistProvider.refresh(PlaylistProvider.playlists.get(pick.id));
   }
-  input.pop();
-  return input.pop();
+  return input.stay();
 }
 
 export async function pickUser(
@@ -988,7 +975,6 @@ export async function pickUser(
 ): Promise<InputStep> {
   const user = await apiUserDetail(uid);
   if (!user) {
-    input.pop();
     return input.stay();
   }
   const playlists = await apiUserPlaylist(uid);
@@ -1067,15 +1053,13 @@ export async function pickUsers(
       ? { previous: offset > 0, next: users.length === limit }
       : { previous: false, next: false }
   );
-  if (pick === ButtonAction.previous) {
-    input.pop();
-    return (input: MultiStepInput) =>
-      pickUsers(input, step, func, pagination, offset - limit, args);
-  }
-  if (pick === ButtonAction.next) {
-    input.pop();
-    return (input: MultiStepInput) =>
-      pickUsers(input, step, func, pagination, offset + limit, args);
-  }
+  if (pick === ButtonAction.previous)
+    return input.stay((input: MultiStepInput) =>
+      pickUsers(input, step, func, pagination, offset - limit, args)
+    );
+  if (pick === ButtonAction.next)
+    return input.stay((input: MultiStepInput) =>
+      pickUsers(input, step, func, pagination, offset + limit, args)
+    );
   return (input: MultiStepInput) => pickUser(input, step + 1, pick.id);
 }

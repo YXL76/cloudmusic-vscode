@@ -102,7 +102,7 @@ export class ButtonManager {
         this.buttonShow[id] ? this.buttons[id].show() : this.buttons[id].hide();
       }
       await this.context.globalState.update(BUTTON_KEY, this.buttonShow);
-      return input.pop();
+      return input.stay();
     };
 
     void MultiStepInput.run(pickButton);

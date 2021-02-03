@@ -67,7 +67,7 @@ export function initCommand(context: ExtensionContext) {
         });
         if (/^[1-9]\d$|^\d$|^100$/.exec(level))
           await Player.volume(parseInt(level));
-        return input.pop();
+        return input.stay();
       }
     })
   );

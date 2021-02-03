@@ -88,7 +88,7 @@ export function initQueue() {
           QueueProvider.songs.reverse();
         }
       });
-      return input.pop();
+      return input.stay();
     }
   });
 

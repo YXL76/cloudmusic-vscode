@@ -74,7 +74,7 @@ export function initStatusBar() {
       if (/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay)) {
         lyric.delay = parseFloat(delay);
       }
-      return input.pop();
+      return input.stay();
     }
 
     async function pickLyric(input: MultiStepInput) {

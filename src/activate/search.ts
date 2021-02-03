@@ -134,20 +134,18 @@ async function pickSearchSingle(
       next: songs.length === limit,
     }
   );
-  if (pick === ButtonAction.previous) {
-    input.pop();
-    return (input: MultiStepInput) => pickSearchSingle(input, offset - limit);
-  }
-  if (pick === ButtonAction.next) {
-    input.pop();
-    return (input: MultiStepInput) => pickSearchSingle(input, offset + limit);
-  }
-  if (pick.length === 0) {
-    return input.pop();
-  }
-  if (pick.length === 1) {
+  if (pick === ButtonAction.previous)
+    return input.stay((input: MultiStepInput) =>
+      pickSearchSingle(input, offset - limit)
+    );
+  if (pick === ButtonAction.next)
+    return input.stay((input: MultiStepInput) =>
+      pickSearchSingle(input, offset + limit)
+    );
+  if (pick.length === 0) return input.stay();
+  if (pick.length === 1)
     return (input: MultiStepInput) => pickSong(input, 5, pick[0].item);
-  }
+
   return (input: MultiStepInput) =>
     pickSongMany(
       input,
@@ -174,14 +172,14 @@ async function pickSearchAlbum(
       next: albums.length === limit,
     }
   );
-  if (pick === ButtonAction.previous) {
-    input.pop();
-    return (input: MultiStepInput) => pickSearchAlbum(input, offset - limit);
-  }
-  if (pick === ButtonAction.next) {
-    input.pop();
-    return (input: MultiStepInput) => pickSearchAlbum(input, offset + limit);
-  }
+  if (pick === ButtonAction.previous)
+    return input.stay((input: MultiStepInput) =>
+      pickSearchAlbum(input, offset - limit)
+    );
+  if (pick === ButtonAction.next)
+    return input.stay((input: MultiStepInput) =>
+      pickSearchAlbum(input, offset + limit)
+    );
   return (input: MultiStepInput) => pickAlbum(input, 5, pick.id);
 }
 
@@ -203,14 +201,14 @@ async function pickSearchArtist(
       next: artists.length === limit,
     }
   );
-  if (pick === ButtonAction.previous) {
-    input.pop();
-    return (input: MultiStepInput) => pickSearchArtist(input, offset - limit);
-  }
-  if (pick === ButtonAction.next) {
-    input.pop();
-    return (input: MultiStepInput) => pickSearchArtist(input, offset + limit);
-  }
+  if (pick === ButtonAction.previous)
+    return input.stay((input: MultiStepInput) =>
+      pickSearchArtist(input, offset - limit)
+    );
+  if (pick === ButtonAction.next)
+    return input.stay((input: MultiStepInput) =>
+      pickSearchArtist(input, offset + limit)
+    );
   return (input: MultiStepInput) => pickArtist(input, 5, pick.id);
 }
 
@@ -232,13 +230,13 @@ async function pickSearchPlaylist(
       next: playlists.length === limit,
     }
   );
-  if (pick === ButtonAction.previous) {
-    input.pop();
-    return (input: MultiStepInput) => pickSearchPlaylist(input, offset - limit);
-  }
-  if (pick === ButtonAction.next) {
-    input.pop();
-    return (input: MultiStepInput) => pickSearchPlaylist(input, offset + limit);
-  }
+  if (pick === ButtonAction.previous)
+    return input.stay((input: MultiStepInput) =>
+      pickSearchPlaylist(input, offset - limit)
+    );
+  if (pick === ButtonAction.next)
+    return input.stay((input: MultiStepInput) =>
+      pickSearchPlaylist(input, offset + limit)
+    );
   return (input: MultiStepInput) => pickPlaylist(input, 5, pick.item);
 }

@@ -135,8 +135,6 @@ export function initAccount(context: ExtensionContext) {
           case Type.user:
             return (input: MultiStepInput) =>
               pickUser(input, 2, AccountManager.uid);
-          case Type.level:
-            return input.pop();
           case Type.search:
             return (input: MultiStepInput) => inputKeyword(input);
           case Type.recommendation:
@@ -157,7 +155,7 @@ export function initAccount(context: ExtensionContext) {
             void commands.executeCommand("cloudmusic.signout");
             break;
         }
-        return;
+        return input.stay();
       }
 
       async function pickRecommend(input: MultiStepInput) {
@@ -399,16 +397,14 @@ export function initAccount(context: ExtensionContext) {
             next: playlists.length === limit,
           }
         );
-        if (pick === ButtonAction.previous) {
-          input.pop();
-          return (input: MultiStepInput) =>
-            pickAllPlaylists(input, offset - limit);
-        }
-        if (pick === ButtonAction.next) {
-          input.pop();
-          return (input: MultiStepInput) =>
-            pickAllPlaylists(input, offset + limit);
-        }
+        if (pick === ButtonAction.previous)
+          return input.stay((input: MultiStepInput) =>
+            pickAllPlaylists(input, offset - limit)
+          );
+        if (pick === ButtonAction.next)
+          return input.stay((input: MultiStepInput) =>
+            pickAllPlaylists(input, offset + limit)
+          );
         return (input: MultiStepInput) => pickPlaylist(input, 6, pick.item);
       }
 
@@ -554,16 +550,14 @@ export function initAccount(context: ExtensionContext) {
             next: artists.length === limit,
           }
         );
-        if (pick === ButtonAction.previous) {
-          input.pop();
-          return (input: MultiStepInput) =>
-            pickAllArtist(input, offset - limit);
-        }
-        if (pick === ButtonAction.next) {
-          input.pop();
-          return (input: MultiStepInput) =>
-            pickAllArtist(input, offset + limit);
-        }
+        if (pick === ButtonAction.previous)
+          return input.stay((input: MultiStepInput) =>
+            pickAllArtist(input, offset - limit)
+          );
+        if (pick === ButtonAction.next)
+          return input.stay((input: MultiStepInput) =>
+            pickAllArtist(input, offset + limit)
+          );
         return (input: MultiStepInput) => pickArtist(input, 7, pick.id);
       }
 

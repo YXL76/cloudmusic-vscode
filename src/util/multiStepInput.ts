@@ -83,12 +83,8 @@ export class MultiStepInput {
     return input.stepThrough(start);
   }
 
-  pop(): InputStep | undefined {
-    --this.step;
-    return this.steps.pop();
-  }
-
-  stay() {
+  stay(step?: InputStep) {
+    if (step) this.steps[this.step - 1] = step;
     return this.steps[this.step - 1];
   }
 
@@ -146,13 +142,8 @@ export class MultiStepInput {
           }
           const button: QuickInputButton[] = [];
           if (buttons) {
-            const { next, previous } = buttons;
-            if (previous) {
-              button.push(pickButtons.previous);
-            }
-            if (next) {
-              button.push(pickButtons.next);
-            }
+            if (buttons.previous) button.push(pickButtons.previous);
+            if (buttons.next) button.push(pickButtons.next);
           }
           input.buttons = [
             ...(this.step > 1 ? [QuickInputButtons.Back] : []),
@@ -186,14 +177,11 @@ export class MultiStepInput {
             ),
             input.onDidHide(() => reject(InputFlowAction.cancel))
           );
-          if (changeCallback) {
+          if (changeCallback)
             disposables.push(
               input.onDidChangeValue((value) => changeCallback(input, value))
             );
-          }
-          if (this.current) {
-            this.current.dispose();
-          }
+          if (this.current) this.current.dispose();
           this.current = input;
           this.current.show();
         }
@@ -254,14 +242,11 @@ export class MultiStepInput {
           }),
           input.onDidHide(() => reject(InputFlowAction.cancel))
         );
-        if (changeCallback) {
+        if (changeCallback)
           disposables.push(
             input.onDidChangeValue((value) => changeCallback(input, value))
           );
-        }
-        if (this.current) {
-          this.current.dispose();
-        }
+        if (this.current) this.current.dispose();
         this.current = input;
         this.current.show();
       });
