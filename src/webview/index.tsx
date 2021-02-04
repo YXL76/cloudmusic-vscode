@@ -229,7 +229,7 @@ export class Webview {
           <title>{title}</title>
           <link rel="stylesheet" type="text/css" href={cssHref} />
         </head>
-        <body>{main}</body>
+        <body className="overflow-x-hidden">{main}</body>
       </html>
     );
   }

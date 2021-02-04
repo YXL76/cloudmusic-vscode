@@ -21,7 +21,7 @@ const MusicCard = ({
   <div className="relative box-border h-24 w-full my-4 rounded-xl bg-black bg-opacity-20 shadow-md flex flex-row px-4 justify-between items-center overflow-hidden">
     <div
       className="absolute h-full bg-blue-600 left-0 top-0 -z-10"
-      style={{ width: Math.ceil(playCount / max) }}
+      style={{ width: `${Math.ceil(playCount / max)}%` }}
     />
     <img
       className="album cursor-pointer rounded-full h-20 w-20"
@@ -66,8 +66,8 @@ const MusicRanking = ({
   const max =
     record.reduce((pre, { playCount }) => Math.max(pre, playCount), 0) / 100;
   return (
-    <div>
-      <div className="box-border w-screen p-4">
+    <>
+      <div className="box-border w-screen py-4 pl-4 pr-12">
         <Tabs
           className="mb-4"
           titles={[i18n.word.weekly, i18n.word.allTime]}
@@ -78,7 +78,7 @@ const MusicRanking = ({
         ))}
       </div>
       <RawScript content={GLOBAL_MUSIC_RANKING} nonce={nonce} />
-    </div>
+    </>
   );
 };
 

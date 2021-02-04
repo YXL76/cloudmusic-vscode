@@ -22,7 +22,7 @@ const Comment = ({
   beReplied,
 }: CommentProps) => (
   <div
-    className="comment box-border w-full my-4 rounded-xl bg-black bg-opacity-20 shadow-md flex flex-row px-4 pb-2 pt-4 overflow-hidden"
+    className="comment box-border w-full my-4 rounded-xl bg-black bg-opacity-20 shadow-md flex flex-row p-4 overflow-hidden"
     data-id={commentId}
   >
     <img
@@ -61,13 +61,13 @@ const Comment = ({
           >
             <FiThumbsUp size={13} color={liked ? "#2563EB" : "#FFF"} />
           </div>
-          <div className="inline-block ml-1">{likedCount}</div>
+          <div className="inline-block ml-2">{likedCount}</div>
         </div>
-        <div className="reply cursor-pointer inline-block ml-4">
+        <div className="reply cursor-pointer inline-block ml-6">
           {i18n.word.reply}
         </div>
         {replyCount > 0 && (
-          <div className="floor cursor-pointer inline-block text-blue-600 ml-4">
+          <div className="floor cursor-pointer inline-block text-blue-600 ml-6">
             {replyCount} {i18n.word.reply}
             {" >"}
           </div>
@@ -98,8 +98,8 @@ const CommentList = ({
   index,
 }: CommentListProps): JSX.Element => {
   return (
-    <div>
-      <div className="box-border w-screen p-4">
+    <>
+      <div className="box-border w-screen py-4 pl-4 pr-12">
         <Tabs
           className="mb-4"
           title={`${i18n.word.comment} (${totalCount})`}
@@ -114,7 +114,7 @@ const CommentList = ({
         {!firstPage && (
           <button
             id="prev"
-            className="mr-4 p-2 rounded-md bg-transparent text-lg text-blue-600 border-solid border-2 border-blue-600 focus:outline-none"
+            className="cursor-pointer mr-4 p-2 rounded-md bg-transparent text-lg text-blue-600 border-solid border-2 border-blue-600 focus:outline-none"
           >
             {i18n.word.previousPage}
           </button>
@@ -122,14 +122,14 @@ const CommentList = ({
         {hasMore && (
           <button
             id="next"
-            className="ml-4 p-2 rounded-md bg-transparent text-lg text-blue-600 border-solid border-2 border-blue-600 focus:outline-none"
+            className="cursor-pointer ml-4 p-2 rounded-md bg-transparent text-lg text-blue-600 border-solid border-2 border-blue-600 focus:outline-none"
           >
             {i18n.word.nextPage}
           </button>
         )}
       </div>
       <RawScript content={GLOBAL_COMMENT} nonce={nonce} />
-    </div>
+    </>
   );
 };
 
