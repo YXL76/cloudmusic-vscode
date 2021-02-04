@@ -11,10 +11,12 @@ const srcPath = resolve(__dirname, "src");
 
 const scriptsPath = resolve(srcPath, "webview", "scripts");
 const definitions = {};
-readdirSync(scriptsPath).map(
+readdirSync(scriptsPath).forEach(
   (file) =>
-    (definitions[file.substr(0, file.lastIndexOf("."))] = `\`${
+    file.substr(file.indexOf(".") + 1) === "ts" &&
+    (definitions[file.substr(0, file.indexOf("."))] = `\`${
       transformSync(readFileSync(resolve(scriptsPath, file)).toString(), {
+        loader: "ts",
         target: "chrome83",
         sourcemap: false,
         minify: true,

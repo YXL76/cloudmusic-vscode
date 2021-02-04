@@ -9,14 +9,14 @@ declare module "cacache" {
   export interface CacheObject {
     integrity: string;
     key: string;
-    // metadata?: any;
+    metadata?: unknown;
     path: string;
     time: number;
     size: number;
   }
 
   export interface GetCacheObject {
-    // metadata?: any;
+    metadata?: unknown;
     integrity: string;
     data: Buffer;
     size: number;
@@ -28,7 +28,7 @@ declare module "cacache" {
       sri: {
         algorithm: string;
         digest: string;
-        // options: any[];
+        options: unknown[];
         source: string;
       };
     }
@@ -104,7 +104,7 @@ declare module "cacache" {
 
       integrity?: string;
 
-      // metadata?: any;
+      metadata?: unknown;
 
       memoize?: null | boolean;
 
@@ -161,7 +161,7 @@ declare module "cacache" {
   export function put(
     cachePath: string,
     key: string,
-    // data: any,
+    data: unknown,
     opts?: put.Options
   ): Promise<string>;
 

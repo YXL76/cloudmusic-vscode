@@ -3,6 +3,7 @@
   "extends": ["eslint:recommended", "plugin:prettier/recommended"],
   "overrides": [
     {
+      "excludedFiles": ["./src/webview/scripts/*.ts"],
       "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
@@ -29,17 +30,29 @@
       "settings": { "react": { "version": "17.0" } }
     },
     {
-      "env": { "browser": true },
+      "env": { "browser": true, "node": false },
       "extends": [
         "eslint:recommended",
-        "plugin:prettier/recommended",
-        "plugin:jsdoc/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "prettier/@typescript-eslint",
+        "plugin:prettier/recommended"
       ],
-      "files": ["./src/webview/scripts/*.js"],
-      "globals": {
-        "vscode": "readonly"
+      "files": ["./src/webview/scripts/*.ts"],
+      "parserOptions": {
+        "ecmaVersion": 10,
+        "project": "./src/webview/scripts/tsconfig.json",
+        "sourceType": "module"
       },
-      "plugins": ["prettier", "jsdoc"]
+      "plugins": ["@typescript-eslint", "prettier"],
+      "rules": {
+        "@typescript-eslint/consistent-type-imports": "warn",
+        "@typescript-eslint/lines-between-class-members": "error",
+        "@typescript-eslint/member-ordering": "warn",
+        "@typescript-eslint/naming-convention": "warn",
+        "@typescript-eslint/semi": "warn",
+        "no-empty": ["error", { "allowEmptyCatch": true }]
+      }
     }
   ],
   "parser": "@typescript-eslint/parser",
