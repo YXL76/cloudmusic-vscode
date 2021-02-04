@@ -60,7 +60,7 @@
 
 ## Usage
 
-![Usage](https://s3.ax1x.com/2021/02/04/y30xSJ.png)
+![Usage](https://s3.ax1x.com/2021/02/04/y3yJU0.png)
 
 支持解锁变灰音乐，可以在设中开启需要的音源（`cloudmusic.music.unblock`）
 

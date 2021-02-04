@@ -60,9 +60,9 @@ Generally speaking, it can be used normally without any additional operations. F
 
 ## Usage
 
-![Usage](https://s3.ax1x.com/2021/02/04/y30xSJ.png)
+![Usage](https://s3.ax1x.com/2021/02/04/y3yJU0.png)
 
-Support unlocking copyrighted music, you can turn on the required audio source in the settings (`cloudmusic.music.`)
+Support unlocking copyrighted music, you can turn on the required audio source in the settings (`cloudmusic.music.unblock`)
 
 ## Contributions
 
