@@ -508,9 +508,9 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 
 [[package]]
 name = "libc"
-version = "0.2.84"
+version = "0.2.85"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1cca32fa0182e8c0989459524dc356b8f2b5c10f1b9eb521b7d182c03cf8c5ff"
+checksum = "7ccac4b00700875e6a07c6cde370d44d32fa01c5a65cdd2fca6858c479d28bb3"
 
 [[package]]
 name = "libflate"
@@ -668,7 +668,7 @@ checksum = "c44922cb3dbb1c70b5e5f443d63b64363a898564d739ba5198e3a9138442868d"
 [[package]]
 name = "neon"
 version = "0.7.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#d566f83de4d4a06a616f22efb1b26e911fffbc38"
+source = "git+https://github.com/neon-bindings/neon?branch=main#0a35c58e96fb4a9c0a60db7051b9e4990ba6cb46"
 dependencies = [
  "cslice",
  "neon-build",
@@ -681,12 +681,12 @@ dependencies = [
 [[package]]
 name = "neon-build"
 version = "0.7.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#d566f83de4d4a06a616f22efb1b26e911fffbc38"
+source = "git+https://github.com/neon-bindings/neon?branch=main#0a35c58e96fb4a9c0a60db7051b9e4990ba6cb46"
 
 [[package]]
 name = "neon-macros"
 version = "0.7.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#d566f83de4d4a06a616f22efb1b26e911fffbc38"
+source = "git+https://github.com/neon-bindings/neon?branch=main#0a35c58e96fb4a9c0a60db7051b9e4990ba6cb46"
 dependencies = [
  "quote",
  "syn",
@@ -695,7 +695,7 @@ dependencies = [
 [[package]]
 name = "neon-runtime"
 version = "0.7.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#d566f83de4d4a06a616f22efb1b26e911fffbc38"
+source = "git+https://github.com/neon-bindings/neon?branch=main#0a35c58e96fb4a9c0a60db7051b9e4990ba6cb46"
 dependencies = [
  "cfg-if 1.0.0",
  "libloading",
@@ -932,9 +932,9 @@ checksum = "b5eb417147ba9860a96cfe72a0b93bf88fee1744b5636ec99ab20c1aa9376581"
 
 [[package]]
 name = "ring"
-version = "0.16.19"
+version = "0.16.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "024a1e66fea74c66c66624ee5622a7ff0e4b73a13b4f5c326ddb50c708944226"
+checksum = "3053cf52e236a3ed746dfc745aa9cacf1b791d846bdaf412f60a8d7d6e17c8fc"
 dependencies = [
  "cc",
  "libc",

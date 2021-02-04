@@ -99,7 +99,7 @@ const CommentList = ({
 }: CommentListProps): JSX.Element => {
   return (
     <>
-      <div className="box-border w-screen py-4 pl-4 pr-12">
+      <div className="w-full p-3">
         <Tabs
           className="mb-4"
           title={`${i18n.word.comment} (${totalCount})`}

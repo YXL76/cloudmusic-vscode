@@ -67,7 +67,7 @@ const MusicRanking = ({
     record.reduce((pre, { playCount }) => Math.max(pre, playCount), 0) / 100;
   return (
     <>
-      <div className="box-border w-screen py-4 pl-4 pr-12">
+      <div className="w-full p-3">
         <Tabs
           className="mb-4"
           titles={[i18n.word.weekly, i18n.word.allTime]}

@@ -74,6 +74,12 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     }
   }
 
+  static playNext(elements: QueueContent[], index?: number): void {
+    if (index) this.songs.splice(index, 1);
+    this.songs.splice(1, 0, ...elements);
+    this.add([]);
+  }
+
   getTreeItem(element: QueueContent): QueueContent {
     return element;
   }

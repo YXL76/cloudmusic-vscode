@@ -139,6 +139,7 @@ const enum PickType {
   albums,
   like,
   add,
+  next,
   save,
   unsave,
   similar,
@@ -283,6 +284,10 @@ export async function pickSong(
         type: PickType.add,
       },
       {
+        label: `${ICON.play} ${i18n.word.nextTrack}`,
+        type: PickType.next,
+      },
+      {
         label: `${ICON.save} ${i18n.word.saveToPlaylist}`,
         type: PickType.save,
       },
@@ -331,6 +336,12 @@ export async function pickSong(
         "cloudmusic.addSong",
         new QueueItemTreeItem(item, 0)
       );
+      break;
+    case PickType.next:
+      QueueProvider.refresh(() =>
+        QueueProvider.playNext([new QueueItemTreeItem(item, 0)])
+      );
+      break;
   }
 
   return input.stay();
@@ -349,11 +360,21 @@ export async function pickSongMany(
         label: `${ICON.add} ${i18n.word.addToQueue}`,
         type: PickType.add,
       },
+      {
+        label: `${ICON.play} ${i18n.word.nextTrack}`,
+        type: PickType.next,
+      },
     ],
   });
   if (pick.type === PickType.add) {
     QueueProvider.refresh(() =>
       QueueProvider.add(songs.map((song) => new QueueItemTreeItem(song, 0)))
+    );
+  } else if (pick.type === PickType.next) {
+    QueueProvider.refresh(() =>
+      QueueProvider.playNext(
+        songs.map((song) => new QueueItemTreeItem(song, 0))
+      )
     );
   }
   return input.stay();
@@ -456,6 +477,10 @@ export async function pickProgram(
         label: `${ICON.add} ${i18n.word.addToQueue}`,
         type: PickType.add,
       },
+      {
+        label: `${ICON.play} ${i18n.word.nextTrack}`,
+        type: PickType.next,
+      },
     ],
   });
   switch (pick.type) {
@@ -478,9 +503,15 @@ export async function pickProgram(
       break;
     case PickType.add:
       void commands.executeCommand(
-        "cloudmusic.addSong",
-        new QueueItemTreeItem(mainSong, 0)
+        "cloudmusic.addProgram",
+        new ProgramTreeItem(item, radio ? radio.id : 0)
       );
+      break;
+    case PickType.next:
+      QueueProvider.refresh(() =>
+        QueueProvider.playNext([new ProgramTreeItem(item, 0)])
+      );
+      break;
   }
 
   return input.stay();
@@ -499,11 +530,21 @@ export async function pickProgramMany(
         label: `${ICON.add} ${i18n.word.addToQueue}`,
         type: PickType.add,
       },
+      {
+        label: `${ICON.play} ${i18n.word.nextTrack}`,
+        type: PickType.next,
+      },
     ],
   });
   if (pick.type === PickType.add) {
     QueueProvider.refresh(() =>
       QueueProvider.add(
+        programs.map((program) => new ProgramTreeItem(program, 0))
+      )
+    );
+  } else if (pick.type === PickType.next) {
+    QueueProvider.refresh(() =>
+      QueueProvider.playNext(
         programs.map((program) => new ProgramTreeItem(program, 0))
       )
     );
@@ -880,6 +921,10 @@ export async function pickPlaylist(
         type: PickType.add,
       },
       {
+        label: `${ICON.play} ${i18n.word.nextTrack}`,
+        type: PickType.next,
+      },
+      {
         label: `${ICON.save} ${i18n.word.save}`,
         type: PickType.save,
       },
@@ -904,6 +949,16 @@ export async function pickPlaylist(
         QueueProvider.refresh(() =>
           QueueProvider.add(
             songs.map((song) => new QueueItemTreeItem(song, id))
+          )
+        );
+      }
+      break;
+    case PickType.next:
+      {
+        const songs = await apiPlaylistDetail(id);
+        QueueProvider.refresh(() =>
+          QueueProvider.playNext(
+            songs.map((song) => new QueueItemTreeItem(song, 0))
           )
         );
       }

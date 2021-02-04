@@ -121,14 +121,7 @@ export function initQueue(): void {
         const index = QueueProvider.songs.findIndex(
           (value) => value.valueOf() === element.valueOf()
         );
-        if (index >= 2)
-          QueueProvider.songs = [
-            QueueProvider.songs[0],
-            QueueProvider.songs[index],
-          ].concat(
-            QueueProvider.songs.slice(1, index),
-            QueueProvider.songs.slice(index + 1)
-          );
+        if (index >= 2) QueueProvider.playNext([element], index);
       });
   });
 }
