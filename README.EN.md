@@ -22,8 +22,6 @@
   - [Requirements](#requirements)
   - [Usage](#usage)
   - [Contributions](#contributions)
-    - [Settings](#settings)
-    - [Commands](#commands)
   - [Known Issues](#known-issues)
   - [Release Notes](#release-notes)
   - [API](#api)
@@ -44,9 +42,11 @@ Realized functions:
 - Personal FM
 - Comments (single/playlist...)
 - Lyric display
+- Unblock copyrighted music
 - Search (hot/single/album/artist...)
 - Top list (Music List/Singer List...)
 - Explore (New song express/New discs on shelves...)
+- Radio/Program
 - Cache management
 - Optional lossless music
 - Media control support
@@ -60,27 +60,13 @@ Generally speaking, it can be used normally without any additional operations. F
 
 ## Usage
 
-![First time](https://s1.ax1x.com/2020/07/07/UAgwfP.png)
+![Usage](https://s3.ax1x.com/2021/02/04/y30xSJ.png)
 
-![Usage](https://s1.ax1x.com/2020/07/07/UAgWYq.png)
+Support unlocking copyrighted music, you can turn on the required audio source in the settings (`cloudmusic.music.`)
 
 ## Contributions
 
 Full list in `Feature Contributions`
-
-### Settings
-
-- `cloudmusic.account.autoCheck`: auto check after signing in
-- `cloudmusic.cache.size`: maximum cache size
-- `cloudmusic.music.quality`: music quality
-
-### Commands
-
-- `Cloudmusic: Sign in`: sign in
-- `Cloudmusic: Sign out`: sign out
-- `Cloudmusic: Daily check`: daily check
-- `Cloudmusic: Toggle button`: show/hide button
-- `Cloudmusic: Search`: search
 
 ## Known Issues
 
@@ -374,3 +360,4 @@ Thanks for these awesome projects:
 - [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)
 - [neon](https://github.com/neon-bindings/neon)
 - [rodio](https://github.com/RustAudio/rodio)
+- [UnblockNeteaseMusic](https://github.com/nondanee/UnblockNeteaseMusic)

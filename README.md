@@ -22,8 +22,6 @@
   - [Requirements](#requirements)
   - [Usage](#usage)
   - [Contributions](#contributions)
-    - [Settings](#settings)
-    - [Commands](#commands)
   - [Known Issues](#known-issues)
   - [Release Notes](#release-notes)
   - [API](#api)
@@ -44,9 +42,11 @@
 - 私人 FM
 - 评论（单曲/歌单...）
 - 歌词显示
+- 解锁变灰音乐
 - 搜索（热搜/单曲/专辑/歌手...）
 - 排行榜（音乐榜/歌手榜...）
 - 发现（新歌速递/新碟上架...）
+- 播单/节目
 - 缓存管理
 - 可选无损音质
 - 媒体控制支持
@@ -60,27 +60,13 @@
 
 ## Usage
 
-![First time](https://s1.ax1x.com/2020/07/07/UAgwfP.png)
+![Usage](https://s3.ax1x.com/2021/02/04/y30xSJ.png)
 
-![Usage](https://s1.ax1x.com/2020/07/07/UAgWYq.png)
+支持解锁变灰音乐，可以在设中开启需要的音源（`cloudmusic.music.unblock`）
 
 ## Contributions
 
 完整列表请查看`Feature Contributions`
-
-### Settings
-
-- `cloudmusic.account.autoCheck`: 登录后自动签到
-- `cloudmusic.cache.size`: 缓存大小限制
-- `cloudmusic.music.quality`: 音质选择
-
-### Commands
-
-- `Cloudmusic: Sign in`: 登录
-- `Cloudmusic: Sign out`: 登出
-- `Cloudmusic: Daily check`: 每日签到
-- `Cloudmusic: Toggle button`: 显示/隐藏按钮
-- `Cloudmusic: Search`: 搜索
 
 ## Known Issues
 
@@ -374,3 +360,4 @@
 - [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi)
 - [neon](https://github.com/neon-bindings/neon)
 - [rodio](https://github.com/RustAudio/rodio)
+- [UnblockNeteaseMusic](https://github.com/nondanee/UnblockNeteaseMusic)
