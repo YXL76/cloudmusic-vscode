@@ -3,6 +3,7 @@ const { readFileSync, readdirSync } = require("fs");
 const { DefinePlugin } = require("webpack");
 const ESLintPlugin = require("eslint-webpack-plugin");
 const { resolve } = require("path");
+const { transformSync } = require("esbuild");
 
 const target = "es2019";
 const distPath = resolve(__dirname, "dist");
@@ -12,9 +13,15 @@ const scriptsPath = resolve(srcPath, "webview", "scripts");
 const definitions = {};
 readdirSync(scriptsPath).map(
   (file) =>
-    (definitions[file.substr(0, file.lastIndexOf("."))] = `\`${readFileSync(
-      resolve(scriptsPath, file)
-    ).toString()}\``)
+    (definitions[file.substr(0, file.lastIndexOf("."))] = `\`${
+      transformSync(readFileSync(resolve(scriptsPath, file)).toString(), {
+        sourcemap: false,
+        minify: true,
+        minifyWhitespace: true,
+        minifyIdentifiers: true,
+        minifySyntax: true,
+      }).code
+    }\``)
 );
 
 module.exports = (_, options) =>

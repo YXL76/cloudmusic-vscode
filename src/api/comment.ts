@@ -7,7 +7,6 @@ import {
   weapiRequest,
 } from ".";
 import type { CommentType } from ".";
-import { apiCache } from "../util";
 
 type CommentRet = {
   totalCount: number;
@@ -59,9 +58,6 @@ export async function apiCommentFloor(
   limit: number,
   time: number
 ): Promise<CommentRet> {
-  const key = `comment_floor${type}-${id}-${parentCommentId}-${limit}-${time}`;
-  const value = apiCache.get<CommentRet>(key);
-  if (value) return value;
   try {
     const {
       data: { totalCount, hasMore, comments },
@@ -77,13 +73,11 @@ export async function apiCommentFloor(
       time,
       limit,
     });
-    const ret = {
+    return {
       totalCount,
       hasMore,
       comments: comments.map(solveComment),
     };
-    apiCache.set(key, ret, 60);
-    return ret;
   } catch (err) {
     console.error(err);
   }
@@ -117,13 +111,6 @@ export async function apiCommentNew(
   sortType: SortType,
   cursor: number
 ): Promise<CommentRet> {
-  const key = `comment_new${type}-${id}-${pageNo}-${pageSize}-${sortType}-${cursor}`;
-  const value = apiCache.get<{
-    totalCount: number;
-    hasMore: boolean;
-    comments: CommentDetail[];
-  }>(key);
-  if (value) return value;
   try {
     const {
       data: { totalCount, hasMore, comments },
@@ -146,15 +133,11 @@ export async function apiCommentNew(
       "/api/v2/resource/comments",
       "pc"
     );
-    const ret = {
+    return {
       totalCount,
       hasMore,
       comments: comments.map(solveComment),
     };
-    if (sortType !== SortType.latest || cursor !== 0) {
-      apiCache.set(key, ret, 60);
-    }
-    return ret;
   } catch (err) {
     console.error(err);
   }

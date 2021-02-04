@@ -1,6 +1,32 @@
+// @ts-check
+
+/** @type { import("../types").VsCodeApi}*/
+// @ts-ignore
+// eslint-disable-next-line no-undef
+const vscode = acquireVsCodeApi();
+
+/**
+ * @param {number} id -
+ * @returns {*} -
+ */
 const tab = (id) => vscode.postMessage({ command: "tab", id });
+
+/**
+ * @param {number} id -
+ * @returns {*} -
+ */
 const song = (id) => vscode.postMessage({ command: "song", id });
+
+/**
+ * @param {number} id -
+ * @returns {*} -
+ */
 const album = (id) => vscode.postMessage({ command: "album", id });
+
+/**
+ * @param {number} id -
+ * @returns {*} -
+ */
 const artist = (id) => vscode.postMessage({ command: "artist", id });
 
 document.querySelectorAll("nav#tabs > button.tabs-button").forEach((node) => {

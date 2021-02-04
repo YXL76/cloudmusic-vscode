@@ -1253,9 +1253,11 @@ __metadata:
     cacache: 15.0.5
     cssnano: 4.1.10
     dayjs: 1.10.4
+    esbuild: 0.8.40
     esbuild-loader: 2.8.0
     eslint: 7.19.0
     eslint-config-prettier: 7.2.0
+    eslint-plugin-jsdoc: 31.6.0
     eslint-plugin-jsx-a11y: 6.4.1
     eslint-plugin-prettier: 3.3.1
     eslint-plugin-react: 7.22.0
@@ -1382,6 +1384,13 @@ __metadata:
   version: 7.0.0
   resolution: "commander@npm:7.0.0"
   checksum: 46e60cb1e1ccc3e8d4bac5672d4be08cb60d0a0c22d0c352ba9f9713a11996e79a67216ace4dc32a04ee621c86c9a327f0c35126e4aaf3ede3004f78a009cb19
+  languageName: node
+  linkType: hard
+
+"comment-parser@npm:1.1.1":
+  version: 1.1.1
+  resolution: "comment-parser@npm:1.1.1"
+  checksum: 25a9ca5c4f3ccee75c09b7a238f74f3cef4b8c98d018e970856ff6a42e8cbbabf0a03f39b00d63e7e9f13697d1f51dff49ea0278f7bc2a8a28de28d3d7768c23
   languageName: node
   linkType: hard
 
@@ -1640,7 +1649,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"debug@npm:^4.0.1, debug@npm:^4.1.1":
+"debug@npm:^4.0.1, debug@npm:^4.1.1, debug@npm:^4.3.1":
   version: 4.3.2
   resolution: "debug@npm:4.3.2"
   dependencies:
@@ -1969,6 +1978,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"esbuild@npm:0.8.40":
+  version: 0.8.40
+  resolution: "esbuild@npm:0.8.40"
+  bin:
+    esbuild: bin/esbuild
+  checksum: beafac37b8f3af4e4f7e032d2ac4e4b74decdbef040955625c7588c75dbe89a8a113afaa1ddd5bacce78ab096d07b4f7a16d5b9d84cb38327b6f32215e5bbeeb
+  languageName: node
+  linkType: hard
+
 "esbuild@npm:^0.8.33":
   version: 0.8.39
   resolution: "esbuild@npm:0.8.39"
@@ -2000,6 +2018,23 @@ __metadata:
   bin:
     eslint-config-prettier: bin/cli.js
   checksum: 6812150ea49703cd64035527205b4905bc1edcd34646e71f71665e1acff9ab4648f872598389bdb209964093ad73993830a2c821ba12642764a5293513b92a58
+  languageName: node
+  linkType: hard
+
+"eslint-plugin-jsdoc@npm:31.6.0":
+  version: 31.6.0
+  resolution: "eslint-plugin-jsdoc@npm:31.6.0"
+  dependencies:
+    comment-parser: 1.1.1
+    debug: ^4.3.1
+    jsdoctypeparser: ^9.0.0
+    lodash: ^4.17.20
+    regextras: ^0.7.1
+    semver: ^7.3.4
+    spdx-expression-parse: ^3.0.1
+  peerDependencies:
+    eslint: ^6.0.0 || ^7.0.0
+  checksum: b3cd3dcbcdc0f6666743690c2f213dbd875f51cc997c830c573762e7ad7c6ce9fc24afbe5020794e9ea5a774f9a8c1b226a00cbb2a8f5db9221005a02ffd042b
   languageName: node
   linkType: hard
 
@@ -3106,6 +3141,15 @@ fsevents@~2.3.1:
   version: 0.1.1
   resolution: "jsbn@npm:0.1.1"
   checksum: b530d48a64e6aff9523407856a54c5b9beee30f34a410612057f4fa097d90072fc8403c49604dacf0c3e7620dca43c2b7f0de3f954af611e43716a254c46f6f5
+  languageName: node
+  linkType: hard
+
+"jsdoctypeparser@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "jsdoctypeparser@npm:9.0.0"
+  bin:
+    jsdoctypeparser: bin/jsdoctypeparser
+  checksum: d0c855be23ddb77260d54c8d833bf089e2e5a08f7b7dd7fdd60c35d3a222669e2edadc455fd69c435e593413e09b6792410d1d877c8f423662053f5e5012513b
   languageName: node
   linkType: hard
 
@@ -4690,6 +4734,13 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
+"regextras@npm:^0.7.1":
+  version: 0.7.1
+  resolution: "regextras@npm:0.7.1"
+  checksum: 60e965d826751da5c7c744c9ecdca3bd90026f8376ec6a362b04b9eeb8140e8be5f6028de155f9b4d3a713344aff625668522c3fb3fc391aec67815bdc3ab509
+  languageName: node
+  linkType: hard
+
 "request@npm:^2.88.2":
   version: 2.88.2
   resolution: "request@npm:2.88.2"
@@ -4867,7 +4918,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.2.1, semver@npm:^7.3.2":
+"semver@npm:^7.2.1, semver@npm:^7.3.2, semver@npm:^7.3.4":
   version: 7.3.4
   resolution: "semver@npm:7.3.4"
   dependencies:
@@ -4992,6 +5043,30 @@ fsevents@~2.3.1:
   version: 0.7.3
   resolution: "source-map@npm:0.7.3"
   checksum: 351ce26ffa1ebf203660c0d70d7566c81e65d2d994d1c2d94da140808e02da34961673ce12ecea9b40797b96fbeb8c70bf71a4ad9f779f1a4fdbba75530bb386
+  languageName: node
+  linkType: hard
+
+"spdx-exceptions@npm:^2.1.0":
+  version: 2.3.0
+  resolution: "spdx-exceptions@npm:2.3.0"
+  checksum: 3cbd2498897dc384158666a9dd7435e3b42ece5da42fd967b218b790e248381d001ec77a676d13d1f4e8da317d97b7bc0ebf4fff37bfbb95923d49b024030c96
+  languageName: node
+  linkType: hard
+
+"spdx-expression-parse@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "spdx-expression-parse@npm:3.0.1"
+  dependencies:
+    spdx-exceptions: ^2.1.0
+    spdx-license-ids: ^3.0.0
+  checksum: f0211cada3fa7cd9db2243143fb0e66e28a46d72d8268f38ad2196aac49408d87892cda6e5600d43d6b05ed2707cb2f4148deb27b092aafabc50a67038f4cbf5
+  languageName: node
+  linkType: hard
+
+"spdx-license-ids@npm:^3.0.0":
+  version: 3.0.7
+  resolution: "spdx-license-ids@npm:3.0.7"
+  checksum: 21e38ec5dd970643f78d37700b6c6ebd42d68c0e4618db914a56cabd2fe4cc1608404ce6abc7535d5165c6555560e821553d06edf6af6ae439617883cf932c0e
   languageName: node
   linkType: hard
 

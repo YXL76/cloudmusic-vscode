@@ -37,8 +37,16 @@
     },
     {
       "env": { "browser": true },
+      "extends": [
+        "eslint:recommended",
+        "plugin:prettier/recommended",
+        "plugin:jsdoc/recommended"
+      ],
       "files": ["./src/webview/scripts/*.js"],
-      "globals": { "vscode": "readonly" }
+      "globals": {
+        "vscode": "readonly"
+      },
+      "plugins": ["prettier", "jsdoc"]
     }
   ],
   "parser": "@typescript-eslint/parser",

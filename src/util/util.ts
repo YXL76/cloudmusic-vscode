@@ -318,7 +318,7 @@ export async function pickSong(
       return (input: MultiStepInput) =>
         pickSimiPlaylists(input, step + 1, id, 0);
     case PickType.comment:
-      Webview.commentList(CommentType.song, id, name);
+      await Webview.comment(CommentType.song, id, name);
       break;
     case PickType.like:
       if (await apiLike(id, true)) {
@@ -474,7 +474,7 @@ export async function pickProgram(
       return (input: MultiStepInput) =>
         pickRadio(input, step + 1, radio as RadioDetail);
     case PickType.comment:
-      Webview.commentList(CommentType.dj, id, name);
+      await Webview.comment(CommentType.dj, id, name);
       break;
     case PickType.add:
       void commands.executeCommand(
@@ -793,7 +793,7 @@ export async function pickAlbum(
         await apiAlbumSub(id, "unsub");
       break;
     case PickType.comment:
-      Webview.commentList(CommentType.album, id, name);
+      await Webview.comment(CommentType.album, id, name);
       break;
     case PickType.save:
       await apiAlbumSub(id, "sub");
@@ -909,7 +909,7 @@ export async function pickPlaylist(
       }
       break;
     case PickType.comment:
-      Webview.commentList(CommentType.playlist, id, name);
+      await Webview.comment(CommentType.playlist, id, name);
       break;
     case PickType.save:
       await apiPlaylistSubscribe(id, "subscribe");

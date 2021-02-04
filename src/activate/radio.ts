@@ -1,9 +1,10 @@
+import { CommentType, apiDjSub } from "../api";
 import { MultiStepInput, load, pickRadio } from "../util";
 import type { ProgramTreeItem, RadioTreeItem } from "../treeview";
 import { QueueProvider, RadioProvider } from "../treeview";
 import { commands, env, window } from "vscode";
 import { PersonalFm } from "../state";
-import { apiDjSub } from "../api";
+import { Webview } from "../webview";
 
 export function initRadio(): void {
   const djRadioProvider = RadioProvider.getInstance();
@@ -72,11 +73,11 @@ export function initRadio(): void {
       void env.clipboard.writeText(`https://music.163.com/#/djradio?id=${id}`)
   );
 
-  /*  commands.registerCommand(
+  commands.registerCommand(
     "cloudmusic.programComment",
     ({ program: { id }, item: { name } }: ProgramTreeItem) =>
-      Webview.commentList(CommentType.dj, id, name)
-  ); */
+      Webview.comment(CommentType.dj, id, name)
+  );
 
   commands.registerCommand(
     "cloudmusic.copyProgramLink",

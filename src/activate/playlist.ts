@@ -1,5 +1,14 @@
+import {
+  CommentType,
+  apiPlaylistCreate,
+  apiPlaylistDelete,
+  apiPlaylistSubscribe,
+  apiPlaylistTracks,
+  apiPlaylistUpdate,
+  apiPlaymodeIntelligenceList,
+  apiSongUrl,
+} from "../api";
 import type { LocalFileTreeItem, PlaylistItemTreeItem } from "../treeview";
-
 import {
   MultiStepInput,
   Player,
@@ -17,18 +26,10 @@ import {
   QueueProvider,
 } from "../treeview";
 import { Uri, commands, env, window } from "vscode";
-import {
-  apiPlaylistCreate,
-  apiPlaylistDelete,
-  apiPlaylistSubscribe,
-  apiPlaylistTracks,
-  apiPlaylistUpdate,
-  apiPlaymodeIntelligenceList,
-  apiSongUrl,
-} from "../api";
 import { basename, dirname } from "path";
 import { HOME_DIR } from "../constant";
 import { PersonalFm } from "../state";
+import { Webview } from "../webview";
 import { createWriteStream } from "fs";
 import i18n from "../i18n";
 
@@ -184,11 +185,11 @@ export function initPlaylist(): void {
       void MultiStepInput.run((input) => pickPlaylist(input, 1, item))
   );
 
-  /* commands.registerCommand(
+  commands.registerCommand(
     "cloudmusic.playlistComment",
     ({ item: { id, name } }: PlaylistItemTreeItem) =>
-      Webview.commentList(CommentType.playlist, id, name)
-  ); */
+      Webview.comment(CommentType.playlist, id, name)
+  );
 
   commands.registerCommand(
     "cloudmusic.copyPlaylistLink",
@@ -267,11 +268,11 @@ export function initPlaylist(): void {
     }
   );
 
-  /*  commands.registerCommand(
+  commands.registerCommand(
     "cloudmusic.songComment",
     ({ item: { id, name } }: QueueItemTreeItem) =>
-      Webview.commentList(CommentType.song, id, name)
-  ); */
+      Webview.comment(CommentType.song, id, name)
+  );
 
   commands.registerCommand(
     "cloudmusic.copySongLink",

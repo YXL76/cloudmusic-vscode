@@ -1,14 +1,26 @@
 export * from "./components";
 
 import { ColorThemeKind, Uri, ViewColumn, window } from "vscode";
-import { MultiStepInput, pickAlbum, pickArtist, pickSong } from "../util";
 import {
+  MultiStepInput,
+  pickAlbum,
+  pickArtist,
+  pickSong,
+  pickUser,
+} from "../util";
+import {
+  SortType,
+  apiCommentFloor,
+  apiCommentLike,
+  apiCommentNew,
   apiLoginQrCheck,
   apiLoginQrKey,
   apiSongDetail,
   apiUserRecord,
 } from "../api";
 import { AccountManager } from "../manager";
+import CommentList from "./comment";
+import { CommentType } from "../api";
 import Login from "./login";
 import MusicRanking from "./musicRanking";
 // eslint-disable-next-line @typescript-eslint/consistent-type-imports
@@ -41,7 +53,7 @@ export class Webview {
       `https://music.163.com/login?codekey=${key}`
     );
     const main = <Login imgSrc={imgSrc} />;
-    const { panel, setHtml } = this.getPanel(i18n.word.signIn, getNonce());
+    const { panel, setHtml } = this.getPanel(i18n.word.signIn);
 
     const timer = setInterval(
       () =>
@@ -65,9 +77,11 @@ export class Webview {
   static async musicRanking(): Promise<void> {
     const nonce = getNonce();
     const [weekData, allData] = await apiUserRecord();
-    const weekView = <MusicRanking record={weekData} index={0} nonce={nonce} />;
-    const allView = <MusicRanking record={allData} index={1} nonce={nonce} />;
-    const { panel, setHtml } = this.getPanel(i18n.word.musicRanking, nonce);
+    const htmls = [
+      <MusicRanking key={0} record={weekData} index={0} nonce={nonce} />,
+      <MusicRanking key={1} record={allData} index={1} nonce={nonce} />,
+    ];
+    const { panel, setHtml } = this.getPanel(i18n.word.musicRanking);
 
     type RecvMessage = {
       command: "tab" | "song" | "album" | "artist";
@@ -76,7 +90,7 @@ export class Webview {
     panel.webview.onDidReceiveMessage(({ command, id }: RecvMessage) => {
       switch (command) {
         case "tab":
-          setHtml(id === 0 ? weekView : allView);
+          setHtml(htmls[id]);
           break;
         case "song":
           void MultiStepInput.run(async (input) =>
@@ -92,16 +106,99 @@ export class Webview {
       }
     });
 
-    setHtml(weekView);
+    setHtml(htmls[0]);
   }
 
-  static commentList(/* type: CommentType, gid: number, title: string */): void {
-    /* const pageSize = 30;
+  static async comment(
+    type: CommentType,
+    gid: number,
+    title: string
+  ): Promise<void> {
+    const pageSize = 30;
+    const nonce = getNonce();
 
-    const panel = this.getPanel(`${i18n.word.comment} (${title})`); */
+    const sortTypes = [
+      ...(type === CommentType.dj ? [] : [SortType.recommendation]),
+      SortType.hottest,
+      SortType.latest,
+    ];
+    const titles = [
+      ...(type === CommentType.dj ? [] : [i18n.word.recommendation]),
+      i18n.word.hottest,
+      i18n.word.latest,
+    ];
+
+    const getList = async (
+      pageNo: number,
+      sortType: SortType,
+      cursor: number
+    ) => await apiCommentNew(type, gid, pageNo, pageSize, sortType, cursor);
+
+    let time = 0;
+    const list = async (index: number, pageNo: number, cursor: number) => {
+      const data = await getList(pageNo, sortTypes[index], cursor);
+      time = data.comments[data.comments.length - 1]?.time || 0;
+      return (
+        <CommentList
+          titles={titles}
+          index={index}
+          nonce={nonce}
+          firstPage={pageNo === 1}
+          {...data}
+        />
+      );
+    };
+
+    let index = 0;
+    let pageNo = 1;
+    const main = await list(index, pageNo, time);
+    const { panel, setHtml } = this.getPanel(`${i18n.word.comment} (${title})`);
+
+    type Message = {
+      command: "like" | "list" | "user" | "prev" | "next" | "floor" | "reply";
+      id: number;
+      t: "like" | "unlike";
+    };
+
+    let busy = false;
+    panel.webview.onDidReceiveMessage(async ({ command, id, t }: Message) => {
+      if (busy) return;
+      busy = true;
+      switch (command) {
+        case "like":
+          if (await apiCommentLike(type, t, gid, id))
+            setHtml(await list(index, pageNo, time));
+          break;
+        case "list":
+          index = id;
+          pageNo = 1;
+          setHtml(await list(index, pageNo, time));
+          break;
+        case "user":
+          void MultiStepInput.run((input) => pickUser(input, 1, id));
+          break;
+        case "prev":
+          --pageNo;
+          if (index === sortTypes.length - 1) time = 0;
+          setHtml(await list(index, pageNo, time));
+          break;
+        case "next":
+          ++pageNo;
+          setHtml(await list(index, pageNo, time));
+          break;
+        case "floor":
+          await apiCommentFloor(type, gid, id, pageSize, time);
+          break;
+        case "reply":
+          break;
+      }
+      busy = false;
+    });
+
+    setHtml(main);
   }
 
-  private static getPanel(title: string, nonce: string) {
+  private static getPanel(title: string) {
     const panel = window.createWebviewPanel(
       "cloudmusic",
       title,
@@ -116,18 +213,12 @@ export class Webview {
         (panel.webview.html = `<!DOCTYPE html>${this.layout(
           title,
           main,
-          css,
-          nonce
+          css
         )}`),
     };
   }
 
-  private static layout(
-    title: string,
-    main: h.JSX.Element,
-    cssHref: string,
-    nonce: string
-  ) {
+  private static layout(title: string, main: h.JSX.Element, cssHref: string) {
     return render(
       <html
         lang="en"
@@ -140,10 +231,7 @@ export class Webview {
           <title>{title}</title>
           <link rel="stylesheet" type="text/css" href={cssHref} />
         </head>
-        <body>
-          <script nonce={nonce}>const vscode = acquireVsCodeApi()</script>
-          {main}
-        </body>
+        <body>{main}</body>
       </html>
     );
   }
