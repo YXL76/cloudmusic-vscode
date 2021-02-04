@@ -127,7 +127,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/eslint@npm:*, @types/eslint@npm:^7.2.4":
+"@types/eslint@npm:*, @types/eslint@npm:^7.2.6":
   version: 7.2.6
   resolution: "@types/eslint@npm:7.2.6"
   dependencies:
@@ -1229,7 +1229,7 @@ __metadata:
     eslint-config-prettier: 7.2.0
     eslint-plugin-prettier: 3.3.1
     eslint-plugin-react: 7.22.0
-    eslint-webpack-plugin: 2.4.3
+    eslint-webpack-plugin: 2.5.0
     file-type: 16.2.0
     lodash: 4.17.20
     lru-cache: 6.0.0
@@ -1927,21 +1927,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:0.8.41":
+"esbuild@npm:0.8.41, esbuild@npm:^0.8.33":
   version: 0.8.41
   resolution: "esbuild@npm:0.8.41"
   bin:
     esbuild: bin/esbuild
   checksum: a7b22bc6b2210e7b92233dfcf79a635476812b45e270b6d9d97b96ee3da85beaa104b9f151037e909b5586b2ab8cd00bb231f1dc6dc0b0a61d31fbd5d922a5a2
-  languageName: node
-  linkType: hard
-
-"esbuild@npm:^0.8.33":
-  version: 0.8.40
-  resolution: "esbuild@npm:0.8.40"
-  bin:
-    esbuild: bin/esbuild
-  checksum: beafac37b8f3af4e4f7e032d2ac4e4b74decdbef040955625c7588c75dbe89a8a113afaa1ddd5bacce78ab096d07b4f7a16d5b9d84cb38327b6f32215e5bbeeb
   languageName: node
   linkType: hard
 
@@ -2039,11 +2030,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-webpack-plugin@npm:2.4.3":
-  version: 2.4.3
-  resolution: "eslint-webpack-plugin@npm:2.4.3"
+"eslint-webpack-plugin@npm:2.5.0":
+  version: 2.5.0
+  resolution: "eslint-webpack-plugin@npm:2.5.0"
   dependencies:
-    "@types/eslint": ^7.2.4
+    "@types/eslint": ^7.2.6
     arrify: ^2.0.1
     jest-worker: ^26.6.2
     micromatch: ^4.0.2
@@ -2051,7 +2042,7 @@ __metadata:
   peerDependencies:
     eslint: ^7.0.0
     webpack: ^4.0.0 || ^5.0.0
-  checksum: 88eaf6991e8eed9ed9d3fa34b40f09ded55dd5a930a63544b66a85ed18bc3a581466eb5d7fb026655e13d4cf363c637169da9b4ff34485aeeef896f28b4cbb8e
+  checksum: 3ac76f39be708aee6bc8b1d7f81412301f271603c12e65420df424fd7c1e41a8e0c3e828ef1adce2494b0e94f02880810dc190896f9597d5ee7120e816a0126a
   languageName: node
   linkType: hard
 
