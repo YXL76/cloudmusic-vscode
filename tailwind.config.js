@@ -1,13 +1,17 @@
 module.exports = {
-  corePlugins: {},
+  corePlugins: { preflight: false },
+  darkMode: "class",
+  plugins: [],
   purge: {
+    content: ["./src/webview/**/*.tsx"],
     enabled: true,
     mode: "all",
     preserveHtmlElements: false,
-    content: ["./src/webview/**/*.tsx"],
   },
-  darkMode: false, // or 'media' or 'class'
-  theme: {},
+  theme: {
+    extend: {
+      zIndex: { "-10": -10 },
+    },
+  },
   variants: {},
-  plugins: [],
 };

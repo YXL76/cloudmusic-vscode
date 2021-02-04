@@ -93,6 +93,7 @@
     "lyricDelay": "Lyric delay",
     "male": "Male artist",
     "more": "More",
+    "musicRanking": "Music ranking",
     "new": "New",
     "nextPage": "Next Rage",
     "nextTrack": "Next track",
@@ -139,7 +140,6 @@
     "type": "Type",
     "unsave": "Unsave",
     "user": "User",
-    "userRankingList": "User ranking list",
     "volume": "Volume",
     "weekly": "Weekly",
     "zh": "Chinese"

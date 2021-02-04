@@ -8,7 +8,7 @@ import type {
   SongsItem,
   UserDetail,
 } from "../constant";
-import { ButtonAction, MusicCache, Player, WebView } from ".";
+import { ButtonAction, MusicCache, Player } from ".";
 import {
   CommentType,
   apiAlbum,
@@ -48,6 +48,7 @@ import { Uri, commands, window } from "vscode";
 import type { QueueContent } from "../treeview";
 import type { QuickPickItem } from "vscode";
 import type { Readable } from "stream";
+import { Webview } from "../webview";
 import axios from "axios";
 import { createWriteStream } from "fs";
 import i18n from "../i18n";
@@ -317,7 +318,7 @@ export async function pickSong(
       return (input: MultiStepInput) =>
         pickSimiPlaylists(input, step + 1, id, 0);
     case PickType.comment:
-      WebView.getInstance().commentList(CommentType.song, id, name);
+      Webview.commentList(CommentType.song, id, name);
       break;
     case PickType.like:
       if (await apiLike(id, true)) {
@@ -473,7 +474,7 @@ export async function pickProgram(
       return (input: MultiStepInput) =>
         pickRadio(input, step + 1, radio as RadioDetail);
     case PickType.comment:
-      WebView.getInstance().commentList(CommentType.dj, id, name);
+      Webview.commentList(CommentType.dj, id, name);
       break;
     case PickType.add:
       void commands.executeCommand(
@@ -792,7 +793,7 @@ export async function pickAlbum(
         await apiAlbumSub(id, "unsub");
       break;
     case PickType.comment:
-      WebView.getInstance().commentList(CommentType.album, id, name);
+      Webview.commentList(CommentType.album, id, name);
       break;
     case PickType.save:
       await apiAlbumSub(id, "sub");
@@ -908,7 +909,7 @@ export async function pickPlaylist(
       }
       break;
     case PickType.comment:
-      WebView.getInstance().commentList(CommentType.playlist, id, name);
+      Webview.commentList(CommentType.playlist, id, name);
       break;
     case PickType.save:
       await apiPlaylistSubscribe(id, "subscribe");

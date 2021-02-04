@@ -4,7 +4,7 @@ import { homedir, platform } from "os";
 import { MUSIC_QUALITY } from "./setting";
 import type { NativeModule } from "./type";
 import { Uri } from "vscode";
-import { join } from "path";
+import { resolve } from "path";
 
 export const unplayable = new Set<number>();
 
@@ -15,7 +15,7 @@ export const PLAYER_AVAILABLE =
 // eslint-disable-next-line @typescript-eslint/naming-convention
 declare function __non_webpack_require__(_: string): unknown;
 export const NATIVE = __non_webpack_require__(
-  join("..", "build", `${PLATFORM}.node`)
+  resolve(__dirname, "..", "build", `${PLATFORM}.node`)
 ) as NativeModule;
 
 export const ACCOUNT_KEY = "account";

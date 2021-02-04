@@ -5,6 +5,7 @@ import type {
   RadioDetail,
   RawPlaylistItem,
   RawProgramDetail,
+  RecordData,
   SongsItem,
   UserDetail,
 } from "../constant";
@@ -431,10 +432,11 @@ export async function apiUserPlaylist(uid: number): Promise<PlaylistItem[]> {
   return [];
 }
 
-type UserRecord = (SongsItem & { playCount: number })[];
-
-export async function apiUserRecord(): Promise<UserRecord[]> {
-  const tasks: Promise<(SongsItem & { playCount: number })[]>[] = [
+export async function apiUserRecord(): Promise<Array<RecordData[]>> {
+  const key = `user_record$`;
+  const value = apiCache.get<Array<RecordData[]>>(key);
+  if (value) return value;
+  const tasks: Promise<RecordData[]>[] = [
     new Promise((resolve, reject) => {
       weapiRequest<{
         weekData: { playCount: number; song: SongsItem }[];
@@ -472,11 +474,13 @@ export async function apiUserRecord(): Promise<UserRecord[]> {
   ];
 
   try {
-    return await Promise.all(tasks);
+    const ret = await Promise.all(tasks);
+    apiCache.set(key, ret);
+    return ret;
   } catch (err) {
     console.error(err);
   }
-  return [];
+  return [[], []];
 }
 
 export async function apiYunbeiInfo(): Promise<{

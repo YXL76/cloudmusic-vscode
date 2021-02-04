@@ -1,13 +1,16 @@
 {
-  "env": { "node": true },
+  "env": { "browser": false, "node": true },
   "extends": ["eslint:recommended", "plugin:prettier/recommended"],
   "overrides": [
     {
       "extends": [
+        "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "prettier/@typescript-eslint",
-        "plugin:prettier/recommended"
+        "plugin:prettier/recommended",
+        "plugin:react/recommended",
+        "plugin:jsx-a11y/recommended"
       ],
       "files": ["./src/**/*.ts", "./src/**/*.tsx"],
       "parserOptions": {
@@ -31,6 +34,11 @@
           "version": "16.0"
         }
       }
+    },
+    {
+      "env": { "browser": true },
+      "files": ["./src/webview/scripts/*.js"],
+      "globals": { "vscode": "readonly" }
     }
   ],
   "parser": "@typescript-eslint/parser",

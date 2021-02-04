@@ -93,6 +93,7 @@
     "lyricDelay": "歌词延迟",
     "male": "男歌手",
     "more": "更多",
+    "musicRanking": "听歌排行",
     "new": "新晋",
     "nextPage": "下一页",
     "nextTrack": "下一首",
@@ -139,7 +140,6 @@
     "type": "种类",
     "unsave": "取消收藏",
     "user": "用户",
-    "userRankingList": "听歌排行",
     "volume": "音量",
     "weekly": "每周",
     "zh": "华语"

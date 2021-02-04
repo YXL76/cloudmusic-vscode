@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "./manager";
-import { LyricCache, MusicCache, Player, WebView } from "./util";
+import { LyricCache, MusicCache, Player } from "./util";
 import { SETTING_DIR, TMP_DIR } from "./constant";
 import {
   initAccount,
@@ -20,7 +20,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
   await workspace.fs.createDirectory(TMP_DIR);
   AccountManager.context = context;
   ButtonManager.context = context;
-  WebView.context = context;
   Player.context = context;
   initPlayer();
   initQueue();

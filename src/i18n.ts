@@ -1,5 +1,5 @@
 import { env } from "vscode";
-import { join } from "path";
+import { resolve } from "path";
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 declare function __non_webpack_require__(_: string): unknown;
@@ -16,7 +16,7 @@ if (idx !== -1) {
 }
 
 export default __non_webpack_require__(
-  join(__dirname, "..", "i18n", `${lang}.json`)
+  resolve(__dirname, "..", "i18n", `${lang}.json`)
 ) as {
   sentence: {
     error: {
@@ -111,6 +111,7 @@ export default __non_webpack_require__(
     lyricDelay: string;
     male: string;
     more: string;
+    musicRanking: string;
     latest: string;
     new: string;
     nextPage: string;
@@ -158,7 +159,6 @@ export default __non_webpack_require__(
     type: string;
     unsave: string;
     user: string;
-    userRankingList: string;
     volume: string;
     weekly: string;
     zh: string;

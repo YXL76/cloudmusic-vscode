@@ -824,11 +824,11 @@
     }
   },
   "scripts": {
-    "generate-css": "postcss src/webview/global.css -o dist/webview.css",
+    "generate-css": "postcss src/style.css -o dist/style.css",
     "build": "yarn generate-css && webpack --mode production",
     "build-dev": "webpack --mode development",
     "lint": "eslint src",
-    "test": "tsc -p tsconfig.json && tsc -p src/webview/tsconfig.json",
+    "test": "tsc -p tsconfig.json",
     "vscode:prepublish": "yarn build"
   },
   "devDependencies": {
@@ -868,6 +868,7 @@
     "node-cache": "5.1.2",
     "preact": "10.5.12",
     "preact-render-to-string": "5.1.12",
-    "qrcode": "1.4.4"
+    "qrcode": "1.4.4",
+    "react-icons": "4.1.0"
   }
 }

@@ -1,3 +1,5 @@
+declare const GLOBAL_MUSIC_RANKING: string;
+
 declare module "array-unsort" {
   export function unsortInplace<T>(items: T[]): T[];
 }
@@ -6,14 +8,14 @@ declare module "cacache" {
   export interface CacheObject {
     integrity: string;
     key: string;
-    metadata?: any;
+    // metadata?: any;
     path: string;
     time: number;
     size: number;
   }
 
   export interface GetCacheObject {
-    metadata?: any;
+    // metadata?: any;
     integrity: string;
     data: Buffer;
     size: number;
@@ -25,7 +27,7 @@ declare module "cacache" {
       sri: {
         algorithm: string;
         digest: string;
-        options: any[];
+        // options: any[];
         source: string;
       };
     }
@@ -101,7 +103,7 @@ declare module "cacache" {
 
       integrity?: string;
 
-      metadata?: any;
+      // metadata?: any;
 
       memoize?: null | boolean;
 
@@ -158,16 +160,16 @@ declare module "cacache" {
   export function put(
     cachePath: string,
     key: string,
-    data: any,
+    // data: any,
     opts?: put.Options
   ): Promise<string>;
 
-  export function rm(cachePath: string, key: string): Promise<any>;
+  export function rm(cachePath: string, key: string): Promise<void>;
 
-  export function setLocale(locale: string): any;
+  export function setLocale(locale: string): void;
 
   export function verify(
     cachePath: string,
     opts?: verify.Options
-  ): Promise<any>;
+  ): Promise<void>;
 }

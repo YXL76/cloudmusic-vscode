@@ -1,9 +1,21 @@
 const { ESBuildPlugin, ESBuildMinifyPlugin } = require("esbuild-loader");
+const { readFileSync, readdirSync } = require("fs");
+const { DefinePlugin } = require("webpack");
 const ESLintPlugin = require("eslint-webpack-plugin");
 const { resolve } = require("path");
 
+const target = "es2019";
 const distPath = resolve(__dirname, "dist");
 const srcPath = resolve(__dirname, "src");
+
+const scriptsPath = resolve(srcPath, "webview", "scripts");
+const definitions = {};
+readdirSync(scriptsPath).map(
+  (file) =>
+    (definitions[file.substr(0, file.lastIndexOf("."))] = `\`${readFileSync(
+      resolve(scriptsPath, file)
+    ).toString()}\``)
+);
 
 module.exports = (_, options) =>
   /**@type {import('webpack').Configuration}*/
@@ -21,7 +33,7 @@ module.exports = (_, options) =>
           loader: "esbuild-loader",
           options: {
             loader: "tsx",
-            target: "es2019",
+            target,
             tsconfigRaw: require(resolve(__dirname, "tsconfig.json")),
           },
           test: /\.tsx?$/,
@@ -32,7 +44,7 @@ module.exports = (_, options) =>
       minimize: options.mode === "production",
       minimizer:
         options.mode === "production"
-          ? [new ESBuildMinifyPlugin({ target: "es2019" })]
+          ? [new ESBuildMinifyPlugin({ target })]
           : [],
     },
     output: {
@@ -45,6 +57,7 @@ module.exports = (_, options) =>
       hints: false,
     },
     plugins: [
+      new DefinePlugin(definitions),
       new ESBuildPlugin(),
       new ESLintPlugin({
         emitError: true,

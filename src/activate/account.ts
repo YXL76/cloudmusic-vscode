@@ -36,7 +36,6 @@ import {
 import {
   ButtonAction,
   MultiStepInput,
-  WebView,
   pickAlbums,
   pickArtist,
   pickArtistItems,
@@ -55,6 +54,7 @@ import { AccountManager } from "../manager";
 import type { ArtistInitial } from "../api";
 import type { InputStep } from "../util";
 import { LoggedIn } from "../state";
+import { Webview } from "../webview";
 import { createHash } from "crypto";
 import i18n from "../i18n";
 import { inputKeyword } from ".";
@@ -86,7 +86,7 @@ export function initAccount(context: ExtensionContext): void {
           recommendation,
           toplist,
           explore,
-          userMusicRankingList,
+          musicRanking,
           save,
           signOut,
         }
@@ -128,8 +128,8 @@ export function initAccount(context: ExtensionContext): void {
               type: Type.explore,
             },
             {
-              label: `${ICON.rankinglist} ${i18n.word.userRankingList}`,
-              type: Type.userMusicRankingList,
+              label: `${ICON.rankinglist} ${i18n.word.musicRanking}`,
+              type: Type.musicRanking,
             },
             {
               label: `${ICON.save} ${i18n.word.saved}`,
@@ -159,8 +159,8 @@ export function initAccount(context: ExtensionContext): void {
           case Type.fm:
             void commands.executeCommand("cloudmusic.personalFM");
             break;
-          case Type.userMusicRankingList:
-            WebView.getInstance().userMusicRankingList();
+          case Type.musicRanking:
+            await Webview.musicRanking();
             break;
           case Type.signOut:
             void commands.executeCommand("cloudmusic.signout");
@@ -746,7 +746,7 @@ export function initAccount(context: ExtensionContext): void {
           totalSteps = 2;
           return (input: MultiStepInput) => inputCookie(input);
         }
-        void WebView.getInstance().login();
+        void Webview.login();
         return;
       }
 
