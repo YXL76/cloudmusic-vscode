@@ -72,10 +72,7 @@ export class Player {
           this.prefetchLock = true;
           void prefetch();
         }
-        if (
-          NATIVE.playerEmpty(this.player) ||
-          pos > (this.treeitem?.item.dt || 4800000) + 8000
-        ) {
+        if (NATIVE.playerEmpty(this.player)) {
           Playing.set(false);
           void commands.executeCommand("cloudmusic.next");
         } else {
