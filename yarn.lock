@@ -238,10 +238,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/vscode@npm:1.52.0":
-  version: 1.52.0
-  resolution: "@types/vscode@npm:1.52.0"
-  checksum: d41cf93d4283f2a92db39abff8195f3fc03ca36466b8499389f3585475fd9ce4bd9330f309e38ebe10d76be75b934d530f520d26e99083c15c611706086e34aa
+"@types/vscode@npm:1.53.0":
+  version: 1.53.0
+  resolution: "@types/vscode@npm:1.53.0"
+  checksum: 4177f6cb763c31c8ece025d808e43729109078f79f0ca3125eb8ca63d180ef739b8edb7cbb914f8092a359b66f8f661d8ad2f26d036a57cf75c1631d185d3a2f
   languageName: node
   linkType: hard
 
@@ -1212,7 +1212,7 @@ __metadata:
     "@types/qrcode": 1.3.5
     "@types/react": 17.0.1
     "@types/react-dom": 17.0.0
-    "@types/vscode": 1.52.0
+    "@types/vscode": 1.53.0
     "@typescript-eslint/eslint-plugin": 4.14.2
     "@typescript-eslint/parser": 4.14.2
     array-unsort: 1.1.6
@@ -1927,21 +1927,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:0.8.41":
+"esbuild@npm:0.8.41, esbuild@npm:^0.8.33":
   version: 0.8.41
   resolution: "esbuild@npm:0.8.41"
   bin:
     esbuild: bin/esbuild
   checksum: a7b22bc6b2210e7b92233dfcf79a635476812b45e270b6d9d97b96ee3da85beaa104b9f151037e909b5586b2ab8cd00bb231f1dc6dc0b0a61d31fbd5d922a5a2
-  languageName: node
-  linkType: hard
-
-"esbuild@npm:^0.8.33":
-  version: 0.8.40
-  resolution: "esbuild@npm:0.8.40"
-  bin:
-    esbuild: bin/esbuild
-  checksum: beafac37b8f3af4e4f7e032d2ac4e4b74decdbef040955625c7588c75dbe89a8a113afaa1ddd5bacce78ab096d07b4f7a16d5b9d84cb38327b6f32215e5bbeeb
   languageName: node
   linkType: hard
 
