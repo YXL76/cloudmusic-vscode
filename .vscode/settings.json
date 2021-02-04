@@ -8,7 +8,9 @@
     "dist": true,
     "build": true,
     ".yarn": true,
-    ".cache": true
+    ".cache": true,
+    "**/.yarn": true,
+    "**/.pnp.*": true
   },
   // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
   "typescript.tsc.autoDetect": "off",
@@ -22,5 +24,8 @@
     "**/dist/**": true,
     "**/native/target/**": true
   },
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": ".yarn/sdks/typescript/lib",
+  "eslint.nodePath": ".yarn/sdks",
+  "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }

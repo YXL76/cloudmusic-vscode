@@ -9,8 +9,7 @@
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "prettier/@typescript-eslint",
         "plugin:prettier/recommended",
-        "plugin:react/recommended",
-        "plugin:jsx-a11y/recommended"
+        "plugin:react/recommended"
       ],
       "files": ["./src/**/*.ts", "./src/**/*.tsx"],
       "parserOptions": {
@@ -18,7 +17,7 @@
         "project": "./tsconfig.json",
         "sourceType": "module"
       },
-      "plugins": ["@typescript-eslint", "prettier", "react", "jsx-a11y"],
+      "plugins": ["@typescript-eslint", "prettier", "react"],
       "rules": {
         "@typescript-eslint/consistent-type-imports": "warn",
         "@typescript-eslint/lines-between-class-members": "error",
