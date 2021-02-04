@@ -823,6 +823,10 @@
       ]
     }
   },
+  "resolutions": {
+    "debug": "^4.0.1",
+    "supports-color": "^5.3.0"
+  },
   "scripts": {
     "generate-css": "postcss src/style.css -o dist/style.css",
     "build": "yarn generate-css && webpack --mode production",
@@ -843,6 +847,7 @@
     "@typescript-eslint/parser": "4.14.2",
     "autoprefixer": "10.2.4",
     "cssnano": "4.1.10",
+    "debug": "4.3.1",
     "esbuild": "0.8.40",
     "esbuild-loader": "2.8.0",
     "eslint": "7.19.0",
@@ -854,6 +859,7 @@
     "postcss-cli": "8.3.1",
     "postcss-import": "14.0.0",
     "prettier": "2.2.1",
+    "supports-color": "8.1.1",
     "tailwindcss": "2.0.2",
     "typescript": "4.1.3",
     "webpack": "5.20.1",
@@ -865,7 +871,6 @@
     "bluebird": "3.7.2",
     "cacache": "15.0.5",
     "dayjs": "1.10.4",
-    "debug": "4.3.1",
     "file-type": "16.2.0",
     "lodash": "4.17.20",
     "lru-cache": "6.0.0",
@@ -873,7 +878,6 @@
     "qrcode": "1.4.4",
     "react": "17.0.1",
     "react-dom": "17.0.1",
-    "react-icons": "4.1.0",
-    "supports-color": "8.1.1"
+    "react-icons": "4.1.0"
   }
 }
