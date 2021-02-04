@@ -42,9 +42,9 @@ export function initStatusBar(): void {
             type: Type.cache,
           },
           {
-            label: `$(trash) ${
-              ButtonManager.showLyric ? i18n.word.disable : i18n.word.enable
-            }`,
+            label: ButtonManager.showLyric
+              ? `$(circle-slash) ${i18n.word.disable}`
+              : `$(circle-large-outline) ${i18n.word.enable}`,
             type: Type.disable,
           },
         ],

@@ -27,12 +27,7 @@ export async function apiLyric(id: number): Promise<LyricData> {
       lrc: { lyric },
     } = await apiRequest<{ lrc: { lyric: string } }>(
       "https://music.163.com/api/song/lyric",
-      {
-        id,
-        lv: -1,
-        kv: -1,
-        tv: -1,
-      }
+      { id, lv: -1, kv: -1, tv: -1 }
     );
     const lines = lyric.split("\n");
     let prev = 0;
@@ -45,7 +40,7 @@ export async function apiLyric(id: number): Promise<LyricData> {
         const second = parseInt(r[2]);
         const millisecond = parseInt(r[3]) * (r[3].length === 2 ? 10 : 1);
         const txt = r[4];
-        const current = minute * 60 + second + millisecond / 1000;
+        const current = (minute * 60 + second) * 1000 + millisecond;
         if (current >= prev) {
           prev = current;
           time.push(current);
