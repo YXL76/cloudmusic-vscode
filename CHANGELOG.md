@@ -6,6 +6,32 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [7.0.0] - 2021-02-04
+
+### Added
+
+- API: support radio/program/dj/yunbei
+- Lyric: can now control whether to display lyrics
+- Treeview: add `Radio` and `Local library`
+- Support unblocking copyrighted music (thanks to [UnblockNeteaseMusic](https://github.com/nondanee/UnblockNeteaseMusic))
+
+### Changed
+
+- Eslint: new rules
+- QuickPick: do not show split line
+- Webview
+  - render html in server side
+  - No longer depend on `ant design`
+
+### Fixed
+
+- Commands: do not displaye commands without `category` key in command palette
+- Player: duration of different units
+
+### Removed
+
+- Cache: local cache support
+
 ## [6.5.0] - 2021-01-23
 
 ### Added
