@@ -65,7 +65,7 @@
   "configuration.music.quality.enumDescriptions.low": "Low Quality",
   "configuration.music.quality.enumDescriptions.medium": "Medium Quality",
   "configuration.music.quality.markdownDescription": "Choose your prefer music quality",
-  "configuration.music.unlock.markdownDescription": "Unlock music",
+  "configuration.music.unblock.markdownDescription": "Unlock music",
   "configuration.player.mediaControl.markdownDescription": "Enable media control",
   "views.favoritePlaylist.name": "Favorite playlist",
   "views.local.name": "Local library",

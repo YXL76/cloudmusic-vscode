@@ -12,7 +12,7 @@ const provider = [
   ...(UNLOCK_MUSIC.joox ? [joox] : []),
 ];
 
-export default async function unlock(
+export default async function unblock(
   song: SongsItem
 ): Promise<SongDetail | void> {
   return (await Promise.all(provider.map((i) => i(song)))).find((item) => item);

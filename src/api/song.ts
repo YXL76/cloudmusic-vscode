@@ -14,7 +14,7 @@ import {
   weapiRequest,
 } from ".";
 import type { TopSongType } from ".";
-import unlock from "../unlock";
+import unblock from "../unblock";
 
 export async function apiLyric(id: number): Promise<LyricData> {
   const lyricCache = await LyricCache.get(`${id}`);
@@ -131,7 +131,7 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
 export async function apiSongUrl(song: SongsItem): Promise<SongDetail> {
   try {
     if (UNLOCK_MUSIC.enabled && unplayable.has(song.id)) {
-      const data = await unlock(song);
+      const data = await unblock(song);
       if (data) return data;
       return {} as SongDetail;
     }

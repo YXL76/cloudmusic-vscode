@@ -9,10 +9,10 @@ export const AUTO_CHECK = conf.get<boolean>("account.autoCheck");
 export const MUSIC_QUALITY =
   conf.get<128000 | 192000 | 320000 | 999000>("music.quality") || 192000;
 
-const UNLOCK_MUSIC_KUWO = conf.get<boolean>("music.unlock.kuwo");
-const UNLOCK_MUSIC_MIGU = conf.get<boolean>("music.unlock.migu");
-const UNLOCK_MUSIC_KUGOU = conf.get<boolean>("music.unlock.kugou");
-const UNLOCK_MUSIC_JOOX = conf.get<boolean>("music.unlock.joox");
+const UNLOCK_MUSIC_KUWO = conf.get<boolean>("music.unblock.kuwo");
+const UNLOCK_MUSIC_MIGU = conf.get<boolean>("music.unblock.migu");
+const UNLOCK_MUSIC_KUGOU = conf.get<boolean>("music.unblock.kugou");
+const UNLOCK_MUSIC_JOOX = conf.get<boolean>("music.unblock.joox");
 
 export const UNLOCK_MUSIC = {
   enabled:

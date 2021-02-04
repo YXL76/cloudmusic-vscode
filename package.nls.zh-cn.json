@@ -65,7 +65,7 @@
   "configuration.music.quality.enumDescriptions.low": "普通",
   "configuration.music.quality.enumDescriptions.medium": "较高",
   "configuration.music.quality.markdownDescription": "选择优先播放的音质",
-  "configuration.music.unlock.markdownDescription": "解锁音乐",
+  "configuration.music.unblock.markdownDescription": "解锁音乐",
   "configuration.player.mediaControl.markdownDescription": "开启媒体控制",
   "views.favoritePlaylist.name": "收藏歌单",
   "views.local.name": "本地曲库",

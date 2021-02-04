@@ -349,25 +349,25 @@
             "scope": "window",
             "type": "number"
           },
-          "cloudmusic.music.unlock.joox": {
+          "cloudmusic.music.unblock.joox": {
             "default": false,
             "markdownDescription": "[https://www.joox.com/](https://www.joox.com/)",
             "scope": "window",
             "type": "boolean"
           },
-          "cloudmusic.music.unlock.kugou": {
+          "cloudmusic.music.unblock.kugou": {
             "default": false,
             "markdownDescription": "[https://www.kugou.com/](https://www.kugou.com/)",
             "scope": "window",
             "type": "boolean"
           },
-          "cloudmusic.music.unlock.kuwo": {
+          "cloudmusic.music.unblock.kuwo": {
             "default": false,
             "markdownDescription": "[https://kuwo.cn/](https://kuwo.cn/)",
             "scope": "window",
             "type": "boolean"
           },
-          "cloudmusic.music.unlock.migu": {
+          "cloudmusic.music.unblock.migu": {
             "default": false,
             "markdownDescription": "[https://www.migu.cn/](https://www.migu.cn/)",
             "scope": "window",
