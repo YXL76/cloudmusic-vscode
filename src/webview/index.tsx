@@ -52,6 +52,7 @@ export class Webview {
     );
     const main = <Login imgSrc={imgSrc} />;
     const { panel, setHtml } = this.getPanel(i18n.word.signIn);
+    setHtml(<div></div>);
 
     const timer = setInterval(
       () =>
@@ -80,6 +81,7 @@ export class Webview {
       <MusicRanking key={1} record={allData} index={1} nonce={nonce} />,
     ];
     const { panel, setHtml } = this.getPanel(i18n.word.musicRanking);
+    setHtml(<div></div>);
 
     type RecvMessage = {
       command: "tab" | "song" | "album" | "artist";
@@ -151,6 +153,7 @@ export class Webview {
     let pageNo = 1;
     const main = await list(index, pageNo, time);
     const { panel, setHtml } = this.getPanel(`${i18n.word.comment} (${title})`);
+    setHtml(<div></div>);
 
     type Message = {
       command: "like" | "list" | "user" | "prev" | "next" | "floor" | "reply";
@@ -229,7 +232,9 @@ export class Webview {
           <title>{title}</title>
           <link rel="stylesheet" type="text/css" href={cssHref} />
         </head>
-        <body className="overflow-x-hidden">{main}</body>
+        <body className="overflow-x-hidden text-black dark:text-white">
+          {main}
+        </body>
       </html>
     );
   }

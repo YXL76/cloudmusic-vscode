@@ -39,7 +39,7 @@ const Comment = ({
         >
           {user.nickname}
         </div>
-        <div className="inline-block ml-4">{dayjs(time).fromNow()}</div>
+        <div className="inline-block ml-4 text-sm">{dayjs(time).fromNow()}</div>
       </div>
       <div className="mt-1">{content}</div>
       {beReplied && (
@@ -59,7 +59,7 @@ const Comment = ({
             className="like cursor-pointer inline-block"
             data-t={liked ? "unlike" : "like"}
           >
-            <FiThumbsUp size={13} color={liked ? "#2563EB" : "#FFF"} />
+            <FiThumbsUp size={13} color={liked ? "#2563EB" : undefined} />
           </div>
           <div className="inline-block ml-2">{likedCount}</div>
         </div>
