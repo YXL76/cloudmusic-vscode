@@ -1,6 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { h } from "preact";
-/** @jsx h */
+import * as React from "react";
 
 interface RawScriptProps {
   content: string;
@@ -8,10 +6,7 @@ interface RawScriptProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const RawScript = ({
-  content,
-  nonce,
-}: RawScriptProps): h.JSX.Element => (
+export const RawScript = ({ content, nonce }: RawScriptProps): JSX.Element => (
   // eslint-disable-next-line @typescript-eslint/naming-convention
   <script nonce={nonce} dangerouslySetInnerHTML={{ __html: content }}></script>
 );
@@ -29,7 +24,7 @@ export const Tabs = ({
   title,
   titles,
   selectd,
-}: TabsProps): h.JSX.Element => (
+}: TabsProps): JSX.Element => (
   <nav className={`flex flex-row items-center ${className ?? ""}`} id="tabs">
     {title && (
       <div className="inline-block px-4 font-bold text-xl text-black dark:text-white">

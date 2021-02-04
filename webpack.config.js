@@ -15,11 +15,9 @@ readdirSync(scriptsPath).map(
   (file) =>
     (definitions[file.substr(0, file.lastIndexOf("."))] = `\`${
       transformSync(readFileSync(resolve(scriptsPath, file)).toString(), {
+        target: "chrome83",
         sourcemap: false,
         minify: true,
-        minifyWhitespace: true,
-        minifyIdentifiers: true,
-        minifySyntax: true,
       }).code
     }\``)
 );
@@ -75,11 +73,6 @@ module.exports = (_, options) =>
     ],
     resolve: {
       extensions: [".ts", ".js", ".tsx", ".jsx"],
-      alias: {
-        react: "preact/compat",
-        "react-dom": "preact/compat",
-        "react-dom/test-utils": "preact/test-utils",
-      },
     },
     target: "node",
   });

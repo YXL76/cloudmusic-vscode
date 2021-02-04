@@ -27,13 +27,7 @@
         "@typescript-eslint/semi": "warn",
         "no-empty": ["error", { "allowEmptyCatch": true }]
       },
-      "settings": {
-        // refer to https://github.com/preactjs/eslint-config-preact/blob/master/index.js
-        "react": {
-          "pragma": "h",
-          "version": "16.0"
-        }
-      }
+      "settings": { "react": { "version": "17.0" } }
     },
     {
       "env": { "browser": true },

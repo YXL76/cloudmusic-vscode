@@ -1,10 +1,8 @@
+import * as React from "react";
 import { RawScript, Tabs } from ".";
 import { FiPlayCircle } from "react-icons/fi";
 import type { RecordData } from "../constant";
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { h } from "preact";
 import i18n from "../i18n";
-/** @jsx h */
 
 interface MusicCardProps extends RecordData {
   max: number;
@@ -19,11 +17,11 @@ const MusicCard = ({
   al,
   playCount,
   max,
-}: MusicCardProps): h.JSX.Element => (
+}: MusicCardProps): JSX.Element => (
   <div className="relative box-border h-24 w-full my-4 rounded-xl bg-black bg-opacity-20 shadow-md flex flex-row px-4 justify-between items-center overflow-hidden">
     <div
       className="absolute h-full bg-blue-600 left-0 top-0 -z-10"
-      style={`width: ${Math.ceil(playCount / max)}%`}
+      style={{ width: Math.ceil(playCount / max) }}
     />
     <img
       className="album cursor-pointer rounded-full h-20 w-20"
@@ -64,7 +62,7 @@ const MusicRanking = ({
   record,
   nonce,
   index,
-}: MusicRankingProps): h.JSX.Element => {
+}: MusicRankingProps): JSX.Element => {
   const max =
     record.reduce((pre, { playCount }) => Math.max(pre, playCount), 0) / 100;
   return (

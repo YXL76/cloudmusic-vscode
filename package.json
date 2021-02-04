@@ -836,6 +836,8 @@
     "@types/lru-cache": "5.1.0",
     "@types/node": "12.19.12",
     "@types/qrcode": "1.3.5",
+    "@types/react": "17.0.1",
+    "@types/react-dom": "17.0.0",
     "@types/vscode": "1.52.0",
     "@typescript-eslint/eslint-plugin": "4.14.2",
     "@typescript-eslint/parser": "4.14.2",
@@ -868,9 +870,9 @@
     "file-type": "16.2.0",
     "lru-cache": "6.0.0",
     "node-cache": "5.1.2",
-    "preact": "10.5.12",
-    "preact-render-to-string": "5.1.12",
     "qrcode": "1.4.4",
+    "react": "17.0.1",
+    "react-dom": "17.0.1",
     "react-icons": "4.1.0"
   }
 }

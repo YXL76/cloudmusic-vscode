@@ -1,5 +1,6 @@
 export * from "./components";
 
+import * as React from "react";
 import { ColorThemeKind, Uri, ViewColumn, window } from "vscode";
 import {
   MultiStepInput,
@@ -23,13 +24,10 @@ import CommentList from "./comment";
 import { CommentType } from "../api";
 import Login from "./login";
 import MusicRanking from "./musicRanking";
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { h } from "preact";
 import i18n from "../i18n";
-import render from "preact-render-to-string";
+import { renderToStaticMarkup } from "react-dom/server";
 import { resolve } from "path";
 import { toDataURL } from "qrcode";
-/** @jsx h */
 
 const getNonce = (): string => {
   let text = "";
@@ -209,7 +207,7 @@ export class Webview {
     const css = panel.webview.asWebviewUri(this.cssUri).toString();
     return {
       panel,
-      setHtml: (main: h.JSX.Element) =>
+      setHtml: (main: JSX.Element) =>
         (panel.webview.html = `<!DOCTYPE html>${this.layout(
           title,
           main,
@@ -218,8 +216,8 @@ export class Webview {
     };
   }
 
-  private static layout(title: string, main: h.JSX.Element, cssHref: string) {
-    return render(
+  private static layout(title: string, main: JSX.Element, cssHref: string) {
+    return renderToStaticMarkup(
       <html
         lang="en"
         className={

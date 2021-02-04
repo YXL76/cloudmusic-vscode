@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "jsx": "react-jsx",
-    "jsxImportSource": "preact",
     "lib": ["es2019"],
     "module": "commonjs",
     "noEmit": true,

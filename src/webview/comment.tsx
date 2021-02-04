@@ -1,12 +1,10 @@
+import * as React from "react";
 import * as dayjs from "dayjs";
 import * as relativeTime from "dayjs/plugin/relativeTime";
 import { RawScript, Tabs } from ".";
 import type { CommentDetail } from "../constant";
 import { FiThumbsUp } from "react-icons/fi";
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-import { h } from "preact";
 import i18n from "../i18n";
-/** @jsx h */
 
 dayjs.extend(relativeTime);
 
@@ -22,7 +20,7 @@ const Comment = ({
   liked,
   replyCount,
   beReplied,
-}: CommentProps): h.JSX.Element => (
+}: CommentProps) => (
   <div
     className="comment box-border w-full my-4 rounded-xl bg-black bg-opacity-20 shadow-md flex flex-row px-4 pb-2 pt-4 overflow-hidden"
     data-id={commentId}
@@ -98,7 +96,7 @@ const CommentList = ({
   comments,
   nonce,
   index,
-}: CommentListProps): h.JSX.Element => {
+}: CommentListProps): JSX.Element => {
   return (
     <div>
       <div className="box-border w-screen p-4">
