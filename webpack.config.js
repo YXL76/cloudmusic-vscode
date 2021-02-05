@@ -17,7 +17,7 @@ readdirSync(scriptsPath).forEach(
     (definitions[file.substr(0, file.indexOf("."))] = `\`${
       transformSync(readFileSync(resolve(scriptsPath, file)).toString(), {
         loader: "ts",
-        target: "chrome83",
+        target: "chrome87",
         sourcemap: false,
         minify: true,
       }).code

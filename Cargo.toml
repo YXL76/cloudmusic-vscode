@@ -18,7 +18,7 @@ branch = "main"
 git = "https://github.com/neon-bindings/neon"
 branch = "main"
 default-features = false
-features = ["napi-5", "event-queue-api"]
+features = ["napi-6", "event-queue-api"]
 
 [dependencies.rodio]
 git = "https://github.com/YXL76/rodio"
