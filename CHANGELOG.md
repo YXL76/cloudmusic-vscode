@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [7.0.2] - 2021-02-05
+
+### Fixed
+
+- Do not play free trial when unblocking is enabled
+
 ## [7.0.1] - 2021-02-05
 
 ### Added
