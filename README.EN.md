@@ -1,4 +1,4 @@
-<div align="center">
+<div style="display: flex; flex-direction: column; align-items: center;">
 
 <img src="https://s1.ax1x.com/2020/07/07/UAKcaq.png" alt="CLOUDMUSIC" width="256"/>
 
