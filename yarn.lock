@@ -1224,7 +1224,7 @@ __metadata:
     dayjs: 1.10.4
     debug: 4.3.1
     esbuild: 0.8.42
-    esbuild-loader: 2.8.0
+    esbuild-loader: 2.9.0
     eslint: 7.19.0
     eslint-config-prettier: 7.2.0
     eslint-plugin-prettier: 3.3.1
@@ -1913,21 +1913,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-loader@npm:2.8.0":
-  version: 2.8.0
-  resolution: "esbuild-loader@npm:2.8.0"
+"esbuild-loader@npm:2.9.0":
+  version: 2.9.0
+  resolution: "esbuild-loader@npm:2.9.0"
   dependencies:
-    esbuild: ^0.8.33
+    esbuild: ^0.8.42
+    joycon: ^2.2.5
+    json5: ^2.2.0
     loader-utils: ^2.0.0
     type-fest: ^0.20.2
     webpack-sources: ^2.2.0
   peerDependencies:
     webpack: ^4.40.0 || ^5.0.0
-  checksum: 2e40d2a9b19bddd3820b0ca1642a2011fd2b7155c0d4df645c455f4cb226eed602af68dee129d88b6431306f0a7f8c8874fa34087d67a2de3a57103b7a0aa282
+  checksum: 5ee61aaef683327e01d6efedca613e8f557e8c733d5a525eb76f2180ffea796c11d86290494db32dfbacf9b062077978a24a486f67e9d3ffa718c2bdff622c3b
   languageName: node
   linkType: hard
 
-"esbuild@npm:0.8.42, esbuild@npm:^0.8.33":
+"esbuild@npm:0.8.42, esbuild@npm:^0.8.42":
   version: 0.8.42
   resolution: "esbuild@npm:0.8.42"
   bin:
@@ -3013,6 +3015,13 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
+"joycon@npm:^2.2.5":
+  version: 2.2.5
+  resolution: "joycon@npm:2.2.5"
+  checksum: 7908f551e05aa754d1068053ec1304c12f3abc9c812f7c5a58bef7d35d247c3b1da14e508970bd411191099949756e2190e24c24b3382f818e7cda83e8ea1899
+  languageName: node
+  linkType: hard
+
 "js-tokens@npm:^3.0.0 || ^4.0.0, js-tokens@npm:^4.0.0":
   version: 4.0.0
   resolution: "js-tokens@npm:4.0.0"
@@ -3088,7 +3097,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"json5@npm:^2.1.2":
+"json5@npm:^2.1.2, json5@npm:^2.2.0":
   version: 2.2.0
   resolution: "json5@npm:2.2.0"
   dependencies:
