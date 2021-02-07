@@ -57,7 +57,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fullhuman/postcss-purgecss@npm:^3.0.0":
+"@fullhuman/postcss-purgecss@npm:^3.1.3":
   version: 3.1.3
   resolution: "@fullhuman/postcss-purgecss@npm:3.1.3"
   dependencies:
@@ -1243,7 +1243,7 @@ __metadata:
     react-dom: 17.0.1
     react-icons: 4.2.0
     supports-color: 8.1.1
-    tailwindcss: 2.0.2
+    tailwindcss: 2.0.3
     typescript: 4.1.3
     webpack: 5.21.1
     webpack-cli: 4.5.0
@@ -2359,7 +2359,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fs-extra@npm:^9.0.0, fs-extra@npm:^9.0.1":
+"fs-extra@npm:^9.0.0, fs-extra@npm:^9.1.0":
   version: 9.1.0
   resolution: "fs-extra@npm:9.1.0"
   dependencies:
@@ -3595,7 +3595,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"object-hash@npm:^2.0.3":
+"object-hash@npm:^2.1.1":
   version: 2.1.1
   resolution: "object-hash@npm:2.1.1"
   checksum: fe49a0864cba7ac4055c604295692ae75f5f4d22ba929aaaa987469809d17ab030d1111e8f0d425a070fa4a78b8021b55260e26e98b66b59e0f7be2bd9069fb8
@@ -4577,7 +4577,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"reduce-css-calc@npm:^2.1.6":
+"reduce-css-calc@npm:^2.1.8":
   version: 2.1.8
   resolution: "reduce-css-calc@npm:2.1.8"
   dependencies:
@@ -5175,29 +5175,29 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:2.0.2":
-  version: 2.0.2
-  resolution: "tailwindcss@npm:2.0.2"
+"tailwindcss@npm:2.0.3":
+  version: 2.0.3
+  resolution: "tailwindcss@npm:2.0.3"
   dependencies:
-    "@fullhuman/postcss-purgecss": ^3.0.0
+    "@fullhuman/postcss-purgecss": ^3.1.3
     bytes: ^3.0.0
     chalk: ^4.1.0
     color: ^3.1.3
     detective: ^5.2.0
     didyoumean: ^1.2.1
-    fs-extra: ^9.0.1
+    fs-extra: ^9.1.0
     html-tags: ^3.1.0
     lodash: ^4.17.20
     modern-normalize: ^1.0.0
     node-emoji: ^1.8.1
-    object-hash: ^2.0.3
+    object-hash: ^2.1.1
     postcss-functions: ^3
     postcss-js: ^3.0.3
     postcss-nested: ^5.0.1
     postcss-selector-parser: ^6.0.4
     postcss-value-parser: ^4.1.0
     pretty-hrtime: ^1.0.3
-    reduce-css-calc: ^2.1.6
+    reduce-css-calc: ^2.1.8
     resolve: ^1.19.0
   peerDependencies:
     autoprefixer: ^10.0.2
@@ -5205,7 +5205,7 @@ fsevents@~2.3.1:
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: c7b874ebd9a5277cc3bbd9b77482baa79a0a26a966174c47b3b703ef168921c64f153cbd824ef724182a95eb1e93297c2fefbeca8a13ce0745865591de515757
+  checksum: a6c86d8992c6f743ac0a6650efe5f83ecdc96e1526accabf026fcdaea43cc40e5d44fb0fdfcecb529787c09f62a0618bbab4e16f9982573ca804f20f1057a4c8
   languageName: node
   linkType: hard
 
