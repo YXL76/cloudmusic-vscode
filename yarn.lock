@@ -1241,7 +1241,7 @@ __metadata:
     qrcode: 1.4.4
     react: 17.0.1
     react-dom: 17.0.1
-    react-icons: 4.1.0
+    react-icons: 4.2.0
     supports-color: 8.1.1
     tailwindcss: 2.0.2
     typescript: 4.1.3
@@ -4479,12 +4479,12 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"react-icons@npm:4.1.0":
-  version: 4.1.0
-  resolution: "react-icons@npm:4.1.0"
+"react-icons@npm:4.2.0":
+  version: 4.2.0
+  resolution: "react-icons@npm:4.2.0"
   peerDependencies:
     react: "*"
-  checksum: 08d768e9c20a061a11de6c0050f0b199451b83592ef2fdb1add9f1f14ff6f356e1950621c3fd257f18383bb917e04577d03740b9be0754046bc435e7897141f9
+  checksum: 0052e25c6aacab93da3328ab856e4971214dce082de4bce857801802903366c7a8f9f490fe02ecd4ce181512b7b55cac12d6273c3c8dccc0e3b71b30dfd28256
   languageName: node
   linkType: hard
 
