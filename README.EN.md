@@ -98,7 +98,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |     module      |      function      | status |
 | :-------------: | :----------------: | :----: |
 |  artist_album   |    歌手专辑列表    |   ✔️   |
-|   artist_desc   |      歌手介绍      |        |
+|   artist_desc   |      歌手介绍      |   ✔️   |
 |  artist_detail  |      歌手详情      |        |
 |   artist_list   |      歌手分类      |   ✔️   |
 |    artist_mv    |    歌手相关 MV     |   ❌   |
