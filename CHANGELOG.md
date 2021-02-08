@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [7.1.2] - 2021-02-08
+
+### Added
+
+- Ignore `.vim` folder
+
 ## [7.1.0] - 2021-02-08
 
 ### Added

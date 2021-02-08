@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "cloudmusic",
   "description": "Netease Music for VS Code",
-  "version": "7.1.1",
+  "version": "7.1.2",
   "publisher": "YXL",
   "engines": {
     "vscode": "^1.53.0"

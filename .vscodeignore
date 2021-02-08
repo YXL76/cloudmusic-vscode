@@ -11,7 +11,6 @@ yarn.lock
 
 # configuration
 .github
-.vscode
 **/gulpfile.js
 **/renovate.json
 **/webpack.config.js
@@ -23,6 +22,10 @@ yarn.lock
 **/postcss.config.js
 **/tailwind.config.js
 Cargo.*
+
+## editors
+.vim
+.vscode
 
 # scoure code
 src
