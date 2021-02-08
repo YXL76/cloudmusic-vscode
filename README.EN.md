@@ -1,9 +1,3 @@
-<div align="center">
-
-<img align="center" src="https://s1.ax1x.com/2020/07/07/UAKcaq.png" alt="CLOUDMUSIC" width="256"/>
-
-[简体中文](./README.md) | English
-
 # CLOUDMUSIC
 
 > Netease Music for VS Code
@@ -12,7 +6,7 @@
 [![Installs](https://img.shields.io/visual-studio-marketplace/i/yxl.cloudmusic.svg?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=yxl.cloudmusic)
 [![Rating](https://img.shields.io/visual-studio-marketplace/stars/yxl.cloudmusic.svg?style=for-the-badge)](https://marketplace.visualstudio.com/items?itemName=yxl.cloudmusic)
 
-</div>
+[简体中文](./README.md) | English
 
 ## Table of contents
 
