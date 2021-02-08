@@ -59,6 +59,25 @@ export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
   return ret;
 }
 
+type ArtistDesc = { ti: string; txt: string }[];
+
+export async function apiArtistDesc(id: number): Promise<ArtistDesc> {
+  const key = `artist_desc${id}`;
+  const value = apiCache.get<ArtistDesc>(key);
+  if (value) return value;
+  try {
+    const { introduction } = await weapiRequest<{ introduction: ArtistDesc }>(
+      "https://music.163.com/weapi/artist/introduction",
+      { id }
+    );
+    apiCache.set(key, introduction);
+    return introduction;
+  } catch (err) {
+    console.error(err);
+  }
+  return [];
+}
+
 export async function apiArtistList(
   type: ArtistType,
   area: ArtistArea,
