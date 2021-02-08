@@ -1,6 +1,6 @@
-<div style="display: flex; flex-direction: column; align-items: center;">
+<div align="center">
 
-<img src="https://s1.ax1x.com/2020/07/07/UAKcaq.png" alt="CLOUDMUSIC" width="256"/>
+<img align="center" src="https://s1.ax1x.com/2020/07/07/UAKcaq.png" alt="CLOUDMUSIC" width="256"/>
 
 [简体中文](./README.md) | English
 
