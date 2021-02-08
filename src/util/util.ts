@@ -134,6 +134,7 @@ export async function load(element: QueueContent): Promise<void> {
 }
 
 const enum PickType {
+  description,
   artist,
   album,
   albums,
@@ -664,6 +665,7 @@ export async function pickArtist(
       {
         label: `${ICON.description} ${i18n.word.description}`,
         detail: briefDesc,
+        type: PickType.description,
       },
       {
         label: `${ICON.album} ${i18n.word.album}`,
@@ -697,6 +699,9 @@ export async function pickArtist(
     ],
   });
   switch (pick.type) {
+    case PickType.description:
+      await Webview.description(id, name);
+      break;
     case PickType.albums:
       return async (input: MultiStepInput) =>
         pickAlbums(input, step + 1, await apiArtistAlbum(pick.id as number));

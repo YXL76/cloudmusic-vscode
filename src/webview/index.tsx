@@ -11,6 +11,7 @@ import {
 } from "../util";
 import {
   SortType,
+  apiArtistDesc,
   apiCommentFloor,
   apiCommentLike,
   apiCommentNew,
@@ -22,6 +23,7 @@ import {
 import { AccountManager } from "../manager";
 import CommentList from "./comment";
 import { CommentType } from "../api";
+import Description from "./description";
 import Login from "./login";
 import MusicRanking from "./musicRanking";
 import i18n from "../i18n";
@@ -70,6 +72,14 @@ export class Webview {
     );
     panel.onDidDispose(() => clearInterval(timer));
 
+    setHtml(main);
+  }
+
+  static async description(id: number, name: string): Promise<void> {
+    const desc = await apiArtistDesc(id);
+
+    const main = <Description name={name} desc={desc} />;
+    const { setHtml } = this.getPanel(name);
     setHtml(main);
   }
 
