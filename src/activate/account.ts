@@ -161,10 +161,10 @@ export function initAccount(context: ExtensionContext): void {
             break;
           case Type.musicRanking:
             await Webview.musicRanking();
-            break;
+            return;
           case Type.signOut:
             void commands.executeCommand("cloudmusic.signout");
-            break;
+            return;
         }
         return input.stay();
       }

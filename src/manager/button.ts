@@ -89,18 +89,16 @@ export class ButtonManager {
           id,
         });
       }
-      const button = await input.showQuickPick({
+      const { id } = await input.showQuickPick({
         title: "",
         step: 1,
         totalSteps: 1,
         items,
         placeholder: i18n.sentence.hint.button,
       });
-      const { id } = button;
       this.buttonShow[id] = !this.buttonShow[id];
-      if (LoggedIn.get()) {
+      if (LoggedIn.get())
         this.buttonShow[id] ? this.buttons[id].show() : this.buttons[id].hide();
-      }
       await this.context.globalState.update(BUTTON_KEY, this.buttonShow);
       return input.stay();
     };
