@@ -14,7 +14,7 @@ const UNLOCK_MUSIC_MIGU = conf.get<boolean>("music.unblock.migu");
 const UNLOCK_MUSIC_KUGOU = conf.get<boolean>("music.unblock.kugou");
 const UNLOCK_MUSIC_JOOX = conf.get<boolean>("music.unblock.joox");
 
-export const UNLOCK_MUSIC = {
+export const UNBLOCK_MUSIC = {
   enabled:
     UNLOCK_MUSIC_KUWO ||
     UNLOCK_MUSIC_MIGU ||

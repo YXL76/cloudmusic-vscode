@@ -5,7 +5,7 @@ import type {
   SongsItem,
 } from "../constant";
 import { LyricCache, apiCache } from "../util";
-import { MUSIC_QUALITY, UNLOCK_MUSIC, unplayable } from "../constant";
+import { MUSIC_QUALITY, UNBLOCK_MUSIC, unplayable } from "../constant";
 import {
   apiRequest,
   eapiRequest,
@@ -96,7 +96,7 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
           ids: `[${ids.join(",")}]`,
         })
           .then(({ songs, privileges }) => {
-            if (UNLOCK_MUSIC.enabled) {
+            if (UNBLOCK_MUSIC.enabled) {
               for (let i = 0; i < privileges.length; ++i) {
                 if (privileges[i].st < 0) {
                   unplayable.add(songs[i].id);
@@ -130,7 +130,7 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
 
 export async function apiSongUrl(song: SongsItem): Promise<SongDetail> {
   try {
-    if (UNLOCK_MUSIC.enabled) {
+    if (UNBLOCK_MUSIC.enabled) {
       if (unplayable.has(song.id)) {
         const data = await unblock(song);
         if (data) return data;

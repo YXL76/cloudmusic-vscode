@@ -5,7 +5,7 @@ import type {
   TrackIdsItem,
   UserDetail,
 } from "../constant";
-import { UNLOCK_MUSIC, unplayable } from "../constant";
+import { UNBLOCK_MUSIC, unplayable } from "../constant";
 import {
   apiRequest,
   solvePlaylistItem,
@@ -97,7 +97,7 @@ export async function apiPlaylistDetail(id: number): Promise<SongsItem[]> {
       s: 8,
     });
     if (tracks.length === trackIds.length) {
-      if (UNLOCK_MUSIC.enabled) {
+      if (UNBLOCK_MUSIC.enabled) {
         for (let i = 0; i < privileges.length; ++i) {
           if (privileges[i].st < 0) {
             unplayable.add(tracks[i].id);
