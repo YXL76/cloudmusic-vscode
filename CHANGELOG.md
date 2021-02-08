@@ -6,6 +6,21 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [7.1.0] - 2021-02-08
+
+### Added
+
+- API: support `artist_desc`
+- Webview: add `description` page
+
+### Changed
+
+- QuickPick: improve ux
+
+### Fixed
+
+- Use a specific dirname when unblocking is enabled ([#210](https://github.com/YXL76/cloudmusic-vscode/issues/210))
+
 ## [7.0.2] - 2021-02-05
 
 ### Fixed
