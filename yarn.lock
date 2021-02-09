@@ -1243,7 +1243,7 @@ __metadata:
     react-icons: 4.2.0
     supports-color: 8.1.1
     tailwindcss: 2.0.3
-    typescript: 4.1.3
+    typescript: 4.1.4
     webpack: 5.21.2
     webpack-cli: 4.5.0
   languageName: unknown
@@ -5367,23 +5367,23 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-typescript@4.1.3:
-  version: 4.1.3
-  resolution: "typescript@npm:4.1.3"
+typescript@4.1.4:
+  version: 4.1.4
+  resolution: "typescript@npm:4.1.4"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 4f7ab1506ea22c7a1c313ec5b4285e93ce08d709ad6086d02d3096adb399ca339972ee56d1e578213c51dd0fb7b0fad50283c2d3c39642405644458ae29774f8
+  checksum: 2da55c253179d360bbc846436c42a5cbbffba99dfed69593450143b1c7f46fe43eab145b84a80f51d8e6d1be6dd4a6a0885e78495a42fc34c4a768595131e148
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@4.1.3#builtin<compat/typescript>":
-  version: 4.1.3
-  resolution: "typescript@patch:typescript@npm%3A4.1.3#builtin<compat/typescript>::version=4.1.3&hash=cc6730"
+"typescript@patch:typescript@4.1.4#builtin<compat/typescript>":
+  version: 4.1.4
+  resolution: "typescript@patch:typescript@npm%3A4.1.4#builtin<compat/typescript>::version=4.1.4&hash=cc6730"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 017af992148346e671d5b83b041773825888e9c94db8d2b9472cdbb6d6f0ee85927817473121524d319f8be6ffe5a6904d27ff6ef21356d2274fcadd52e17938
+  checksum: d913f9d92f15437627d35ec24bb28740c5f550843a0442977cb61be0973aa760d618b33f4426205ccff920442ed38256b7d4b48731cfb7084ce0977c07e35404
   languageName: node
   linkType: hard
 
