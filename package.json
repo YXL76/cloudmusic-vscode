@@ -854,7 +854,7 @@
     "eslint-config-prettier": "7.2.0",
     "eslint-plugin-prettier": "3.3.1",
     "eslint-plugin-react": "7.22.0",
-    "eslint-webpack-plugin": "2.5.0",
+    "eslint-webpack-plugin": "2.5.1",
     "postcss": "8.2.6",
     "postcss-cli": "8.3.1",
     "postcss-import": "14.0.0",
