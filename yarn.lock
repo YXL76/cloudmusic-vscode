@@ -1228,7 +1228,7 @@ __metadata:
     eslint-config-prettier: 7.2.0
     eslint-plugin-prettier: 3.3.1
     eslint-plugin-react: 7.22.0
-    eslint-webpack-plugin: 2.5.0
+    eslint-webpack-plugin: 2.5.1
     file-type: 16.2.0
     lodash: 4.17.20
     lru-cache: 6.0.0
@@ -2031,9 +2031,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-webpack-plugin@npm:2.5.0":
-  version: 2.5.0
-  resolution: "eslint-webpack-plugin@npm:2.5.0"
+"eslint-webpack-plugin@npm:2.5.1":
+  version: 2.5.1
+  resolution: "eslint-webpack-plugin@npm:2.5.1"
   dependencies:
     "@types/eslint": ^7.2.6
     arrify: ^2.0.1
@@ -2043,7 +2043,7 @@ __metadata:
   peerDependencies:
     eslint: ^7.0.0
     webpack: ^4.0.0 || ^5.0.0
-  checksum: 3ac76f39be708aee6bc8b1d7f81412301f271603c12e65420df424fd7c1e41a8e0c3e828ef1adce2494b0e94f02880810dc190896f9597d5ee7120e816a0126a
+  checksum: caa604a712c3cf82c0d8e9d40abd0f265f12e91ff50c55ce359a3e7585660c14e1352b625651af15fa8915881b250c983d3c81a55cbebb6a37d355ed62c8948b
   languageName: node
   linkType: hard
 
