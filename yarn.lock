@@ -218,12 +218,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:17.0.0":
-  version: 17.0.0
-  resolution: "@types/react-dom@npm:17.0.0"
+"@types/react-dom@npm:17.0.1":
+  version: 17.0.1
+  resolution: "@types/react-dom@npm:17.0.1"
   dependencies:
     "@types/react": "*"
-  checksum: 7ca9351b6c2523327cd7afe40082a37034898f65e9d86700236682efed910ba7c9cec10e9a3b829aa7b804b18791a28743ce468fcb42e9a788bfc33b84137e45
+  checksum: 695dd4bbef4fabdc726359e4031b2887b913d65fb2ff59e5a9e81f9ae20ca4dd8f2b6fe1f39fa5c1197babdb86f6b81b385f5d4438536f2ceeb5ff136102f45b
   languageName: node
   linkType: hard
 
@@ -1219,7 +1219,7 @@ __metadata:
     "@types/node": 12.19.12
     "@types/qrcode": 1.4.0
     "@types/react": 17.0.2
-    "@types/react-dom": 17.0.0
+    "@types/react-dom": 17.0.1
     "@types/vscode": 1.53.0
     "@typescript-eslint/eslint-plugin": 4.15.0
     "@typescript-eslint/parser": 4.15.0
