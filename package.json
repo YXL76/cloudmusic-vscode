@@ -848,7 +848,7 @@
     "autoprefixer": "10.2.4",
     "cssnano": "4.1.10",
     "debug": "4.3.1",
-    "esbuild": "0.8.47",
+    "esbuild": "0.8.48",
     "esbuild-loader": "2.9.2",
     "eslint": "7.20.0",
     "eslint-config-prettier": "7.2.0",
