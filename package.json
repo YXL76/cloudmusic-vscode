@@ -872,7 +872,7 @@
     "cacache": "15.0.5",
     "dayjs": "1.10.4",
     "file-type": "16.2.0",
-    "lodash": "4.17.20",
+    "lodash": "4.17.21",
     "lru-cache": "6.0.0",
     "node-cache": "5.1.2",
     "qrcode": "1.4.4",
