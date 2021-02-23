@@ -1253,7 +1253,7 @@ __metadata:
     supports-color: 8.1.1
     tailwindcss: 2.0.3
     typescript: 4.1.5
-    webpack: 5.23.0
+    webpack: 5.24.0
     webpack-cli: 4.5.0
   languageName: unknown
   linkType: soft
@@ -1903,10 +1903,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"es-module-lexer@npm:^0.3.26":
-  version: 0.3.26
-  resolution: "es-module-lexer@npm:0.3.26"
-  checksum: f6a6bfb5f38e7ecdb3fb5e530a9998dcf988356757460cb5f3b86240f6150bf5084aa651984a295d820c0532d097ab5296dad73f408f70e846ad566b733910fa
+"es-module-lexer@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "es-module-lexer@npm:0.4.0"
+  checksum: 41d29cc3eb7e648c535bba09e6511834cbb9d06ed4747972ad102e605e1134567a39a3b3f482b9148693a5a95caf7ffe828db9d8f1ede833b836a5d9593f1933
   languageName: node
   linkType: hard
 
@@ -5571,9 +5571,9 @@ typescript@4.1.5:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.23.0":
-  version: 5.23.0
-  resolution: "webpack@npm:5.23.0"
+"webpack@npm:5.24.0":
+  version: 5.24.0
+  resolution: "webpack@npm:5.24.0"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.46
@@ -5584,7 +5584,7 @@ typescript@4.1.5:
     browserslist: ^4.14.5
     chrome-trace-event: ^1.0.2
     enhanced-resolve: ^5.7.0
-    es-module-lexer: ^0.3.26
+    es-module-lexer: ^0.4.0
     eslint-scope: ^5.1.1
     events: ^3.2.0
     glob-to-regexp: ^0.4.1
@@ -5603,7 +5603,7 @@ typescript@4.1.5:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: eace31deaec4e59051308c91a00dee4fca02242c72f4b1929948616dff03715680ec65d61e67dfd18726eb1be49a863d98a0149a0f62c8a253dbfba3b8fac4a6
+  checksum: 6b7b0f9e4b60fb736ed80d37f16a08bfc7a4764c271b3f27108b0da5d8ee9639be15a62b24f4ae3528cf96d4bad7ec9d2439fec192bcc29d625ca03e918625df
   languageName: node
   linkType: hard
 
