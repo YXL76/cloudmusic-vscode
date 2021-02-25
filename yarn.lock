@@ -1234,7 +1234,7 @@ __metadata:
     esbuild: 0.8.51
     esbuild-loader: 2.9.2
     eslint: 7.20.0
-    eslint-config-prettier: 8.0.0
+    eslint-config-prettier: 8.1.0
     eslint-plugin-prettier: 3.3.1
     eslint-plugin-react: 7.22.0
     eslint-webpack-plugin: 2.5.2
@@ -1960,14 +1960,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:8.0.0":
-  version: 8.0.0
-  resolution: "eslint-config-prettier@npm:8.0.0"
+"eslint-config-prettier@npm:8.1.0":
+  version: 8.1.0
+  resolution: "eslint-config-prettier@npm:8.1.0"
   peerDependencies:
     eslint: ">=7.0.0"
   bin:
     eslint-config-prettier: bin/cli.js
-  checksum: 4f7eb2885af2e2647bc0da210b3bed613a376e74a9f7ae4b069204a4aae335735093323d21bf95eb814d3f0f5116f76cb00a7e0f1b5895fcced184e25a560d52
+  checksum: 409d3a071f8228d4c958a6a9be9d5ec2b357ce21b7b6cbb137096cade2c31f008a0a3c3533dee8979c0cd944f220a959710b30fd86f8b96f0ef1f4f557d740b3
   languageName: node
   linkType: hard
 
