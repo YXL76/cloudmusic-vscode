@@ -25,7 +25,7 @@ export async function apiLyric(id: number): Promise<LyricData> {
   try {
     const {
       lrc: { lyric },
-    } = await apiRequest<{ lrc: { lyric: string } }>(
+    } = await apiRequest<{ lrc: { lyric: string }; tlyric: { lyric: string } }>(
       "https://music.163.com/api/song/lyric",
       { id, lv: -1, kv: -1, tv: -1 }
     );

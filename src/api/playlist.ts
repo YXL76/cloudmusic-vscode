@@ -55,7 +55,7 @@ export async function apiPlaylistCreate(
         privacy, //0 为普通歌单，10 为隐私歌单
         type: "NORMAL", // NORMAL|VIDEO
       },
-      "pc"
+      { os: "pc" }
     );
     return true;
   } catch (err) {
@@ -71,7 +71,7 @@ export async function apiPlaylistDelete(id: number): Promise<boolean> {
       {
         ids: `[${id}]`,
       },
-      "pc"
+      { os: "pc" }
     );
     return true;
   } catch (err) {
@@ -197,7 +197,7 @@ export async function apiPlaylistTracks(
         trackIds: JSON.stringify(tracks),
         imme: "true",
       },
-      "pc"
+      { os: "pc" }
     );
     return true;
   } catch (err) {
@@ -218,7 +218,7 @@ export async function apiPlaylistUpdate(
         "/api/playlist/desc/update": `{"id":${id},"desc":"${desc}"}`,
         "/api/playlist/update/name": `{"id":${id},"name":"${name}"}`,
       },
-      "pc"
+      { os: "pc" }
     );
     return true;
   } catch (err) {

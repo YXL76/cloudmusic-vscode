@@ -23,7 +23,7 @@ export async function apiCommentAdd(
     await weapiRequest(
       `https://music.163.com/weapi/resource/comments/add`,
       { threadId: `${resourceTypeMap[type]}${id}`, content },
-      "pc"
+      { os: "pc" }
     );
     return true;
   } catch (err) {
@@ -42,7 +42,7 @@ export async function apiCommentReply(
     await weapiRequest(
       `https://music.163.com/weapi/resource/comments/reply`,
       { threadId: `${resourceTypeMap[type]}${id}`, content, commentId },
-      "pc"
+      { os: "pc" }
     );
     return true;
   } catch (err) {
@@ -94,7 +94,7 @@ export async function apiCommentLike(
     await weapiRequest(
       `https://music.163.com/weapi/v1/comment/${t}`,
       { threadId: `${resourceTypeMap[type]}${id}`, commentId },
-      "pc"
+      { os: "pc" }
     );
     return true;
   } catch (err) {

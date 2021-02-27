@@ -132,7 +132,7 @@ export async function apiArtistSongs(
         offset,
         limit,
       },
-      "pc"
+      { os: "pc" }
     );
     const ret = songs.map(solveSongItem);
     apiCache.set(key, ret);
