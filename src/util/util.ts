@@ -624,7 +624,7 @@ export async function pickRadio(
         pickUser(input, step + 1, (pick as T).id);
     case PickType.subscribed:
       return async (input: MultiStepInput) =>
-        pickUsers(input, step + 1, apiDjSubscriber, false, -1, id);
+        pickUsers(input, step + 1, apiDjSubscriber, -1, id);
     case PickType.programs:
       return async (input: MultiStepInput) =>
         pickPrograms(input, step + 1, await apiDjProgram(id, programCount));
@@ -944,7 +944,7 @@ export async function pickPlaylist(
         pickSongs(input, step + 1, await apiPlaylistDetail(id));
     case PickType.subscribed:
       return (input: MultiStepInput) =>
-        pickUsers(input, step + 1, apiPlaylistSubscribers, true, 0, id);
+        pickUsers(input, step + 1, apiPlaylistSubscribers, 0, id);
     case PickType.user:
       return (input: MultiStepInput) =>
         pickUser(input, step + 1, (pick as T).id);
@@ -1091,10 +1091,10 @@ export async function pickUser(
   switch (pick.type) {
     case PickType.followeds:
       return (input: MultiStepInput) =>
-        pickUsers(input, step + 1, apiUserFolloweds, false, 0, uid);
+        pickUsers(input, step + 1, apiUserFolloweds, 0, uid);
     case PickType.follows:
       return (input: MultiStepInput) =>
-        pickUsers(input, step + 1, apiUserFollows, true, 0, uid);
+        pickUsers(input, step + 1, apiUserFollows, 0, uid);
     case PickType.playlist:
       return (input: MultiStepInput) =>
         pickPlaylist(input, step + 1, pick.item as PlaylistItem);
@@ -1109,12 +1109,10 @@ export async function pickUsers(
   step: number,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   func: (...args: any[]) => Promise<UserDetail[]>,
-  pagination: boolean,
   offset: number,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ...args: any[]
+  id: number
 ): Promise<InputStep> {
-  const users = await func(...args, limit, offset);
+  const users = await func(id, limit, offset);
   const pick = await input.showQuickPick(
     {
       title: i18n.word.user,
@@ -1122,17 +1120,15 @@ export async function pickUsers(
       items: pickUserDetails(users),
     },
     undefined,
-    pagination
-      ? { previous: offset > 0, next: users.length === limit }
-      : { previous: false, next: false }
+    { previous: offset > 0, next: users.length === limit }
   );
   if (pick === ButtonAction.previous)
     return input.stay((input: MultiStepInput) =>
-      pickUsers(input, step, func, pagination, offset - limit, args)
+      pickUsers(input, step, func, offset - limit, id)
     );
   if (pick === ButtonAction.next)
     return input.stay((input: MultiStepInput) =>
-      pickUsers(input, step, func, pagination, offset + limit, args)
+      pickUsers(input, step, func, offset + limit, id)
     );
   return (input: MultiStepInput) => pickUser(input, step + 1, pick.id);
 }

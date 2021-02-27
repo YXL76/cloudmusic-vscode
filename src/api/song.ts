@@ -85,7 +85,6 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
           privileges: { st: number }[];
         }>("https://music.163.com/weapi/v3/song/detail", {
           c: `[${ids.map((id) => `{"id":${id}}`).join(",")}]`,
-          ids: `[${ids.join(",")}]`,
         })
           .then(({ songs, privileges }) => {
             if (UNBLOCK_MUSIC.enabled) {

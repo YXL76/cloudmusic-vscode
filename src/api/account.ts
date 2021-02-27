@@ -81,8 +81,14 @@ export async function apiLike(
 ): Promise<boolean> {
   try {
     await weapiRequest(
-      `https://music.163.com/weapi/radio/like?alg=itembased&trackId=${trackId}&time=25`,
-      { trackId, like }
+      "https://music.163.com/api/radio/like",
+      {
+        alg: "itembased",
+        trackId,
+        like,
+        time: "3",
+      },
+      { os: "pc", appver: "2.7.1.198277" }
     );
     return true;
   } catch (err) {
@@ -114,7 +120,7 @@ export async function apiLogin(
     }>(
       "https://music.163.com/weapi/login",
       { username, password, rememberLogin: "true" },
-      "pc"
+      { os: "pc" }
     );
     return profile;
   } catch (err) {
@@ -134,7 +140,7 @@ export async function apiLoginCellphone(
     }>(
       "https://music.163.com/weapi/login/cellphone",
       { phone, countrycode, password, rememberLogin: "true" },
-      "pc"
+      { os: "pc" }
     );
     return profile;
   } catch (err) {
@@ -342,7 +348,8 @@ export async function apiUserDetail(uid: number): Promise<UserDetail | void> {
 
 export async function apiUserFolloweds(
   userId: number,
-  limit: number
+  limit: number,
+  offset: number
 ): Promise<UserDetail[]> {
   const key = `user_followeds${userId}-${limit}`;
   const value = apiCache.get<UserDetail[]>(key);
@@ -350,7 +357,7 @@ export async function apiUserFolloweds(
   try {
     const { followeds } = await eapiRequest<{ followeds: UserDetail[] }>(
       `https://music.163.com/eapi/user/getfolloweds/${userId}`,
-      { userId, time: -1, limit },
+      { userId, time: "0", limit, offset, getcounts: "true" },
       "/api/user/getfolloweds"
     );
     const ret = followeds.map(solveUserDetail);

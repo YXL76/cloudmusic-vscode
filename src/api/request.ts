@@ -87,12 +87,12 @@ const responseHandler = async <T>(
 export const weapiRequest = async <T = ParsedUrlQueryInput>(
   url: string,
   data: ParsedUrlQueryInput,
-  os?: OS
+  extraCookie: { os?: OS; appver?: string } = {}
 ): Promise<T> => {
   const headers = generateHeader(url);
   headers["Cookie"] = jsonToCookie({
     ...AccountManager.cookie,
-    ...(os ? { os } : {}),
+    ...extraCookie,
   });
   const csrfToken = csrfTokenReg.exec(headers["Cookie"]);
   data.csrf_token = csrfToken ? csrfToken[1] : "";
