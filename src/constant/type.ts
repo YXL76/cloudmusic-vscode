@@ -174,7 +174,7 @@ export type RawProgramDetail = {
 export type NativePlayer = unknown;
 
 export interface NativeModule {
-  // startKeyboardEvent(callback: (res: number) => void, prev: number): void;
+  startKeyboardEvent(callback: (res: number) => void): void;
 
   kuwoCrypt(msg: string): Buffer;
 

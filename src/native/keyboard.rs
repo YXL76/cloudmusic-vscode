@@ -1,5 +1,5 @@
 use neon::prelude::*;
-use std::{thread, time::Duration};
+use std::{sync::Arc, thread, time::Duration};
 
 static SLEEP_DURATION: Duration = Duration::from_millis(16);
 
@@ -9,14 +9,15 @@ use std::{os::raw::c_char, ptr, slice::from_raw_parts};
 use x11::xlib::{XOpenDisplay, XQueryKeymap};
 
 #[cfg(target_os = "linux")]
+static KEYS: [i32; 3] = [5, 4, 3];
+
+#[cfg(target_os = "linux")]
 pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-    let callback = cx.argument::<JsFunction>(0)?.root(&mut cx);
-    let prev = cx.argument::<JsNumber>(1)?.value(&mut cx) as i32;
+    let callback = Arc::new(cx.argument::<JsFunction>(0)?.root(&mut cx));
     let queue = cx.queue();
 
     thread::spawn(move || {
-        // let keys = [5, 4, 3];
-        let mut active = 0;
+        let mut prev = 0;
         let keymap: *mut c_char = [0; 32].as_mut_ptr();
 
         unsafe {
@@ -24,43 +25,35 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 
             loop {
                 thread::sleep(SLEEP_DURATION);
+                let mut flag = false;
                 XQueryKeymap(disp, keymap);
                 let b = from_raw_parts(keymap, 32)[21];
 
-                let state1 = b & 1 << 5 != 0;
-                let state2 = b & 1 << 4 != 0;
-                let state3 = b & 1 << 3 != 0;
+                for (i, &key) in KEYS.iter().enumerate() {
+                    if b & 1 << key != 0 {
+                        flag = true;
+                        if prev != key {
+                            prev = key;
+                            let callback = callback.clone();
+                            queue.send(move |mut cx| {
+                                let callback = callback.to_inner(&mut cx);
+                                let this = cx.undefined();
+                                let args = vec![cx.number(i as f64)];
 
-                if prev != 0 {
-                    if !state1 && !state2 && !state3 {
-                        break;
-                    }
-                } else {
-                    if state1 {
-                        active = 1;
-                        break;
-                    }
-                    if state2 {
-                        active = 2;
-                        break;
-                    }
-                    if state3 {
-                        active = 3;
+                                callback.call(&mut cx, this, args)?;
+                                Ok(())
+                            });
+                        }
                         break;
                     }
                 }
+                if !flag {
+                    prev = 0;
+                }
             }
         }
-
-        queue.send(move |mut cx| {
-            let callback = callback.into_inner(&mut cx);
-            let this = cx.undefined();
-            let args = vec![cx.number(active)];
-
-            callback.call(&mut cx, this, args)?;
-            Ok(())
-        });
     });
+
     Ok(cx.undefined())
 }
 
@@ -70,53 +63,50 @@ use winapi::um::winuser::{
 };
 
 #[cfg(target_os = "windows")]
+static KEYS: [i32; 3] = [
+    VK_MEDIA_PREV_TRACK,
+    VK_MEDIA_PLAY_PAUSE,
+    VK_MEDIA_NEXT_TRACK,
+];
+
+#[cfg(target_os = "windows")]
 pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     let callback = cx.argument::<JsFunction>(0)?.root(&mut cx);
-    let prev = cx.argument::<JsNumber>(1)?.value(&mut cx) as i32;
     let queue = cx.queue();
 
     thread::spawn(move || {
-        // let keys = [177, 179, 176];
-        let mut active = 0;
+        let mut prev = 0;
 
         loop {
             thread::sleep(SLEEP_DURATION);
+            let mut flag = false;
 
-            unsafe {
-                let state1 = GetAsyncKeyState(VK_MEDIA_PREV_TRACK) as u32 & 0x8000 != 0;
-                let state2 = GetAsyncKeyState(VK_MEDIA_PLAY_PAUSE) as u32 & 0x8000 != 0;
-                let state3 = GetAsyncKeyState(VK_MEDIA_NEXT_TRACK) as u32 & 0x8000 != 0;
+            for (i, &key) in KEYS.iter().enumerate() {
+                unsafe {
+                    if GetAsyncKeyState(*key) as u32 & 0x8000 != 0 {
+                        flag = true;
+                        if prev != key {
+                            prev = key;
+                            let callback = callback.clone();
+                            queue.send(move |mut cx| {
+                                let callback = callback.to_inner(&mut cx);
+                                let this = cx.undefined();
+                                let args = vec![cx.number(i as f64)];
 
-                if prev != 0 {
-                    if !state1 && !state2 && !state3 {
+                                callback.call(&mut cx, this, args)?;
+                                Ok(())
+                            });
+                        }
                         break;
                     }
-                } else {
-                    if state1 {
-                        active = 1;
-                        break;
-                    }
-                    if state2 {
-                        active = 2;
-                        break;
-                    }
-                    if state3 {
-                        active = 3;
-                        break;
+                    if !flag {
+                        prev = 0;
                     }
                 }
             }
         }
-
-        queue.send(move |mut cx| {
-            let callback = callback.into_inner(&mut cx);
-            let this = cx.undefined();
-            let args = vec![cx.number(active)];
-
-            callback.call(&mut cx, this, args)?;
-            Ok(())
-        });
     });
+
     Ok(cx.undefined())
 }
 
@@ -127,52 +117,45 @@ extern "C" {
 }
 
 #[cfg(target_os = "macos")]
+static KEYS: [i32; 3] = [98, 100, 101];
+
+#[cfg(target_os = "macos")]
 pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     let callback = cx.argument::<JsFunction>(0)?.root(&mut cx);
-    let prev = cx.argument::<JsNumber>(1)?.value(&mut cx) as i32;
     let queue = cx.queue();
 
     thread::spawn(move || {
-        // let keys = [98, 100, 101];
-        let mut active = 0;
+        let mut prev = 0;
 
         loop {
             thread::sleep(SLEEP_DURATION);
+            let mut flag = false;
 
-            unsafe {
-                let state1 = CGEventSourceKeyState(0, 98);
-                let state2 = CGEventSourceKeyState(0, 100);
-                let state3 = CGEventSourceKeyState(0, 101);
+            for (i, &key) in KEYS.iter().enumerate() {
+                unsafe {
+                    if CGEventSourceKeyState(0, key) {
+                        flag = true;
+                        if prev != key {
+                            prev = key;
+                            let callback = callback.clone();
+                            queue.send(move |mut cx| {
+                                let callback = callback.to_inner(&mut cx);
+                                let this = cx.undefined();
+                                let args = vec![cx.number(i as f64)];
 
-                if prev != 0 {
-                    if !state1 && !state2 && !state3 {
+                                callback.call(&mut cx, this, args)?;
+                                Ok(())
+                            });
+                        }
                         break;
                     }
-                } else {
-                    if state1 {
-                        active = 1;
-                        break;
-                    }
-                    if state2 {
-                        active = 2;
-                        break;
-                    }
-                    if state3 {
-                        active = 3;
-                        break;
+                    if !flag {
+                        prev = 0;
                     }
                 }
             }
         }
-
-        queue.send(move |mut cx| {
-            let callback = callback.into_inner(&mut cx);
-            let this = cx.undefined();
-            let args = vec![cx.number(active)];
-
-            callback.call(&mut cx, this, args)?;
-            Ok(())
-        });
     });
+
     Ok(cx.undefined())
 }

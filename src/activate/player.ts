@@ -1,26 +1,23 @@
+import { MEDIA_CONTROL, NATIVE } from "../constant";
 import { Player } from "../util";
+import { commands } from "vscode";
 
 export function initPlayer(): void {
   Player.init();
 
-  /* if (MEDIA_CONTROL) {
-      const handler = (res: number) => {
-        switch (res) {
-          case 0:
-            break;
-          case 1:
-            void commands.executeCommand("cloudmusic.previous");
-            break;
-          case 2:
-            void commands.executeCommand("cloudmusic.play");
-            break;
-          case 3:
-            void commands.executeCommand("cloudmusic.next");
-            break;
-        }
-        NATIVE.startKeyboardEvent(handler, res);
-      };
-
-      NATIVE.startKeyboardEvent(handler, 0);
-    } */
+  if (MEDIA_CONTROL) {
+    NATIVE.startKeyboardEvent((res: number) => {
+      switch (res) {
+        case 0:
+          void commands.executeCommand("cloudmusic.previous");
+          break;
+        case 1:
+          void commands.executeCommand("cloudmusic.play");
+          break;
+        case 2:
+          void commands.executeCommand("cloudmusic.next");
+          break;
+      }
+    });
+  }
 }

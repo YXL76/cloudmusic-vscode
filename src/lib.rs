@@ -2,12 +2,12 @@ use neon::prelude::*;
 
 mod native {
     // pub mod download;
-    // pub mod keyboard;
+    pub mod keyboard;
     pub mod kuwo_des;
     pub mod player;
 }
 // use native::download::*;
-// use native::keyboard::*;
+use native::keyboard::*;
 use native::kuwo_des::*;
 use native::player::*;
 
@@ -15,7 +15,7 @@ use native::player::*;
 fn main(mut cx: ModuleContext) -> NeonResult<()> {
     // cx.export_function("download", download)?;
 
-    // cx.export_function("startKeyboardEvent", start_keyboard_event)?;
+    cx.export_function("startKeyboardEvent", start_keyboard_event)?;
 
     cx.export_function("kuwoCrypt", kuwo_crypt)?;
 
