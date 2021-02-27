@@ -30,22 +30,14 @@ export async function apiLyric(id: number): Promise<LyricData> {
       { id, lv: -1, kv: -1, tv: -1 }
     );
     const lines = lyric.split("\n");
-    let prev = 0;
     for (const line of lines) {
-      const r = /^\[(\d{2,}):(\d{2})(?:[.:](\d{2,3}))?](.*)$/g.exec(
-        line.trim()
-      );
+      const r = /^\[(\d{2}):(\d{2})\.(\d{3})\](.*)$/g.exec(line.trim());
       if (r) {
         const minute = parseInt(r[1]);
         const second = parseInt(r[2]);
-        const millisecond = parseInt(r[3]) * (r[3].length === 2 ? 10 : 1);
-        const txt = r[4];
-        const current = (minute * 60 + second) * 1000 + millisecond;
-        if (current >= prev) {
-          prev = current;
-          time.push(current);
-          text.push(txt || "Lyric");
-        }
+        const millisecond = parseInt(r[3]);
+        time.push((minute * 60 + second) * 1000 + millisecond);
+        text.push(r[4] || "Lyric");
       }
     }
 
