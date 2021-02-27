@@ -19,6 +19,7 @@ export const NATIVE = __non_webpack_require__(
 ) as NativeModule;
 
 export const ACCOUNT_KEY = "account";
+export const CACHE_KEY = "cache";
 export const COOKIE_KEY = "cookie";
 export const BUTTON_KEY = "button";
 export const VOLUME_KEY = "volume";
@@ -32,11 +33,7 @@ export const CACHE_DIR = Uri.joinPath(SETTING_DIR, "cache");
 export const MUSIC_CACHE_DIR_NAME = `${MUSIC_QUALITY}${
   UNBLOCK_MUSIC.enabled ? "u" : ""
 }`;
-export const MUSIC_CACHE_DIR = Uri.joinPath(
-  CACHE_DIR,
-  "music",
-  MUSIC_CACHE_DIR_NAME
-);
+export const MUSIC_CACHE_DIR = Uri.joinPath(CACHE_DIR, "music");
 export const LYRIC_CACHE_DIR = Uri.joinPath(CACHE_DIR, "lyric");
 
 export const enum ICON {

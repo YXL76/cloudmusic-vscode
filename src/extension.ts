@@ -28,7 +28,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   initCommand(context);
   initStatusBar();
   initAccount(context);
-  initCache();
+  void initCache(context);
   initLocal(context);
 }
 
