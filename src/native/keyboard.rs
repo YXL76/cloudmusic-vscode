@@ -71,7 +71,7 @@ static KEYS: [i32; 3] = [
 
 #[cfg(target_os = "windows")]
 pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-    let callback = cx.argument::<JsFunction>(0)?.root(&mut cx);
+    let callback = Arc::new(cx.argument::<JsFunction>(0)?.root(&mut cx));
     let queue = cx.queue();
 
     thread::spawn(move || {
@@ -83,7 +83,7 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 
             for (i, &key) in KEYS.iter().enumerate() {
                 unsafe {
-                    if GetAsyncKeyState(*key) as u32 & 0x8000 != 0 {
+                    if GetAsyncKeyState(key) as u32 & 0x8000 != 0 {
                         flag = true;
                         if prev != key {
                             prev = key;
@@ -99,10 +99,10 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
                         }
                         break;
                     }
-                    if !flag {
-                        prev = 0;
-                    }
                 }
+            }
+            if !flag {
+                prev = 0;
             }
         }
     });
@@ -117,11 +117,11 @@ extern "C" {
 }
 
 #[cfg(target_os = "macos")]
-static KEYS: [i32; 3] = [98, 100, 101];
+static KEYS: [u16; 3] = [98, 100, 101];
 
 #[cfg(target_os = "macos")]
 pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-    let callback = cx.argument::<JsFunction>(0)?.root(&mut cx);
+    let callback = Arc::new(cx.argument::<JsFunction>(0)?.root(&mut cx));
     let queue = cx.queue();
 
     thread::spawn(move || {
@@ -149,10 +149,10 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
                         }
                         break;
                     }
-                    if !flag {
-                        prev = 0;
-                    }
                 }
+            }
+            if !flag {
+                prev = 0;
             }
         }
     });
