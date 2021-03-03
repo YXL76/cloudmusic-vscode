@@ -52,6 +52,7 @@ export default __non_webpack_require__(
       programRecommendation: string;
       qrcode: string;
       radioRecommendation: string;
+      showInEditor: string;
     };
     success: {
       dailyCheck: string;

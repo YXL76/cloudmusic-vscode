@@ -95,6 +95,7 @@ export class Player {
           while (lyric.time[lyric.index] <= pos - lyric.delay * 1000)
             ++lyric.index;
           ButtonManager.buttonLyric(lyric[lyric.type].text[lyric.index - 1]);
+          if (lyric.updatePanel) lyric.updatePanel(lyric.index - 1);
         }
       }
     }, 1000);

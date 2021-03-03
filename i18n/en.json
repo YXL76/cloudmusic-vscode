@@ -32,7 +32,8 @@
       "playlistRecommendation": "Playlist recommendation",
       "programRecommendation": "Program recommendation",
       "qrcode": "Use QR Code to sign in",
-      "radioRecommendation": "Radio recommendation"
+      "radioRecommendation": "Radio recommendation",
+      "showInEditor": "Show in editor"
     },
     "success": {
       "dailyCheck": "Daily check successful",

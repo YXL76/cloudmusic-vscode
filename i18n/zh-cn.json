@@ -32,7 +32,8 @@
       "playlistRecommendation": "歌单推荐",
       "programRecommendation": "推荐节目",
       "qrcode": "使用二维码登录",
-      "radioRecommendation": "精选播单"
+      "radioRecommendation": "精选播单",
+      "showInEditor": "在编辑器中显示"
     },
     "success": {
       "dailyCheck": "签到成功",

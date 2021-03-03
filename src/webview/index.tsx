@@ -4,6 +4,7 @@ import * as React from "react";
 import { ColorThemeKind, Uri, ViewColumn, window } from "vscode";
 import {
   MultiStepInput,
+  lyric,
   pickAlbum,
   pickArtist,
   pickSong,
@@ -25,6 +26,7 @@ import CommentList from "./comment";
 import { CommentType } from "../api";
 import Description from "./description";
 import Login from "./login";
+import Lyric from "./lyric";
 import MusicRanking from "./musicRanking";
 import i18n from "../i18n";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -73,6 +75,17 @@ export class Webview {
     panel.onDidDispose(() => clearInterval(timer));
 
     setHtml(main);
+  }
+
+  static lyric(): void {
+    const { panel, setHtml } = this.getPanel(i18n.word.lyric);
+
+    panel.onDidDispose(() => (lyric.updatePanel = undefined));
+
+    lyric.updatePanel = (index: number) =>
+      setHtml(
+        <Lyric otext={lyric.o.text[index]} ttext={lyric.t.text[index]} />
+      );
   }
 
   static async description(id: number, name: string): Promise<void> {

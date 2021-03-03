@@ -2,6 +2,7 @@ import { LyricCache, MultiStepInput, Player, lyric, pickUser } from "../util";
 import { ButtonManager } from "../manager";
 import { LyricType } from "../constant";
 import type { QuickPickItem } from "vscode";
+import { Webview } from "../webview";
 import { apiFmTrash } from "../api";
 import { commands } from "vscode";
 import i18n from "../i18n";
@@ -21,6 +22,7 @@ export function initStatusBar(): void {
       cache,
       disable,
       user,
+      panel,
     }
 
     await MultiStepInput.run((input) => pickMethod(input));
@@ -62,6 +64,10 @@ export function initStatusBar(): void {
           ...(user
             ? [{ label: `$(account) ${i18n.word.user}`, type: Type.user }]
             : []),
+          {
+            label: `$(book) ${i18n.sentence.label.showInEditor}`,
+            type: Type.panel,
+          },
         ],
       });
       switch (type) {
@@ -84,6 +90,9 @@ export function initStatusBar(): void {
         case Type.user:
           return (input: MultiStepInput) =>
             pickUser(input, 2, user?.userid || 0);
+        case Type.panel:
+          Webview.lyric();
+          break;
       }
       return input.stay();
     }

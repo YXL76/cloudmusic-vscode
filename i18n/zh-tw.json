@@ -32,7 +32,8 @@
       "playlistRecommendation": "歌單推薦",
       "programRecommendation": "推薦節目",
       "qrcode": "使用二維碼登錄",
-      "radioRecommendation": "精選播單"
+      "radioRecommendation": "精選播單",
+      "showInEditor": "在編輯器中顯示"
     },
     "success": {
       "dailyCheck": "簽到成功",

@@ -109,6 +109,7 @@ export type Lyric = {
   index: number;
   delay: number;
   type: LyricType;
+  updatePanel?: (inde: number) => void;
 } & LyricData;
 
 export type LyricSpecifyData = {
