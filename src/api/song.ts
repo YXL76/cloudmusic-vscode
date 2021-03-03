@@ -25,10 +25,12 @@ export async function apiLyric(id: number): Promise<LyricData> {
   try {
     const {
       lrc: { lyric },
-    } = await apiRequest<{ lrc: { lyric: string }; tlyric: { lyric: string } }>(
-      "https://music.163.com/api/song/lyric",
-      { id, lv: -1, kv: -1, tv: -1 }
-    );
+    } = await apiRequest<{
+      lrc: { lyric: string };
+      tlyric: { lyric: string };
+      lyricUser?: { nickname: string; userid: number };
+      transUser?: { nickname: string; userid: number };
+    }>("https://music.163.com/api/song/lyric", { id, lv: -1, kv: -1, tv: -1 });
     const lines = lyric.split("\n");
     for (const line of lines) {
       const r = /^\[(\d{2}):(\d{2})\.(\d{3})\](.*)$/g.exec(line.trim());

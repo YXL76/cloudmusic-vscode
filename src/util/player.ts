@@ -140,14 +140,12 @@ export class Player {
   }
 
   static togglePlay(): void {
-    if (this.treeitem?.item.id) {
+    if (!NATIVE.playerEmpty(this.player)) {
       if (Playing.get()) {
         NATIVE.playerPause(this.player);
         Playing.set(false);
       } else {
-        if (NATIVE.playerPlay(this.player)) {
-          Playing.set(true);
-        }
+        if (NATIVE.playerPlay(this.player)) Playing.set(true);
       }
     }
   }

@@ -108,7 +108,7 @@ export class LocalFileTreeItem extends TreeItem {
 
   constructor(
     public readonly label: string,
-    public readonly description: string,
+    public readonly description: string | undefined,
     public readonly tooltip: string
   ) {
     super(label);
