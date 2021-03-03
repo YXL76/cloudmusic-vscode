@@ -60,7 +60,7 @@ export function initLocal(context: ExtensionContext): void {
           void PersonalFm.set(false);
           QueueProvider.clear();
           QueueProvider.add(items);
-          void load(QueueProvider.songs[0]);
+          void load(QueueProvider.head);
         })
       )
   );
@@ -91,7 +91,7 @@ export function initLocal(context: ExtensionContext): void {
         void PersonalFm.set(false);
         QueueProvider.clear();
         QueueProvider.add([element]);
-        void load(QueueProvider.songs[0]);
+        void load(QueueProvider.head);
       })
   );
 }

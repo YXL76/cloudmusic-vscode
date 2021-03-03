@@ -25,7 +25,7 @@ export function initRadio(): void {
         void PersonalFm.set(false);
         QueueProvider.clear();
         QueueProvider.add(items);
-        void load(QueueProvider.songs[0]);
+        void load(QueueProvider.head);
       })
     )
   );
@@ -56,7 +56,7 @@ export function initRadio(): void {
           QueueProvider.clear();
           QueueProvider.add(items);
           QueueProvider.top(id);
-          void load(QueueProvider.songs[0]);
+          void load(QueueProvider.head);
         })
       )
   );

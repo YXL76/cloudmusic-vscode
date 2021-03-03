@@ -11,15 +11,12 @@ import i18n from "../i18n";
 export function initCommand(context: ExtensionContext): void {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.previous", () => {
-      const len = QueueProvider.songs.length - 1;
-      if (!PersonalFm.get() && len > 0) {
-        if (len === 1) void load(QueueProvider.songs[0]);
-        else
-          QueueProvider.refresh(() => {
-            QueueProvider.shift(-1);
-            void load(QueueProvider.songs[0]);
-          });
-      }
+      const len = QueueProvider.len;
+      if (!PersonalFm.get() && len > 0)
+        QueueProvider.refresh(() => {
+          QueueProvider.shift(-1);
+          void load(QueueProvider.head);
+        });
     })
   );
 
@@ -27,11 +24,11 @@ export function initCommand(context: ExtensionContext): void {
     commands.registerCommand("cloudmusic.next", async (repeat?: boolean) => {
       if (repeat) void load(Player.treeitem);
       else {
-        if (PersonalFm.get()) void load(await PersonalFm.next());
+        if (PersonalFm.get()) void load(await PersonalFm.head());
         else
           QueueProvider.refresh(() => {
             QueueProvider.shift(1);
-            void load(QueueProvider.songs[0]);
+            void load(QueueProvider.head);
           });
       }
     })

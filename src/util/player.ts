@@ -15,15 +15,15 @@ import type { QueueContent } from "../treeview";
 import { createWriteStream } from "fs";
 
 async function prefetch() {
-  if (QueueProvider.songs[1] instanceof LocalFileTreeItem) return;
   try {
-    const { item } = PersonalFm.get()
-      ? PersonalFm.item[1]
-      : QueueProvider.songs[1];
-    const idString = `${item.id}`;
+    const treeitem = PersonalFm.get()
+      ? await PersonalFm.next()
+      : QueueProvider.next;
+    if (!treeitem || treeitem instanceof LocalFileTreeItem) return;
+    const idString = `${treeitem.valueOf()}`;
 
     if (idString !== "0" && !(await MusicCache.get(idString))) {
-      const { url, md5 } = await apiSongUrl(item);
+      const { url, md5 } = await apiSongUrl(treeitem.item);
       if (!url) return;
 
       const path = Uri.joinPath(TMP_DIR, idString);

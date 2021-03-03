@@ -19,7 +19,7 @@ export class Playing {
 }
 
 export class PersonalFm {
-  static item: QueueItemTreeItem[] = [];
+  private static item: QueueItemTreeItem[] = [];
 
   private static state = false;
 
@@ -35,12 +35,23 @@ export class PersonalFm {
     }
   }
 
-  static async next(): Promise<QueueItemTreeItem> {
+  static async head(): Promise<QueueItemTreeItem> {
     if (this.item.length === 0) {
       const songs = await apiPersonalFm();
       this.item = songs.map((song) => new QueueItemTreeItem(song, 0));
     }
 
     return this.item.splice(0, 1)[0];
+  }
+
+  static async next(): Promise<QueueItemTreeItem> {
+    if (this.item.length <= 1) {
+      const songs = await apiPersonalFm();
+      this.item = this.item.concat(
+        songs.map((song) => new QueueItemTreeItem(song, 0))
+      );
+    }
+
+    return this.item[1];
   }
 }
