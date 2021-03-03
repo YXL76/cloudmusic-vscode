@@ -6,6 +6,30 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [7.2.0] - 2021-03-04
+
+### Added
+
+- Lyric
+  - support translation ([#322](https://github.com/YXL76/cloudmusic-vscode/issues/322))
+  - support pre-fetch
+  - show in editor ([#324](https://github.com/YXL76/cloudmusic-vscode/issues/324))
+- Player: support repeat playback ([#313](https://github.com/YXL76/cloudmusic-vscode/issues/313))
+- Support media control again ([#288](https://github.com/YXL76/cloudmusic-vscode/issues/288))
+
+### Changed
+
+- Cache: music cache dir name
+- Treeview: speed up queue modification
+
+### Fixed
+
+- Api: like did not work ([#330](https://github.com/YXL76/cloudmusic-vscode/issues/330))
+- Lyric
+  - Clear data after stopping playback
+  - Delay did not work
+- Player: `togglePlay` did not work when playing local file ([#329](https://github.com/YXL76/cloudmusic-vscode/issues/329))
+
 ## [7.1.2] - 2021-02-08
 
 ### Added
