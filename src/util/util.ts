@@ -86,11 +86,7 @@ export function stop(): void {
   Playing.set(false);
   ButtonManager.buttonSong();
   ButtonManager.buttonLyric();
-  setLyric(
-    0,
-    { time: [0], text: [i18n.word.lyric] },
-    { time: [0], text: [i18n.word.lyric] }
-  );
+  setLyric(0, [0], { text: [i18n.word.lyric] }, { text: [i18n.word.lyric] });
 }
 
 export async function load(element?: QueueContent): Promise<void> {

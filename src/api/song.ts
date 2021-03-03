@@ -1,7 +1,6 @@
 import type {
   AnotherSongItem,
   LyricData,
-  LyricLine,
   LyricUser,
   SongDetail,
   SongsItem,
@@ -19,30 +18,34 @@ import type { TopSongType } from ".";
 import i18n from "../i18n";
 import unblock from "../unblock";
 
-const resolveLyric = (raw: string, user?: LyricUser): LyricLine => {
-  const time = [0];
-  const text = [i18n.word.lyric];
+const resolveLyric = (raw: string): { time: number[]; text: string[] } => {
+  const time = [];
+  const text = [];
   const lines = raw.split("\n");
   for (const line of lines) {
-    const r = /^\[(\d{2}):(\d{2})\.(\d{3})\](.*)$/g.exec(line.trim());
+    const r = /^\[(\d{2}):(\d{2})(?:[.:](\d{2,3}))\](.*)$/g.exec(line.trim());
     if (r) {
       const minute = parseInt(r[1]);
       const second = parseInt(r[2]);
-      const millisecond = parseInt(r[3]);
+      const millisecond = parseInt(r[3].length === 2 ? `${r[3]}0` : r[3]);
       time.push((minute * 60 + second) * 1000 + millisecond);
       text.push(r[4] || i18n.word.lyric);
     }
   }
-  return {
-    time,
-    text,
-    user: user ? { nickname: user.nickname, userid: user.userid } : undefined,
-  };
+  return { time, text };
 };
+
+const resolveLyricUser = (user?: LyricUser): LyricUser | undefined =>
+  user ? { nickname: user.nickname, userid: user.userid } : undefined;
 
 export async function apiLyric(id: number): Promise<LyricData> {
   const lyricCache = await LyricCache.get(`${id}`);
   if (lyricCache) return lyricCache;
+  const lyric: LyricData = {
+    time: [0],
+    o: { text: [i18n.word.lyric] },
+    t: { text: [i18n.word.lyric] },
+  };
 
   try {
     const { lrc, tlyric, lyricUser, transUser } = await apiRequest<{
@@ -52,18 +55,40 @@ export async function apiLyric(id: number): Promise<LyricData> {
       transUser?: LyricUser;
     }>("https://music.163.com/api/song/lyric", { id, lv: -1, kv: -1, tv: -1 });
 
-    const lyric = {
-      lrc: resolveLyric(lrc.lyric, lyricUser),
-      tlyric: resolveLyric(tlyric.lyric, transUser),
-    };
+    lyric.o.user = resolveLyricUser(lyricUser);
+    lyric.t.user = resolveLyricUser(transUser);
+
+    const o = resolveLyric(lrc.lyric);
+    const t = resolveLyric(tlyric.lyric);
+
+    let i = 0;
+    let j = 0;
+    while (i < o.time.length && j < t.time.length) {
+      const otime = o.time[i];
+      const otext = o.text[i] || i18n.word.lyric;
+      const ttime = t.time[j];
+      const ttext = t.text[j] || i18n.word.lyric;
+      lyric.time.push(Math.min(otime, ttime));
+      if (otime === ttime) {
+        lyric.o.text.push(otext);
+        ++i;
+        lyric.t.text.push(ttext);
+        ++j;
+      } else if (otime < ttime) {
+        lyric.o.text.push(otext);
+        ++i;
+        lyric.t.text.push(lyric.t.text[j]);
+      } else if (otime > ttime) {
+        lyric.o.text.push(lyric.o.text[i]);
+        lyric.t.text.push(ttext);
+        ++j;
+      }
+    }
 
     LyricCache.put(`${id}`, lyric);
     return lyric;
   } catch {}
-  return {
-    lrc: { time: [0], text: [i18n.word.lyric] },
-    tlyric: { time: [0], text: [i18n.word.lyric] },
-  };
+  return lyric;
 }
 
 export async function apiSimiSong(

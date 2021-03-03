@@ -101,8 +101,8 @@ export type LruCacheValue = {
 };
 
 export const enum LyricType {
-  original = "lrc",
-  translation = "tlyric",
+  original = "o",
+  translation = "t",
 }
 
 export type Lyric = {
@@ -111,8 +111,7 @@ export type Lyric = {
   type: LyricType;
 } & LyricData;
 
-export type LyricLine = {
-  time: number[];
+export type LyricSpecifyData = {
   text: string[];
   user?: LyricUser;
 };
@@ -123,8 +122,9 @@ export type LyricUser = {
 };
 
 export type LyricData = {
-  lrc: LyricLine;
-  tlyric: LyricLine;
+  time: number[];
+  o: LyricSpecifyData;
+  t: LyricSpecifyData;
 };
 
 export type RawCommentDetail = {

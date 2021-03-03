@@ -4,7 +4,7 @@ import {
   QueueItemTreeItem,
   QueueProvider,
 } from "../treeview";
-import type { Lyric, LyricLine } from "../constant";
+import type { Lyric, LyricSpecifyData } from "../constant";
 import { LyricType, NATIVE, TMP_DIR, VOLUME_KEY } from "../constant";
 import { MusicCache, downloadMusic } from ".";
 import { Uri, commands, workspace } from "vscode";
@@ -47,18 +47,21 @@ export const lyric: Lyric = {
   index: 0,
   delay: -1.0,
   type: LyricType.original,
-  lrc: { time: [0], text: [i18n.word.lyric] },
-  tlyric: { time: [0], text: [i18n.word.lyric] },
+  time: [0],
+  o: { text: [i18n.word.lyric] },
+  t: { text: [i18n.word.lyric] },
 };
 
 export const setLyric = (
   index: number,
-  lrc: LyricLine,
-  tlyric: LyricLine
+  time: number[],
+  o: LyricSpecifyData,
+  t: LyricSpecifyData
 ): void => {
   lyric.index = index;
-  lyric.lrc = lrc;
-  lyric.tlyric = tlyric;
+  lyric.time = time;
+  lyric.o = o;
+  lyric.t = t;
 };
 
 export class Player {
@@ -88,7 +91,7 @@ export class Player {
           Playing.set(false);
           void commands.executeCommand("cloudmusic.next", ButtonManager.repeat);
         } else {
-          while (lyric[lyric.type].time[lyric.index] <= pos) ++lyric.index;
+          while (lyric.time[lyric.index] <= pos) ++lyric.index;
           ButtonManager.buttonLyric(lyric[lyric.type].text[lyric.index - 1]);
         }
       }
@@ -124,20 +127,18 @@ export class Player {
       );
       Playing.set(true);
 
-      if (treeitem instanceof QueueItemTreeItem) {
-        void apiLyric(treeitem.valueOf).then(({ lrc, tlyric }) =>
-          setLyric(0, lrc, tlyric)
+      if (treeitem instanceof QueueItemTreeItem)
+        void apiLyric(treeitem.valueOf).then(({ time, o, t }) =>
+          setLyric(0, time, o, t)
         );
-      }
 
       const pTime = this.time;
       this.time = Date.now();
       if (this.treeitem instanceof QueueItemTreeItem) {
         const diff = this.time - pTime;
         const { id, dt } = this.treeitem.item;
-        if (diff > 60000 && dt > 60000) {
+        if (diff > 60000 && dt > 60000)
           void apiScrobble(id, this.pid, Math.floor(Math.min(diff, dt)) / 1000);
-        }
       }
 
       this.treeitem = treeitem;
@@ -152,9 +153,7 @@ export class Player {
       if (Playing.get) {
         NATIVE.playerPause(this.player);
         Playing.set(false);
-      } else {
-        if (NATIVE.playerPlay(this.player)) Playing.set(true);
-      }
+      } else if (NATIVE.playerPlay(this.player)) Playing.set(true);
     }
   }
 

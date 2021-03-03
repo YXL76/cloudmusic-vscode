@@ -26,7 +26,7 @@ export function initStatusBar(): void {
     await MultiStepInput.run((input) => pickMethod(input));
 
     async function pickMethod(input: MultiStepInput) {
-      const { time, text, user } = lyric[lyric.type];
+      const { text, user } = lyric[lyric.type];
       const { type } = await input.showQuickPick({
         title,
         step: 1,
@@ -68,7 +68,7 @@ export function initStatusBar(): void {
         case Type.delay:
           return (input: MultiStepInput) => inputDelay(input);
         case Type.full:
-          return (input: MultiStepInput) => pickLyric(input, time, text);
+          return (input: MultiStepInput) => pickLyric(input, text);
         case Type.type:
           lyric.type =
             lyric.type === LyricType.original
@@ -96,24 +96,19 @@ export function initStatusBar(): void {
         value: `${lyric.delay}`,
         prompt: i18n.sentence.hint.lyricDelay,
       });
-      if (/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay)) {
+      if (/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay))
         lyric.delay = parseFloat(delay);
-      }
       return input.stay();
     }
 
-    async function pickLyric(
-      input: MultiStepInput,
-      time: number[],
-      text: string[]
-    ) {
+    async function pickLyric(input: MultiStepInput, text: string[]) {
       interface T extends QuickPickItem {
         description: string;
       }
       const items: T[] = [];
       text.forEach((v, i) => {
-        if (v !== i18n.word.lyric)
-          items.push({ label: v, description: `[${time[i]}]` });
+        if (v !== i18n.word.lyric && v !== text[i - 1])
+          items.push({ label: v, description: `[${lyric.time[i]}]` });
       });
 
       const pick = await input.showQuickPick({
