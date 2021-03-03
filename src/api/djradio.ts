@@ -4,9 +4,9 @@ import type {
   RawProgramDetail,
   UserDetail,
 } from "../constant";
-import { solveProgramDetail, solveRadioDetail, weapiRequest } from ".";
+import { resolveProgramDetail, resolveRadioDetail, weapiRequest } from ".";
 import { apiCache } from "../util";
-import { solveUserDetail } from "./helper";
+import { resolveUserDetail } from "./helper";
 
 /* export async function apiDjCategoryRecommend() {
   const key = "dj_category_recommend";
@@ -51,7 +51,7 @@ export async function apiDjDetail(id: number): Promise<RadioDetail | void> {
       "https://music.163.com/api/djradio/v2/get",
       { id }
     );
-    const ret = solveRadioDetail(data);
+    const ret = resolveRadioDetail(data);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -72,7 +72,7 @@ export async function apiDjHot(
       "https://music.163.com/weapi/djradio/hot/v1",
       { limit, offset }
     );
-    const ret = djRadios.map(solveRadioDetail);
+    const ret = djRadios.map(resolveRadioDetail);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -93,7 +93,7 @@ export async function apiDjProgram(
       "https://music.163.com/weapi/dj/program/byradio",
       { radioId, limit, offset: 0, asc: false }
     );
-    const ret = programs.map(solveProgramDetail);
+    const ret = programs.map(resolveProgramDetail);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -113,7 +113,7 @@ export async function apiDjProgramDetail(
       "https://music.163.com/api/dj/program/detail",
       { id }
     );
-    const ret = solveProgramDetail(program);
+    const ret = resolveProgramDetail(program);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -133,7 +133,7 @@ export async function apiDjProgramToplist(
     const { toplist } = await weapiRequest<{
       toplist: { program: RawProgramDetail }[];
     }>("https://music.163.com/api/program/toplist/v1", { limit, offset });
-    const ret = toplist.map(({ program }) => solveProgramDetail(program));
+    const ret = toplist.map(({ program }) => resolveProgramDetail(program));
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -153,7 +153,7 @@ export async function apiDjProgramToplistHours(): Promise<ProgramDetail[]> {
       "https://music.163.com/api/djprogram/toplist/hours",
       { limit: 100 }
     );
-    const ret = list.map(({ program }) => solveProgramDetail(program));
+    const ret = list.map(({ program }) => resolveProgramDetail(program));
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -175,7 +175,7 @@ export async function apiDjRadioHot(
       "https://music.163.com/api/djradio/hot",
       { cateId, limit, offset }
     );
-    const ret = djRadios.map(solveRadioDetail);
+    const ret = djRadios.map(resolveRadioDetail);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -193,7 +193,7 @@ export async function apiDjRecommend(): Promise<RadioDetail[]> {
       "https://music.163.com/weapi/djradio/recommend/v1",
       {}
     );
-    const ret = djRadios.map(solveRadioDetail);
+    const ret = djRadios.map(resolveRadioDetail);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -213,7 +213,7 @@ export async function apiDjRecommendType(
       "https://music.163.com/weapi/djradio/recommend",
       { cateId }
     );
-    const ret = djRadios.map(solveRadioDetail);
+    const ret = djRadios.map(resolveRadioDetail);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -233,7 +233,7 @@ export async function apiProgramRecommend(
     const { programs } = await weapiRequest<{
       programs: RawProgramDetail[];
     }>("https://music.163.com/weapi/program/recommend/v1", { limit, offset });
-    const ret = programs.map(solveProgramDetail);
+    const ret = programs.map(resolveProgramDetail);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -269,7 +269,7 @@ export async function apiDjSublist(): Promise<RadioDetail[]> {
       offset: 0,
       total: true,
     });
-    const ret = djRadios.map(solveRadioDetail);
+    const ret = djRadios.map(resolveRadioDetail);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -321,7 +321,7 @@ export async function apiDjSubscriber(
       "https://music.163.com/api/djradio/subscriber",
       { time: -1, id, limit, total: "true" }
     );
-    const ret = subscribers.map(solveUserDetail);
+    const ret = subscribers.map(resolveUserDetail);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -343,7 +343,7 @@ export async function apiDjToplist(
     const { toplist } = await weapiRequest<{
       toplist: RadioDetail[];
     }>("https://music.163.com/api/djradio/toplist", { type, limit, offset });
-    const ret = toplist.map(solveRadioDetail);
+    const ret = toplist.map(resolveRadioDetail);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {

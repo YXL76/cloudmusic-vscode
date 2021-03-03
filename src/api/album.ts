@@ -1,5 +1,5 @@
 import type { AlbumsItem, SongsItem } from "../constant";
-import { solveAlbumsItem, solveSongItem, weapiRequest } from ".";
+import { resolveAlbumsItem, resolveSongItem, weapiRequest } from ".";
 import { apiCache } from "../util";
 
 export async function apiAlbum(
@@ -13,10 +13,10 @@ export async function apiAlbum(
       album: AlbumsItem;
       songs: SongsItem[];
     }>(`https://music.163.com/weapi/v1/album/${id}`, {});
-    const info = solveAlbumsItem(album);
+    const info = resolveAlbumsItem(album);
     const ret = {
       info,
-      songs: songs.map(solveSongItem),
+      songs: songs.map(resolveSongItem),
     };
     apiCache.set(key, ret);
     return ret;
@@ -35,7 +35,7 @@ export async function apiAlbumNewest(): Promise<AlbumsItem[]> {
       "https://music.163.com/api/discovery/newAlbum",
       {}
     );
-    const ret = albums.map(solveAlbumsItem);
+    const ret = albums.map(resolveAlbumsItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -69,7 +69,7 @@ export async function apiAlbumSublist(): Promise<AlbumsItem[]> {
         "https://music.163.com/weapi/album/sublist",
         { limit, offset, total: true }
       );
-      ret = ret.concat(data.map(solveAlbumsItem));
+      ret = ret.concat(data.map(resolveAlbumsItem));
       if (data.length < limit) {
         break;
       }
@@ -100,7 +100,7 @@ export async function apiTopAlbum(): Promise<AlbumsItem[]> {
         rcmd: true,
       }
     );
-    const ret = monthData.map(solveAlbumsItem);
+    const ret = monthData.map(resolveAlbumsItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {

@@ -1,6 +1,11 @@
 import type { AlbumsItem, Artist, SongsItem } from "../constant";
 import type { ArtistArea, ArtistInitial, ArtistType } from ".";
-import { solveAlbumsItem, solveArtist, solveSongItem, weapiRequest } from ".";
+import {
+  resolveAlbumsItem,
+  resolveArtist,
+  resolveSongItem,
+  weapiRequest,
+} from ".";
 import { apiCache } from "../util";
 
 export async function apiArtists(
@@ -15,8 +20,8 @@ export async function apiArtists(
       hotSongs: SongsItem[];
     }>(`https://music.163.com/weapi/v1/artist/${id}`, {});
     const ret = {
-      info: solveArtist(artist),
-      songs: hotSongs.map(solveSongItem),
+      info: resolveArtist(artist),
+      songs: hotSongs.map(resolveSongItem),
     };
     apiCache.set(key, ret);
     return ret;
@@ -43,7 +48,7 @@ export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
         offset,
         total: true,
       });
-      ret = ret.concat(hotAlbums.map(solveAlbumsItem));
+      ret = ret.concat(hotAlbums.map(resolveAlbumsItem));
       if (more) {
         offset += limit;
       } else {
@@ -102,7 +107,7 @@ export async function apiArtistList(
         area,
       }
     );
-    const ret = artists.map(solveArtist);
+    const ret = artists.map(resolveArtist);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -134,7 +139,7 @@ export async function apiArtistSongs(
       },
       { os: "pc" }
     );
-    const ret = songs.map(solveSongItem);
+    const ret = songs.map(resolveSongItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -173,7 +178,7 @@ export async function apiArtistSublist(): Promise<Artist[]> {
           total: true,
         }
       );
-      ret = ret.concat(data.map(solveArtist));
+      ret = ret.concat(data.map(resolveArtist));
       if (data.length < limit) {
         break;
       }
@@ -194,7 +199,7 @@ export async function apiSimiArtist(artistid: number): Promise<Artist[]> {
       "https://music.163.com/weapi/discovery/simiArtist",
       { artistid }
     );
-    const ret = artists.map(solveArtist);
+    const ret = artists.map(resolveArtist);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -215,7 +220,7 @@ export async function apiTopArtists(
       "https://music.163.com/weapi/artist/top",
       { limit, offset, total: true }
     );
-    const ret = artists.map(solveArtist);
+    const ret = artists.map(resolveArtist);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -235,7 +240,7 @@ export async function apiToplistArtist(): Promise<Artist[]> {
       "https://music.163.com/weapi/toplist/artist",
       { type: 1, limit: 100, offset: 0, total: true }
     );
-    const ret = artists.map(solveArtist);
+    const ret = artists.map(resolveArtist);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {

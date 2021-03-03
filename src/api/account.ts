@@ -11,12 +11,12 @@ import type {
 } from "../constant";
 import {
   eapiRequest,
-  solveAnotherSongItem,
-  solvePlaylistItem,
-  solveProgramDetail,
-  solveRadioDetail,
-  solveSongItem,
-  solveUserDetail,
+  resolveAnotherSongItem,
+  resolvePlaylistItem,
+  resolveProgramDetail,
+  resolveRadioDetail,
+  resolveSongItem,
+  resolveUserDetail,
   weapiRequest,
 } from ".";
 import { AccountManager } from "../manager";
@@ -53,7 +53,7 @@ export async function apiDjPersonalizeRecommend(): Promise<RadioDetail[]> {
       "https://music.163.com/api/djradio/personalize/rcmd",
       { limit: 10 }
     );
-    const ret = data.map(solveRadioDetail);
+    const ret = data.map(resolveRadioDetail);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -203,7 +203,7 @@ export async function apiPersonalFm(): Promise<SongsItem[]> {
       "https://music.163.com/weapi/v1/radio/get",
       {}
     );
-    return data.map(solveAnotherSongItem);
+    return data.map(resolveAnotherSongItem);
   } catch (err) {
     console.error(err);
   }
@@ -219,7 +219,7 @@ export async function apiPersonalized(): Promise<PlaylistItem[]> {
       "https://music.163.com/weapi/personalized/playlist",
       { limit: 30, total: true, n: 1000 }
     );
-    const ret = result.map(solvePlaylistItem);
+    const ret = result.map(resolvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -236,7 +236,7 @@ export async function apiPersonalizedDjprogram(): Promise<ProgramDetail[]> {
     const { result } = await weapiRequest<{
       result: { program: RawProgramDetail }[];
     }>("https://music.163.com/weapi/personalized/djprogram", {});
-    const ret = result.map(({ program }) => solveProgramDetail(program));
+    const ret = result.map(({ program }) => resolveProgramDetail(program));
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -257,7 +257,7 @@ export async function apiPersonalizedNewsong(): Promise<SongsItem[]> {
       limit: 10,
       areaId: 0,
     });
-    const ret = result.map(({ song }) => solveAnotherSongItem(song));
+    const ret = result.map(({ song }) => resolveAnotherSongItem(song));
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -275,7 +275,7 @@ export async function apiRecommendResource(): Promise<PlaylistItem[]> {
       "https://music.163.com/weapi/v1/discovery/recommend/resource",
       {}
     );
-    const ret = recommend.map(solvePlaylistItem);
+    const ret = recommend.map(resolvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -293,7 +293,7 @@ export async function apiRecommendSongs(): Promise<SongsItem[]> {
       "https://music.163.com/api/v3/discovery/recommend/songs",
       {}
     );
-    const ret = data.dailySongs.map(solveSongItem);
+    const ret = data.dailySongs.map(resolveSongItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -338,7 +338,7 @@ export async function apiUserDetail(uid: number): Promise<UserDetail | void> {
       `https://music.163.com/weapi/v1/user/detail/${uid}`,
       {}
     );
-    const ret = solveUserDetail(profile);
+    const ret = resolveUserDetail(profile);
     return ret;
   } catch (err) {
     console.error(err);
@@ -360,7 +360,7 @@ export async function apiUserFolloweds(
       { userId, time: "0", limit, offset, getcounts: "true" },
       "/api/user/getfolloweds"
     );
-    const ret = followeds.map(solveUserDetail);
+    const ret = followeds.map(resolveUserDetail);
     return ret;
   } catch (err) {
     console.error(err);
@@ -385,7 +385,7 @@ export async function apiUserFollows(
         order: true,
       }
     );
-    const ret = follow.map(solveUserDetail);
+    const ret = follow.map(resolveUserDetail);
     return ret;
   } catch (err) {
     console.error(err);
@@ -428,7 +428,7 @@ export async function apiUserPlaylist(uid: number): Promise<PlaylistItem[]> {
       offset: 0,
       includeVideo: true,
     });
-    const ret = playlist.map(solvePlaylistItem);
+    const ret = playlist.map(resolvePlaylistItem);
     if (ret.length > 0) {
       apiCache.set(key, ret);
     }
@@ -454,7 +454,7 @@ export async function apiUserRecord(): Promise<Array<RecordData[]>> {
         .then(({ weekData }) => {
           resolve(
             weekData.map(({ playCount, song }) => ({
-              ...solveSongItem(song),
+              ...resolveSongItem(song),
               playCount,
             }))
           );
@@ -471,7 +471,7 @@ export async function apiUserRecord(): Promise<Array<RecordData[]>> {
         .then(({ allData }) => {
           resolve(
             allData.map(({ playCount, song }) => ({
-              ...solveSongItem(song),
+              ...resolveSongItem(song),
               playCount,
             }))
           );

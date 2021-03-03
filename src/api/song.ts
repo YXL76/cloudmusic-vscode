@@ -10,8 +10,8 @@ import { MUSIC_QUALITY, UNBLOCK_MUSIC, unplayable } from "../constant";
 import {
   apiRequest,
   eapiRequest,
-  solveAnotherSongItem,
-  solveSongItem,
+  resolveAnotherSongItem,
+  resolveSongItem,
   weapiRequest,
 } from ".";
 import type { TopSongType } from ".";
@@ -104,7 +104,7 @@ export async function apiSimiSong(
       "https://music.163.com/weapi/v1/discovery/simiSong",
       { songid, limit, offset }
     );
-    const ret = songs.map(solveAnotherSongItem);
+    const ret = songs.map(resolveAnotherSongItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -138,12 +138,12 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
                   unplayable.add(songs[i].id);
                 }
               }
-              resolve(songs.map(solveSongItem));
+              resolve(songs.map(resolveSongItem));
             }
             const ret: SongsItem[] = [];
             for (let i = 0; i < privileges.length; ++i) {
               if (privileges[i].st >= 0) {
-                ret.push(solveSongItem(songs[i]));
+                ret.push(resolveSongItem(songs[i]));
               }
             }
             resolve(ret);
@@ -226,7 +226,7 @@ export async function apiTopSong(areaId: TopSongType): Promise<SongsItem[]> {
         total: true,
       }
     );
-    const ret = data.map(solveAnotherSongItem);
+    const ret = data.map(resolveAnotherSongItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {

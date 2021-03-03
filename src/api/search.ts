@@ -8,10 +8,10 @@ import type {
 import {
   SearchType,
   eapiRequest,
-  solveAlbumsItem,
-  solveArtist,
-  solvePlaylistItem,
-  solveSongItem,
+  resolveAlbumsItem,
+  resolveArtist,
+  resolvePlaylistItem,
+  resolveSongItem,
   weapiRequest,
 } from ".";
 import { apiCache } from "../util";
@@ -57,7 +57,7 @@ export async function apiSearchSingle(
         total: true,
       }
     );
-    const ret = songs.map(solveSongItem);
+    const ret = songs.map(resolveSongItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -87,7 +87,7 @@ export async function apiSearchAlbum(
         total: true,
       }
     );
-    const ret = albums.map(solveAlbumsItem);
+    const ret = albums.map(resolveAlbumsItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -118,7 +118,7 @@ export async function apiSearchArtist(
       }
     );
     const ret = artists.map((artist) =>
-      solveArtist({ ...artist, briefDesc: "" })
+      resolveArtist({ ...artist, briefDesc: "" })
     );
     apiCache.set(key, ret);
     return ret;
@@ -149,7 +149,7 @@ export async function apiSearchPlaylist(
         total: true,
       }
     );
-    const ret = playlists.map(solvePlaylistItem);
+    const ret = playlists.map(resolvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {

@@ -160,15 +160,15 @@ export const jsonToCookie = (json: Cookie): string => {
     .join("; ");
 };
 
-export const solveArtist = (item: Artist): Artist => {
+export const resolveArtist = (item: Artist): Artist => {
   const { name, id, alias, briefDesc, albumSize, musicSize } = item;
   return { name, id, alias, briefDesc, albumSize, musicSize };
 };
 
-export const solveAlbumsItem = (item: AlbumsItem): AlbumsItem => {
+export const resolveAlbumsItem = (item: AlbumsItem): AlbumsItem => {
   const { artists, alias, company, description, name, id } = item;
   return {
-    artists: artists.map(solveArtist),
+    artists: artists.map(resolveArtist),
     alias,
     company,
     description,
@@ -177,7 +177,7 @@ export const solveAlbumsItem = (item: AlbumsItem): AlbumsItem => {
   };
 };
 
-export const solveSongItem = (item: SongsItem): SongsItem => {
+export const resolveSongItem = (item: SongsItem): SongsItem => {
   const { name, id, dt, alia, ar, al } = item;
   return {
     name,
@@ -189,7 +189,7 @@ export const solveSongItem = (item: SongsItem): SongsItem => {
   };
 };
 
-export const solveAnotherSongItem = (item: AnotherSongItem): SongsItem => {
+export const resolveAnotherSongItem = (item: AnotherSongItem): SongsItem => {
   const { name, id, duration, alias, artists, album } = item;
   return {
     name,
@@ -201,7 +201,7 @@ export const solveAnotherSongItem = (item: AnotherSongItem): SongsItem => {
   };
 };
 
-export const solvePlaylistItem = (item: RawPlaylistItem): PlaylistItem => {
+export const resolvePlaylistItem = (item: RawPlaylistItem): PlaylistItem => {
   const {
     bookCount,
     copywriter,
@@ -225,7 +225,7 @@ export const solvePlaylistItem = (item: RawPlaylistItem): PlaylistItem => {
   };
 };
 
-export const solveUserDetail = (item: UserDetail): UserDetail => {
+export const resolveUserDetail = (item: UserDetail): UserDetail => {
   const { userId, nickname, signature, followeds, follows, avatarUrl } = item;
   return {
     userId,
@@ -237,14 +237,14 @@ export const solveUserDetail = (item: UserDetail): UserDetail => {
   };
 };
 
-export const solveSimplyUserDetail = (
+export const resolveSimplyUserDetail = (
   item: SimplyUserDetail
 ): SimplyUserDetail => {
   const { userId, nickname, avatarUrl } = item;
   return { userId, nickname, avatarUrl };
 };
 
-export const solveComment = (item: RawCommentDetail): CommentDetail => {
+export const resolveComment = (item: RawCommentDetail): CommentDetail => {
   const {
     user,
     commentId,
@@ -256,7 +256,7 @@ export const solveComment = (item: RawCommentDetail): CommentDetail => {
     showFloorComment,
   } = item;
   return {
-    user: solveSimplyUserDetail(user),
+    user: resolveSimplyUserDetail(user),
     commentId,
     content,
     time,
@@ -267,13 +267,13 @@ export const solveComment = (item: RawCommentDetail): CommentDetail => {
       ? {
           beRepliedCommentId: beReplied[0].beRepliedCommentId,
           content: beReplied[0].content,
-          user: solveSimplyUserDetail(beReplied[0].user),
+          user: resolveSimplyUserDetail(beReplied[0].user),
         }
       : undefined,
   };
 };
 
-export const solveRadioDetail = (item: RadioDetail): RadioDetail => {
+export const resolveRadioDetail = (item: RadioDetail): RadioDetail => {
   const { name, desc, id, subCount, programCount, playCount, dj } = item;
   return {
     name,
@@ -282,19 +282,19 @@ export const solveRadioDetail = (item: RadioDetail): RadioDetail => {
     subCount,
     programCount,
     playCount,
-    dj: solveUserDetail(dj),
+    dj: resolveUserDetail(dj),
   };
 };
 
-export const solveProgramDetail = (item: RawProgramDetail): ProgramDetail => {
+export const resolveProgramDetail = (item: RawProgramDetail): ProgramDetail => {
   const { mainSong, dj, radio, coverUrl, description, id } = item;
   return {
     mainSong: {
-      ...solveAnotherSongItem(mainSong),
+      ...resolveAnotherSongItem(mainSong),
       ar: [{ name: dj.nickname, id: 0 }],
       al: { name: radio.name, id: 0, picUrl: coverUrl },
     },
-    dj: solveUserDetail(dj),
+    dj: resolveUserDetail(dj),
     description,
     id,
     rid: radio.id,

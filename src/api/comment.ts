@@ -2,8 +2,8 @@ import type { CommentDetail, RawCommentDetail } from "../constant";
 import {
   SortType,
   eapiRequest,
+  resolveComment,
   resourceTypeMap,
-  solveComment,
   weapiRequest,
 } from ".";
 import type { CommentType } from ".";
@@ -76,7 +76,7 @@ export async function apiCommentFloor(
     return {
       totalCount,
       hasMore,
-      comments: comments.map(solveComment),
+      comments: comments.map(resolveComment),
     };
   } catch (err) {
     console.error(err);
@@ -136,7 +136,7 @@ export async function apiCommentNew(
     return {
       totalCount,
       hasMore,
-      comments: comments.map(solveComment),
+      comments: comments.map(resolveComment),
     };
   } catch (err) {
     console.error(err);

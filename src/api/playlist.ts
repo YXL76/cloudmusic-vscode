@@ -8,9 +8,9 @@ import type {
 import { UNBLOCK_MUSIC, unplayable } from "../constant";
 import {
   apiRequest,
-  solvePlaylistItem,
-  solveSongItem,
-  solveUserDetail,
+  resolvePlaylistItem,
+  resolveSongItem,
+  resolveUserDetail,
   weapiRequest,
 } from ".";
 import { apiCache } from "../util";
@@ -103,12 +103,12 @@ export async function apiPlaylistDetail(id: number): Promise<SongsItem[]> {
             unplayable.add(tracks[i].id);
           }
         }
-        return tracks.map(solveSongItem);
+        return tracks.map(resolveSongItem);
       }
       const ret: SongsItem[] = [];
       for (let i = 0; i < privileges.length; ++i) {
         if (privileges[i].st >= 0) {
-          ret.push(solveSongItem(tracks[i]));
+          ret.push(resolveSongItem(tracks[i]));
         }
       }
       apiCache.set(key, ret);
@@ -174,7 +174,7 @@ export async function apiPlaylistSubscribers(
       limit,
       offset,
     });
-    const ret = subscribers.map(solveUserDetail);
+    const ret = subscribers.map(resolveUserDetail);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -242,7 +242,7 @@ export async function apiPlaymodeIntelligenceList(
         count: 1,
       }
     );
-    return data.map(({ songInfo }) => solveSongItem(songInfo));
+    return data.map(({ songInfo }) => resolveSongItem(songInfo));
   } catch (err) {
     console.error(err);
   }
@@ -262,7 +262,7 @@ export async function apiSimiPlaylist(
       "https://music.163.com/weapi/discovery/simiPlaylist",
       { songid, limit, offset }
     );
-    const ret = playlists.map(solvePlaylistItem);
+    const ret = playlists.map(resolvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -290,7 +290,7 @@ export async function apiTopPlaylist(
         total: true,
       }
     );
-    const ret = playlists.map(solvePlaylistItem);
+    const ret = playlists.map(resolvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -316,7 +316,7 @@ export async function apiTopPlaylistHighquality(
         total: true,
       }
     );
-    const ret = playlists.map(solvePlaylistItem);
+    const ret = playlists.map(resolvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
@@ -334,7 +334,7 @@ export async function apiToplist(): Promise<PlaylistItem[]> {
       "https://music.163.com/api/toplist",
       {}
     );
-    const ret = list.map(solvePlaylistItem);
+    const ret = list.map(resolvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
