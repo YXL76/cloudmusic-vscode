@@ -6,7 +6,7 @@ import { load } from "../util";
 export class Playing {
   private static state = false;
 
-  static get(): boolean {
+  static get get(): boolean {
     return this.state;
   }
 
@@ -23,7 +23,7 @@ export class PersonalFm {
 
   private static state = false;
 
-  static get(): boolean {
+  static get get(): boolean {
     return this.state;
   }
 

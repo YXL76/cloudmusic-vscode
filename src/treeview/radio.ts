@@ -35,7 +35,7 @@ export class RadioProvider
   ): void {
     if (element) {
       if (action) this.action = action;
-      else apiCache.del(`dj_program${element.item.id}`);
+      else apiCache.del(`dj_program${element.valueOf}`);
     } else {
       this.radios.clear();
       apiCache.del("dj_sublist");
@@ -53,9 +53,9 @@ export class RadioProvider
     element?: RadioTreeItem
   ): Promise<(RadioTreeItem | ProgramTreeItem)[]> {
     if (element) {
-      const pid = element.valueOf();
+      const pid = element.valueOf;
       const programs = (
-        await apiDjProgram(element.item.id, element.item.programCount)
+        await apiDjProgram(element.valueOf, element.item.programCount)
       ).map((program) => new ProgramTreeItem(program, pid));
       const localAction = RadioProvider.action;
       if (localAction) {
@@ -89,7 +89,7 @@ ${i18n.word.subscribedCount}: ${this.item.subCount}`;
     super(item.name, TreeItemCollapsibleState.Collapsed);
   }
 
-  valueOf(): number {
+  get valueOf(): number {
     return this.item.id;
   }
 }
@@ -121,7 +121,7 @@ export class ProgramTreeItem extends TreeItem {
     super(program.mainSong.name);
   }
 
-  valueOf(): number {
+  get valueOf(): number {
     return this.item.id;
   }
 }

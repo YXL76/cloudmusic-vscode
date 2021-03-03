@@ -114,7 +114,7 @@ export class LocalFileTreeItem extends TreeItem {
     super(label);
   }
 
-  valueOf(): string {
+  get valueOf(): string {
     return this.tooltip;
   }
 }

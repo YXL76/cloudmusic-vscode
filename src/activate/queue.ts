@@ -75,7 +75,7 @@ export function initQueue(): void {
   commands.registerCommand("cloudmusic.clearQueue", () =>
     QueueProvider.refresh(() => {
       QueueProvider.clear();
-      if (!PersonalFm.get()) stop();
+      if (!PersonalFm.get) stop();
     })
   );
 
@@ -86,13 +86,13 @@ export function initQueue(): void {
   commands.registerCommand("cloudmusic.playSong", (element: QueueContent) =>
     QueueProvider.refresh(() => {
       void PersonalFm.set(false);
-      QueueProvider.top(element.valueOf());
+      QueueProvider.top(element.valueOf);
       void load(element);
     })
   );
 
   commands.registerCommand("cloudmusic.deleteSong", (element: QueueContent) =>
-    QueueProvider.refresh(() => QueueProvider.delete(element.valueOf()))
+    QueueProvider.refresh(() => QueueProvider.delete(element.valueOf))
   );
 
   commands.registerCommand("cloudmusic.playNext", (element: QueueContent) => {

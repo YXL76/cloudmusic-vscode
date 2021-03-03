@@ -135,7 +135,7 @@ ${i18n.word.subscribedCount}: ${this.item.subscribedCount}`;
     super(item.name, collapsibleState);
   }
 
-  valueOf(): number {
+  get valueOf(): number {
     return this.item.id;
   }
 }

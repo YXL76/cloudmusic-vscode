@@ -16,11 +16,11 @@ import { createWriteStream } from "fs";
 
 async function prefetch() {
   try {
-    const treeitem = PersonalFm.get()
+    const treeitem = PersonalFm.get
       ? await PersonalFm.next()
       : QueueProvider.next;
     if (!treeitem || treeitem instanceof LocalFileTreeItem) return;
-    const idString = `${treeitem.valueOf()}`;
+    const idString = `${treeitem.valueOf}`;
 
     if (idString !== "0" && !(await MusicCache.get(idString))) {
       const { url, md5 } = await apiSongUrl(treeitem.item);
@@ -31,7 +31,7 @@ async function prefetch() {
         url,
         idString,
         path,
-        !PersonalFm.get(),
+        !PersonalFm.get,
         md5
       );
       if (data) {
@@ -66,7 +66,7 @@ export class Player {
     void this.volume(this.context.globalState.get(VOLUME_KEY) ?? 85);
 
     setInterval(() => {
-      if (Playing.get()) {
+      if (Playing.get) {
         const pos = NATIVE.playerPosition(this.player);
         if (pos > 120000 && !this.prefetchLock) {
           this.prefetchLock = true;
@@ -113,7 +113,7 @@ export class Player {
       Playing.set(true);
 
       if (treeitem instanceof QueueItemTreeItem) {
-        void apiLyric(treeitem.item.id).then(({ time, text }) => {
+        void apiLyric(treeitem.valueOf).then(({ time, text }) => {
           lyric.index = 0;
           lyric.time = time;
           lyric.text = text;
@@ -139,7 +139,7 @@ export class Player {
 
   static togglePlay(): void {
     if (!NATIVE.playerEmpty(this.player)) {
-      if (Playing.get()) {
+      if (Playing.get) {
         NATIVE.playerPause(this.player);
         Playing.set(false);
       } else {

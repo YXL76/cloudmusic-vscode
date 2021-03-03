@@ -30,7 +30,7 @@ export class AccountManager {
   static cookie = {} as Cookie;
 
   static async login(account?: Account): Promise<boolean> {
-    if (LoggedIn.get()) {
+    if (LoggedIn.get) {
       return true;
     }
     try {

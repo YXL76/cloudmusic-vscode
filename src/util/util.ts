@@ -116,7 +116,7 @@ export async function load(element?: QueueContent): Promise<void> {
   }
 
   const tmpUri = Uri.joinPath(TMP_DIR, idS);
-  const data = await downloadMusic(url, idS, tmpUri, !PersonalFm.get(), md5);
+  const data = await downloadMusic(url, idS, tmpUri, !PersonalFm.get, md5);
   if (data) {
     let len = 0;
     const onData = ({ length }: { length: number }) => {
@@ -333,7 +333,7 @@ export async function pickSong(
     case PickType.like:
       if (await apiLike(id, true)) {
         AccountManager.likelist.add(id);
-        IsLike.set(id === Player.treeitem?.item.id);
+        IsLike.set(id === Player.treeitem?.valueOf);
       }
       break;
     case PickType.add:

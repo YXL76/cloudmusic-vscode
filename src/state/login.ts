@@ -12,7 +12,7 @@ import { commands } from "vscode";
 export class LoggedIn {
   private static state = false;
 
-  static get(): boolean {
+  static get get(): boolean {
     return this.state;
   }
 

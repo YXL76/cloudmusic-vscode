@@ -62,7 +62,7 @@ import { inputKeyword } from ".";
 export function initAccount(context: ExtensionContext): void {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.account", async () => {
-      if (!LoggedIn.get()) {
+      if (!LoggedIn.get) {
         const result = await window.showErrorMessage(
           i18n.sentence.error.needSignIn,
           i18n.word.signIn
@@ -686,7 +686,7 @@ export function initAccount(context: ExtensionContext): void {
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.signin", async () => {
-      if (LoggedIn.get()) return;
+      if (LoggedIn.get) return;
 
       const title = i18n.word.signIn;
       let totalSteps = 3;
@@ -823,7 +823,7 @@ export function initAccount(context: ExtensionContext): void {
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.dailyCheck", async () => {
-      if (LoggedIn.get()) {
+      if (LoggedIn.get) {
         if (await AccountManager.dailyCheck())
           void window.showInformationMessage(i18n.sentence.success.dailyCheck);
       } else void window.showErrorMessage(i18n.sentence.error.needSignIn);

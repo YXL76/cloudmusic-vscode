@@ -107,7 +107,7 @@ export class ButtonManager {
         placeholder: i18n.sentence.hint.button,
       });
       this.buttonShow[id] = !this.buttonShow[id];
-      if (LoggedIn.get())
+      if (LoggedIn.get)
         this.buttonShow[id] ? this.buttons[id].show() : this.buttons[id].hide();
       await this.context.globalState.update(BUTTON_KEY, this.buttonShow);
       return input.stay();

@@ -12,7 +12,7 @@ export function initCommand(context: ExtensionContext): void {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.previous", () => {
       const len = QueueProvider.len;
-      if (!PersonalFm.get() && len > 0)
+      if (!PersonalFm.get && len > 0)
         QueueProvider.refresh(() => {
           QueueProvider.shift(-1);
           void load(QueueProvider.head);
@@ -24,7 +24,7 @@ export function initCommand(context: ExtensionContext): void {
     commands.registerCommand("cloudmusic.next", async (repeat?: boolean) => {
       if (repeat) void load(Player.treeitem);
       else {
-        if (PersonalFm.get()) void load(await PersonalFm.head());
+        if (PersonalFm.get) void load(await PersonalFm.head());
         else
           QueueProvider.refresh(() => {
             QueueProvider.shift(1);
@@ -46,7 +46,7 @@ export function initCommand(context: ExtensionContext): void {
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.like", async () => {
-      const islike = !IsLike.get();
+      const islike = !IsLike.get;
       if (Player.treeitem instanceof QueueItemTreeItem) {
         const { id } = Player.treeitem.item;
         if (id && (await apiLike(id, islike))) {

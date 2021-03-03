@@ -22,7 +22,7 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
 
   private static instance: QueueProvider;
 
-  private static ids: Set<string | number> = new Set();
+  private static ids = new Set<string | number>();
 
   _onDidChangeTreeData = new EventEmitter<QueueContent | void>();
 
@@ -63,7 +63,7 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   }
 
   static top(id: number | string): void {
-    this.shift(this.songs.findIndex((value) => value.valueOf() === id));
+    this.shift(this.songs.findIndex((value) => value.valueOf === id));
   }
 
   static shift(index: number): void {
@@ -76,36 +76,34 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   static add(elements: QueueContent[], index: number = this.len): void {
     const selected = [];
     for (const i of elements) {
-      if (!this.ids.has(i.valueOf())) {
+      if (!this.ids.has(i.valueOf)) {
         selected.push(i);
-        this.ids.add(i.valueOf());
+        this.ids.add(i.valueOf);
       }
     }
     this.songs.splice(index, 0, ...selected);
   }
 
   static delete(id: number | string): void {
-    const index = this.songs.findIndex((value) => value.valueOf() === id);
+    const index = this.songs.findIndex((value) => value.valueOf === id);
     if (index >= 0)
       this.songs
         .splice(index, 1)
-        .forEach((item) => this.ids.delete(item.valueOf()));
+        .forEach((item) => this.ids.delete(item.valueOf));
   }
 
   static playNext(elements: QueueContent[]): void {
-    const headValue = this.head?.valueOf();
+    const headValue = this.head?.valueOf;
     if (elements.length > 1) {
-      const index = elements.findIndex(
-        (value) => value.valueOf() === headValue
-      );
+      const index = elements.findIndex((value) => value.valueOf === headValue);
       if (index > 0) elements.splice(index, 1);
-      for (const i of elements) this.ids.delete(i.valueOf());
+      for (const i of elements) this.ids.delete(i.valueOf);
       const songs = [];
-      for (const i of this.songs) if (this.ids.has(i.valueOf())) songs.push(i);
+      for (const i of this.songs) if (this.ids.has(i.valueOf)) songs.push(i);
       this.songs = songs;
     } else {
-      if (elements[0].valueOf() === headValue) return;
-      this.delete(elements[0].valueOf());
+      if (elements[0].valueOf === headValue) return;
+      this.delete(elements[0].valueOf);
     }
     this.add(elements, 1);
   }
@@ -160,7 +158,7 @@ export class QueueItemTreeItem extends TreeItem {
     super(`${item.name}${item.alia[0] ? ` (${item.alia.join("/")})` : ""}`);
   }
 
-  valueOf(): number {
+  get valueOf(): number {
     return this.item.id;
   }
 }
