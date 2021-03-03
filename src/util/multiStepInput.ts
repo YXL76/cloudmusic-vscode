@@ -76,7 +76,7 @@ export class MultiStepInput {
 
   private current?: QuickInput;
 
-  private steps: InputStep[] = [];
+  private readonly steps: InputStep[] = [];
 
   static async run(start: InputStep): Promise<void> {
     const input = new MultiStepInput();

@@ -19,7 +19,7 @@ export const apiCache = new NodeCache({
 });
 
 export class MusicCache {
-  static lruCache = new LRU({
+  static readonly lruCache = new LRU({
     max: MUSIC_CACHE_SIZE,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     length: (n: LruCacheValue, _key: string) => n.size,

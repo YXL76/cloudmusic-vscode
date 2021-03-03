@@ -24,7 +24,7 @@ export class ButtonManager {
 
   static showLyric = false;
 
-  private static buttons: StatusBarItem[] = [
+  private static readonly buttons: StatusBarItem[] = [
     window.createStatusBarItem(StatusBarAlignment.Left, -128),
     window.createStatusBarItem(StatusBarAlignment.Left, -129),
     window.createStatusBarItem(StatusBarAlignment.Left, -130),

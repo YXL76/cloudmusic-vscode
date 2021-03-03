@@ -22,7 +22,7 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
 
   private static instance: QueueProvider;
 
-  private static ids = new Set<string | number>();
+  private static readonly ids = new Set<string | number>();
 
   _onDidChangeTreeData = new EventEmitter<QueueContent | void>();
 

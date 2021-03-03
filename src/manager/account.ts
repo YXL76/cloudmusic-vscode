@@ -23,11 +23,11 @@ export class AccountManager {
 
   static nickname = "";
 
-  static likelist: Set<number> = new Set<number>();
-
   static context: ExtensionContext;
 
   static cookie = {} as Cookie;
+
+  static readonly likelist: Set<number> = new Set<number>();
 
   static async login(account?: Account): Promise<boolean> {
     if (LoggedIn.get) {
@@ -48,13 +48,14 @@ export class AccountManager {
         const { userId, nickname } = res;
         this.uid = userId;
         this.nickname = nickname;
+        this.likelist.clear();
         LoggedIn.set(true);
 
         void this.context.globalState.update(ACCOUNT_KEY, account);
         void this.context.globalState.update(COOKIE_KEY, this.cookie);
 
-        void apiLikelist().then(
-          (ids) => (this.likelist = new Set<number>(ids))
+        void apiLikelist().then((ids) =>
+          ids.forEach((v) => this.likelist.add(v))
         );
 
         return true;
