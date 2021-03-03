@@ -11,7 +11,7 @@ export class Loading {
       this.state = newValue;
       if (newValue) {
         ButtonManager.buttonSong(
-          `$(loading) ${i18n.word.song}: ${i18n.word.loading}`
+          `$(loading~spin) ${i18n.word.song}: ${i18n.word.loading}`
         );
       } else if (Player.treeitem) {
         const { name, ar, id } = Player.treeitem.item;
