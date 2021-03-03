@@ -91,7 +91,8 @@ export class Player {
           Playing.set(false);
           void commands.executeCommand("cloudmusic.next", ButtonManager.repeat);
         } else {
-          while (lyric.time[lyric.index] <= pos) ++lyric.index;
+          while (lyric.time[lyric.index] <= pos - lyric.delay * 1000)
+            ++lyric.index;
           ButtonManager.buttonLyric(lyric[lyric.type].text[lyric.index - 1]);
         }
       }
