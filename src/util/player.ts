@@ -39,6 +39,7 @@ async function prefetch() {
         const file = createWriteStream(path.fsPath);
         data.pipe(file);
       }
+      void apiLyric(treeitem.valueOf);
     }
   } catch {}
 }
