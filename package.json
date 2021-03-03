@@ -28,8 +28,10 @@
   ],
   "preview": false,
   "activationEvents": [
+    "onView:local",
     "onView:userPlaylist",
     "onView:favoritePlaylist",
+    "onView:radio",
     "onView:queue"
   ],
   "icon": "media/icon-300.png",
