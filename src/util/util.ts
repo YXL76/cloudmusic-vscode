@@ -52,6 +52,7 @@ import { Webview } from "../webview";
 import axios from "axios";
 import { createWriteStream } from "fs";
 import i18n from "../i18n";
+import { lyric } from "./player";
 
 const minSize = MUSIC_QUALITY === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
 
@@ -86,6 +87,8 @@ export function stop(): void {
   Playing.set(false);
   ButtonManager.buttonSong();
   ButtonManager.buttonLyric();
+  lyric.time = [0];
+  lyric.text = ["Lyric"];
 }
 
 export async function load(element: QueueContent): Promise<void> {
