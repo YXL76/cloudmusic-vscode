@@ -92,7 +92,7 @@ export class LyricCache {
         key
       );
       // 7 * 24 * 60 * 60 * 1000
-      if (Date.now() - time < 604800000 && time > 1612444546463) {
+      if (Date.now() - time < 604800000 && time > 1614778593768) {
         return JSON.parse(
           Buffer.from(await workspace.fs.readFile(Uri.file(path))).toString()
         ) as LyricData;

@@ -1,5 +1,6 @@
-import { LyricCache, MultiStepInput, Player, lyric } from "../util";
+import { LyricCache, MultiStepInput, Player, lyric, pickUser } from "../util";
 import { ButtonManager } from "../manager";
+import { LyricType } from "../constant";
 import type { QuickPickItem } from "vscode";
 import { apiFmTrash } from "../api";
 import { commands } from "vscode";
@@ -15,14 +16,17 @@ export function initStatusBar(): void {
 
     const enum Type {
       delay,
+      type,
       full,
       cache,
       disable,
+      user,
     }
 
-    await MultiStepInput.run((input) => pickMthod(input));
+    await MultiStepInput.run((input) => pickMethod(input));
 
-    async function pickMthod(input: MultiStepInput) {
+    async function pickMethod(input: MultiStepInput) {
+      const { time, text, user } = lyric[lyric.type];
       const { type } = await input.showQuickPick({
         title,
         step: 1,
@@ -32,6 +36,14 @@ export function initStatusBar(): void {
             label: `$(versions) ${i18n.word.lyricDelay}`,
             description: `${i18n.sentence.label.lyricDelay} (${i18n.word.default}: -1.0)`,
             type: Type.delay,
+          },
+          {
+            label: `$(symbol-type-parameter) ${
+              lyric.type === LyricType.original
+                ? i18n.word.translation
+                : i18n.word.original
+            }`,
+            type: Type.type,
           },
           {
             label: `$(list-ordered) ${i18n.word.fullLyric}`,
@@ -47,20 +59,33 @@ export function initStatusBar(): void {
               : `$(circle-large-outline) ${i18n.word.enable}`,
             type: Type.disable,
           },
+          ...(user
+            ? [{ label: `$(account) ${i18n.word.user}`, type: Type.user }]
+            : []),
         ],
       });
       switch (type) {
         case Type.delay:
           return (input: MultiStepInput) => inputDelay(input);
         case Type.full:
-          return (input: MultiStepInput) => pickLyric(input);
+          return (input: MultiStepInput) => pickLyric(input, time, text);
+        case Type.type:
+          lyric.type =
+            lyric.type === LyricType.original
+              ? LyricType.translation
+              : LyricType.original;
+          break;
         case Type.cache:
           LyricCache.clear();
-          return;
+          break;
         case Type.disable:
           ButtonManager.toggleLyric();
-          return;
+          break;
+        case Type.user:
+          return (input: MultiStepInput) =>
+            pickUser(input, 2, user?.userid || 0);
       }
+      return input.stay();
     }
 
     async function inputDelay(input: MultiStepInput) {
@@ -77,19 +102,20 @@ export function initStatusBar(): void {
       return input.stay();
     }
 
-    async function pickLyric(input: MultiStepInput) {
+    async function pickLyric(
+      input: MultiStepInput,
+      time: number[],
+      text: string[]
+    ) {
       interface T extends QuickPickItem {
         description: string;
       }
       const items: T[] = [];
-      for (let i = 0; i < lyric.text.length; ++i) {
-        if (lyric.text[i] !== "Lyric") {
-          items.push({
-            label: lyric.text[i],
-            description: `[${lyric.time[i]}]`,
-          });
-        }
-      }
+      text.forEach((v, i) => {
+        if (v !== i18n.word.lyric)
+          items.push({ label: v, description: `[${time[i]}]` });
+      });
+
       const pick = await input.showQuickPick({
         title,
         step: 2,

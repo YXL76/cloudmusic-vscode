@@ -8,7 +8,7 @@ import type {
   SongsItem,
   UserDetail,
 } from "../constant";
-import { ButtonAction, MusicCache, Player } from ".";
+import { ButtonAction, MusicCache, Player, setLyric } from ".";
 import {
   CommentType,
   apiAlbum,
@@ -52,7 +52,6 @@ import { Webview } from "../webview";
 import axios from "axios";
 import { createWriteStream } from "fs";
 import i18n from "../i18n";
-import { lyric } from "./player";
 
 const minSize = MUSIC_QUALITY === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
 
@@ -87,8 +86,11 @@ export function stop(): void {
   Playing.set(false);
   ButtonManager.buttonSong();
   ButtonManager.buttonLyric();
-  lyric.time = [0];
-  lyric.text = ["Lyric"];
+  setLyric(
+    0,
+    { time: [0], text: [i18n.word.lyric] },
+    { time: [0], text: [i18n.word.lyric] }
+  );
 }
 
 export async function load(element?: QueueContent): Promise<void> {

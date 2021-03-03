@@ -116,6 +116,7 @@ export default __non_webpack_require__(
     new: string;
     nextPage: string;
     nextTrack: string;
+    original: string;
     other: string;
     pause: string;
     personalFm: string;
@@ -156,6 +157,7 @@ export default __non_webpack_require__(
     toplist: string;
     topSong: string;
     trackCount: string;
+    translation: string;
     trash: string;
     type: string;
     unsave: string;

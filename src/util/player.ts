@@ -4,15 +4,16 @@ import {
   QueueItemTreeItem,
   QueueProvider,
 } from "../treeview";
+import type { Lyric, LyricLine } from "../constant";
+import { LyricType, NATIVE, TMP_DIR, VOLUME_KEY } from "../constant";
 import { MusicCache, downloadMusic } from ".";
-import { NATIVE, TMP_DIR, VOLUME_KEY } from "../constant";
 import { Uri, commands, workspace } from "vscode";
 import { apiLyric, apiScrobble, apiSongUrl } from "../api";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
-import type { Lyric } from "../constant";
 import type { QueueContent } from "../treeview";
 import { createWriteStream } from "fs";
+import i18n from "../i18n";
 
 async function prefetch() {
   try {
@@ -45,8 +46,19 @@ async function prefetch() {
 export const lyric: Lyric = {
   index: 0,
   delay: -1.0,
-  time: [0],
-  text: ["Lyric"],
+  type: LyricType.original,
+  lrc: { time: [0], text: [i18n.word.lyric] },
+  tlyric: { time: [0], text: [i18n.word.lyric] },
+};
+
+export const setLyric = (
+  index: number,
+  lrc: LyricLine,
+  tlyric: LyricLine
+): void => {
+  lyric.index = index;
+  lyric.lrc = lrc;
+  lyric.tlyric = tlyric;
 };
 
 export class Player {
@@ -76,8 +88,8 @@ export class Player {
           Playing.set(false);
           void commands.executeCommand("cloudmusic.next", ButtonManager.repeat);
         } else {
-          while (lyric.time[lyric.index] <= pos) ++lyric.index;
-          ButtonManager.buttonLyric(lyric.text[lyric.index - 1]);
+          while (lyric[lyric.type].time[lyric.index] <= pos) ++lyric.index;
+          ButtonManager.buttonLyric(lyric[lyric.type].text[lyric.index - 1]);
         }
       }
     }, 1000);
@@ -113,11 +125,9 @@ export class Player {
       Playing.set(true);
 
       if (treeitem instanceof QueueItemTreeItem) {
-        void apiLyric(treeitem.valueOf).then(({ time, text }) => {
-          lyric.index = 0;
-          lyric.time = time;
-          lyric.text = text;
-        });
+        void apiLyric(treeitem.valueOf).then(({ lrc, tlyric }) =>
+          setLyric(0, lrc, tlyric)
+        );
       }
 
       const pTime = this.time;
