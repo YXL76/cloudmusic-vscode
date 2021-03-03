@@ -74,7 +74,7 @@ export class Player {
         }
         if (NATIVE.playerEmpty(this.player)) {
           Playing.set(false);
-          void commands.executeCommand("cloudmusic.next");
+          void commands.executeCommand("cloudmusic.next", ButtonManager.repeat);
         } else {
           while (lyric.time[lyric.index] <= pos) ++lyric.index;
           ButtonManager.buttonLyric(lyric.text[lyric.index - 1]);
@@ -134,9 +134,7 @@ export class Player {
       this.pid = pid;
       this.prefetchLock = false;
       Loading.set(false);
-    } else {
-      void commands.executeCommand("cloudmusic.next");
-    }
+    } else void commands.executeCommand("cloudmusic.next");
   }
 
   static togglePlay(): void {

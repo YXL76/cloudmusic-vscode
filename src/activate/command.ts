@@ -24,18 +24,27 @@ export function initCommand(context: ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    commands.registerCommand("cloudmusic.next", async () => {
-      if (PersonalFm.get()) void load(await PersonalFm.next());
-      else
-        QueueProvider.refresh(() => {
-          QueueProvider.shift(1);
-          void load(QueueProvider.songs[0]);
-        });
+    commands.registerCommand("cloudmusic.next", async (repeat?: boolean) => {
+      if (repeat) void load(Player.treeitem);
+      else {
+        if (PersonalFm.get()) void load(await PersonalFm.next());
+        else
+          QueueProvider.refresh(() => {
+            QueueProvider.shift(1);
+            void load(QueueProvider.songs[0]);
+          });
+      }
     })
   );
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.play", () => Player.togglePlay())
+  );
+
+  context.subscriptions.push(
+    commands.registerCommand("cloudmusic.repeat", () =>
+      ButtonManager.buttonRepeat()
+    )
   );
 
   context.subscriptions.push(

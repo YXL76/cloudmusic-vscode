@@ -91,7 +91,8 @@ export function stop(): void {
   lyric.text = ["Lyric"];
 }
 
-export async function load(element: QueueContent): Promise<void> {
+export async function load(element?: QueueContent): Promise<void> {
+  if (!element) return;
   Loading.set(true);
   if (element instanceof LocalFileTreeItem) {
     Player.load(element.tooltip, 0, element);

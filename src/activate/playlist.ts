@@ -300,7 +300,6 @@ export function initPlaylist(): void {
           data.on("error", (err) => {
             console.error(err);
             void window.showErrorMessage(i18n.sentence.error.network);
-            void commands.executeCommand("cloudmusic.next");
           });
           data.on(
             "close",

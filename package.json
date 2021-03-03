@@ -76,6 +76,11 @@
       },
       {
         "category": "Cloudmusic",
+        "command": "cloudmusic.repeat",
+        "title": "%commands.repeat.title%"
+      },
+      {
+        "category": "Cloudmusic",
         "command": "cloudmusic.like",
         "title": "%commands.like.title%"
       },

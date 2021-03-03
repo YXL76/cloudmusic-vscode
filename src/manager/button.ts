@@ -10,6 +10,7 @@ const enum ButtonLabel {
   previous,
   play,
   next,
+  repeat,
   like,
   volume,
   song,
@@ -18,6 +19,8 @@ const enum ButtonLabel {
 
 export class ButtonManager {
   static context: ExtensionContext;
+
+  static repeat = false;
 
   static showLyric = false;
 
@@ -30,46 +33,53 @@ export class ButtonManager {
     window.createStatusBarItem(StatusBarAlignment.Left, -133),
     window.createStatusBarItem(StatusBarAlignment.Left, -134),
     window.createStatusBarItem(StatusBarAlignment.Left, -135),
+    window.createStatusBarItem(StatusBarAlignment.Left, -136),
   ];
 
-  private static buttonShow = [true, true, true, true, true, true, true, true];
+  private static buttonShow = Array(9).fill(true) as boolean[];
 
   static init(): void {
     this.showLyric = this.context.globalState.get(LYRIC_KEY) || this.showLyric;
 
-    this.buttons[0].text = "$(account)";
-    this.buttons[1].text = "$(chevron-left)";
-    this.buttons[2].text = "$(play)";
-    this.buttons[3].text = "$(chevron-right)";
-    this.buttons[4].text = "$(star)";
-    this.buttons[5].text = "$(unmute)";
-    this.buttons[6].text = "$(flame)";
-    this.buttons[7].text = this.showLyric ? "$(text-size)" : i18n.word.disabled;
+    [
+      "$(account)",
+      "$(chevron-left)",
+      "$(play)",
+      "$(chevron-right)",
+      "$(sync-ignored)",
+      "$(star)",
+      "$(unmute)",
+      "$(flame)",
+      this.showLyric ? "$(text-size)" : i18n.word.disabled,
+    ].forEach((value, index) => (this.buttons[index].text = value));
 
-    this.buttons[0].tooltip = i18n.word.account;
-    this.buttons[1].tooltip = i18n.word.previousTrack;
-    this.buttons[2].tooltip = i18n.word.play;
-    this.buttons[3].tooltip = i18n.word.nextTrack;
-    this.buttons[4].tooltip = i18n.word.like;
-    this.buttons[5].tooltip = i18n.word.volume;
-    this.buttons[6].tooltip = i18n.word.song;
-    this.buttons[7].tooltip = i18n.word.lyric;
+    [
+      i18n.word.account,
+      i18n.word.previousTrack,
+      i18n.word.play,
+      i18n.word.nextTrack,
+      i18n.word.repeat,
+      i18n.word.like,
+      i18n.word.volume,
+      i18n.word.song,
+      i18n.word.lyric,
+    ].forEach((value, index) => (this.buttons[index].tooltip = value));
 
-    this.buttons[0].command = "cloudmusic.signin";
-    this.buttons[1].command = "cloudmusic.previous";
-    this.buttons[2].command = "cloudmusic.play";
-    this.buttons[3].command = "cloudmusic.next";
-    this.buttons[4].command = "cloudmusic.like";
-    this.buttons[5].command = "cloudmusic.volume";
-    this.buttons[6].command = "cloudmusic.songDetail";
-    this.buttons[7].command = "cloudmusic.lyric";
+    [
+      "cloudmusic.signin",
+      "cloudmusic.previous",
+      "cloudmusic.play",
+      "cloudmusic.next",
+      "cloudmusic.repeat",
+      "cloudmusic.like",
+      "cloudmusic.volume",
+      "cloudmusic.songDetail",
+      "cloudmusic.lyric",
+    ].forEach((value, index) => (this.buttons[index].command = value));
 
     this.buttons[0].show();
     this.buttonShow =
       this.context.globalState.get(BUTTON_KEY) || this.buttonShow;
-    while (this.buttonShow.length < this.buttons.length) {
-      this.buttonShow.push(true);
-    }
     this.show();
   }
 
@@ -152,6 +162,13 @@ export class ButtonManager {
       : i18n.word.play;
   }
 
+  static buttonRepeat(): void {
+    this.repeat = !this.repeat;
+    this.buttons[ButtonLabel.repeat].text = this.repeat
+      ? "$(sync)"
+      : "$(sync-ignored)";
+  }
+
   static buttonLike(islike: boolean): void {
     this.buttons[ButtonLabel.like].text = islike ? "$(star-full)" : "$(star)";
     this.buttons[ButtonLabel.like].tooltip = islike
@@ -179,10 +196,8 @@ export class ButtonManager {
   }
 
   static buttonLyric(text?: string): void {
-    if (this.showLyric) {
-      this.buttons[ButtonLabel.lyric].text = text ?? "$(text-size)";
-    } else {
-      this.buttons[ButtonLabel.lyric].text = i18n.word.disabled;
-    }
+    this.buttons[ButtonLabel.lyric].text = this.showLyric
+      ? text ?? "$(text-size)"
+      : i18n.word.disabled;
   }
 }

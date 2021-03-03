@@ -48,6 +48,7 @@
   "commands.refreshPlaylistContent.title": "重繪",
   "commands.refreshRadio.title": "重繪",
   "commands.refreshRadioContent.title": "重繪",
+  "commands.repeat.title": "單曲循環",
   "commands.saveToPlaylist.title": "添加到歌單",
   "commands.signin.title": "登入",
   "commands.signout.title": "登出",

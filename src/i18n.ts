@@ -133,6 +133,7 @@ export default __non_webpack_require__(
     recommendation: string;
     refresh: string;
     refreshing: string;
+    repeat: string;
     reply: string;
     save: string;
     saved: string;

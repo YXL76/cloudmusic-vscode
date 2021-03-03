@@ -48,6 +48,7 @@
   "commands.refreshPlaylistContent.title": "Refresh",
   "commands.refreshRadio.title": "Refresh",
   "commands.refreshRadioContent.title": "Refresh",
+  "commands.repeat.title": "Repeat",
   "commands.saveToPlaylist.title": "Save to playlist",
   "commands.signin.title": "Sign in",
   "commands.signout.title": "Sign Out",
