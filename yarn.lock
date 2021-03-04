@@ -1241,7 +1241,7 @@ __metadata:
     lodash: 4.17.21
     lru-cache: 6.0.0
     node-cache: 5.1.2
-    postcss: 8.2.6
+    postcss: 8.2.7
     postcss-cli: 8.3.1
     postcss-import: 14.0.0
     prettier: 2.2.1
@@ -1327,10 +1327,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"colorette@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "colorette@npm:1.2.1"
-  checksum: 1cc21ad4b84777a424794f78b6bb6a44b614ae17dcea91762199339f8047598e6d981249eeef7ea588c99eaf062be8fcdcd4866c112998922ed854db6dde96f9
+"colorette@npm:^1.2.1, colorette@npm:^1.2.2":
+  version: 1.2.2
+  resolution: "colorette@npm:1.2.2"
+  checksum: e240f0c94b8d9f34b52bd17b50fc13a3b74f9e662edeaa2b0c65e06ec6b1fc6367fb42b834ec5a1d819d68b74a3d850f3bd3e284f9e614d6c4ffa122f83c6ec5
   languageName: node
   linkType: hard
 
@@ -4317,14 +4317,14 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"postcss@npm:8.2.6, postcss@npm:^8.1.6, postcss@npm:^8.2.1":
-  version: 8.2.6
-  resolution: "postcss@npm:8.2.6"
+"postcss@npm:8.2.7, postcss@npm:^8.1.6, postcss@npm:^8.2.1":
+  version: 8.2.7
+  resolution: "postcss@npm:8.2.7"
   dependencies:
-    colorette: ^1.2.1
+    colorette: ^1.2.2
     nanoid: ^3.1.20
     source-map: ^0.6.1
-  checksum: 31dcc6632589e5b0d06ae3854122073a38952f3a25280511fa4bd8c2bc254c05d1d1db0913848ed3171c84d41b233ec3fe5d7349de4700f624a16fa93553ccac
+  checksum: cd2a7a8b9c1950783afd05e906d65a6433b13bcce5a52f3c2802c524479e7ba6893f516338ed1bc755b3a8545eb5a181daf0fcf25af694ad2e33e9d9fe7d4254
   languageName: node
   linkType: hard
 
