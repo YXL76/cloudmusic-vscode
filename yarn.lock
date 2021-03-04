@@ -246,10 +246,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/vscode@npm:1.53.0":
-  version: 1.53.0
-  resolution: "@types/vscode@npm:1.53.0"
-  checksum: 4177f6cb763c31c8ece025d808e43729109078f79f0ca3125eb8ca63d180ef739b8edb7cbb914f8092a359b66f8f661d8ad2f26d036a57cf75c1631d185d3a2f
+"@types/vscode@npm:1.54.0":
+  version: 1.54.0
+  resolution: "@types/vscode@npm:1.54.0"
+  checksum: 517f00d7587eea16feef79d9fe05ebdc0569a00bf8424ae66557608f44a656e25f0136cb7ca3a91fffde0bb7204d4305cff378fdcb9dc7ff3369056eb1b8d08d
   languageName: node
   linkType: hard
 
@@ -1219,7 +1219,7 @@ __metadata:
     "@types/qrcode": 1.4.0
     "@types/react": 17.0.2
     "@types/react-dom": 17.0.1
-    "@types/vscode": 1.53.0
+    "@types/vscode": 1.54.0
     "@typescript-eslint/eslint-plugin": 4.16.1
     "@typescript-eslint/parser": 4.16.1
     array-unsort: 1.1.6

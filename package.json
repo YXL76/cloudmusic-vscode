@@ -849,7 +849,7 @@
     "@types/qrcode": "1.4.0",
     "@types/react": "17.0.2",
     "@types/react-dom": "17.0.1",
-    "@types/vscode": "1.53.0",
+    "@types/vscode": "1.54.0",
     "@typescript-eslint/eslint-plugin": "4.16.1",
     "@typescript-eslint/parser": "4.16.1",
     "autoprefixer": "10.2.4",
