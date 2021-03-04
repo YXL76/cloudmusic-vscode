@@ -1230,7 +1230,7 @@ __metadata:
     cssnano: 4.1.10
     dayjs: 1.10.4
     debug: 4.3.1
-    esbuild: 0.8.54
+    esbuild: 0.8.55
     esbuild-loader: 2.9.2
     eslint: 7.21.0
     eslint-config-prettier: 8.1.0
@@ -1936,12 +1936,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:0.8.54, esbuild@npm:^0.8.42":
-  version: 0.8.54
-  resolution: "esbuild@npm:0.8.54"
+"esbuild@npm:0.8.55, esbuild@npm:^0.8.42":
+  version: 0.8.55
+  resolution: "esbuild@npm:0.8.55"
   bin:
     esbuild: bin/esbuild
-  checksum: 6efe01549da8c49d707806b6788c6ae59ae5c18dbfd6e6f0def626deb005978275af634d1b44f224517665d1f61af9998f51a533615afb207cebc6c905e9fbd8
+  checksum: ea1e9cd273f27cc8222457e81ab0134b72387fb143983645d684b3067b0422e12a322febdb9ad72bec7bc61137f915af8f2944ff44dd96e74ca62e31892ac79e
   languageName: node
   linkType: hard
 
