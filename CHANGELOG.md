@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [7.4.0] - 2021-03-05
+
+### Changed
+
+- Cache: new music cache model
+
 ## [7.3.1] - 2021-03-05
 
 ### Changed
