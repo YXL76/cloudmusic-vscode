@@ -1,6 +1,6 @@
+import { ACCOUNT_KEY, COOKIE_KEY, SETTING_DIR, TMP_DIR } from "./constant";
 import { AccountManager, ButtonManager } from "./manager";
 import { LyricCache, MusicCache, Player } from "./util";
-import { SETTING_DIR, TMP_DIR } from "./constant";
 import {
   initAccount,
   initCache,
@@ -16,6 +16,8 @@ import type { ExtensionContext } from "vscode";
 import { workspace } from "vscode";
 
 export async function activate(context: ExtensionContext): Promise<void> {
+  void context.globalState.update(ACCOUNT_KEY, undefined);
+  void context.globalState.update(COOKIE_KEY, undefined);
   await Promise.all([
     workspace.fs.createDirectory(SETTING_DIR),
     workspace.fs.createDirectory(TMP_DIR),

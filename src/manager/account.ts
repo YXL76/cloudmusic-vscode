@@ -70,9 +70,13 @@ export class AccountManager implements AuthenticationProvider {
   readonly onDidChangeSessions = this._onDidChangeSessions.event;
 
   constructor() {
-    AccountManager.cookie =
-      AccountManager.context.globalState.get(COOKIE_KEY) || {};
-    void AccountManager.login().then((res) => {
+    (async () => {
+      let res = false;
+      const cookieStr = await AccountManager.context.secrets.get(COOKIE_KEY);
+      if (cookieStr) {
+        AccountManager.cookie = JSON.parse(cookieStr) as Cookie;
+        res = await AccountManager.login();
+      }
       if (res) {
         if (AUTO_CHECK) void AccountManager.dailyCheck();
       } else {
@@ -80,6 +84,8 @@ export class AccountManager implements AuthenticationProvider {
           createIfNone: true,
         });
       }
+    })().catch(() => {
+      //
     });
   }
 
@@ -123,20 +129,24 @@ export class AccountManager implements AuthenticationProvider {
   private static async logout(): Promise<boolean> {
     if (!(await apiLogout())) return false;
 
-    void this.context.globalState.update(ACCOUNT_KEY, undefined);
-    void this.context.globalState.update(COOKIE_KEY, undefined);
+    void this.context.secrets.delete(ACCOUNT_KEY);
+    void this.context.secrets.delete(COOKIE_KEY);
 
     this.cookie = {} as Cookie;
     this.uid = 0;
     this.nickname = "";
     this.likelist.clear();
+    State.login = false;
 
     return true;
   }
 
   private static async login(): Promise<boolean> {
     if (State.login) return true;
-    const account = this.context.globalState.get<Account>(ACCOUNT_KEY);
+    const accountStr = await this.context.secrets.get(ACCOUNT_KEY);
+    const account = accountStr
+      ? (JSON.parse(accountStr) as Account)
+      : undefined;
 
     try {
       const res = account
@@ -154,9 +164,13 @@ export class AccountManager implements AuthenticationProvider {
         this.uid = userId;
         this.nickname = nickname;
         this.likelist.clear();
+        State.login = true;
 
-        void this.context.globalState.update(ACCOUNT_KEY, account);
-        void this.context.globalState.update(COOKIE_KEY, this.cookie);
+        void this.context.secrets.store(ACCOUNT_KEY, JSON.stringify(account));
+        void this.context.secrets.store(
+          COOKIE_KEY,
+          JSON.stringify(this.cookie)
+        );
 
         void apiLikelist().then((ids) =>
           ids.forEach((v) => this.likelist.add(v))
@@ -281,7 +295,7 @@ export class AccountManager implements AuthenticationProvider {
           prompt: i18n.sentence.hint.account,
         }),
       ]);
-      await AccountManager.context.globalState.update(ACCOUNT_KEY, undefined);
+      await AccountManager.context.secrets.delete(ACCOUNT_KEY);
     }
 
     async function inputPassword(input: MultiStepInput) {
@@ -293,7 +307,10 @@ export class AccountManager implements AuthenticationProvider {
         password: true,
       });
       state.password = createHash("md5").update(password).digest("hex");
-      await AccountManager.context.globalState.update(ACCOUNT_KEY, state);
+      await AccountManager.context.secrets.store(
+        ACCOUNT_KEY,
+        JSON.stringify(state)
+      );
     }
   }
 
@@ -308,7 +325,6 @@ export class AccountManager implements AuthenticationProvider {
     } catch {
       throw Error();
     }
-    State.login = true;
     const added = AccountManager.sessions;
     this._onDidChangeSessions.fire({ added });
     return added[0];
@@ -316,7 +332,6 @@ export class AccountManager implements AuthenticationProvider {
 
   async removeSession(): Promise<void> {
     if (!(await AccountManager.logout())) throw Error();
-    State.login = false;
     this._onDidChangeSessions.fire({ removed: AccountManager.sessions });
     await authentication.getSession(AUTH_PROVIDER_ID, []);
     return;
