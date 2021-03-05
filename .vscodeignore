@@ -28,6 +28,7 @@ Cargo.*
 .vscode
 
 # scoure code
+scripts
 src
 *.rs
 

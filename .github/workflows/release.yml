@@ -87,13 +87,12 @@ jobs:
       - name: Package
         run: |
           yarn
-          yarn dlx vsce package --no-yarn
+          yarn dlx vsce package
           echo "VSIX_PATH=$(find . -maxdepth 1 -type f -iname "*.vsix" | head -1)" >> $GITHUB_ENV
           echo "VSIX_NAME=$(basename $(find . -maxdepth 1 -type f -iname "*.vsix" | head -1))" >> $GITHUB_ENV
 
       - name: Publish to Visual Studio Marketplace
-        run: yarn dlx vsce publish --packagePath ${{ env.VSIX_PATH }} -p ${{ secrets.VSCE_TOKEN }} --no-yarn
-
+        run: yarn dlx vsce publish --packagePath ${{ env.VSIX_PATH }} -p ${{ secrets.VSCE_TOKEN }}
       - name: Publish to Open VSX Registry
         run: yarn dlx ovsx publish ${{ env.VSIX_PATH }} -p ${{ secrets.OVSX_TOKEN }}
 

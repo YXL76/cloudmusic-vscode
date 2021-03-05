@@ -835,6 +835,7 @@
     "supports-color": "^8.1.1"
   },
   "scripts": {
+    "list": "node scripts/list.js",
     "generate-css": "postcss src/style.css -o dist/style.css",
     "build": "yarn generate-css && webpack --mode production",
     "build-dev": "webpack --mode development",
