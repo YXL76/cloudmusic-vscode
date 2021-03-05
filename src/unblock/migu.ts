@@ -93,7 +93,6 @@ async function songUrl({ id, mp3 }: UnlockSongItem & { mp3?: string }) {
     return {
       url: mp3,
       type: extname(mp3).split(".").pop(),
-      md5: "",
     };
   }
   try {
@@ -118,7 +117,6 @@ async function songUrl({ id, mp3 }: UnlockSongItem & { mp3?: string }) {
           type: extname(playUrl.split("?").shift() || "")
             .split(".")
             .pop(),
-          md5: "",
         }
       : undefined;
   } catch {}

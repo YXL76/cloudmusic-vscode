@@ -76,7 +76,7 @@ async function songUrl({ id }: UnlockSongItem) {
         const [key, value] = line.split("=");
         obj[key] = value;
       });
-      return { url: obj["url"], type: obj["format"], md5: "" };
+      return { url: obj["url"], type: obj["format"] };
     } else {
       const { data } = await axios.get<string>(
         `http://antiserver.kuwo.cn/anti.s?type=convert_url&format=mp3&response=url&rid=${id}`,
@@ -85,7 +85,6 @@ async function songUrl({ id }: UnlockSongItem) {
       return {
         url: data,
         type: extname(data).split(".").pop(),
-        md5: "",
       };
     }
   } catch {}

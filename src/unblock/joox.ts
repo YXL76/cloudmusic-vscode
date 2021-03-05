@@ -65,9 +65,7 @@ async function songUrl({ id }: UnlockSongItem) {
       /M\d00([\w]+).mp3/,
       "M800$1.mp3"
     );
-    return url
-      ? { url, type: extname(url).split(".").pop(), md5: "" }
-      : undefined;
+    return url ? { url, type: extname(url).split(".").pop() } : undefined;
   } catch {}
   return;
 }
