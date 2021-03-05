@@ -21,6 +21,7 @@ import {
   initStatusBar,
 } from "./activate";
 import type { ExtensionContext } from "vscode";
+import { rmdirSync } from "fs";
 import { workspace } from "vscode";
 
 export async function activate(context: ExtensionContext): Promise<void> {
@@ -29,7 +30,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   await workspace.fs.createDirectory(SETTING_DIR);
   await Promise.all([
     workspace.fs.createDirectory(TMP_DIR),
-    await workspace.fs.createDirectory(CACHE_DIR),
+    workspace.fs.createDirectory(CACHE_DIR),
   ]);
   await Promise.all([
     workspace.fs.createDirectory(LYRIC_CACHE_DIR),
@@ -49,10 +50,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
   initLocal(context);
 }
 
-export async function deactivate(): Promise<void> {
+export function deactivate(): void {
   Player.stop();
-  await Promise.all([
-    MusicCache.store(),
-    workspace.fs.delete(TMP_DIR, { recursive: true, useTrash: false }),
-  ]);
+  MusicCache.store();
+  try {
+    rmdirSync(TMP_DIR.fsPath, { recursive: true });
+  } catch {}
 }

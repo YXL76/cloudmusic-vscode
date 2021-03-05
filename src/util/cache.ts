@@ -10,6 +10,7 @@ import {
 import { FileType, Uri, workspace } from "vscode";
 import type { LyricData, MusicCacheNode } from "../constant";
 import type { FileStat } from "vscode";
+import { writeFileSync } from "fs";
 
 export const apiCache = new NodeCache({
   stdTTL: 300,
@@ -63,9 +64,8 @@ export class MusicCache {
       );
     } catch {}
 
-    void this.store();
     // 1000 * 60 * 16;
-    setInterval(() => void this.store(), 960000);
+    // setInterval(() => this.store(), 960000);
   }
 
   static async clear(): Promise<void> {
@@ -78,12 +78,9 @@ export class MusicCache {
     } catch {}
   }
 
-  static async store(): Promise<void> {
+  static store(): void {
     try {
-      await workspace.fs.writeFile(
-        this.listPath,
-        Buffer.from(JSON.stringify(this.list.toArray()), "utf8")
-      );
+      writeFileSync(this.listPath.fsPath, JSON.stringify(this.list.toArray()));
     } catch {}
   }
 
