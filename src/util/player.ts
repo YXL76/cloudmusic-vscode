@@ -22,7 +22,7 @@ async function prefetch() {
     if (!treeitem || treeitem instanceof LocalFileTreeItem) return;
     const idString = `${treeitem.valueOf}`;
 
-    if (idString !== "0" && !(await MusicCache.get(idString))) {
+    if (idString !== "0" && !MusicCache.get(idString)) {
       const { url, md5 } = await apiSongUrl(treeitem.item);
       if (!url) return;
 
@@ -47,7 +47,6 @@ export const lyric: Lyric = {
   index: 0,
   delay: -1.0,
   type: LyricType.original,
-  ctime: 0,
   time: [0],
   o: { text: [i18n.word.lyric] },
   t: { text: [i18n.word.lyric] },

@@ -1,7 +1,9 @@
 import {
   ACCOUNT_KEY,
+  CACHE_DIR,
   COOKIE_KEY,
   LYRIC_CACHE_DIR,
+  MUSIC_CACHE_DIR,
   SETTING_DIR,
   TMP_DIR,
 } from "./constant";
@@ -24,10 +26,14 @@ import { workspace } from "vscode";
 export async function activate(context: ExtensionContext): Promise<void> {
   void context.globalState.update(ACCOUNT_KEY, undefined);
   void context.globalState.update(COOKIE_KEY, undefined);
+  await workspace.fs.createDirectory(SETTING_DIR);
   await Promise.all([
-    workspace.fs.createDirectory(SETTING_DIR),
     workspace.fs.createDirectory(TMP_DIR),
+    await workspace.fs.createDirectory(CACHE_DIR),
+  ]);
+  await Promise.all([
     workspace.fs.createDirectory(LYRIC_CACHE_DIR),
+    workspace.fs.createDirectory(MUSIC_CACHE_DIR),
   ]);
   AccountManager.context = context;
   ButtonManager.context = context;
@@ -43,8 +49,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
   initLocal(context);
 }
 
-export function deactivate(): void {
+export async function deactivate(): Promise<void> {
   Player.stop();
-  MusicCache.verify();
-  void workspace.fs.delete(TMP_DIR, { recursive: true, useTrash: false });
+  await Promise.all([
+    MusicCache.store(),
+    workspace.fs.delete(TMP_DIR, { recursive: true, useTrash: false }),
+  ]);
 }

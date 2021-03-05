@@ -95,8 +95,8 @@ export type TrackIdsItem = {
   at: number;
 };
 
-export type LruCacheValue = {
-  integrity: string;
+export type MusicCacheNode = {
+  key: string;
   size: number;
 };
 
@@ -110,7 +110,7 @@ export type Lyric = {
   delay: number;
   type: LyricType;
   updatePanel?: (inde: number) => void;
-} & LyricData;
+} & Omit<LyricData, "ctime">;
 
 export type LyricSpecifyData = {
   text: string[];

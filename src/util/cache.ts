@@ -1,13 +1,15 @@
-import * as LRU from "lru-cache";
 import * as NodeCache from "node-cache";
-import * as cacache from "cacache";
+import * as Yallist from "yallist";
+import * as md5File from "md5-file";
 import {
+  CACHE_DIR,
   LYRIC_CACHE_DIR,
   MUSIC_CACHE_DIR,
   MUSIC_CACHE_SIZE,
 } from "../constant";
-import type { LruCacheValue, LyricData } from "../constant";
-import { Uri, workspace } from "vscode";
+import { FileType, Uri, workspace } from "vscode";
+import type { LyricData, MusicCacheNode } from "../constant";
+import type { FileStat } from "vscode";
 
 export const apiCache = new NodeCache({
   stdTTL: 300,
@@ -19,60 +21,122 @@ export const apiCache = new NodeCache({
 });
 
 export class MusicCache {
-  static readonly lruCache = new LRU({
-    max: MUSIC_CACHE_SIZE,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    length: (n: LruCacheValue, _key: string) => n.size,
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    dispose: (key: string, n: LruCacheValue) => {
-      void cacache.rm.entry(MUSIC_CACHE_DIR.fsPath, key);
-      void cacache.rm.content(MUSIC_CACHE_DIR.fsPath, n.integrity);
-    },
-    noDisposeOnSet: true,
-  });
+  private static size = 0;
+
+  private static readonly list = new Yallist<MusicCacheNode>();
+
+  private static readonly cache = new Map<
+    string,
+    Yallist.Node<MusicCacheNode>
+  >();
+
+  private static readonly listPath = Uri.joinPath(CACHE_DIR, "music-list");
 
   static async init(): Promise<void> {
+    const set = new Set(
+      (await workspace.fs.readDirectory(MUSIC_CACHE_DIR))
+        .filter(([, type]) => type === FileType.File)
+        .map(([name]) => name)
+    );
     try {
-      const res = await cacache.ls(MUSIC_CACHE_DIR.fsPath);
-      for (const item in res) {
-        const { key, integrity, size } = res[item];
-        this.lruCache.set(key, { integrity, size });
+      const list = JSON.parse(
+        (await workspace.fs.readFile(this.listPath)).toString()
+      ) as MusicCacheNode[];
+      list
+        .filter(({ key }) => set.has(key))
+        .reverse()
+        .forEach((value) => {
+          set.delete(value.key);
+          this.addNode(value);
+        });
+    } catch {}
+
+    try {
+      const names: string[] = [];
+      const tasks: Thenable<FileStat>[] = [];
+      set.forEach((name) => {
+        names.push(name);
+        tasks.push(workspace.fs.stat(Uri.joinPath(MUSIC_CACHE_DIR, name)));
+      });
+      (await Promise.all(tasks)).forEach(({ size }, index) =>
+        this.addNode({ key: names[index], size })
+      );
+    } catch {}
+
+    void this.store();
+    // 1000 * 60 * 16;
+    setInterval(() => void this.store(), 960000);
+  }
+
+  static async clear(): Promise<void> {
+    try {
+      await workspace.fs.delete(MUSIC_CACHE_DIR, {
+        recursive: true,
+        useTrash: false,
+      });
+      await workspace.fs.createDirectory(MUSIC_CACHE_DIR);
+    } catch {}
+  }
+
+  static async store(): Promise<void> {
+    try {
+      await workspace.fs.writeFile(
+        this.listPath,
+        Buffer.from(JSON.stringify(this.list.toArray()), "utf8")
+      );
+    } catch {}
+  }
+
+  static get(key: string): string | void {
+    const node = this.cache.get(key);
+    if (node) {
+      this.list.unshiftNode(node);
+      return Uri.joinPath(MUSIC_CACHE_DIR, key).fsPath;
+    }
+    /* try {
+      const { type, size } = await workspace.fs.stat(path);
+      if (type !== FileType.File) throw Error();
+      const node = this.cache.get(key);
+      if (node) {
+        this.list.unshiftNode(node);
+      } else {
+        this.addNode({ key, size });
       }
-    } catch {}
-  }
-
-  static verify(): void {
-    void cacache.verify(MUSIC_CACHE_DIR.fsPath);
-  }
-
-  static async get(key: string): Promise<string | void> {
-    try {
-      const { path } = await cacache.get.info(MUSIC_CACHE_DIR.fsPath, key);
-      this.lruCache.get(key);
-      return path;
-    } catch {}
-    return;
+      return path.fsPath;
+    } catch {
+      this.deleteNode(key);
+    } 
+    return; */
   }
 
   static async put(key: string, path: Uri, md5?: string): Promise<void> {
+    const target = Uri.joinPath(MUSIC_CACHE_DIR, key);
     try {
-      await cacache.put(
-        MUSIC_CACHE_DIR.fsPath,
-        key,
-        await workspace.fs.readFile(path),
-        md5
-          ? {
-              integrity: `md5-${Buffer.from(md5, "hex").toString("base64")}`,
-              algorithms: ["md5"],
-            }
-          : undefined
-      );
-      const { integrity, size } = await cacache.get.info(
-        MUSIC_CACHE_DIR.fsPath,
-        key
-      );
-      this.lruCache.set(key, { integrity, size });
+      await workspace.fs.copy(path, target, { overwrite: true });
+      const { size } = await workspace.fs.stat(target);
+      this.deleteNode(key);
+      if (!md5 || (await md5File(target.fsPath)) === md5)
+        this.addNode({ key, size });
     } catch {}
+  }
+
+  private static addNode(value: MusicCacheNode) {
+    this.list.unshift(value);
+    this.cache.set(value.key, this.list.head as Yallist.Node<MusicCacheNode>);
+    this.size += value.size;
+    while (this.size > MUSIC_CACHE_SIZE) {
+      const { tail } = this.list;
+      if (!tail && tail !== null) this.deleteNode(tail);
+    }
+  }
+
+  private static deleteNode(key: string) {
+    const node = this.cache.get(key);
+    if (node) {
+      this.list.removeNode(node);
+      this.cache.delete(key);
+      this.size -= node.value.size;
+    }
   }
 }
 

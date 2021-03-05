@@ -107,7 +107,7 @@ export async function load(element?: QueueContent): Promise<void> {
   const { id } = item;
   const idS = `${id}`;
 
-  const path = await MusicCache.get(idS);
+  const path = MusicCache.get(idS);
   if (path) {
     Player.load(path, pid, element);
     return;
