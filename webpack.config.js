@@ -1,7 +1,6 @@
 const { ESBuildPlugin, ESBuildMinifyPlugin } = require("esbuild-loader");
 const { readFileSync, readdirSync } = require("fs");
 const { DefinePlugin } = require("webpack");
-const ESLintPlugin = require("eslint-webpack-plugin");
 const { resolve } = require("path");
 const { transformSync } = require("esbuild");
 
@@ -63,16 +62,7 @@ module.exports = (_, options) =>
     performance: {
       hints: false,
     },
-    plugins: [
-      new DefinePlugin(definitions),
-      new ESBuildPlugin(),
-      new ESLintPlugin({
-        emitError: true,
-        emitWarning: true,
-        extensions: ["ts", "tsx"],
-        fix: true,
-      }),
-    ],
+    plugins: [new DefinePlugin(definitions), new ESBuildPlugin()],
     resolve: {
       extensions: [".ts", ".js", ".tsx", ".jsx"],
     },

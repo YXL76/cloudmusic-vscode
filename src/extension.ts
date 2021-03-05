@@ -16,8 +16,10 @@ import type { ExtensionContext } from "vscode";
 import { workspace } from "vscode";
 
 export async function activate(context: ExtensionContext): Promise<void> {
-  await workspace.fs.createDirectory(SETTING_DIR);
-  await workspace.fs.createDirectory(TMP_DIR);
+  await Promise.all([
+    workspace.fs.createDirectory(SETTING_DIR),
+    workspace.fs.createDirectory(TMP_DIR),
+  ]);
   AccountManager.context = context;
   ButtonManager.context = context;
   Player.context = context;

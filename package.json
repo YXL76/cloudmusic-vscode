@@ -5,7 +5,7 @@
   "version": "7.2.0",
   "publisher": "YXL",
   "engines": {
-    "vscode": "^1.53.0"
+    "vscode": "^1.54.0"
   },
   "license": "SEE LICENSE IN LICENSE",
   "categories": [
@@ -41,16 +41,6 @@
   },
   "contributes": {
     "commands": [
-      {
-        "category": "Cloudmusic",
-        "command": "cloudmusic.signin",
-        "title": "%commands.signin.title%"
-      },
-      {
-        "category": "Cloudmusic",
-        "command": "cloudmusic.signout",
-        "title": "%commands.signout.title%"
-      },
       {
         "category": "Cloudmusic",
         "command": "cloudmusic.dailyCheck",
@@ -850,7 +840,7 @@
     "@types/qrcode": "1.4.0",
     "@types/react": "17.0.2",
     "@types/react-dom": "17.0.1",
-    "@types/vscode": "1.53.0",
+    "@types/vscode": "1.54.0",
     "@typescript-eslint/eslint-plugin": "4.16.1",
     "@typescript-eslint/parser": "4.16.1",
     "autoprefixer": "10.2.4",
@@ -862,7 +852,6 @@
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-prettier": "3.3.1",
     "eslint-plugin-react": "7.22.0",
-    "eslint-webpack-plugin": "2.5.2",
     "postcss": "8.2.7",
     "postcss-cli": "8.3.1",
     "postcss-import": "14.0.0",

@@ -50,8 +50,6 @@
   "commands.refreshRadioContent.title": "刷新",
   "commands.repeat.title": "单曲循环",
   "commands.saveToPlaylist.title": "添加到歌单",
-  "commands.signin.title": "登录",
-  "commands.signout.title": "登出",
   "commands.songComment.title": "评论",
   "commands.songDetail.title": "详情",
   "commands.sortQueue.title": "排序",

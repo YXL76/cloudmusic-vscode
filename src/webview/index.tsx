@@ -21,7 +21,6 @@ import {
   apiSongDetail,
   apiUserRecord,
 } from "../api";
-import { AccountManager } from "../manager";
 import CommentList from "./comment";
 import { CommentType } from "../api";
 import Description from "./description";
@@ -48,33 +47,42 @@ export class Webview {
     resolve(__dirname, "..", "media", "icon.ico")
   );
 
-  static async login(): Promise<void> {
-    const key = await apiLoginQrKey();
-    if (!key) return;
-    const imgSrc = await toDataURL(
-      `https://music.163.com/login?codekey=${key}`
-    );
-    const main = <Login imgSrc={imgSrc} />;
-    const { panel, setHtml } = this.getPanel(i18n.word.signIn);
-    setHtml(<div></div>);
-
-    const timer = setInterval(
-      () =>
-        void apiLoginQrCheck(key).then((code) => {
-          if (code === 803) {
-            panel.dispose();
-            void AccountManager.login();
-            void window.showInformationMessage(i18n.sentence.success.signIn);
-          } else if (code === 800) {
-            panel.dispose();
-            void window.showErrorMessage(i18n.sentence.fail.signIn);
+  static login(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      apiLoginQrKey()
+        .then((key) => {
+          if (!key) {
+            reject();
+            return;
           }
-        }),
-      512
-    );
-    panel.onDidDispose(() => clearInterval(timer));
+          toDataURL(`https://music.163.com/login?codekey=${key}`)
+            .then((imgSrc) => {
+              const main = <Login imgSrc={imgSrc} />;
+              const { panel, setHtml } = this.getPanel(i18n.word.signIn);
+              setHtml(<div></div>);
 
-    setHtml(main);
+              const timer = setInterval(
+                () =>
+                  void apiLoginQrCheck(key).then((code) => {
+                    if (code === 803) {
+                      panel.dispose();
+                      resolve();
+                    } else if (code === 800) {
+                      panel.dispose();
+                      void window.showErrorMessage(i18n.sentence.fail.signIn);
+                      reject();
+                    }
+                  }),
+                512
+              );
+              panel.onDidDispose(() => clearInterval(timer));
+
+              setHtml(main);
+            })
+            .catch(reject);
+        })
+        .catch(reject);
+    });
   }
 
   static lyric(): void {

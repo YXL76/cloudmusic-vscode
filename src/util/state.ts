@@ -61,7 +61,7 @@ export class State {
       RadioProvider.refresh();
       if (newValue) {
         void apiUserLevel();
-        ButtonManager.buttonAccountAccount(AccountManager.nickname);
+        ButtonManager.buttonAccount(AccountManager.nickname);
         ButtonManager.show();
         void apiRecommendSongs().then((songs) =>
           QueueProvider.refresh(() => {
@@ -72,7 +72,6 @@ export class State {
           })
         );
       } else {
-        ButtonManager.buttonAccountSignin();
         ButtonManager.hide();
         void commands.executeCommand("cloudmusic.clearQueue");
       }

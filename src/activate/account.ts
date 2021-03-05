@@ -1,5 +1,4 @@
-import { ACCOUNT_KEY, AUTO_CHECK, COOKIE_KEY, ICON } from "../constant";
-import type { Account, RadioDetail } from "../constant";
+import { AUTH_PROVIDER_ID, ICON } from "../constant";
 import {
   ArtistArea,
   ArtistType,
@@ -31,7 +30,6 @@ import {
   apiToplist,
   apiToplistArtist,
   apiUserLevel,
-  cookieToJson,
 } from "../api";
 import {
   ButtonAction,
@@ -50,25 +48,27 @@ import {
   pickUser,
 } from "../util";
 import type { ExtensionContext, QuickPickItem } from "vscode";
-import { commands, window } from "vscode";
+import { authentication, commands, window } from "vscode";
 import { AccountManager } from "../manager";
 import type { ArtistInitial } from "../api";
 import type { InputStep } from "../util";
+import type { RadioDetail } from "../constant";
 import { Webview } from "../webview";
-import { createHash } from "crypto";
 import i18n from "../i18n";
 import { inputKeyword } from ".";
 
 export function initAccount(context: ExtensionContext): void {
+  const accountManager = AccountManager.getInstance();
+  authentication.registerAuthenticationProvider(
+    AUTH_PROVIDER_ID,
+    "Cloudmusic",
+    accountManager
+  );
+
   context.subscriptions.push(
-    commands.registerCommand("cloudmusic.account", async () => {
+    commands.registerCommand("cloudmusic.account", () => {
       if (!State.login) {
-        const result = await window.showErrorMessage(
-          i18n.sentence.error.needSignIn,
-          i18n.word.signIn
-        );
-        if (result === i18n.word.signIn)
-          void commands.executeCommand("cloudmusic.signin");
+        void window.showErrorMessage(i18n.sentence.error.needSignIn);
         return;
       }
       let cat = "";
@@ -88,7 +88,6 @@ export function initAccount(context: ExtensionContext): void {
           explore,
           musicRanking,
           save,
-          signOut,
         }
 
         const level = await apiUserLevel();
@@ -135,10 +134,6 @@ export function initAccount(context: ExtensionContext): void {
               label: `${ICON.save} ${i18n.word.saved}`,
               type: Type.save,
             },
-            {
-              label: `$(sign-out) ${i18n.word.signOut}`,
-              type: Type.signOut,
-            },
           ],
         });
 
@@ -161,9 +156,6 @@ export function initAccount(context: ExtensionContext): void {
             break;
           case Type.musicRanking:
             await Webview.musicRanking();
-            return;
-          case Type.signOut:
-            void commands.executeCommand("cloudmusic.signout");
             return;
         }
         return input.stay();
@@ -685,169 +677,11 @@ export function initAccount(context: ExtensionContext): void {
   );
 
   context.subscriptions.push(
-    commands.registerCommand("cloudmusic.signin", async () => {
-      if (State.login) return;
-
-      const title = i18n.word.signIn;
-      let totalSteps = 3;
-
-      const state: Account = {
-        phone: "",
-        username: "",
-        password: "",
-        countrycode: "86",
-      };
-      await MultiStepInput.run((input) => pickMethod(input));
-
-      const enum Type {
-        emial,
-        phone,
-        qrcode,
-        cookie,
-      }
-
-      async function pickMethod(input: MultiStepInput) {
-        const pick = await input.showQuickPick({
-          title,
-          step: 1,
-          totalSteps,
-          items: [
-            {
-              label: `$(mail) ${i18n.word.email}`,
-              description: i18n.sentence.label.email,
-              type: Type.emial,
-            },
-            {
-              label: `$(device-mobile) ${i18n.word.cellphone}`,
-              description: i18n.sentence.label.cellphone,
-              type: Type.phone,
-            },
-            {
-              label: `$(diff) ${i18n.word.qrcode}`,
-              description: i18n.sentence.label.qrcode,
-              type: Type.qrcode,
-            },
-            {
-              label: "$(database) Cookie",
-              type: Type.cookie,
-            },
-          ],
-          placeholder: i18n.sentence.hint.signIn,
-        });
-        if (pick.type === Type.phone) {
-          totalSteps = 4;
-          return (input: MultiStepInput) => inputCountrycode(input);
-        }
-        if (pick.type === Type.emial) {
-          totalSteps = 3;
-          return (input: MultiStepInput) => inputUsername(input);
-        }
-        if (pick.type === Type.cookie) {
-          totalSteps = 2;
-          return (input: MultiStepInput) => inputCookie(input);
-        }
-        void Webview.login();
-        return;
-      }
-
-      async function inputCountrycode(input: MultiStepInput) {
-        state.countrycode = await input.showInputBox({
-          title,
-          step: 2,
-          totalSteps,
-          value: state.countrycode,
-          prompt: i18n.sentence.hint.countrycode,
-        });
-        return (input: MultiStepInput) => inputPhone(input);
-      }
-
-      async function inputPhone(input: MultiStepInput) {
-        state.phone = await input.showInputBox({
-          title,
-          step: totalSteps - 1,
-          totalSteps,
-          value: state.phone,
-          prompt: i18n.sentence.hint.account,
-        });
-        state.username = "";
-        return (input: MultiStepInput) => inputPassword(input);
-      }
-
-      async function inputUsername(input: MultiStepInput) {
-        state.username = await input.showInputBox({
-          title,
-          step: totalSteps - 1,
-          totalSteps,
-          value: state.username,
-          prompt: i18n.sentence.hint.account,
-        });
-        state.phone = "";
-        return (input: MultiStepInput) => inputPassword(input);
-      }
-
-      async function inputCookie(input: MultiStepInput) {
-        AccountManager.cookie = cookieToJson([
-          await input.showInputBox({
-            title,
-            step: totalSteps,
-            totalSteps,
-            value: state.username,
-            prompt: i18n.sentence.hint.account,
-          }),
-        ]);
-
-        if (await AccountManager.login()) {
-          void window.showInformationMessage(i18n.sentence.success.signIn);
-        } else {
-          void window.showErrorMessage(i18n.sentence.fail.signIn);
-        }
-      }
-
-      async function inputPassword(input: MultiStepInput) {
-        const password = await input.showInputBox({
-          title,
-          step: totalSteps,
-          totalSteps,
-          prompt: i18n.sentence.hint.password,
-          password: true,
-        });
-
-        state.password = createHash("md5").update(password).digest("hex");
-
-        if (await AccountManager.login(state))
-          void window.showInformationMessage(i18n.sentence.success.signIn);
-        else void window.showErrorMessage(i18n.sentence.fail.signIn);
-      }
-    })
-  );
-
-  context.subscriptions.push(
     commands.registerCommand("cloudmusic.dailyCheck", async () => {
-      if (State.login) {
+      if (State.login)
         if (await AccountManager.dailyCheck())
           void window.showInformationMessage(i18n.sentence.success.dailyCheck);
-      } else void window.showErrorMessage(i18n.sentence.error.needSignIn);
+        else void window.showErrorMessage(i18n.sentence.error.needSignIn);
     })
   );
-
-  context.subscriptions.push(
-    commands.registerCommand("cloudmusic.signout", () => {
-      void AccountManager.logout();
-    })
-  );
-
-  void (async () => {
-    AccountManager.cookie = context.globalState.get(COOKIE_KEY) || {};
-    if (await AccountManager.login(context.globalState.get(ACCOUNT_KEY))) {
-      if (AUTO_CHECK) void AccountManager.dailyCheck();
-      return;
-    }
-    if (
-      (await window.showInformationMessage(
-        i18n.sentence.hint.trySignIn,
-        i18n.word.signIn
-      )) === i18n.word.signIn
-    )
-      void commands.executeCommand("cloudmusic.signin");
-  })();
 }

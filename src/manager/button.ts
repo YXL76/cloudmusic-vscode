@@ -1,5 +1,5 @@
 import { BUTTON_KEY, LYRIC_KEY } from "../constant";
-import type { ExtensionContext, QuickPickItem, StatusBarItem } from "vscode";
+import type { ExtensionContext, StatusBarItem } from "vscode";
 import { MultiStepInput, State } from "../util";
 import { StatusBarAlignment, window } from "vscode";
 import i18n from "../i18n";
@@ -65,7 +65,7 @@ export class ButtonManager {
     ].forEach((value, index) => (this.buttons[index].tooltip = value));
 
     [
-      "cloudmusic.signin",
+      "cloudmusic.account",
       "cloudmusic.previous",
       "cloudmusic.play",
       "cloudmusic.next",
@@ -76,7 +76,6 @@ export class ButtonManager {
       "cloudmusic.lyric",
     ].forEach((value, index) => (this.buttons[index].command = value));
 
-    this.buttons[0].show();
     this.buttonShow =
       this.context.globalState.get(BUTTON_KEY) || this.buttonShow;
     this.show();
@@ -84,60 +83,42 @@ export class ButtonManager {
 
   static toggle(): void {
     const pickButton = async (input: MultiStepInput) => {
-      interface T extends QuickPickItem {
-        id: number;
-      }
-
-      const items: T[] = [];
-      for (let id = 1; id < this.buttons.length; ++id) {
-        items.push({
-          label: `${this.buttons[id].text} ${
-            this.buttons[id].tooltip as string
-          }`,
-          description: this.buttonShow[id] ? i18n.word.show : i18n.word.hide,
-          id,
-        });
-      }
-      const { id } = await input.showQuickPick({
+      const { index } = await input.showQuickPick({
         title: "",
         step: 1,
         totalSteps: 1,
-        items,
+        items: this.buttons.map((button, index) => ({
+          label: `${button.text} ${button.tooltip as string}`,
+          description: this.buttonShow[index] ? i18n.word.show : i18n.word.hide,
+          index,
+        })),
         placeholder: i18n.sentence.hint.button,
       });
-      this.buttonShow[id] = !this.buttonShow[id];
+      this.buttonShow[index] = !this.buttonShow[index];
       if (State.login)
-        this.buttonShow[id] ? this.buttons[id].show() : this.buttons[id].hide();
+        this.buttonShow[index]
+          ? this.buttons[index].show()
+          : this.buttons[index].hide();
       await this.context.globalState.update(BUTTON_KEY, this.buttonShow);
       return input.stay();
     };
 
-    void MultiStepInput.run(pickButton);
+    void MultiStepInput.run((input) => pickButton(input));
   }
 
   static show(): void {
-    for (let i = 1; i < this.buttons.length; ++i) {
-      if (this.buttonShow[i]) {
-        this.buttons[i].show();
-      } else {
-        this.buttons[i].hide();
-      }
-    }
+    this.buttons.forEach((v, i) => {
+      if (this.buttonShow[i]) v.show();
+      else v.hide();
+    });
   }
 
   static hide(): void {
-    for (let i = 1; i < this.buttons.length; ++i) {
-      this.buttons[i].hide();
-    }
+    for (const i of this.buttons) i.hide();
   }
 
-  static buttonAccountAccount(tooltip: string): void {
+  static buttonAccount(tooltip: string): void {
     this.buttons[ButtonLabel.account].tooltip = tooltip;
-    this.buttons[ButtonLabel.account].command = "cloudmusic.account";
-  }
-
-  static buttonAccountSignin(): void {
-    this.buttons[ButtonLabel.account].command = "cloudmusic.signin";
   }
 
   static buttonPrevious(personalFm: boolean): void {

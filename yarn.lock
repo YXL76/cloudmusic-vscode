@@ -135,7 +135,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/eslint@npm:*, @types/eslint@npm:^7.2.6":
+"@types/eslint@npm:*":
   version: 7.2.6
   resolution: "@types/eslint@npm:7.2.6"
   dependencies:
@@ -246,10 +246,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/vscode@npm:1.53.0":
-  version: 1.53.0
-  resolution: "@types/vscode@npm:1.53.0"
-  checksum: 4177f6cb763c31c8ece025d808e43729109078f79f0ca3125eb8ca63d180ef739b8edb7cbb914f8092a359b66f8f661d8ad2f26d036a57cf75c1631d185d3a2f
+"@types/vscode@npm:1.54.0":
+  version: 1.54.0
+  resolution: "@types/vscode@npm:1.54.0"
+  checksum: 517f00d7587eea16feef79d9fe05ebdc0569a00bf8424ae66557608f44a656e25f0136cb7ca3a91fffde0bb7204d4305cff378fdcb9dc7ff3369056eb1b8d08d
   languageName: node
   linkType: hard
 
@@ -781,13 +781,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"arrify@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "arrify@npm:2.0.1"
-  checksum: 2a19726815590d829e07998aefa2c352bd9061e58bf4391ffffa227129995841a710bef2d8b4c9408a6b0679d96c96bd23764bdbcc29bb21666c976816093972
-  languageName: node
-  linkType: hard
-
 "asn1@npm:~0.2.3":
   version: 0.2.4
   resolution: "asn1@npm:0.2.4"
@@ -1219,7 +1212,7 @@ __metadata:
     "@types/qrcode": 1.4.0
     "@types/react": 17.0.2
     "@types/react-dom": 17.0.1
-    "@types/vscode": 1.53.0
+    "@types/vscode": 1.54.0
     "@typescript-eslint/eslint-plugin": 4.16.1
     "@typescript-eslint/parser": 4.16.1
     array-unsort: 1.1.6
@@ -1236,7 +1229,6 @@ __metadata:
     eslint-config-prettier: 8.1.0
     eslint-plugin-prettier: 3.3.1
     eslint-plugin-react: 7.22.0
-    eslint-webpack-plugin: 2.5.2
     file-type: 16.2.0
     lodash: 4.17.21
     lru-cache: 6.0.0
@@ -2019,22 +2011,6 @@ __metadata:
   version: 2.0.0
   resolution: "eslint-visitor-keys@npm:2.0.0"
   checksum: 429dabdcab3c1cf5e65d44843afc513398d4ee32a37f93edc93bb5ba59a12b78fa67d87ff23c752c170b5e4f9085050f45b3c036cdfb23d40a724f2614048140
-  languageName: node
-  linkType: hard
-
-"eslint-webpack-plugin@npm:2.5.2":
-  version: 2.5.2
-  resolution: "eslint-webpack-plugin@npm:2.5.2"
-  dependencies:
-    "@types/eslint": ^7.2.6
-    arrify: ^2.0.1
-    jest-worker: ^26.6.2
-    micromatch: ^4.0.2
-    schema-utils: ^3.0.0
-  peerDependencies:
-    eslint: ^7.0.0
-    webpack: ^4.0.0 || ^5.0.0
-  checksum: c768b5bab405b1f4e65c40cf2a2fb1ce55667a34a617da1fedcbb86f56881c827d6449109d85c0d0fb928ee59094618adde6eebdbf684da1bd00a3aa1f0560b2
   languageName: node
   linkType: hard
 

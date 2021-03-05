@@ -36,6 +36,8 @@ export const MUSIC_CACHE_DIR_NAME = `${MUSIC_QUALITY}${
 export const MUSIC_CACHE_DIR = Uri.joinPath(CACHE_DIR, "music");
 export const LYRIC_CACHE_DIR = Uri.joinPath(CACHE_DIR, "lyric");
 
+export const AUTH_PROVIDER_ID = "cloudmusic-auth-provider";
+
 export const enum ICON {
   album = "$(circuit-board)",
   artist = "$(account)",
