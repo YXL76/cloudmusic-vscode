@@ -1,6 +1,12 @@
-import { ACCOUNT_KEY, COOKIE_KEY, SETTING_DIR, TMP_DIR } from "./constant";
+import {
+  ACCOUNT_KEY,
+  COOKIE_KEY,
+  LYRIC_CACHE_DIR,
+  SETTING_DIR,
+  TMP_DIR,
+} from "./constant";
 import { AccountManager, ButtonManager } from "./manager";
-import { LyricCache, MusicCache, Player } from "./util";
+import { MusicCache, Player } from "./util";
 import {
   initAccount,
   initCache,
@@ -21,6 +27,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   await Promise.all([
     workspace.fs.createDirectory(SETTING_DIR),
     workspace.fs.createDirectory(TMP_DIR),
+    workspace.fs.createDirectory(LYRIC_CACHE_DIR),
   ]);
   AccountManager.context = context;
   ButtonManager.context = context;
@@ -39,6 +46,5 @@ export async function activate(context: ExtensionContext): Promise<void> {
 export function deactivate(): void {
   Player.stop();
   MusicCache.verify();
-  LyricCache.verify();
   void workspace.fs.delete(TMP_DIR, { recursive: true, useTrash: false });
 }

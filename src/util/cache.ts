@@ -77,34 +77,33 @@ export class MusicCache {
 }
 
 export class LyricCache {
-  static verify(): void {
-    void cacache.verify(LYRIC_CACHE_DIR.fsPath);
-  }
-
-  static clear(): void {
-    void cacache.rm.all(LYRIC_CACHE_DIR.fsPath);
+  static async clear(): Promise<void> {
+    await workspace.fs.delete(LYRIC_CACHE_DIR, {
+      recursive: true,
+      useTrash: false,
+    });
+    await workspace.fs.createDirectory(LYRIC_CACHE_DIR);
   }
 
   static async get(key: string): Promise<LyricData | void> {
     try {
-      const { path, time, integrity } = await cacache.get.info(
-        LYRIC_CACHE_DIR.fsPath,
-        key
-      );
+      const path = Uri.joinPath(LYRIC_CACHE_DIR, key);
+      const data = JSON.parse(
+        (await workspace.fs.readFile(path)).toString()
+      ) as LyricData;
       // 7 * 24 * 60 * 60 * 1000
-      if (Date.now() - time < 604800000 && time > 1614788436126) {
-        return JSON.parse(
-          Buffer.from(await workspace.fs.readFile(Uri.file(path))).toString()
-        ) as LyricData;
-      } else {
-        void cacache.rm.entry(LYRIC_CACHE_DIR.fsPath, key);
-        void cacache.rm.content(LYRIC_CACHE_DIR.fsPath, integrity);
-      }
+      if (Date.now() - data.ctime < 604800000) return data;
+      else void workspace.fs.delete(path, { recursive: true, useTrash: false });
     } catch {}
     return;
   }
 
   static put(key: string, data: LyricData): void {
-    void cacache.put(LYRIC_CACHE_DIR.fsPath, key, JSON.stringify(data));
+    try {
+      void workspace.fs.writeFile(
+        Uri.joinPath(LYRIC_CACHE_DIR, key),
+        Buffer.from(JSON.stringify(data), "utf8")
+      );
+    } catch {}
   }
 }

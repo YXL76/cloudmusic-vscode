@@ -47,6 +47,7 @@ export const lyric: Lyric = {
   index: 0,
   delay: -1.0,
   type: LyricType.original,
+  ctime: 0,
   time: [0],
   o: { text: [i18n.word.lyric] },
   t: { text: [i18n.word.lyric] },

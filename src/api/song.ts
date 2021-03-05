@@ -42,6 +42,7 @@ export async function apiLyric(id: number): Promise<LyricData> {
   const lyricCache = await LyricCache.get(`${id}`);
   if (lyricCache) return lyricCache;
   const lyric: LyricData = {
+    ctime: Date.now(),
     time: [0],
     o: { text: [i18n.word.lyric] },
     t: { text: [i18n.word.lyric] },

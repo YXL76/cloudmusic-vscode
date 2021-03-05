@@ -82,7 +82,7 @@ export function initStatusBar(): void {
               : LyricType.original;
           break;
         case Type.cache:
-          LyricCache.clear();
+          void LyricCache.clear();
           break;
         case Type.disable:
           ButtonManager.toggleLyric();

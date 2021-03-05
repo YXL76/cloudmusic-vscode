@@ -20,11 +20,12 @@ export const NATIVE = __non_webpack_require__(
 
 export const ACCOUNT_KEY = "account";
 export const CACHE_KEY = "cache";
+export const LYRIC_CACHE_KEY = "lyric-cache";
 export const COOKIE_KEY = "cookie";
 export const BUTTON_KEY = "button-v1";
 export const VOLUME_KEY = "volume";
 export const LYRIC_KEY = "lyric";
-export const LOCAL_FOLDER_KEY = "localFolder";
+export const LOCAL_FOLDER_KEY = "local-folder";
 
 export const HOME_DIR = Uri.file(homedir());
 export const SETTING_DIR = Uri.joinPath(HOME_DIR, ".cloudmusic");

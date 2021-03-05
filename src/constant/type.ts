@@ -123,6 +123,7 @@ export type LyricUser = {
 };
 
 export type LyricData = {
+  ctime: number;
   time: number[];
   o: LyricSpecifyData;
   t: LyricSpecifyData;
