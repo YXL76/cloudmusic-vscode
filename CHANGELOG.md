@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [7.4.1] - 2021-03-05
+
+### Fixed
+
+- `Vscode` instance will not exist when deactivating
+
 ## [7.4.0] - 2021-03-05
 
 ### Changed
