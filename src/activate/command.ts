@@ -1,6 +1,5 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { IsLike, PersonalFm } from "../state";
-import { MultiStepInput, Player, load } from "../util";
+import { MultiStepInput, PersonalFm, Player, State, load } from "../util";
 import { QueueItemTreeItem, QueueProvider } from "../treeview";
 import type { ExtensionContext } from "vscode";
 import { VOLUME_KEY } from "../constant";
@@ -46,11 +45,11 @@ export function initCommand(context: ExtensionContext): void {
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.like", async () => {
-      const islike = !IsLike.get;
+      const islike = !State.like;
       if (Player.treeitem instanceof QueueItemTreeItem) {
         const { id } = Player.treeitem.item;
         if (id && (await apiLike(id, islike))) {
-          IsLike.set(islike);
+          State.like = islike;
           islike
             ? AccountManager.likelist.add(id)
             : AccountManager.likelist.delete(id);

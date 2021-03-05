@@ -16,7 +16,7 @@ import {
 } from "../api";
 import type { Cookie } from "../api";
 import type { ExtensionContext } from "vscode";
-import { LoggedIn } from "../state";
+import { State } from "../util";
 
 export class AccountManager {
   static uid = 0;
@@ -30,7 +30,7 @@ export class AccountManager {
   static readonly likelist: Set<number> = new Set<number>();
 
   static async login(account?: Account): Promise<boolean> {
-    if (LoggedIn.get) {
+    if (State.login) {
       return true;
     }
     try {
@@ -49,7 +49,7 @@ export class AccountManager {
         this.uid = userId;
         this.nickname = nickname;
         this.likelist.clear();
-        LoggedIn.set(true);
+        State.login = true;
 
         void this.context.globalState.update(ACCOUNT_KEY, account);
         void this.context.globalState.update(COOKIE_KEY, this.cookie);
@@ -75,7 +75,7 @@ export class AccountManager {
       this.uid = 0;
       this.nickname = "";
       this.likelist.clear();
-      LoggedIn.set(false);
+      State.login = false;
 
       return true;
     }

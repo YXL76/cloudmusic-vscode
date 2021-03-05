@@ -1,10 +1,9 @@
 import type { LocalFileTreeItem, LocalLibraryTreeItem } from "../treeview";
 import { LocalProvider, QueueProvider } from "../treeview";
+import { PersonalFm, load } from "../util";
 import { Uri, commands, env, window } from "vscode";
 import type { ExtensionContext } from "vscode";
 import { LOCAL_FOLDER_KEY } from "../constant";
-import { PersonalFm } from "../state";
-import { load } from "../util";
 
 export function initLocal(context: ExtensionContext): void {
   context.globalState

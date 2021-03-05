@@ -2,7 +2,7 @@ import { MultiStepInput, load, stop } from "../util";
 import { QueueProvider, QueueSortType } from "../treeview";
 import { commands, window } from "vscode";
 import { ICON } from "../constant";
-import { PersonalFm } from "../state";
+import { PersonalFm } from "../util";
 import type { QueueContent } from "../treeview";
 import i18n from "../i18n";
 

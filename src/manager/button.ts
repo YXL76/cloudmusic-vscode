@@ -1,8 +1,7 @@
 import { BUTTON_KEY, LYRIC_KEY } from "../constant";
 import type { ExtensionContext, QuickPickItem, StatusBarItem } from "vscode";
+import { MultiStepInput, State } from "../util";
 import { StatusBarAlignment, window } from "vscode";
-import { LoggedIn } from "../state";
-import { MultiStepInput } from "../util";
 import i18n from "../i18n";
 
 const enum ButtonLabel {
@@ -107,7 +106,7 @@ export class ButtonManager {
         placeholder: i18n.sentence.hint.button,
       });
       this.buttonShow[id] = !this.buttonShow[id];
-      if (LoggedIn.get)
+      if (State.login)
         this.buttonShow[id] ? this.buttons[id].show() : this.buttons[id].hide();
       await this.context.globalState.update(BUTTON_KEY, this.buttonShow);
       return input.stay();

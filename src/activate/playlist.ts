@@ -11,6 +11,7 @@ import {
 import type { LocalFileTreeItem, PlaylistItemTreeItem } from "../treeview";
 import {
   MultiStepInput,
+  PersonalFm,
   Player,
   downloadMusic,
   load,
@@ -28,7 +29,6 @@ import {
 import { Uri, commands, env, window } from "vscode";
 import { basename, dirname } from "path";
 import { HOME_DIR } from "../constant";
-import { PersonalFm } from "../state";
 import { Webview } from "../webview";
 import { createWriteStream } from "fs";
 import i18n from "../i18n";

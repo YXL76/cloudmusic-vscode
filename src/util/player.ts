@@ -1,4 +1,3 @@
-import { Loading, PersonalFm, Playing } from "../state";
 import {
   LocalFileTreeItem,
   QueueItemTreeItem,
@@ -6,7 +5,7 @@ import {
 } from "../treeview";
 import type { Lyric, LyricSpecifyData } from "../constant";
 import { LyricType, NATIVE, TMP_DIR, VOLUME_KEY } from "../constant";
-import { MusicCache, downloadMusic } from ".";
+import { MusicCache, PersonalFm, State, downloadMusic } from ".";
 import { Uri, commands, workspace } from "vscode";
 import { apiLyric, apiScrobble, apiSongUrl } from "../api";
 import { ButtonManager } from "../manager";
@@ -82,14 +81,14 @@ export class Player {
     void this.volume(this.context.globalState.get(VOLUME_KEY) ?? 85);
 
     setInterval(() => {
-      if (Playing.get) {
+      if (State.playing) {
         const pos = NATIVE.playerPosition(this.player);
         if (pos > 120000 && !this.prefetchLock) {
           this.prefetchLock = true;
           void prefetch();
         }
         if (NATIVE.playerEmpty(this.player)) {
-          Playing.set(false);
+          State.playing = false;
           void commands.executeCommand("cloudmusic.next", ButtonManager.repeat);
         } else {
           while (lyric.time[lyric.index] <= pos - lyric.delay * 1000)
@@ -128,7 +127,7 @@ export class Player {
         this.player,
         this.context.globalState.get(VOLUME_KEY) ?? 85
       );
-      Playing.set(true);
+      State.playing = true;
 
       if (treeitem instanceof QueueItemTreeItem)
         void apiLyric(treeitem.valueOf).then(({ time, o, t }) =>
@@ -147,16 +146,16 @@ export class Player {
       this.treeitem = treeitem;
       this.pid = pid;
       this.prefetchLock = false;
-      Loading.set(false);
+      State.loading = false;
     } else void commands.executeCommand("cloudmusic.next");
   }
 
   static togglePlay(): void {
     if (!NATIVE.playerEmpty(this.player)) {
-      if (Playing.get) {
+      if (State.playing) {
         NATIVE.playerPause(this.player);
-        Playing.set(false);
-      } else if (NATIVE.playerPlay(this.player)) Playing.set(true);
+        State.playing = false;
+      } else if (NATIVE.playerPlay(this.player)) State.playing = true;
     }
   }
 

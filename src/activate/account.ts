@@ -36,6 +36,7 @@ import {
 import {
   ButtonAction,
   MultiStepInput,
+  State,
   pickAlbums,
   pickArtist,
   pickArtistItems,
@@ -53,7 +54,6 @@ import { commands, window } from "vscode";
 import { AccountManager } from "../manager";
 import type { ArtistInitial } from "../api";
 import type { InputStep } from "../util";
-import { LoggedIn } from "../state";
 import { Webview } from "../webview";
 import { createHash } from "crypto";
 import i18n from "../i18n";
@@ -62,7 +62,7 @@ import { inputKeyword } from ".";
 export function initAccount(context: ExtensionContext): void {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.account", async () => {
-      if (!LoggedIn.get) {
+      if (!State.login) {
         const result = await window.showErrorMessage(
           i18n.sentence.error.needSignIn,
           i18n.word.signIn
@@ -686,7 +686,7 @@ export function initAccount(context: ExtensionContext): void {
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.signin", async () => {
-      if (LoggedIn.get) return;
+      if (State.login) return;
 
       const title = i18n.word.signIn;
       let totalSteps = 3;
@@ -823,7 +823,7 @@ export function initAccount(context: ExtensionContext): void {
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.dailyCheck", async () => {
-      if (LoggedIn.get) {
+      if (State.login) {
         if (await AccountManager.dailyCheck())
           void window.showInformationMessage(i18n.sentence.success.dailyCheck);
       } else void window.showErrorMessage(i18n.sentence.error.needSignIn);

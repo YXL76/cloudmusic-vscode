@@ -8,7 +8,14 @@ import type {
   SongsItem,
   UserDetail,
 } from "../constant";
-import { ButtonAction, MusicCache, Player, setLyric } from ".";
+import {
+  ButtonAction,
+  MusicCache,
+  PersonalFm,
+  Player,
+  State,
+  setLyric,
+} from ".";
 import {
   CommentType,
   apiAlbum,
@@ -36,7 +43,6 @@ import {
 } from "../api";
 import { ICON, MUSIC_QUALITY, TMP_DIR } from "../constant";
 import type { InputStep, MultiStepInput } from ".";
-import { IsLike, Loading, PersonalFm, Playing } from "../state";
 import {
   LocalFileTreeItem,
   PlaylistProvider,
@@ -83,7 +89,7 @@ export async function downloadMusic(
 export function stop(): void {
   Player.stop();
   Player.treeitem = undefined;
-  Playing.set(false);
+  State.playing = false;
   ButtonManager.buttonSong();
   ButtonManager.buttonLyric();
   setLyric(0, [0], { text: [i18n.word.lyric] }, { text: [i18n.word.lyric] });
@@ -91,7 +97,7 @@ export function stop(): void {
 
 export async function load(element?: QueueContent): Promise<void> {
   if (!element) return;
-  Loading.set(true);
+  State.loading = true;
   if (element instanceof LocalFileTreeItem) {
     Player.load(element.tooltip, 0, element);
     return;
@@ -331,7 +337,7 @@ export async function pickSong(
     case PickType.like:
       if (await apiLike(id, true)) {
         AccountManager.likelist.add(id);
-        IsLike.set(id === Player.treeitem?.valueOf);
+        State.like = id === Player.treeitem?.valueOf;
       }
       break;
     case PickType.add:
