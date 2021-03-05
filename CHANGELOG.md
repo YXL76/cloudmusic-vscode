@@ -6,6 +6,22 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [7.3.0] - 2021-03-05
+
+### Added
+
+- Apply a spinning animation to loading icon
+- New activation events
+
+### Changed
+
+- Account: use build-in authentication
+- Cache: rewrite lyric cache design
+
+### Fixed
+
+- Security: store account and cookie in secrets
+
 ## [7.2.0] - 2021-03-04
 
 ### Added
