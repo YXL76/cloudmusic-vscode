@@ -80,11 +80,16 @@ export class AccountManager implements AuthenticationProvider {
       if (res) {
         if (AUTO_CHECK) void AccountManager.dailyCheck();
       } else {
-        void authentication.getSession(AUTH_PROVIDER_ID, [], {
-          createIfNone: true,
-        });
+        try {
+          await authentication.getSession(AUTH_PROVIDER_ID, [], {
+            createIfNone: true,
+          });
+        } catch {
+          void authentication.getSession(AUTH_PROVIDER_ID, []);
+        }
       }
-    })().catch(() => {
+    })().catch((err) => {
+      console.log(err);
       //
     });
   }
@@ -166,7 +171,6 @@ export class AccountManager implements AuthenticationProvider {
         this.likelist.clear();
         State.login = true;
 
-        void this.context.secrets.store(ACCOUNT_KEY, JSON.stringify(account));
         void this.context.secrets.store(
           COOKIE_KEY,
           JSON.stringify(this.cookie)
@@ -181,6 +185,8 @@ export class AccountManager implements AuthenticationProvider {
     } catch (err) {
       console.error(err);
       void window.showErrorMessage(i18n.sentence.fail.signIn);
+      void this.context.secrets.delete(ACCOUNT_KEY);
+      void this.context.secrets.delete(COOKIE_KEY);
     }
     return false;
   }
@@ -246,6 +252,7 @@ export class AccountManager implements AuthenticationProvider {
           return (input: MultiStepInput) => inputCookie(input);
         case Type.qrcode:
           await Webview.login();
+          await AccountManager.context.secrets.delete(ACCOUNT_KEY);
       }
       return;
     }
