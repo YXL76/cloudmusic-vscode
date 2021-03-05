@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [7.3.1] - 2021-03-05
+
+### Changed
+
+- Improve the login process
+
 ## [7.3.0] - 2021-03-05
 
 ### Added
