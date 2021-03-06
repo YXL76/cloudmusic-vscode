@@ -193,7 +193,7 @@ export const resolveSongItem = (item: SongsItem): SongsItem => {
 
 export const resolveSongItemSt = (item: SongsItemSt): SongsItem => {
   const { name, id, dt, alia, ar, al, privilege } = item;
-  if (privilege.st < 0) unplayable.add(id);
+  if (privilege && privilege?.st < 0) unplayable.add(id);
   return {
     name,
     id,
@@ -206,7 +206,7 @@ export const resolveSongItemSt = (item: SongsItemSt): SongsItem => {
 
 export const resolveAnotherSongItem = (item: AnotherSongItem): SongsItem => {
   const { name, id, duration, alias, artists, album, privilege } = item;
-  if (privilege.st < 0) unplayable.add(id);
+  if (privilege && privilege?.st < 0) unplayable.add(id);
   return {
     name,
     id,

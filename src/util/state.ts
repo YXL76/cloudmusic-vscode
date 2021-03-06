@@ -9,9 +9,16 @@ import {
 import { apiPersonalFm, apiRecommendSongs, apiUserLevel } from "../api";
 import { commands } from "vscode";
 import i18n from "../i18n";
+import { unplayable } from "../constant";
+
+export const enum LikeState {
+  none = -1,
+  like = 1,
+  dislike = 0,
+}
 
 export class State {
-  private static like_ = false;
+  private static like_ = LikeState.none;
 
   private static loading_ = false;
 
@@ -19,11 +26,11 @@ export class State {
 
   private static playing_ = false;
 
-  static get like(): boolean {
+  static get like(): LikeState {
     return this.like_;
   }
 
-  static set like(newValue: boolean) {
+  static set like(newValue: LikeState) {
     if (newValue !== this.like_) {
       this.like_ = newValue;
       ButtonManager.buttonLike(newValue);
@@ -44,7 +51,12 @@ export class State {
       else if (Player.treeitem) {
         const { name, ar, id } = Player.treeitem.item;
         ButtonManager.buttonSong(name, ar.map(({ name }) => name).join("/"));
-        this.like = AccountManager.likelist.has(id);
+        this.like =
+          Player.treeitem instanceof QueueItemTreeItem && !unplayable.has(id)
+            ? AccountManager.likelist.has(id)
+              ? LikeState.like
+              : LikeState.dislike
+            : LikeState.none;
       }
     }
   }

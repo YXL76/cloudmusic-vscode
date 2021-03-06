@@ -24,6 +24,7 @@ export default __non_webpack_require__(
       network: string;
     };
     fail: {
+      addToPlaylist: string;
       signIn: string;
     };
     hint: {

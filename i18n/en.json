@@ -5,6 +5,7 @@
       "network": "Network error"
     },
     "fail": {
+      "addToPlaylist": "Failed to add to playlist",
       "signIn": "Sign in failed"
     },
     "hint": {

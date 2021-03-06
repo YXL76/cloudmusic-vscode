@@ -10,6 +10,7 @@ import type {
 } from "../constant";
 import {
   ButtonAction,
+  LikeState,
   MusicCache,
   PersonalFm,
   Player,
@@ -84,6 +85,16 @@ export async function downloadMusic(
     void window.showErrorMessage(i18n.sentence.error.network);
   }
   return;
+}
+
+export async function likeMusic(id: number, like: boolean): Promise<void> {
+  const word = like ? i18n.word.like : i18n.word.dislike;
+  if (await apiLike(id, like)) {
+    if (id === Player.treeitem?.valueOf)
+      State.like = like ? LikeState.like : LikeState.dislike;
+    like ? AccountManager.likelist.add(id) : AccountManager.likelist.delete(id);
+    void window.showInformationMessage(word);
+  } else void window.showErrorMessage(word);
 }
 
 export function stop(): void {
@@ -335,10 +346,7 @@ export async function pickSong(
       await Webview.comment(CommentType.song, id, name);
       break;
     case PickType.like:
-      if (await apiLike(id, true)) {
-        AccountManager.likelist.add(id);
-        if (id === Player.treeitem?.valueOf) State.like = true;
-      }
+      await likeMusic(id, true);
       break;
     case PickType.add:
       void commands.executeCommand(
@@ -1043,9 +1051,9 @@ export async function pickAddToPlaylist(
       id,
     })),
   });
-  if (await apiPlaylistTracks("add", pick.id, [id])) {
+  if (await apiPlaylistTracks("add", pick.id, [id]))
     PlaylistProvider.refresh(PlaylistProvider.playlists.get(pick.id));
-  }
+  else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
   return input.stay();
 }
 
@@ -1115,8 +1123,7 @@ const limit = 50;
 export async function pickUsers(
   input: MultiStepInput,
   step: number,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  func: (...args: any[]) => Promise<UserDetail[]>,
+  func: (_: number, __: number, ___: number) => Promise<UserDetail[]>,
   offset: number,
   id: number
 ): Promise<InputStep> {

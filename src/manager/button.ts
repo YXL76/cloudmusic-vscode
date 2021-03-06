@@ -1,6 +1,6 @@
 import { BUTTON_KEY, LYRIC_KEY } from "../constant";
 import type { ExtensionContext, StatusBarItem } from "vscode";
-import { MultiStepInput, State } from "../util";
+import { LikeState, MultiStepInput, State } from "../util";
 import { StatusBarAlignment, window } from "vscode";
 import i18n from "../i18n";
 
@@ -46,7 +46,7 @@ export class ButtonManager {
       "$(play)",
       "$(chevron-right)",
       "$(sync-ignored)",
-      "$(star)",
+      "$(stop)",
       "$(unmute)",
       "$(flame)",
       this.showLyric ? "$(text-size)" : i18n.word.disabled,
@@ -58,7 +58,7 @@ export class ButtonManager {
       i18n.word.play,
       i18n.word.nextTrack,
       i18n.word.repeat,
-      i18n.word.like,
+      "",
       i18n.word.volume,
       i18n.word.song,
       i18n.word.lyric,
@@ -149,11 +149,24 @@ export class ButtonManager {
       : "$(sync-ignored)";
   }
 
-  static buttonLike(islike: boolean): void {
-    this.buttons[ButtonLabel.like].text = islike ? "$(star-full)" : "$(star)";
-    this.buttons[ButtonLabel.like].tooltip = islike
-      ? i18n.word.dislike
-      : i18n.word.like;
+  static buttonLike(islike: LikeState): void {
+    let text!: string;
+    let tooltip!: string;
+    switch (islike) {
+      case LikeState.none:
+        text = "$(stop)";
+        tooltip = "";
+        break;
+      case LikeState.like:
+        text = "$(star-full)";
+        tooltip = i18n.word.dislike;
+        break;
+      case LikeState.dislike:
+        text = "$(star)";
+        tooltip = i18n.word.like;
+    }
+    this.buttons[ButtonLabel.like].text = text;
+    this.buttons[ButtonLabel.like].tooltip = tooltip;
   }
 
   static buttonVolume(level: number): void {

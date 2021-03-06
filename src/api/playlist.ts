@@ -180,12 +180,7 @@ export async function apiPlaylistTracks(
   try {
     await weapiRequest(
       "https://music.163.com/api/playlist/manipulate/tracks",
-      {
-        op,
-        pid,
-        trackIds: JSON.stringify(tracks),
-        imme: "true",
-      },
+      { op, pid, trackIds: JSON.stringify(tracks), imme: "true" },
       { os: "pc" }
     );
     return true;

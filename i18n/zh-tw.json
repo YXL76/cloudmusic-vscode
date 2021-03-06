@@ -5,6 +5,7 @@
       "network": "網絡錯誤"
     },
     "fail": {
+      "addToPlaylist": "添加到歌單失敗",
       "signIn": "登入失敗"
     },
     "hint": {
