@@ -798,13 +798,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"autoprefixer@npm:10.2.4":
-  version: 10.2.4
-  resolution: "autoprefixer@npm:10.2.4"
+"autoprefixer@npm:10.2.5":
+  version: 10.2.5
+  resolution: "autoprefixer@npm:10.2.5"
   dependencies:
-    browserslist: ^4.16.1
-    caniuse-lite: ^1.0.30001181
-    colorette: ^1.2.1
+    browserslist: ^4.16.3
+    caniuse-lite: ^1.0.30001196
+    colorette: ^1.2.2
     fraction.js: ^4.0.13
     normalize-range: ^0.1.2
     postcss-value-parser: ^4.1.0
@@ -812,7 +812,7 @@ __metadata:
     postcss: ^8.1.0
   bin:
     autoprefixer: bin/autoprefixer
-  checksum: c07fb325ee63e535a2246be4ac0d6afc9e9e43e66386e39c495015bdc8d83547ffdc0797be22d88781d044d3eecbbcb13d8a550ef94eb684091b24a05eb0c83e
+  checksum: bd346dd75b7cb3bc8edca6e36edf1f4e0ae5bf0a51b2ac6d07523efd21d272d8932643f9a9410b4ee2ff36936531f7b6fa9d30d87b044579612f249fb96b9c78
   languageName: node
   linkType: hard
 
@@ -902,7 +902,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browserslist@npm:^4.0.0, browserslist@npm:^4.14.5, browserslist@npm:^4.16.1":
+"browserslist@npm:^4.0.0, browserslist@npm:^4.14.5, browserslist@npm:^4.16.3":
   version: 4.16.3
   resolution: "browserslist@npm:4.16.3"
   dependencies:
@@ -1033,10 +1033,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001181":
-  version: 1.0.30001194
-  resolution: "caniuse-lite@npm:1.0.30001194"
-  checksum: e2a47728f3fef1ac54ab0b6efb6f87943a99b8a4a402a567708b5c9a3a0ca0b6f56c436972b6dafd4268304fc1685e58aec3dc7fd5826a5081a76a60dd17f12e
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001181, caniuse-lite@npm:^1.0.30001196":
+  version: 1.0.30001196
+  resolution: "caniuse-lite@npm:1.0.30001196"
+  checksum: 42c38418062cd00c43793679c1a8766f98127c3cb99c9775156b8d7843e2e12fd188791360e890c0c25a2c492ff30d9072d1727cb65a860e87a9d9fd11b0d917
   languageName: node
   linkType: hard
 
@@ -1157,7 +1157,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 4.16.1
     "@typescript-eslint/parser": 4.16.1
     array-unsort: 1.1.6
-    autoprefixer: 10.2.4
+    autoprefixer: 10.2.5
     axios: 0.21.1
     cssnano: 4.1.10
     dayjs: 1.10.4
@@ -1851,21 +1851,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:0.8.56":
+"esbuild@npm:0.8.56, esbuild@npm:^0.8.42":
   version: 0.8.56
   resolution: "esbuild@npm:0.8.56"
   bin:
     esbuild: bin/esbuild
   checksum: d6500c634a6d80b51f9a6bfe55be47f1cc84e3ac3e1c503752a9334b02b7d2d94261bc0e794b8bc546a0a8d892ead10bd767b359fc31704c337f872f3f9f7e8f
-  languageName: node
-  linkType: hard
-
-"esbuild@npm:^0.8.42":
-  version: 0.8.55
-  resolution: "esbuild@npm:0.8.55"
-  bin:
-    esbuild: bin/esbuild
-  checksum: ea1e9cd273f27cc8222457e81ab0134b72387fb143983645d684b3067b0422e12a322febdb9ad72bec7bc61137f915af8f2944ff44dd96e74ca62e31892ac79e
   languageName: node
   linkType: hard
 
