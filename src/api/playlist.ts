@@ -6,7 +6,6 @@ import type {
   TrackIdsItem,
   UserDetail,
 } from "../constant";
-import { UNBLOCK_MUSIC, unplayable } from "../constant";
 import {
   apiRequest,
   resolvePlaylistItem,
@@ -17,6 +16,7 @@ import {
 } from ".";
 import { apiCache } from "../util";
 import { apiSongDetail } from ".";
+import { unplayable } from "../constant";
 
 type PlaylistCatlistItem = { name: string; category?: number; hot: boolean };
 
@@ -86,6 +86,7 @@ export async function apiPlaylistDetail(id: number): Promise<SongsItem[]> {
   const key = `playlist_detail${id}`;
   const value = apiCache.get<SongsItem[]>(key);
   if (value) return value;
+  let ret!: SongsItem[];
   try {
     const {
       playlist: { tracks, trackIds },
@@ -93,30 +94,16 @@ export async function apiPlaylistDetail(id: number): Promise<SongsItem[]> {
     } = await apiRequest<{
       playlist: { tracks: SongsItem[]; trackIds: TrackIdsItem[] };
       privileges: { st: number }[];
-    }>("https://music.163.com/api/v6/playlist/detail", {
-      id,
-      n: 100000,
-      s: 8,
-    });
+    }>("https://music.163.com/api/v6/playlist/detail", { id, n: 100000, s: 8 });
+
+    const ids = trackIds.map(({ id }) => id);
     if (tracks.length === trackIds.length) {
-      if (UNBLOCK_MUSIC.enabled) {
-        for (let i = 0; i < privileges.length; ++i) {
-          if (privileges[i].st < 0) {
-            unplayable.add(tracks[i].id);
-          }
-        }
-        return tracks.map(resolveSongItem);
-      }
-      const ret: SongsItem[] = [];
-      for (let i = 0; i < privileges.length; ++i) {
-        if (privileges[i].st >= 0) {
-          ret.push(resolveSongItem(tracks[i]));
-        }
-      }
-      apiCache.set(key, ret);
-      return ret;
-    }
-    const ret = await apiSongDetail(trackIds.map(({ id }) => id));
+      privileges.forEach(({ st }, i) => {
+        if (st < 0) unplayable.add(ids[i]);
+      });
+      ret = tracks.map(resolveSongItem);
+    } else ret = await apiSongDetail(ids);
+
     apiCache.set(key, ret);
     return ret;
   } catch (err) {

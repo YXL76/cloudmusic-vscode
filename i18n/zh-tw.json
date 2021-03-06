@@ -20,6 +20,7 @@
       "search": "請選擇搜索類型",
       "signIn": "請選擇登入管道",
       "trySignIn": "發現到您還沒登入",
+      "noUnplayable": "沒有添加無法播放的歌曲",
       "volume": "請輸入音量"
     },
     "label": {

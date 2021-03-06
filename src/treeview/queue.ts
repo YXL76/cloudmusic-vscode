@@ -1,7 +1,9 @@
-import { EventEmitter, ThemeIcon, TreeItem } from "vscode";
+import { EventEmitter, ThemeIcon, TreeItem, window } from "vscode";
 import type { LocalFileTreeItem, ProgramTreeItem } from ".";
+import { UNBLOCK_MUSIC, unplayable } from "../constant";
 import type { SongsItem } from "../constant";
 import type { TreeDataProvider } from "vscode";
+import i18n from "../i18n";
 import { unsortInplace } from "array-unsort";
 
 export const enum QueueSortType {
@@ -75,11 +77,26 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
 
   static add(elements: QueueContent[], index: number = this.len): void {
     const selected = [];
-    for (const i of elements)
-      if (!this.ids.has(i.valueOf)) {
-        selected.push(i);
-        this.ids.add(i.valueOf);
-      }
+    if (UNBLOCK_MUSIC.enabled) {
+      for (const i of elements)
+        if (!this.ids.has(i.valueOf)) {
+          selected.push(i);
+          this.ids.add(i.valueOf);
+        }
+    } else {
+      let flag = false;
+      for (const i of elements)
+        if (!this.ids.has(i.valueOf)) {
+          if (typeof i.valueOf === "number" && unplayable.has(i.valueOf)) {
+            flag = true;
+            continue;
+          }
+          selected.push(i);
+          this.ids.add(i.valueOf);
+        }
+      if (flag)
+        void window.showInformationMessage(i18n.sentence.hint.noUnplayable);
+    }
     this.songs.splice(index, 0, ...selected);
   }
 

@@ -120,6 +120,7 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
     const value = apiCache.get<SongsItem[]>(key);
     if (value) return value;
   }
+
   const limit = 1000;
   const tasks: Promise<SongsItem[]>[] = [];
   for (let i = 0; i < trackIds.length; i += limit) {
@@ -133,21 +134,10 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
           c: `[${ids.map((id) => `{"id":${id}}`).join(",")}]`,
         })
           .then(({ songs, privileges }) => {
-            if (UNBLOCK_MUSIC.enabled) {
-              for (let i = 0; i < privileges.length; ++i) {
-                if (privileges[i].st < 0) {
-                  unplayable.add(songs[i].id);
-                }
-              }
-              resolve(songs.map(resolveSongItem));
-            }
-            const ret: SongsItem[] = [];
-            for (let i = 0; i < privileges.length; ++i) {
-              if (privileges[i].st >= 0) {
-                ret.push(resolveSongItem(songs[i]));
-              }
-            }
-            resolve(ret);
+            privileges.forEach(({ st }, i) => {
+              if (st < 0) unplayable.add(songs[i].id);
+            });
+            resolve(songs.map(resolveSongItem));
           })
           .catch(reject);
       })
@@ -155,9 +145,7 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
   }
   try {
     const ret = (await Promise.all(tasks)).flat();
-    if (trackIds.length === 1) {
-      apiCache.set(key, ret);
-    }
+    if (trackIds.length === 1) apiCache.set(key, ret);
     return ret;
   } catch (err) {
     console.error(err);
@@ -167,46 +155,27 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
 
 export async function apiSongUrl(song: SongsItem): Promise<SongDetail> {
   try {
-    if (UNBLOCK_MUSIC.enabled) {
-      if (unplayable.has(song.id)) {
-        const data = await unblock(song);
-        if (data) return data;
-        return {} as SongDetail;
-      } else {
-        const { data } = await eapiRequest<{
-          data: (SongDetail & {
-            freeTrialInfo?: { start: number; end: number };
-          })[];
-        }>(
-          "https://interface3.music.163.com/eapi/song/enhance/player/url",
-          {
-            ids: `[${song.id}]`,
-            br: MUSIC_QUALITY,
-          },
-          "/api/song/enhance/player/url",
-          "pc"
-        );
-        if (data[0].freeTrialInfo) {
-          const rep = await unblock(song);
-          if (rep) return rep;
-        }
-        const { url, md5, type } = data[0];
-        return { url, md5, type };
-      }
-    } else {
-      const { data } = await eapiRequest<{ data: SongDetail[] }>(
-        "https://interface3.music.163.com/eapi/song/enhance/player/url",
-        {
-          ids: `[${song.id}]`,
-          br: MUSIC_QUALITY,
-        },
-        "/api/song/enhance/player/url",
-        "pc"
-      );
-
-      const { url, md5, type } = data[0];
-      return { url, md5, type };
+    if (unplayable.has(song.id) && UNBLOCK_MUSIC.enabled) {
+      const data = await unblock(song);
+      if (data) return data;
+      return {} as SongDetail;
     }
+
+    const { data } = await eapiRequest<{
+      data: (SongDetail & { freeTrialInfo?: { start: number; end: number } })[];
+    }>(
+      "https://interface3.music.163.com/eapi/song/enhance/player/url",
+      { ids: `[${song.id}]`, br: MUSIC_QUALITY },
+      "/api/song/enhance/player/url",
+      "pc"
+    );
+    const { url, md5, type, freeTrialInfo } = data[0];
+
+    if (freeTrialInfo && UNBLOCK_MUSIC.enabled) {
+      const rep = await unblock(song);
+      if (rep) return rep;
+    }
+    return { url, md5, type };
   } catch (err) {
     console.error(err);
   }

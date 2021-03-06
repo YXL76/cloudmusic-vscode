@@ -20,6 +20,7 @@
       "search": "请选择搜索类型",
       "signIn": "请选择登录方式",
       "trySignIn": "发现到您还没登录",
+      "noUnplayable": "没有添加无法播放的歌曲",
       "volume": "请输入音量"
     },
     "label": {
