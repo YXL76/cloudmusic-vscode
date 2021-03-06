@@ -1168,7 +1168,7 @@ __metadata:
     eslint-config-prettier: 8.1.0
     eslint-plugin-prettier: 3.3.1
     eslint-plugin-react: 7.22.0
-    file-type: 16.2.0
+    file-type: 16.3.0
     lodash: 4.17.21
     md5-file: 5.0.0
     node-cache: 5.1.2
@@ -2173,15 +2173,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-type@npm:16.2.0":
-  version: 16.2.0
-  resolution: "file-type@npm:16.2.0"
+"file-type@npm:16.3.0":
+  version: 16.3.0
+  resolution: "file-type@npm:16.3.0"
   dependencies:
     readable-web-to-node-stream: ^3.0.0
     strtok3: ^6.0.3
     token-types: ^2.0.0
     typedarray-to-buffer: ^3.1.5
-  checksum: 4fdff6d36192d00acc02ea96b4c3b760b60368ad1ceaac6f26324f844ca97bf0d403f766f0c1d6fed622f6e1d8ca19f4b92da3db25686c04518ffe3258186b85
+  checksum: bef7512b1c6f6b7179d6cb1e0caffe255c9add273ff6e509939528a16dbd5018ca36342d6cd6c439306726faf7a48fddd4357da53a8362dc77742163f6c12af5
   languageName: node
   linkType: hard
 
