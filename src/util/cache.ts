@@ -9,7 +9,6 @@ import {
 } from "../constant";
 import { FileType, Uri, workspace } from "vscode";
 import type { LyricData, MusicCacheNode } from "../constant";
-import type { FileStat } from "vscode";
 import { writeFileSync } from "fs";
 
 export const apiCache = new NodeCache({
@@ -53,15 +52,14 @@ export class MusicCache {
     } catch {}
 
     try {
-      const names: string[] = [];
-      const tasks: Thenable<FileStat>[] = [];
-      set.forEach((name) => {
-        names.push(name);
-        tasks.push(workspace.fs.stat(Uri.joinPath(MUSIC_CACHE_DIR, name)));
-      });
-      (await Promise.all(tasks)).forEach(({ size }, index) =>
-        this.addNode({ key: names[index], size })
-      );
+      const names = [...set];
+      (
+        await Promise.all(
+          names.map((name) =>
+            workspace.fs.stat(Uri.joinPath(MUSIC_CACHE_DIR, name))
+          )
+        )
+      ).forEach(({ size }, index) => this.addNode({ key: names[index], size }));
     } catch {}
 
     // 1000 * 60 * 16;

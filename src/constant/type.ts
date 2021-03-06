@@ -39,6 +39,16 @@ export type SongsItem = {
   al: { id: number; name: string; picUrl: string };
 };
 
+export type SongsItemSt = {
+  name: string;
+  id: number;
+  dt: number;
+  alia: string[];
+  ar: { id: number; name: string }[];
+  al: { id: number; name: string; picUrl: string };
+  privilege: { st: number };
+};
+
 export type RecordData = SongsItem & { playCount: number };
 
 export type AnotherSongItem = {
@@ -48,6 +58,7 @@ export type AnotherSongItem = {
   alias: string[];
   artists: { id: number; name: string }[];
   album: { id: number; name: string; picUrl: string };
+  privilege: { st: number };
 };
 
 export type AlbumsItem = {

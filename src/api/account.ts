@@ -7,6 +7,7 @@ import type {
   RawProgramDetail,
   RecordData,
   SongsItem,
+  SongsItemSt,
   UserDetail,
 } from "../constant";
 import {
@@ -16,6 +17,7 @@ import {
   resolveProgramDetail,
   resolveRadioDetail,
   resolveSongItem,
+  resolveSongItemSt,
   resolveUserDetail,
   weapiRequest,
 } from ".";
@@ -289,11 +291,10 @@ export async function apiRecommendSongs(): Promise<SongsItem[]> {
   const value = apiCache.get<SongsItem[]>(key);
   if (value) return value;
   try {
-    const { data } = await weapiRequest<{ data: { dailySongs: SongsItem[] } }>(
-      "https://music.163.com/api/v3/discovery/recommend/songs",
-      {}
-    );
-    const ret = data.dailySongs.map(resolveSongItem);
+    const { data } = await weapiRequest<{
+      data: { dailySongs: SongsItemSt[] };
+    }>("https://music.163.com/api/v3/discovery/recommend/songs", {});
+    const ret = data.dailySongs.map(resolveSongItemSt);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {

@@ -1,9 +1,10 @@
-import type { AlbumsItem, Artist, SongsItem } from "../constant";
+import type { AlbumsItem, Artist, SongsItem, SongsItemSt } from "../constant";
 import type { ArtistArea, ArtistInitial, ArtistType } from ".";
 import {
   resolveAlbumsItem,
   resolveArtist,
   resolveSongItem,
+  resolveSongItemSt,
   weapiRequest,
 } from ".";
 import { apiCache } from "../util";
@@ -125,7 +126,7 @@ export async function apiArtistSongs(
   const value = apiCache.get<SongsItem[]>(key);
   if (value) return value;
   try {
-    const { songs } = await weapiRequest<{ songs: SongsItem[] }>(
+    const { songs } = await weapiRequest<{ songs: SongsItemSt[] }>(
       "https://music.163.com/api/v1/artist/songs",
       {
         id,
@@ -139,7 +140,7 @@ export async function apiArtistSongs(
       },
       { os: "pc" }
     );
-    const ret = songs.map(resolveSongItem);
+    const ret = songs.map(resolveSongItemSt);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {

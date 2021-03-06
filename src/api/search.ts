@@ -4,6 +4,7 @@ import type {
   PlaylistItem,
   RawPlaylistItem,
   SongsItem,
+  SongsItemSt,
 } from "../constant";
 import {
   SearchType,
@@ -11,7 +12,7 @@ import {
   resolveAlbumsItem,
   resolveArtist,
   resolvePlaylistItem,
-  resolveSongItem,
+  resolveSongItemSt,
   weapiRequest,
 } from ".";
 import { apiCache } from "../util";
@@ -47,7 +48,7 @@ export async function apiSearchSingle(
   try {
     const {
       result: { songs },
-    } = await weapiRequest<{ result: { songs: SongsItem[] } }>(
+    } = await weapiRequest<{ result: { songs: SongsItemSt[] } }>(
       "https://music.163.com/api/cloudsearch/pc",
       {
         s: keywords,
@@ -57,7 +58,7 @@ export async function apiSearchSingle(
         total: true,
       }
     );
-    const ret = songs.map(resolveSongItem);
+    const ret = songs.map(resolveSongItemSt);
     apiCache.set(key, ret);
     return ret;
   } catch (err) {

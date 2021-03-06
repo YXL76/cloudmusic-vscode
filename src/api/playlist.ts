@@ -2,6 +2,7 @@ import type {
   PlaylistItem,
   RawPlaylistItem,
   SongsItem,
+  SongsItemSt,
   TrackIdsItem,
   UserDetail,
 } from "../constant";
@@ -10,6 +11,7 @@ import {
   apiRequest,
   resolvePlaylistItem,
   resolveSongItem,
+  resolveSongItemSt,
   resolveUserDetail,
   weapiRequest,
 } from ".";
@@ -232,7 +234,7 @@ export async function apiPlaymodeIntelligenceList(
   playlistId: number
 ): Promise<SongsItem[]> {
   try {
-    const { data } = await weapiRequest<{ data: { songInfo: SongsItem }[] }>(
+    const { data } = await weapiRequest<{ data: { songInfo: SongsItemSt }[] }>(
       "https://music.163.com/weapi/playmode/intelligence/list",
       {
         songId,
@@ -242,7 +244,7 @@ export async function apiPlaymodeIntelligenceList(
         count: 1,
       }
     );
-    return data.map(({ songInfo }) => resolveSongItem(songInfo));
+    return data.map(({ songInfo }) => resolveSongItemSt(songInfo));
   } catch (err) {
     console.error(err);
   }

@@ -337,7 +337,7 @@ export async function pickSong(
     case PickType.like:
       if (await apiLike(id, true)) {
         AccountManager.likelist.add(id);
-        State.like = id === Player.treeitem?.valueOf;
+        if (id === Player.treeitem?.valueOf) State.like = true;
       }
       break;
     case PickType.add:

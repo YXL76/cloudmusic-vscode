@@ -75,12 +75,11 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
 
   static add(elements: QueueContent[], index: number = this.len): void {
     const selected = [];
-    for (const i of elements) {
+    for (const i of elements)
       if (!this.ids.has(i.valueOf)) {
         selected.push(i);
         this.ids.add(i.valueOf);
       }
-    }
     this.songs.splice(index, 0, ...selected);
   }
 
@@ -89,7 +88,7 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     if (index >= 0)
       this.songs
         .splice(index, 1)
-        .forEach((item) => this.ids.delete(item.valueOf));
+        .forEach(({ valueOf }) => this.ids.delete(valueOf));
   }
 
   static playNext(elements: QueueContent[]): void {
