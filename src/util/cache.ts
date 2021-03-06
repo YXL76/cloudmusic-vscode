@@ -76,6 +76,9 @@ export class MusicCache {
       });
       await workspace.fs.createDirectory(MUSIC_CACHE_DIR);
     } catch {}
+    this.cache.clear();
+    this.size = 0;
+    while (this.list.length) this.list.pop();
   }
 
   static store(): void {
@@ -124,6 +127,7 @@ export class MusicCache {
     while (this.size > MUSIC_CACHE_SIZE) {
       const { tail } = this.list;
       if (!tail && tail !== null) this.deleteNode(tail);
+      else this.size = 0;
     }
   }
 

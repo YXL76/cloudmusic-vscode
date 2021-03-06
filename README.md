@@ -282,6 +282,7 @@
 |           user_account           |      获取账号信息      |   ❌   |
 |            user_audio            |     用户创建的电台     |        |
 |           user_binding           |      用户绑定信息      |   ❌   |
+|      user_bindingcellphone       |        绑定手机        |   ❌   |
 |            user_cloud            |        云盘数据        |   ❌   |
 |          user_cloud_del          |      云盘歌曲删除      |   ❌   |
 |        user_cloud_detail         |      云盘数据详情      |   ❌   |
