@@ -6,6 +6,21 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [7.5.0] - 2021-03-06
+
+### Added
+
+- Add a new package keyword
+- Button: add a new inoperable state for the like button and show operation result information
+
+### Changed
+
+- New unplayable handling
+
+### Fixed
+
+- API : Check the playable status in all relevant APIs
+
 ## [7.4.1] - 2021-03-05
 
 ### Fixed
@@ -58,7 +73,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Fixed
 
-- Api: like did not work ([#330](https://github.com/YXL76/cloudmusic-vscode/issues/330))
+- API: like did not work ([#330](https://github.com/YXL76/cloudmusic-vscode/issues/330))
 - Lyric
   - Clear data after stopping playback
   - Delay did not work
