@@ -22,6 +22,7 @@ export function initStatusBar(): void {
       cache,
       disable,
       user,
+      font,
       panel,
     }
 
@@ -65,6 +66,10 @@ export function initStatusBar(): void {
             ? [{ label: `$(account) ${i18n.word.user}`, type: Type.user }]
             : []),
           {
+            label: `$(text-size) ${i18n.word.fontSize}`,
+            type: Type.font,
+          },
+          {
             label: `$(book) ${i18n.sentence.label.showInEditor}`,
             type: Type.panel,
           },
@@ -75,6 +80,8 @@ export function initStatusBar(): void {
           return (input: MultiStepInput) => inputDelay(input);
         case Type.full:
           return (input: MultiStepInput) => pickLyric(input, text);
+        case Type.font:
+          return (input: MultiStepInput) => inputFontSize(input);
         case Type.type:
           lyric.type =
             lyric.type === LyricType.original
@@ -107,6 +114,18 @@ export function initStatusBar(): void {
       });
       if (/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay))
         lyric.delay = parseFloat(delay);
+      return input.stay();
+    }
+
+    async function inputFontSize(input: MultiStepInput) {
+      const size = await input.showInputBox({
+        title,
+        step: 2,
+        totalSteps,
+        value: `${Webview.lyricFontSize}`,
+        prompt: i18n.sentence.hint.lyricFontSize,
+      });
+      if (/^\d+$/.test(size)) Webview.lyricFontSize = parseInt(size);
       return input.stay();
     }
 

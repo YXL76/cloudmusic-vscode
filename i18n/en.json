@@ -16,12 +16,13 @@
       "desc": "Please enter description",
       "keyword": "Please enter keyword",
       "lyricDelay": "Please enter lyric delay",
+      "lyricFontSize": "Please enter lyric font size",
       "name": "Please enter the name",
+      "noUnplayable": "Did not add unplayable songs",
       "password": "Please enter your password",
       "search": "Please choose search type",
       "signIn": "Select the method to sign in",
       "trySignIn": "Found that you have not logged in",
-      "noUnplayable": "Did not add unplayable songs",
       "volume": "Please enter volume"
     },
     "label": {
@@ -79,6 +80,7 @@
     "female": "Female artist",
     "followeds": "Followeds",
     "follows": "Follows",
+    "fontSize": "Font size",
     "forward": "Forword",
     "fullLyric": "All lyrics",
     "hide": "Hide",

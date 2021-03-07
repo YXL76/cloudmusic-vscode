@@ -35,6 +35,7 @@ export default __non_webpack_require__(
       desc: string;
       keyword: string;
       lyricDelay: string;
+      lyricFontSize: string;
       name: string;
       password: string;
       search: string;
@@ -98,6 +99,7 @@ export default __non_webpack_require__(
     female: string;
     followeds: string;
     follows: string;
+    fontSize: string;
     forward: string;
     fullLyric: string;
     hide: string;

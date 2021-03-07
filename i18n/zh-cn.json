@@ -16,12 +16,13 @@
       "desc": "请输入描述",
       "keyword": "请输入关键词",
       "lyricDelay": "请输入歌词延迟",
+      "lyricFontSize": "请输入歌词字体大小",
       "name": "请输入名称",
+      "noUnplayable": "没有添加无法播放的歌曲",
       "password": "请输入密码",
       "search": "请选择搜索类型",
       "signIn": "请选择登录方式",
       "trySignIn": "发现到您还没登录",
-      "noUnplayable": "没有添加无法播放的歌曲",
       "volume": "请输入音量"
     },
     "label": {
@@ -79,6 +80,7 @@
     "female": "女歌手",
     "followeds": "粉丝",
     "follows": "关注",
+    "fontSize": "字体大小",
     "forward": "前进",
     "fullLyric": "全部歌词",
     "hide": "隐藏",

@@ -41,6 +41,8 @@ const getNonce = (): string => {
   return text;
 };
 export class Webview {
+  static lyricFontSize = 16;
+
   private static readonly cssUri = Uri.file(resolve(__dirname, "style.css"));
 
   private static readonly iconUri = Uri.file(
@@ -92,7 +94,11 @@ export class Webview {
 
     lyric.updatePanel = (index: number) =>
       setHtml(
-        <Lyric otext={lyric.o.text[index]} ttext={lyric.t.text[index]} />
+        <Lyric
+          otext={lyric.o.text[index]}
+          ttext={lyric.t.text[index]}
+          fontSize={this.lyricFontSize}
+        />
       );
   }
 

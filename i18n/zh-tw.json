@@ -16,12 +16,13 @@
       "desc": "請輸入描述",
       "keyword": "請輸入關鍵字",
       "lyricDelay": "請輸入歌詞延遲",
+      "lyricFontSize": "請輸入歌詞字體大小",
       "name": "請輸入名稱",
+      "noUnplayable": "沒有添加無法播放的歌曲",
       "password": "請輸入密碼",
       "search": "請選擇搜索類型",
       "signIn": "請選擇登入管道",
       "trySignIn": "發現到您還沒登入",
-      "noUnplayable": "沒有添加無法播放的歌曲",
       "volume": "請輸入音量"
     },
     "label": {
@@ -79,6 +80,7 @@
     "female": "女歌手",
     "followeds": "粉絲",
     "follows": "關注",
+    "fontSize": "字體大小",
     "forward": "前進",
     "fullLyric": "全部歌詞",
     "hide": "隱藏",
