@@ -445,40 +445,30 @@ export async function apiUserRecord(): Promise<Array<RecordData[]>> {
   const value = apiCache.get<Array<RecordData[]>>(key);
   if (value) return value;
   const tasks: Promise<RecordData[]>[] = [
-    new Promise((resolve, reject) => {
-      weapiRequest<{
+    (async () => {
+      const { weekData } = await weapiRequest<{
         weekData: { playCount: number; song: SongsItem }[];
       }>("https://music.163.com/weapi/v1/play/record", {
         type: 1,
         uid: AccountManager.uid,
-      })
-        .then(({ weekData }) => {
-          resolve(
-            weekData.map(({ playCount, song }) => ({
-              ...resolveSongItem(song),
-              playCount,
-            }))
-          );
-        })
-        .catch(reject);
-    }),
-    new Promise((resolve, reject) => {
-      weapiRequest<{
+      });
+      return weekData.map(({ playCount, song }) => ({
+        ...resolveSongItem(song),
+        playCount,
+      }));
+    })(),
+    (async () => {
+      const { allData } = await weapiRequest<{
         allData: { playCount: number; song: SongsItem }[];
       }>("https://music.163.com/weapi/v1/play/record", {
         type: 0,
         uid: AccountManager.uid,
-      })
-        .then(({ allData }) => {
-          resolve(
-            allData.map(({ playCount, song }) => ({
-              ...resolveSongItem(song),
-              playCount,
-            }))
-          );
-        })
-        .catch(reject);
-    }),
+      });
+      return allData.map(({ playCount, song }) => ({
+        ...resolveSongItem(song),
+        playCount,
+      }));
+    })(),
   ];
 
   try {

@@ -88,13 +88,14 @@ export async function downloadMusic(
 }
 
 export async function likeMusic(id: number, like: boolean): Promise<void> {
-  const word = like ? i18n.word.like : i18n.word.dislike;
   if (await apiLike(id, like)) {
     if (id === Player.treeitem?.valueOf)
       State.like = like ? LikeState.like : LikeState.dislike;
     like ? AccountManager.likelist.add(id) : AccountManager.likelist.delete(id);
-    void window.showInformationMessage(word);
-  } else void window.showErrorMessage(word);
+    void window.showInformationMessage(
+      like ? i18n.word.like : i18n.word.dislike
+    );
+  } else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
 }
 
 export function stop(): void {
@@ -1123,7 +1124,7 @@ const limit = 50;
 export async function pickUsers(
   input: MultiStepInput,
   step: number,
-  func: (_: number, __: number, ___: number) => Promise<UserDetail[]>,
+  func: (...args: number[]) => Promise<UserDetail[]>,
   offset: number,
   id: number
 ): Promise<InputStep> {

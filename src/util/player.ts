@@ -103,13 +103,12 @@ export class Player {
     setInterval(
       () =>
         void workspace.fs.readDirectory(TMP_DIR).then((items) => {
-          for (const item of items)
-            if (item[0] !== `${this.treeitem?.id || 0}`) {
-              const path = Uri.joinPath(TMP_DIR, item[0]);
+          for (const [item] of items)
+            if (item !== `${this.treeitem?.id || 0}`) {
+              const path = Uri.joinPath(TMP_DIR, item);
               void workspace.fs.stat(path).then(({ mtime }) => {
                 // 8 * 60 * 1000 = 960000
-                if (Date.now() - mtime > 480000)
-                  void workspace.fs.delete(Uri.joinPath(TMP_DIR, item[0]));
+                if (Date.now() - mtime > 480000) void workspace.fs.delete(path);
               });
             }
         }),

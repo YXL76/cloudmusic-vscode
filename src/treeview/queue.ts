@@ -17,6 +17,8 @@ export type QueueContent =
   | LocalFileTreeItem
   | ProgramTreeItem;
 
+let infoFlag = false;
+
 export class QueueProvider implements TreeDataProvider<QueueContent> {
   private static lock = false;
 
@@ -76,28 +78,20 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   }
 
   static add(elements: QueueContent[], index: number = this.len): void {
-    const selected = [];
-    if (UNBLOCK_MUSIC.enabled) {
-      for (const i of elements)
-        if (!this.ids.has(i.valueOf)) {
-          selected.push(i);
-          this.ids.add(i.valueOf);
-        }
-    } else {
-      let flag = false;
-      for (const i of elements)
-        if (!this.ids.has(i.valueOf)) {
-          if (typeof i.valueOf === "number" && unplayable.has(i.valueOf)) {
-            flag = true;
-            continue;
-          }
-          selected.push(i);
-          this.ids.add(i.valueOf);
-        }
-      if (flag)
-        void window.showInformationMessage(i18n.sentence.hint.noUnplayable);
-    }
+    const selected = UNBLOCK_MUSIC.enabled
+      ? elements.filter(({ valueOf }) => !this.ids.has(valueOf))
+      : elements.filter(
+          ({ valueOf }) =>
+            !this.ids.has(valueOf) &&
+            (typeof valueOf !== "number" || !unplayable.has(valueOf))
+        );
+    selected.forEach(({ valueOf }) => this.ids.add(valueOf));
     this.songs.splice(index, 0, ...selected);
+
+    if (!infoFlag && !UNBLOCK_MUSIC.enabled) {
+      infoFlag = true;
+      void window.showInformationMessage(i18n.sentence.hint.noUnplayable);
+    }
   }
 
   static delete(id: number | string): void {
@@ -114,9 +108,7 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
       const index = elements.findIndex((value) => value.valueOf === headValue);
       if (index > 0) elements.splice(index, 1);
       for (const i of elements) this.ids.delete(i.valueOf);
-      const songs = [];
-      for (const i of this.songs) if (this.ids.has(i.valueOf)) songs.push(i);
-      this.songs = songs;
+      this.songs = this.songs.filter(({ valueOf }) => this.ids.has(valueOf));
     } else {
       if (elements[0].valueOf === headValue) return;
       this.delete(elements[0].valueOf);

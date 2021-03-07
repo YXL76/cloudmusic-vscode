@@ -126,21 +126,18 @@ export async function apiSongDetail(trackIds: number[]): Promise<SongsItem[]> {
   for (let i = 0; i < trackIds.length; i += limit) {
     const ids = trackIds.slice(i, i + limit);
     tasks.push(
-      new Promise((resolve, reject) => {
-        weapiRequest<{
+      (async () => {
+        const { songs, privileges } = await weapiRequest<{
           songs: SongsItem[];
           privileges: { st: number }[];
         }>("https://music.163.com/weapi/v3/song/detail", {
           c: `[${ids.map((id) => `{"id":${id}}`).join(",")}]`,
-        })
-          .then(({ songs, privileges }) => {
-            privileges.forEach(({ st }, i) => {
-              if (st < 0) unplayable.add(songs[i].id);
-            });
-            resolve(songs.map(resolveSongItem));
-          })
-          .catch(reject);
-      })
+        });
+        privileges.forEach(({ st }, i) => {
+          if (st < 0) unplayable.add(songs[i].id);
+        });
+        return songs.map(resolveSongItem);
+      })()
     );
   }
   try {

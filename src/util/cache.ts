@@ -156,7 +156,7 @@ export class LyricCache {
       ) as LyricData;
       // 7 * 24 * 60 * 60 * 1000
       if (Date.now() - data.ctime < 604800000) return data;
-      else void workspace.fs.delete(path, { recursive: true, useTrash: false });
+      void workspace.fs.delete(path, { recursive: true, useTrash: false });
     } catch {}
     return;
   }
