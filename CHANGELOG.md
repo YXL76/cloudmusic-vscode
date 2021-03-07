@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [7.6.0] - 2021-03-07
+
+### Added
+
+- Lyric: set font size ([#338](https://github.com/YXL76/cloudmusic-vscode/issues/338))
+
 ## [7.5.1] - 2021-03-07
 
 ### Fixed
