@@ -20,20 +20,14 @@ async function prefetch() {
       ? await PersonalFm.next()
       : QueueProvider.next;
     if (!treeitem || treeitem instanceof LocalFileTreeItem) return;
-    const idString = `${treeitem.valueOf}`;
+    const idS = `${treeitem.valueOf}`;
 
-    if (idString !== "0" && !MusicCache.get(idString)) {
+    if (idS !== "0" && !MusicCache.get(idS)) {
       const { url, md5 } = await apiSongUrl(treeitem.item);
       if (!url) return;
 
-      const path = Uri.joinPath(TMP_DIR, idString);
-      const data = await downloadMusic(
-        url,
-        idString,
-        path,
-        !PersonalFm.get,
-        md5
-      );
+      const path = Uri.joinPath(TMP_DIR, idS);
+      const data = await downloadMusic(url, idS, path, !PersonalFm.get, md5);
       if (data) {
         const file = createWriteStream(path.fsPath);
         data.pipe(file);

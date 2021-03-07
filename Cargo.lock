@@ -705,7 +705,7 @@ checksum = "b5eb417147ba9860a96cfe72a0b93bf88fee1744b5636ec99ab20c1aa9376581"
 [[package]]
 name = "rodio"
 version = "0.13.0"
-source = "git+https://github.com/YXL76/rodio?branch=dev#868d96a5e35044b18bf68beb8bfa0aa3e0bf960c"
+source = "git+https://github.com/YXL76/rodio?branch=dev#ae1e22f3136fde010204939c05984022b0682888"
 dependencies = [
  "claxon",
  "cpal",
