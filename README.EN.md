@@ -1,8 +1,8 @@
 <h1 align="center">
-  <img src="https://s1.ax1x.com/2020/07/07/UAKcaq.png" alt="CLOUDMUSIC" width="256">
-  <br>
+  <img src="https://s3.ax1x.com/2021/03/07/6M7aLj.png" alt="CLOUDMUSIC"></img>
+  <br></br>
   🎶 CLOUDMUSIC
-  <br>
+  <br></br>
 </h1>
 
 <div align="center">
