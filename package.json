@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "cloudmusic",
   "description": "Netease Music for VS Code",
-  "version": "7.5.0",
+  "version": "7.5.1",
   "publisher": "YXL",
   "engines": {
     "vscode": "^1.54.0"
@@ -867,7 +867,7 @@
     "array-unsort": "1.1.6",
     "axios": "0.21.1",
     "dayjs": "1.10.4",
-    "file-type": "16.2.0",
+    "file-type": "16.3.0",
     "lodash": "4.17.21",
     "md5-file": "5.0.0",
     "node-cache": "5.1.2",

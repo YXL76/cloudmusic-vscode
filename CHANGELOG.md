@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [7.5.1] - 2021-03-07
+
+### Fixed
+
+- Lyric: copy the original text to the translation when there is no translation ([#337](https://github.com/YXL76/cloudmusic-vscode/issues/337))
+
 ## [7.5.0] - 2021-03-06
 
 ### Added
