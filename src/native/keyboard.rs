@@ -20,36 +20,34 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
         let mut prev = 0;
         let keymap: *mut c_char = [0; 32].as_mut_ptr();
 
-        unsafe {
-            let disp = XOpenDisplay(ptr::null());
+        let disp = unsafe { XOpenDisplay(ptr::null()) };
 
-            loop {
-                thread::sleep(SLEEP_DURATION);
-                let mut flag = false;
-                XQueryKeymap(disp, keymap);
-                let b = from_raw_parts(keymap, 32)[21];
+        loop {
+            thread::sleep(SLEEP_DURATION);
+            let mut flag = false;
+            unsafe { XQueryKeymap(disp, keymap) };
+            let b = unsafe { from_raw_parts(keymap, 32) }[21];
 
-                for (i, &key) in KEYS.iter().enumerate() {
-                    if b & 1 << key != 0 {
-                        flag = true;
-                        if prev != key {
-                            prev = key;
-                            let callback = callback.clone();
-                            queue.send(move |mut cx| {
-                                let callback = callback.to_inner(&mut cx);
-                                let this = cx.undefined();
-                                let args = vec![cx.number(i as f64)];
+            for (i, &key) in KEYS.iter().enumerate() {
+                if b & 1 << key != 0 {
+                    flag = true;
+                    if prev != key {
+                        prev = key;
+                        let callback = callback.clone();
+                        queue.send(move |mut cx| {
+                            let callback = callback.to_inner(&mut cx);
+                            let this = cx.undefined();
+                            let args = vec![cx.number(i as f64)];
 
-                                callback.call(&mut cx, this, args)?;
-                                Ok(())
-                            });
-                        }
-                        break;
+                            callback.call(&mut cx, this, args)?;
+                            Ok(())
+                        });
                     }
+                    break;
                 }
-                if !flag {
-                    prev = 0;
-                }
+            }
+            if !flag {
+                prev = 0;
             }
         }
     });
@@ -82,23 +80,21 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
             let mut flag = false;
 
             for (i, &key) in KEYS.iter().enumerate() {
-                unsafe {
-                    if GetAsyncKeyState(key) as u32 & 0x8000 != 0 {
-                        flag = true;
-                        if prev != key {
-                            prev = key;
-                            let callback = callback.clone();
-                            queue.send(move |mut cx| {
-                                let callback = callback.to_inner(&mut cx);
-                                let this = cx.undefined();
-                                let args = vec![cx.number(i as f64)];
+                if unsafe { GetAsyncKeyState(key) } as u32 & 0x8000 != 0 {
+                    flag = true;
+                    if prev != key {
+                        prev = key;
+                        let callback = callback.clone();
+                        queue.send(move |mut cx| {
+                            let callback = callback.to_inner(&mut cx);
+                            let this = cx.undefined();
+                            let args = vec![cx.number(i as f64)];
 
-                                callback.call(&mut cx, this, args)?;
-                                Ok(())
-                            });
-                        }
-                        break;
+                            callback.call(&mut cx, this, args)?;
+                            Ok(())
+                        });
                     }
+                    break;
                 }
             }
             if !flag {
@@ -132,23 +128,21 @@ pub fn start_keyboard_event(mut cx: FunctionContext) -> JsResult<JsUndefined> {
             let mut flag = false;
 
             for (i, &key) in KEYS.iter().enumerate() {
-                unsafe {
-                    if CGEventSourceKeyState(0, key) {
-                        flag = true;
-                        if prev != key {
-                            prev = key;
-                            let callback = callback.clone();
-                            queue.send(move |mut cx| {
-                                let callback = callback.to_inner(&mut cx);
-                                let this = cx.undefined();
-                                let args = vec![cx.number(i as f64)];
+                if unsafe { CGEventSourceKeyState(0, key) } {
+                    flag = true;
+                    if prev != key {
+                        prev = key;
+                        let callback = callback.clone();
+                        queue.send(move |mut cx| {
+                            let callback = callback.to_inner(&mut cx);
+                            let this = cx.undefined();
+                            let args = vec![cx.number(i as f64)];
 
-                                callback.call(&mut cx, this, args)?;
-                                Ok(())
-                            });
-                        }
-                        break;
+                            callback.call(&mut cx, this, args)?;
+                            Ok(())
+                        });
                     }
+                    break;
                 }
             }
             if !flag {
