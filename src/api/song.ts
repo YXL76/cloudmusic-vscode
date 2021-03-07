@@ -58,31 +58,36 @@ export async function apiLyric(id: number): Promise<LyricData> {
 
     lyric.o.user = resolveLyricUser(lyricUser);
     lyric.t.user = resolveLyricUser(transUser);
-
     const o = resolveLyric(lrc.lyric);
     const t = resolveLyric(tlyric.lyric);
 
-    let i = 0;
-    let j = 0;
-    while (i < o.time.length && j < t.time.length) {
-      const otime = o.time[i];
-      const otext = o.text[i] || i18n.word.lyric;
-      const ttime = t.time[j];
-      const ttext = t.text[j] || i18n.word.lyric;
-      lyric.time.push(Math.min(otime, ttime));
-      if (otime === ttime) {
-        lyric.o.text.push(otext);
-        ++i;
-        lyric.t.text.push(ttext);
-        ++j;
-      } else if (otime < ttime) {
-        lyric.o.text.push(otext);
-        ++i;
-        lyric.t.text.push(lyric.t.text[j]);
-      } else if (otime > ttime) {
-        lyric.o.text.push(lyric.o.text[i]);
-        lyric.t.text.push(ttext);
-        ++j;
+    if (t.text.length === 0) {
+      lyric.time = [0, ...o.time];
+      lyric.o.text = [i18n.word.lyric, ...o.text];
+      lyric.t.text = [i18n.word.lyric, ...o.text];
+    } else {
+      let i = 0;
+      let j = 0;
+      while (i < o.time.length && j < t.time.length) {
+        const otime = o.time[i];
+        const otext = o.text[i] || i18n.word.lyric;
+        const ttime = t.time[j];
+        const ttext = t.text[j] || i18n.word.lyric;
+        lyric.time.push(Math.min(otime, ttime));
+        if (otime === ttime) {
+          lyric.o.text.push(otext);
+          ++i;
+          lyric.t.text.push(ttext);
+          ++j;
+        } else if (otime < ttime) {
+          lyric.o.text.push(otext);
+          ++i;
+          lyric.t.text.push(lyric.t.text[j]);
+        } else if (otime > ttime) {
+          lyric.o.text.push(lyric.o.text[i]);
+          lyric.t.text.push(ttext);
+          ++j;
+        }
       }
     }
 
