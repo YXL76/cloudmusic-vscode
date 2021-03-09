@@ -1180,7 +1180,7 @@ __metadata:
     lodash: 4.17.21
     md5-file: 5.0.0
     node-cache: 5.1.2
-    postcss: 8.2.7
+    postcss: 8.2.8
     postcss-cli: 8.3.1
     postcss-import: 14.0.0
     prettier: 2.2.1
@@ -4213,14 +4213,14 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"postcss@npm:8.2.7, postcss@npm:^8.1.6, postcss@npm:^8.2.1":
-  version: 8.2.7
-  resolution: "postcss@npm:8.2.7"
+"postcss@npm:8.2.8, postcss@npm:^8.1.6, postcss@npm:^8.2.1":
+  version: 8.2.8
+  resolution: "postcss@npm:8.2.8"
   dependencies:
     colorette: ^1.2.2
     nanoid: ^3.1.20
     source-map: ^0.6.1
-  checksum: cd2a7a8b9c1950783afd05e906d65a6433b13bcce5a52f3c2802c524479e7ba6893f516338ed1bc755b3a8545eb5a181daf0fcf25af694ad2e33e9d9fe7d4254
+  checksum: 6e17d28833cf918a5ab306bfc7ec66b236dc51ed0f3de959491d40f6a171f5bd5f26de12f74e6bfeebaad44b0ac92b9f477a669d5f1fc07a27d67d8147a4bf6f
   languageName: node
   linkType: hard
 
