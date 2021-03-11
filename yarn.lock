@@ -31,13 +31,13 @@ __metadata:
   linkType: hard
 
 "@babel/highlight@npm:^7.10.4, @babel/highlight@npm:^7.12.13":
-  version: 7.13.8
-  resolution: "@babel/highlight@npm:7.13.8"
+  version: 7.13.10
+  resolution: "@babel/highlight@npm:7.13.10"
   dependencies:
     "@babel/helper-validator-identifier": ^7.12.11
     chalk: ^2.0.0
     js-tokens: ^4.0.0
-  checksum: a25fc49b803ed103f829b949636d6ead219a13f325d16f959e19b69c995322d9ef15464d4d865a4b2b7779053b2c64788d2d1e171144b5d941d89abd46bd0534
+  checksum: 8f23d3b728422713bfab45bee1e7584f2a3d2e20c9c4d6153312b898c82e776bdc5b1b2afaf9433fddb21d70417f5b477c0bb1a48613324fd761117e19a5702b
   languageName: node
   linkType: hard
 
@@ -157,9 +157,9 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*":
-  version: 14.14.32
-  resolution: "@types/node@npm:14.14.32"
-  checksum: ae73f3b668242da660b4f4f2047114fc047f5a6a92b8f9f4ab2f8ca1325c914c08cf13b6f90e6e88016fafb7a662d1963b075a6220d2208651a98a1cb3407221
+  version: 14.14.33
+  resolution: "@types/node@npm:14.14.33"
+  checksum: f269fc728f6547345e000a0d86e1be802b475bb6759493208d7bc1cf8d49e838d3952ae54b8c7cd2ce168f9ef50c30e0d7084064a5f98db87efc833a38d955af
   languageName: node
   linkType: hard
 
@@ -593,11 +593,11 @@ __metadata:
   linkType: hard
 
 "acorn@npm:^8.0.4":
-  version: 8.0.5
-  resolution: "acorn@npm:8.0.5"
+  version: 8.1.0
+  resolution: "acorn@npm:8.1.0"
   bin:
     acorn: bin/acorn
-  checksum: b138585ca3948355fb0125105576b90326d4bdfd610f6c8bab382d281c9ea99d2360280c0aa4548f2e4b924eea2256a273140c49fc1be46d8a3b4b3bfefd8a62
+  checksum: 99ccf30832b00ff7e19dff353479fd303c5a82c4ae0a5c5904a6c03316658b89bbdca40f5d8473e6aedd988a404190abd7b431dbd3160df4c09a10398b84bf1c
   languageName: node
   linkType: hard
 
@@ -623,14 +623,14 @@ __metadata:
   linkType: hard
 
 "ajv@npm:^7.0.2":
-  version: 7.2.0
-  resolution: "ajv@npm:7.2.0"
+  version: 7.2.1
+  resolution: "ajv@npm:7.2.1"
   dependencies:
     fast-deep-equal: ^3.1.1
     json-schema-traverse: ^1.0.0
     require-from-string: ^2.0.2
     uri-js: ^4.2.2
-  checksum: d996aa2af3c2e575ab436d4104b01481826564be56ffc0ded82760a37286358c7593f9f53a474e46f041c5a04e78d10ed33a1843caffec5d6bf32772f125c615
+  checksum: 34044f60ca45ef8ec850f5d09e4db340bb870639efc1694d54bec7ff4b06b12b077872949223f703d1507bbf3d553b59752f4c327ffcd25726ee27919d586037
   languageName: node
   linkType: hard
 
@@ -1042,9 +1042,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001181, caniuse-lite@npm:^1.0.30001196":
-  version: 1.0.30001196
-  resolution: "caniuse-lite@npm:1.0.30001196"
-  checksum: 42c38418062cd00c43793679c1a8766f98127c3cb99c9775156b8d7843e2e12fd188791360e890c0c25a2c492ff30d9072d1727cb65a860e87a9d9fd11b0d917
+  version: 1.0.30001198
+  resolution: "caniuse-lite@npm:1.0.30001198"
+  checksum: fe1ac01934933ab2e8db93f68972be9271be3a5505f855cf37e1e1bc716d1cd8e3addeed960a3740ac13d27108bf5492478f7c626d0a237451bdc0d1d6386a26
   languageName: node
   linkType: hard
 
@@ -1723,9 +1723,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.3.649":
-  version: 1.3.682
-  resolution: "electron-to-chromium@npm:1.3.682"
-  checksum: 9ceb3a72a4ff0c239889d7d1aba0a02ee3d19540e6e0cc63906f03dae931b01f390e54a723f52f94fc35835b1352b746850315a56057dd596c3f8d43635c0c44
+  version: 1.3.685
+  resolution: "electron-to-chromium@npm:1.3.685"
+  checksum: 469c41eeb243c378a4bc9ecd3939c6dfc71afb17d9942931dcf90f34b37ba75613d14c5c13abf68d92cdb3db363aafa6346034791091c0ff9e4c2bd0ca520f50
   languageName: node
   linkType: hard
 
@@ -1777,9 +1777,9 @@ __metadata:
   linkType: hard
 
 "env-paths@npm:^2.2.0":
-  version: 2.2.0
-  resolution: "env-paths@npm:2.2.0"
-  checksum: 09de4fd1c068d5965aa8aede852a764b7fb6fa8f1299ba7789bc29c22840ab1985e0c9c55bc6bf40b4276834b8adfa1baf82ec9bc58445d9e75800dc32d78a4f
+  version: 2.2.1
+  resolution: "env-paths@npm:2.2.1"
+  checksum: 9579868bc73526de31682625d89aa08c83f3c87850218f9251f953bf4242428a1020e75cb201ca16b42f2874c3ca175ffc8aa47a88423b546711b7dbf86f79a8
   languageName: node
   linkType: hard
 
@@ -5206,13 +5206,13 @@ fsevents@~2.3.1:
   linkType: hard
 
 "tsutils@npm:^3.17.1":
-  version: 3.20.0
-  resolution: "tsutils@npm:3.20.0"
+  version: 3.21.0
+  resolution: "tsutils@npm:3.21.0"
   dependencies:
     tslib: ^1.8.1
   peerDependencies:
     typescript: ">=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta"
-  checksum: 9245072f9c0d511e3a30c52ec0bfd5ad91495f85d819426ad5283931d09bbdffe515c5c708ba99a4c2424e4576d37200d3e62df66f0027ca29fcfa76794e9610
+  checksum: a10e746258ca9c8e5cdd5e363259b4e353a6729b432f1b30455b9d84ff3fd2f12a44fedafd13872518b0e951fa8cdf56a5b35908bc91d5bf5e7d342548427f2e
   languageName: node
   linkType: hard
 
@@ -5618,9 +5618,9 @@ typescript@4.2.3:
   linkType: hard
 
 "yargs-parser@npm:^20.2.2":
-  version: 20.2.6
-  resolution: "yargs-parser@npm:20.2.6"
-  checksum: ed21fc0f35290dc9ce1714e6a3e656ca1901ff59432f3dd43668244879b2cca6acff0bff66df9cfbcd934d4db6e98e57cae6def2700ca823e85449f2fb664660
+  version: 20.2.7
+  resolution: "yargs-parser@npm:20.2.7"
+  checksum: 124e7f1c24c9609d5d1c343f14b83289634e19bb43770708ebb6a19852647aaa0f89edcbf0e5b18a21bee77f54513ab5051518b2950cda69eb607a7c6251aa4f
   languageName: node
   linkType: hard
 

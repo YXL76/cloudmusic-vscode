@@ -470,7 +470,7 @@ checksum = "c44922cb3dbb1c70b5e5f443d63b64363a898564d739ba5198e3a9138442868d"
 [[package]]
 name = "neon"
 version = "0.7.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#6e2557c4aaf341159eca0ee4bc0be2745b100d57"
+source = "git+https://github.com/neon-bindings/neon?branch=main#3e76b0196da254a4e8476e1687593bb774792b70"
 dependencies = [
  "cslice",
  "neon-build",
@@ -483,12 +483,12 @@ dependencies = [
 [[package]]
 name = "neon-build"
 version = "0.7.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#6e2557c4aaf341159eca0ee4bc0be2745b100d57"
+source = "git+https://github.com/neon-bindings/neon?branch=main#3e76b0196da254a4e8476e1687593bb774792b70"
 
 [[package]]
 name = "neon-macros"
 version = "0.7.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#6e2557c4aaf341159eca0ee4bc0be2745b100d57"
+source = "git+https://github.com/neon-bindings/neon?branch=main#3e76b0196da254a4e8476e1687593bb774792b70"
 dependencies = [
  "quote",
  "syn",
@@ -497,7 +497,7 @@ dependencies = [
 [[package]]
 name = "neon-runtime"
 version = "0.7.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#6e2557c4aaf341159eca0ee4bc0be2745b100d57"
+source = "git+https://github.com/neon-bindings/neon?branch=main#3e76b0196da254a4e8476e1687593bb774792b70"
 dependencies = [
  "cfg-if 1.0.0",
  "libloading 0.6.7",
@@ -791,9 +791,9 @@ checksum = "6446ced80d6c486436db5c078dde11a9f73d42b57fb273121e160b84f63d894c"
 
 [[package]]
 name = "syn"
-version = "1.0.62"
+version = "1.0.63"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "123a78a3596b24fee53a6464ce52d8ecbf62241e6294c7e7fe12086cd161f512"
+checksum = "8fd9bc7ccc2688b3344c2f48b9b546648b25ce0b20fc717ee7fa7981a8ca9717"
 dependencies = [
  "proc-macro2",
  "quote",
