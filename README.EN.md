@@ -75,7 +75,7 @@ Full list in `Feature Contributions`
 
 ## API
 
-[API](./API.md)
+[API](./doc/API.md)
 
 ## Acknowledgements
 

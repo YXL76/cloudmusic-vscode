@@ -173,6 +173,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |              follow              |   关注与取消关注用户   |   ❌   |
 |     history_recommend_songs      |    历史每日推荐歌曲    |   ❌   |
 |  history_recommend_songs_detail  |  历史每日推荐歌曲详情  |   ❌   |
+|      listen_together_status      |       一起听状态       |        |
 |              login               |        邮箱登录        |   ✔️   |
 |         login_cellphone          |        手机登录        |   ✔️   |
 |          login_qr_check          |     二维码扫码状态     |   ✔️   |

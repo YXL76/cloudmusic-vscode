@@ -470,7 +470,7 @@ checksum = "c44922cb3dbb1c70b5e5f443d63b64363a898564d739ba5198e3a9138442868d"
 [[package]]
 name = "neon"
 version = "0.7.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#3e76b0196da254a4e8476e1687593bb774792b70"
+source = "git+https://github.com/neon-bindings/neon?branch=main#bd69a89cda0e759273842bd9259b249a523a217a"
 dependencies = [
  "cslice",
  "neon-build",
@@ -483,12 +483,12 @@ dependencies = [
 [[package]]
 name = "neon-build"
 version = "0.7.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#3e76b0196da254a4e8476e1687593bb774792b70"
+source = "git+https://github.com/neon-bindings/neon?branch=main#bd69a89cda0e759273842bd9259b249a523a217a"
 
 [[package]]
 name = "neon-macros"
 version = "0.7.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#3e76b0196da254a4e8476e1687593bb774792b70"
+source = "git+https://github.com/neon-bindings/neon?branch=main#bd69a89cda0e759273842bd9259b249a523a217a"
 dependencies = [
  "quote",
  "syn",
@@ -497,7 +497,7 @@ dependencies = [
 [[package]]
 name = "neon-runtime"
 version = "0.7.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#3e76b0196da254a4e8476e1687593bb774792b70"
+source = "git+https://github.com/neon-bindings/neon?branch=main#bd69a89cda0e759273842bd9259b249a523a217a"
 dependencies = [
  "cfg-if 1.0.0",
  "libloading 0.6.7",
@@ -689,18 +689,18 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.4.3"
+version = "1.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9251239e129e16308e70d853559389de218ac275b515068abc96829d05b948a"
+checksum = "54fd1046a3107eb58f42de31d656fee6853e5d276c455fd943742dce89fc3dd3"
 dependencies = [
  "regex-syntax",
 ]
 
 [[package]]
 name = "regex-syntax"
-version = "0.6.22"
+version = "0.6.23"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5eb417147ba9860a96cfe72a0b93bf88fee1744b5636ec99ab20c1aa9376581"
+checksum = "24d5f089152e60f62d28b835fbff2cd2e8dc0baf1ac13343bef92ab7eed84548"
 
 [[package]]
 name = "rodio"

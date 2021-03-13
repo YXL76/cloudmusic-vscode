@@ -75,7 +75,7 @@
 
 ## API
 
-[API](./API.md)
+[API](./doc/API.md)
 
 ## Acknowledgements
 
