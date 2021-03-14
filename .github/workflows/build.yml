@@ -4,12 +4,12 @@ on:
   push:
     paths:
       - "src/native/*"
-      - "src/native/*"
       - "src/lib.rs"
       - "Cargo.*"
       - ".github/workflows/build.yml"
     branches:
       - master
+      - dev
 
 jobs:
   build:
