@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [7.7.0] - 2021-03-14
+
+### Added
+
+- API: search lyric
+
 ## [7.6.0] - 2021-03-07
 
 ### Added
