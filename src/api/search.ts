@@ -159,6 +159,40 @@ export async function apiSearchPlaylist(
   return [];
 }
 
+type SearchLyricResult = SongsItem & { lyrics: string[] };
+
+export async function apiSearchLyric(
+  keywords: string,
+  limit: number,
+  offset: number
+): Promise<SearchLyricResult[]> {
+  const key = `cloudsearch${SearchType.lyric}-${keywords}-${limit}-${offset}`;
+  const value = apiCache.get<SearchLyricResult[]>(key);
+  if (value) return value;
+  try {
+    const {
+      result: { songs },
+    } = await weapiRequest<{
+      result: { songs: (SongsItemSt & { lyrics: string[] })[] };
+    }>("https://music.163.com/api/cloudsearch/pc", {
+      s: keywords,
+      type: SearchType.lyric,
+      limit,
+      offset,
+      total: true,
+    });
+    const ret = songs.map((song) => ({
+      ...resolveSongItemSt(song),
+      lyrics: song.lyrics,
+    }));
+    apiCache.set(key, ret);
+    return ret;
+  } catch (err) {
+    console.error(err);
+  }
+  return [];
+}
+
 export async function apiSearchHotDetail(): Promise<
   { searchWord: string; content: string }[]
 > {

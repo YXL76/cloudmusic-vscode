@@ -49,6 +49,7 @@ export const enum ICON {
   fm = "$(radio-tower)",
   level = "$(graph)",
   like = "$(heart)",
+  lyric = "$(text-size)",
   name = "$(code)",
   number = "$(symbol-number)",
   playlist = "$(list-unordered)",

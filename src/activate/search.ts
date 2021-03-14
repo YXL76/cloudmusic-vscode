@@ -18,6 +18,7 @@ import {
   apiSearchArtist,
   apiSearchDefault,
   apiSearchHotDetail,
+  apiSearchLyric,
   apiSearchPlaylist,
   apiSearchSingle,
   apiSearchSuggest,
@@ -100,6 +101,10 @@ async function pickType(input: MultiStepInput) {
         label: `${ICON.playlist} ${i18n.word.playlist}`,
         type: SearchType.playlist,
       },
+      {
+        label: `${ICON.lyric} ${i18n.word.lyric}`,
+        type: SearchType.lyric,
+      },
     ],
     placeholder: i18n.sentence.hint.search,
   });
@@ -112,6 +117,8 @@ async function pickType(input: MultiStepInput) {
       return (input: MultiStepInput) => pickSearchArtist(input, 0);
     case SearchType.playlist:
       return (input: MultiStepInput) => pickSearchPlaylist(input, 0);
+    case SearchType.lyric:
+      return (input: MultiStepInput) => pickSearchLyric(input, 0);
   }
   return (input: MultiStepInput) => pickSearchSingle(input, 0);
 }
@@ -220,4 +227,43 @@ async function pickSearchPlaylist(
       pickSearchPlaylist(input, offset + limit)
     );
   return (input: MultiStepInput) => pickPlaylist(input, 5, pick.item);
+}
+
+async function pickSearchLyric(
+  input: MultiStepInput,
+  offset: number
+): Promise<InputStep> {
+  const songs = await apiSearchLyric(state.keyword, limit, offset);
+  const pick = await input.showQuickPick({
+    title,
+    step: 4,
+    totalSteps,
+    items: songs.map((item) => ({
+      label: `${ICON.song} ${item.name}`,
+      description: item.ar.map((i) => i.name).join("/"),
+      detail: item.lyrics.slice(1).join(", "),
+      item,
+    })),
+    canSelectMany: true,
+    previous: offset > 0,
+    next: songs.length === limit,
+  });
+  if (pick === ButtonAction.previous)
+    return input.stay((input: MultiStepInput) =>
+      pickSearchLyric(input, offset - limit)
+    );
+  if (pick === ButtonAction.next)
+    return input.stay((input: MultiStepInput) =>
+      pickSearchLyric(input, offset + limit)
+    );
+  if (pick.length === 0) return input.stay();
+  if (pick.length === 1)
+    return (input: MultiStepInput) => pickSong(input, 5, pick[0].item);
+
+  return (input: MultiStepInput) =>
+    pickSongMany(
+      input,
+      5,
+      pick.map(({ item }) => item)
+    );
 }
