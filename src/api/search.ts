@@ -38,11 +38,11 @@ export async function apiSearchDefault(): Promise<string> {
 }
 
 export async function apiSearchSingle(
-  keywords: string,
+  s: string,
   limit: number,
   offset: number
 ): Promise<SongsItem[]> {
-  const key = `cloudsearch${SearchType.single}-${keywords}-${limit}-${offset}`;
+  const key = `cloudsearch${SearchType.single}-${s}-${limit}-${offset}`;
   const value = apiCache.get<SongsItem[]>(key);
   if (value) return value;
   try {
@@ -50,13 +50,7 @@ export async function apiSearchSingle(
       result: { songs },
     } = await weapiRequest<{ result: { songs: SongsItemSt[] } }>(
       "https://music.163.com/api/cloudsearch/pc",
-      {
-        s: keywords,
-        type: SearchType.single,
-        limit,
-        offset,
-        total: true,
-      }
+      { s, type: SearchType.single, limit, offset, total: true }
     );
     const ret = songs.map(resolveSongItemSt);
     apiCache.set(key, ret);
@@ -68,11 +62,11 @@ export async function apiSearchSingle(
 }
 
 export async function apiSearchAlbum(
-  keywords: string,
+  s: string,
   limit: number,
   offset: number
 ): Promise<AlbumsItem[]> {
-  const key = `cloudsearch${SearchType.album}-${keywords}-${limit}-${offset}`;
+  const key = `cloudsearch${SearchType.album}-${s}-${limit}-${offset}`;
   const value = apiCache.get<AlbumsItem[]>(key);
   if (value) return value;
   try {
@@ -80,13 +74,7 @@ export async function apiSearchAlbum(
       result: { albums },
     } = await weapiRequest<{ result: { albums: AlbumsItem[] } }>(
       "https://music.163.com/api/cloudsearch/pc",
-      {
-        s: keywords,
-        type: SearchType.album,
-        limit,
-        offset,
-        total: true,
-      }
+      { s, type: SearchType.album, limit, offset, total: true }
     );
     const ret = albums.map(resolveAlbumsItem);
     apiCache.set(key, ret);
@@ -98,11 +86,11 @@ export async function apiSearchAlbum(
 }
 
 export async function apiSearchArtist(
-  keywords: string,
+  s: string,
   limit: number,
   offset: number
 ): Promise<Artist[]> {
-  const key = `cloudsearch${SearchType.artist}-${keywords}-${limit}-${offset}`;
+  const key = `cloudsearch${SearchType.artist}-${s}-${limit}-${offset}`;
   const value = apiCache.get<Artist[]>(key);
   if (value) return value;
   try {
@@ -110,13 +98,7 @@ export async function apiSearchArtist(
       result: { artists },
     } = await weapiRequest<{ result: { artists: Artist[] } }>(
       "https://music.163.com/api/cloudsearch/pc",
-      {
-        s: keywords,
-        type: SearchType.artist,
-        limit,
-        offset,
-        total: true,
-      }
+      { s, type: SearchType.artist, limit, offset, total: true }
     );
     const ret = artists.map((artist) =>
       resolveArtist({ ...artist, briefDesc: "" })
@@ -130,11 +112,11 @@ export async function apiSearchArtist(
 }
 
 export async function apiSearchPlaylist(
-  keywords: string,
+  s: string,
   limit: number,
   offset: number
 ): Promise<PlaylistItem[]> {
-  const key = `cloudsearch${SearchType.playlist}-${keywords}-${limit}-${offset}`;
+  const key = `cloudsearch${SearchType.playlist}-${s}-${limit}-${offset}`;
   const value = apiCache.get<PlaylistItem[]>(key);
   if (value) return value;
   try {
@@ -142,13 +124,7 @@ export async function apiSearchPlaylist(
       result: { playlists },
     } = await weapiRequest<{ result: { playlists: RawPlaylistItem[] } }>(
       "https://music.163.com/api/cloudsearch/pc",
-      {
-        s: keywords,
-        type: SearchType.playlist,
-        limit,
-        offset,
-        total: true,
-      }
+      { s, type: SearchType.playlist, limit, offset, total: true }
     );
     const ret = playlists.map(resolvePlaylistItem);
     apiCache.set(key, ret);
@@ -162,11 +138,11 @@ export async function apiSearchPlaylist(
 type SearchLyricResult = SongsItem & { lyrics: string[] };
 
 export async function apiSearchLyric(
-  keywords: string,
+  s: string,
   limit: number,
   offset: number
 ): Promise<SearchLyricResult[]> {
-  const key = `cloudsearch${SearchType.lyric}-${keywords}-${limit}-${offset}`;
+  const key = `cloudsearch${SearchType.lyric}-${s}-${limit}-${offset}`;
   const value = apiCache.get<SearchLyricResult[]>(key);
   if (value) return value;
   try {
@@ -175,7 +151,7 @@ export async function apiSearchLyric(
     } = await weapiRequest<{
       result: { songs: (SongsItemSt & { lyrics: string[] })[] };
     }>("https://music.163.com/api/cloudsearch/pc", {
-      s: keywords,
+      s,
       type: SearchType.lyric,
       limit,
       offset,
