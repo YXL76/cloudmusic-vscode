@@ -390,7 +390,6 @@ name = "native"
 version = "0.1.0"
 dependencies = [
  "neon",
- "neon-build",
  "rodio",
  "winapi",
  "x11",

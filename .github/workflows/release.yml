@@ -9,7 +9,13 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        include:
+          - os: macos-latest
+            ext: dylib
+          - os: ubuntu-latest
+            ext: so
+          - os: windows-latest
+            ext: dll
 
     name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -54,7 +60,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ runner.os }}
-          path: index.node
+          path: target/release/libnative.${{ matrix.ext }}
 
   release:
     runs-on: ubuntu-latest
@@ -69,9 +75,9 @@ jobs:
       - name: Copy file
         run: |
           mkdir -p build
-          cp .artifact/macOS/index.node   build/darwin.node
-          cp .artifact/Linux/index.node   build/linux.node
-          cp .artifact/Windows/index.node build/win32.node
+          cp .artifact/macOS/libnative.dylib build/darwin.node
+          cp .artifact/Linux/libnative.so    build/linux.node
+          cp .artifact/Windows/native.dll    build/win32.node
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
