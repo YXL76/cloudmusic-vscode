@@ -466,19 +466,14 @@ export function initAccount(context: ExtensionContext): void {
       ): Promise<InputStep> {
         const limit = 50;
         const playlists = await apiTopPlaylist(cat, limit, offset);
-        const pick = await input.showQuickPick(
-          {
-            title: i18n.word.playlist,
-            step: 5,
-            totalSteps: 6,
-            items: pickPlaylistItems(playlists),
-          },
-          undefined,
-          {
-            previous: offset > 0,
-            next: playlists.length === limit,
-          }
-        );
+        const pick = await input.showQuickPick({
+          title: i18n.word.playlist,
+          step: 5,
+          totalSteps: 6,
+          items: pickPlaylistItems(playlists),
+          previous: offset > 0,
+          next: playlists.length === limit,
+        });
         if (pick === ButtonAction.previous)
           return input.stay((input: MultiStepInput) =>
             pickAllPlaylists(input, offset - limit)
@@ -619,19 +614,14 @@ export function initAccount(context: ExtensionContext): void {
       ): Promise<InputStep> {
         const limit = 50;
         const artists = await apiArtistList(type, area, initial, limit, offset);
-        const pick = await input.showQuickPick(
-          {
-            title: i18n.word.artist,
-            step: 6,
-            totalSteps: 7,
-            items: pickArtistItems(artists),
-          },
-          undefined,
-          {
-            previous: offset > 0,
-            next: artists.length === limit,
-          }
-        );
+        const pick = await input.showQuickPick({
+          title: i18n.word.artist,
+          step: 6,
+          totalSteps: 7,
+          items: pickArtistItems(artists),
+          previous: offset > 0,
+          next: artists.length === limit,
+        });
         if (pick === ButtonAction.previous)
           return input.stay((input: MultiStepInput) =>
             pickAllArtist(input, offset - limit)

@@ -406,18 +406,14 @@ async function pickSimiSong(
 ): Promise<InputStep> {
   const limit = 50;
   const songs = await apiSimiSong(id, limit, offset);
-  const pick = await input.showQuickPick(
-    {
-      title: i18n.word.similarSongs,
-      step,
-      items: pickSongItems(songs),
-    },
-    true,
-    {
-      previous: offset > 0,
-      next: songs.length === limit,
-    }
-  );
+  const pick = await input.showQuickPick({
+    title: i18n.word.similarSongs,
+    step,
+    items: pickSongItems(songs),
+    canSelectMany: true,
+    previous: offset > 0,
+    next: songs.length === limit,
+  });
   if (pick === ButtonAction.previous)
     return input.stay((input: MultiStepInput) =>
       pickSimiSong(input, step, id, offset - limit)
@@ -443,14 +439,12 @@ export async function pickSongs(
   step: number,
   songs: SongsItem[]
 ): Promise<InputStep> {
-  const pick = await input.showQuickPick(
-    {
-      title: i18n.word.song,
-      step,
-      items: pickSongItems(songs),
-    },
-    true
-  );
+  const pick = await input.showQuickPick({
+    title: i18n.word.song,
+    step,
+    items: pickSongItems(songs),
+    canSelectMany: true,
+  });
   if (pick.length === 0) return input.stay();
   if (pick.length === 1)
     return (input: MultiStepInput) => pickSong(input, step + 1, pick[0].item);
@@ -575,21 +569,17 @@ export async function pickPrograms(
   step: number,
   programs: ProgramDetail[]
 ): Promise<InputStep> {
-  const pick = await input.showQuickPick(
-    {
-      title: i18n.word.program,
-      step,
-      items: pickProgramDetails(programs),
-    },
-    true
-  );
-  if (pick.length === 0) {
-    return input.stay();
-  }
-  if (pick.length === 1) {
+  const pick = await input.showQuickPick({
+    title: i18n.word.program,
+    step,
+    items: pickProgramDetails(programs),
+    canSelectMany: true,
+  });
+  if (pick.length === 0) return input.stay();
+  if (pick.length === 1)
     return (input: MultiStepInput) =>
       pickProgram(input, step + 1, pick[0].item);
-  }
+
   return (input: MultiStepInput) =>
     pickProgramMany(
       input,
@@ -753,18 +743,14 @@ export async function pickArtist(
   ): Promise<InputStep> {
     const limit = 100;
     const songs = await apiArtistSongs(id, limit, offset);
-    const pick = await input.showQuickPick(
-      {
-        title: i18n.word.song,
-        step,
-        items: pickSongItems(songs),
-      },
-      true,
-      {
-        previous: offset > 0,
-        next: songs.length === limit,
-      }
-    );
+    const pick = await input.showQuickPick({
+      title: i18n.word.song,
+      step,
+      items: pickSongItems(songs),
+      canSelectMany: true,
+      previous: offset > 0,
+      next: songs.length === limit,
+    });
     if (pick === ButtonAction.previous)
       return input.stay((input: MultiStepInput) =>
         pickAllSongs(input, step, id, offset - limit)
@@ -1002,18 +988,13 @@ async function pickSimiPlaylists(
 ): Promise<InputStep> {
   const limit = 50;
   const playlists = await apiSimiPlaylist(id, limit, offset);
-  const pick = await input.showQuickPick(
-    {
-      title: i18n.word.similarPlaylists,
-      step,
-      items: pickPlaylistItems(playlists),
-    },
-    undefined,
-    {
-      previous: offset > 0,
-      next: playlists.length === limit,
-    }
-  );
+  const pick = await input.showQuickPick({
+    title: i18n.word.similarPlaylists,
+    step,
+    items: pickPlaylistItems(playlists),
+    previous: offset > 0,
+    next: playlists.length === limit,
+  });
   if (pick === ButtonAction.previous)
     return input.stay((input: MultiStepInput) =>
       pickSimiPlaylists(input, step, id, offset - limit)
@@ -1129,15 +1110,13 @@ export async function pickUsers(
   id: number
 ): Promise<InputStep> {
   const users = await func(id, limit, offset);
-  const pick = await input.showQuickPick(
-    {
-      title: i18n.word.user,
-      step,
-      items: pickUserDetails(users),
-    },
-    undefined,
-    { previous: offset > 0, next: users.length === limit }
-  );
+  const pick = await input.showQuickPick({
+    title: i18n.word.user,
+    step,
+    items: pickUserDetails(users),
+    previous: offset > 0,
+    next: users.length === limit,
+  });
   if (pick === ButtonAction.previous)
     return input.stay((input: MultiStepInput) =>
       pickUsers(input, step, func, offset - limit, id)

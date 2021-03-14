@@ -65,10 +65,13 @@ export const enum ButtonAction {
   previous,
   next,
 }
-
 interface ButtonOption {
   previous?: boolean;
   next?: boolean;
+}
+
+interface QuickPickOption extends ButtonOption {
+  canSelectMany?: true;
 }
 
 export class MultiStepInput {
@@ -92,33 +95,29 @@ export class MultiStepInput {
     _: QuickPickParameters<T>
   ): Promise<T>;
   async showQuickPick<T extends QuickPickItem>(
-    _: QuickPickParameters<T>,
-    canSelectMany: true
+    _: QuickPickParameters<T> & { canSelectMany: true }
   ): Promise<readonly T[]>;
   async showQuickPick<T extends QuickPickItem>(
-    _: QuickPickParameters<T>,
-    canSelectMany: undefined,
-    buttons: ButtonOption
+    _: QuickPickParameters<T> & Required<ButtonOption>
   ): Promise<T | ButtonAction>;
   async showQuickPick<T extends QuickPickItem>(
-    _: QuickPickParameters<T>,
-    canSelectMany: true,
-    buttons: ButtonOption
+    _: QuickPickParameters<T> & Required<QuickPickOption>
   ): Promise<readonly T[] | ButtonAction>;
 
-  async showQuickPick<T extends QuickPickItem>(
-    {
-      title,
-      step,
-      totalSteps,
-      items,
-      activeItems,
-      placeholder,
-      changeCallback,
-    }: QuickPickParameters<T>,
-    canSelectMany?: true,
-    buttons?: ButtonOption
-  ): Promise<readonly T[] | T | ButtonAction> {
+  async showQuickPick<T extends QuickPickItem>({
+    title,
+    step,
+    totalSteps,
+    items,
+    activeItems,
+    placeholder,
+    changeCallback,
+    canSelectMany,
+    previous,
+    next,
+  }: QuickPickParameters<T> & QuickPickOption): Promise<
+    readonly T[] | T | ButtonAction
+  > {
     const disposables: Disposable[] = [];
     try {
       return await new Promise<readonly T[] | T | ButtonAction>(
@@ -141,10 +140,8 @@ export class MultiStepInput {
             input.activeItems = activeItems;
           }
           const button: QuickInputButton[] = [];
-          if (buttons) {
-            if (buttons.previous) button.push(pickButtons.previous);
-            if (buttons.next) button.push(pickButtons.next);
-          }
+          if (previous) button.push(pickButtons.previous);
+          if (next) button.push(pickButtons.next);
           input.buttons = [
             ...(this.step > 1 ? [QuickInputButtons.Back] : []),
             ...button,
