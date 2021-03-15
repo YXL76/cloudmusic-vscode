@@ -1,6 +1,6 @@
-const { ESBuildPlugin, ESBuildMinifyPlugin } = require("esbuild-loader");
 const { readFileSync, readdirSync } = require("fs");
 const { DefinePlugin } = require("webpack");
+const { ESBuildMinifyPlugin } = require("esbuild-loader");
 const { resolve } = require("path");
 const { transformSync } = require("esbuild");
 
@@ -62,7 +62,7 @@ module.exports = (_, options) =>
     performance: {
       hints: false,
     },
-    plugins: [new DefinePlugin(definitions), new ESBuildPlugin()],
+    plugins: [new DefinePlugin(definitions)],
     resolve: {
       extensions: [".ts", ".js", ".tsx", ".jsx"],
     },
