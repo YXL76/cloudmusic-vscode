@@ -1171,7 +1171,7 @@ __metadata:
     dayjs: 1.10.4
     debug: 4.3.1
     esbuild: 0.8.57
-    esbuild-loader: 2.9.2
+    esbuild-loader: 2.10.0
     eslint: 7.22.0
     eslint-config-prettier: 8.1.0
     eslint-plugin-prettier: 3.3.1
@@ -1843,28 +1843,37 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-loader@npm:2.9.2":
-  version: 2.9.2
-  resolution: "esbuild-loader@npm:2.9.2"
+"esbuild-loader@npm:2.10.0":
+  version: 2.10.0
+  resolution: "esbuild-loader@npm:2.10.0"
   dependencies:
-    esbuild: ^0.8.42
+    esbuild: ^0.9.2
     joycon: ^2.2.5
     json5: ^2.2.0
     loader-utils: ^2.0.0
-    type-fest: ^0.20.2
+    type-fest: ^0.21.3
     webpack-sources: ^2.2.0
   peerDependencies:
     webpack: ^4.40.0 || ^5.0.0
-  checksum: a1251dab1ed72f68ce9b50a2b58ffef83594627f1bbf8fc53a098525166d1413f22374eeb966bac2848bc61fbf9f593f170c44e23786ae38f64ff5e5a5ff6724
+  checksum: 9f8f2a9e95fb71cbcdaaca59ff6cad8a6a9ac2f1eb5347821e8f4866ffdd30ada8a89fa536fa5eb841a0babf4c3ab276d59dcfe0641c8cff51147edfe0b84be9
   languageName: node
   linkType: hard
 
-"esbuild@npm:0.8.57, esbuild@npm:^0.8.42":
+"esbuild@npm:0.8.57":
   version: 0.8.57
   resolution: "esbuild@npm:0.8.57"
   bin:
     esbuild: bin/esbuild
   checksum: 0942950a21a30b57a324380cfedcb425cc1245412e720593415afa0d4f1b7c5f931aa6330937dc1353c754d45c1e5ff7dbc52eb514f54d85517114971300b454
+  languageName: node
+  linkType: hard
+
+"esbuild@npm:^0.9.2":
+  version: 0.9.2
+  resolution: "esbuild@npm:0.9.2"
+  bin:
+    esbuild: bin/esbuild
+  checksum: 443c46b61eeffdd9627205de5759d95ab8f9e0dd08c6f51ba3952830ca248e25d323601bef88de94ff71cde076051316564b0ea5d2177110976a3e6623de3732
   languageName: node
   linkType: hard
 
@@ -5254,6 +5263,13 @@ fsevents@~2.3.1:
   version: 0.20.2
   resolution: "type-fest@npm:0.20.2"
   checksum: 1f887bc6150e632fb772fd28e33c22a4ab036c6f484fa9ac2e2115f6cae9d62bba7ca0368e3332b539d85bd2c8391c7bff22ad410abcbc9ab3774d61e250b210
+  languageName: node
+  linkType: hard
+
+"type-fest@npm:^0.21.3":
+  version: 0.21.3
+  resolution: "type-fest@npm:0.21.3"
+  checksum: bbe5f5c60e8da4e0b0fe290c31821b10c2fd935768802cd659784cb5e792c7a31bb25a89174d3b42dde3bf8eb9d301ede7456a274c1068280b7698438e250f49
   languageName: node
   linkType: hard
 
