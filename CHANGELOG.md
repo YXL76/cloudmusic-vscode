@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [7.7.1] - 2021-03-17
+
+### Fixed
+
+- Cache: size limit
+
 ## [7.7.0] - 2021-03-14
 
 ### Added

@@ -113,7 +113,7 @@ export class MusicCache {
       await workspace.fs.copy(path, target, { overwrite: true });
       const { size } = await workspace.fs.stat(target);
       this.deleteNode(key);
-      if (!md5 || (await md5File(path.fsPath)) === md5)
+      if (!md5 || (await md5File(target.fsPath)) === md5)
         this.addNode({ key, size });
     } catch {}
   }
