@@ -217,9 +217,9 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:*":
-  version: 14.14.34
-  resolution: "@types/node@npm:14.14.34"
-  checksum: 74db0d80ad997c3ca2597abe1c63c85e87c32e06b4e8c8392a24a11ad00a4567b293a72bbdf49ace201150b420a943609181771cab034cef10fe65272d452718
+  version: 14.14.35
+  resolution: "@types/node@npm:14.14.35"
+  checksum: 0f6320bf5370d1ff82105fb7f26aa0658499c97d3ec78561e65b65724280244f281602541182b63470d2c8a98db22fbb4f91409c5c7c97da8c3bb8f97fbc5dbc
   languageName: node
   linkType: hard
 
@@ -231,9 +231,9 @@ __metadata:
   linkType: hard
 
 "@types/node@npm:^13.7.0":
-  version: 13.13.46
-  resolution: "@types/node@npm:13.13.46"
-  checksum: 3786ac15b21b489c0c807d769edf64f732788b3e8f7f66ac04d63580c658fbafd5c9352c958199a37b2393c6132b16f4bbc43ced25bf4bcb90cbae9d75e61f17
+  version: 13.13.47
+  resolution: "@types/node@npm:13.13.47"
+  checksum: 6321ad2d731867ac102d8b4fabcbc3cbdb2fcd2ab7a0572fbba05f083dcb4d4f0e3f9f6b997d648319d1351431966d3db862fe967e0c86366fcbec8990fd45a0
   languageName: node
   linkType: hard
 
@@ -1320,9 +1320,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001181, caniuse-lite@npm:^1.0.30001196":
-  version: 1.0.30001200
-  resolution: "caniuse-lite@npm:1.0.30001200"
-  checksum: 58539f5702e969cb1d9c15134e59f82972e1174f948197011e3f2441c44bdffda60d7d48df98cec00471777c0d414571026540bec12d922e4e1e2e99a8f1aee1
+  version: 1.0.30001202
+  resolution: "caniuse-lite@npm:1.0.30001202"
+  checksum: 5eb150cf389125e6c9f47a3c2f61cace16b8105461fed6c22f7ef51661f8f4302856a6017686b93d9b18b9a57efe5ce58c76cc714aa53eaccf4149953eec9795
   languageName: node
   linkType: hard
 
@@ -1503,7 +1503,7 @@ __metadata:
     supports-color: 8.1.1
     tailwindcss: 2.0.3
     typescript: 4.2.3
-    webpack: 5.26.0
+    webpack: 5.26.2
     webpack-cli: 4.5.0
     yallist: 4.0.0
   languageName: unknown
@@ -2070,9 +2070,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.3.649":
-  version: 1.3.687
-  resolution: "electron-to-chromium@npm:1.3.687"
-  checksum: e151b0f1c776fac2074786a90d36e3d76a5121947821f935d9f3722c6316275b73eba756d15cdc8835462824bc8b83699295fffdd5b5b98b39687b2a52295bc8
+  version: 1.3.690
+  resolution: "electron-to-chromium@npm:1.3.690"
+  checksum: 1dfef22772d4b83c2933f234d12685c4c6d12a7eca44c5579f735c0515c964e9db461d3ff90568492c8b572106f83b927324b86f854fb301fd8af733f2369b30
   languageName: node
   linkType: hard
 
@@ -3847,11 +3847,11 @@ fsevents@~2.3.1:
   linkType: hard
 
 "nanoid@npm:^3.1.20":
-  version: 3.1.21
-  resolution: "nanoid@npm:3.1.21"
+  version: 3.1.22
+  resolution: "nanoid@npm:3.1.22"
   bin:
     nanoid: bin/nanoid.cjs
-  checksum: d400484b438d54cc286e1fec43d1156cfbba976a15ad73558378b6e3779f8f8e635b635a49c425a365aa8ac9e5e2c73f098fc617f4297a9b1a38177be0592b6f
+  checksum: 6a38c799816de388cd67233a9fad6216e0ad2abda3ce5b34eb126afbef6905924507223dc65797e2bcbc513f9cd7e078ea7e69448d59f434a6206b491278ae24
   languageName: node
   linkType: hard
 
@@ -6119,9 +6119,9 @@ typescript@4.2.3:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.26.0":
-  version: 5.26.0
-  resolution: "webpack@npm:5.26.0"
+"webpack@npm:5.26.2":
+  version: 5.26.2
+  resolution: "webpack@npm:5.26.2"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.46
@@ -6151,7 +6151,7 @@ typescript@4.2.3:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: dcfa0ce0210512b4e769e645e2288963472c94ed02f7ddc5af1c0f9d36dd958eb2ab10029b9cfaf3c7cb8a601305c493a8b5c1107a14ac3999a1cd6a2f7dfd47
+  checksum: 8787f3cbeece7f6d2f43e865b198815bb48fe6d6d79fda6969a0e861bbf1e3205b47f8a542a7328162dba27e63be37b9e9058375dfa5c94b7f459c32e77f00d7
   languageName: node
   linkType: hard
 
