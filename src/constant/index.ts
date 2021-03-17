@@ -19,7 +19,7 @@ export const NATIVE = __non_webpack_require__(
 ) as NativeModule;
 
 export const ACCOUNT_KEY = "account";
-export const CACHE_KEY = "cache-v1";
+export const CACHE_KEY = "cache-v2";
 export const LYRIC_CACHE_KEY = "lyric-cache-v1";
 export const COOKIE_KEY = "cookie";
 export const BUTTON_KEY = "button-v1";

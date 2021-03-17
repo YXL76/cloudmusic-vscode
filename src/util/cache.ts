@@ -113,7 +113,7 @@ export class MusicCache {
       await workspace.fs.copy(path, target, { overwrite: true });
       const { size } = await workspace.fs.stat(target);
       this.deleteNode(key);
-      if (!md5 || (await md5File(target.fsPath)) === md5)
+      if (!md5 || (await md5File(path.fsPath)) === md5)
         this.addNode({ key, size });
     } catch {}
   }
@@ -124,8 +124,8 @@ export class MusicCache {
     this.size += value.size;
     while (this.size > MUSIC_CACHE_SIZE) {
       const { tail } = this.list;
-      if (!tail && tail !== null) this.deleteNode(tail);
-      else this.size = 0;
+      if (tail) this.deleteNode(tail.value.key);
+      else void this.clear();
     }
   }
 
@@ -135,6 +135,11 @@ export class MusicCache {
       this.list.removeNode(node);
       this.cache.delete(key);
       this.size -= node.value.size;
+      try {
+        void workspace.fs.delete(Uri.joinPath(MUSIC_CACHE_DIR, key), {
+          useTrash: false,
+        });
+      } catch {}
     }
   }
 }
