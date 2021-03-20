@@ -1503,7 +1503,7 @@ __metadata:
     supports-color: 8.1.1
     tailwindcss: 2.0.3
     typescript: 4.2.3
-    webpack: 5.26.3
+    webpack: 5.27.0
     webpack-cli: 4.5.0
     yallist: 4.0.0
   languageName: unknown
@@ -6119,9 +6119,9 @@ typescript@4.2.3:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.26.3":
-  version: 5.26.3
-  resolution: "webpack@npm:5.26.3"
+"webpack@npm:5.27.0":
+  version: 5.27.0
+  resolution: "webpack@npm:5.27.0"
   dependencies:
     "@types/eslint-scope": ^3.7.0
     "@types/estree": ^0.0.46
@@ -6151,7 +6151,7 @@ typescript@4.2.3:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: f3d456173423ba67a18167f79c1c1b3dd33c9e4d2de2c51253fcb148353449235c4b789d22207de34106cfe9efbd20e20fe6a26ba204224ecc34f486a428a3a6
+  checksum: c37a74ae986c22674cf185c4527e55db4ee0d65f9ec039769c1a84da8335e8d17e4fe06678eb02e37f7ff32e6bfff45a0337ac9c7c6e9e033f94d10d6b935d52
   languageName: node
   linkType: hard
 
