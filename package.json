@@ -865,7 +865,7 @@
     "supports-color": "8.1.1",
     "tailwindcss": "2.0.4",
     "typescript": "4.2.3",
-    "webpack": "5.27.0",
+    "webpack": "5.27.1",
     "webpack-cli": "4.5.0"
   },
   "dependencies": {
