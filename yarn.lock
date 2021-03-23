@@ -961,7 +961,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"array-includes@npm:^3.1.1, array-includes@npm:^3.1.2":
+"array-includes@npm:^3.1.2, array-includes@npm:^3.1.3":
   version: 3.1.3
   resolution: "array-includes@npm:3.1.3"
   dependencies:
@@ -988,7 +988,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"array.prototype.flatmap@npm:^1.2.3":
+"array.prototype.flatmap@npm:^1.2.4":
   version: 1.2.4
   resolution: "array.prototype.flatmap@npm:1.2.4"
   dependencies:
@@ -1487,7 +1487,7 @@ __metadata:
     eslint: 7.22.0
     eslint-config-prettier: 8.1.0
     eslint-plugin-prettier: 3.3.1
-    eslint-plugin-react: 7.22.0
+    eslint-plugin-react: 7.23.0
     file-type: 16.3.0
     lodash: 4.17.21
     md5-file: 5.0.0
@@ -2273,24 +2273,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:7.22.0":
-  version: 7.22.0
-  resolution: "eslint-plugin-react@npm:7.22.0"
+"eslint-plugin-react@npm:7.23.0":
+  version: 7.23.0
+  resolution: "eslint-plugin-react@npm:7.23.0"
   dependencies:
-    array-includes: ^3.1.1
-    array.prototype.flatmap: ^1.2.3
+    array-includes: ^3.1.3
+    array.prototype.flatmap: ^1.2.4
     doctrine: ^2.1.0
     has: ^1.0.3
     jsx-ast-utils: ^2.4.1 || ^3.0.0
-    object.entries: ^1.1.2
-    object.fromentries: ^2.0.2
-    object.values: ^1.1.1
+    minimatch: ^3.0.4
+    object.entries: ^1.1.3
+    object.fromentries: ^2.0.4
+    object.values: ^1.1.3
     prop-types: ^15.7.2
-    resolve: ^1.18.1
-    string.prototype.matchall: ^4.0.2
+    resolve: ^2.0.0-next.3
+    string.prototype.matchall: ^4.0.4
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7
-  checksum: 34927cb4880984e3a3e413ef57ebedbc4c4bf8e26f3cf561986e240c621d0873765fc5eef2be22171625deab2f77d0ec7013b422987ae5296fbdee0c682c6cc5
+  checksum: 6b3673dd202459ceb6a105f547daa211a74e02e7ce18ea3627b45a84deb50c1a4109262a854e8ea013fd3c2d5b1c1c2c7ea08dc5ba2756729452d91ac07f3df4
   languageName: node
   linkType: hard
 
@@ -4047,7 +4048,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"object.entries@npm:^1.1.2":
+"object.entries@npm:^1.1.3":
   version: 1.1.3
   resolution: "object.entries@npm:1.1.3"
   dependencies:
@@ -4059,7 +4060,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"object.fromentries@npm:^2.0.2":
+"object.fromentries@npm:^2.0.4":
   version: 2.0.4
   resolution: "object.fromentries@npm:2.0.4"
   dependencies:
@@ -4082,7 +4083,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"object.values@npm:^1.1.0, object.values@npm:^1.1.1":
+"object.values@npm:^1.1.0, object.values@npm:^1.1.3":
   version: 1.1.3
   resolution: "object.values@npm:1.1.3"
   dependencies:
@@ -5182,7 +5183,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"resolve@^1.1.7, resolve@^1.18.1, resolve@^1.20.0, resolve@^1.9.0":
+"resolve@^1.1.7, resolve@^1.20.0, resolve@^1.9.0":
   version: 1.20.0
   resolution: "resolve@npm:1.20.0"
   dependencies:
@@ -5192,13 +5193,33 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.1.7#builtin<compat/resolve>, resolve@patch:resolve@^1.18.1#builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#builtin<compat/resolve>, resolve@patch:resolve@^1.9.0#builtin<compat/resolve>":
+resolve@^2.0.0-next.3:
+  version: 2.0.0-next.3
+  resolution: "resolve@npm:2.0.0-next.3"
+  dependencies:
+    is-core-module: ^2.2.0
+    path-parse: ^1.0.6
+  checksum: dc9529322d9ac6175e91cd909ca845f31cc2c065e0f79ca2c423499238af9c214373d6682df24ca7be4ff20561332d4fad4516f91ea6c3919853f72f869e542c
+  languageName: node
+  linkType: hard
+
+"resolve@patch:resolve@^1.1.7#builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#builtin<compat/resolve>, resolve@patch:resolve@^1.9.0#builtin<compat/resolve>":
   version: 1.20.0
   resolution: "resolve@patch:resolve@npm%3A1.20.0#builtin<compat/resolve>::version=1.20.0&hash=3388aa"
   dependencies:
     is-core-module: ^2.2.0
     path-parse: ^1.0.6
   checksum: c4a515b76026806b5b26513fc7bdb80458c532bc91c02ef45ac928d1025585f93bec0b904be39c02131118a37ff7e3f9258f1526850b025d2ec0948bb5fd03d0
+  languageName: node
+  linkType: hard
+
+"resolve@patch:resolve@^2.0.0-next.3#builtin<compat/resolve>":
+  version: 2.0.0-next.3
+  resolution: "resolve@patch:resolve@npm%3A2.0.0-next.3#builtin<compat/resolve>::version=2.0.0-next.3&hash=3388aa"
+  dependencies:
+    is-core-module: ^2.2.0
+    path-parse: ^1.0.6
+  checksum: a36d174b5e1b72eb9d05f2457fde2e91a4954f4480ee693681eca3a423978304d6232443726384ebf54fc4039f1ec8da7e8731383aab4c11704d157d5bcf5031
   languageName: node
   linkType: hard
 
@@ -5534,7 +5555,7 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"string.prototype.matchall@npm:^4.0.2":
+"string.prototype.matchall@npm:^4.0.4":
   version: 4.0.4
   resolution: "string.prototype.matchall@npm:4.0.4"
   dependencies:
