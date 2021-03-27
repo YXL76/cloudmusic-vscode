@@ -87,8 +87,9 @@ export class MultiStepInput {
   }
 
   stay(step?: InputStep): InputStep {
-    if (step) this.steps[this.step - 1] = step;
-    return this.steps[this.step - 1];
+    --this.step;
+    if (step) this.steps[this.step] = step;
+    return this.steps[this.step];
   }
 
   async showQuickPick<T extends QuickPickItem>(
