@@ -41,9 +41,7 @@ const updateSuggestions = throttle((that: QuickPick<QuickPickItem>, value) => {
   that.enabled = false;
   that.busy = true;
   void apiSearchSuggest(value).then((suggestions) => {
-    that.items = [that.items[0]].concat(
-      suggestions.map((label) => ({ label }))
-    );
+    that.items = [that.items[0], ...suggestions.map((label) => ({ label }))];
     that.enabled = true;
     that.busy = false;
   });
@@ -68,7 +66,7 @@ export async function inputKeyword(input: MultiStepInput): Promise<InputStep> {
     placeholder: i18n.sentence.hint.keyword,
     changeCallback: (that, value) => {
       if (value) {
-        that.items = [{ label: value }].concat(that.items.slice(1));
+        that.items = [{ label: value }, ...that.items.slice(1)];
         updateSuggestions(that, value);
       } else {
         that.items = items;

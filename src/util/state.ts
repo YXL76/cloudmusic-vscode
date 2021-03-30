@@ -131,9 +131,7 @@ export class PersonalFm {
   static async next(): Promise<QueueItemTreeItem> {
     if (this.item.length <= 1) {
       const songs = await apiPersonalFm();
-      this.item = this.item.concat(
-        songs.map((song) => new QueueItemTreeItem(song, 0))
-      );
+      this.item.push(...songs.map((song) => new QueueItemTreeItem(song, 0)));
     }
 
     return this.item[1];

@@ -63,7 +63,7 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   }
 
   static random(): void {
-    this.songs = [this.songs[0]].concat(unsortInplace(this.songs.slice(1)));
+    this.songs = [this.songs[0], ...unsortInplace(this.songs.slice(1))];
   }
 
   static top(id: number | string): void {
@@ -73,7 +73,7 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   static shift(index: number): void {
     if (index) {
       while (index < 0) index += this.len;
-      this.songs = this.songs.slice(index).concat(this.songs.slice(0, index));
+      this.songs.push(...this.songs.splice(0, index));
     }
   }
 

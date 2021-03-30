@@ -62,14 +62,14 @@ export async function apiAlbumSub(
 export async function apiAlbumSublist(): Promise<AlbumsItem[]> {
   const limit = 100;
   let offset = 0;
-  let ret: AlbumsItem[] = [];
+  const ret: AlbumsItem[] = [];
   try {
     for (let i = 0; i < 16; ++i) {
       const { data } = await weapiRequest<{ data: AlbumsItem[] }>(
         "https://music.163.com/weapi/album/sublist",
         { limit, offset, total: true }
       );
-      ret = ret.concat(data.map(resolveAlbumsItem));
+      ret.push(...data.map(resolveAlbumsItem));
       if (data.length < limit) {
         break;
       }

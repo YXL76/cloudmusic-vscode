@@ -36,7 +36,7 @@ export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
   const key = `artist_album${id}`;
   const value = apiCache.get<AlbumsItem[]>(key);
   if (value) return value;
-  let ret: AlbumsItem[] = [];
+  const ret: AlbumsItem[] = [];
   const limit = 50;
   let offset = 0;
   try {
@@ -49,7 +49,7 @@ export async function apiArtistAlbum(id: number): Promise<AlbumsItem[]> {
         offset,
         total: true,
       });
-      ret = ret.concat(hotAlbums.map(resolveAlbumsItem));
+      ret.push(...hotAlbums.map(resolveAlbumsItem));
       if (more) {
         offset += limit;
       } else {
@@ -168,7 +168,7 @@ export async function apiArtistSub(
 export async function apiArtistSublist(): Promise<Artist[]> {
   const limit = 100;
   let offset = 0;
-  let ret: Artist[] = [];
+  const ret: Artist[] = [];
   try {
     for (let i = 0; i < 16; ++i) {
       const { data } = await weapiRequest<{ data: Artist[] }>(
@@ -179,7 +179,7 @@ export async function apiArtistSublist(): Promise<Artist[]> {
           total: true,
         }
       );
-      ret = ret.concat(data.map(resolveArtist));
+      ret.push(...data.map(resolveArtist));
       if (data.length < limit) {
         break;
       }
