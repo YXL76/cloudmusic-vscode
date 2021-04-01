@@ -62,6 +62,7 @@
 ## Usage
 
 ![Usage](https://s3.ax1x.com/2021/02/04/y3yJU0.png)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FYXL76%2Fcloudmusic-vscode.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FYXL76%2Fcloudmusic-vscode?ref=badge_shield)
 
 支持解锁变灰音乐，可以在设置中开启需要的音源（`cloudmusic.music.unblock`）
 
@@ -91,3 +92,7 @@
 - [neon](https://github.com/neon-bindings/neon)
 - [rodio](https://github.com/RustAudio/rodio)
 - [UnblockNeteaseMusic](https://github.com/nondanee/UnblockNeteaseMusic)
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FYXL76%2Fcloudmusic-vscode.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FYXL76%2Fcloudmusic-vscode?ref=badge_large)
