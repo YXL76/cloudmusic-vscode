@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [7.7.2] - 2021-04-01
+
+### Fixed
+
+- QuickPick: staying will clear the last pcik
+- Account: authentication error vscode ([#392](https://github.com/YXL76/cloudmusic-vscode/issues/392), [#384](https://github.com/YXL76/cloudmusic-vscode/issues/384))
+
 ## [7.7.1] - 2021-03-17
 
 ### Fixed
@@ -446,13 +453,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Added
 
-- Quickpick: show playlists in `user`
+- QuickPick: show playlists in `user`
 
 ## [4.4.0] - 2020-09-04
 
 ### Added
 
-- Quickpick: `user` and `users`
+- QuickPick: `user` and `users`
 
 ## [4.3.0] - 2020-08-28
 
@@ -506,7 +513,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Fixed
 
-- Quickpick: some titles
+- QuickPick: some titles
 
 ## [4.0.1] - 2020-08-23
 
@@ -659,7 +666,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Changed
 
-- Qiuckpick: reduce network request in order to improve performance
+- QuickPick: reduce network request in order to improve performance
 
 ### Fixed
 
