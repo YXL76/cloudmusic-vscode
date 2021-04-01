@@ -45,7 +45,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   initRadio();
   initCommand(context);
   initStatusBar();
-  initAccount(context);
+  void initAccount(context);
   void initCache(context);
   initLocal(context);
 }

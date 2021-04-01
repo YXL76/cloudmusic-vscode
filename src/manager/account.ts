@@ -69,32 +69,16 @@ export class AccountManager implements AuthenticationProvider {
 
   readonly onDidChangeSessions = this._onDidChangeSessions.event;
 
-  constructor() {
-    (async () => {
-      let res = false;
-      const cookieStr = await AccountManager.context.secrets.get(COOKIE_KEY);
+  static async getInstance(): Promise<AccountManager> {
+    try {
+      const cookieStr = await this.context.secrets.get(COOKIE_KEY);
       if (cookieStr) {
-        AccountManager.cookie = JSON.parse(cookieStr) as Cookie;
-        res = await AccountManager.login();
+        this.cookie = JSON.parse(cookieStr) as Cookie;
+        if ((await this.login()) && AUTO_CHECK) void this.dailyCheck();
       }
-      if (res) {
-        if (AUTO_CHECK) void AccountManager.dailyCheck();
-      } else {
-        try {
-          await authentication.getSession(AUTH_PROVIDER_ID, [], {
-            createIfNone: true,
-          });
-        } catch {
-          void authentication.getSession(AUTH_PROVIDER_ID, []);
-        }
-      }
-    })().catch((err) => {
-      console.log(err);
-      //
-    });
-  }
-
-  static getInstance(): AccountManager {
+    } catch (err) {
+      console.error(err);
+    }
     return this.instance || (this.instance = new AccountManager());
   }
 
@@ -148,10 +132,14 @@ export class AccountManager implements AuthenticationProvider {
 
   private static async login(): Promise<boolean> {
     if (State.login) return true;
-    const accountStr = await this.context.secrets.get(ACCOUNT_KEY);
-    const account = accountStr
-      ? (JSON.parse(accountStr) as Account)
-      : undefined;
+
+    let account: Account | undefined = undefined;
+    try {
+      const accountStr = await this.context.secrets.get(ACCOUNT_KEY);
+      if (accountStr) account = JSON.parse(accountStr) as Account;
+    } catch (err) {
+      console.error(account);
+    }
 
     try {
       const res = account

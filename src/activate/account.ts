@@ -57,13 +57,21 @@ import { Webview } from "../webview";
 import i18n from "../i18n";
 import { inputKeyword } from ".";
 
-export function initAccount(context: ExtensionContext): void {
-  const accountManager = AccountManager.getInstance();
+export async function initAccount(context: ExtensionContext): Promise<void> {
+  const accountManager = await AccountManager.getInstance();
   authentication.registerAuthenticationProvider(
     AUTH_PROVIDER_ID,
     "Cloudmusic",
     accountManager
   );
+  if (!State.login)
+    try {
+      await authentication.getSession(AUTH_PROVIDER_ID, [], {
+        createIfNone: true,
+      });
+    } catch {
+      void authentication.getSession(AUTH_PROVIDER_ID, []);
+    }
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.account", () => {
