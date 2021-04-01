@@ -75,9 +75,7 @@ export async function downloadMusic(
       timeout: 8000,
     });
 
-    if (cache) {
-      data.on("end", () => void MusicCache.put(filename, path, md5));
-    }
+    if (cache) data.on("end", () => void MusicCache.put(filename, path, md5));
 
     return data;
   } catch (err) {
