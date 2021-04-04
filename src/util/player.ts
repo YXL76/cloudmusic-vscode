@@ -72,7 +72,7 @@ export class Player {
   private static prefetchLock = false;
 
   static init(): void {
-    void this.volume(this.context.globalState.get(VOLUME_KEY) ?? 85);
+    void this.volume(this.context.globalState.get(VOLUME_KEY, 85));
 
     setInterval(() => {
       if (State.playing) {
@@ -118,7 +118,7 @@ export class Player {
     if (NATIVE.playerLoad(this.player, url)) {
       NATIVE.playerSetVolume(
         this.player,
-        this.context.globalState.get(VOLUME_KEY) ?? 85
+        this.context.globalState.get(VOLUME_KEY, 85)
       );
       State.playing = true;
 

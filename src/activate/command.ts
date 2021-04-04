@@ -69,7 +69,7 @@ export function initCommand(context: ExtensionContext): void {
           title: i18n.word.volume,
           step: 1,
           totalSteps: 1,
-          value: `${context.globalState.get<number>(VOLUME_KEY) ?? 85}`,
+          value: `${context.globalState.get(VOLUME_KEY, 85)}`,
           prompt: `${i18n.sentence.hint.volume} (0~100)`,
         });
         if (/^[1-9]\d$|^\d$|^100$/.exec(level))

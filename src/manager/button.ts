@@ -38,7 +38,7 @@ export class ButtonManager {
   private static buttonShow = Array(9).fill(true) as boolean[];
 
   static init(): void {
-    this.showLyric = this.context.globalState.get(LYRIC_KEY) || this.showLyric;
+    this.showLyric = this.context.globalState.get(LYRIC_KEY, this.showLyric);
 
     [
       "$(account)",
@@ -76,8 +76,7 @@ export class ButtonManager {
       "cloudmusic.lyric",
     ].forEach((value, index) => (this.buttons[index].command = value));
 
-    this.buttonShow =
-      this.context.globalState.get(BUTTON_KEY) || this.buttonShow;
+    this.buttonShow = this.context.globalState.get(BUTTON_KEY, this.buttonShow);
     this.show();
   }
 
