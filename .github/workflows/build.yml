@@ -36,7 +36,7 @@ jobs:
 
       - name: Install LLVM and Clang
         if: runner.os == 'Windows'
-        uses: KyleMayes/install-llvm-action@v1.1.1
+        uses: KyleMayes/install-llvm-action@v1.2.1
         with:
           version: "11"
           directory: ${{ runner.temp }}/llvm
