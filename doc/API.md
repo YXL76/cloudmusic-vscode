@@ -215,6 +215,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |            user_cloud            |        云盘数据        |   ❌   |
 |          user_cloud_del          |      云盘歌曲删除      |   ❌   |
 |        user_cloud_detail         |      云盘数据详情      |   ❌   |
+|       user_comment_history       |      用户历史评论      |        |
 |           user_detail            |        用户详情        |   ✔️   |
 |             user_dj              |      用户电台节目      |        |
 |            user_event            |        用户动态        |        |
