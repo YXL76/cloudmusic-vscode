@@ -1506,7 +1506,7 @@ __metadata:
     react: 17.0.2
     react-dom: 17.0.2
     react-icons: 4.2.0
-    supports-color: 8.1.1
+    supports-color: 9.0.0
     tailwindcss: 2.1.1
     typescript: 4.2.4
     webpack: 5.31.0
@@ -2809,10 +2809,10 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"has-flag@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "has-flag@npm:4.0.0"
-  checksum: 2e5391139d3d287231ccb58659702392f6e3abeac3296fb4721afaff46493f3d9b99a9329ae015dfe973aa206ed5c75f43e86aec0267dce79aa5c2b6e811b3ad
+"has-flag@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "has-flag@npm:5.0.0"
+  checksum: 6d3be1873675a1b3a63d27f6670d46f685f8fd0d2133c9bafbcad10aedd0069db4b540b8097af3754f374c33f19c70a171ecc5d77f899c04087d9498cf56d2b6
   languageName: node
   linkType: hard
 
@@ -5666,12 +5666,12 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"supports-color@npm:latest":
-  version: 8.1.1
-  resolution: "supports-color@npm:8.1.1"
+"supports-color@npm:9.0.0":
+  version: 9.0.0
+  resolution: "supports-color@npm:9.0.0"
   dependencies:
-    has-flag: ^4.0.0
-  checksum: 0219f5c91753fea8dc8046cd4b18d39458b5dc0c6421c67c1072209faae9ba93b89283252e3b05d5c18901fd9f8b95001e3247fb93e2265f66d584a676522c75
+    has-flag: ^5.0.0
+  checksum: 4de87a53dbed08b535ace63763b66953b0e67c39332bc804fbe248e89a5d0d1ee21ab69557bcd18b0a5e6ad604e20c4a47fea3e77c3ab9c54527b7e55f8798b1
   languageName: node
   linkType: hard
 
