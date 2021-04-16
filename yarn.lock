@@ -1489,7 +1489,7 @@ __metadata:
     dayjs: 1.10.4
     debug: 4.3.1
     esbuild: 0.11.6
-    esbuild-loader: 2.11.0
+    esbuild-loader: 2.12.0
     eslint: 7.23.0
     eslint-config-prettier: 8.1.0
     eslint-plugin-prettier: 3.3.1
@@ -2163,9 +2163,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-loader@npm:2.11.0":
-  version: 2.11.0
-  resolution: "esbuild-loader@npm:2.11.0"
+"esbuild-loader@npm:2.12.0":
+  version: 2.12.0
+  resolution: "esbuild-loader@npm:2.12.0"
   dependencies:
     esbuild: ^0.10.2
     joycon: ^3.0.1
@@ -2175,7 +2175,7 @@ __metadata:
     webpack-sources: ^2.2.0
   peerDependencies:
     webpack: ^4.40.0 || ^5.0.0
-  checksum: 9ac1c05329c7e8976548f452292d3ca77107a6273f2e66309f41a3fb9e2085e04a5fc1bec2fae150a20ee5e1e8ab32f0c7fa2faad0fb8d54172337953bbd6109
+  checksum: a9f81365e80b54648f020aebe148f5a16659ff0df85ed4f74825b76bb8e78a0fa57bf1c161d7a875a32665a14a717b468f482e08bf907910658073e5dde6cd29
   languageName: node
   linkType: hard
 
