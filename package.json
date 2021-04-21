@@ -827,8 +827,7 @@
     "debug": "latest",
     "isarray": "latest",
     "loose-envify": "latest",
-    "object-assign": "latest",
-    "supports-color": "latest"
+    "object-assign": "latest"
   },
   "scripts": {
     "list": "node scripts/list.js",
@@ -862,7 +861,7 @@
     "postcss-cli": "8.3.1",
     "postcss-import": "14.0.1",
     "prettier": "2.2.1",
-    "supports-color": "latest",
+    "supports-color": "9.0.0",
     "tailwindcss": "2.1.1",
     "typescript": "4.2.4",
     "webpack": "5.35.0",
