@@ -97,9 +97,9 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "clang-sys"
-version = "1.1.1"
+version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f54d78e30b388d4815220c8dd03fea5656b6c6d32adb59e89061552a102f8da1"
+checksum = "853eda514c284c2287f4bf20ae614f8781f40a81d32ecda6e91449304dfe077c"
 dependencies = [
  "glob",
  "libc",
@@ -272,9 +272,9 @@ checksum = "8eaf4bc02d17cbdd7ff4c7438cafcdf7fb9a4613313ad11b4f8fefe7d3fa0130"
 
 [[package]]
 name = "jobserver"
-version = "0.1.21"
+version = "0.1.22"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5c71313ebb9439f74b00d9d2dcec36440beaf57a6aa0623068441dd7cd81a7f2"
+checksum = "972f5ae5d1cb9c6ae417789196c803205313edde988685da5e3aae0827b9e7fd"
 dependencies = [
  "libc",
 ]
@@ -302,9 +302,9 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 
 [[package]]
 name = "libc"
-version = "0.2.92"
+version = "0.2.93"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56d855069fafbb9b344c0f962150cd2c1187975cb1c22c1522c240d8c4986714"
+checksum = "9385f66bf6105b241aa65a61cb923ef20efc665cb9f9bb50ac2f0c4b7f378d41"
 
 [[package]]
 name = "libloading"
@@ -437,7 +437,7 @@ checksum = "c44922cb3dbb1c70b5e5f443d63b64363a898564d739ba5198e3a9138442868d"
 [[package]]
 name = "neon"
 version = "0.8.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#03c7e9e425b42560d542f3f4f9c20589edcc4277"
+source = "git+https://github.com/neon-bindings/neon?branch=main#b8c8c2a1aee12c2b20affc40cdb653b2208a1a77"
 dependencies = [
  "cslice",
  "neon-build",
@@ -450,12 +450,12 @@ dependencies = [
 [[package]]
 name = "neon-build"
 version = "0.8.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#03c7e9e425b42560d542f3f4f9c20589edcc4277"
+source = "git+https://github.com/neon-bindings/neon?branch=main#b8c8c2a1aee12c2b20affc40cdb653b2208a1a77"
 
 [[package]]
 name = "neon-macros"
 version = "0.8.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#03c7e9e425b42560d542f3f4f9c20589edcc4277"
+source = "git+https://github.com/neon-bindings/neon?branch=main#b8c8c2a1aee12c2b20affc40cdb653b2208a1a77"
 dependencies = [
  "quote",
  "syn",
@@ -464,7 +464,7 @@ dependencies = [
 [[package]]
 name = "neon-runtime"
 version = "0.8.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#03c7e9e425b42560d542f3f4f9c20589edcc4277"
+source = "git+https://github.com/neon-bindings/neon?branch=main#b8c8c2a1aee12c2b20affc40cdb653b2208a1a77"
 dependencies = [
  "cfg-if",
  "libloading 0.6.7",
@@ -624,9 +624,9 @@ dependencies = [
 
 [[package]]
 name = "redox_syscall"
-version = "0.2.5"
+version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94341e4e44e24f6b591b59e47a8a027df12e008d73fd5672dbea9cc22f4507d9"
+checksum = "8270314b5ccceb518e7e578952f0b72b88222d02e8f77f5ecf7abbb673539041"
 dependencies = [
  "bitflags",
 ]
@@ -735,9 +735,9 @@ checksum = "6446ced80d6c486436db5c078dde11a9f73d42b57fb273121e160b84f63d894c"
 
 [[package]]
 name = "syn"
-version = "1.0.68"
+version = "1.0.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ce15dd3ed8aa2f8eeac4716d6ef5ab58b6b9256db41d7e1a0224c2788e8fd87"
+checksum = "48fe99c6bd8b1cc636890bcc071842de909d902c81ac7dab53ba33c421ab8ffb"
 dependencies = [
  "proc-macro2",
  "quote",
