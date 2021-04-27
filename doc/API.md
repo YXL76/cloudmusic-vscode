@@ -162,6 +162,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |          captcha_verify          |       校验验证码       |   ❌   |
 |    cellphone_existence_check     | 检测手机号码是否已注册 |   ❌   |
 |              cloud               |        云盘上传        |   ❌   |
+|           cloud_match            |  云盘歌曲信息匹配纠正  |   ❌   |
 |           daily_signin           |          签到          |   ✔️   |
 |      digitalAlbum_ordering       |      购买数字专辑      |   ❌   |
 |      digitalAlbum_purchased      |      我的数字专辑      |   ❌   |
