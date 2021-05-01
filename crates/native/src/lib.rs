@@ -1,23 +1,15 @@
-use neon::prelude::*;
+pub mod player;
 
-mod native {
-    // pub mod download;
-    pub mod keyboard;
-    pub mod kuwo_des;
-    pub mod player;
-}
-// use native::download::*;
-use native::keyboard::*;
-use native::kuwo_des::*;
-use native::player::*;
+// use crate::download::*;
+// use crate::keyboard::*;
+use crate::player::*;
+use neon::prelude::*;
 
 #[neon::main]
 fn main(mut cx: ModuleContext) -> NeonResult<()> {
     // cx.export_function("download", download)?;
 
-    cx.export_function("startKeyboardEvent", start_keyboard_event)?;
-
-    cx.export_function("kuwoCrypt", kuwo_crypt)?;
+    // cx.export_function("startKeyboardEvent", start_keyboard_event)?;
 
     cx.export_function("playerEmpty", player_empty)?;
     cx.export_function("playerLoad", player_load)?;

@@ -26,6 +26,7 @@ readdirSync(scriptsPath).forEach(
 module.exports = (_, options) =>
   /**@type {import('webpack').Configuration}*/
   ({
+    experiments: { asyncWebAssembly: true },
     devtool: "source-map",
     entry: resolve(srcPath, "extension.ts"),
     externals: {

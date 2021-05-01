@@ -1,7 +1,5 @@
 //! Thanks to https://github.com/nondanee/UnblockNeteaseMusic/blob/master/src/kwDES.js
 
-use neon::prelude::*;
-
 static ARRAY_E: [isize; 64] = [
     31, 0, 1, 2, 3, 4, -1, -1, 3, 4, 5, 6, 7, 8, -1, -1, 7, 8, 9, 10, 11, 12, -1, -1, 11, 12, 13,
     14, 15, 16, -1, -1, 15, 16, 17, 18, 19, 20, -1, -1, 19, 20, 21, 22, 23, 24, -1, -1, 23, 24, 25,
@@ -189,8 +187,7 @@ fn des64(longs: &[i64], l: i64) -> i64 {
 // static KEY: [i64; 8] = [121, 108, 122, 115, 120, 107, 119, 108];
 static L: i64 = 7815833843402435705;
 
-pub fn kuwo_crypt(mut cx: FunctionContext) -> JsResult<JsBuffer> {
-    let msg = cx.argument::<JsString>(0)?.value(&mut cx);
+pub fn crypt(msg: &str) -> Vec<u8> {
     let msg = msg.as_bytes();
     let m = msg.len() / 8;
 
@@ -233,11 +230,5 @@ pub fn kuwo_crypt(mut cx: FunctionContext) -> JsResult<JsBuffer> {
         }
     }
 
-    let mut buf = cx.buffer(bytes.len() as u32)?;
-    cx.borrow_mut(&mut buf, |buf| {
-        let buf = buf.as_mut_slice();
-        buf.copy_from_slice(&bytes);
-    });
-
-    Ok(buf)
+    bytes
 }

@@ -1,8 +1,15 @@
-import { MUSIC_QUALITY, NATIVE } from "../constant";
 import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
+import { MUSIC_QUALITY } from "../constant";
 import axios from "axios";
 import { extname } from "path";
 import filter from "./filter";
+
+let crypt: undefined | ((_: string) => Uint8Array);
+
+import("../../crates/wasi/pkg")
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  .then(({ kuwo_crypt }) => (crypt = kuwo_crypt))
+  .catch(console.error);
 
 interface SearchResult {
   data: {
@@ -62,12 +69,15 @@ const format = ["flac", "mp3"]
   .join("|");
 
 async function songUrl({ id }: UnlockSongItem) {
+  if (!crypt) return;
   try {
     if (MUSIC_QUALITY > 128000) {
       id = id.split("_").pop() || "";
       const { data } = await axios.get<string>(
-        `http://mobi.kuwo.cn/mobi.s?f=kuwo&q=${NATIVE.kuwoCrypt(
-          `corp=kuwo&p2p=1&type=convert_url2&sig=0&format=${format}&rid=${id}`
+        `http://mobi.kuwo.cn/mobi.s?f=kuwo&q=${Buffer.from(
+          crypt(
+            `corp=kuwo&p2p=1&type=convert_url2&sig=0&format=${format}&rid=${id}`
+          )
         ).toString("base64")}`,
         { headers: { "user-agent": "okhttp/3.10.0" } }
       );

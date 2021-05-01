@@ -1,0 +1,41 @@
+[package]
+name = "native"
+version = "0.1.0"
+authors = ["YXL <chenxin.lan.76@gmail.com>"]
+build = "build.rs"
+edition = "2018"
+
+[lib]
+name = "native"
+crate-type = ["cdylib"]
+
+[build-dependencies.neon-build]
+git = "https://github.com/neon-bindings/neon"
+branch = "main"
+
+[dependencies.neon]
+git = "https://github.com/neon-bindings/neon"
+branch = "main"
+default-features = false
+features = ["napi-6", "event-queue-api"]
+
+[dependencies.rodio]
+git = "https://github.com/YXL76/rodio"
+branch = "dev"
+default-features = false
+features = ["flac", "mp3"]
+
+# [dependencies.curl]
+# version = "0.4"
+# default-features = false
+# features = ["static-curl"]
+
+# [target.'cfg(target_os = "linux")'.dependencies.x11]
+# version = "2.18"
+# default-features = false
+# features = ["xlib"]
+
+# [target.'cfg(target_os = "windows")'.dependencies.winapi]
+# version = "0.3"
+# default-features = false
+# features = ["winuser"]

@@ -328,9 +328,9 @@ dependencies = [
 
 [[package]]
 name = "lock_api"
-version = "0.4.3"
+version = "0.4.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5a3c91c24eae6777794bb1997ad98bbb87daf92890acab859f7eaa4320333176"
+checksum = "0382880606dff6d15c9476c416d18690b72742aa7b605bb6dd6ec9030fbf07eb"
 dependencies = [
  "scopeguard",
 ]
@@ -355,9 +355,9 @@ dependencies = [
 
 [[package]]
 name = "memchr"
-version = "2.3.4"
+version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0ee1c47aaa256ecabcaea351eae4a9b01ef39ed810004e298d2511ed284b1525"
+checksum = "b16bd47d9e329435e309c58469fe0791c2d0d1ba96ec0954152a5ae2b04387dc"
 
 [[package]]
 name = "minimp3"
@@ -384,9 +384,8 @@ name = "native"
 version = "0.1.0"
 dependencies = [
  "neon",
+ "neon-build",
  "rodio",
- "winapi",
- "x11",
 ]
 
 [[package]]
@@ -436,8 +435,8 @@ checksum = "c44922cb3dbb1c70b5e5f443d63b64363a898564d739ba5198e3a9138442868d"
 
 [[package]]
 name = "neon"
-version = "0.8.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#b8c8c2a1aee12c2b20affc40cdb653b2208a1a77"
+version = "0.8.1"
+source = "git+https://github.com/neon-bindings/neon?branch=main#14bc6072ec498057ab5bcd32ab1a0478b295caf4"
 dependencies = [
  "cslice",
  "neon-build",
@@ -449,13 +448,13 @@ dependencies = [
 
 [[package]]
 name = "neon-build"
-version = "0.8.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#b8c8c2a1aee12c2b20affc40cdb653b2208a1a77"
+version = "0.8.1"
+source = "git+https://github.com/neon-bindings/neon?branch=main#14bc6072ec498057ab5bcd32ab1a0478b295caf4"
 
 [[package]]
 name = "neon-macros"
-version = "0.8.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#b8c8c2a1aee12c2b20affc40cdb653b2208a1a77"
+version = "0.8.1"
+source = "git+https://github.com/neon-bindings/neon?branch=main#14bc6072ec498057ab5bcd32ab1a0478b295caf4"
 dependencies = [
  "quote",
  "syn",
@@ -463,8 +462,8 @@ dependencies = [
 
 [[package]]
 name = "neon-runtime"
-version = "0.8.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#b8c8c2a1aee12c2b20affc40cdb653b2208a1a77"
+version = "0.8.1"
+source = "git+https://github.com/neon-bindings/neon?branch=main#14bc6072ec498057ab5bcd32ab1a0478b295caf4"
 dependencies = [
  "cfg-if",
  "libloading 0.6.7",
@@ -624,27 +623,27 @@ dependencies = [
 
 [[package]]
 name = "redox_syscall"
-version = "0.2.6"
+version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8270314b5ccceb518e7e578952f0b72b88222d02e8f77f5ecf7abbb673539041"
+checksum = "85dd92e586f7355c633911e11f77f3d12f04b1b1bd76a198bd34ae3af8341ef2"
 dependencies = [
  "bitflags",
 ]
 
 [[package]]
 name = "regex"
-version = "1.4.6"
+version = "1.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2a26af418b574bd56588335b3a3659a65725d4e636eb1016c2f9e3b38c7cc759"
+checksum = "a068b905b8cb93815aa3069ae48653d90f382308aebd1d33d940ac1f1d771e2d"
 dependencies = [
  "regex-syntax",
 ]
 
 [[package]]
 name = "regex-syntax"
-version = "0.6.23"
+version = "0.6.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "24d5f089152e60f62d28b835fbff2cd2e8dc0baf1ac13343bef92ab7eed84548"
+checksum = "00efb87459ba4f6fb2169d20f68565555688e1250ee6825cdf6254f8b48fafb2"
 
 [[package]]
 name = "rodio"
@@ -735,9 +734,9 @@ checksum = "6446ced80d6c486436db5c078dde11a9f73d42b57fb273121e160b84f63d894c"
 
 [[package]]
 name = "syn"
-version = "1.0.70"
+version = "1.0.71"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9505f307c872bab8eb46f77ae357c8eba1fdacead58ee5a850116b1d7f82883"
+checksum = "ad184cc9470f9117b2ac6817bfe297307418819ba40552f9b3846f05c33d5373"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -775,9 +774,9 @@ dependencies = [
 
 [[package]]
 name = "unicode-xid"
-version = "0.2.1"
+version = "0.2.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f7fe0bb3479651439c9112f72b6c505038574c9fbb575ed1bf3b797fa39dd564"
+checksum = "8ccb82d61f80a663efe1f787a51b16b5a51e3314d6ac365b08639f52387b33f3"
 
 [[package]]
 name = "version_check"
@@ -794,6 +793,13 @@ dependencies = [
  "same-file",
  "winapi",
  "winapi-util",
+]
+
+[[package]]
+name = "wasi"
+version = "0.1.0"
+dependencies = [
+ "wasm-bindgen",
 ]
 
 [[package]]
@@ -890,13 +896,3 @@ name = "winapi-x86_64-pc-windows-gnu"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "712e227841d057c1ee1cd2fb22fa7e5a5461ae8e48fa2ca79ec42cfc1931183f"
-
-[[package]]
-name = "x11"
-version = "2.18.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "77ecd092546cb16f25783a5451538e73afc8d32e242648d54f4ae5459ba1e773"
-dependencies = [
- "libc",
- "pkg-config",
-]

@@ -2,8 +2,6 @@ import { workspace } from "vscode";
 
 const conf = workspace.getConfiguration("cloudmusic");
 
-export const MEDIA_CONTROL = conf.get<boolean>("player.mediaControl");
-
 export const AUTO_CHECK = conf.get<boolean>("account.autoCheck");
 
 export const MUSIC_QUALITY =
