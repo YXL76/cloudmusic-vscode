@@ -22,7 +22,7 @@
     "**/.yarn/**": true,
     "**/.cache/**": true,
     "**/dist/**": true,
-    "**/native/target/**": true
+    "**/target/**": true
   },
   "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "eslint.nodePath": ".yarn/sdks",

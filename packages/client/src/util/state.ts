@@ -18,32 +18,32 @@ export const enum LikeState {
 }
 
 export class State {
-  private static like_ = LikeState.none;
+  private static _like = LikeState.none;
 
-  private static loading_ = false;
+  private static _loading = false;
 
-  private static login_ = false;
+  private static _login = false;
 
-  private static playing_ = false;
+  private static _playing = false;
 
   static get like(): LikeState {
-    return this.like_;
+    return this._like;
   }
 
   static set like(newValue: LikeState) {
-    if (newValue !== this.like_) {
-      this.like_ = newValue;
+    if (newValue !== this._like) {
+      this._like = newValue;
       ButtonManager.buttonLike(newValue);
     }
   }
 
   static get loading(): boolean {
-    return this.loading_;
+    return this._loading;
   }
 
   static set loading(newValue: boolean) {
-    if (newValue !== this.loading_) {
-      this.loading_ = newValue;
+    if (newValue !== this._loading) {
+      this._loading = newValue;
       if (newValue)
         ButtonManager.buttonSong(
           `$(loading~spin) ${i18n.word.song}: ${i18n.word.loading}`
@@ -62,12 +62,12 @@ export class State {
   }
 
   static get login(): boolean {
-    return this.login_;
+    return this._login;
   }
 
   static set login(newValue: boolean) {
-    if (newValue !== this.login_) {
-      this.login_ = newValue;
+    if (newValue !== this._login) {
+      this._login = newValue;
       apiCache.flushAll();
       PlaylistProvider.refresh();
       RadioProvider.refresh();
@@ -91,12 +91,12 @@ export class State {
   }
 
   static get playing(): boolean {
-    return this.playing_;
+    return this._playing;
   }
 
   static set playing(newValue: boolean) {
-    if (newValue !== this.playing_) {
-      this.playing_ = newValue;
+    if (newValue !== this._playing) {
+      this._playing = newValue;
       ButtonManager.buttonPlay(newValue);
     }
   }

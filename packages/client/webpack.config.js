@@ -5,7 +5,8 @@ const { resolve } = require("path");
 const { transformSync } = require("esbuild");
 
 const target = "es2019";
-const distPath = resolve(__dirname, "..", "..", "dist");
+const rootPath = resolve(__dirname, "..", "..");
+const distPath = resolve(rootPath, "dist");
 const srcPath = resolve(__dirname, "src");
 
 const scriptsPath = resolve(srcPath, "webview", "scripts");
@@ -28,6 +29,7 @@ module.exports = (_, options) =>
   ({
     experiments: { asyncWebAssembly: true },
     devtool: "source-map",
+    context: rootPath,
     entry: resolve(srcPath, "extension.ts"),
     externals: {
       vscode: "commonjs vscode",
