@@ -5,7 +5,7 @@ const { resolve } = require("path");
 const { transformSync } = require("esbuild");
 
 const target = "es2019";
-const distPath = resolve(__dirname, "dist");
+const distPath = resolve(__dirname, "..", "..", "dist");
 const srcPath = resolve(__dirname, "src");
 
 const scriptsPath = resolve(srcPath, "webview", "scripts");

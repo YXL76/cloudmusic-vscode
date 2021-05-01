@@ -1,5 +1,5 @@
 [package]
-name = "native"
+name = "cloudmusic-native"
 version = "0.1.0"
 authors = ["YXL <chenxin.lan.76@gmail.com>"]
 build = "build.rs"

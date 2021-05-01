@@ -113,6 +113,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4bfbf56724aa9eca8afa4fcfadeb479e722935bb2a0900c2d37e0cc477af0688"
 
 [[package]]
+name = "cloudmusic-native"
+version = "0.1.0"
+dependencies = [
+ "neon",
+ "neon-build",
+ "rodio",
+]
+
+[[package]]
+name = "cloudmusic-wasi"
+version = "0.1.0"
+dependencies = [
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "combine"
 version = "4.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -377,15 +393,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e21c73734c69dc95696c9ed8926a2b393171d98b3f5f5935686a26a487ab9b90"
 dependencies = [
  "cc",
-]
-
-[[package]]
-name = "native"
-version = "0.1.0"
-dependencies = [
- "neon",
- "neon-build",
- "rodio",
 ]
 
 [[package]]
@@ -793,13 +800,6 @@ dependencies = [
  "same-file",
  "winapi",
  "winapi-util",
-]
-
-[[package]]
-name = "wasi"
-version = "0.1.0"
-dependencies = [
- "wasm-bindgen",
 ]
 
 [[package]]

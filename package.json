@@ -1,9 +1,14 @@
 {
   "name": "cloudmusic",
-  "displayName": "cloudmusic",
+  "displayName": "Cloudmusic",
   "description": "Netease Music for VS Code",
   "version": "7.7.2",
   "publisher": "YXL",
+  "private": true,
+  "preview": false,
+  "workspaces": [
+    "packages/*"
+  ],
   "engines": {
     "vscode": "^1.55.0"
   },
@@ -27,7 +32,6 @@
     "cloudmusic",
     "Netease"
   ],
-  "preview": false,
   "activationEvents": [
     "onView:local",
     "onView:userPlaylist",
@@ -825,32 +829,23 @@
     "buffer": "latest",
     "buffer-from": "latest",
     "debug": "latest",
+    "esbuild": "latest",
     "isarray": "latest",
     "loose-envify": "latest",
     "object-assign": "latest"
   },
   "scripts": {
-    "list": "node scripts/list.js",
-    "generate-css": "postcss src/style.css -o dist/style.css",
-    "build": "yarn generate-css && webpack --mode production",
-    "build-dev": "webpack --mode development",
-    "lint": "eslint src",
-    "test": "tsc -p tsconfig.json",
+    "pnp": "yarn pnpify --sdk vscode vim",
+    "build-dev": "yarn workspace @cloudmusic/client run build-dev",
     "vscode:prepublish": "yarn build"
   },
   "devDependencies": {
-    "@types/lodash": "4.14.168",
-    "@types/node": "14.14.43",
-    "@types/qrcode": "1.4.0",
-    "@types/react": "17.0.4",
-    "@types/react-dom": "17.0.3",
-    "@types/vscode": "1.55.0",
-    "@types/yallist": "3.0.1",
     "@typescript-eslint/eslint-plugin": "4.22.0",
     "@typescript-eslint/parser": "4.22.0",
     "@yarnpkg/pnpify": "2.4.0",
     "autoprefixer": "10.2.5",
     "cssnano": "5.0.2",
+    "debug": "4.3.1",
     "esbuild": "0.11.16",
     "esbuild-loader": "2.12.0",
     "eslint": "7.25.0",
@@ -864,22 +859,6 @@
     "supports-color": "9.0.0",
     "tailwindcss": "2.1.2",
     "typescript": "4.2.4",
-    "webpack": "5.36.2",
-    "webpack-cli": "4.6.0"
-  },
-  "dependencies": {
-    "array-unsort": "1.1.6",
-    "axios": "0.21.1",
-    "dayjs": "1.10.4",
-    "debug": "4.3.1",
-    "file-type": "16.3.0",
-    "lodash": "4.17.21",
-    "md5-file": "5.0.0",
-    "node-cache": "5.1.2",
-    "qrcode": "1.4.4",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "react-icons": "4.2.0",
-    "yallist": "4.0.0"
+    "webpack": "5.36.2"
   }
 }

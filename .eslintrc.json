@@ -1,9 +1,28 @@
 {
   "env": { "browser": false, "node": true },
   "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["prettier"],
+  "rules": {
+    "curly": "warn",
+    "eqeqeq": "warn",
+    "no-empty": ["error", { "allowEmptyCatch": true }],
+    "no-throw-literal": "warn",
+    "semi": "warn",
+    "sort-imports": [
+      "warn",
+      {
+        "allowSeparatedGroups": false,
+        "ignoreCase": false,
+        "ignoreDeclarationSort": false,
+        "ignoreMemberSort": false,
+        "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
+      }
+    ]
+  },
   "overrides": [
     {
-      "excludedFiles": ["./src/webview/scripts/*.ts"],
+      "excludedFiles": ["./packages/client/src/webview/scripts/*.ts"],
       "extends": [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
@@ -11,10 +30,13 @@
         "plugin:prettier/recommended",
         "plugin:react/recommended"
       ],
-      "files": ["./src/**/*.ts", "./src/**/*.tsx"],
+      "files": [
+        "./packages/client/src/**/*.ts",
+        "./packages/client/src/**/*.tsx"
+      ],
       "parserOptions": {
         "ecmaVersion": 10,
-        "project": "./tsconfig.json",
+        "project": "./packages/client/tsconfig.json",
         "sourceType": "module"
       },
       "plugins": ["@typescript-eslint", "prettier", "react"],
@@ -36,10 +58,10 @@
         "plugin:@typescript-eslint/recommended-requiring-type-checking",
         "plugin:prettier/recommended"
       ],
-      "files": ["./src/webview/scripts/*.ts"],
+      "files": ["./packages/client/src/webview/scripts/*.ts"],
       "parserOptions": {
         "ecmaVersion": 10,
-        "project": "./src/webview/scripts/tsconfig.json",
+        "project": "./packages/client/src/webview/scripts/tsconfig.json",
         "sourceType": "module"
       },
       "plugins": ["@typescript-eslint", "prettier"],
@@ -52,24 +74,5 @@
         "no-empty": ["error", { "allowEmptyCatch": true }]
       }
     }
-  ],
-  "parser": "@typescript-eslint/parser",
-  "plugins": ["prettier"],
-  "rules": {
-    "curly": "warn",
-    "eqeqeq": "warn",
-    "no-empty": ["error", { "allowEmptyCatch": true }],
-    "no-throw-literal": "warn",
-    "semi": "warn",
-    "sort-imports": [
-      "warn",
-      {
-        "allowSeparatedGroups": false,
-        "ignoreCase": false,
-        "ignoreDeclarationSort": false,
-        "ignoreMemberSort": false,
-        "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
-      }
-    ]
-  }
+  ]
 }

@@ -29,7 +29,8 @@ Cargo.*
 
 # scoure code
 scripts
-src
+packages
+crates
 *.rs
 
 # cache and build file

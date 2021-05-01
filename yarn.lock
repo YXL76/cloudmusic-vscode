@@ -50,6 +50,54 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cloudmusic/client@workspace:packages/client":
+  version: 0.0.0-use.local
+  resolution: "@cloudmusic/client@workspace:packages/client"
+  dependencies:
+    "@types/lodash": 4.14.168
+    "@types/node": 14.14.43
+    "@types/qrcode": 1.4.0
+    "@types/react": 17.0.4
+    "@types/react-dom": 17.0.3
+    "@types/vscode": 1.55.0
+    "@types/yallist": 3.0.1
+    array-unsort: 1.1.6
+    axios: 0.21.1
+    dayjs: 1.10.4
+    esbuild: 0.11.16
+    esbuild-loader: 2.12.0
+    file-type: 16.3.0
+    lodash: 4.17.21
+    md5-file: 5.0.0
+    node-cache: 5.1.2
+    qrcode: 1.4.4
+    react: 17.0.2
+    react-dom: 17.0.2
+    react-icons: 4.2.0
+    webpack: 5.36.2
+    webpack-cli: 4.6.0
+    yallist: 4.0.0
+  languageName: unknown
+  linkType: soft
+
+"@cloudmusic/server@workspace:packages/server":
+  version: 0.0.0-use.local
+  resolution: "@cloudmusic/server@workspace:packages/server"
+  languageName: unknown
+  linkType: soft
+
+"@cloudmusic/shared@workspace:packages/shared":
+  version: 0.0.0-use.local
+  resolution: "@cloudmusic/shared@workspace:packages/shared"
+  languageName: unknown
+  linkType: soft
+
+"@cloudmusic/webview@workspace:packages/webview":
+  version: 0.0.0-use.local
+  resolution: "@cloudmusic/webview@workspace:packages/webview"
+  languageName: unknown
+  linkType: soft
+
 "@discoveryjs/json-ext@npm:^0.5.0":
   version: 0.5.2
   resolution: "@discoveryjs/json-ext@npm:0.5.2"
@@ -1461,25 +1509,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cloudmusic-wasi@workspace:packages/wasi":
+  version: 0.0.0-use.local
+  resolution: "cloudmusic-wasi@workspace:packages/wasi"
+  languageName: unknown
+  linkType: soft
+
 "cloudmusic@workspace:.":
   version: 0.0.0-use.local
   resolution: "cloudmusic@workspace:."
   dependencies:
-    "@types/lodash": 4.14.168
-    "@types/node": 14.14.43
-    "@types/qrcode": 1.4.0
-    "@types/react": 17.0.4
-    "@types/react-dom": 17.0.3
-    "@types/vscode": 1.55.0
-    "@types/yallist": 3.0.1
     "@typescript-eslint/eslint-plugin": 4.22.0
     "@typescript-eslint/parser": 4.22.0
     "@yarnpkg/pnpify": 2.4.0
-    array-unsort: 1.1.6
     autoprefixer: 10.2.5
-    axios: 0.21.1
     cssnano: 5.0.2
-    dayjs: 1.10.4
     debug: 4.3.1
     esbuild: 0.11.16
     esbuild-loader: 2.12.0
@@ -1487,24 +1531,14 @@ __metadata:
     eslint-config-prettier: 8.3.0
     eslint-plugin-prettier: 3.4.0
     eslint-plugin-react: 7.23.2
-    file-type: 16.3.0
-    lodash: 4.17.21
-    md5-file: 5.0.0
-    node-cache: 5.1.2
     postcss: 8.2.13
     postcss-cli: 8.3.1
     postcss-import: 14.0.1
     prettier: 2.2.1
-    qrcode: 1.4.4
-    react: 17.0.2
-    react-dom: 17.0.2
-    react-icons: 4.2.0
     supports-color: 9.0.0
     tailwindcss: 2.1.2
     typescript: 4.2.4
     webpack: 5.36.2
-    webpack-cli: 4.6.0
-    yallist: 4.0.0
   languageName: unknown
   linkType: soft
 
@@ -2172,21 +2206,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:0.11.16":
+"esbuild@npm:latest":
   version: 0.11.16
   resolution: "esbuild@npm:0.11.16"
   bin:
     esbuild: bin/esbuild
   checksum: ccbdf57069a83714fac7b9c884db8dc38020ebb8530e8f14f209740401b0ae0dd58e0871ef0821b101798b57720f8d139f6f85a4952a065a448ab5142e6eddf7
-  languageName: node
-  linkType: hard
-
-"esbuild@npm:^0.10.2":
-  version: 0.10.2
-  resolution: "esbuild@npm:0.10.2"
-  bin:
-    esbuild: bin/esbuild
-  checksum: 54bb44ea101f8dedea286b321c71b9ba2c739e6979b06696009da0bdd4fc8cf61a452e055ddef5b458c25e6c7ce353ba09e56b592b2beaaffaa72b13ed9b4d6c
   languageName: node
   linkType: hard
 

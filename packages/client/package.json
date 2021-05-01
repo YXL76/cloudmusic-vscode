@@ -1,0 +1,40 @@
+{
+  "name": "@cloudmusic/client",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "list": "node scripts/list.js",
+    "generate-css": "postcss src/style.css -o dist/style.css",
+    "build": "yarn generate-css && webpack --mode production",
+    "build-dev": "webpack --mode development",
+    "lint": "eslint src",
+    "test": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/lodash": "4.14.168",
+    "@types/node": "14.14.43",
+    "@types/qrcode": "1.4.0",
+    "@types/react": "17.0.4",
+    "@types/react-dom": "17.0.3",
+    "@types/vscode": "1.55.0",
+    "@types/yallist": "3.0.1",
+    "esbuild": "0.11.16",
+    "esbuild-loader": "2.12.0",
+    "webpack": "5.36.2",
+    "webpack-cli": "4.6.0"
+  },
+  "dependencies": {
+    "array-unsort": "1.1.6",
+    "axios": "0.21.1",
+    "dayjs": "1.10.4",
+    "file-type": "16.3.0",
+    "lodash": "4.17.21",
+    "md5-file": "5.0.0",
+    "node-cache": "5.1.2",
+    "qrcode": "1.4.4",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-icons": "4.2.0",
+    "yallist": "4.0.0"
+  }
+}

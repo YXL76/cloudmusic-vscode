@@ -2,14 +2,14 @@ import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
 import { MUSIC_QUALITY } from "../constant";
 import axios from "axios";
 import { extname } from "path";
-import filter from "./filter";
+import filter from "./filter"; 
 
 let crypt: undefined | ((_: string) => Uint8Array);
-
-import("../../crates/wasi/pkg")
+ 
+import("../../../wasi") 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   .then(({ kuwo_crypt }) => (crypt = kuwo_crypt))
-  .catch(console.error);
+  .catch(console.error); 
 
 interface SearchResult {
   data: {
