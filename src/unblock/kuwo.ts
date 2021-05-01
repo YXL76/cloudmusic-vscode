@@ -18,7 +18,7 @@ interface SearchResult {
       artist: string;
       musicrid: string;
       name: string;
-      songTimeMinutes: string;
+      duration: string;
     }[];
   };
 }
@@ -50,8 +50,8 @@ async function search(keyword: string) {
         },
       }
     );
-    return list.map(({ album, artist, musicrid, name, songTimeMinutes }) => {
-      const dt = songTimeMinutes.split(":").map((i) => parseInt(i));
+    return list.map(({ album, artist, musicrid, name, duration }) => {
+      const dt = duration.split(":").map((i) => parseInt(i));
       return {
         album,
         artist: artist.split("&"),
