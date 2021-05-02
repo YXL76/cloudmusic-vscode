@@ -1,13 +1,11 @@
+import { AccountManager, ButtonManager } from "./manager";
 import {
-  ACCOUNT_KEY,
   CACHE_DIR,
-  COOKIE_KEY,
   LYRIC_CACHE_DIR,
   MUSIC_CACHE_DIR,
   SETTING_DIR,
   TMP_DIR,
 } from "./constant";
-import { AccountManager, ButtonManager } from "./manager";
 import { MusicCache, Player } from "./util";
 import {
   initAccount,
@@ -21,12 +19,12 @@ import {
   initStatusBar,
 } from "./activate";
 import type { ExtensionContext } from "vscode";
+// import { fork } from "child_process";
 import { rmdirSync } from "fs";
 import { workspace } from "vscode";
 
 export async function activate(context: ExtensionContext): Promise<void> {
-  void context.globalState.update(ACCOUNT_KEY, undefined);
-  void context.globalState.update(COOKIE_KEY, undefined);
+  // fork("", { detached: true, silent: true });
   await workspace.fs.createDirectory(SETTING_DIR);
   await Promise.all([
     workspace.fs.createDirectory(TMP_DIR),
@@ -40,11 +38,11 @@ export async function activate(context: ExtensionContext): Promise<void> {
   ButtonManager.context = context;
   Player.context = context;
   initPlayer();
-  initQueue();
-  initPlaylist();
-  initRadio();
+  initQueue(context);
+  initPlaylist(context);
+  initRadio(context);
   initCommand(context);
-  initStatusBar();
+  initStatusBar(context);
   void initAccount(context);
   void initCache(context);
   initLocal(context);

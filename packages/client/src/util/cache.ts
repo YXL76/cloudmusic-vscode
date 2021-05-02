@@ -52,7 +52,7 @@ export class MusicCache {
     } catch {}
 
     try {
-      const names = [...set];
+      const names = [...set] as string[];
       (
         await Promise.all(
           names.map((name) =>

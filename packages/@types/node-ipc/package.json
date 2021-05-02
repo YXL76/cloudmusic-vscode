@@ -1,0 +1,10 @@
+{
+  "name": "@types/node-ipc",
+  "version": "1.0.0",
+  "devDependencies": {
+    "@types/node": "14.14.43"
+  },
+  "dependencies": {
+    "@cloudmusic/shared": "workspace:*"
+  }
+}

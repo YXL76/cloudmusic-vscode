@@ -30,10 +30,7 @@
         "plugin:prettier/recommended",
         "plugin:react/recommended"
       ],
-      "files": [
-        "./packages/client/src/**/*.ts",
-        "./packages/client/src/**/*.tsx"
-      ],
+      "files": ["./packages/client/**/*.ts", "./packages/client/**/*.tsx"],
       "parserOptions": {
         "ecmaVersion": 10,
         "project": "./packages/client/tsconfig.json",
@@ -49,6 +46,75 @@
         "no-empty": ["error", { "allowEmptyCatch": true }]
       },
       "settings": { "react": { "version": "17.0" } }
+    },
+    {
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:prettier/recommended"
+      ],
+      "files": ["./packages/server/**/*.ts"],
+      "parserOptions": {
+        "ecmaVersion": 10,
+        "project": "./packages/server/tsconfig.json",
+        "sourceType": "module"
+      },
+      "plugins": ["@typescript-eslint", "prettier"],
+      "rules": {
+        "@typescript-eslint/consistent-type-imports": "warn",
+        "@typescript-eslint/lines-between-class-members": "error",
+        "@typescript-eslint/member-ordering": "warn",
+        "@typescript-eslint/naming-convention": "warn",
+        "@typescript-eslint/semi": "warn",
+        "no-empty": ["error", { "allowEmptyCatch": true }]
+      }
+    },
+    {
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:prettier/recommended"
+      ],
+      "files": ["./packages/@types/**/*.ts"],
+      "parserOptions": {
+        "ecmaVersion": 10,
+        "project": "./packages/@types/tsconfig.json",
+        "sourceType": "module"
+      },
+      "plugins": ["@typescript-eslint", "prettier"],
+      "rules": {
+        "@typescript-eslint/consistent-type-imports": "warn",
+        "@typescript-eslint/lines-between-class-members": "error",
+        "@typescript-eslint/member-ordering": "warn",
+        "@typescript-eslint/naming-convention": "warn",
+        "@typescript-eslint/semi": "warn",
+        "no-empty": ["error", { "allowEmptyCatch": true }]
+      }
+    },
+    {
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:prettier/recommended"
+      ],
+      "files": ["./packages/shared/**/*.ts"],
+      "parserOptions": {
+        "ecmaVersion": 10,
+        "project": "./packages/shared/tsconfig.json",
+        "sourceType": "module"
+      },
+      "plugins": ["@typescript-eslint", "prettier"],
+      "rules": {
+        "@typescript-eslint/consistent-type-imports": "warn",
+        "@typescript-eslint/lines-between-class-members": "error",
+        "@typescript-eslint/member-ordering": "warn",
+        "@typescript-eslint/naming-convention": "warn",
+        "@typescript-eslint/semi": "warn",
+        "no-empty": ["error", { "allowEmptyCatch": true }]
+      }
     },
     {
       "env": { "browser": true, "node": false },

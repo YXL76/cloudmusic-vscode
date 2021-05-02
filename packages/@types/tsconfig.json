@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
+    "lib": ["es2019"],
+    "module": "commonjs",
+    "noEmit": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strict": true,
+    "strictFunctionTypes": true,
+    "strictNullChecks": true,
+    "target": "es2019"
+  },
+  "include": ["node-ipc"]
+}

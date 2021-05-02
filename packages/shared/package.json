@@ -1,5 +1,9 @@
 {
   "name": "@cloudmusic/shared",
   "version": "1.0.0",
-  "private": true
+  "private": true,
+  "main": "./src/index.ts",
+  "devDependencies": {
+    "@types/node-ipc": "workspace:*"
+  }
 }

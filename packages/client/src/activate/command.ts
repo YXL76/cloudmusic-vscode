@@ -23,10 +23,8 @@ export function initCommand(context: ExtensionContext): void {
           QueueProvider.shift(-1);
           void load(QueueProvider.head);
         });
-    })
-  );
+    }),
 
-  context.subscriptions.push(
     commands.registerCommand("cloudmusic.next", async (repeat?: boolean) => {
       if (repeat) void load(Player.treeitem);
       else {
@@ -37,30 +35,21 @@ export function initCommand(context: ExtensionContext): void {
             void load(QueueProvider.head);
           });
       }
-    })
-  );
+    }),
 
-  context.subscriptions.push(
-    commands.registerCommand("cloudmusic.play", () => Player.togglePlay())
-  );
+    commands.registerCommand("cloudmusic.play", () => Player.togglePlay()),
 
-  context.subscriptions.push(
     commands.registerCommand("cloudmusic.repeat", () =>
       ButtonManager.buttonRepeat()
-    )
-  );
+    ),
 
-  context.subscriptions.push(
     commands.registerCommand("cloudmusic.like", () => {
       if (
         Player.treeitem instanceof QueueItemTreeItem &&
         State.like !== LikeState.none
       )
         void likeMusic(Player.treeitem.valueOf, !State.like);
-    })
-  );
-
-  context.subscriptions.push(
+    }),
     commands.registerCommand("cloudmusic.volume", () => {
       void MultiStepInput.run((input) => inputLevel(input));
 
@@ -76,17 +65,12 @@ export function initCommand(context: ExtensionContext): void {
           await Player.volume(parseInt(level));
         return input.stay();
       }
-    })
-  );
-
-  context.subscriptions.push(
+    }),
     commands.registerCommand(
       "cloudmusic.toggleButton",
       () => void ButtonManager.toggle()
-    )
-  );
+    ),
 
-  context.subscriptions.push(
     commands.registerCommand(
       "cloudmusic.personalFM",
       () => void PersonalFm.set(true)

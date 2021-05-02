@@ -198,16 +198,3 @@ export type RawProgramDetail = {
   description: string;
   id: number;
 };
-
-export type NativePlayer = unknown;
-
-export interface NativeModule {
-  playerEmpty(player: NativePlayer): boolean;
-  playerLoad(player: NativePlayer, url: string): boolean;
-  playerNew(): NativePlayer;
-  playerPause(player: NativePlayer): void;
-  playerPlay(player: NativePlayer): boolean;
-  playerPosition(player: NativePlayer): number;
-  playerSetVolume(player: NativePlayer, level: number): void;
-  playerStop(player: NativePlayer): void;
-}

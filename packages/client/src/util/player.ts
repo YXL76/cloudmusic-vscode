@@ -1,11 +1,11 @@
+import { IPCClient, MusicCache, PersonalFm, State, downloadMusic } from ".";
 import {
   LocalFileTreeItem,
   QueueItemTreeItem,
   QueueProvider,
 } from "../treeview";
 import type { Lyric, LyricSpecifyData } from "../constant";
-import { LyricType, NATIVE, TMP_DIR, VOLUME_KEY } from "../constant";
-import { MusicCache, PersonalFm, State, downloadMusic } from ".";
+import { LyricType, TMP_DIR, VOLUME_KEY } from "../constant";
 import { Uri, commands, workspace } from "vscode";
 import { apiLyric, apiScrobble, apiSongUrl } from "../api";
 import { ButtonManager } from "../manager";
@@ -67,14 +67,10 @@ export class Player {
 
   static context: ExtensionContext;
 
-  private static readonly player = NATIVE.playerNew();
-
-  private static prefetchLock = false;
-
   static init(): void {
     void this.volume(this.context.globalState.get(VOLUME_KEY, 85));
 
-    setInterval(() => {
+    /*  setInterval(() => {
       if (State.playing) {
         const pos = NATIVE.playerPosition(this.player);
         if (pos > 120000 && !this.prefetchLock) {
@@ -107,15 +103,13 @@ export class Player {
             }
         }),
       480000
-    );
-  }
-
-  static stop(): void {
-    NATIVE.playerStop(this.player);
+    ); */
   }
 
   static load(url: string, pid: number, treeitem: QueueContent): void {
-    if (NATIVE.playerLoad(this.player, url)) {
+    IPCClient.load(url);
+
+    /* if (NATIVE.playerLoad(this.player, url)) {
       NATIVE.playerSetVolume(
         this.player,
         this.context.globalState.get(VOLUME_KEY, 85)
@@ -140,21 +134,21 @@ export class Player {
       this.pid = pid;
       this.prefetchLock = false;
       State.loading = false;
-    } else void commands.executeCommand("cloudmusic.next");
+    } else void commands.executeCommand("cloudmusic.next"); */
+  }
+
+  static stop(): void {
+    IPCClient.stop();
   }
 
   static togglePlay(): void {
-    if (!NATIVE.playerEmpty(this.player)) {
-      if (State.playing) {
-        NATIVE.playerPause(this.player);
-        State.playing = false;
-      } else if (NATIVE.playerPlay(this.player)) State.playing = true;
-    }
+    if (State.playing) IPCClient.pause();
+    else IPCClient.play();
   }
 
   static async volume(level: number): Promise<void> {
+    IPCClient.volume(level);
     await this.context.globalState.update(VOLUME_KEY, level);
-    NATIVE.playerSetVolume(this.player, level);
     ButtonManager.buttonVolume(level);
   }
 }

@@ -59,21 +59,14 @@ import { inputKeyword } from ".";
 
 export async function initAccount(context: ExtensionContext): Promise<void> {
   const accountManager = await AccountManager.getInstance();
-  authentication.registerAuthenticationProvider(
-    AUTH_PROVIDER_ID,
-    "Cloudmusic",
-    accountManager
-  );
-  if (!State.login)
-    try {
-      await authentication.getSession(AUTH_PROVIDER_ID, [], {
-        createIfNone: true,
-      });
-    } catch {
-      void authentication.getSession(AUTH_PROVIDER_ID, []);
-    }
 
   context.subscriptions.push(
+    authentication.registerAuthenticationProvider(
+      AUTH_PROVIDER_ID,
+      "Cloudmusic",
+      accountManager
+    ),
+
     commands.registerCommand("cloudmusic.account", () => {
       if (!State.login) {
         void window.showErrorMessage(i18n.sentence.error.needSignIn);
@@ -671,10 +664,8 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
               pickArtists(input, 3, await apiArtistSublist());
         }
       }
-    })
-  );
+    }),
 
-  context.subscriptions.push(
     commands.registerCommand("cloudmusic.dailyCheck", async () => {
       if (State.login)
         if (await AccountManager.dailyCheck())
@@ -682,4 +673,13 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
         else void window.showErrorMessage(i18n.sentence.error.needSignIn);
     })
   );
+
+  if (!State.login)
+    try {
+      await authentication.getSession(AUTH_PROVIDER_ID, [], {
+        createIfNone: true,
+      });
+    } catch {
+      void authentication.getSession(AUTH_PROVIDER_ID, []);
+    }
 }

@@ -58,6 +58,7 @@ enum ControlEvent {
 }
 
 pub struct Player {
+    volume: f32,
     status: Status,
     control_tx: mpsc::Sender<ControlEvent>,
     info_rx: mpsc::Receiver<bool>,
@@ -73,6 +74,7 @@ impl Player {
         let (control_tx, _) = mpsc::channel();
         let (_, info_rx) = mpsc::channel();
         Self {
+            volume: 85.0,
             status: Status::new(),
             control_tx,
             info_rx,
@@ -88,10 +90,14 @@ impl Player {
                 let (control_tx, control_rx) = mpsc::channel();
                 let (info_tx, info_rx) = mpsc::channel();
 
+                let volume = self.volume;
+
                 thread::spawn(move || {
                     let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
                     let sink = rodio::Sink::try_new(&handle).unwrap();
                     sink.append(source.fade_in(Duration::from_secs(2)));
+                    sink.set_volume(volume);
+
                     let _ = info_tx.send(true);
                     loop {
                         match control_rx.recv() {
@@ -138,8 +144,9 @@ impl Player {
     }
 
     #[inline]
-    fn set_volume(&self, level: f32) {
+    fn set_volume(&mut self, level: f32) {
         let _ = self.control_tx.send(ControlEvent::Volume(level));
+        self.volume = level;
     }
 
     #[inline]
@@ -203,7 +210,7 @@ pub fn player_stop(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 pub fn player_set_volume(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     let player = cx.argument::<JsBox<RefCell<Player>>>(0)?;
     let level = cx.argument::<JsNumber>(1)?.value(&mut cx) / 100.0;
-    player.borrow().set_volume(level as f32);
+    player.borrow_mut().set_volume(level as f32);
 
     Ok(cx.undefined())
 }

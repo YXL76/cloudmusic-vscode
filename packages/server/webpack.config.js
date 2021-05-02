@@ -1,28 +1,10 @@
-const { readFileSync, readdirSync } = require("fs");
-const { DefinePlugin } = require("webpack");
 const { ESBuildMinifyPlugin } = require("esbuild-loader");
 const { resolve } = require("path");
-const { transformSync } = require("esbuild");
 
 const target = "es2019";
 const rootPath = resolve(__dirname, "..", "..");
 const distPath = resolve(rootPath, "dist");
 const srcPath = resolve(__dirname, "src");
-
-const scriptsPath = resolve(srcPath, "webview", "scripts");
-const definitions = {};
-readdirSync(scriptsPath).forEach(
-  (file) =>
-    file.substr(file.indexOf(".") + 1) === "ts" &&
-    (definitions[file.substr(0, file.indexOf("."))] = `\`${
-      transformSync(readFileSync(resolve(scriptsPath, file)).toString(), {
-        loader: "ts",
-        target: "chrome87",
-        sourcemap: false,
-        minify: true,
-      }).code
-    }\``)
-);
 
 module.exports = (_, options) =>
   /**@type {import('webpack').Configuration}*/
@@ -30,10 +12,7 @@ module.exports = (_, options) =>
     experiments: { asyncWebAssembly: true },
     devtool: "source-map",
     context: rootPath,
-    entry: resolve(srcPath, "extension.ts"),
-    externals: {
-      vscode: "commonjs vscode",
-    },
+    entry: resolve(srcPath, "server.ts"),
     module: {
       rules: [
         {
@@ -41,11 +20,11 @@ module.exports = (_, options) =>
           include: rootPath,
           loader: "esbuild-loader",
           options: {
-            loader: "tsx",
+            loader: "ts",
             target,
             tsconfigRaw: require(resolve(__dirname, "tsconfig.json")),
           },
-          test: /\.tsx?$/,
+          test: /\.ts$/,
         },
       ],
     },
@@ -58,16 +37,15 @@ module.exports = (_, options) =>
     },
     output: {
       devtoolModuleFilenameTemplate: "../[resource-path]",
-      filename: "extension.js",
+      filename: "server.js",
       libraryTarget: "commonjs2",
       path: distPath,
     },
     performance: {
       hints: false,
     },
-    plugins: [new DefinePlugin(definitions)],
     resolve: {
-      extensions: [".ts", ".js", ".tsx", ".jsx"],
+      extensions: [".ts", ".js"],
     },
     target: "node",
   });

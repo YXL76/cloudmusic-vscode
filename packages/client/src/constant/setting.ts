@@ -2,15 +2,17 @@ import { workspace } from "vscode";
 
 const conf = workspace.getConfiguration("cloudmusic");
 
-export const AUTO_CHECK = conf.get<boolean>("account.autoCheck");
+export const AUTO_CHECK = conf.get("account.autoCheck", false);
 
-export const MUSIC_QUALITY =
-  conf.get<128000 | 192000 | 320000 | 999000>("music.quality") || 192000;
+export const MUSIC_QUALITY = conf.get<128000 | 192000 | 320000 | 999000>(
+  "music.quality",
+  192000
+);
 
-const UNBLOCK_MUSIC_KUWO = conf.get<boolean>("music.unblock.kuwo");
-const UNBLOCK_MUSIC_MIGU = conf.get<boolean>("music.unblock.migu");
-const UNBLOCK_MUSIC_KUGOU = conf.get<boolean>("music.unblock.kugou");
-const UNBLOCK_MUSIC_JOOX = conf.get<boolean>("music.unblock.joox");
+const UNBLOCK_MUSIC_KUWO = conf.get("music.unblock.kuwo", false);
+const UNBLOCK_MUSIC_MIGU = conf.get("music.unblock.migu", false);
+const UNBLOCK_MUSIC_KUGOU = conf.get("music.unblock.kugou", false);
+const UNBLOCK_MUSIC_JOOX = conf.get("music.unblock.joox", false);
 
 export const UNBLOCK_MUSIC = {
   enabled:
@@ -24,5 +26,4 @@ export const UNBLOCK_MUSIC = {
   joox: UNBLOCK_MUSIC_JOOX,
 };
 
-export const MUSIC_CACHE_SIZE =
-  (conf.get<number>("cache.size") || 4096) * 1024 * 1024;
+export const MUSIC_CACHE_SIZE = conf.get("cache.size", 4096) * 1024 * 1024;

@@ -11,86 +11,90 @@ export function initLocal(context: ExtensionContext): void {
     ?.forEach((folder) => LocalProvider.folders.push(folder));
 
   const localProvider = LocalProvider.getInstance();
-  window.registerTreeDataProvider("local", localProvider);
 
-  commands.registerCommand("cloudmusic.newLocalLibrary", async () => {
-    const path = (
-      await window.showOpenDialog({
-        canSelectFiles: false,
-        canSelectFolders: true,
-        canSelectMany: false,
-      })
-    )?.shift()?.fsPath;
-    if (!path) return;
-    try {
-      if (!LocalProvider.folders.includes(path)) {
-        LocalProvider.folders.push(path);
-        await context.globalState.update(
-          LOCAL_FOLDER_KEY,
-          LocalProvider.folders
-        );
+  context.subscriptions.push(
+    window.registerTreeDataProvider("local", localProvider),
+
+    commands.registerCommand("cloudmusic.newLocalLibrary", async () => {
+      const path = (
+        await window.showOpenDialog({
+          canSelectFiles: false,
+          canSelectFolders: true,
+          canSelectMany: false,
+        })
+      )?.shift()?.fsPath;
+      if (!path) return;
+      try {
+        if (!LocalProvider.folders.includes(path)) {
+          LocalProvider.folders.push(path);
+          await context.globalState.update(
+            LOCAL_FOLDER_KEY,
+            LocalProvider.folders
+          );
+          LocalProvider.refresh();
+        }
+      } catch {}
+    }),
+
+    commands.registerCommand("cloudmusic.refreshLocalLibrary", () =>
+      LocalProvider.refresh()
+    ),
+
+    commands.registerCommand(
+      "cloudmusic.deleteLocalLibrary",
+      ({ label }: LocalLibraryTreeItem) => {
+        LocalProvider.folders.splice(LocalProvider.folders.indexOf(label), 1);
         LocalProvider.refresh();
       }
-    } catch {}
-  });
+    ),
 
-  commands.registerCommand("cloudmusic.refreshLocalLibrary", () =>
-    LocalProvider.refresh()
-  );
+    commands.registerCommand(
+      "cloudmusic.openLocalLibrary",
+      ({ label }: LocalLibraryTreeItem) =>
+        void env.openExternal(Uri.file(label))
+    ),
 
-  commands.registerCommand(
-    "cloudmusic.deleteLocalLibrary",
-    ({ label }: LocalLibraryTreeItem) => {
-      LocalProvider.folders.splice(LocalProvider.folders.indexOf(label), 1);
-      LocalProvider.refresh();
-    }
-  );
+    commands.registerCommand(
+      "cloudmusic.playLocalLibrary",
+      (element: LocalLibraryTreeItem) =>
+        LocalProvider.refresh(element, (items) =>
+          QueueProvider.refresh(() => {
+            void PersonalFm.set(false);
+            QueueProvider.clear();
+            QueueProvider.add(items);
+            void load(QueueProvider.head);
+          })
+        )
+    ),
 
-  commands.registerCommand(
-    "cloudmusic.openLocalLibrary",
-    ({ label }: LocalLibraryTreeItem) => void env.openExternal(Uri.file(label))
-  );
+    commands.registerCommand(
+      "cloudmusic.addLocalLibrary",
+      (element: LocalLibraryTreeItem) =>
+        LocalProvider.refresh(element, (items) =>
+          QueueProvider.refresh(() => QueueProvider.add(items))
+        )
+    ),
 
-  commands.registerCommand(
-    "cloudmusic.playLocalLibrary",
-    (element: LocalLibraryTreeItem) =>
-      LocalProvider.refresh(element, (items) =>
+    commands.registerCommand(
+      "cloudmusic.refreshLocalFile",
+      (element: LocalLibraryTreeItem) => LocalProvider.refresh(element)
+    ),
+
+    commands.registerCommand(
+      "cloudmusic.addLocalFile",
+      (element: LocalFileTreeItem) =>
+        QueueProvider.refresh(() => QueueProvider.add([element]))
+    ),
+
+    commands.registerCommand(
+      "cloudmusic.playLocalFile",
+      (element: LocalFileTreeItem) =>
         QueueProvider.refresh(() => {
           void PersonalFm.set(false);
           QueueProvider.clear();
-          QueueProvider.add(items);
+          QueueProvider.add([element]);
           void load(QueueProvider.head);
         })
-      )
-  );
-
-  commands.registerCommand(
-    "cloudmusic.addLocalLibrary",
-    (element: LocalLibraryTreeItem) =>
-      LocalProvider.refresh(element, (items) =>
-        QueueProvider.refresh(() => QueueProvider.add(items))
-      )
-  );
-
-  commands.registerCommand(
-    "cloudmusic.refreshLocalFile",
-    (element: LocalLibraryTreeItem) => LocalProvider.refresh(element)
-  );
-
-  commands.registerCommand(
-    "cloudmusic.addLocalFile",
-    (element: LocalFileTreeItem) =>
-      QueueProvider.refresh(() => QueueProvider.add([element]))
-  );
-
-  commands.registerCommand(
-    "cloudmusic.playLocalFile",
-    (element: LocalFileTreeItem) =>
-      QueueProvider.refresh(() => {
-        void PersonalFm.set(false);
-        QueueProvider.clear();
-        QueueProvider.add([element]);
-        void load(QueueProvider.head);
-      })
+    )
   );
 }
