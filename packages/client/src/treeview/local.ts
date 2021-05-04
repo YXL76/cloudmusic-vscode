@@ -7,8 +7,7 @@ import {
   Uri,
   workspace,
 } from "vscode";
-import type { PlayTreeItem, PlayTreeItemData, RefreshAction } from ".";
-import type { SongsItem } from "../constant";
+import type { PlayTreeItem, RefreshAction } from ".";
 import type { TreeDataProvider } from "vscode";
 import { TreeItemId } from "../constant";
 import { fromFile } from "file-type";
@@ -71,12 +70,8 @@ export class LocalProvider
               ({ mime }) =>
                 mime && (mime === "audio/x-flac" || mime === "audio/mpeg")
             )
-            .map(({ filename: label, ext }) =>
-              LocalFileTreeItem.new({
-                label,
-                description: ext ?? "",
-                tooltip: resolve(label, label),
-              })
+            .map(({ filename: fn, ext }) =>
+              LocalFileTreeItem.new(fn, ext ?? "", resolve(label, fn))
             );
           LocalProvider.files.set(label, items);
         } catch {}
@@ -101,31 +96,47 @@ export class LocalLibraryTreeItem extends TreeItem {
 
   readonly contextValue = "LocalLibraryTreeItem";
 
-  constructor(public readonly label: string) {
+  constructor(readonly label: string) {
     super(label, TreeItemCollapsibleState.Collapsed);
   }
 }
+
+export type LocalFileTreeItemData = {
+  filename: string;
+  ext: string;
+  path: string;
+  itemType: TreeItemId.local;
+};
+
+const fakeItem = {
+  name: "",
+  alia: [],
+  id: 0,
+  al: { id: 0, name: "", picUrl: "" },
+  ar: [{ id: 0, name: "" }],
+  dt: 4800000,
+};
 
 export class LocalFileTreeItem extends TreeItem implements PlayTreeItem {
   private static readonly _set = new Map<string, LocalFileTreeItem>();
 
   readonly iconPath = new ThemeIcon("file-media");
 
-  readonly item: SongsItem = {
-    name: this.label,
-    alia: [],
-    id: 0,
-    al: { id: 0, name: "", picUrl: "" },
-    ar: [{ id: 0, name: "" }],
-    dt: 4800000,
+  readonly data = {
+    filename: this.label,
+    ext: this.description,
+    path: this.tooltip,
+    itemType: TreeItemId.local as TreeItemId.local,
   };
+
+  readonly item = fakeItem;
 
   readonly contextValue = "LocalFileTreeItem";
 
   private constructor(
-    public readonly label: string,
-    public readonly description: string,
-    public readonly tooltip: string
+    readonly label: string,
+    readonly description: string,
+    readonly tooltip: string
   ) {
     super(label);
   }
@@ -134,26 +145,11 @@ export class LocalFileTreeItem extends TreeItem implements PlayTreeItem {
     return this.tooltip;
   }
 
-  get data(): PlayTreeItemData {
-    return {
-      id: TreeItemId.local,
-      ctr: {
-        label: this.label,
-        description: this.description,
-        tooltip: this.tooltip,
-      },
-    };
-  }
-
-  static new({
-    label,
-    description,
-    tooltip,
-  }: {
-    label: string;
-    description: string;
-    tooltip: string;
-  }): LocalFileTreeItem {
+  static new(
+    label: string,
+    description: string,
+    tooltip: string
+  ): LocalFileTreeItem {
     let element = this._set.get(tooltip);
     if (element) return element;
     element = new this(label, description, tooltip);

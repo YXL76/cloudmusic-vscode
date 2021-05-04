@@ -35,7 +35,6 @@ import {
   apiSimiArtist,
   apiSimiPlaylist,
   apiSimiSong,
-  apiSongUrl,
   apiUserDetail,
   apiUserFolloweds,
   apiUserFollows,
@@ -43,16 +42,13 @@ import {
 } from "../api";
 import type { InputStep, MultiStepInput } from ".";
 import {
-  LocalFileTreeItem,
   PlaylistProvider,
   ProgramTreeItem,
   QueueItemTreeItem,
-  QueueProvider,
 } from "../treeview";
 import type { QuickPickItem, Uri } from "vscode";
 import { commands, window } from "vscode";
 import { ICON } from "../constant";
-import type { QueueContent } from "../treeview";
 import type { Readable } from "stream";
 import { Webview } from "../webview";
 import axios from "axios";
@@ -298,14 +294,11 @@ export async function pickSong(
     case PickType.add:
       void commands.executeCommand(
         "cloudmusic.addSong",
-        QueueItemTreeItem.new({ item, pid: 0 })
+        QueueItemTreeItem.new({ ...item, pid: 0 })
       );
       break;
     case PickType.next:
-      // TODO
-      /* QueueProvider.refresh(() =>
-        QueueProvider.playNext([new QueueItemTreeItem(item, 0)])
-      ); */
+      IPCClient.add([QueueItemTreeItem.new({ ...item, pid: 0 }).data], 1);
       break;
   }
 
@@ -331,18 +324,10 @@ export async function pickSongMany(
       },
     ],
   });
-  // TODO
-  /* if (pick.type === PickType.add) {
-    QueueProvider.refresh(() =>
-      QueueProvider.add(songs.map((song) => new QueueItemTreeItem(song, 0)))
-    );
-  } else if (pick.type === PickType.next) {
-    QueueProvider.refresh(() =>
-      QueueProvider.playNext(
-        songs.map((song) => new QueueItemTreeItem(song, 0))
-      )
-    );
-  } */
+  IPCClient.add(
+    songs.map((song) => QueueItemTreeItem.new({ ...song, pid: 0 }).data),
+    pick.type === PickType.add ? undefined : 1
+  );
   return input.stay();
 }
 
@@ -464,13 +449,11 @@ export async function pickProgram(
     case PickType.add:
       void commands.executeCommand(
         "cloudmusic.addProgram",
-        ProgramTreeItem.new({ program, pid: radio ? radio.id : 0 })
+        ProgramTreeItem.new({ ...program, pid: radio ? radio.id : 0 })
       );
       break;
     case PickType.next:
-      QueueProvider.refresh(() =>
-        QueueProvider.playNext([new ProgramTreeItem(item, 0)])
-      );
+      IPCClient.add([ProgramTreeItem.new({ ...program, pid: 0 }).data], 1);
       break;
   }
 
@@ -496,20 +479,10 @@ export async function pickProgramMany(
       },
     ],
   });
-  // TODO
-  /* if (pick.type === PickType.add) {
-    QueueProvider.refresh(() =>
-      QueueProvider.add(
-        programs.map((program) => new ProgramTreeItem(program, 0))
-      )
-    );
-  } else if (pick.type === PickType.next) {
-    QueueProvider.refresh(() =>
-      QueueProvider.playNext(
-        programs.map((program) => new ProgramTreeItem(program, 0))
-      )
-    );
-  } */
+  IPCClient.add(
+    programs.map((program) => ProgramTreeItem.new({ ...program, pid: 0 }).data),
+    pick.type === PickType.add ? undefined : 1
+  );
   return input.stay();
 }
 
@@ -901,26 +874,21 @@ export async function pickPlaylist(
       return (input: MultiStepInput) =>
         pickUser(input, step + 1, (pick as T).id);
     case PickType.add:
-      // TODO
-      /* {
+      {
         const songs = await apiPlaylistDetail(id);
-        QueueProvider.refresh(() =>
-          QueueProvider.add(
-            songs.map((song) => new QueueItemTreeItem(song, id))
-          )
+        IPCClient.add(
+          songs.map((song) => QueueItemTreeItem.new({ ...song, pid: 0 }).data)
         );
-      } */
+      }
       break;
     case PickType.next:
-      // TODO
-      /* {
+      {
         const songs = await apiPlaylistDetail(id);
-        QueueProvider.refresh(() =>
-          QueueProvider.playNext(
-            songs.map((song) => new QueueItemTreeItem(song, 0))
-          )
+        IPCClient.add(
+          songs.map((song) => QueueItemTreeItem.new({ ...song, pid: 0 }).data),
+          1
         );
-      } */
+      }
       break;
     case PickType.comment:
       await Webview.comment(CommentType.playlist, id, name);

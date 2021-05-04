@@ -826,8 +826,8 @@
     "vscode:prepublish": "yarn build"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "4.22.0",
-    "@typescript-eslint/parser": "4.22.0",
+    "@typescript-eslint/eslint-plugin": "4.22.1",
+    "@typescript-eslint/parser": "4.22.1",
     "@yarnpkg/pnpify": "2.4.0",
     "autoprefixer": "10.2.5",
     "cssnano": "5.0.2",

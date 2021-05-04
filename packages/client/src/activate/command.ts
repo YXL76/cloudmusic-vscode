@@ -19,6 +19,7 @@ export function initCommand(context: ExtensionContext): void {
     }),
 
     commands.registerCommand("cloudmusic.next", (repeat?: boolean) => {
+      // TODO
       /* if (repeat) void load(Player.item);
       else {
         if (PersonalFm.state) void load(await PersonalFm.head());

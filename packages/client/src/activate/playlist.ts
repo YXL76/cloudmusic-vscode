@@ -8,7 +8,6 @@ import {
   apiPlaymodeIntelligenceList,
   apiSongUrl,
 } from "../api";
-import { HOME_DIR, TreeItemId } from "../constant";
 import {
   IPCClient,
   MultiStepInput,
@@ -29,6 +28,7 @@ import { Uri, commands, env, window } from "vscode";
 import { basename, dirname } from "path";
 import { AccountManager } from "../manager";
 import type { ExtensionContext } from "vscode";
+import { HOME_DIR } from "../constant";
 import { Webview } from "../webview";
 import { createWriteStream } from "fs";
 import i18n from "../i18n";
@@ -184,14 +184,13 @@ export function initPlaylist(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.intelligence",
       async (element: QueueItemTreeItem) => {
-        const { pid, item, data } = element;
-        const songs = await apiPlaymodeIntelligenceList(item.id, pid);
+        const { data } = element;
+        const songs = await apiPlaymodeIntelligenceList(data.id, data.pid);
         IPCClient.new([
           data,
-          ...songs.map((item) => ({
-            id: TreeItemId.queue as TreeItemId.queue,
-            ctr: { item, pid },
-          })),
+          ...songs.map(
+            (song) => QueueItemTreeItem.new({ ...song, pid: data.pid }).data
+          ),
         ]);
       }
     ),
@@ -203,7 +202,7 @@ export function initPlaylist(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.playSongWithPlaylist",
-      ({ item: { id }, pid }: QueueItemTreeItem) =>
+      ({ data: { id, pid } }: QueueItemTreeItem) =>
         PlaylistProvider.refresh(PlaylistProvider.playlists.get(pid), (items) =>
           IPCClient.new(
             items.map(({ data }) => data),
@@ -214,7 +213,7 @@ export function initPlaylist(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.deleteFromPlaylist",
-      async ({ item: { id }, pid }: QueueItemTreeItem) => {
+      async ({ data: { id, pid } }: QueueItemTreeItem) => {
         if (
           AccountManager.isUserPlaylisr(id) &&
           (await window.showWarningMessage(
@@ -238,13 +237,14 @@ export function initPlaylist(context: ExtensionContext): void {
       "cloudmusic.songDetail",
       (element?: QueueContent) => {
         element = element ?? State.playItem;
+        if (!element) return;
         if (element instanceof QueueItemTreeItem)
           void MultiStepInput.run((input) =>
             pickSong(input, 1, (element as QueueItemTreeItem).item)
           );
         else if (element instanceof ProgramTreeItem)
           void MultiStepInput.run((input) =>
-            pickProgram(input, 1, (element as ProgramTreeItem).program)
+            pickProgram(input, 1, (element as ProgramTreeItem).data)
           );
       }
     ),

@@ -4,7 +4,7 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import type { PlayTreeItem, PlayTreeItemData, RefreshAction } from ".";
+import type { PlayTreeItem, RefreshAction } from ".";
 import type { ProgramDetail, RadioDetail } from "../constant";
 import { AccountManager } from "../manager";
 import type { TreeDataProvider } from "vscode";
@@ -55,7 +55,7 @@ export class RadioProvider
       const pid = element.valueOf;
       const programs = (
         await apiDjProgram(element.valueOf, element.item.programCount)
-      ).map((program) => ProgramTreeItem.new({ program, pid }));
+      ).map((program) => ProgramTreeItem.new({ ...program, pid }));
       const localAction = RadioProvider.action;
       if (localAction) {
         RadioProvider.action = undefined;
@@ -84,7 +84,7 @@ ${i18n.word.subscribedCount}: ${this.item.subCount}`;
 
   readonly contextValue = "RadioTreeItem";
 
-  constructor(public readonly item: RadioDetail) {
+  constructor(readonly item: RadioDetail) {
     super(item.name, TreeItemCollapsibleState.Collapsed);
   }
 
@@ -93,20 +93,27 @@ ${i18n.word.subscribedCount}: ${this.item.subCount}`;
   }
 }
 
+export type ProgramTreeItemData = ProgramDetail & {
+  pid: number;
+  itemType: TreeItemId.program;
+};
+
 export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
   private static readonly _set = new Map<number, ProgramTreeItem>();
 
   readonly label!: string;
 
-  readonly tooltip = this.program.description;
+  readonly tooltip = this.data.description;
 
-  readonly item = this.program.mainSong;
-
-  readonly description!: string;
+  readonly description = this.data.mainSong.ar
+    .map(({ name }) => name)
+    .join("/");
 
   readonly iconPath = new ThemeIcon("radio-tower");
 
   readonly contextValue = "ProgramTreeItem";
+
+  readonly item = this.data.mainSong;
 
   command = {
     title: "Detail",
@@ -114,36 +121,22 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
     arguments: [this],
   };
 
-  private constructor(
-    public readonly program: ProgramDetail,
-    public readonly pid: number
-  ) {
-    super(program.mainSong.name);
-    this.description = this.item.ar.map(({ name }) => name).join("/");
+  private constructor(readonly data: ProgramTreeItemData) {
+    super(data.mainSong.name);
   }
 
   get valueOf(): number {
-    return this.item.id;
+    return this.data.id;
   }
 
-  get data(): PlayTreeItemData {
-    return {
-      id: TreeItemId.program,
-      ctr: { program: this.program, pid: this.pid },
-    };
-  }
-
-  static new({
-    program,
-    pid,
-  }: {
-    program: ProgramDetail;
-    pid: number;
-  }): ProgramTreeItem {
-    let element = this._set.get(program.id);
-    if (element) return element;
-    element = new this(program, pid);
-    this._set.set(program.id, element);
+  static new(data: Omit<ProgramTreeItemData, "itemType">): ProgramTreeItem {
+    let element = this._set.get(data.id);
+    if (element) {
+      if (element.data.pid === 0) element.data.pid = data.pid;
+      return element;
+    }
+    element = new this({ ...data, itemType: TreeItemId.program });
+    this._set.set(data.id, element);
     return element;
   }
 }

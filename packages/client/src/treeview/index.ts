@@ -3,9 +3,16 @@ export * from "./local";
 export * from "./playlist";
 export * from "./queue";
 
-import type { LocalFileTreeItem, ProgramTreeItem, QueueItemTreeItem } from ".";
+import type {
+  LocalFileTreeItem,
+  LocalFileTreeItemData,
+  ProgramTreeItem,
+  ProgramTreeItemData,
+  QueueItemTreeItem,
+  QueueItemTreeItemData,
+} from ".";
+import type { SongsItem, TreeItemId } from "../constant";
 import type { ThemeIcon, TreeItem } from "vscode";
-import type { TreeItemId } from "../constant";
 
 export type QueueContent =
   | QueueItemTreeItem
@@ -15,18 +22,9 @@ export type QueueContent =
 export type RefreshAction = (items: QueueContent[]) => void;
 
 export type PlayTreeItemData =
-  | {
-      id: TreeItemId.local;
-      ctr: Parameters<typeof LocalFileTreeItem.new>[0];
-    }
-  | {
-      id: TreeItemId.program;
-      ctr: Parameters<typeof ProgramTreeItem.new>[0];
-    }
-  | {
-      id: TreeItemId.queue;
-      ctr: Parameters<typeof QueueItemTreeItem.new>[0];
-    };
+  | ({ itemType: TreeItemId.local } & LocalFileTreeItemData)
+  | ({ itemType: TreeItemId.program } & ProgramTreeItemData)
+  | ({ itemType: TreeItemId.queue } & QueueItemTreeItemData);
 
 export interface PlayTreeItem extends TreeItem {
   readonly iconPath: ThemeIcon;
@@ -34,6 +32,7 @@ export interface PlayTreeItem extends TreeItem {
   readonly label: string;
   readonly description: string;
   readonly tooltip: string;
+  readonly data: PlayTreeItemData;
+  readonly item: SongsItem;
   valueOf: number | string;
-  data: PlayTreeItemData;
 }

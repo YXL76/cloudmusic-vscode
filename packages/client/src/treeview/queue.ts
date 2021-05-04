@@ -128,13 +128,13 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
 
   private static _parseRaw(items: PlayTreeItemData[]): QueueContent[] {
     return items.map((item) => {
-      switch (item.id) {
+      switch (item.itemType) {
         case TreeItemId.local:
-          return LocalFileTreeItem.new(item.ctr);
+          return LocalFileTreeItem.new(item.filename, item.ext, item.path);
         case TreeItemId.program:
-          return ProgramTreeItem.new(item.ctr);
+          return ProgramTreeItem.new(item);
         default:
-          return QueueItemTreeItem.new(item.ctr);
+          return QueueItemTreeItem.new(item);
       }
     });
   }
@@ -143,7 +143,6 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     elements: QueueContent[],
     index: number = this.len
   ): void {
-    // TODO play next
     if (UNBLOCK_MUSIC.enabled)
       elements = elements.filter(
         ({ valueOf }) => typeof valueOf !== "number" || !unplayable.has(valueOf)
@@ -180,18 +179,25 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   }
 }
 
+export type QueueItemTreeItemData = SongsItem & {
+  pid: number;
+  itemType: TreeItemId.queue;
+};
+
 export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
   private static readonly _set = new Map<number, QueueItemTreeItem>();
 
   readonly label!: string;
 
-  readonly description!: string;
+  readonly description = this.data.ar.map(({ name }) => name).join("/");
 
-  readonly tooltip = this.item.al.name;
+  readonly tooltip = this.data.al.name;
 
   readonly iconPath = new ThemeIcon("zap");
 
   readonly contextValue = "QueueItemTreeItem";
+
+  readonly item = this.data;
 
   readonly command = {
     title: "Detail",
@@ -199,36 +205,22 @@ export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
     arguments: [this],
   };
 
-  private constructor(
-    public readonly item: SongsItem,
-    public readonly pid: number
-  ) {
-    super(`${item.name}${item.alia[0] ? ` (${item.alia.join("/")})` : ""}`);
-    this.description = this.item.ar.map(({ name }) => name).join("/");
+  constructor(readonly data: QueueItemTreeItemData) {
+    super(`${data.name}${data.alia[0] ? ` (${data.alia.join("/")})` : ""}`);
   }
 
   get valueOf(): number {
-    return this.item.id;
+    return this.data.id;
   }
 
-  get data(): PlayTreeItemData {
-    return {
-      id: TreeItemId.queue,
-      ctr: { item: this.item, pid: this.pid },
-    };
-  }
-
-  static new({
-    item,
-    pid,
-  }: {
-    item: SongsItem;
-    pid: number;
-  }): QueueItemTreeItem {
-    let element = this._set.get(item.id);
-    if (element) return element;
-    element = new this(item, pid);
-    this._set.set(item.id, element);
+  static new(data: Omit<QueueItemTreeItemData, "itemType">): QueueItemTreeItem {
+    let element = this._set.get(data.id);
+    if (element) {
+      if (element.data.pid === 0) element.data.pid = data.pid;
+      return element;
+    }
+    element = new this({ ...data, itemType: TreeItemId.queue });
+    this._set.set(data.id, element);
     return element;
   }
 }

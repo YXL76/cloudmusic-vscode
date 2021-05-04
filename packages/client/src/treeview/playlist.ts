@@ -44,7 +44,7 @@ export class PlaylistProvider
 
   private static async getPlaylistContent(pid: number) {
     const songs = await apiPlaylistDetail(pid);
-    const ret = songs.map((item) => QueueItemTreeItem.new({ item, pid }));
+    const ret = songs.map((song) => QueueItemTreeItem.new({ ...song, pid }));
     return ret;
   }
 
@@ -91,7 +91,7 @@ ${i18n.word.subscribedCount}: ${this.item.subscribedCount}`;
 
   readonly contextValue = "PlaylistItemTreeItem";
 
-  constructor(public readonly item: PlaylistItem) {
+  constructor(readonly item: PlaylistItem) {
     super(item.name, TreeItemCollapsibleState.Collapsed);
   }
 

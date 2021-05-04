@@ -84,7 +84,10 @@ export class IPCClient {
       return;
     }
 
-    const { item, pid } = playItem;
+    const {
+      data: { pid },
+      item,
+    } = playItem;
     const idS = `${item.id}`;
     {
       const url = MusicCache.get(idS);

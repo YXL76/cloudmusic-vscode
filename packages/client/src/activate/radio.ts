@@ -46,7 +46,7 @@ export function initRadio(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.playProgram",
-      ({ item: { id }, pid }: ProgramTreeItem) =>
+      ({ data: { id, pid } }: ProgramTreeItem) =>
         RadioProvider.refresh(RadioProvider.radios.get(pid), (items) =>
           IPCClient.new(
             items.map(({ data }) => data),
@@ -68,13 +68,13 @@ export function initRadio(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.programComment",
-      ({ program: { id }, item: { name } }: ProgramTreeItem) =>
-        Webview.comment(CommentType.dj, id, name)
+      ({ data: { id }, label }: ProgramTreeItem) =>
+        Webview.comment(CommentType.dj, id, label)
     ),
 
     commands.registerCommand(
       "cloudmusic.copyProgramLink",
-      ({ program: { id } }: ProgramTreeItem) =>
+      ({ data: { id } }: ProgramTreeItem) =>
         void env.clipboard.writeText(`https://music.163.com/#/program?id=${id}`)
     )
   );
