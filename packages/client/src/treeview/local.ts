@@ -71,9 +71,12 @@ export class LocalProvider
               ({ mime }) =>
                 mime && (mime === "audio/x-flac" || mime === "audio/mpeg")
             )
-            .map(
-              ({ filename: fn, ext }) =>
-                new LocalFileTreeItem(fn, ext ?? "", resolve(label, fn))
+            .map(({ filename: label, ext }) =>
+              LocalFileTreeItem.new({
+                label,
+                description: ext ?? "",
+                tooltip: resolve(label, label),
+              })
             );
           LocalProvider.files.set(label, items);
         } catch {}
@@ -91,7 +94,21 @@ export class LocalProvider
   }
 }
 
+export class LocalLibraryTreeItem extends TreeItem {
+  readonly tooltip = this.label;
+
+  readonly iconPath = new ThemeIcon("file-directory");
+
+  readonly contextValue = "LocalLibraryTreeItem";
+
+  constructor(public readonly label: string) {
+    super(label, TreeItemCollapsibleState.Collapsed);
+  }
+}
+
 export class LocalFileTreeItem extends TreeItem implements PlayTreeItem {
+  private static readonly _set = new Map<string, LocalFileTreeItem>();
+
   readonly iconPath = new ThemeIcon("file-media");
 
   readonly item: SongsItem = {
@@ -105,7 +122,7 @@ export class LocalFileTreeItem extends TreeItem implements PlayTreeItem {
 
   readonly contextValue = "LocalFileTreeItem";
 
-  constructor(
+  private constructor(
     public readonly label: string,
     public readonly description: string,
     public readonly tooltip: string
@@ -120,19 +137,27 @@ export class LocalFileTreeItem extends TreeItem implements PlayTreeItem {
   get data(): PlayTreeItemData {
     return {
       id: TreeItemId.local,
-      ctr: [this.label, this.description, this.tooltip],
+      ctr: {
+        label: this.label,
+        description: this.description,
+        tooltip: this.tooltip,
+      },
     };
   }
-}
 
-export class LocalLibraryTreeItem extends TreeItem {
-  readonly tooltip = this.label;
-
-  readonly iconPath = new ThemeIcon("file-directory");
-
-  readonly contextValue = "LocalLibraryTreeItem";
-
-  constructor(public readonly label: string) {
-    super(label, TreeItemCollapsibleState.Collapsed);
+  static new({
+    label,
+    description,
+    tooltip,
+  }: {
+    label: string;
+    description: string;
+    tooltip: string;
+  }): LocalFileTreeItem {
+    let element = this._set.get(tooltip);
+    if (element) return element;
+    element = new this(label, description, tooltip);
+    this._set.set(tooltip, element);
+    return element;
   }
 }

@@ -161,6 +161,13 @@ export class IPCClient {
     this._emit({ t: IPCEvent.Queue.play, id });
   }
 
+  static random(): void {
+    this._emit({
+      t: IPCEvent.Queue.random,
+      items: QueueProvider.random(),
+    });
+  }
+
   static shift(index: number): void {
     this._emit({ t: IPCEvent.Queue.shift, index });
   }

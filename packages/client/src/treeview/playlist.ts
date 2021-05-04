@@ -42,9 +42,9 @@ export class PlaylistProvider
     this.instance._onDidChangeTreeData.fire(element);
   }
 
-  private static async getPlaylistContent(id: number) {
-    const songs = await apiPlaylistDetail(id);
-    const ret = songs.map((song) => new QueueItemTreeItem(song, id));
+  private static async getPlaylistContent(pid: number) {
+    const songs = await apiPlaylistDetail(pid);
+    const ret = songs.map((item) => QueueItemTreeItem.new({ item, pid }));
     return ret;
   }
 

@@ -17,15 +17,15 @@ export type RefreshAction = (items: QueueContent[]) => void;
 export type PlayTreeItemData =
   | {
       id: TreeItemId.local;
-      ctr: ConstructorParameters<typeof LocalFileTreeItem>;
+      ctr: Parameters<typeof LocalFileTreeItem.new>[0];
     }
   | {
       id: TreeItemId.program;
-      ctr: ConstructorParameters<typeof ProgramTreeItem>;
+      ctr: Parameters<typeof ProgramTreeItem.new>[0];
     }
   | {
       id: TreeItemId.queue;
-      ctr: ConstructorParameters<typeof QueueItemTreeItem>;
+      ctr: Parameters<typeof QueueItemTreeItem.new>[0];
     };
 
 export interface PlayTreeItem extends TreeItem {

@@ -23,7 +23,8 @@ export class State {
   static set playItem(value: QueueContent | undefined) {
     if (value !== this._playItem) {
       this._playItem = value;
-      void IPCClient.load();
+      if (value) void IPCClient.load();
+      else IPCClient.stop();
     }
   }
 

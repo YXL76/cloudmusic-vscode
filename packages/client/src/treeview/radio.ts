@@ -55,7 +55,7 @@ export class RadioProvider
       const pid = element.valueOf;
       const programs = (
         await apiDjProgram(element.valueOf, element.item.programCount)
-      ).map((program) => new ProgramTreeItem(program, pid));
+      ).map((program) => ProgramTreeItem.new({ program, pid }));
       const localAction = RadioProvider.action;
       if (localAction) {
         RadioProvider.action = undefined;
@@ -94,6 +94,8 @@ ${i18n.word.subscribedCount}: ${this.item.subCount}`;
 }
 
 export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
+  private static readonly _set = new Map<number, ProgramTreeItem>();
+
   readonly label!: string;
 
   readonly tooltip = this.program.description;
@@ -112,7 +114,7 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
     arguments: [this],
   };
 
-  constructor(
+  private constructor(
     public readonly program: ProgramDetail,
     public readonly pid: number
   ) {
@@ -127,7 +129,21 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
   get data(): PlayTreeItemData {
     return {
       id: TreeItemId.program,
-      ctr: [this.program, this.pid],
+      ctr: { program: this.program, pid: this.pid },
     };
+  }
+
+  static new({
+    program,
+    pid,
+  }: {
+    program: ProgramDetail;
+    pid: number;
+  }): ProgramTreeItem {
+    let element = this._set.get(program.id);
+    if (element) return element;
+    element = new this(program, pid);
+    this._set.set(program.id, element);
+    return element;
   }
 }

@@ -15,6 +15,7 @@ export const enum Queue {
   play = "queue.play",
   next = "queue.next",
   new = "queue.new",
+  random = "queue.random",
   shift = "queue.shift",
   sort = "queue.sort",
 }

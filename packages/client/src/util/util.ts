@@ -298,7 +298,7 @@ export async function pickSong(
     case PickType.add:
       void commands.executeCommand(
         "cloudmusic.addSong",
-        new QueueItemTreeItem(item, 0)
+        QueueItemTreeItem.new({ item, pid: 0 })
       );
       break;
     case PickType.next:
@@ -408,9 +408,9 @@ export async function pickSongs(
 export async function pickProgram(
   input: MultiStepInput,
   step: number,
-  item: ProgramDetail
+  program: ProgramDetail
 ): Promise<InputStep> {
-  const { mainSong, dj, id, rid } = item;
+  const { mainSong, dj, id, rid } = program;
   const { name } = mainSong;
   const radio = await apiDjDetail(rid);
 
@@ -464,14 +464,13 @@ export async function pickProgram(
     case PickType.add:
       void commands.executeCommand(
         "cloudmusic.addProgram",
-        new ProgramTreeItem(item, radio ? radio.id : 0)
+        ProgramTreeItem.new({ program, pid: radio ? radio.id : 0 })
       );
       break;
     case PickType.next:
-      // TODO
-      /* QueueProvider.refresh(() =>
+      QueueProvider.refresh(() =>
         QueueProvider.playNext([new ProgramTreeItem(item, 0)])
-      ); */
+      );
       break;
   }
 

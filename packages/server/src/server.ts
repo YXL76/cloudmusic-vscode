@@ -51,6 +51,7 @@ const callback = () => {
       case IPCEvent.Queue.delete:
       case IPCEvent.Queue.new:
       case IPCEvent.Queue.play:
+      case IPCEvent.Queue.random:
       case IPCEvent.Queue.shift:
       case IPCEvent.Queue.sort:
         broadcast(data);

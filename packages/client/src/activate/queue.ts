@@ -73,7 +73,7 @@ export function initQueue(context: ExtensionContext): void {
     commands.registerCommand("cloudmusic.clearQueue", () => IPCClient.clear()),
 
     commands.registerCommand("cloudmusic.randomQueue", () =>
-      QueueProvider.random()
+      IPCClient.random()
     ),
 
     commands.registerCommand(

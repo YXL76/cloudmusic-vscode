@@ -19,6 +19,7 @@ export type BroadcastMsg =
   | { t: IPCEvent.Queue.delete; id: string | number }
   | { t: IPCEvent.Queue.new; items: unknown; id?: number }
   | { t: IPCEvent.Queue.play; id: string | number }
+  | { t: IPCEvent.Queue.random; items: unknown }
   | { t: IPCEvent.Queue.shift; index: number }
   | { t: IPCEvent.Queue.sort; type: number; order: number };
 

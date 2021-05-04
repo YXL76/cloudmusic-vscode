@@ -185,12 +185,14 @@ export function initPlaylist(context: ExtensionContext): void {
       "cloudmusic.intelligence",
       async (element: QueueItemTreeItem) => {
         const { pid, item, data } = element;
-        const items = [data];
         const songs = await apiPlaymodeIntelligenceList(item.id, pid);
-        items.concat(
-          songs.map((song) => ({ id: TreeItemId.queue, ctr: [song, pid] }))
-        );
-        IPCClient.new(items);
+        IPCClient.new([
+          data,
+          ...songs.map((item) => ({
+            id: TreeItemId.queue as TreeItemId.queue,
+            ctr: { item, pid },
+          })),
+        ]);
       }
     ),
 

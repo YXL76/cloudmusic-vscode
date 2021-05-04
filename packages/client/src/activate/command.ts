@@ -15,7 +15,7 @@ import i18n from "../i18n";
 export function initCommand(context: ExtensionContext): void {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.previous", () => {
-      if (/* !PersonalFm.state &&  */ QueueProvider.len) IPCClient.shift(-1);
+      if (/* !PersonalFm.state &&  */ QueueProvider.len) IPCClient.shift(1);
     }),
 
     commands.registerCommand("cloudmusic.next", (repeat?: boolean) => {
