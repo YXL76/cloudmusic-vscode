@@ -1,4 +1,4 @@
-import { native, status } from ".";
+import { State, native } from ".";
 
 export class Player {
   private static readonly player = native.playerNew();
@@ -82,19 +82,21 @@ export class Player {
     return native.playerEmpty(this.player);
   }
 
-  static load(url: string): void {
-    native.playerLoad(this.player, url);
-    status.playing = true;
+  static load(url: string): boolean {
+    if (native.playerLoad(this.player, url)) {
+      State.playing = true;
+      return true;
+    }
+    return false;
   }
 
   static pause(): void {
     native.playerPause(this.player);
-    status.playing = false;
+    State.playing = false;
   }
 
   static play(): void {
-    native.playerPlay(this.player);
-    status.playing = true;
+    if (native.playerPlay(this.player)) State.playing = true;
   }
 
   static position(): number {
@@ -103,7 +105,7 @@ export class Player {
 
   static stop(): void {
     native.playerStop(this.player);
-    status.playing = false;
+    State.playing = false;
   }
 
   static volume(level: number): void {

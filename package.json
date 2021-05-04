@@ -836,7 +836,7 @@
     "object-assign": "latest"
   },
   "scripts": {
-    "build-dev": "yarn workspace @cloudmusic/client run build-dev",
+    "build-dev": "yarn workspaces foreach run build-dev",
     "list": "node scripts/list.js",
     "pnp": "yarn pnpify --sdk vscode vim",
     "vscode:prepublish": "yarn build"

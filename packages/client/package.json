@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "generate-css": "postcss src/style.css -o dist/style.css",
     "build": "webpack --mode production",
     "build-dev": "webpack --mode development",
     "lint": "eslint src",
@@ -18,7 +17,7 @@
     "@types/react-dom": "17.0.3",
     "@types/vscode": "1.55.0",
     "@types/yallist": "3.0.1",
-    "esbuild": "0.11.16",
+    "esbuild": "0.11.17",
     "esbuild-loader": "2.12.0",
     "webpack": "5.36.2",
     "webpack-cli": "4.6.0"

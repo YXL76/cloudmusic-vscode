@@ -10,10 +10,9 @@ import type {
 } from "../constant";
 import {
   ButtonAction,
+  IPCClient,
   LikeState,
   MusicCache,
-  PersonalFm,
-  Player,
   State,
   setLyric,
 } from ".";
@@ -42,7 +41,6 @@ import {
   apiUserFollows,
   apiUserPlaylist,
 } from "../api";
-import { ICON, MUSIC_QUALITY, TMP_DIR } from "../constant";
 import type { InputStep, MultiStepInput } from ".";
 import {
   LocalFileTreeItem,
@@ -51,16 +49,14 @@ import {
   QueueItemTreeItem,
   QueueProvider,
 } from "../treeview";
-import { Uri, commands, window } from "vscode";
+import type { QuickPickItem, Uri } from "vscode";
+import { commands, window } from "vscode";
+import { ICON } from "../constant";
 import type { QueueContent } from "../treeview";
-import type { QuickPickItem } from "vscode";
 import type { Readable } from "stream";
 import { Webview } from "../webview";
 import axios from "axios";
-import { createWriteStream } from "fs";
 import i18n from "../i18n";
-
-const minSize = MUSIC_QUALITY === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
 
 export async function downloadMusic(
   url: string,
@@ -86,69 +82,21 @@ export async function downloadMusic(
 }
 
 export async function likeMusic(id: number, like: boolean): Promise<void> {
-  if (await apiLike(id, like)) {
-    if (id === Player.treeitem?.valueOf)
+  /* if (await apiLike(id, like)) {
+    if (id === Player.item?.valueOf)
       State.like = like ? LikeState.like : LikeState.dislike;
     like ? AccountManager.likelist.add(id) : AccountManager.likelist.delete(id);
     void window.showInformationMessage(
       like ? i18n.word.like : i18n.word.dislike
     );
-  } else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
+  } else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist); */
 }
 
 export function stop(): void {
-  Player.stop();
-  Player.treeitem = undefined;
-  State.playing = false;
+  IPCClient.stop();
   ButtonManager.buttonSong();
   ButtonManager.buttonLyric();
   setLyric(0, [0], { text: [i18n.word.lyric] }, { text: [i18n.word.lyric] });
-}
-
-export async function load(element?: QueueContent): Promise<void> {
-  if (!element) return;
-  State.loading = true;
-  if (element instanceof LocalFileTreeItem) {
-    Player.load(element.tooltip, 0, element);
-    return;
-  }
-
-  const { pid, item } = element;
-  const { id } = item;
-  const idS = `${id}`;
-
-  const path = MusicCache.get(idS);
-  if (path) {
-    Player.load(path, pid, element);
-    return;
-  }
-
-  const { url, md5 } = await apiSongUrl(item);
-  if (!url) {
-    void commands.executeCommand("cloudmusic.next");
-    return;
-  }
-
-  const tmpUri = Uri.joinPath(TMP_DIR, idS);
-  const data = await downloadMusic(url, idS, tmpUri, !PersonalFm.get, md5);
-  if (data) {
-    let len = 0;
-    const onData = ({ length }: { length: number }) => {
-      len += length;
-      if (len > minSize) {
-        data.removeListener("data", onData);
-        Player.load(tmpUri.fsPath, pid, element);
-      }
-    };
-    data.on("data", onData);
-    data.once("error", (err) => {
-      console.error(err);
-      void window.showErrorMessage(i18n.sentence.error.network);
-      void commands.executeCommand("cloudmusic.next");
-    });
-    const file = createWriteStream(tmpUri.fsPath);
-    data.pipe(file);
-  }
 }
 
 const enum PickType {
@@ -354,9 +302,10 @@ export async function pickSong(
       );
       break;
     case PickType.next:
-      QueueProvider.refresh(() =>
+      // TODO
+      /* QueueProvider.refresh(() =>
         QueueProvider.playNext([new QueueItemTreeItem(item, 0)])
-      );
+      ); */
       break;
   }
 
@@ -382,7 +331,8 @@ export async function pickSongMany(
       },
     ],
   });
-  if (pick.type === PickType.add) {
+  // TODO
+  /* if (pick.type === PickType.add) {
     QueueProvider.refresh(() =>
       QueueProvider.add(songs.map((song) => new QueueItemTreeItem(song, 0)))
     );
@@ -392,7 +342,7 @@ export async function pickSongMany(
         songs.map((song) => new QueueItemTreeItem(song, 0))
       )
     );
-  }
+  } */
   return input.stay();
 }
 
@@ -518,9 +468,10 @@ export async function pickProgram(
       );
       break;
     case PickType.next:
-      QueueProvider.refresh(() =>
+      // TODO
+      /* QueueProvider.refresh(() =>
         QueueProvider.playNext([new ProgramTreeItem(item, 0)])
-      );
+      ); */
       break;
   }
 
@@ -546,7 +497,8 @@ export async function pickProgramMany(
       },
     ],
   });
-  if (pick.type === PickType.add) {
+  // TODO
+  /* if (pick.type === PickType.add) {
     QueueProvider.refresh(() =>
       QueueProvider.add(
         programs.map((program) => new ProgramTreeItem(program, 0))
@@ -558,7 +510,7 @@ export async function pickProgramMany(
         programs.map((program) => new ProgramTreeItem(program, 0))
       )
     );
-  }
+  } */
   return input.stay();
 }
 
@@ -950,24 +902,26 @@ export async function pickPlaylist(
       return (input: MultiStepInput) =>
         pickUser(input, step + 1, (pick as T).id);
     case PickType.add:
-      {
+      // TODO
+      /* {
         const songs = await apiPlaylistDetail(id);
         QueueProvider.refresh(() =>
           QueueProvider.add(
             songs.map((song) => new QueueItemTreeItem(song, id))
           )
         );
-      }
+      } */
       break;
     case PickType.next:
-      {
+      // TODO
+      /* {
         const songs = await apiPlaylistDetail(id);
         QueueProvider.refresh(() =>
           QueueProvider.playNext(
             songs.map((song) => new QueueItemTreeItem(song, 0))
           )
         );
-      }
+      } */
       break;
     case PickType.comment:
       await Webview.comment(CommentType.playlist, id, name);

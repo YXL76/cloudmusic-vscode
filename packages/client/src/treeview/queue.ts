@@ -1,8 +1,9 @@
 import { EventEmitter, ThemeIcon, TreeItem, window } from "vscode";
-import type { LocalFileTreeItem, ProgramTreeItem } from ".";
-import { UNBLOCK_MUSIC, unplayable } from "../constant";
+import type { ExtensionContext, TreeDataProvider } from "vscode";
+import { LocalFileTreeItem, ProgramTreeItem } from ".";
+import type { PlayTreeItem, PlayTreeItemData, QueueContent } from ".";
+import { QUEUE_KEY, TreeItemId, UNBLOCK_MUSIC, unplayable } from "../constant";
 import type { SongsItem } from "../constant";
-import type { TreeDataProvider } from "vscode";
 import i18n from "../i18n";
 import { unsortInplace } from "array-unsort";
 
@@ -12,15 +13,15 @@ export const enum QueueSortType {
   artist,
 }
 
-export type QueueContent =
-  | QueueItemTreeItem
-  | LocalFileTreeItem
-  | ProgramTreeItem;
+export const enum QueueSortOrder {
+  ascending,
+  descending,
+}
 
 let infoFlag = false;
 
 export class QueueProvider implements TreeDataProvider<QueueContent> {
-  private static lock = false;
+  static context: ExtensionContext;
 
   private static songs: QueueContent[] = [];
 
@@ -36,34 +37,34 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     return this.instance || (this.instance = new QueueProvider());
   }
 
-  static refresh(action: () => void): void {
-    if (!this.lock) {
-      this.lock = true;
-      action();
-      this.instance._onDidChangeTreeData.fire();
-      this.lock = false;
-    }
-  }
-
   static get len(): number {
     return this.songs.length;
   }
 
   static get head(): QueueContent | undefined {
-    return this.songs[0];
+    return this.songs?.[0];
   }
 
   static get next(): QueueContent | undefined {
-    return this.songs[1];
+    return this.songs?.[1];
+  }
+
+  static new(elements: QueueContent[], id?: number): void {
+    this._clear();
+    this._add(elements);
+    id ? this.top(id) : this.instance._onDidChangeTreeData.fire();
   }
 
   static clear(): void {
-    this.songs = [];
-    this.ids.clear();
+    this._clear();
+
+    this.instance._onDidChangeTreeData.fire();
   }
 
   static random(): void {
     this.songs = [this.songs[0], ...unsortInplace(this.songs.slice(1))];
+
+    this.instance._onDidChangeTreeData.fire();
   }
 
   static top(id: number | string): void {
@@ -71,13 +72,124 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   }
 
   static shift(index: number): void {
-    if (index) {
-      while (index < 0) index += this.len;
-      this.songs.push(...this.songs.splice(0, index));
-    }
+    this._shift(index);
+
+    this.instance._onDidChangeTreeData.fire();
   }
 
   static add(elements: QueueContent[], index: number = this.len): void {
+    this._add(elements, index);
+
+    this.instance._onDidChangeTreeData.fire();
+  }
+
+  static delete(id: number | string): void {
+    const index = this.songs.findIndex(({ valueOf }) => valueOf === id);
+    if (index >= 0)
+      this.songs
+        .splice(index, 1)
+        .forEach(({ valueOf }) => this.ids.delete(valueOf));
+
+    this.instance._onDidChangeTreeData.fire();
+  }
+
+  static sort(type: QueueSortType, order: QueueSortOrder): void {
+    switch (type) {
+      case QueueSortType.song:
+        this.songs.sort(
+          order === QueueSortOrder.ascending
+            ? ({ label: a }, { label: b }) => a.localeCompare(b)
+            : ({ label: a }, { label: b }) => b.localeCompare(a)
+        );
+        break;
+      case QueueSortType.album:
+        this.songs.sort(
+          order === QueueSortOrder.ascending
+            ? (
+                {
+                  item: {
+                    al: { name: a },
+                  },
+                },
+                {
+                  item: {
+                    al: { name: b },
+                  },
+                }
+              ) => a.localeCompare(b)
+            : (
+                {
+                  item: {
+                    al: { name: a },
+                  },
+                },
+                {
+                  item: {
+                    al: { name: b },
+                  },
+                }
+              ) => b.localeCompare(a)
+        );
+        break;
+      case QueueSortType.artist:
+        this.songs.sort(
+          order === QueueSortOrder.ascending
+            ? (
+                {
+                  item: {
+                    ar: [{ name: a }],
+                  },
+                },
+                {
+                  item: {
+                    ar: [{ name: b }],
+                  },
+                }
+              ) => a.localeCompare(b)
+            : (
+                {
+                  item: {
+                    ar: [{ name: a }],
+                  },
+                },
+                {
+                  item: {
+                    ar: [{ name: b }],
+                  },
+                }
+              ) => b.localeCompare(a)
+        );
+    }
+
+    this.instance._onDidChangeTreeData.fire();
+  }
+
+  static newRaw(items: PlayTreeItemData[], id?: number): void {
+    this.new(this._parseRaw(items), id);
+  }
+
+  static addRaw(items: PlayTreeItemData[], index?: number): void {
+    this.add(this._parseRaw(items), index);
+  }
+
+  private static _parseRaw(items: PlayTreeItemData[]): QueueContent[] {
+    return items.map((item) => {
+      switch (item.id) {
+        case TreeItemId.local:
+          return new LocalFileTreeItem(...item.ctr);
+        case TreeItemId.program:
+          return new ProgramTreeItem(...item.ctr);
+        default:
+          return new QueueItemTreeItem(...item.ctr);
+      }
+    });
+  }
+
+  private static _add(
+    elements: QueueContent[],
+    index: number = this.len
+  ): void {
+    // TODO play next
     const selected = UNBLOCK_MUSIC.enabled
       ? elements.filter(({ valueOf }) => !this.ids.has(valueOf))
       : elements.filter(
@@ -94,47 +206,15 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     }
   }
 
-  static delete(id: number | string): void {
-    const index = this.songs.findIndex((value) => value.valueOf === id);
-    if (index >= 0)
-      this.songs
-        .splice(index, 1)
-        .forEach(({ valueOf }) => this.ids.delete(valueOf));
+  private static _clear() {
+    this.songs = [];
+    this.ids.clear();
   }
 
-  static playNext(elements: QueueContent[]): void {
-    const headValue = this.head?.valueOf;
-    if (elements.length > 1) {
-      const index = elements.findIndex((value) => value.valueOf === headValue);
-      if (index > 0) elements.splice(index, 1);
-      for (const i of elements) this.ids.delete(i.valueOf);
-      this.songs = this.songs.filter(({ valueOf }) => this.ids.has(valueOf));
-    } else {
-      if (elements[0].valueOf === headValue) return;
-      this.delete(elements[0].valueOf);
-    }
-    this.add(elements, 1);
-  }
-
-  static sort(type: QueueSortType): void {
-    switch (type) {
-      case QueueSortType.song:
-        QueueProvider.songs.sort((a, b) => a.label.localeCompare(b.label));
-        break;
-      case QueueSortType.album:
-        QueueProvider.songs.sort((a, b) =>
-          a.item.al.name.localeCompare(b?.item.al.name)
-        );
-        break;
-      case QueueSortType.artist:
-        QueueProvider.songs.sort((a, b) =>
-          a.item.ar[0].name.localeCompare(b.item.ar[0].name)
-        );
-    }
-  }
-
-  static reverse(): void {
-    this.songs.reverse();
+  private static _shift(index: number): void {
+    if (index === 0) return;
+    while (index < 0) index += this.len;
+    this.songs.push(...this.songs.splice(0, index));
   }
 
   getTreeItem(element: QueueContent): QueueContent {
@@ -142,15 +222,21 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   }
 
   getChildren(): QueueContent[] {
+    // TODO only master
+    void QueueProvider.context.globalState.update(
+      QUEUE_KEY,
+      JSON.stringify(QueueProvider.songs.map(({ data }) => data))
+    );
     return QueueProvider.songs;
   }
 }
 
-export class QueueItemTreeItem extends TreeItem {
+export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
   readonly label!: string;
 
-  readonly description = (() =>
-    this.item.ar.map(({ name }) => name).join("/"))();
+  readonly description!: string;
+
+  readonly tooltip = this.item.al.name;
 
   readonly iconPath = new ThemeIcon("zap");
 
@@ -164,9 +250,17 @@ export class QueueItemTreeItem extends TreeItem {
 
   constructor(public readonly item: SongsItem, public readonly pid: number) {
     super(`${item.name}${item.alia[0] ? ` (${item.alia.join("/")})` : ""}`);
+    this.description = this.item.ar.map(({ name }) => name).join("/");
   }
 
   get valueOf(): number {
     return this.item.id;
+  }
+
+  get data(): PlayTreeItemData {
+    return {
+      id: TreeItemId.queue,
+      ctr: [this.item, this.pid],
+    };
   }
 }

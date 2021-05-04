@@ -66,7 +66,7 @@ __metadata:
     array-unsort: 1.1.6
     axios: 0.21.1
     dayjs: 1.10.4
-    esbuild: 0.11.16
+    esbuild: 0.11.17
     esbuild-loader: 2.12.0
     file-type: 16.3.0
     lodash: 4.17.21
@@ -1391,9 +1391,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001196, caniuse-lite@npm:^1.0.30001219":
-  version: 1.0.30001219
-  resolution: "caniuse-lite@npm:1.0.30001219"
-  checksum: 0a45591af1ffdd86b5c67534adceeb792b088418aa32912249a5609f32d2ded35254d8b300775b43b4d9d9b81d2d40f1e8e1c4aeebe6c69ed549bc52b41f2b30
+  version: 1.0.30001220
+  resolution: "caniuse-lite@npm:1.0.30001220"
+  checksum: ef0ad593aa312486f21dfe3432b939862a73d03a531ec84b4576856118b697661c2a17bd6325efa13852e73fb794df512db3a3b414f0d4878b4bd9a0b772de36
   languageName: node
   linkType: hard
 
@@ -2235,11 +2235,11 @@ __metadata:
   linkType: hard
 
 "esbuild@npm:latest":
-  version: 0.11.16
-  resolution: "esbuild@npm:0.11.16"
+  version: 0.11.17
+  resolution: "esbuild@npm:0.11.17"
   bin:
     esbuild: bin/esbuild
-  checksum: ccbdf57069a83714fac7b9c884db8dc38020ebb8530e8f14f209740401b0ae0dd58e0871ef0821b101798b57720f8d139f6f85a4952a065a448ab5142e6eddf7
+  checksum: 8f67ff366b9bf29f0284a6b7855a878d657052acfa13bdf63d2a7efd191804ff3d4344c95fa4196872184f75ebb9feaac5ab68b783af975734d21b7323121e84
   languageName: node
   linkType: hard
 
@@ -3936,9 +3936,9 @@ fsevents@~2.3.1:
   linkType: hard
 
 "modern-normalize@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "modern-normalize@npm:1.0.0"
-  checksum: 013c442ba2a58ce79cf790ffa8ac461ac67b1f3904ba7bf4ff0a83a5e443500730c1dd1d1af66d2066f8f1500ba8e150aa32518c6a294e0ab0c93692a59b77ee
+  version: 1.1.0
+  resolution: "modern-normalize@npm:1.1.0"
+  checksum: d75412f804e93ccc4b992b5c66f3a37093b4e105e1ed90ac2fa718601dad2c1250d06d7773fe0fee054927bd53b4ab624e04ecafddfa80ea337937f6282791b2
   languageName: node
   linkType: hard
 
@@ -4232,9 +4232,9 @@ fsevents@~2.3.1:
   linkType: hard
 
 "p-cancelable@npm:^2.0.0":
-  version: 2.1.0
-  resolution: "p-cancelable@npm:2.1.0"
-  checksum: 6031b388a3babef83bbfb25e70089f67e88db05968b8cc6ec2ba54e6bd71ebee113681ffaeee8dec807f9b913e1c6e1c2c15f5a3bff1436ec8947c4e81d420c6
+  version: 2.1.1
+  resolution: "p-cancelable@npm:2.1.1"
+  checksum: 0ce643f3c9701514b1e831900b94912d1f365bb4a600b586a85fc41ed15fde46ad221793e1a1ba92452df4b5a062f6a0e3840a9812bc068082d1288d15e886af
   languageName: node
   linkType: hard
 

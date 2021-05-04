@@ -1,5 +1,6 @@
 /// <reference types="node" />
 
+import type { ClientMsg } from ".";
 import type { IPCEvent } from "@cloudmusic/shared";
 import type { Socket } from "net";
 
@@ -7,6 +8,19 @@ export interface SocketConfig {
   address?: string;
   port?: number;
 }
+
+export type BroadcastMsg =
+  | { t: IPCEvent.Play.load }
+  | { t: IPCEvent.Play.pause }
+  | { t: IPCEvent.Play.play }
+  | { t: IPCEvent.Play.volume; level: number }
+  | { t: IPCEvent.Queue.add; items: unknown; index?: number }
+  | { t: IPCEvent.Queue.clear }
+  | { t: IPCEvent.Queue.delete; id: string | number }
+  | { t: IPCEvent.Queue.new; items: unknown; id?: number }
+  | { t: IPCEvent.Queue.play; id: string | number }
+  | { t: IPCEvent.Queue.shift; index: number }
+  | { t: IPCEvent.Queue.sort; type: number; order: number };
 
 export interface Server {
   sockets: ReadonlyArray<Socket>;
@@ -18,19 +32,7 @@ export interface Server {
     callback: (socket: Socket, destroyedSocketID: string) => void
   ): Server;
 
-  on(
-    event: "msg",
-    callback: (
-      data:
-        | { t: IPCEvent.Play.load; url: string }
-        | { t: IPCEvent.Play.pause }
-        | { t: IPCEvent.Play.play }
-        | { t: IPCEvent.Play.stop }
-        | { t: IPCEvent.Play.volume; level: number }
-        | { t: IPCEvent.Queue.clear },
-      socket: Socket
-    ) => void
-  ): Server;
+  on(event: "msg", callback: (data: ClientMsg, socket: Socket) => void): Server;
 
   /**
    * start serving need top call serve or serveNet first to set up the server
@@ -47,12 +49,5 @@ export interface Server {
   emit(socket: Socket | SocketConfig, event: string, value?: unknown): Server;
   emit(socketConfig: Socket | SocketConfig, value?: unknown): Server;
 
-  broadcast(
-    event: "msg",
-    value:
-      | { t: IPCEvent.Play.pause }
-      | { t: IPCEvent.Play.play }
-      | { t: IPCEvent.Play.stop }
-      | { t: IPCEvent.Queue.clear }
-  ): Server;
+  broadcast(event: "msg", value: BroadcastMsg): Server;
 }

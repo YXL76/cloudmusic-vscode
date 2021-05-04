@@ -7,6 +7,7 @@ import {
 import { AccountManager } from "../manager";
 import type { PlaylistItem } from "../constant";
 import { QueueItemTreeItem } from ".";
+import type { RefreshAction } from ".";
 import type { TreeDataProvider } from "vscode";
 import { apiCache } from "../util";
 import { apiPlaylistDetail } from "../api";
@@ -16,6 +17,7 @@ const enum Type {
   userInstance,
   favoriteInstance,
 }
+
 export class PlaylistProvider
   implements TreeDataProvider<PlaylistItemTreeItem | QueueItemTreeItem> {
   static readonly playlists = new Map<number, PlaylistItemTreeItem>();
@@ -26,7 +28,7 @@ export class PlaylistProvider
 
   private static readonly belongsTo = new Map<number, Type>();
 
-  private static action?: (items: QueueItemTreeItem[]) => void;
+  private static action?: RefreshAction;
 
   _onDidChangeTreeData = new EventEmitter<
     PlaylistItemTreeItem | undefined | void
@@ -50,10 +52,7 @@ export class PlaylistProvider
     );
   }
 
-  static refresh(
-    element?: PlaylistItemTreeItem,
-    action?: (items: QueueItemTreeItem[]) => void
-  ): void {
+  static refresh(element?: PlaylistItemTreeItem, action?: RefreshAction): void {
     if (element) {
       const { id } = element.item;
 
@@ -128,11 +127,8 @@ ${i18n.word.subscribedCount}: ${this.item.subscribedCount}`;
 
   readonly contextValue = "PlaylistItemTreeItem";
 
-  constructor(
-    public readonly item: PlaylistItem,
-    public readonly collapsibleState = TreeItemCollapsibleState.Collapsed
-  ) {
-    super(item.name, collapsibleState);
+  constructor(public readonly item: PlaylistItem) {
+    super(item.name, TreeItemCollapsibleState.Collapsed);
   }
 
   get valueOf(): number {

@@ -8,28 +8,26 @@ import {
   apiPlaymodeIntelligenceList,
   apiSongUrl,
 } from "../api";
-import type { LocalFileTreeItem, PlaylistItemTreeItem } from "../treeview";
+import { HOME_DIR, TreeItemId } from "../constant";
 import {
+  IPCClient,
   MultiStepInput,
-  PersonalFm,
-  Player,
+  State,
   downloadMusic,
-  load,
   pickAddToPlaylist,
   pickPlaylist,
   pickProgram,
   pickSong,
 } from "../util";
+import type { PlaylistItemTreeItem, QueueContent } from "../treeview";
 import {
   PlaylistProvider,
   ProgramTreeItem,
   QueueItemTreeItem,
-  QueueProvider,
 } from "../treeview";
 import { Uri, commands, env, window } from "vscode";
 import { basename, dirname } from "path";
 import type { ExtensionContext } from "vscode";
-import { HOME_DIR } from "../constant";
 import { Webview } from "../webview";
 import { createWriteStream } from "fs";
 import i18n from "../i18n";
@@ -104,12 +102,7 @@ export function initPlaylist(context: ExtensionContext): void {
       "cloudmusic.playPlaylist",
       (element: PlaylistItemTreeItem) =>
         PlaylistProvider.refresh(element, (items) =>
-          QueueProvider.refresh(() => {
-            void PersonalFm.set(false);
-            QueueProvider.clear();
-            QueueProvider.add(items);
-            void load(QueueProvider.head);
-          })
+          IPCClient.new(items.map(({ data }) => data))
         )
     ),
 
@@ -180,7 +173,7 @@ export function initPlaylist(context: ExtensionContext): void {
       "cloudmusic.addPlaylist",
       (element: PlaylistItemTreeItem) =>
         PlaylistProvider.refresh(element, (items) =>
-          QueueProvider.refresh(() => QueueProvider.add(items))
+          IPCClient.add(items.map(({ data }) => data))
         )
     ),
 
@@ -207,39 +200,29 @@ export function initPlaylist(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.intelligence",
       async (element: QueueItemTreeItem) => {
-        const { pid, item } = element;
-        const { id } = item;
-        const songs = await apiPlaymodeIntelligenceList(id, pid);
-        void PersonalFm.set(false);
-        QueueProvider.refresh(() => {
-          const elements = songs.map(
-            (song) => new QueueItemTreeItem(song, pid)
-          );
-          QueueProvider.clear();
-          QueueProvider.add([element]);
-          QueueProvider.add(elements);
-          void load(element);
-        });
+        const { pid, item, data } = element;
+        const items = [data];
+        const songs = await apiPlaymodeIntelligenceList(item.id, pid);
+        items.concat(
+          songs.map((song) => ({ id: TreeItemId.queue, ctr: [song, pid] }))
+        );
+        IPCClient.new(items);
       }
     ),
 
     commands.registerCommand(
       "cloudmusic.addSong",
-      (element: QueueItemTreeItem) =>
-        QueueProvider.refresh(() => QueueProvider.add([element]))
+      ({ data }: QueueItemTreeItem) => IPCClient.add([data])
     ),
 
     commands.registerCommand(
       "cloudmusic.playSongWithPlaylist",
       ({ item: { id }, pid }: QueueItemTreeItem) =>
         PlaylistProvider.refresh(PlaylistProvider.playlists.get(pid), (items) =>
-          QueueProvider.refresh(() => {
-            void PersonalFm.set(false);
-            QueueProvider.clear();
-            QueueProvider.add(items);
-            QueueProvider.top(id);
-            void load(QueueProvider.head);
-          })
+          IPCClient.new(
+            items.map(({ data }) => data),
+            id
+          )
         )
     ),
 
@@ -266,8 +249,8 @@ export function initPlaylist(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.songDetail",
-      (element?: QueueItemTreeItem | ProgramTreeItem | LocalFileTreeItem) => {
-        element = element ?? Player.treeitem;
+      (element?: QueueContent) => {
+        element = element ?? State.playItem;
         if (element instanceof QueueItemTreeItem)
           void MultiStepInput.run((input) =>
             pickSong(input, 1, (element as QueueItemTreeItem).item)

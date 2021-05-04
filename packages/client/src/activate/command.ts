@@ -1,11 +1,9 @@
 import {
+  IPCClient,
   LikeState,
   MultiStepInput,
-  PersonalFm,
-  Player,
   State,
   likeMusic,
-  load,
 } from "../util";
 import { QueueItemTreeItem, QueueProvider } from "../treeview";
 import { ButtonManager } from "../manager";
@@ -17,63 +15,58 @@ import i18n from "../i18n";
 export function initCommand(context: ExtensionContext): void {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.previous", () => {
-      const len = QueueProvider.len;
-      if (!PersonalFm.get && len > 0)
-        QueueProvider.refresh(() => {
-          QueueProvider.shift(-1);
-          void load(QueueProvider.head);
-        });
+      if (/* !PersonalFm.state &&  */ QueueProvider.len) IPCClient.shift(-1);
     }),
 
-    commands.registerCommand("cloudmusic.next", async (repeat?: boolean) => {
-      if (repeat) void load(Player.treeitem);
+    commands.registerCommand("cloudmusic.next", (repeat?: boolean) => {
+      /* if (repeat) void load(Player.item);
       else {
-        if (PersonalFm.get) void load(await PersonalFm.head());
-        else
-          QueueProvider.refresh(() => {
-            QueueProvider.shift(1);
-            void load(QueueProvider.head);
-          });
-      }
+        if (PersonalFm.state) void load(await PersonalFm.head());
+        else  
+      } */
+      if (QueueProvider.len) IPCClient.shift(-1);
     }),
 
-    commands.registerCommand("cloudmusic.play", () => Player.togglePlay()),
+    commands.registerCommand("cloudmusic.play", () => IPCClient.toggle()),
 
     commands.registerCommand("cloudmusic.repeat", () =>
       ButtonManager.buttonRepeat()
     ),
 
-    commands.registerCommand("cloudmusic.like", () => {
+    /* commands.registerCommand("cloudmusic.like", () => {
       if (
-        Player.treeitem instanceof QueueItemTreeItem &&
+        Player.item instanceof QueueItemTreeItem &&
         State.like !== LikeState.none
       )
-        void likeMusic(Player.treeitem.valueOf, !State.like);
-    }),
-    commands.registerCommand("cloudmusic.volume", () => {
-      void MultiStepInput.run((input) => inputLevel(input));
+        void likeMusic(Player.item.valueOf, !State.like);
+    }), */
 
-      async function inputLevel(input: MultiStepInput) {
-        const level = await input.showInputBox({
+    commands.registerCommand("cloudmusic.volume", () => {
+      void MultiStepInput.run(async (input) => {
+        const levelS = await input.showInputBox({
           title: i18n.word.volume,
           step: 1,
           totalSteps: 1,
           value: `${context.globalState.get(VOLUME_KEY, 85)}`,
           prompt: `${i18n.sentence.hint.volume} (0~100)`,
         });
-        if (/^[1-9]\d$|^\d$|^100$/.exec(level))
-          await Player.volume(parseInt(level));
+        if (/^[1-9]\d$|^\d$|^100$/.exec(levelS)) {
+          const level = parseInt(levelS);
+          IPCClient.volume(level);
+          await context.globalState.update(VOLUME_KEY, level);
+        }
         return input.stay();
-      }
+      });
     }),
+
     commands.registerCommand(
       "cloudmusic.toggleButton",
       () => void ButtonManager.toggle()
-    ),
-
-    commands.registerCommand(
-      "cloudmusic.personalFM",
-      () => void PersonalFm.set(true)
     )
+
+    /* commands.registerCommand(
+      "cloudmusic.personalFM",
+      () => (PersonalFm.state = true)
+    ) */
   );
 }

@@ -3,16 +3,18 @@ export const enum Play {
   pause = "player.stop",
   play = "player.play",
   stop = "player.stop",
+  toggle = "player.toggle",
   volume = "player.volume",
 }
 
 export const enum Queue {
+  add = "queue.add",
   clear = "queue.clear",
+  delete = "queue.delete",
   fm = "queue.fm",
-  next = "queue.next",
   play = "queue.play",
-  playNext = "queue.playNext",
-  previous = "queue.previous",
-  sort = "queue.sort",
+  next = "queue.next",
   new = "queue.new",
+  shift = "queue.shift",
+  sort = "queue.sort",
 }

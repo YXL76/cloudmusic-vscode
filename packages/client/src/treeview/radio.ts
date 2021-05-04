@@ -4,9 +4,11 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
+import type { PlayTreeItem, PlayTreeItemData, RefreshAction } from ".";
 import type { ProgramDetail, RadioDetail } from "../constant";
 import { AccountManager } from "../manager";
 import type { TreeDataProvider } from "vscode";
+import { TreeItemId } from "../constant";
 import { apiCache } from "../util";
 import { apiDjProgram } from "../api";
 import i18n from "../i18n";
@@ -17,7 +19,7 @@ export class RadioProvider
 
   private static instance: RadioProvider;
 
-  private static action?: (items: ProgramTreeItem[]) => void;
+  private static action?: RefreshAction;
 
   _onDidChangeTreeData = new EventEmitter<
     RadioTreeItem | ProgramTreeItem | void
@@ -29,10 +31,7 @@ export class RadioProvider
     return this.instance || (this.instance = new RadioProvider());
   }
 
-  static refresh(
-    element?: RadioTreeItem,
-    action?: (items: ProgramTreeItem[]) => void
-  ): void {
+  static refresh(element?: RadioTreeItem, action?: RefreshAction): void {
     if (element) {
       if (action) this.action = action;
       else apiCache.del(`dj_program${element.valueOf}`);
@@ -94,15 +93,14 @@ ${i18n.word.subscribedCount}: ${this.item.subCount}`;
   }
 }
 
-export class ProgramTreeItem extends TreeItem {
+export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
   readonly label!: string;
 
   readonly tooltip = this.program.description;
 
   readonly item = this.program.mainSong;
 
-  readonly description = (() =>
-    this.item.ar.map(({ name }) => name).join("/"))();
+  readonly description!: string;
 
   readonly iconPath = new ThemeIcon("radio-tower");
 
@@ -119,9 +117,17 @@ export class ProgramTreeItem extends TreeItem {
     public readonly pid: number
   ) {
     super(program.mainSong.name);
+    this.description = this.item.ar.map(({ name }) => name).join("/");
   }
 
   get valueOf(): number {
     return this.item.id;
+  }
+
+  get data(): PlayTreeItemData {
+    return {
+      id: TreeItemId.program,
+      ctr: [this.program, this.pid],
+    };
   }
 }

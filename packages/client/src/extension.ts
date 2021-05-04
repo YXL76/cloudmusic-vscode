@@ -6,21 +6,20 @@ import {
   SETTING_DIR,
   TMP_DIR,
 } from "./constant";
-import { MusicCache, Player } from "./util";
 import {
   initAccount,
   initCache,
   initCommand,
   initLocal,
-  initPlayer,
   initPlaylist,
   initQueue,
   initRadio,
   initStatusBar,
 } from "./activate";
 import type { ExtensionContext } from "vscode";
+import { QueueProvider } from "./treeview";
 // import { fork } from "child_process";
-import { rmdirSync } from "fs";
+// import { rmdirSync } from "fs";
 import { workspace } from "vscode";
 
 export async function activate(context: ExtensionContext): Promise<void> {
@@ -36,8 +35,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   ]);
   AccountManager.context = context;
   ButtonManager.context = context;
-  Player.context = context;
-  initPlayer();
+  QueueProvider.context = context;
   initQueue(context);
   initPlaylist(context);
   initRadio(context);
@@ -49,9 +47,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
 }
 
 export function deactivate(): void {
-  Player.stop();
-  MusicCache.store();
+  /* MusicCache.store();
   try {
     rmdirSync(TMP_DIR.fsPath, { recursive: true });
-  } catch {}
+  } catch {} */
 }

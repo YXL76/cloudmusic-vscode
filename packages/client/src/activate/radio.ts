@@ -1,9 +1,9 @@
 import { CommentType, apiDjSub } from "../api";
-import { MultiStepInput, PersonalFm, load, pickRadio } from "../util";
+import { IPCClient, MultiStepInput, pickRadio } from "../util";
 import type { ProgramTreeItem, RadioTreeItem } from "../treeview";
-import { QueueProvider, RadioProvider } from "../treeview";
 import { commands, env, window } from "vscode";
 import type { ExtensionContext } from "vscode";
+import { RadioProvider } from "../treeview";
 import { Webview } from "../webview";
 
 export function initRadio(context: ExtensionContext): void {
@@ -23,18 +23,13 @@ export function initRadio(context: ExtensionContext): void {
 
     commands.registerCommand("cloudmusic.playRadio", (element: RadioTreeItem) =>
       RadioProvider.refresh(element, (items) =>
-        QueueProvider.refresh(() => {
-          void PersonalFm.set(false);
-          QueueProvider.clear();
-          QueueProvider.add(items);
-          void load(QueueProvider.head);
-        })
+        IPCClient.new(items.map(({ data }) => data))
       )
     ),
 
     commands.registerCommand("cloudmusic.addRadio", (element: RadioTreeItem) =>
       RadioProvider.refresh(element, (items) =>
-        QueueProvider.refresh(() => QueueProvider.add(items))
+        IPCClient.add(items.map(({ data }) => data))
       )
     ),
 
@@ -53,20 +48,16 @@ export function initRadio(context: ExtensionContext): void {
       "cloudmusic.playProgram",
       ({ item: { id }, pid }: ProgramTreeItem) =>
         RadioProvider.refresh(RadioProvider.radios.get(pid), (items) =>
-          QueueProvider.refresh(() => {
-            void PersonalFm.set(false);
-            QueueProvider.clear();
-            QueueProvider.add(items);
-            QueueProvider.top(id);
-            void load(QueueProvider.head);
-          })
+          IPCClient.new(
+            items.map(({ data }) => data),
+            id
+          )
         )
     ),
 
     commands.registerCommand(
       "cloudmusic.addProgram",
-      (element: ProgramTreeItem) =>
-        QueueProvider.refresh(() => QueueProvider.add([element]))
+      ({ data }: ProgramTreeItem) => IPCClient.add([data])
     ),
 
     commands.registerCommand(

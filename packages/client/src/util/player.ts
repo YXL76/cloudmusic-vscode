@@ -1,4 +1,4 @@
-import { IPCClient, MusicCache, PersonalFm, State, downloadMusic } from ".";
+import { IPCClient, MusicCache, State, downloadMusic } from ".";
 import {
   LocalFileTreeItem,
   QueueItemTreeItem,
@@ -14,9 +14,9 @@ import type { QueueContent } from "../treeview";
 import { createWriteStream } from "fs";
 import i18n from "../i18n";
 
-async function prefetch() {
+/* async function prefetch() {
   try {
-    const treeitem = PersonalFm.get
+    const treeitem = PersonalFm.state
       ? await PersonalFm.next()
       : QueueProvider.next;
     if (!treeitem || treeitem instanceof LocalFileTreeItem) return;
@@ -27,7 +27,7 @@ async function prefetch() {
       if (!url) return;
 
       const path = Uri.joinPath(TMP_DIR, idS);
-      const data = await downloadMusic(url, idS, path, !PersonalFm.get, md5);
+      const data = await downloadMusic(url, idS, path, !PersonalFm.state, md5);
       if (data) {
         const file = createWriteStream(path.fsPath);
         data.pipe(file);
@@ -35,7 +35,7 @@ async function prefetch() {
       void apiLyric(treeitem.valueOf);
     }
   } catch {}
-}
+} */
 
 export const lyric: Lyric = {
   index: 0,
@@ -57,98 +57,3 @@ export const setLyric = (
   lyric.o = o;
   lyric.t = t;
 };
-
-export class Player {
-  static treeitem?: QueueContent;
-
-  static pid = 0;
-
-  static time = Date.now();
-
-  static context: ExtensionContext;
-
-  static init(): void {
-    void this.volume(this.context.globalState.get(VOLUME_KEY, 85));
-
-    /*  setInterval(() => {
-      if (State.playing) {
-        const pos = NATIVE.playerPosition(this.player);
-        if (pos > 120000 && !this.prefetchLock) {
-          this.prefetchLock = true;
-          void prefetch();
-        }
-        if (NATIVE.playerEmpty(this.player)) {
-          State.playing = false;
-          void commands.executeCommand("cloudmusic.next", ButtonManager.repeat);
-        } else {
-          while (lyric.time[lyric.index] <= pos - lyric.delay * 1000)
-            ++lyric.index;
-          ButtonManager.buttonLyric(lyric[lyric.type].text[lyric.index - 1]);
-          if (lyric.updatePanel) lyric.updatePanel(lyric.index - 1);
-        }
-      }
-    }, 1000);
-
-    // 1000 * 60 * 8 = 480000
-    setInterval(
-      () =>
-        void workspace.fs.readDirectory(TMP_DIR).then((items) => {
-          for (const [item] of items)
-            if (item !== `${this.treeitem?.id || 0}`) {
-              const path = Uri.joinPath(TMP_DIR, item);
-              void workspace.fs.stat(path).then(({ mtime }) => {
-                // 8 * 60 * 1000 = 960000
-                if (Date.now() - mtime > 480000) void workspace.fs.delete(path);
-              });
-            }
-        }),
-      480000
-    ); */
-  }
-
-  static load(url: string, pid: number, treeitem: QueueContent): void {
-    IPCClient.load(url);
-
-    /* if (NATIVE.playerLoad(this.player, url)) {
-      NATIVE.playerSetVolume(
-        this.player,
-        this.context.globalState.get(VOLUME_KEY, 85)
-      );
-      State.playing = true;
-
-      if (treeitem instanceof QueueItemTreeItem)
-        void apiLyric(treeitem.valueOf).then(({ time, o, t }) =>
-          setLyric(0, time, o, t)
-        );
-
-      const pTime = this.time;
-      this.time = Date.now();
-      if (this.treeitem instanceof QueueItemTreeItem) {
-        const diff = this.time - pTime;
-        const { id, dt } = this.treeitem.item;
-        if (diff > 60000 && dt > 60000)
-          void apiScrobble(id, this.pid, Math.floor(Math.min(diff, dt)) / 1000);
-      }
-
-      this.treeitem = treeitem;
-      this.pid = pid;
-      this.prefetchLock = false;
-      State.loading = false;
-    } else void commands.executeCommand("cloudmusic.next"); */
-  }
-
-  static stop(): void {
-    IPCClient.stop();
-  }
-
-  static togglePlay(): void {
-    if (State.playing) IPCClient.pause();
-    else IPCClient.play();
-  }
-
-  static async volume(level: number): Promise<void> {
-    IPCClient.volume(level);
-    await this.context.globalState.update(VOLUME_KEY, level);
-    ButtonManager.buttonVolume(level);
-  }
-}

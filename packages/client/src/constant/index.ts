@@ -28,6 +28,12 @@ export const LYRIC_CACHE_DIR = Uri.joinPath(CACHE_DIR, "lyric");
 
 export const AUTH_PROVIDER_ID = "cloudmusic-auth-provider";
 
+export const enum TreeItemId {
+  queue,
+  program,
+  local,
+}
+
 export const enum ICON {
   album = "$(circuit-board)",
   artist = "$(account)",

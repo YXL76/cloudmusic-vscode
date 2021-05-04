@@ -1,15 +1,20 @@
-import { Player, status } from ".";
+import { Player, State } from ".";
 import { ipcDefaultConfig, ipcServerId } from "@cloudmusic/shared";
 import { IPC } from "node-ipc";
 import { IPCEvent } from "@cloudmusic/shared";
-// import type { Socket } from "net";
 
 const ipc = new IPC();
 Object.assign(ipc.config, ipcDefaultConfig, { id: ipcServerId });
 
+export const broadcast = (
+  value: Parameters<typeof ipc.server.broadcast>[1]
+): void => {
+  ipc.server.broadcast("msg", value);
+};
+
 const callback = () => {
   setInterval(() => {
-    if (!status.playing) return;
+    if (!State.playing) return;
 
     //  const pos = Player.position();
     /* if (pos > 120000 && !this.prefetchLock) {
@@ -17,7 +22,7 @@ const callback = () => {
         void prefetch();
       } */
     if (Player.empty()) {
-      status.playing = false;
+      State.playing = false;
       // void commands.executeCommand("cloudmusic.next", ButtonManager.repeat);
     } /* else {
       while (lyric.time[lyric.index] <= pos - lyric.delay * 1000) ++lyric.index;
@@ -26,34 +31,29 @@ const callback = () => {
     } */
   }, 1000);
 
-  const broadcast = (value: Parameters<typeof ipc.server.broadcast>[1]) => {
-    ipc.server.broadcast("msg", value);
-  };
-
-  ipc.server.on("msg", (data, socket) => {
+  ipc.server.on("msg", (data) => {
     switch (data.t) {
       case IPCEvent.Play.load:
-        Player.load(data.url);
+        if (Player.load(data.url)) broadcast({ t: IPCEvent.Play.load });
         break;
-      case IPCEvent.Play.play:
-        Player.play();
-        broadcast({ t: IPCEvent.Play.play });
-        break;
-      case IPCEvent.Play.pause:
-        Player.pause();
-        broadcast({ t: IPCEvent.Play.pause });
+      case IPCEvent.Play.toggle:
+        State.playing ? Player.pause() : Player.play();
         break;
       case IPCEvent.Play.stop:
         Player.stop();
-        broadcast({ t: IPCEvent.Play.stop });
         break;
       case IPCEvent.Play.volume:
         Player.volume(data.level);
+        broadcast(data);
         break;
+      case IPCEvent.Queue.add:
       case IPCEvent.Queue.clear:
-        broadcast({ t: IPCEvent.Queue.clear });
-        break;
-      default:
+      case IPCEvent.Queue.delete:
+      case IPCEvent.Queue.new:
+      case IPCEvent.Queue.play:
+      case IPCEvent.Queue.shift:
+      case IPCEvent.Queue.sort:
+        broadcast(data);
         break;
     }
   });

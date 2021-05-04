@@ -7,8 +7,10 @@ import {
   Uri,
   workspace,
 } from "vscode";
+import type { PlayTreeItem, PlayTreeItemData, RefreshAction } from ".";
 import type { SongsItem } from "../constant";
 import type { TreeDataProvider } from "vscode";
+import { TreeItemId } from "../constant";
 import { fromFile } from "file-type";
 import { resolve } from "path";
 
@@ -20,7 +22,7 @@ export class LocalProvider
 
   private static instance: LocalProvider;
 
-  private static action?: (items: LocalFileTreeItem[]) => void;
+  private static action?: RefreshAction;
 
   _onDidChangeTreeData = new EventEmitter<LocalLibraryTreeItem | void>();
 
@@ -30,10 +32,7 @@ export class LocalProvider
     return this.instance || (this.instance = new LocalProvider());
   }
 
-  static refresh(
-    element?: LocalLibraryTreeItem,
-    action?: (items: LocalFileTreeItem[]) => void
-  ): void {
+  static refresh(element?: LocalLibraryTreeItem, action?: RefreshAction): void {
     if (element) {
       if (action) this.action = action;
       else this.files.delete(element.label);
@@ -73,8 +72,8 @@ export class LocalProvider
                 mime && (mime === "audio/x-flac" || mime === "audio/mpeg")
             )
             .map(
-              ({ filename, ext }) =>
-                new LocalFileTreeItem(filename, ext, resolve(label, filename))
+              ({ filename: fn, ext }) =>
+                new LocalFileTreeItem(fn, ext ?? "", resolve(label, fn))
             );
           LocalProvider.files.set(label, items);
         } catch {}
@@ -92,7 +91,7 @@ export class LocalProvider
   }
 }
 
-export class LocalFileTreeItem extends TreeItem {
+export class LocalFileTreeItem extends TreeItem implements PlayTreeItem {
   readonly iconPath = new ThemeIcon("file-media");
 
   readonly item: SongsItem = {
@@ -108,7 +107,7 @@ export class LocalFileTreeItem extends TreeItem {
 
   constructor(
     public readonly label: string,
-    public readonly description: string | undefined,
+    public readonly description: string,
     public readonly tooltip: string
   ) {
     super(label);
@@ -116,6 +115,13 @@ export class LocalFileTreeItem extends TreeItem {
 
   get valueOf(): string {
     return this.tooltip;
+  }
+
+  get data(): PlayTreeItemData {
+    return {
+      id: TreeItemId.local,
+      ctr: [this.label, this.description, this.tooltip],
+    };
   }
 }
 

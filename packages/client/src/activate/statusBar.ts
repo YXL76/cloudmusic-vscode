@@ -1,4 +1,4 @@
-import { LyricCache, MultiStepInput, Player, lyric, pickUser } from "../util";
+import { LyricCache, MultiStepInput, lyric, pickUser } from "../util";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import { LyricType } from "../constant";
@@ -159,11 +159,11 @@ export function initStatusBar(context: ExtensionContext): void {
           value: select,
         });
       }
-    }),
-
-    commands.registerCommand("cloudmusic.fmTrash", () => {
-      if (typeof Player.treeitem?.valueOf === "number")
-        void apiFmTrash(Player.treeitem.valueOf);
     })
+
+    /* commands.registerCommand("cloudmusic.fmTrash", () => {
+      if (typeof Player.item?.valueOf === "number")
+        void apiFmTrash(Player.item.valueOf);
+    }) */
   );
 }

@@ -1,9 +1,9 @@
 import type { LocalFileTreeItem, LocalLibraryTreeItem } from "../treeview";
-import { LocalProvider, QueueProvider } from "../treeview";
-import { PersonalFm, load } from "../util";
 import { Uri, commands, env, window } from "vscode";
 import type { ExtensionContext } from "vscode";
+import { IPCClient } from "../util";
 import { LOCAL_FOLDER_KEY } from "../constant";
+import { LocalProvider } from "../treeview";
 
 export function initLocal(context: ExtensionContext): void {
   context.globalState
@@ -58,12 +58,7 @@ export function initLocal(context: ExtensionContext): void {
       "cloudmusic.playLocalLibrary",
       (element: LocalLibraryTreeItem) =>
         LocalProvider.refresh(element, (items) =>
-          QueueProvider.refresh(() => {
-            void PersonalFm.set(false);
-            QueueProvider.clear();
-            QueueProvider.add(items);
-            void load(QueueProvider.head);
-          })
+          IPCClient.new(items.map(({ data }) => data))
         )
     ),
 
@@ -71,7 +66,7 @@ export function initLocal(context: ExtensionContext): void {
       "cloudmusic.addLocalLibrary",
       (element: LocalLibraryTreeItem) =>
         LocalProvider.refresh(element, (items) =>
-          QueueProvider.refresh(() => QueueProvider.add(items))
+          IPCClient.add(items.map(({ data }) => data))
         )
     ),
 
@@ -82,19 +77,12 @@ export function initLocal(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.addLocalFile",
-      (element: LocalFileTreeItem) =>
-        QueueProvider.refresh(() => QueueProvider.add([element]))
+      ({ data }: LocalFileTreeItem) => IPCClient.add([data])
     ),
 
     commands.registerCommand(
       "cloudmusic.playLocalFile",
-      (element: LocalFileTreeItem) =>
-        QueueProvider.refresh(() => {
-          void PersonalFm.set(false);
-          QueueProvider.clear();
-          QueueProvider.add([element]);
-          void load(QueueProvider.head);
-        })
+      ({ data }: LocalFileTreeItem) => IPCClient.new([data])
     )
   );
 }
