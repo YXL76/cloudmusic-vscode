@@ -27,20 +27,17 @@ import {
 } from "../treeview";
 import { Uri, commands, env, window } from "vscode";
 import { basename, dirname } from "path";
+import { AccountManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import { Webview } from "../webview";
 import { createWriteStream } from "fs";
 import i18n from "../i18n";
 
 export function initPlaylist(context: ExtensionContext): void {
-  const userPlaylistProvider = PlaylistProvider.getUserInstance();
-  const favoritePlaylistProvider = PlaylistProvider.getFavoriteInstance();
+  const playlistProvider = PlaylistProvider.getInstance();
+
   context.subscriptions.push(
-    window.registerTreeDataProvider("userPlaylist", userPlaylistProvider),
-    window.registerTreeDataProvider(
-      "favoritePlaylist",
-      favoritePlaylistProvider
-    ),
+    window.registerTreeDataProvider("playlist", playlistProvider),
 
     commands.registerCommand("cloudmusic.refreshPlaylist", () =>
       PlaylistProvider.refresh()
@@ -115,7 +112,9 @@ export function initPlaylist(context: ExtensionContext): void {
             { modal: true },
             i18n.word.confirmation
           )) &&
-          (await apiPlaylistDelete(id))
+          (await (AccountManager.isUserPlaylisr(id)
+            ? apiPlaylistDelete(id)
+            : apiPlaylistSubscribe(id, "unsubscribe")))
         )
           PlaylistProvider.refresh();
       }
@@ -124,12 +123,12 @@ export function initPlaylist(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.editPlaylist",
       ({ item: { id, name, description } }: PlaylistItemTreeItem) => {
+        if (!AccountManager.isUserPlaylisr(id)) return;
+
         type State = { name: string; desc: string };
         const state: State = { name, desc: description || "" };
 
-        void MultiStepInput.run((input) => inputName(input));
-
-        async function inputName(input: MultiStepInput) {
+        void MultiStepInput.run(async (input) => {
           state.name = await input.showInputBox({
             title: i18n.word.editPlaylist,
             step: 1,
@@ -138,7 +137,7 @@ export function initPlaylist(context: ExtensionContext): void {
             prompt: i18n.sentence.hint.name,
           });
           return (input: MultiStepInput) => inputDesc(input);
-        }
+        });
 
         async function inputDesc(input: MultiStepInput) {
           state.desc = await input.showInputBox({
@@ -151,21 +150,6 @@ export function initPlaylist(context: ExtensionContext): void {
           if (await apiPlaylistUpdate(id, state.name, state.desc))
             PlaylistProvider.refresh();
         }
-      }
-    ),
-
-    commands.registerCommand(
-      "cloudmusic.unsavePlaylist",
-      async ({ item: { id } }: PlaylistItemTreeItem) => {
-        if (
-          (await window.showWarningMessage(
-            i18n.sentence.hint.confirmation,
-            { modal: true },
-            i18n.word.confirmation
-          )) &&
-          (await apiPlaylistSubscribe(id, "unsubscribe"))
-        )
-          PlaylistProvider.refresh();
       }
     ),
 
@@ -230,6 +214,7 @@ export function initPlaylist(context: ExtensionContext): void {
       "cloudmusic.deleteFromPlaylist",
       async ({ item: { id }, pid }: QueueItemTreeItem) => {
         if (
+          AccountManager.isUserPlaylisr(id) &&
           (await window.showWarningMessage(
             i18n.sentence.hint.confirmation,
             { modal: true },

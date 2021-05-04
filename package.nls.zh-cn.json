@@ -54,7 +54,6 @@
   "commands.songDetail.title": "详情",
   "commands.sortQueue.title": "排序",
   "commands.toggleButton.title": "按钮切换",
-  "commands.unsavePlaylist.title": "取消收藏",
   "commands.unsubRadio.title": "取消收藏",
   "commands.volume.title": "音量",
   "configuration.account.autoCheck.markdownDescription": "自动签到",
@@ -65,10 +64,9 @@
   "configuration.music.quality.enumDescriptions.medium": "较高",
   "configuration.music.quality.markdownDescription": "选择优先播放的音质",
   "configuration.player.mediaControl.markdownDescription": "开启媒体控制",
-  "views.favoritePlaylist.name": "收藏歌单",
   "views.local.name": "本地曲库",
+  "views.playlist.name": "歌单",
   "views.queue.name": "队列",
   "views.radio.name": "播单",
-  "views.userPlaylist.name": "用户歌单",
   "viewsContainers.activitybar.title": "云音乐"
 }

@@ -35,8 +35,7 @@
   ],
   "activationEvents": [
     "onView:local",
-    "onView:userPlaylist",
-    "onView:favoritePlaylist",
+    "onView:playlist",
     "onView:radio",
     "onView:queue"
   ],
@@ -172,10 +171,6 @@
       {
         "command": "cloudmusic.editPlaylist",
         "title": "%commands.editPlaylist.title%"
-      },
-      {
-        "command": "cloudmusic.unsavePlaylist",
-        "title": "%commands.unsavePlaylist.title%"
       },
       {
         "command": "cloudmusic.sortQueue",
@@ -453,10 +448,6 @@
           "when": "false"
         },
         {
-          "command": "cloudmusic.unsavePlaylist",
-          "when": "false"
-        },
-        {
           "command": "cloudmusic.sortQueue",
           "when": "false"
         },
@@ -617,44 +608,40 @@
         {
           "command": "cloudmusic.refreshPlaylistContent",
           "group": "inline",
-          "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem || view == favoritePlaylist && viewItem == PlaylistItemTreeItem"
+          "when": "view == playlist && viewItem == PlaylistItemTreeItem"
         },
         {
           "command": "cloudmusic.playPlaylist",
           "group": "inline",
-          "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem || view == favoritePlaylist && viewItem == PlaylistItemTreeItem"
+          "when": "view == playlist && viewItem == PlaylistItemTreeItem"
         },
         {
           "command": "cloudmusic.addPlaylist",
           "group": "inline",
-          "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem || view == favoritePlaylist && viewItem == PlaylistItemTreeItem"
+          "when": "view == playlist && viewItem == PlaylistItemTreeItem"
         },
         {
           "command": "cloudmusic.deletePlaylist",
-          "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem"
+          "when": "view == playlist && viewItem == PlaylistItemTreeItem"
         },
         {
           "command": "cloudmusic.editPlaylist",
-          "when": "view == userPlaylist && viewItem == PlaylistItemTreeItem"
-        },
-        {
-          "command": "cloudmusic.unsavePlaylist",
-          "when": "view == favoritePlaylist && viewItem == PlaylistItemTreeItem"
+          "when": "view == playlist && viewItem == PlaylistItemTreeItem"
         },
         {
           "command": "cloudmusic.addSong",
           "group": "inline",
-          "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem"
+          "when": "view == playlist && viewItem == QueueItemTreeItem"
         },
         {
           "command": "cloudmusic.intelligence",
           "group": "inline",
-          "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem"
+          "when": "view == playlist && viewItem == QueueItemTreeItem"
         },
         {
           "command": "cloudmusic.playSongWithPlaylist",
           "group": "inline",
-          "when": "view == userPlaylist && viewItem == QueueItemTreeItem || view == favoritePlaylist && viewItem == QueueItemTreeItem"
+          "when": "view == playlist && viewItem == QueueItemTreeItem"
         },
         {
           "command": "cloudmusic.playSong",
@@ -673,7 +660,7 @@
         },
         {
           "command": "cloudmusic.deleteFromPlaylist",
-          "when": "view == userPlaylist && viewItem == QueueItemTreeItem"
+          "when": "view == playlist && viewItem == QueueItemTreeItem"
         },
         {
           "command": "cloudmusic.saveToPlaylist",
@@ -763,12 +750,12 @@
         {
           "command": "cloudmusic.refreshPlaylist",
           "group": "navigation",
-          "when": "view == userPlaylist || view == favoritePlaylist"
+          "when": "view == playlist"
         },
         {
           "command": "cloudmusic.createPlaylist",
           "group": "navigation",
-          "when": "view == userPlaylist"
+          "when": "view == playlist"
         },
         {
           "command": "cloudmusic.refreshRadio",
@@ -799,12 +786,8 @@
           "name": "%views.local.name%"
         },
         {
-          "id": "userPlaylist",
-          "name": "%views.userPlaylist.name%"
-        },
-        {
-          "id": "favoritePlaylist",
-          "name": "%views.favoritePlaylist.name%"
+          "id": "playlist",
+          "name": "%views.playlist.name%"
         },
         {
           "id": "radio",

@@ -42,6 +42,8 @@ export class AccountManager implements AuthenticationProvider {
 
   static cookie = {} as Cookie;
 
+  static userPlaylist: PlaylistItem[];
+
   static readonly likelist: Set<number> = new Set<number>();
 
   private static instance: AccountManager;
@@ -98,16 +100,17 @@ export class AccountManager implements AuthenticationProvider {
     return false;
   }
 
-  static async userPlaylist(): Promise<PlaylistItem[]> {
-    if (this.uid === 0) return [];
-    const lists = await apiUserPlaylist(this.uid);
-    return lists.filter((list) => list.creator.userId === this.uid);
+  static isUserPlaylisr(id: number): boolean {
+    return this.userPlaylist.findIndex(({ id: vid }) => vid === id) !== -1;
   }
 
-  static async favoritePlaylist(): Promise<PlaylistItem[]> {
+  static async playlist(): Promise<PlaylistItem[]> {
     if (this.uid === 0) return [];
     const lists = await apiUserPlaylist(this.uid);
-    return lists.filter((list) => list.creator.userId !== this.uid);
+    this.userPlaylist = lists.filter(
+      ({ creator: { userId } }) => userId === this.uid
+    );
+    return lists;
   }
 
   static async djradio(): Promise<RadioDetail[]> {

@@ -976,7 +976,7 @@ export async function pickAddToPlaylist(
   step: number,
   id: number
 ): Promise<InputStep | void> {
-  const lists = await AccountManager.userPlaylist();
+  const lists = AccountManager.userPlaylist;
   const pick = await input.showQuickPick({
     title: i18n.word.saveToPlaylist,
     step,

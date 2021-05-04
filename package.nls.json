@@ -54,7 +54,6 @@
   "commands.songDetail.title": "Detail",
   "commands.sortQueue.title": "Sort",
   "commands.toggleButton.title": "Toggle button",
-  "commands.unsavePlaylist.title": "Unsave",
   "commands.unsubRadio.title": "Unsubscribe",
   "commands.volume.title": "Volume",
   "configuration.account.autoCheck.markdownDescription": "Auto check when extension is active",
@@ -65,10 +64,9 @@
   "configuration.music.quality.enumDescriptions.medium": "Medium Quality",
   "configuration.music.quality.markdownDescription": "Choose your prefer music quality",
   "configuration.player.mediaControl.markdownDescription": "Enable media control",
-  "views.favoritePlaylist.name": "Favorite playlist",
   "views.local.name": "Local library",
+  "views.playlist.name": "Playlist",
   "views.queue.name": "Queue",
   "views.radio.name": "Radio",
-  "views.userPlaylist.name": "User playlist",
   "viewsContainers.activitybar.title": "Cloudmusic"
 }

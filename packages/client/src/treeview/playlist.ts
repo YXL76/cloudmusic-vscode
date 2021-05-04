@@ -13,20 +13,11 @@ import { apiCache } from "../util";
 import { apiPlaylistDetail } from "../api";
 import i18n from "../i18n";
 
-const enum Type {
-  userInstance,
-  favoriteInstance,
-}
-
 export class PlaylistProvider
   implements TreeDataProvider<PlaylistItemTreeItem | QueueItemTreeItem> {
   static readonly playlists = new Map<number, PlaylistItemTreeItem>();
 
-  private static userInstance: PlaylistProvider;
-
-  private static favoriteInstance: PlaylistProvider;
-
-  private static readonly belongsTo = new Map<number, Type>();
+  private static instance: PlaylistProvider;
 
   private static action?: RefreshAction;
 
@@ -36,39 +27,19 @@ export class PlaylistProvider
 
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-  constructor(private type: Type) {}
-
-  static getUserInstance(): PlaylistProvider {
-    return (
-      this.userInstance ||
-      (this.userInstance = new PlaylistProvider(Type.userInstance))
-    );
-  }
-
-  static getFavoriteInstance(): PlaylistProvider {
-    return (
-      this.favoriteInstance ||
-      (this.favoriteInstance = new PlaylistProvider(Type.favoriteInstance))
-    );
+  static getInstance(): PlaylistProvider {
+    return this.instance || (this.instance = new PlaylistProvider());
   }
 
   static refresh(element?: PlaylistItemTreeItem, action?: RefreshAction): void {
     if (element) {
-      const { id } = element.item;
-
       if (action) this.action = action;
-      else apiCache.del(`playlist_detail${id}`);
-
-      if (this.belongsTo.get(id) === Type.userInstance)
-        this.userInstance._onDidChangeTreeData.fire(element);
-      else this.favoriteInstance._onDidChangeTreeData.fire(element);
+      else apiCache.del(`playlist_detail${element.item.id}`);
     } else {
       apiCache.del(`user_playlist${AccountManager.uid}`);
-      this.belongsTo.clear();
       this.playlists.clear();
-      this.userInstance._onDidChangeTreeData.fire();
-      this.favoriteInstance._onDidChangeTreeData.fire();
     }
+    this.instance._onDidChangeTreeData.fire(element);
   }
 
   private static async getPlaylistContent(id: number) {
@@ -100,14 +71,7 @@ export class PlaylistProvider
   }
 
   private async getPlaylistItem() {
-    let playlists: PlaylistItem[];
-    if (this.type === Type.userInstance) {
-      playlists = await AccountManager.userPlaylist();
-    } else {
-      playlists = await AccountManager.favoritePlaylist();
-    }
-    return playlists.map((playlist) => {
-      PlaylistProvider.belongsTo.set(playlist.id, this.type);
+    return (await AccountManager.playlist()).map((playlist) => {
       const item = new PlaylistItemTreeItem(playlist);
       PlaylistProvider.playlists.set(playlist.id, item);
       return item;
