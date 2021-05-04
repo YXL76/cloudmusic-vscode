@@ -819,6 +819,7 @@
     "object-assign": "latest"
   },
   "scripts": {
+    "build": "yarn workspaces foreach run build",
     "build-dev": "yarn workspaces foreach run build-dev",
     "list": "node scripts/list.js",
     "pnp": "yarn pnpify --sdk vscode vim",

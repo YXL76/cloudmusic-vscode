@@ -28,7 +28,7 @@ module.exports = (_, options) =>
   /**@type {import('webpack').Configuration}*/
   ({
     experiments: { asyncWebAssembly: true },
-    devtool: "source-map",
+    devtool: options.mode === "production" ? undefined : "source-map",
     context: rootPath,
     entry: resolve(srcPath, "extension.ts"),
     externals: {
