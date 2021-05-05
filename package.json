@@ -872,7 +872,7 @@
     "axios": "0.21.1",
     "dayjs": "1.10.4",
     "debug": "4.3.1",
-    "file-type": "16.3.0",
+    "file-type": "16.4.0",
     "lodash": "4.17.21",
     "md5-file": "5.0.0",
     "node-cache": "5.1.2",
