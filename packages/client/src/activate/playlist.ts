@@ -12,6 +12,7 @@ import {
   IPCClient,
   MultiStepInput,
   State,
+  Webview,
   downloadMusic,
   pickAddToPlaylist,
   pickPlaylist,
@@ -29,7 +30,6 @@ import { basename, dirname } from "path";
 import { AccountManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import { HOME_DIR } from "../constant";
-import { Webview } from "../webview";
 import { createWriteStream } from "fs";
 import i18n from "../i18n";
 

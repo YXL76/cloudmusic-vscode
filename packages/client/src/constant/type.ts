@@ -120,7 +120,8 @@ export type Lyric = {
   index: number;
   delay: number;
   type: LyricType;
-  updatePanel?: (inde: number) => void;
+  updatePanel?: (index: number) => void;
+  updateFontSize?: (size: number) => void;
 } & Omit<LyricData, "ctime">;
 
 export type LyricSpecifyData = {

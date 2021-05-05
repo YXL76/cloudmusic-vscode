@@ -1,10 +1,9 @@
 import { CommentType, apiDjSub } from "../api";
-import { IPCClient, MultiStepInput, pickRadio } from "../util";
+import { IPCClient, MultiStepInput, Webview, pickRadio } from "../util";
 import type { ProgramTreeItem, RadioTreeItem } from "../treeview";
 import { commands, env, window } from "vscode";
 import type { ExtensionContext } from "vscode";
 import { RadioProvider } from "../treeview";
-import { Webview } from "../webview";
 
 export function initRadio(context: ExtensionContext): void {
   const djRadioProvider = RadioProvider.getInstance();

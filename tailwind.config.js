@@ -3,7 +3,7 @@ module.exports = {
   darkMode: "class",
   plugins: [],
   purge: {
-    content: ["./src/webview/**/*.tsx"],
+    content: ["./packages/webview/src/**/*.tsx"],
     enabled: true,
     mode: "all",
     preserveHtmlElements: false,

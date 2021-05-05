@@ -59,14 +59,10 @@ __metadata:
     "@types/node": 14.14.43
     "@types/node-ipc": "workspace:*"
     "@types/qrcode": 1.4.0
-    "@types/react": 17.0.4
-    "@types/react-dom": 17.0.3
     "@types/vscode": 1.55.0
     "@types/yallist": 3.0.1
     array-unsort: 1.1.6
     axios: 0.21.1
-    dayjs: 1.10.4
-    esbuild: 0.11.18
     esbuild-loader: 2.12.0
     file-type: 16.3.0
     lodash: 4.17.21
@@ -74,9 +70,6 @@ __metadata:
     node-cache: 5.1.2
     node-ipc: 9.1.4
     qrcode: 1.4.4
-    react: 17.0.2
-    react-dom: 17.0.2
-    react-icons: 4.2.0
     webpack: 5.36.2
     webpack-cli: 4.6.0
     yallist: 4.0.0
@@ -108,6 +101,17 @@ __metadata:
 "@cloudmusic/webview@workspace:packages/webview":
   version: 0.0.0-use.local
   resolution: "@cloudmusic/webview@workspace:packages/webview"
+  dependencies:
+    "@cloudmusic/shared": "workspace:*"
+    "@types/react": 17.0.5
+    "@types/react-dom": 17.0.3
+    dayjs: 1.10.4
+    esbuild-loader: 2.12.0
+    react: 17.0.2
+    react-dom: 17.0.2
+    react-icons: 4.2.0
+    webpack: 5.36.2
+    webpack-cli: 4.6.0
   languageName: unknown
   linkType: soft
 
@@ -311,9 +315,9 @@ __metadata:
   linkType: soft
 
 "@types/node@npm:*":
-  version: 15.0.1
-  resolution: "@types/node@npm:15.0.1"
-  checksum: 4e4fb69394efb224272ad7c6b6dc16a381b97e46a8f3c21d33fec51ef13a4d635f571b446d127eae333ea6a763f304b787f4b3f73e24e1f3b05a21b481900dfb
+  version: 15.0.2
+  resolution: "@types/node@npm:15.0.2"
+  checksum: ea8dd741bf16ad3318cca505783b7c211a5c8bea49202f99ba88d2ce8a804e994e1fd1b575b994e434e8b8ead810da966d588ea112998f8fe8d95cd74c396f8a
   languageName: node
   linkType: hard
 
@@ -363,14 +367,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:17.0.4":
-  version: 17.0.4
-  resolution: "@types/react@npm:17.0.4"
+"@types/react@npm:*, @types/react@npm:17.0.5":
+  version: 17.0.5
+  resolution: "@types/react@npm:17.0.5"
   dependencies:
     "@types/prop-types": "*"
     "@types/scheduler": "*"
     csstype: ^3.0.2
-  checksum: d7a8121faa889d52148df392751b771be16a45369872e9ad2b5db3d5bb8f76e684db27c2447b440441e3da1f353d434fa20fdcb45b3a56a296aab0757862da77
+  checksum: f9793e8113f14122d6ed20643b4fe27d30e10d7c80571a1d238c13f8171864f2a7b337194bf41310724498586ed4560fffd081a2d21e488afbb1aca33534189b
   languageName: node
   linkType: hard
 
@@ -904,11 +908,11 @@ __metadata:
   linkType: hard
 
 "acorn@npm:^8.2.1":
-  version: 8.2.2
-  resolution: "acorn@npm:8.2.2"
+  version: 8.2.4
+  resolution: "acorn@npm:8.2.4"
   bin:
     acorn: bin/acorn
-  checksum: 9e509a7a99e4e65cbfe48395f2d5576a7dbd30078ae95ea28f771921667c102b092d79994c20658ae98506ed4f2e86b5e6fcdbba3e6f8e18eda195568942cfe9
+  checksum: 6879266ea9ba4ece99afb4ab4f3ac6eaa3cf866cee40651ca90cde0b1fd5c6954d2006c54877c83287d5d38700327cbd6bda028b6fbb1daa346c7034f18147c2
   languageName: node
   linkType: hard
 
@@ -1391,9 +1395,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001196, caniuse-lite@npm:^1.0.30001219":
-  version: 1.0.30001220
-  resolution: "caniuse-lite@npm:1.0.30001220"
-  checksum: ef0ad593aa312486f21dfe3432b939862a73d03a531ec84b4576856118b697661c2a17bd6325efa13852e73fb794df512db3a3b414f0d4878b4bd9a0b772de36
+  version: 1.0.30001221
+  resolution: "caniuse-lite@npm:1.0.30001221"
+  checksum: 38d436b0636bd0f26cef1f322d261b04e337bb3930e2ea9daaa0479719463187c456d004865bb2a70ef733b9c4970693a985175695383ef1038f5e687437dcfa
   languageName: node
   linkType: hard
 
@@ -2064,9 +2068,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.3.723":
-  version: 1.3.725
-  resolution: "electron-to-chromium@npm:1.3.725"
-  checksum: 95058d931b50a7463a28ecb4f427419e3f6086952195fff5e61e97ae07463cb3665afc40548cbfa0efcdc2458d610770374c5932dd8ebda8aecef32aae5393ec
+  version: 1.3.726
+  resolution: "electron-to-chromium@npm:1.3.726"
+  checksum: 031fb7d794021b2c7200e74c830a033a2ee12a2a547751d399c499a2022c0b0dbe1deae1396995cb2ef48830d441a36190b7fa6465af19562e0b849a00d88b39
   languageName: node
   linkType: hard
 
@@ -2235,11 +2239,11 @@ __metadata:
   linkType: hard
 
 "esbuild@npm:latest":
-  version: 0.11.17
-  resolution: "esbuild@npm:0.11.17"
+  version: 0.11.18
+  resolution: "esbuild@npm:0.11.18"
   bin:
     esbuild: bin/esbuild
-  checksum: 8f67ff366b9bf29f0284a6b7855a878d657052acfa13bdf63d2a7efd191804ff3d4344c95fa4196872184f75ebb9feaac5ab68b783af975734d21b7323121e84
+  checksum: e910000e9a31b577d10ff066b395b2e273571604c32247ebd4832544168499e6d3b975ce0fd9f35aa3c01a15407380be6c5e51a80f1713721396483eb9525b34
   languageName: node
   linkType: hard
 
@@ -2332,9 +2336,9 @@ __metadata:
   linkType: hard
 
 "eslint-visitor-keys@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "eslint-visitor-keys@npm:2.0.0"
-  checksum: 429dabdcab3c1cf5e65d44843afc513398d4ee32a37f93edc93bb5ba59a12b78fa67d87ff23c752c170b5e4f9085050f45b3c036cdfb23d40a724f2614048140
+  version: 2.1.0
+  resolution: "eslint-visitor-keys@npm:2.1.0"
+  checksum: 75eaae9006f5bcb9d1e09641719b840b83c4758f5f25bc06a0e94918d78658d0f19691bdc2e3b100604d0fe2d1eb94a2aab287ba24ad2f02f87cacdccb86c2e4
   languageName: node
   linkType: hard
 
@@ -3157,9 +3161,9 @@ fsevents@~2.3.1:
   linkType: hard
 
 "is-bigint@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "is-bigint@npm:1.0.1"
-  checksum: dd132ab80f389d6968315d491706c5dbb3f6c4bf35b64085d74895e7f3516123ab1bcf6a9a83a63cfede688f44550a08713ed37f3ae9153afe8d0cf569a8b956
+  version: 1.0.2
+  resolution: "is-bigint@npm:1.0.2"
+  checksum: 818680e551dc0a33ed8662b869cd3cb3236f6b94994850c1701200816cf9ad7e82a24fb4efbfc7046f167cd6429a71ba3672c73a7507093164c6ee9123bf30a9
   languageName: node
   linkType: hard
 

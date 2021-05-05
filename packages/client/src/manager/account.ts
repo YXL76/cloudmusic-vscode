@@ -12,7 +12,7 @@ import type {
   ExtensionContext,
 } from "vscode";
 import { EventEmitter, authentication, window } from "vscode";
-import { MultiStepInput, State } from "../util";
+import { MultiStepInput, State, Webview } from "../util";
 import {
   apiDailySigninAndroid,
   apiDailySigninWeb,
@@ -29,7 +29,6 @@ import {
   cookieToJson,
 } from "../api";
 import type { Cookie } from "../api";
-import { Webview } from "../webview";
 import { createHash } from "crypto";
 import i18n from "../i18n";
 

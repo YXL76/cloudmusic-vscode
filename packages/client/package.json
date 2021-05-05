@@ -13,11 +13,8 @@
     "@types/node": "14.14.43",
     "@types/node-ipc": "workspace:*",
     "@types/qrcode": "1.4.0",
-    "@types/react": "17.0.4",
-    "@types/react-dom": "17.0.3",
     "@types/vscode": "1.55.0",
     "@types/yallist": "3.0.1",
-    "esbuild": "0.11.18",
     "esbuild-loader": "2.12.0",
     "webpack": "5.36.2",
     "webpack-cli": "4.6.0"
@@ -26,16 +23,12 @@
     "@cloudmusic/shared": "workspace:*",
     "array-unsort": "1.1.6",
     "axios": "0.21.1",
-    "dayjs": "1.10.4",
     "file-type": "16.3.0",
     "lodash": "4.17.21",
     "md5-file": "5.0.0",
     "node-cache": "5.1.2",
     "node-ipc": "9.1.4",
     "qrcode": "1.4.4",
-    "react": "17.0.2",
-    "react-dom": "17.0.2",
-    "react-icons": "4.2.0",
     "yallist": "4.0.0"
   }
 }

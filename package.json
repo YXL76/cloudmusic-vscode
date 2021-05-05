@@ -821,6 +821,7 @@
   "scripts": {
     "build": "yarn workspaces foreach run build",
     "build-dev": "yarn workspaces foreach run build-dev",
+    "generate-css": "postcss style.css -o dist/style.css",
     "list": "node scripts/list.js",
     "pnp": "yarn pnpify --sdk vscode vim",
     "vscode:prepublish": "yarn build"

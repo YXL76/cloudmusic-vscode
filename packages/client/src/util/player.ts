@@ -1,17 +1,5 @@
-import { IPCClient, MusicCache, State, downloadMusic } from ".";
-import {
-  LocalFileTreeItem,
-  QueueItemTreeItem,
-  QueueProvider,
-} from "../treeview";
 import type { Lyric, LyricSpecifyData } from "../constant";
-import { LyricType, TMP_DIR, VOLUME_KEY } from "../constant";
-import { Uri, commands, workspace } from "vscode";
-import { apiLyric, apiScrobble, apiSongUrl } from "../api";
-import { ButtonManager } from "../manager";
-import type { ExtensionContext } from "vscode";
-import type { QueueContent } from "../treeview";
-import { createWriteStream } from "fs";
+import { LyricType } from "../constant";
 import i18n from "../i18n";
 
 /* async function prefetch() {

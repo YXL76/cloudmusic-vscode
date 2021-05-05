@@ -35,6 +35,7 @@ import {
   ButtonAction,
   MultiStepInput,
   State,
+  Webview,
   pickAlbums,
   pickArtist,
   pickArtistItems,
@@ -53,7 +54,6 @@ import { AccountManager } from "../manager";
 import type { ArtistInitial } from "../api";
 import type { InputStep } from "../util";
 import type { RadioDetail } from "../constant";
-import { Webview } from "../webview";
 import i18n from "../i18n";
 import { inputKeyword } from ".";
 

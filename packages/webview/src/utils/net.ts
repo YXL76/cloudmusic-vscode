@@ -1,0 +1,29 @@
+import type { CSConnPool, CSMessage } from "@cloudmusic/shared";
+import { webview } from "@cloudmusic/shared";
+
+export const vscode = acquireVsCodeApi();
+
+const requestPool = new Map() as CSConnPool;
+
+declare const PAGE_PAGE: webview.Type;
+
+if (PAGE_PAGE !== webview.Type.lyric) {
+  window.addEventListener(
+    "message",
+    ({ data: { msg, channel } }: MessageEvent<CSMessage>) => {
+      const req = requestPool.get(channel);
+      requestPool.delete(channel);
+      if (req) req.resolve(msg);
+    }
+  );
+}
+
+export function request<T = undefined, U = undefined>(msg: U): Promise<T> {
+  const channel = Date.now();
+  return new Promise((resolve, reject) => {
+    const prev = requestPool.get(channel);
+    if (prev) prev.reject();
+    requestPool.set(channel, { resolve, reject });
+    vscode.postMessage<CSMessage<U>>({ msg, channel });
+  });
+}

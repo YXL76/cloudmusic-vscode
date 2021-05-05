@@ -12,6 +12,5 @@
     "strictNullChecks": true,
     "target": "es2019"
   },
-  "exclude": [".vscode-test", "src/webview/scripts"],
   "include": ["src"]
 }

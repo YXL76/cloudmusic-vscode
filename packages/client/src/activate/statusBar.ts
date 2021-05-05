@@ -1,9 +1,8 @@
-import { LyricCache, MultiStepInput, lyric, pickUser } from "../util";
+import { LyricCache, MultiStepInput, Webview, lyric, pickUser } from "../util";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import { LyricType } from "../constant";
 import type { QuickPickItem } from "vscode";
-import { Webview } from "../webview";
 import { apiFmTrash } from "../api";
 import { commands } from "vscode";
 import i18n from "../i18n";
@@ -124,10 +123,9 @@ export function initStatusBar(context: ExtensionContext): void {
           title,
           step: 2,
           totalSteps,
-          value: `${Webview.lyricFontSize}`,
           prompt: i18n.sentence.hint.lyricFontSize,
         });
-        if (/^\d+$/.test(size)) Webview.lyricFontSize = parseInt(size);
+        if (/^\d+$/.test(size)) lyric.updateFontSize?.(parseInt(size));
         return input.stay();
       }
 

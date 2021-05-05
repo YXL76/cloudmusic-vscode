@@ -1,7 +1,7 @@
 const { ESBuildMinifyPlugin } = require("esbuild-loader");
 const { resolve } = require("path");
 
-const target = "es2019";
+const target = "chrome87";
 const rootPath = resolve(__dirname, "..", "..");
 const distPath = resolve(rootPath, "dist");
 const srcPath = resolve(__dirname, "src");
@@ -9,21 +9,21 @@ const srcPath = resolve(__dirname, "src");
 module.exports = (_, options) =>
   /**@type {import('webpack').Configuration}*/
   ({
-    experiments: { asyncWebAssembly: true },
+    experiments: { asyncWebAssembly: true, outputModule: true },
     // devtool: options.mode === "production" ? undefined : "source-map",
     context: rootPath,
-    entry: resolve(srcPath, "server.ts"),
+    entry: resolve(srcPath, "index.tsx"),
     module: {
       rules: [
         {
           include: rootPath,
           loader: "esbuild-loader",
           options: {
-            loader: "ts",
+            loader: "tsx",
             target,
             tsconfigRaw: require(resolve(__dirname, "tsconfig.json")),
           },
-          test: /\.ts$/,
+          test: /\.tsx?$/,
         },
       ],
     },
@@ -36,15 +36,15 @@ module.exports = (_, options) =>
     },
     output: {
       devtoolModuleFilenameTemplate: "../[resource-path]",
-      filename: "server.js",
-      libraryTarget: "commonjs2",
+      filename: "webview.js",
+      libraryTarget: "module",
       path: distPath,
     },
     performance: {
       hints: false,
     },
     resolve: {
-      extensions: [".ts", ".js"],
+      extensions: [".ts", ".tsx", ".js", ".jsx"],
     },
-    target: "node",
+    target: "web",
   });

@@ -1,28 +1,10 @@
-const { readFileSync, readdirSync } = require("fs");
-const { DefinePlugin } = require("webpack");
 const { ESBuildMinifyPlugin } = require("esbuild-loader");
 const { resolve } = require("path");
-const { transformSync } = require("esbuild");
 
 const target = "es2019";
 const rootPath = resolve(__dirname, "..", "..");
 const distPath = resolve(rootPath, "dist");
 const srcPath = resolve(__dirname, "src");
-
-const scriptsPath = resolve(srcPath, "webview", "scripts");
-const definitions = {};
-readdirSync(scriptsPath).forEach(
-  (file) =>
-    file.substr(file.indexOf(".") + 1) === "ts" &&
-    (definitions[file.substr(0, file.indexOf("."))] = `\`${
-      transformSync(readFileSync(resolve(scriptsPath, file)).toString(), {
-        loader: "ts",
-        target: "chrome87",
-        sourcemap: false,
-        minify: true,
-      }).code
-    }\``)
-);
 
 module.exports = (_, options) =>
   /**@type {import('webpack').Configuration}*/
@@ -37,7 +19,6 @@ module.exports = (_, options) =>
     module: {
       rules: [
         {
-          exclude: /node_modules/,
           include: rootPath,
           loader: "esbuild-loader",
           options: {
@@ -65,7 +46,6 @@ module.exports = (_, options) =>
     performance: {
       hints: false,
     },
-    plugins: [new DefinePlugin(definitions)],
     resolve: {
       extensions: [".ts", ".js", ".tsx", ".jsx"],
     },

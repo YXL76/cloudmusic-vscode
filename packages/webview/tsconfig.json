@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "lib": ["esnext", "dom", "dom.iterable"],
+    "esModuleInterop": true,
+    "jsx": "react-jsx",
+    "lib": ["es2019", "DOM", "DOM.Iterable"],
     "module": "commonjs",
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
@@ -8,7 +10,8 @@
     "noImplicitReturns": true,
     "noUnusedParameters": true,
     "strict": true,
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "target": "es2019"
   },
-  "include": ["."]
+  "include": ["src"]
 }
