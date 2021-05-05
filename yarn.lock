@@ -58,7 +58,7 @@ __metadata:
     "@types/lodash": 4.14.168
     "@types/node": 14.14.43
     "@types/node-ipc": "workspace:*"
-    "@types/qrcode": 1.4.0
+    "@types/qrcode": "workspace:*"
     "@types/vscode": 1.55.0
     "@types/yallist": 3.0.1
     array-unsort: 1.1.6
@@ -349,14 +349,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/qrcode@npm:1.4.0":
-  version: 1.4.0
-  resolution: "@types/qrcode@npm:1.4.0"
+"@types/qrcode@workspace:*, @types/qrcode@workspace:packages/@types/qrcode":
+  version: 0.0.0-use.local
+  resolution: "@types/qrcode@workspace:packages/@types/qrcode"
   dependencies:
-    "@types/node": "*"
-  checksum: ea1b7afe629d4c3f6bf0dd78d670efa694e3803fec8b8051fe14faab33c0837c085e4f538aacbf95123bc152eb948fc33ac8cdf61056ff093429e569af97982e
-  languageName: node
-  linkType: hard
+    "@types/node": 14.14.43
+  languageName: unknown
+  linkType: soft
 
 "@types/react-dom@npm:17.0.3":
   version: 17.0.3

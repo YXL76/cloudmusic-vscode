@@ -77,7 +77,7 @@ export async function downloadMusic(
   return;
 }
 
-export async function likeMusic(id: number, like: boolean): Promise<void> {
+export async function likeMusic(/* id: number, like: boolean */): Promise<void> {
   /* if (await apiLike(id, like)) {
     if (id === Player.item?.valueOf)
       State.like = like ? LikeState.like : LikeState.dislike;
@@ -289,7 +289,8 @@ export async function pickSong(
       Webview.comment(CommentType.song, id, name);
       break;
     case PickType.like:
-      await likeMusic(id, true);
+      // TODO
+      // await likeMusic(id, true);
       break;
     case PickType.add:
       void commands.executeCommand(

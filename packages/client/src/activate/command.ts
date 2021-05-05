@@ -18,7 +18,7 @@ export function initCommand(context: ExtensionContext): void {
       if (/* !PersonalFm.state &&  */ QueueProvider.len) IPCClient.shift(1);
     }),
 
-    commands.registerCommand("cloudmusic.next", (repeat?: boolean) => {
+    commands.registerCommand("cloudmusic.next", () => {
       // TODO
       /* if (repeat) void load(Player.item);
       else {
