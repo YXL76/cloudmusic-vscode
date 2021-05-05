@@ -3,8 +3,8 @@ name: Build
 on:
   push:
     paths:
-      - "src/native/*"
-      - "src/lib.rs"
+      - "crates/*"
+      - "packages/*"
       - "Cargo.*"
       - ".github/workflows/build.yml"
     branches:
@@ -17,11 +17,11 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            filename: libnative.dylib
+            target: aarch64-apple-darwin
           - os: ubuntu-latest
-            filename: libnative.so
+            target: aarch64-unknown-linux-gnu
           - os: windows-latest
-            filename: native.dll
+            target: aarch64-pc-windows-msvc
 
     name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -41,6 +41,9 @@ jobs:
           version: "11"
           directory: ${{ runner.temp }}/llvm
 
+      - name: Install rust target
+        run: rustup target add ${{ matrix.target }}
+
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -52,12 +55,14 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
 
-      - name: Build
+      - name: Build x86-64
         if: runner.os != 'Windows'
         run: cargo build --release
 
-      - name: Build
+      - name: Build x86-64
         if: runner.os == 'Windows'
         run: cargo build --release
         env:
@@ -65,5 +70,17 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ runner.os }}
-          path: target/release/${{ matrix.filename }}
+          name: ${{ runner.os }}-x86-64
+          path: crates/native/index.node
+      
+      - uses: actions-rs/cargo@v1
+        name: Build aarch64
+        with:
+          use-cross: true
+          command: build
+          args: --release --target ${{ matrix.target }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ runner.os }}-aarch64
+          path: crates/native/index.node

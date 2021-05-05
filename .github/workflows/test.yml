@@ -24,10 +24,26 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
+      - uses: actions/cache@v2.1.5
+        id: cargo-cache
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Install rust target
+        run: rustup target add wasm32-unknown-unknown
+      
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      
+      - name: Build wasi
+        run: wasm-pack build crates/wasi/ --out-dir ../../packages/wasi --out-name index
+
       - run: yarn
-      - name: Lint
-        run: yarn lint
-      - name: Build
-        run: yarn build-dev
       - name: Test
         run: yarn test

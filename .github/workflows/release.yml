@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - "v*"
+      - "v*.*.*"
 
 jobs:
   build:
@@ -11,11 +11,11 @@ jobs:
       matrix:
         include:
           - os: macos-latest
-            filename: libnative.dylib
+            target: aarch64-apple-darwin
           - os: ubuntu-latest
-            filename: libnative.so
+            target: aarch64-unknown-linux-gnu
           - os: windows-latest
-            filename: native.dll
+            target: aarch64-pc-windows-msvc
 
     name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
@@ -35,6 +35,9 @@ jobs:
           version: "11"
           directory: ${{ runner.temp }}/llvm
 
+      - name: Install rust target
+        run: rustup target add ${{ matrix.target }}
+
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -46,12 +49,14 @@ jobs:
             ~/.cargo/git
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
 
-      - name: Build
+      - name: Build x86-64
         if: runner.os != 'Windows'
         run: cargo build --release
 
-      - name: Build
+      - name: Build x86-64
         if: runner.os == 'Windows'
         run: cargo build --release
         env:
@@ -59,8 +64,20 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ runner.os }}
-          path: target/release/${{ matrix.filename }}
+          name: ${{ runner.os }}-x86_64
+          path: crates/native/index.node
+      
+      - uses: actions-rs/cargo@v1
+        name: Build aarch64
+        with:
+          use-cross: true
+          command: build
+          args: --release --target ${{ matrix.target }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ runner.os }}-aarch64
+          path: crates/native/index.node
 
   release:
     runs-on: ubuntu-latest
@@ -75,9 +92,12 @@ jobs:
       - name: Copy file
         run: |
           mkdir -p build
-          cp .artifact/macOS/libnative.dylib build/darwin.node
-          cp .artifact/Linux/libnative.so    build/linux.node
-          cp .artifact/Windows/native.dll    build/win32.node
+          cp .artifact/macOS-aarch64/index.node   build/darwin-arm64.node
+          cp .artifact/Linux-aarch64/index.node   build/linux-arm64.node
+          cp .artifact/Windows-aarch64/index.node build/win32-arm64.node
+          cp .artifact/macOS-x86_64/index.node    build/darwin-x86.node
+          cp .artifact/Linux-x86_64/index.node    build/linux-x86.node
+          cp .artifact/Windows-x86_64/index.node  build/win32-x86.node
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -89,6 +109,26 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+
+      - uses: actions/cache@v2.1.5
+        id: cargo-cache
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Install rust target
+        run: rustup target add wasm32-unknown-unknown
+      
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+      
+      - name: Build wasi
+        run: wasm-pack build crates/wasi/ --out-dir ../../packages/wasi --out-name index
 
       - name: Package
         run: |

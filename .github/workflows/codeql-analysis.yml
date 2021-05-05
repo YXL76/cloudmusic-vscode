@@ -3,10 +3,10 @@ name: "CodeQL"
 on:
   push:
     branches: [master]
-    paths: ["src/*"]
+    paths: ["packages/*"]
   pull_request:
     branches: [master]
-    paths: ["src/*"]
+    paths: ["packages/*"]
 
 jobs:
   analyze:

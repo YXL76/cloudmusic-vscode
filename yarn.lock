@@ -64,7 +64,7 @@ __metadata:
     array-unsort: 1.1.6
     axios: 0.21.1
     esbuild-loader: 2.12.0
-    file-type: 16.3.0
+    file-type: 16.4.0
     lodash: 4.17.21
     md5-file: 5.0.0
     node-cache: 5.1.2
@@ -2076,9 +2076,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.3.723":
-  version: 1.3.726
-  resolution: "electron-to-chromium@npm:1.3.726"
-  checksum: 031fb7d794021b2c7200e74c830a033a2ee12a2a547751d399c499a2022c0b0dbe1deae1396995cb2ef48830d441a36190b7fa6465af19562e0b849a00d88b39
+  version: 1.3.727
+  resolution: "electron-to-chromium@npm:1.3.727"
+  checksum: a090f19d382d78a5e22d1ccd656336c341ddd878fe0675613b53c24c12d0edbb8fe07e41ab5c42d49584617f3ece1650c20b2dceaaa3a1b583922fdf2b132b6b
   languageName: node
   linkType: hard
 
@@ -2555,15 +2555,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-type@npm:16.3.0":
-  version: 16.3.0
-  resolution: "file-type@npm:16.3.0"
+"file-type@npm:16.4.0":
+  version: 16.4.0
+  resolution: "file-type@npm:16.4.0"
   dependencies:
     readable-web-to-node-stream: ^3.0.0
     strtok3: ^6.0.3
     token-types: ^2.0.0
     typedarray-to-buffer: ^3.1.5
-  checksum: bef7512b1c6f6b7179d6cb1e0caffe255c9add273ff6e509939528a16dbd5018ca36342d6cd6c439306726faf7a48fddd4357da53a8362dc77742163f6c12af5
+  checksum: bd4acfd428cddcd90e6903521e15f8dc1c0cf7f2c756ff45e73ac0a2df7b0d33a6536ac66ec7c5ed66e4ffa2d7722335d37e981b3242d9a113d043c82e3dafdb
   languageName: node
   linkType: hard
 
