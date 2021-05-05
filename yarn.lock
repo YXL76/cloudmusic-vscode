@@ -258,7 +258,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/eslint@npm:*":
+"@types/eslint@npm:*, @types/eslint@npm:7.2.10":
   version: 7.2.10
   resolution: "@types/eslint@npm:7.2.10"
   dependencies:
@@ -408,6 +408,13 @@ __metadata:
   version: 7.3.5
   resolution: "@types/semver@npm:7.3.5"
   checksum: fcb9faf9aced715efee64fbef485f2a58b3ea822b0a0c4a30cc52135dfba7668f21d5a2a3510ed7b158af6b9d0f927f66eff91e2f3866372aec41a6a7fae8665
+  languageName: node
+  linkType: hard
+
+"@types/tailwindcss@npm:2.0.2":
+  version: 2.0.2
+  resolution: "@types/tailwindcss@npm:2.0.2"
+  checksum: 449b245cca1654cbcb511eb0e0e87087dc1dd22fa20f80b3d6ac1894a6d08e4b62b020d33344d533bee6c876fe4855b8302d7d5c31786877fecacc7e2cd4f13f
   languageName: node
   linkType: hard
 
@@ -1395,9 +1402,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001196, caniuse-lite@npm:^1.0.30001219":
-  version: 1.0.30001221
-  resolution: "caniuse-lite@npm:1.0.30001221"
-  checksum: 38d436b0636bd0f26cef1f322d261b04e337bb3930e2ea9daaa0479719463187c456d004865bb2a70ef733b9c4970693a985175695383ef1038f5e687437dcfa
+  version: 1.0.30001222
+  resolution: "caniuse-lite@npm:1.0.30001222"
+  checksum: c9456038f11c0a864e7db8314ebc1edd9f8c8907e8b602ae8f4dc1c08724e2c647b7060997c41ad70c747f19684d5a64c39871425615f93777fe2745de16e0c8
   languageName: node
   linkType: hard
 
@@ -1545,6 +1552,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cloudmusic@workspace:."
   dependencies:
+    "@types/eslint": 7.2.10
+    "@types/tailwindcss": 2.0.2
     "@typescript-eslint/eslint-plugin": 4.22.1
     "@typescript-eslint/parser": 4.22.1
     "@yarnpkg/pnpify": 2.4.0

@@ -824,9 +824,12 @@
     "generate-css": "postcss style.css -o dist/style.css",
     "list": "node scripts/list.js",
     "pnp": "yarn pnpify --sdk vscode vim",
+    "test": "yarn workspaces foreach run test",
     "vscode:prepublish": "yarn build"
   },
   "devDependencies": {
+    "@types/eslint": "7.2.10",
+    "@types/tailwindcss": "2.0.2",
     "@typescript-eslint/eslint-plugin": "4.22.1",
     "@typescript-eslint/parser": "4.22.1",
     "@yarnpkg/pnpify": "2.4.0",

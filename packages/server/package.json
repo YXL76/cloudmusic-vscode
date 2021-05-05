@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "build": "webpack --mode production",
-    "build-dev": "webpack --mode development"
+    "build-dev": "webpack --mode development",
+    "test": "tsc -p tsconfig.json"
   },
   "devDependencies": {
     "@types/node": "14.14.43",
