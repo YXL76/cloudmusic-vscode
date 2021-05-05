@@ -2,5 +2,8 @@
 members = ["crates/native", "crates/wasi"]
 default-members = ["crates/native"]
 
+[patch.crates-io]
+minimp3 = { git = "https://github.com/YXL76/minimp3-rs", branch = "dev" }
+
 [profile.release]
 lto = true

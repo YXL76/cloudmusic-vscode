@@ -378,8 +378,7 @@ checksum = "b16bd47d9e329435e309c58469fe0791c2d0d1ba96ec0954152a5ae2b04387dc"
 [[package]]
 name = "minimp3"
 version = "0.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "985438f75febf74c392071a975a29641b420dd84431135a6e6db721de4b74372"
+source = "git+https://github.com/YXL76/minimp3-rs?branch=dev#4723c902045ff31771a1aca44b46f9fd24cbc985"
 dependencies = [
  "minimp3-sys",
  "slice-deque",
@@ -389,8 +388,7 @@ dependencies = [
 [[package]]
 name = "minimp3-sys"
 version = "0.3.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e21c73734c69dc95696c9ed8926a2b393171d98b3f5f5935686a26a487ab9b90"
+source = "git+https://github.com/YXL76/minimp3-rs?branch=dev#4723c902045ff31771a1aca44b46f9fd24cbc985"
 dependencies = [
  "cc",
 ]
@@ -443,7 +441,7 @@ checksum = "c44922cb3dbb1c70b5e5f443d63b64363a898564d739ba5198e3a9138442868d"
 [[package]]
 name = "neon"
 version = "0.8.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#14bc6072ec498057ab5bcd32ab1a0478b295caf4"
+source = "git+https://github.com/neon-bindings/neon?branch=main#2f2bfca92a325bc318738b8997b4fe9c2b3a5adc"
 dependencies = [
  "cslice",
  "neon-build",
@@ -456,12 +454,12 @@ dependencies = [
 [[package]]
 name = "neon-build"
 version = "0.8.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#14bc6072ec498057ab5bcd32ab1a0478b295caf4"
+source = "git+https://github.com/neon-bindings/neon?branch=main#2f2bfca92a325bc318738b8997b4fe9c2b3a5adc"
 
 [[package]]
 name = "neon-macros"
 version = "0.8.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#14bc6072ec498057ab5bcd32ab1a0478b295caf4"
+source = "git+https://github.com/neon-bindings/neon?branch=main#2f2bfca92a325bc318738b8997b4fe9c2b3a5adc"
 dependencies = [
  "quote",
  "syn",
@@ -470,7 +468,7 @@ dependencies = [
 [[package]]
 name = "neon-runtime"
 version = "0.8.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#14bc6072ec498057ab5bcd32ab1a0478b295caf4"
+source = "git+https://github.com/neon-bindings/neon?branch=main#2f2bfca92a325bc318738b8997b4fe9c2b3a5adc"
 dependencies = [
  "cfg-if",
  "libloading 0.6.7",
@@ -630,27 +628,27 @@ dependencies = [
 
 [[package]]
 name = "redox_syscall"
-version = "0.2.7"
+version = "0.2.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "85dd92e586f7355c633911e11f77f3d12f04b1b1bd76a198bd34ae3af8341ef2"
+checksum = "742739e41cd49414de871ea5e549afb7e2a3ac77b589bcbebe8c82fab37147fc"
 dependencies = [
  "bitflags",
 ]
 
 [[package]]
 name = "regex"
-version = "1.5.1"
+version = "1.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a068b905b8cb93815aa3069ae48653d90f382308aebd1d33d940ac1f1d771e2d"
+checksum = "ce5f1ceb7f74abbce32601642fcf8e8508a8a8991e0621c7d750295b9095702b"
 dependencies = [
  "regex-syntax",
 ]
 
 [[package]]
 name = "regex-syntax"
-version = "0.6.24"
+version = "0.6.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "00efb87459ba4f6fb2169d20f68565555688e1250ee6825cdf6254f8b48fafb2"
+checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
 
 [[package]]
 name = "rodio"
@@ -741,9 +739,9 @@ checksum = "6446ced80d6c486436db5c078dde11a9f73d42b57fb273121e160b84f63d894c"
 
 [[package]]
 name = "syn"
-version = "1.0.71"
+version = "1.0.72"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ad184cc9470f9117b2ac6817bfe297307418819ba40552f9b3846f05c33d5373"
+checksum = "a1e8cdbefb79a9a5a65e0db8b47b723ee907b7c7f8496c76a1770b5c310bab82"
 dependencies = [
  "proc-macro2",
  "quote",
