@@ -1,7 +1,7 @@
 const { ESBuildMinifyPlugin } = require("esbuild-loader");
 const { resolve } = require("path");
 
-const target = "es2019";
+const target = "es2020";
 const rootPath = resolve(__dirname, "..", "..");
 const distPath = resolve(rootPath, "dist");
 const srcPath = resolve(__dirname, "src");

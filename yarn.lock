@@ -63,7 +63,7 @@ __metadata:
     "@types/yallist": 3.0.1
     array-unsort: 1.1.6
     axios: 0.21.1
-    esbuild-loader: 2.12.0
+    esbuild-loader: 2.13.0
     file-type: 16.4.0
     lodash: 4.17.21
     md5-file: 5.0.0
@@ -83,7 +83,7 @@ __metadata:
     "@cloudmusic/shared": "workspace:*"
     "@types/node": 14.14.43
     "@types/node-ipc": "workspace:*"
-    esbuild-loader: 2.12.0
+    esbuild-loader: 2.13.0
     node-ipc: 9.1.4
     webpack: 5.36.2
     webpack-cli: 4.6.0
@@ -106,7 +106,7 @@ __metadata:
     "@types/react": 17.0.5
     "@types/react-dom": 17.0.3
     dayjs: 1.10.4
-    esbuild-loader: 2.12.0
+    esbuild-loader: 2.13.0
     react: 17.0.2
     react-dom: 17.0.2
     react-icons: 4.2.0
@@ -1401,9 +1401,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001196, caniuse-lite@npm:^1.0.30001219":
-  version: 1.0.30001222
-  resolution: "caniuse-lite@npm:1.0.30001222"
-  checksum: c9456038f11c0a864e7db8314ebc1edd9f8c8907e8b602ae8f4dc1c08724e2c647b7060997c41ad70c747f19684d5a64c39871425615f93777fe2745de16e0c8
+  version: 1.0.30001223
+  resolution: "caniuse-lite@npm:1.0.30001223"
+  checksum: 0a19e4c3689048cf7f6a47d348cc6dc849a141ae814634cc2c9b37a91dc5ba019c08d67ddf3549323ae4b13c84cb2a796204128bcd19f0dbbe844dab0058b25e
   languageName: node
   linkType: hard
 
@@ -1559,12 +1559,12 @@ __metadata:
     autoprefixer: 10.2.5
     cssnano: 5.0.2
     debug: 4.3.1
-    esbuild-loader: 2.12.0
+    esbuild-loader: 2.13.0
     eslint: 7.25.0
     eslint-config-prettier: 8.3.0
     eslint-plugin-prettier: 3.4.0
     eslint-plugin-react: 7.23.2
-    postcss: 8.2.13
+    postcss: 8.2.14
     postcss-cli: 8.3.1
     postcss-import: 14.0.1
     prettier: 2.2.1
@@ -2230,11 +2230,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-loader@npm:2.12.0":
-  version: 2.12.0
-  resolution: "esbuild-loader@npm:2.12.0"
+"esbuild-loader@npm:2.13.0":
+  version: 2.13.0
+  resolution: "esbuild-loader@npm:2.13.0"
   dependencies:
-    esbuild: ^0.10.2
+    esbuild: ^0.11.19
     joycon: ^3.0.1
     json5: ^2.2.0
     loader-utils: ^2.0.0
@@ -2242,16 +2242,16 @@ __metadata:
     webpack-sources: ^2.2.0
   peerDependencies:
     webpack: ^4.40.0 || ^5.0.0
-  checksum: a9f81365e80b54648f020aebe148f5a16659ff0df85ed4f74825b76bb8e78a0fa57bf1c161d7a875a32665a14a717b468f482e08bf907910658073e5dde6cd29
+  checksum: ebf650b8c2abc14e960a6765310047982029a91225f6e27090ab70cae11c1f18acfa7e53de4ba15944c19a0fb488e53142a013035ab78ef78c81f8728fa03eac
   languageName: node
   linkType: hard
 
 "esbuild@npm:latest":
-  version: 0.11.18
-  resolution: "esbuild@npm:0.11.18"
+  version: 0.11.19
+  resolution: "esbuild@npm:0.11.19"
   bin:
     esbuild: bin/esbuild
-  checksum: e910000e9a31b577d10ff066b395b2e273571604c32247ebd4832544168499e6d3b975ce0fd9f35aa3c01a15407380be6c5e51a80f1713721396483eb9525b34
+  checksum: 29a30dad2659f03767901c07c1168908d0b31c48f26e2790af1dcd0e04d22048080052595f20d73ff86102e30fb799538a446ef6c67736bc764e046937292281
   languageName: node
   linkType: hard
 
@@ -3224,9 +3224,9 @@ fsevents@~2.3.1:
   linkType: hard
 
 "is-date-object@npm:^1.0.1":
-  version: 1.0.2
-  resolution: "is-date-object@npm:1.0.2"
-  checksum: 0e322699464a99da638c8a583b74dfb791732b6bc9c102bc0b7ac6303d83c86b9935f19b8d2ed4de52092241190c8826b099cb31972dea49a99b755293c0b1cf
+  version: 1.0.3
+  resolution: "is-date-object@npm:1.0.3"
+  checksum: 27066db9795c98a2579ee333b7d8499488ce21ce6f451ed59a0e38d3f8faf558418b1af47aa45c44fb181dea03f7f65a14218987493fdd16a8a15258f028869a
   languageName: node
   linkType: hard
 
@@ -4867,14 +4867,14 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"postcss@npm:8.2.13, postcss@npm:^8.1.6, postcss@npm:^8.2.1":
-  version: 8.2.13
-  resolution: "postcss@npm:8.2.13"
+"postcss@npm:8.2.14, postcss@npm:^8.1.6, postcss@npm:^8.2.1":
+  version: 8.2.14
+  resolution: "postcss@npm:8.2.14"
   dependencies:
     colorette: ^1.2.2
     nanoid: ^3.1.22
     source-map: ^0.6.1
-  checksum: df64697cbd6d8e501eac2eaed501dc9a9c848538b4b51c53bfe7ed62a91736e97135d1fe22384b69af11bb2387a6cb483f5eecd14b19ca192ab5497ed5522124
+  checksum: 46bcc7c05f2b6b0e22e36af03e0244366871bd5cd9e3ca35e0ba2a87fb9080063322ee1dcef307d6e116fdac7c85941aaebd3755a3c88b4533bb8722b7bba4d2
   languageName: node
   linkType: hard
 

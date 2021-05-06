@@ -10,6 +10,7 @@ yarn-error.log
 yarn.lock
 
 # configuration
+.cargo
 .github
 **/gulpfile.js
 **/renovate.json
@@ -17,7 +18,7 @@ yarn.lock
 **/.gitignore
 **/.editorconfig
 **/tsconfig.json
-**/.eslintrc.json
+**/.eslintrc.js
 **/.browserslistrc
 **/postcss.config.js
 **/tailwind.config.js
@@ -32,6 +33,7 @@ scripts
 packages
 crates
 *.rs
+./style.css
 
 # cache and build file
 .cache

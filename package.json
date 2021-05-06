@@ -11,12 +11,18 @@
     "packages/@types/*"
   ],
   "engines": {
-    "vscode": "^1.55.0"
+    "vscode": "^1.56.0"
   },
   "license": "SEE LICENSE IN LICENSE",
   "categories": [
     "Other"
   ],
+  "capabilities": {
+    "virtualWorkspaces": false,
+    "untrustedWorkspaces": {
+      "supported": true
+    }
+  },
   "extensionKind": [
     "ui",
     "workspace"
@@ -825,7 +831,7 @@
     "list": "node scripts/list.js",
     "pnp": "yarn pnpify --sdk vscode vim",
     "test": "yarn workspaces foreach run test",
-    "vscode:prepublish": "yarn build"
+    "vscode:prepublish": "yarn generate-css && yarn build"
   },
   "devDependencies": {
     "@types/eslint": "7.2.10",
@@ -836,12 +842,12 @@
     "autoprefixer": "10.2.5",
     "cssnano": "5.0.2",
     "debug": "4.3.1",
-    "esbuild-loader": "2.12.0",
+    "esbuild-loader": "2.13.0",
     "eslint": "7.25.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.0",
     "eslint-plugin-react": "7.23.2",
-    "postcss": "8.2.13",
+    "postcss": "8.2.14",
     "postcss-cli": "8.3.1",
     "postcss-import": "14.0.1",
     "prettier": "2.2.1",

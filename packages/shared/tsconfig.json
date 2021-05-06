@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "lib": ["es2019"],
+    "lib": ["es2020"],
     "module": "commonjs",
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
@@ -9,7 +9,7 @@
     "noUnusedParameters": true,
     "strict": true,
     "strictNullChecks": true,
-    "target": "es2019"
+    "target": "es2020"
   },
   "include": ["src"]
 }
