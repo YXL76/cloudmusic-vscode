@@ -2,7 +2,7 @@ import { EventEmitter, ThemeIcon, TreeItem, window } from "vscode";
 import type { ExtensionContext, TreeDataProvider } from "vscode";
 import { LocalFileTreeItem, ProgramTreeItem } from ".";
 import type { PlayTreeItem, PlayTreeItemData, QueueContent } from ".";
-import { QUEUE_KEY, TreeItemId, UNBLOCK_MUSIC, unplayable } from "../constant";
+import { TreeItemId, UNBLOCK_MUSIC, unplayable } from "../constant";
 import type { SongsItem } from "../constant";
 import i18n from "../i18n";
 import { unsortInplace } from "array-unsort";
@@ -19,8 +19,6 @@ export const enum QueueSortOrder {
 }
 
 export class QueueProvider implements TreeDataProvider<QueueContent> {
-  static context: ExtensionContext;
-
   private static songs: QueueContent[] = [];
 
   private static instance: QueueProvider;
@@ -170,11 +168,6 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   }
 
   getChildren(): QueueContent[] {
-    // TODO only master
-    void QueueProvider.context.globalState.update(
-      QUEUE_KEY,
-      JSON.stringify(QueueProvider.songs.map(({ data }) => data))
-    );
     return QueueProvider.songs;
   }
 }

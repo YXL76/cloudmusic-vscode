@@ -34,13 +34,13 @@ export function initCommand(context: ExtensionContext): void {
       ButtonManager.buttonRepeat()
     ),
 
-    /* commands.registerCommand("cloudmusic.like", () => {
+    commands.registerCommand("cloudmusic.like", () => {
       if (
-        Player.item instanceof QueueItemTreeItem &&
+        State.playItem instanceof QueueItemTreeItem &&
         State.like !== LikeState.none
       )
-        void likeMusic(Player.item.valueOf, !State.like);
-    }), */
+        void likeMusic(State.playItem.valueOf, !State.like);
+    }),
 
     commands.registerCommand("cloudmusic.volume", () => {
       void MultiStepInput.run(async (input) => {

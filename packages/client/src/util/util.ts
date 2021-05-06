@@ -77,15 +77,15 @@ export async function downloadMusic(
   return;
 }
 
-export async function likeMusic(/* id: number, like: boolean */): Promise<void> {
-  /* if (await apiLike(id, like)) {
-    if (id === Player.item?.valueOf)
+export async function likeMusic(id: number, like: boolean): Promise<void> {
+  if (await apiLike(id, like)) {
+    if (id === State.playItem?.valueOf)
       State.like = like ? LikeState.like : LikeState.dislike;
     like ? AccountManager.likelist.add(id) : AccountManager.likelist.delete(id);
     void window.showInformationMessage(
       like ? i18n.word.like : i18n.word.dislike
     );
-  } else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist); */
+  } else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
 }
 
 export function stop(): void {
@@ -289,8 +289,7 @@ export async function pickSong(
       Webview.comment(CommentType.song, id, name);
       break;
     case PickType.like:
-      // TODO
-      // await likeMusic(id, true);
+      await likeMusic(id, true);
       break;
     case PickType.add:
       void commands.executeCommand(

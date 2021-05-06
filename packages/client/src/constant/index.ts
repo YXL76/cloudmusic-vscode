@@ -14,7 +14,6 @@ export const BUTTON_KEY = "button-v1";
 export const VOLUME_KEY = "volume";
 export const LYRIC_KEY = "lyric";
 export const LOCAL_FOLDER_KEY = "local-folder";
-export const QUEUE_KEY = "queue";
 
 export const HOME_DIR = Uri.file(homedir());
 export const SETTING_DIR = Uri.joinPath(HOME_DIR, ".cloudmusic");

@@ -25,17 +25,16 @@ import { workspace } from "vscode";
 export async function activate(context: ExtensionContext): Promise<void> {
   // fork("", { detached: true, silent: true });
   await workspace.fs.createDirectory(SETTING_DIR);
-  await Promise.all([
+  await Promise.allSettled([
     workspace.fs.createDirectory(TMP_DIR),
     workspace.fs.createDirectory(CACHE_DIR),
   ]);
-  await Promise.all([
+  await Promise.allSettled([
     workspace.fs.createDirectory(LYRIC_CACHE_DIR),
     workspace.fs.createDirectory(MUSIC_CACHE_DIR),
   ]);
   AccountManager.context = context;
   ButtonManager.context = context;
-  QueueProvider.context = context;
   initQueue(context);
   initPlaylist(context);
   initRadio(context);
