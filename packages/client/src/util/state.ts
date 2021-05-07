@@ -14,6 +14,8 @@ export const enum LikeState {
 }
 
 export class State {
+  static repeat = false;
+
   private static _playItem?: QueueContent;
 
   static get playItem(): QueueContent | undefined {

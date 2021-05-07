@@ -74,8 +74,8 @@
       },
       {
         "category": "Cloudmusic",
-        "command": "cloudmusic.play",
-        "title": "%commands.play.title%"
+        "command": "cloudmusic.toggle",
+        "title": "%commands.toggle.title%"
       },
       {
         "category": "Cloudmusic",
@@ -209,9 +209,9 @@
         "title": "%commands.playSongWithPlaylist.title%"
       },
       {
-        "command": "cloudmusic.playSong",
+        "command": "cloudmusic.play",
         "icon": "$(play)",
-        "title": "%commands.playSong.title%"
+        "title": "%commands.play.title%"
       },
       {
         "command": "cloudmusic.deleteSong",
@@ -478,7 +478,7 @@
           "when": "false"
         },
         {
-          "command": "cloudmusic.playSong",
+          "command": "cloudmusic.play",
           "when": "false"
         },
         {
@@ -650,7 +650,7 @@
           "when": "view == playlist && viewItem == QueueItemTreeItem"
         },
         {
-          "command": "cloudmusic.playSong",
+          "command": "cloudmusic.play",
           "group": "inline",
           "when": "view == queue && viewItem == QueueItemTreeItem || view == queue && viewItem == LocalFileTreeItem || view == queue && viewItem == ProgramTreeItem"
         },

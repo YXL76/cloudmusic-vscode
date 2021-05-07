@@ -22,10 +22,10 @@ export function initCommand(context: ExtensionContext): void {
       if (QueueProvider.len) IPC.shift(1);
     }),
 
-    commands.registerCommand("cloudmusic.play", () => IPC.toggle()),
+    commands.registerCommand("cloudmusic.toggle", () => IPC.toggle()),
 
     commands.registerCommand("cloudmusic.repeat", () =>
-      ButtonManager.buttonRepeat()
+      IPC.repeat(!State.repeat)
     ),
 
     commands.registerCommand("cloudmusic.like", () => {

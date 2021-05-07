@@ -74,9 +74,8 @@ export function initQueue(context: ExtensionContext): void {
 
     commands.registerCommand("cloudmusic.randomQueue", () => IPC.random()),
 
-    commands.registerCommand(
-      "cloudmusic.playSong",
-      ({ valueOf }: QueueContent) => IPC.playSong(valueOf)
+    commands.registerCommand("cloudmusic.play", ({ valueOf }: QueueContent) =>
+      IPC.playSong(valueOf)
     ),
 
     commands.registerCommand(

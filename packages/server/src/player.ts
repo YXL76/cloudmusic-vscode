@@ -1,28 +1,12 @@
 import { State, native } from ".";
+import { IPCEvent } from "@cloudmusic/shared";
+import { IPCServer } from "./server";
 
 export class Player {
   private static readonly player = native.playerNew();
 
   static init(): void {
     // void this.volume(this.context.globalState.get(VOLUME_KEY, 85));
-    /*  setInterval(() => {
-      if (State.playing) {
-        const pos = native.playerPosition(this.player);
-        if (pos > 120000 && !this.prefetchLock) {
-          this.prefetchLock = true;
-          void prefetch();
-        }
-        if (native.playerEmpty(this.player)) {
-          State.playing = false;
-          void commands.executeCommand("cloudmusic.next", ButtonManager.repeat);
-        } else {
-          while (lyric.time[lyric.index] <= pos - lyric.delay * 1000)
-            ++lyric.index;
-          ButtonManager.buttonLyric(lyric[lyric.type].text[lyric.index - 1]);
-          if (lyric.updatePanel) lyric.updatePanel(lyric.index - 1);
-        }
-      }
-    }, 1000); */
     // 1000 * 60 * 8 = 480000
     /*  setInterval(
       () =>
@@ -112,3 +96,23 @@ export class Player {
     native.playerSetVolume(this.player, level);
   }
 }
+
+setInterval(() => {
+  if (!State.playing) return;
+  // const pos = Player.position();
+
+  /* if (pos > 120000 && !this.prefetchLock) {
+    this.prefetchLock = true;
+    void prefetch();
+  } */
+
+  if (Player.empty()) {
+    State.playing = false;
+    IPCServer.sendToMaster({ t: IPCEvent.Play.end });
+    return;
+  }
+
+  /* while (lyric.time[lyric.index] <= pos - lyric.delay * 1000) ++lyric.index;
+  ButtonManager.buttonLyric(lyric[lyric.type].text[lyric.index - 1]);
+  if (lyric.updatePanel) lyric.updatePanel(lyric.index - 1); */
+}, 1024);

@@ -18,12 +18,9 @@ import {
   initStatusBar,
 } from "./activate";
 import type { ExtensionContext } from "vscode";
-// import { fork } from "child_process";
-// import { rmdirSync } from "fs";
 import { workspace } from "vscode";
 
 export async function activate(context: ExtensionContext): Promise<void> {
-  // fork("", { detached: true, silent: true });
   await workspace.fs.createDirectory(SETTING_DIR);
   await Promise.allSettled([
     workspace.fs.createDirectory(TMP_DIR),
@@ -47,8 +44,5 @@ export async function activate(context: ExtensionContext): Promise<void> {
 }
 
 export function deactivate(): void {
-  /* MusicCache.store();
-  try {
-    rmdirSync(TMP_DIR.fsPath, { recursive: true });
-  } catch {} */
+  // MusicCache.store();
 }

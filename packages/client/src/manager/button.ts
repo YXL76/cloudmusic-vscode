@@ -4,7 +4,7 @@ import { LikeState, MultiStepInput, State } from "../util";
 import { StatusBarAlignment, window } from "vscode";
 import i18n from "../i18n";
 
-const enum ButtonLabel {
+const enum Label {
   account,
   previous,
   play,
@@ -18,8 +18,6 @@ const enum ButtonLabel {
 
 export class ButtonManager {
   static context: ExtensionContext;
-
-  static repeat = false;
 
   static showLyric = false;
 
@@ -67,7 +65,7 @@ export class ButtonManager {
     [
       "cloudmusic.account",
       "cloudmusic.previous",
-      "cloudmusic.play",
+      "cloudmusic.toggle",
       "cloudmusic.next",
       "cloudmusic.repeat",
       "cloudmusic.like",
@@ -117,35 +115,31 @@ export class ButtonManager {
   }
 
   static buttonAccount(tooltip: string): void {
-    this.buttons[ButtonLabel.account].tooltip = tooltip;
+    this.buttons[Label.account].tooltip = tooltip;
   }
 
   static buttonPrevious(personalFm: boolean): void {
     if (personalFm) {
-      this.buttons[ButtonLabel.previous].text = "$(trash)";
-      this.buttons[ButtonLabel.previous].tooltip = i18n.word.trash;
-      this.buttons[ButtonLabel.previous].command = "cloudmusic.fmTrash";
+      this.buttons[Label.previous].text = "$(trash)";
+      this.buttons[Label.previous].tooltip = i18n.word.trash;
+      this.buttons[Label.previous].command = "cloudmusic.fmTrash";
     } else {
-      this.buttons[ButtonLabel.previous].text = "$(chevron-left)";
-      this.buttons[ButtonLabel.previous].tooltip = i18n.word.previousTrack;
-      this.buttons[ButtonLabel.previous].command = "cloudmusic.previous";
+      this.buttons[Label.previous].text = "$(chevron-left)";
+      this.buttons[Label.previous].tooltip = i18n.word.previousTrack;
+      this.buttons[Label.previous].command = "cloudmusic.previous";
     }
   }
 
   static buttonPlay(playing: boolean): void {
-    this.buttons[ButtonLabel.play].text = playing
-      ? "$(debug-pause)"
-      : "$(play)";
-    this.buttons[ButtonLabel.play].tooltip = playing
+    this.buttons[Label.play].text = playing ? "$(debug-pause)" : "$(play)";
+    this.buttons[Label.play].tooltip = playing
       ? i18n.word.pause
       : i18n.word.play;
   }
 
-  static buttonRepeat(): void {
-    this.repeat = !this.repeat;
-    this.buttons[ButtonLabel.repeat].text = this.repeat
-      ? "$(sync)"
-      : "$(sync-ignored)";
+  static buttonRepeat(r: boolean): void {
+    State.repeat = r;
+    this.buttons[Label.repeat].text = r ? "$(sync)" : "$(sync-ignored)";
   }
 
   static buttonLike(islike: LikeState): void {
@@ -164,21 +158,21 @@ export class ButtonManager {
         text = "$(star)";
         tooltip = i18n.word.like;
     }
-    this.buttons[ButtonLabel.like].text = text;
-    this.buttons[ButtonLabel.like].tooltip = tooltip;
+    this.buttons[Label.like].text = text;
+    this.buttons[Label.like].tooltip = tooltip;
   }
 
   static buttonVolume(level: number): void {
-    this.buttons[ButtonLabel.volume].tooltip = `${i18n.word.volume}: ${level}`;
+    this.buttons[Label.volume].tooltip = `${i18n.word.volume}: ${level}`;
   }
 
   static buttonSong(name?: string, ar?: string): void {
     if (name) {
-      this.buttons[ButtonLabel.song].text = name;
-      this.buttons[ButtonLabel.song].tooltip = ar ? `${name} - ${ar}` : name;
+      this.buttons[Label.song].text = name;
+      this.buttons[Label.song].tooltip = ar ? `${name} - ${ar}` : name;
     } else {
-      this.buttons[ButtonLabel.song].text = "$(flame)";
-      this.buttons[ButtonLabel.song].tooltip = i18n.word.song;
+      this.buttons[Label.song].text = "$(flame)";
+      this.buttons[Label.song].tooltip = i18n.word.song;
     }
   }
 
@@ -188,7 +182,7 @@ export class ButtonManager {
   }
 
   static buttonLyric(text?: string): void {
-    this.buttons[ButtonLabel.lyric].text = this.showLyric
+    this.buttons[Label.lyric].text = this.showLyric
       ? text ?? "$(text-size)"
       : i18n.word.disabled;
   }

@@ -172,6 +172,10 @@ export class IPC {
     }
   }
 
+  static repeat(r: boolean): void {
+    ipcB.send({ t: IPCEvent.Play.repeat, r });
+  }
+
   static stop(): void {
     ipc.send({ t: IPCEvent.Play.stop });
   }

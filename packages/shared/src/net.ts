@@ -14,6 +14,7 @@ export type CSConnPool = Map<
 export type IPCMsg<T = string, U = Record<never, never>> = { t: T } & U;
 
 export type IPCBroadcastMsg =
+  | IPCMsg<IPCEvent.Play.repeat, { r: boolean }>
   | IPCMsg<IPCEvent.Queue.add, { items: unknown; index?: number }>
   | IPCMsg<IPCEvent.Queue.clear>
   | IPCMsg<IPCEvent.Queue.delete, { id: string | number }>
@@ -30,6 +31,7 @@ export type IPCClientMsg =
   | { t: IPCEvent.Play.volume; level: number };
 
 export type IPCServerMsg =
+  | { t: IPCEvent.Play.end }
   | { t: IPCEvent.Play.load }
   | { t: IPCEvent.Play.pause }
   | { t: IPCEvent.Play.play }
