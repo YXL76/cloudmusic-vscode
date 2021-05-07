@@ -58,23 +58,15 @@ const ipcBHandler = (data: IPCBroadcastMsg) => {
   }
 };
 
-export async function initIPC(): Promise<void> {
-  try {
-    const firstTry = await Promise.all([
-      ipc.connect(ipcHandler),
-      ipcB.connect(ipcBHandler),
-    ]);
-    if (firstTry.includes(false)) throw Error;
-    return;
-  } catch {}
-  fork(resolve(__dirname, "server.js"), { detached: true, silent: true });
-  try {
-    const secondTry = await Promise.all([
-      ipc.connect(ipcHandler),
-      ipcB.connect(ipcBHandler),
-    ]);
-    if (secondTry.includes(false)) throw Error;
-  } catch (err) {
-    console.error(err);
-  }
+export function initIPC(): void {
+  Promise.all([ipc.connect(ipcHandler, 0), ipcB.connect(ipcBHandler, 0)])
+    .then((firstTry) => {
+      if (firstTry.includes(false)) throw Error;
+    })
+    .catch(() => {
+      fork(resolve(__dirname, "server.js"), { detached: true, silent: true });
+      Promise.all([ipc.connect(ipcHandler), ipcB.connect(ipcBHandler)]).catch(
+        console.error
+      );
+    });
 }

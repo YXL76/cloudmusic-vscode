@@ -30,9 +30,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
     workspace.fs.createDirectory(LYRIC_CACHE_DIR),
     workspace.fs.createDirectory(MUSIC_CACHE_DIR),
   ]);
-  await initIPC();
   AccountManager.context = context;
   ButtonManager.context = context;
+  void initIPC();
   initQueue(context);
   initPlaylist(context);
   initRadio(context);

@@ -42,15 +42,12 @@ class IPCClient<T, U = T> {
         : `/tmp/${ipcAppspace}${id}`;
   }
 
-  connect(handler: (data: U) => void): Promise<boolean> {
+  connect(handler: (data: U) => void, retry = 4): Promise<boolean> {
     return new Promise<boolean>(
       (resolve) =>
-        void this._tryConnect()
+        void this._tryConnect(retry)
           .then((socket) => {
-            if (!socket) {
-              resolve(false);
-              return;
-            }
+            if (!socket) throw new Error();
 
             this._socket = socket
               .on("close", () => this.disconnect())
@@ -87,13 +84,13 @@ class IPCClient<T, U = T> {
     this._socket?.write(`${JSON.stringify(data)}${ipcDelimiter}`);
   }
 
-  private _tryConnect(): Promise<Socket | undefined> {
+  private _tryConnect(retry: number): Promise<Socket | undefined> {
     return new Promise((resolve) => {
       const setTimer = (remain: number) => {
         const socket = connect({ path: this._path }).setEncoding("utf8");
         const listener = () => {
           socket.destroy();
-          if (remain > 0) setTimeout(() => setTimer(remain - 1), 1500);
+          if (remain > 0) setTimeout(() => setTimer(remain - 1), 1000);
           else resolve(undefined);
         };
         socket
@@ -103,7 +100,7 @@ class IPCClient<T, U = T> {
           })
           .once("close", listener);
       };
-      setTimer(4);
+      setTimer(retry);
     });
   }
 }
