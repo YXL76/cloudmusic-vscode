@@ -10,6 +10,7 @@ import {
   initAccount,
   initCache,
   initCommand,
+  initIPC,
   initLocal,
   initPlaylist,
   initQueue,
@@ -17,7 +18,6 @@ import {
   initStatusBar,
 } from "./activate";
 import type { ExtensionContext } from "vscode";
-import { QueueProvider } from "./treeview";
 // import { fork } from "child_process";
 // import { rmdirSync } from "fs";
 import { workspace } from "vscode";
@@ -33,6 +33,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     workspace.fs.createDirectory(LYRIC_CACHE_DIR),
     workspace.fs.createDirectory(MUSIC_CACHE_DIR),
   ]);
+  await initIPC();
   AccountManager.context = context;
   ButtonManager.context = context;
   initQueue(context);

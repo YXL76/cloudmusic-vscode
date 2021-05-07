@@ -1,9 +1,5 @@
-import type { NodeIPC } from "node-ipc";
-
+export const ipcAppspace = "cm-vsc";
 export const ipcServerId = "server";
+export const ipcBroadcastServerId = "bc-server";
 
-export const ipcDefaultConfig: Partial<NodeIPC.Config> = {
-  appspace: "cloudmusic-vscode",
-  maxRetries: 4,
-  silent: true,
-};
+export const ipcDelimiter = "\f";

@@ -9,7 +9,7 @@ import {
   apiSongUrl,
 } from "../api";
 import {
-  IPCClient,
+  IPC,
   MultiStepInput,
   State,
   Webview,
@@ -99,7 +99,7 @@ export function initPlaylist(context: ExtensionContext): void {
       "cloudmusic.playPlaylist",
       (element: PlaylistItemTreeItem) =>
         PlaylistProvider.refresh(element, (items) =>
-          IPCClient.new(items.map(({ data }) => data))
+          IPC.new(items.map(({ data }) => data))
         )
     ),
 
@@ -157,7 +157,7 @@ export function initPlaylist(context: ExtensionContext): void {
       "cloudmusic.addPlaylist",
       (element: PlaylistItemTreeItem) =>
         PlaylistProvider.refresh(element, (items) =>
-          IPCClient.add(items.map(({ data }) => data))
+          IPC.add(items.map(({ data }) => data))
         )
     ),
 
@@ -186,7 +186,7 @@ export function initPlaylist(context: ExtensionContext): void {
       async (element: QueueItemTreeItem) => {
         const { data } = element;
         const songs = await apiPlaymodeIntelligenceList(data.id, data.pid);
-        IPCClient.new([
+        IPC.new([
           data,
           ...songs.map(
             (song) => QueueItemTreeItem.new({ ...song, pid: data.pid }).data
@@ -197,14 +197,14 @@ export function initPlaylist(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.addSong",
-      ({ data }: QueueItemTreeItem) => IPCClient.add([data])
+      ({ data }: QueueItemTreeItem) => IPC.add([data])
     ),
 
     commands.registerCommand(
       "cloudmusic.playSongWithPlaylist",
       ({ data: { id, pid } }: QueueItemTreeItem) =>
         PlaylistProvider.refresh(PlaylistProvider.playlists.get(pid), (items) =>
-          IPCClient.new(
+          IPC.new(
             items.map(({ data }) => data),
             id
           )

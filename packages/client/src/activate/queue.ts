@@ -1,4 +1,4 @@
-import { IPCClient, MultiStepInput, State, stop } from "../util";
+import { IPC, MultiStepInput, State, stop } from "../util";
 import { QueueProvider, QueueSortOrder, QueueSortType } from "../treeview";
 import { commands, window } from "vscode";
 import type { ExtensionContext } from "vscode";
@@ -65,29 +65,27 @@ export function initQueue(context: ExtensionContext): void {
         });
 
         stop();
-        IPCClient.sort(pick.type, pick.order);
+        IPC.sort(pick.type, pick.order);
         return input.stay();
       }
     }),
 
-    commands.registerCommand("cloudmusic.clearQueue", () => IPCClient.clear()),
+    commands.registerCommand("cloudmusic.clearQueue", () => IPC.clear()),
 
-    commands.registerCommand("cloudmusic.randomQueue", () =>
-      IPCClient.random()
-    ),
+    commands.registerCommand("cloudmusic.randomQueue", () => IPC.random()),
 
     commands.registerCommand(
       "cloudmusic.playSong",
-      ({ valueOf }: QueueContent) => IPCClient.playSong(valueOf)
+      ({ valueOf }: QueueContent) => IPC.playSong(valueOf)
     ),
 
     commands.registerCommand(
       "cloudmusic.deleteSong",
-      ({ valueOf }: QueueContent) => IPCClient.delete(valueOf)
+      ({ valueOf }: QueueContent) => IPC.delete(valueOf)
     ),
 
     commands.registerCommand("cloudmusic.playNext", (element: QueueContent) =>
-      IPCClient.add([element.data], 1)
+      IPC.add([element.data], 1)
     )
   );
 }

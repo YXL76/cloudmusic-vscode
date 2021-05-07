@@ -172,7 +172,7 @@ export async function apiLoginQrKey(): Promise<string | void> {
     );
     return unikey;
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
   return;
 }

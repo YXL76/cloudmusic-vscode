@@ -1,9 +1,9 @@
 import { EventEmitter, ThemeIcon, TreeItem, window } from "vscode";
-import type { ExtensionContext, TreeDataProvider } from "vscode";
 import { LocalFileTreeItem, ProgramTreeItem } from ".";
 import type { PlayTreeItem, PlayTreeItemData, QueueContent } from ".";
 import { TreeItemId, UNBLOCK_MUSIC, unplayable } from "../constant";
 import type { SongsItem } from "../constant";
+import type { TreeDataProvider } from "vscode";
 import i18n from "../i18n";
 import { unsortInplace } from "array-unsort";
 

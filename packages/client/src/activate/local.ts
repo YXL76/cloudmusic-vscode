@@ -1,7 +1,7 @@
 import type { LocalFileTreeItem, LocalLibraryTreeItem } from "../treeview";
 import { Uri, commands, env, window } from "vscode";
 import type { ExtensionContext } from "vscode";
-import { IPCClient } from "../util";
+import { IPC } from "../util";
 import { LOCAL_FOLDER_KEY } from "../constant";
 import { LocalProvider } from "../treeview";
 
@@ -58,7 +58,7 @@ export function initLocal(context: ExtensionContext): void {
       "cloudmusic.playLocalLibrary",
       (element: LocalLibraryTreeItem) =>
         LocalProvider.refresh(element, (items) =>
-          IPCClient.new(items.map(({ data }) => data))
+          IPC.new(items.map(({ data }) => data))
         )
     ),
 
@@ -66,7 +66,7 @@ export function initLocal(context: ExtensionContext): void {
       "cloudmusic.addLocalLibrary",
       (element: LocalLibraryTreeItem) =>
         LocalProvider.refresh(element, (items) =>
-          IPCClient.add(items.map(({ data }) => data))
+          IPC.add(items.map(({ data }) => data))
         )
     ),
 
@@ -77,12 +77,12 @@ export function initLocal(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.addLocalFile",
-      ({ data }: LocalFileTreeItem) => IPCClient.add([data])
+      ({ data }: LocalFileTreeItem) => IPC.add([data])
     ),
 
     commands.registerCommand(
       "cloudmusic.playLocalFile",
-      ({ data }: LocalFileTreeItem) => IPCClient.new([data])
+      ({ data }: LocalFileTreeItem) => IPC.new([data])
     )
   );
 }

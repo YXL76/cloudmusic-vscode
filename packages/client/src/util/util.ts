@@ -10,7 +10,7 @@ import type {
 } from "../constant";
 import {
   ButtonAction,
-  IPCClient,
+  IPC,
   LikeState,
   MusicCache,
   State,
@@ -89,7 +89,7 @@ export async function likeMusic(id: number, like: boolean): Promise<void> {
 }
 
 export function stop(): void {
-  IPCClient.stop();
+  IPC.stop();
   ButtonManager.buttonSong();
   ButtonManager.buttonLyric();
   setLyric(0, [0], { text: [i18n.word.lyric] }, { text: [i18n.word.lyric] });
@@ -298,7 +298,7 @@ export async function pickSong(
       );
       break;
     case PickType.next:
-      IPCClient.add([QueueItemTreeItem.new({ ...item, pid: 0 }).data], 1);
+      IPC.add([QueueItemTreeItem.new({ ...item, pid: 0 }).data], 1);
       break;
   }
 
@@ -324,7 +324,7 @@ export async function pickSongMany(
       },
     ],
   });
-  IPCClient.add(
+  IPC.add(
     songs.map((song) => QueueItemTreeItem.new({ ...song, pid: 0 }).data),
     pick.type === PickType.add ? undefined : 1
   );
@@ -453,7 +453,7 @@ export async function pickProgram(
       );
       break;
     case PickType.next:
-      IPCClient.add([ProgramTreeItem.new({ ...program, pid: 0 }).data], 1);
+      IPC.add([ProgramTreeItem.new({ ...program, pid: 0 }).data], 1);
       break;
   }
 
@@ -479,7 +479,7 @@ export async function pickProgramMany(
       },
     ],
   });
-  IPCClient.add(
+  IPC.add(
     programs.map((program) => ProgramTreeItem.new({ ...program, pid: 0 }).data),
     pick.type === PickType.add ? undefined : 1
   );
@@ -876,7 +876,7 @@ export async function pickPlaylist(
     case PickType.add:
       {
         const songs = await apiPlaylistDetail(id);
-        IPCClient.add(
+        IPC.add(
           songs.map((song) => QueueItemTreeItem.new({ ...song, pid: 0 }).data)
         );
       }
@@ -884,7 +884,7 @@ export async function pickPlaylist(
     case PickType.next:
       {
         const songs = await apiPlaylistDetail(id);
-        IPCClient.add(
+        IPC.add(
           songs.map((song) => QueueItemTreeItem.new({ ...song, pid: 0 }).data),
           1
         );

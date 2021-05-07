@@ -1,4 +1,15 @@
-import { IPCEvent, ipcDefaultConfig, ipcServerId } from "@cloudmusic/shared";
+import type {
+  IPCBroadcastMsg,
+  IPCClientMsg,
+  IPCServerMsg,
+} from "@cloudmusic/shared";
+import {
+  IPCEvent,
+  ipcAppspace,
+  ipcBroadcastServerId,
+  ipcDelimiter,
+  ipcServerId,
+} from "@cloudmusic/shared";
 import { LocalFileTreeItem, QueueProvider } from "../treeview";
 import { MUSIC_QUALITY, TMP_DIR } from "../constant";
 import { MusicCache, State, downloadMusic } from ".";
@@ -8,79 +19,108 @@ import type {
   QueueSortType,
 } from "../treeview";
 import { Uri, window } from "vscode";
-import { ButtonManager } from "../manager";
-import { IPC } from "node-ipc";
+import type { Socket } from "net";
 import { apiSongUrl } from "../api";
+import { connect } from "net";
 import { createWriteStream } from "fs";
 import i18n from "../i18n";
+import { platform } from "os";
 
-const ipc = new IPC();
-Object.assign(ipc.config, ipcDefaultConfig, { id: `${process.pid}` });
+class IPCClient<T, U = T> {
+  private _buffer = "";
 
-const callback = () => {
-  /* ipc.of[ipcServerId].on("connect", () => {
-    console.log("connect");
-  });
-  ipc.of[ipcServerId].on("destroy", () => {
-    console.log("destroyed");
-  });
-  ipc.of[ipcServerId].on("disconnect", () => {
-    console.log("disconnected");
-  }); */
+  private _socket?: Socket;
 
-  ipc.of[ipcServerId].on("msg", (data) => {
-    switch (data.t) {
-      case IPCEvent.Play.load:
-        State.loading = false;
-        break;
-      case IPCEvent.Play.pause:
-        ButtonManager.buttonPlay(false);
-        break;
-      case IPCEvent.Play.play:
-        ButtonManager.buttonPlay(true);
-        break;
-      case IPCEvent.Play.volume:
-        ButtonManager.buttonVolume(data.level);
-        break;
-      case IPCEvent.Queue.add:
-        QueueProvider.addRaw(data.items as PlayTreeItemData[], data.index);
-        break;
-      case IPCEvent.Queue.clear:
-        QueueProvider.clear();
-        break;
-      case IPCEvent.Queue.delete:
-        QueueProvider.delete(data.id);
-        break;
-      case IPCEvent.Queue.new:
-        QueueProvider.newRaw(data.items as PlayTreeItemData[], data.id);
-        break;
-      case IPCEvent.Queue.play:
-        QueueProvider.top(data.id);
-        break;
-      case IPCEvent.Queue.shift:
-        QueueProvider.shift(data.index);
-        break;
-      case IPCEvent.Queue.sort:
-        QueueProvider.sort(data.type, data.order);
-        break;
-    }
-  });
-};
+  private readonly _path: string;
 
-ipc.connectTo(ipcServerId, callback);
+  constructor(id: string) {
+    this._path =
+      platform() === "win32"
+        ? `\\\\.\\pipe\\${`/tmp/${ipcAppspace}${id}`
+            .replace(/^\//, "")
+            .replace(/\//g, "-")}`
+        : `/tmp/${ipcAppspace}${id}`;
+  }
+
+  connect(handler: (data: U) => void): Promise<boolean> {
+    return new Promise<boolean>(
+      (resolve) =>
+        void this._tryConnect()
+          .then((socket) => {
+            if (!socket) {
+              resolve(false);
+              return;
+            }
+
+            this._socket = socket
+              .on("close", () => this.disconnect())
+              .on("error", console.error)
+              .on("data", (data) => {
+                const buffer = this._buffer + data.toString();
+
+                if (buffer.lastIndexOf(ipcDelimiter) === -1) {
+                  this._buffer = buffer;
+                  return;
+                }
+
+                this._buffer = "";
+                const msgs = buffer.split(ipcDelimiter);
+                msgs.pop();
+                for (const msg of msgs) handler(JSON.parse(msg));
+              });
+
+            resolve(true);
+          })
+          .catch((err) => {
+            console.error(err);
+            resolve(false);
+          })
+    );
+  }
+
+  disconnect(): void {
+    this._socket?.destroy();
+    this._socket = undefined;
+  }
+
+  send(data: T): void {
+    this._socket?.write(`${JSON.stringify(data)}${ipcDelimiter}`);
+  }
+
+  private _tryConnect(): Promise<Socket | undefined> {
+    return new Promise((resolve) => {
+      const setTimer = (remain: number) => {
+        const socket = connect({ path: this._path }).setEncoding("utf8");
+        const listener = () => {
+          socket.destroy();
+          if (remain > 0) setTimeout(() => setTimer(remain - 1), 1500);
+          else resolve(undefined);
+        };
+        socket
+          .once("connect", () => {
+            resolve(socket);
+            socket.off("close", listener);
+          })
+          .once("close", listener);
+      };
+      setTimer(4);
+    });
+  }
+}
+
+export const ipc = new IPCClient<IPCClientMsg, IPCServerMsg>(ipcServerId);
+export const ipcB = new IPCClient<IPCBroadcastMsg>(ipcBroadcastServerId);
 
 const minSize = MUSIC_QUALITY === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
 
-export class IPCClient {
-  private static readonly ipc = ipc;
-
+export class IPC {
   static async load(): Promise<void> {
     const { playItem } = State;
     if (!playItem) return;
     State.loading = true;
 
     if (playItem instanceof LocalFileTreeItem) {
-      this._emit({ t: IPCEvent.Play.load, url: playItem.tooltip });
+      ipc.send({ t: IPCEvent.Play.load, url: playItem.tooltip });
       return;
     }
 
@@ -92,7 +132,7 @@ export class IPCClient {
     {
       const url = MusicCache.get(idS);
       if (url) {
-        this._emit({ t: IPCEvent.Play.load, url, pid });
+        ipc.send({ t: IPCEvent.Play.load, url, pid });
         return;
       }
     }
@@ -118,7 +158,7 @@ export class IPCClient {
         len += length;
         if (len > minSize) {
           data.removeListener("data", onData);
-          this._emit({ t: IPCEvent.Play.load, url: tmpUri.fsPath, pid });
+          ipc.send({ t: IPCEvent.Play.load, url: tmpUri.fsPath, pid });
         }
       };
       data.on("data", onData);
@@ -133,53 +173,49 @@ export class IPCClient {
   }
 
   static stop(): void {
-    this._emit({ t: IPCEvent.Play.stop });
+    ipc.send({ t: IPCEvent.Play.stop });
   }
 
   static toggle(): void {
-    this._emit({ t: IPCEvent.Play.toggle });
+    ipc.send({ t: IPCEvent.Play.toggle });
   }
 
   static volume(level: number): void {
-    this._emit({ t: IPCEvent.Play.volume, level });
+    ipc.send({ t: IPCEvent.Play.volume, level });
   }
 
   static add(items: PlayTreeItemData[], index?: number): void {
-    this._emit({ t: IPCEvent.Queue.add, items, index });
+    ipcB.send({ t: IPCEvent.Queue.add, items, index });
   }
 
   static clear(): void {
-    this._emit({ t: IPCEvent.Queue.clear });
+    ipcB.send({ t: IPCEvent.Queue.clear });
   }
 
   static delete(id: number | string): void {
-    this._emit({ t: IPCEvent.Queue.delete, id });
+    ipcB.send({ t: IPCEvent.Queue.delete, id });
   }
 
   static new(items: PlayTreeItemData[], id?: number): void {
-    this._emit({ t: IPCEvent.Queue.new, items, id });
+    ipcB.send({ t: IPCEvent.Queue.new, items, id });
   }
 
   static playSong(id: number | string): void {
-    this._emit({ t: IPCEvent.Queue.play, id });
+    ipcB.send({ t: IPCEvent.Queue.play, id });
   }
 
   static random(): void {
-    this._emit({
+    ipcB.send({
       t: IPCEvent.Queue.random,
       items: QueueProvider.random(),
     });
   }
 
   static shift(index: number): void {
-    this._emit({ t: IPCEvent.Queue.shift, index });
+    ipcB.send({ t: IPCEvent.Queue.shift, index });
   }
 
   static sort(type: QueueSortType, order: QueueSortOrder): void {
-    this._emit({ t: IPCEvent.Queue.sort, type, order });
-  }
-
-  private static _emit(value: Parameters<typeof ipc.of.x.emit>[1]): void {
-    this.ipc.of[ipcServerId].emit("msg", value);
+    ipcB.send({ t: IPCEvent.Queue.sort, type, order });
   }
 }

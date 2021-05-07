@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { IPCClient, apiCache } from ".";
+import { IPC, apiCache } from ".";
 import { PlaylistProvider, QueueItemTreeItem } from "../treeview";
 import type { QueueContent } from "../treeview";
 import { apiUserLevel } from "../api";
@@ -23,8 +23,8 @@ export class State {
   static set playItem(value: QueueContent | undefined) {
     if (value !== this._playItem) {
       this._playItem = value;
-      if (value) void IPCClient.load();
-      else IPCClient.stop();
+      if (value) void IPC.load();
+      else IPC.stop();
     }
   }
 

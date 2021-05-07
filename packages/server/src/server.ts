@@ -1,40 +1,89 @@
+import type { IPCClientMsg, IPCServerMsg } from "@cloudmusic/shared";
+import {
+  IPCEvent,
+  ipcAppspace,
+  ipcBroadcastServerId,
+  ipcDelimiter,
+  ipcServerId,
+} from "@cloudmusic/shared";
 import { Player, State } from ".";
-import { ipcDefaultConfig, ipcServerId } from "@cloudmusic/shared";
-import { IPC } from "node-ipc";
-import { IPCEvent } from "@cloudmusic/shared";
+import type { Socket } from "net";
+import { createServer } from "net";
+import { platform } from "os";
+import { unlinkSync } from "fs";
 
-const ipc = new IPC();
-Object.assign(ipc.config, ipcDefaultConfig, { id: ipcServerId });
+export class IPCServer {
+  private static readonly _sockets = new Set<Socket>();
 
-export const broadcast = (
-  value: Parameters<typeof ipc.server.broadcast>[1]
-): void => {
-  ipc.server.broadcast("msg", value);
-};
+  private static readonly _buffer = new Map<Socket, string>();
 
-const callback = () => {
-  setInterval(() => {
-    if (!State.playing) return;
+  private static readonly _server = (() => {
+    const path =
+      platform() === "win32"
+        ? `\\\\.\\pipe\\${`/tmp/${ipcAppspace}${ipcServerId}`
+            .replace(/^\//, "")
+            .replace(/\//g, "-")}`
+        : `/tmp/${ipcAppspace}${ipcServerId}`;
+    try {
+      unlinkSync(path);
+    } catch {}
 
-    //  const pos = Player.position();
-    /* if (pos > 120000 && !this.prefetchLock) {
-        this.prefetchLock = true;
-        void prefetch();
-      } */
-    if (Player.empty()) {
-      State.playing = false;
-      // void commands.executeCommand("cloudmusic.next", ButtonManager.repeat);
-    } /* else {
-      while (lyric.time[lyric.index] <= pos - lyric.delay * 1000) ++lyric.index;
-      ButtonManager.buttonLyric(lyric[lyric.type].text[lyric.index - 1]);
-      if (lyric.updatePanel) lyric.updatePanel(lyric.index - 1);
-    } */
-  }, 1000);
+    return (
+      createServer((socket) => {
+        IPCServer._sockets.add(socket);
+        socket.setEncoding("utf8");
 
-  ipc.server.on("msg", (data) => {
+        socket
+          .on("close", (/* err */) => {
+            for (const socket of IPCServer._sockets) {
+              if (socket?.readable) continue;
+              socket?.destroy();
+              IPCServer._sockets.delete(socket);
+              return;
+            }
+          })
+          // .on("error", (err) => {})
+          .on("data", (data) => {
+            const buffer =
+              (IPCServer._buffer.get(socket) ?? "") + data.toString();
+
+            if (buffer.lastIndexOf(ipcDelimiter) === -1) {
+              IPCServer._buffer.set(socket, buffer);
+              return;
+            }
+
+            IPCServer._buffer.set(socket, "");
+            const msgs = buffer.split(ipcDelimiter);
+            msgs.pop();
+            for (const msg of msgs)
+              IPCServer._handler(JSON.parse(msg) /*,socket*/);
+          });
+      })
+        // .on("error", (err) => {})
+        .listen(path)
+    );
+  })();
+
+  static stop(): void {
+    this._server.close(() => {
+      for (const socket of this._sockets) socket?.destroy();
+      this._sockets.clear();
+    });
+  }
+
+  static send(socket: Socket, data: IPCServerMsg): void {
+    socket.write(`${JSON.stringify(data)}${ipcDelimiter}`);
+  }
+
+  static broadcast(data: IPCServerMsg): void {
+    for (const socket of this._sockets)
+      socket.write(`${JSON.stringify(data)}${ipcDelimiter}`);
+  }
+
+  private static _handler(data: IPCClientMsg /* , socket: Socket */): void {
     switch (data.t) {
       case IPCEvent.Play.load:
-        if (Player.load(data.url)) broadcast({ t: IPCEvent.Play.load });
+        if (Player.load(data.url)) this.broadcast({ t: IPCEvent.Play.load });
         break;
       case IPCEvent.Play.toggle:
         State.playing ? Player.pause() : Player.play();
@@ -44,21 +93,56 @@ const callback = () => {
         break;
       case IPCEvent.Play.volume:
         Player.volume(data.level);
-        broadcast(data);
-        break;
-      case IPCEvent.Queue.add:
-      case IPCEvent.Queue.clear:
-      case IPCEvent.Queue.delete:
-      case IPCEvent.Queue.new:
-      case IPCEvent.Queue.play:
-      case IPCEvent.Queue.random:
-      case IPCEvent.Queue.shift:
-      case IPCEvent.Queue.sort:
-        broadcast(data);
+        this.broadcast(data);
         break;
     }
-  });
-};
+  }
+}
 
-ipc.serve(callback);
-ipc.server.start();
+export class IPCBroadcastServer {
+  private static readonly _sockets = new Set<Socket>();
+
+  private static readonly _server = (() => {
+    const path =
+      platform() === "win32"
+        ? `\\\\.\\pipe\\${`/tmp/${ipcAppspace}${ipcBroadcastServerId}`
+            .replace(/^\//, "")
+            .replace(/\//g, "-")}`
+        : `/tmp/${ipcAppspace}${ipcBroadcastServerId}`;
+    try {
+      unlinkSync(path);
+    } catch {}
+
+    return (
+      createServer((socket) => {
+        IPCBroadcastServer._sockets.add(socket);
+        socket.setEncoding("utf8");
+
+        socket
+          .on("close", (/* err */) => {
+            for (const socket of IPCBroadcastServer._sockets) {
+              if (socket?.readable) continue;
+              socket?.destroy();
+              IPCBroadcastServer._sockets.delete(socket);
+              return;
+            }
+          })
+          // .on("error", (err) => {})
+          .on("data", (data) => IPCBroadcastServer.broadcast(data));
+      })
+        // .on("error", (err) => {})
+        .listen(path)
+    );
+  })();
+
+  static stop(): void {
+    this._server.close(() => {
+      for (const socket of this._sockets) socket?.destroy();
+      this._sockets.clear();
+    });
+  }
+
+  static broadcast(data: Buffer): void {
+    for (const socket of this._sockets) socket.write(data);
+  }
+}

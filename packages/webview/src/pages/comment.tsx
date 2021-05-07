@@ -29,7 +29,6 @@ export const CommentList = ({
           title={`${i18n.word.comment} (${state.totalCount})`}
           titles={titles}
           selectd={state.index}
-          // TODO
           switchTab={async (index) => {
             const list = await request<CommentRet, webview.CommentCSMsg>({
               command: "tabs",

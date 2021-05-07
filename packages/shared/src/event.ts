@@ -1,6 +1,6 @@
 export const enum Play {
   load = "player.load",
-  pause = "player.stop",
+  pause = "player.pause",
   play = "player.play",
   stop = "player.stop",
   toggle = "player.toggle",

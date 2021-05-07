@@ -1,10 +1,4 @@
-import {
-  IPCClient,
-  LikeState,
-  MultiStepInput,
-  State,
-  likeMusic,
-} from "../util";
+import { IPC, LikeState, MultiStepInput, State, likeMusic } from "../util";
 import { QueueItemTreeItem, QueueProvider } from "../treeview";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
@@ -15,7 +9,7 @@ import i18n from "../i18n";
 export function initCommand(context: ExtensionContext): void {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.previous", () => {
-      if (/* !PersonalFm.state &&  */ QueueProvider.len) IPCClient.shift(1);
+      if (/* !PersonalFm.state &&  */ QueueProvider.len) IPC.shift(-1);
     }),
 
     commands.registerCommand("cloudmusic.next", () => {
@@ -25,10 +19,10 @@ export function initCommand(context: ExtensionContext): void {
         if (PersonalFm.state) void load(await PersonalFm.head());
         else  
       } */
-      if (QueueProvider.len) IPCClient.shift(-1);
+      if (QueueProvider.len) IPC.shift(1);
     }),
 
-    commands.registerCommand("cloudmusic.play", () => IPCClient.toggle()),
+    commands.registerCommand("cloudmusic.play", () => IPC.toggle()),
 
     commands.registerCommand("cloudmusic.repeat", () =>
       ButtonManager.buttonRepeat()
@@ -53,7 +47,7 @@ export function initCommand(context: ExtensionContext): void {
         });
         if (/^[1-9]\d$|^\d$|^100$/.exec(levelS)) {
           const level = parseInt(levelS);
-          IPCClient.volume(level);
+          IPC.volume(level);
           await context.globalState.update(VOLUME_KEY, level);
         }
         return input.stay();

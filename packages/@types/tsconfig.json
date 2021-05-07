@@ -11,5 +11,5 @@
     "strictNullChecks": true,
     "target": "es2020"
   },
-  "include": ["node-ipc"]
+  "include": ["."]
 }

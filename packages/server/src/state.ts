@@ -1,5 +1,5 @@
 import { IPCEvent } from "@cloudmusic/shared";
-import { broadcast } from ".";
+import { IPCServer } from ".";
 
 export class State {
   private static _playing = false;
@@ -11,7 +11,9 @@ export class State {
   static set playing(value: boolean) {
     if (value !== this._playing) {
       State._playing = value;
-      broadcast({ t: value ? IPCEvent.Play.play : IPCEvent.Play.pause });
+      IPCServer.broadcast({
+        t: value ? IPCEvent.Play.play : IPCEvent.Play.pause,
+      });
     }
   }
 }

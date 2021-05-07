@@ -10,13 +10,12 @@
   "devDependencies": {
     "@types/lodash": "4.14.168",
     "@types/node": "14.14.43",
-    "@types/node-ipc": "workspace:*",
     "@types/qrcode": "workspace:*",
-    "@types/vscode": "1.55.0",
+    "@types/vscode": "1.56.0",
     "@types/yallist": "3.0.1",
     "esbuild-loader": "2.13.0",
     "webpack": "5.36.2",
-    "webpack-cli": "4.6.0"
+    "webpack-cli": "4.7.0"
   },
   "dependencies": {
     "@cloudmusic/shared": "workspace:*",
@@ -26,7 +25,6 @@
     "lodash": "4.17.21",
     "md5-file": "5.0.0",
     "node-cache": "5.1.2",
-    "node-ipc": "9.1.4",
     "qrcode": "1.4.4",
     "yallist": "4.0.0"
   }

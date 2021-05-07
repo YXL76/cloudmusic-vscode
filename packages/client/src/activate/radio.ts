@@ -1,5 +1,5 @@
 import { CommentType, apiDjSub } from "../api";
-import { IPCClient, MultiStepInput, Webview, pickRadio } from "../util";
+import { IPC, MultiStepInput, Webview, pickRadio } from "../util";
 import type { ProgramTreeItem, RadioTreeItem } from "../treeview";
 import { commands, env, window } from "vscode";
 import type { ExtensionContext } from "vscode";
@@ -22,13 +22,13 @@ export function initRadio(context: ExtensionContext): void {
 
     commands.registerCommand("cloudmusic.playRadio", (element: RadioTreeItem) =>
       RadioProvider.refresh(element, (items) =>
-        IPCClient.new(items.map(({ data }) => data))
+        IPC.new(items.map(({ data }) => data))
       )
     ),
 
     commands.registerCommand("cloudmusic.addRadio", (element: RadioTreeItem) =>
       RadioProvider.refresh(element, (items) =>
-        IPCClient.add(items.map(({ data }) => data))
+        IPC.add(items.map(({ data }) => data))
       )
     ),
 
@@ -47,7 +47,7 @@ export function initRadio(context: ExtensionContext): void {
       "cloudmusic.playProgram",
       ({ data: { id, pid } }: ProgramTreeItem) =>
         RadioProvider.refresh(RadioProvider.radios.get(pid), (items) =>
-          IPCClient.new(
+          IPC.new(
             items.map(({ data }) => data),
             id
           )
@@ -56,7 +56,7 @@ export function initRadio(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.addProgram",
-      ({ data }: ProgramTreeItem) => IPCClient.add([data])
+      ({ data }: ProgramTreeItem) => IPC.add([data])
     ),
 
     commands.registerCommand(
