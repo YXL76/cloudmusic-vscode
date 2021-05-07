@@ -410,10 +410,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/tailwindcss@npm:2.0.2":
-  version: 2.0.2
-  resolution: "@types/tailwindcss@npm:2.0.2"
-  checksum: 449b245cca1654cbcb511eb0e0e87087dc1dd22fa20f80b3d6ac1894a6d08e4b62b020d33344d533bee6c876fe4855b8302d7d5c31786877fecacc7e2cd4f13f
+"@types/tailwindcss@npm:2.0.3":
+  version: 2.0.3
+  resolution: "@types/tailwindcss@npm:2.0.3"
+  checksum: 5dcf4e276b11e86529cfaf06a24291e5bc3858e2ec4be59fe8ab012beeb82d0d5835b1e370e21f37c196d07029f962219eccfe2c340a52105ef0e38e7abbb853
   languageName: node
   linkType: hard
 
@@ -1541,18 +1541,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cloudmusic-wasi@workspace:packages/wasi":
-  version: 0.0.0-use.local
-  resolution: "cloudmusic-wasi@workspace:packages/wasi"
-  languageName: unknown
-  linkType: soft
-
 "cloudmusic@workspace:.":
   version: 0.0.0-use.local
   resolution: "cloudmusic@workspace:."
   dependencies:
     "@types/eslint": 7.2.10
-    "@types/tailwindcss": 2.0.2
+    "@types/tailwindcss": 2.0.3
     "@typescript-eslint/eslint-plugin": 4.22.1
     "@typescript-eslint/parser": 4.22.1
     "@yarnpkg/pnpify": 2.4.0
