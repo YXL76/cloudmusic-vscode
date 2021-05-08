@@ -60,7 +60,7 @@ __metadata:
     "@types/node-ipc": "workspace:*"
     "@types/qrcode": "workspace:*"
     "@types/vscode": 1.55.0
-    "@types/yallist": 3.0.1
+    "@types/yallist": 4.0.0
     array-unsort: 1.1.6
     axios: 0.21.1
     esbuild-loader: 2.13.0
@@ -431,10 +431,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/yallist@npm:3.0.1":
-  version: 3.0.1
-  resolution: "@types/yallist@npm:3.0.1"
-  checksum: ec3f0d367b9eea0da8e6e4f2af179faba99d3da17d52ec008236f3d9b37b73477e295414301da59e5a37440de1bc8d8dc5ae24001f08d9855f5bcd1794d073c7
+"@types/yallist@npm:4.0.0":
+  version: 4.0.0
+  resolution: "@types/yallist@npm:4.0.0"
+  checksum: d7390ed4d14ff6c1614591cce23365ac323f8120bee9afa3588e5ad152ba78a5bcbed6bc76f7472cd6024e5cf30092249bcc282f530ee9218590515ab64e2adc
   languageName: node
   linkType: hard
 
@@ -1540,12 +1540,6 @@ __metadata:
   checksum: 85232d66015d2d703dc59812e30049931d97c7815bf70569ae4fb7a66be257f46fcf47040e4e7050966ca195a9e615d59d73ba9e39fc37eedba1a76865f27ab1
   languageName: node
   linkType: hard
-
-"cloudmusic-wasi@workspace:packages/wasi":
-  version: 0.0.0-use.local
-  resolution: "cloudmusic-wasi@workspace:packages/wasi"
-  languageName: unknown
-  linkType: soft
 
 "cloudmusic@workspace:.":
   version: 0.0.0-use.local
