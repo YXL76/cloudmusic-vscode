@@ -1,6 +1,7 @@
 import { LyricCache, MultiStepInput, Webview, lyric, pickUser } from "../util";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
+import type { InputStep } from "../util";
 import { LyricType } from "../constant";
 import type { QuickPickItem } from "vscode";
 import { apiFmTrash } from "../api";
@@ -27,9 +28,7 @@ export function initStatusBar(context: ExtensionContext): void {
         panel,
       }
 
-      await MultiStepInput.run((input) => pickMethod(input));
-
-      async function pickMethod(input: MultiStepInput) {
+      await MultiStepInput.run(async (input) => {
         const { text, user } = lyric[lyric.type];
         const { type } = await input.showQuickPick({
           title,
@@ -78,11 +77,11 @@ export function initStatusBar(context: ExtensionContext): void {
         });
         switch (type) {
           case Type.delay:
-            return (input: MultiStepInput) => inputDelay(input);
+            return (input) => inputDelay(input);
           case Type.full:
-            return (input: MultiStepInput) => pickLyric(input, text);
+            return (input) => pickLyric(input, text);
           case Type.font:
-            return (input: MultiStepInput) => inputFontSize(input);
+            return (input) => inputFontSize(input);
           case Type.type:
             lyric.type =
               lyric.type === LyricType.original
@@ -96,16 +95,15 @@ export function initStatusBar(context: ExtensionContext): void {
             ButtonManager.toggleLyric();
             break;
           case Type.user:
-            return (input: MultiStepInput) =>
-              pickUser(input, 2, user?.userid || 0);
+            return (input) => pickUser(input, 2, user?.userid || 0);
           case Type.panel:
             Webview.lyric();
             break;
         }
         return input.stay();
-      }
+      });
 
-      async function inputDelay(input: MultiStepInput) {
+      async function inputDelay(input: MultiStepInput): Promise<InputStep> {
         const delay = await input.showInputBox({
           title,
           step: 2,
@@ -129,7 +127,10 @@ export function initStatusBar(context: ExtensionContext): void {
         return input.stay();
       }
 
-      async function pickLyric(input: MultiStepInput, text: string[]) {
+      async function pickLyric(
+        input: MultiStepInput,
+        text: string[]
+      ): Promise<InputStep> {
         interface T extends QuickPickItem {
           description: string;
         }
@@ -146,7 +147,7 @@ export function initStatusBar(context: ExtensionContext): void {
           items,
         });
         select = pick.label;
-        return (input: MultiStepInput) => showLyric(input);
+        return (input) => showLyric(input);
       }
 
       async function showLyric(input: MultiStepInput) {

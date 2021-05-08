@@ -825,12 +825,12 @@
     "object-assign": "latest"
   },
   "scripts": {
-    "build": "yarn workspaces foreach run build",
-    "build-dev": "yarn workspaces foreach run build-dev",
+    "build": "yarn workspaces foreach -p run build",
+    "build-dev": "yarn workspaces foreach -p run build-dev",
     "generate-css": "postcss style.css -o dist/style.css",
     "list": "node scripts/list.js",
     "pnp": "yarn pnpify --sdk vscode vim",
-    "test": "yarn workspaces foreach run test",
+    "test": "yarn workspaces foreach -p run test",
     "vscode:prepublish": "yarn generate-css && yarn build"
   },
   "devDependencies": {

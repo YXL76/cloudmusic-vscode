@@ -46,9 +46,7 @@ export function initPlaylist(context: ExtensionContext): void {
     commands.registerCommand("cloudmusic.createPlaylist", () => {
       let name: undefined | string = undefined;
 
-      void MultiStepInput.run((input) => inputName(input));
-
-      async function inputName(input: MultiStepInput) {
+      void MultiStepInput.run(async (input) => {
         name = await input.showInputBox({
           title: i18n.word.createPlaylist,
           step: 1,
@@ -57,8 +55,8 @@ export function initPlaylist(context: ExtensionContext): void {
           prompt: i18n.sentence.hint.name,
         });
 
-        return (input: MultiStepInput) => pickType(input);
-      }
+        return (input) => pickType(input);
+      });
 
       async function pickType(input: MultiStepInput) {
         const enum Type {
@@ -136,7 +134,7 @@ export function initPlaylist(context: ExtensionContext): void {
             value: state.name,
             prompt: i18n.sentence.hint.name,
           });
-          return (input: MultiStepInput) => inputDesc(input);
+          return (input) => inputDesc(input);
         });
 
         async function inputDesc(input: MultiStepInput) {

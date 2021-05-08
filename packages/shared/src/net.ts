@@ -25,14 +25,15 @@ export type IPCBroadcastMsg =
   | IPCMsg<IPCEvent.Queue.sort, { type: number; order: number }>;
 
 export type IPCClientMsg =
-  | { t: IPCEvent.Play.load; url: string; pid?: number }
-  | { t: IPCEvent.Play.stop }
-  | { t: IPCEvent.Play.toggle }
-  | { t: IPCEvent.Play.volume; level: number };
+  | IPCMsg<IPCEvent.Play.load, { url: string; pid?: number }>
+  | IPCMsg<IPCEvent.Play.stop>
+  | IPCMsg<IPCEvent.Play.toggle>
+  | IPCMsg<IPCEvent.Play.volume, { level: number }>;
 
 export type IPCServerMsg =
-  | { t: IPCEvent.Play.end }
-  | { t: IPCEvent.Play.load }
-  | { t: IPCEvent.Play.pause }
-  | { t: IPCEvent.Play.play }
-  | { t: IPCEvent.Play.volume; level: number };
+  | IPCMsg<IPCEvent.Control.master, { is?: true }>
+  | IPCMsg<IPCEvent.Play.end>
+  | IPCMsg<IPCEvent.Play.load>
+  | IPCMsg<IPCEvent.Play.pause>
+  | IPCMsg<IPCEvent.Play.play>
+  | IPCMsg<IPCEvent.Play.volume, { level: number }>;

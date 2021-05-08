@@ -14,6 +14,8 @@ export const enum LikeState {
 }
 
 export class State {
+  static master = false;
+
   static repeat = false;
 
   private static _playItem?: QueueContent;
@@ -25,8 +27,9 @@ export class State {
   static set playItem(value: QueueContent | undefined) {
     if (value !== this._playItem) {
       this._playItem = value;
-      if (value) void IPC.load();
-      else IPC.stop();
+      if (this.master)
+        if (value) void IPC.load();
+        else IPC.stop();
     }
   }
 

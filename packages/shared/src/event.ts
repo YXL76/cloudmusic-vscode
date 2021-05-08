@@ -1,3 +1,7 @@
+export const enum Control {
+  master = "control.master",
+}
+
 export const enum Play {
   end = "player.end",
   load = "player.load",

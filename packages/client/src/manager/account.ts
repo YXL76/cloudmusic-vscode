@@ -29,6 +29,7 @@ import {
   cookieToJson,
 } from "../api";
 import type { Cookie } from "../api";
+import type { InputStep } from "../util";
 import { createHash } from "crypto";
 import i18n from "../i18n";
 
@@ -193,8 +194,6 @@ export class AccountManager implements AuthenticationProvider {
       countrycode: "86",
     };
 
-    await MultiStepInput.run((input) => pickMethod(input));
-
     const enum Type {
       emial,
       phone,
@@ -202,7 +201,7 @@ export class AccountManager implements AuthenticationProvider {
       cookie,
     }
 
-    async function pickMethod(input: MultiStepInput) {
+    await MultiStepInput.run(async (input) => {
       const pick = await input.showQuickPick({
         title,
         step: 1,
@@ -233,21 +232,21 @@ export class AccountManager implements AuthenticationProvider {
       switch (pick.type) {
         case Type.phone:
           totalSteps = 4;
-          return (input: MultiStepInput) => inputCountrycode(input);
+          return (input) => inputCountrycode(input);
         case Type.emial:
           totalSteps = 3;
-          return (input: MultiStepInput) => inputUsername(input);
+          return (input) => inputUsername(input);
         case Type.cookie:
           totalSteps = 2;
-          return (input: MultiStepInput) => inputCookie(input);
+          return (input) => inputCookie(input);
         case Type.qrcode:
           await Webview.login();
           await AccountManager.context.secrets.delete(ACCOUNT_KEY);
       }
       return;
-    }
+    });
 
-    async function inputCountrycode(input: MultiStepInput) {
+    async function inputCountrycode(input: MultiStepInput): Promise<InputStep> {
       state.countrycode = await input.showInputBox({
         title,
         step: 2,
@@ -255,10 +254,10 @@ export class AccountManager implements AuthenticationProvider {
         value: state.countrycode,
         prompt: i18n.sentence.hint.countrycode,
       });
-      return (input: MultiStepInput) => inputPhone(input);
+      return (input) => inputPhone(input);
     }
 
-    async function inputPhone(input: MultiStepInput) {
+    async function inputPhone(input: MultiStepInput): Promise<InputStep> {
       state.phone = await input.showInputBox({
         title,
         step: totalSteps - 1,
@@ -267,10 +266,10 @@ export class AccountManager implements AuthenticationProvider {
         prompt: i18n.sentence.hint.account,
       });
       state.username = "";
-      return (input: MultiStepInput) => inputPassword(input);
+      return (input) => inputPassword(input);
     }
 
-    async function inputUsername(input: MultiStepInput) {
+    async function inputUsername(input: MultiStepInput): Promise<InputStep> {
       state.username = await input.showInputBox({
         title,
         step: totalSteps - 1,
@@ -279,7 +278,7 @@ export class AccountManager implements AuthenticationProvider {
         prompt: i18n.sentence.hint.account,
       });
       state.phone = "";
-      return (input: MultiStepInput) => inputPassword(input);
+      return (input) => inputPassword(input);
     }
 
     async function inputCookie(input: MultiStepInput) {

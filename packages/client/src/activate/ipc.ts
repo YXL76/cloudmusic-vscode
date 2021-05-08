@@ -10,6 +10,9 @@ import { resolve } from "path";
 
 const ipcHandler = (data: IPCServerMsg) => {
   switch (data.t) {
+    case IPCEvent.Control.master:
+      State.master = data.is ?? false;
+      break;
     case IPCEvent.Play.end:
       if (State.repeat) void IPC.load();
       else void commands.executeCommand("cloudmusic.next");

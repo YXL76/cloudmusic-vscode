@@ -1,4 +1,4 @@
-import { IPC, MultiStepInput, State, stop } from "../util";
+import { IPC, MultiStepInput, State } from "../util";
 import { QueueProvider, QueueSortOrder, QueueSortType } from "../treeview";
 import { commands, window } from "vscode";
 import type { ExtensionContext } from "vscode";
@@ -17,9 +17,7 @@ export function initQueue(context: ExtensionContext): void {
     window.registerTreeDataProvider("queue", queueProvider),
 
     commands.registerCommand("cloudmusic.sortQueue", () => {
-      void MultiStepInput.run((input: MultiStepInput) => pickType(input));
-
-      async function pickType(input: MultiStepInput) {
+      void MultiStepInput.run(async (input) => {
         const pick = await input.showQuickPick({
           title: i18n.word.account,
           step: 1,
@@ -64,10 +62,9 @@ export function initQueue(context: ExtensionContext): void {
           ],
         });
 
-        stop();
         IPC.sort(pick.type, pick.order);
         return input.stay();
-      }
+      });
     }),
 
     commands.registerCommand("cloudmusic.clearQueue", () => IPC.clear()),
@@ -83,8 +80,8 @@ export function initQueue(context: ExtensionContext): void {
       ({ valueOf }: QueueContent) => IPC.delete(valueOf)
     ),
 
-    commands.registerCommand("cloudmusic.playNext", (element: QueueContent) =>
-      IPC.add([element.data], 1)
+    commands.registerCommand("cloudmusic.playNext", ({ data }: QueueContent) =>
+      IPC.add([data], 1)
     )
   );
 }

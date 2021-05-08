@@ -79,7 +79,7 @@ export class ButtonManager {
   }
 
   static toggle(): void {
-    const pickButton = async (input: MultiStepInput) => {
+    void MultiStepInput.run(async (input) => {
       const { index } = await input.showQuickPick({
         title: "",
         step: 1,
@@ -98,9 +98,7 @@ export class ButtonManager {
           : this.buttons[index].hide();
       await this.context.globalState.update(BUTTON_KEY, this.buttonShow);
       return input.stay();
-    };
-
-    void MultiStepInput.run((input) => pickButton(input));
+    });
   }
 
   static show(): void {

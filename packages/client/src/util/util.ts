@@ -272,19 +272,16 @@ export async function pickSong(
       void commands.executeCommand("cloudmusic.downloadSong", { item });
       break;
     case PickType.album:
-      return (input: MultiStepInput) =>
-        pickAlbum(input, step + 1, (pick as T).id);
+      return (input) => pickAlbum(input, step + 1, (pick as T).id);
     case PickType.artist:
-      return (input: MultiStepInput) =>
-        pickArtist(input, step + 1, (pick as T).id);
+      return (input) => pickArtist(input, step + 1, (pick as T).id);
     case PickType.save:
-      return (input: MultiStepInput) => pickAddToPlaylist(input, step + 1, id);
+      return (input) => pickAddToPlaylist(input, step + 1, id);
     case PickType.similar:
       if (pick.label === `${ICON.similar} ${i18n.word.similarSongs}`) {
-        return (input: MultiStepInput) => pickSimiSong(input, step + 1, id, 0);
+        return (input) => pickSimiSong(input, step + 1, id, 0);
       }
-      return (input: MultiStepInput) =>
-        pickSimiPlaylists(input, step + 1, id, 0);
+      return (input) => pickSimiPlaylists(input, step + 1, id, 0);
     case PickType.comment:
       Webview.comment(CommentType.song, id, name);
       break;
@@ -348,18 +345,14 @@ async function pickSimiSong(
     next: songs.length === limit,
   });
   if (pick === ButtonAction.previous)
-    return input.stay((input: MultiStepInput) =>
-      pickSimiSong(input, step, id, offset - limit)
-    );
+    return input.stay((input) => pickSimiSong(input, step, id, offset - limit));
   if (pick === ButtonAction.next)
-    return input.stay((input: MultiStepInput) =>
-      pickSimiSong(input, step, id, offset + limit)
-    );
+    return input.stay((input) => pickSimiSong(input, step, id, offset + limit));
   if (pick.length === 0) return input.stay();
   if (pick.length === 1)
-    return (input: MultiStepInput) => pickSong(input, step + 1, pick[0].item);
+    return (input) => pickSong(input, step + 1, pick[0].item);
 
-  return (input: MultiStepInput) =>
+  return (input) =>
     pickSongMany(
       input,
       step + 1,
@@ -380,9 +373,9 @@ export async function pickSongs(
   });
   if (pick.length === 0) return input.stay();
   if (pick.length === 1)
-    return (input: MultiStepInput) => pickSong(input, step + 1, pick[0].item);
+    return (input) => pickSong(input, step + 1, pick[0].item);
 
-  return (input: MultiStepInput) =>
+  return (input) =>
     pickSongMany(
       input,
       step + 1,
@@ -438,11 +431,9 @@ export async function pickProgram(
       });
       break;
     case PickType.user:
-      return (input: MultiStepInput) =>
-        pickUser(input, step + 1, (pick as T).id);
+      return (input) => pickUser(input, step + 1, (pick as T).id);
     case PickType.radio:
-      return (input: MultiStepInput) =>
-        pickRadio(input, step + 1, radio as RadioDetail);
+      return (input) => pickRadio(input, step + 1, radio as RadioDetail);
     case PickType.comment:
       Webview.comment(CommentType.dj, id, name);
       break;
@@ -499,10 +490,9 @@ export async function pickPrograms(
   });
   if (pick.length === 0) return input.stay();
   if (pick.length === 1)
-    return (input: MultiStepInput) =>
-      pickProgram(input, step + 1, pick[0].item);
+    return (input) => pickProgram(input, step + 1, pick[0].item);
 
-  return (input: MultiStepInput) =>
+  return (input) =>
     pickProgramMany(
       input,
       step + 1,
@@ -549,13 +539,12 @@ export async function pickRadio(
       void commands.executeCommand("cloudmusic.copyRadioLink", { id });
       break;
     case PickType.user:
-      return (input: MultiStepInput) =>
-        pickUser(input, step + 1, (pick as T).id);
+      return (input) => pickUser(input, step + 1, (pick as T).id);
     case PickType.subscribed:
-      return async (input: MultiStepInput) =>
+      return async (input) =>
         pickUsers(input, step + 1, apiDjSubscriber, -1, id);
     case PickType.programs:
-      return async (input: MultiStepInput) =>
+      return async (input) =>
         pickPrograms(input, step + 1, await apiDjProgram(id, programCount));
   }
 
@@ -572,7 +561,7 @@ export async function pickRadios(
     step,
     items: pickRadioDetails(radios),
   });
-  return (input: MultiStepInput) => pickRadio(input, step + 1, item);
+  return (input) => pickRadio(input, step + 1, item);
 }
 
 export async function pickArtist(
@@ -632,14 +621,14 @@ export async function pickArtist(
       await Webview.description(id, name);
       break;
     case PickType.albums:
-      return async (input: MultiStepInput) =>
+      return async (input) =>
         pickAlbums(input, step + 1, await apiArtistAlbum(pick.id as number));
     case PickType.hot:
-      return (input: MultiStepInput) => pickSongs(input, step + 1, songs);
+      return (input) => pickSongs(input, step + 1, songs);
     case PickType.songs:
-      return (input: MultiStepInput) => pickAllSongs(input, step + 1, id, 0);
+      return (input) => pickAllSongs(input, step + 1, id, 0);
     case PickType.similar:
-      return async (input: MultiStepInput) =>
+      return async (input) =>
         pickArtists(input, step + 1, await apiSimiArtist(id));
     case PickType.unsave:
       if (
@@ -674,18 +663,18 @@ export async function pickArtist(
       next: songs.length === limit,
     });
     if (pick === ButtonAction.previous)
-      return input.stay((input: MultiStepInput) =>
+      return input.stay((input) =>
         pickAllSongs(input, step, id, offset - limit)
       );
     if (pick === ButtonAction.next)
-      return input.stay((input: MultiStepInput) =>
+      return input.stay((input) =>
         pickAllSongs(input, step, id, offset + limit)
       );
     if (pick.length === 0) return input.stay();
     if (pick.length === 1)
-      return (input: MultiStepInput) => pickSong(input, step + 1, pick[0].item);
+      return (input) => pickSong(input, step + 1, pick[0].item);
 
-    return (input: MultiStepInput) =>
+    return (input) =>
       pickSongMany(
         input,
         step + 1,
@@ -704,7 +693,7 @@ export async function pickArtists(
     step,
     items: pickArtistItems(artists),
   });
-  return (input: MultiStepInput) => pickArtist(input, step + 1, pick.id);
+  return (input) => pickArtist(input, step + 1, pick.id);
 }
 
 export async function pickAlbum(
@@ -749,10 +738,9 @@ export async function pickAlbum(
   });
   switch (pick.type) {
     case PickType.artist:
-      return (input: MultiStepInput) =>
-        pickArtist(input, step + 1, (pick as T).id);
+      return (input) => pickArtist(input, step + 1, (pick as T).id);
     case PickType.songs:
-      return (input: MultiStepInput) => pickSongs(input, step + 1, songs);
+      return (input) => pickSongs(input, step + 1, songs);
     case PickType.unsave:
       if (
         await window.showWarningMessage(
@@ -783,7 +771,7 @@ export async function pickAlbums(
     step,
     items: pickAlbumItems(albums),
   });
-  return (input: MultiStepInput) => pickAlbum(input, step + 1, pick.id);
+  return (input) => pickAlbum(input, step + 1, pick.id);
 }
 
 export async function pickPlaylist(
@@ -865,14 +853,13 @@ export async function pickPlaylist(
       void commands.executeCommand("cloudmusic.copyPlaylistLink", { item });
       break;
     case PickType.songs:
-      return async (input: MultiStepInput) =>
+      return async (input) =>
         pickSongs(input, step + 1, await apiPlaylistDetail(id));
     case PickType.subscribed:
-      return (input: MultiStepInput) =>
+      return (input) =>
         pickUsers(input, step + 1, apiPlaylistSubscribers, 0, id);
     case PickType.user:
-      return (input: MultiStepInput) =>
-        pickUser(input, step + 1, (pick as T).id);
+      return (input) => pickUser(input, step + 1, (pick as T).id);
     case PickType.add:
       {
         const songs = await apiPlaylistDetail(id);
@@ -915,14 +902,14 @@ async function pickSimiPlaylists(
     next: playlists.length === limit,
   });
   if (pick === ButtonAction.previous)
-    return input.stay((input: MultiStepInput) =>
+    return input.stay((input) =>
       pickSimiPlaylists(input, step, id, offset - limit)
     );
   if (pick === ButtonAction.next)
-    return input.stay((input: MultiStepInput) =>
+    return input.stay((input) =>
       pickSimiPlaylists(input, step, id, offset + limit)
     );
-  return (input: MultiStepInput) => pickPlaylist(input, step + 1, pick.item);
+  return (input) => pickPlaylist(input, step + 1, pick.item);
 }
 
 export async function pickPlaylists(
@@ -935,7 +922,7 @@ export async function pickPlaylists(
     step,
     items: pickPlaylistItems(items),
   });
-  return (input: MultiStepInput) => pickPlaylist(input, step + 1, pick.item);
+  return (input) => pickPlaylist(input, step + 1, pick.item);
 }
 
 export async function pickAddToPlaylist(
@@ -1007,13 +994,11 @@ export async function pickUser(
   });
   switch (pick.type) {
     case PickType.followeds:
-      return (input: MultiStepInput) =>
-        pickUsers(input, step + 1, apiUserFolloweds, 0, uid);
+      return (input) => pickUsers(input, step + 1, apiUserFolloweds, 0, uid);
     case PickType.follows:
-      return (input: MultiStepInput) =>
-        pickUsers(input, step + 1, apiUserFollows, 0, uid);
+      return (input) => pickUsers(input, step + 1, apiUserFollows, 0, uid);
     case PickType.playlist:
-      return (input: MultiStepInput) =>
+      return (input) =>
         pickPlaylist(input, step + 1, pick.item as PlaylistItem);
   }
   return input.stay();
@@ -1037,12 +1022,12 @@ export async function pickUsers(
     next: users.length === limit,
   });
   if (pick === ButtonAction.previous)
-    return input.stay((input: MultiStepInput) =>
+    return input.stay((input) =>
       pickUsers(input, step, func, offset - limit, id)
     );
   if (pick === ButtonAction.next)
-    return input.stay((input: MultiStepInput) =>
+    return input.stay((input) =>
       pickUsers(input, step, func, offset + limit, id)
     );
-  return (input: MultiStepInput) => pickUser(input, step + 1, pick.id);
+  return (input) => pickUser(input, step + 1, pick.id);
 }

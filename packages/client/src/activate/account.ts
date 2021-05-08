@@ -78,7 +78,7 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
       let initial: ArtistInitial;
       void MultiStepInput.run((input) => pickType(input));
 
-      async function pickType(input: MultiStepInput) {
+      async function pickType(input: MultiStepInput): Promise<InputStep> {
         const enum Type {
           user,
           level,
@@ -140,29 +140,27 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
 
         switch (pick.type) {
           case Type.user:
-            return (input: MultiStepInput) =>
-              pickUser(input, 2, AccountManager.uid);
+            return (input) => pickUser(input, 2, AccountManager.uid);
           case Type.search:
-            return (input: MultiStepInput) => inputKeyword(input);
+            return (input) => inputKeyword(input);
           case Type.recommendation:
-            return (input: MultiStepInput) => pickRecommend(input);
+            return (input) => pickRecommend(input);
           case Type.toplist:
-            return (input: MultiStepInput) => pickToplist(input);
+            return (input) => pickToplist(input);
           case Type.explore:
-            return (input: MultiStepInput) => pickExplore(input);
+            return (input) => pickExplore(input);
           case Type.save:
-            return (input: MultiStepInput) => pickSave(input);
+            return (input) => pickSave(input);
           case Type.fm:
             void commands.executeCommand("cloudmusic.personalFM");
             break;
           case Type.musicRanking:
             await Webview.musicRanking();
-            return;
         }
         return input.stay();
       }
 
-      async function pickRecommend(input: MultiStepInput) {
+      async function pickRecommend(input: MultiStepInput): Promise<InputStep> {
         const enum Type {
           dailyPlaylist,
           dailySong,
@@ -205,22 +203,22 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
         });
         switch (pick.type) {
           case Type.dailyPlaylist:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickPlaylists(input, 3, await apiRecommendResource());
           case Type.dailySong:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickSongs(input, 3, await apiRecommendSongs());
           case Type.playlist:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickPlaylists(input, 3, await apiPersonalized());
           case Type.song:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickSongs(input, 3, await apiPersonalizedNewsong());
           case Type.radio:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickRadioType(input, 3, apiDjRecommend, apiDjRecommendType);
           case Type.program:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickPrograms(input, 3, await apiPersonalizedDjprogram());
         }
       }
@@ -230,7 +228,7 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
         step: number,
         allFunc: (...args: number[]) => Promise<RadioDetail[]>,
         typeFunc: (id: number, ...args: number[]) => Promise<RadioDetail[]>
-      ) {
+      ): Promise<InputStep> {
         const types = await apiDjCatelist();
         const pick = await input.showQuickPick({
           title: i18n.word.type,
@@ -242,13 +240,12 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           ],
         });
         if (pick.id === -1)
-          return async (input: MultiStepInput) =>
-            pickRadios(input, 3, await allFunc(100, 0));
-        return async (input: MultiStepInput) =>
+          return async (input) => pickRadios(input, 3, await allFunc(100, 0));
+        return async (input) =>
           pickRadios(input, 3, await typeFunc(pick.id, 100, 0));
       }
 
-      async function pickToplist(input: MultiStepInput) {
+      async function pickToplist(input: MultiStepInput): Promise<InputStep> {
         const enum Type {
           song,
           artist,
@@ -291,27 +288,26 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
         });
         switch (pick.type) {
           case Type.song:
-            return async (input: MultiStepInput) =>
-              pickPlaylists(input, 3, await apiToplist());
+            return async (input) => pickPlaylists(input, 3, await apiToplist());
           case Type.artist:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickArtists(input, 3, await apiToplistArtist());
           case Type.radioNew:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickRadios(input, 3, await apiDjToplist(0, 100, 0));
           case Type.radioHot:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickRadios(input, 3, await apiDjToplist(1, 100, 0));
           case Type.program:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickPrograms(input, 3, await apiDjProgramToplist(100, 0));
           case Type.program24:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickPrograms(input, 3, await apiDjProgramToplistHours());
         }
       }
 
-      async function pickExplore(input: MultiStepInput) {
+      async function pickExplore(input: MultiStepInput): Promise<InputStep> {
         const enum Type {
           playlist,
           highqualityPlaylist,
@@ -363,30 +359,28 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
         });
         switch (pick.type) {
           case Type.playlist:
-            return (input: MultiStepInput) => pickPlaylistCategories(input);
+            return (input) => pickPlaylistCategories(input);
           case Type.highqualityPlaylist:
-            return (input: MultiStepInput) =>
-              pickHighqualitPlaylistCategories(input);
+            return (input) => pickHighqualitPlaylistCategories(input);
           case Type.artist:
-            return (input: MultiStepInput) => pickArtistType(input);
+            return (input) => pickArtistType(input);
           case Type.topAlbums:
-            return async (input: MultiStepInput) =>
-              pickAlbums(input, 3, await apiTopAlbum());
+            return async (input) => pickAlbums(input, 3, await apiTopAlbum());
           case Type.topArtists:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickArtists(input, 3, await apiTopArtists(50, 0));
           case Type.topSongs:
-            return (input: MultiStepInput) => pickTopSongs(input);
+            return (input) => pickTopSongs(input);
           case Type.albumNewest:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickAlbums(input, 3, await apiAlbumNewest());
           case Type.radioHot:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickRadioType(input, 3, apiDjHot, apiDjRadioHot);
         }
       }
 
-      async function pickTopSongs(input: MultiStepInput) {
+      async function pickTopSongs(input: MultiStepInput): Promise<InputStep> {
         const pick = await input.showQuickPick({
           title: i18n.word.categorie,
           step: 3,
@@ -410,11 +404,13 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
             },
           ],
         });
-        return async (input: MultiStepInput) =>
+        return async (input) =>
           pickSongs(input, 4, await apiTopSong(pick.type));
       }
 
-      async function pickPlaylistCategories(input: MultiStepInput) {
+      async function pickPlaylistCategories(
+        input: MultiStepInput
+      ): Promise<InputStep> {
         const categories = await apiPlaylistCatlist();
         const pick = await input.showQuickPick({
           title: i18n.word.categorie,
@@ -422,7 +418,7 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           totalSteps: 6,
           items: Object.keys(categories).map((label) => ({ label })),
         });
-        return (input: MultiStepInput) =>
+        return (input) =>
           pickPlaylistSubCategories(
             input,
             categories[pick.label].map(({ name, hot }) => ({
@@ -432,7 +428,9 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           );
       }
 
-      async function pickHighqualitPlaylistCategories(input: MultiStepInput) {
+      async function pickHighqualitPlaylistCategories(
+        input: MultiStepInput
+      ): Promise<InputStep> {
         const categories = await apiHighqualityTags();
         const pick = await input.showQuickPick({
           title: i18n.word.categorie,
@@ -444,13 +442,13 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           })),
         });
         cat = pick.label;
-        return (input: MultiStepInput) => pickAllHighqualityPlaylists(input);
+        return (input) => pickAllHighqualityPlaylists(input);
       }
 
       async function pickPlaylistSubCategories(
         input: MultiStepInput,
         items: QuickPickItem[]
-      ) {
+      ): Promise<InputStep> {
         const pick = await input.showQuickPick({
           title: i18n.word.categorie,
           step: 4,
@@ -458,7 +456,7 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           items,
         });
         cat = pick.label;
-        return (input: MultiStepInput) => pickAllPlaylists(input, 0);
+        return (input) => pickAllPlaylists(input, 0);
       }
 
       async function pickAllPlaylists(
@@ -476,14 +474,10 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           next: playlists.length === limit,
         });
         if (pick === ButtonAction.previous)
-          return input.stay((input: MultiStepInput) =>
-            pickAllPlaylists(input, offset - limit)
-          );
+          return input.stay((input) => pickAllPlaylists(input, offset - limit));
         if (pick === ButtonAction.next)
-          return input.stay((input: MultiStepInput) =>
-            pickAllPlaylists(input, offset + limit)
-          );
-        return (input: MultiStepInput) => pickPlaylist(input, 6, pick.item);
+          return input.stay((input) => pickAllPlaylists(input, offset + limit));
+        return (input) => pickPlaylist(input, 6, pick.item);
       }
 
       async function pickAllHighqualityPlaylists(
@@ -497,10 +491,10 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           totalSteps: 5,
           items: pickPlaylistItems(playlists),
         });
-        return (input: MultiStepInput) => pickPlaylist(input, 5, pick.item);
+        return (input) => pickPlaylist(input, 5, pick.item);
       }
 
-      async function pickArtistType(input: MultiStepInput) {
+      async function pickArtistType(input: MultiStepInput): Promise<InputStep> {
         const pick = await input.showQuickPick({
           title: i18n.word.type,
           step: 3,
@@ -521,10 +515,10 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           ],
         });
         type = pick.type;
-        return async (input: MultiStepInput) => pickArtistArea(input);
+        return async (input) => pickArtistArea(input);
       }
 
-      async function pickArtistArea(input: MultiStepInput) {
+      async function pickArtistArea(input: MultiStepInput): Promise<InputStep> {
         const pick = await input.showQuickPick({
           title: i18n.word.area,
           step: 4,
@@ -557,10 +551,12 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           ],
         });
         area = pick.type;
-        return async (input: MultiStepInput) => pickArtistInitial(input);
+        return async (input) => pickArtistInitial(input);
       }
 
-      async function pickArtistInitial(input: MultiStepInput) {
+      async function pickArtistInitial(
+        input: MultiStepInput
+      ): Promise<InputStep> {
         const allInitial: ArtistInitial[] = [
           "A",
           "B",
@@ -606,7 +602,7 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           ],
         });
         initial = pick.type;
-        return (input: MultiStepInput) => pickAllArtist(input, 0);
+        return (input) => pickAllArtist(input, 0);
       }
 
       async function pickAllArtist(
@@ -624,17 +620,13 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           next: artists.length === limit,
         });
         if (pick === ButtonAction.previous)
-          return input.stay((input: MultiStepInput) =>
-            pickAllArtist(input, offset - limit)
-          );
+          return input.stay((input) => pickAllArtist(input, offset - limit));
         if (pick === ButtonAction.next)
-          return input.stay((input: MultiStepInput) =>
-            pickAllArtist(input, offset + limit)
-          );
-        return (input: MultiStepInput) => pickArtist(input, 7, pick.id);
+          return input.stay((input) => pickAllArtist(input, offset + limit));
+        return (input) => pickArtist(input, 7, pick.id);
       }
 
-      async function pickSave(input: MultiStepInput) {
+      async function pickSave(input: MultiStepInput): Promise<InputStep> {
         const enum Type {
           album,
           artist,
@@ -657,10 +649,10 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
         });
         switch (pick.type) {
           case Type.album:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickAlbums(input, 3, await apiAlbumSublist());
           case Type.artist:
-            return async (input: MultiStepInput) =>
+            return async (input) =>
               pickArtists(input, 3, await apiArtistSublist());
         }
       }
