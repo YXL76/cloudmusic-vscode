@@ -1,7 +1,6 @@
 import { IPC, State, ipc, ipcB } from "../util";
 import type { IPCBroadcastMsg, IPCServerMsg } from "@cloudmusic/shared";
 import { ButtonManager } from "../manager";
-import { IPCEvent } from "@cloudmusic/shared";
 import type { PlayTreeItemData } from "../treeview";
 import { QueueProvider } from "../treeview";
 import { commands } from "vscode";
@@ -10,23 +9,23 @@ import { resolve } from "path";
 
 const ipcHandler = (data: IPCServerMsg) => {
   switch (data.t) {
-    case IPCEvent.Control.master:
+    case "control.master":
       State.master = data.is ?? false;
       break;
-    case IPCEvent.Play.end:
+    case "player.end":
       if (State.repeat) void IPC.load();
       else void commands.executeCommand("cloudmusic.next");
       break;
-    case IPCEvent.Play.load:
+    case "player.load":
       State.loading = false;
       break;
-    case IPCEvent.Play.pause:
+    case "player.pause":
       ButtonManager.buttonPlay(false);
       break;
-    case IPCEvent.Play.play:
+    case "player.play":
       ButtonManager.buttonPlay(true);
       break;
-    case IPCEvent.Play.volume:
+    case "player.volume":
       ButtonManager.buttonVolume(data.level);
       break;
   }
@@ -34,28 +33,28 @@ const ipcHandler = (data: IPCServerMsg) => {
 
 const ipcBHandler = (data: IPCBroadcastMsg) => {
   switch (data.t) {
-    case IPCEvent.Play.repeat:
+    case "player.repeat":
       ButtonManager.buttonRepeat(data.r);
       break;
-    case IPCEvent.Queue.add:
+    case "queue.add":
       QueueProvider.addRaw(data.items as PlayTreeItemData[], data.index);
       break;
-    case IPCEvent.Queue.clear:
+    case "queue.clear":
       QueueProvider.clear();
       break;
-    case IPCEvent.Queue.delete:
+    case "queue.delete":
       QueueProvider.delete(data.id);
       break;
-    case IPCEvent.Queue.new:
+    case "queue.new":
       QueueProvider.newRaw(data.items as PlayTreeItemData[], data.id);
       break;
-    case IPCEvent.Queue.play:
+    case "queue.play":
       QueueProvider.top(data.id);
       break;
-    case IPCEvent.Queue.shift:
+    case "queue.shift":
       QueueProvider.shift(data.index);
       break;
-    case IPCEvent.Queue.sort:
+    case "queue.sort":
       QueueProvider.sort(data.type, data.order);
       break;
   }

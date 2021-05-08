@@ -1,3 +1,10 @@
+import type {
+  CSMessage,
+  CommentCMsg,
+  CommentCSMsg,
+  LyricSMsg,
+  MsicRankingCMsg,
+} from "@cloudmusic/shared";
 import { ColorThemeKind, Uri, ViewColumn, window } from "vscode";
 import {
   CommentType,
@@ -18,11 +25,10 @@ import {
   pickSong,
   pickUser,
 } from ".";
-import type { CSMessage } from "@cloudmusic/shared";
+import type { WebviewType } from "@cloudmusic/shared";
 import i18n from "../i18n";
 import { resolve } from "path";
 import { toDataURL } from "qrcode";
-import { webview } from "@cloudmusic/shared";
 
 const getNonce = (): string => {
   let text = "";
@@ -47,10 +53,7 @@ export class Webview {
     const imgSrc = await toDataURL(
       `https://music.163.com/login?codekey=${key}`
     );
-    const { panel, setHtml } = this.getPanel(
-      i18n.word.signIn,
-      webview.Type.login
-    );
+    const { panel, setHtml } = this.getPanel(i18n.word.signIn, "login");
 
     panel.webview.onDidReceiveMessage(({ channel }: CSMessage) => {
       void panel.webview.postMessage({ msg: { imgSrc }, channel });
@@ -79,10 +82,7 @@ export class Webview {
   }
 
   static lyric(): void {
-    const { panel, setHtml } = this.getPanel(
-      i18n.word.lyric,
-      webview.Type.lyric
-    );
+    const { panel, setHtml } = this.getPanel(i18n.word.lyric, "lyric");
 
     panel.onDidDispose(() => {
       lyric.updatePanel = undefined;
@@ -96,19 +96,19 @@ export class Webview {
           otext: lyric.o.text[index],
           ttext: lyric.t.text[index],
         },
-      } as webview.LyricSMsg);
+      } as LyricSMsg);
     lyric.updateFontSize = (size: number) =>
       panel.webview.postMessage({
         command: "size",
         data: size,
-      } as webview.LyricSMsg);
+      } as LyricSMsg);
 
     setHtml();
   }
 
   static async description(id: number, name: string): Promise<void> {
     const desc = await apiArtistDesc(id);
-    const { panel, setHtml } = this.getPanel(name, webview.Type.description);
+    const { panel, setHtml } = this.getPanel(name, "description");
 
     panel.webview.onDidReceiveMessage(({ channel }: CSMessage) => {
       void panel.webview.postMessage({ msg: { name, desc }, channel });
@@ -120,11 +120,11 @@ export class Webview {
     const record = await apiUserRecord();
     const { panel, setHtml } = this.getPanel(
       i18n.word.musicRanking,
-      webview.Type.musicRanking
+      "musicRanking"
     );
 
     panel.webview.onDidReceiveMessage(
-      ({ msg, channel }: CSMessage | webview.MsicRankingCMsg) => {
+      ({ msg, channel }: CSMessage | MsicRankingCMsg) => {
         if (channel) {
           void panel.webview.postMessage({ msg: record, channel });
           return;
@@ -180,14 +180,11 @@ export class Webview {
 
     const { panel, setHtml } = this.getPanel(
       `${i18n.word.comment} (${title})`,
-      webview.Type.comment
+      "comment"
     );
 
     panel.webview.onDidReceiveMessage(
-      async ({
-        msg,
-        channel,
-      }: CSMessage<webview.CommentCSMsg> | webview.CommentCMsg) => {
+      async ({ msg, channel }: CSMessage<CommentCSMsg> | CommentCMsg) => {
         if (!channel) {
           switch (msg.command) {
             case "user":
@@ -241,7 +238,7 @@ export class Webview {
     setHtml();
   }
 
-  private static getPanel(title: string, type: webview.Type) {
+  private static getPanel(title: string, type: WebviewType) {
     const panel = window.createWebviewPanel(
       "Cloudmusic",
       title,
@@ -259,7 +256,7 @@ export class Webview {
 
   private static layout(
     title: string,
-    type: webview.Type,
+    type: WebviewType,
     css: string,
     js: string
   ) {
@@ -274,7 +271,7 @@ export class Webview {
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>${title}</title>
     <link rel="stylesheet" type="text/css" href=${css} />
-    <script>const PAGE_PAGE = ${type}</script>
+    <script>const PAGE_PAGE = "${type}"</script>
   </head>
   <body>
     <div id="root"></div>

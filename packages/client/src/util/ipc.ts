@@ -3,13 +3,6 @@ import type {
   IPCClientMsg,
   IPCServerMsg,
 } from "@cloudmusic/shared";
-import {
-  IPCEvent,
-  ipcAppspace,
-  ipcBroadcastServerId,
-  ipcDelimiter,
-  ipcServerId,
-} from "@cloudmusic/shared";
 import { LocalFileTreeItem, QueueProvider } from "../treeview";
 import { MUSIC_QUALITY, TMP_DIR } from "../constant";
 import { MusicCache, State, downloadMusic } from ".";
@@ -19,6 +12,12 @@ import type {
   QueueSortType,
 } from "../treeview";
 import { Uri, window } from "vscode";
+import {
+  ipcAppspace,
+  ipcBroadcastServerId,
+  ipcDelimiter,
+  ipcServerId,
+} from "@cloudmusic/shared";
 import type { Socket } from "net";
 import { apiSongUrl } from "../api";
 import { connect } from "net";
@@ -117,7 +116,10 @@ export class IPC {
     State.loading = true;
 
     if (playItem instanceof LocalFileTreeItem) {
-      ipc.send({ t: IPCEvent.Play.load, url: playItem.tooltip });
+      ipc.send({
+        t: "player.load",
+        url: playItem.tooltip,
+      });
       return;
     }
 
@@ -129,7 +131,7 @@ export class IPC {
     {
       const url = MusicCache.get(idS);
       if (url) {
-        ipc.send({ t: IPCEvent.Play.load, url, pid });
+        ipc.send({ t: "player.load", url, pid });
         return;
       }
     }
@@ -155,7 +157,11 @@ export class IPC {
         len += length;
         if (len > minSize) {
           data.removeListener("data", onData);
-          ipc.send({ t: IPCEvent.Play.load, url: tmpUri.fsPath, pid });
+          ipc.send({
+            t: "player.load",
+            url: tmpUri.fsPath,
+            pid,
+          });
         }
       };
       data.on("data", onData);
@@ -170,53 +176,53 @@ export class IPC {
   }
 
   static repeat(r: boolean): void {
-    ipcB.send({ t: IPCEvent.Play.repeat, r });
+    ipcB.send({ t: "player.repeat", r });
   }
 
   static stop(): void {
-    ipc.send({ t: IPCEvent.Play.stop });
+    ipc.send({ t: "player.stop" });
   }
 
   static toggle(): void {
-    ipc.send({ t: IPCEvent.Play.toggle });
+    ipc.send({ t: "player.toggle" });
   }
 
   static volume(level: number): void {
-    ipc.send({ t: IPCEvent.Play.volume, level });
+    ipc.send({ t: "player.volume", level });
   }
 
   static add(items: PlayTreeItemData[], index?: number): void {
-    ipcB.send({ t: IPCEvent.Queue.add, items, index });
+    ipcB.send({ t: "queue.add", items, index });
   }
 
   static clear(): void {
-    ipcB.send({ t: IPCEvent.Queue.clear });
+    ipcB.send({ t: "queue.clear" });
   }
 
   static delete(id: number | string): void {
-    ipcB.send({ t: IPCEvent.Queue.delete, id });
+    ipcB.send({ t: "queue.delete", id });
   }
 
   static new(items: PlayTreeItemData[], id?: number): void {
-    ipcB.send({ t: IPCEvent.Queue.new, items, id });
+    ipcB.send({ t: "queue.new", items, id });
   }
 
   static playSong(id: number | string): void {
-    ipcB.send({ t: IPCEvent.Queue.play, id });
+    ipcB.send({ t: "queue.play", id });
   }
 
   static random(): void {
     ipcB.send({
-      t: IPCEvent.Queue.random,
+      t: "queue.random",
       items: QueueProvider.random(),
     });
   }
 
   static shift(index: number): void {
-    ipcB.send({ t: IPCEvent.Queue.shift, index });
+    ipcB.send({ t: "queue.shift", index });
   }
 
   static sort(type: QueueSortType, order: QueueSortOrder): void {
-    ipcB.send({ t: IPCEvent.Queue.sort, type, order });
+    ipcB.send({ t: "queue.sort", type, order });
   }
 }

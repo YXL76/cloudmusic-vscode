@@ -1,5 +1,5 @@
 import { Comment, Tabs } from "../components";
-import type { CommentRet, webview } from "@cloudmusic/shared";
+import type { CommentCSMsg, CommentRet } from "@cloudmusic/shared";
 import React, { useState } from "react";
 import i18n from "../i18n";
 import { request } from "../utils";
@@ -30,7 +30,7 @@ export const CommentList = ({
           titles={titles}
           selectd={state.index}
           switchTab={async (index) => {
-            const list = await request<CommentRet, webview.CommentCSMsg>({
+            const list = await request<CommentRet, CommentCSMsg>({
               command: "tabs",
               index,
             });
@@ -46,7 +46,7 @@ export const CommentList = ({
           <button
             className="cursor-pointer mr-4 p-2 rounded-md bg-transparent text-lg text-blue-600 border-solid border-2 border-blue-600 focus:outline-none"
             onClick={async () => {
-              const list = await request<CommentRet, webview.CommentCSMsg>({
+              const list = await request<CommentRet, CommentCSMsg>({
                 command: "prev",
               });
               setState({ ...state, ...list });
@@ -59,7 +59,7 @@ export const CommentList = ({
           <button
             className="cursor-pointer ml-4 p-2 rounded-md bg-transparent text-lg text-blue-600 border-solid border-2 border-blue-600 focus:outline-none"
             onClick={async () => {
-              const list = await request<CommentRet, webview.CommentCSMsg>({
+              const list = await request<CommentRet, CommentCSMsg>({
                 command: "next",
               });
               setState({ ...state, ...list });

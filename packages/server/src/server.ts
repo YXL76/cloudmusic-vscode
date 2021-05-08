@@ -1,13 +1,12 @@
 import type { IPCClientMsg, IPCServerMsg } from "@cloudmusic/shared";
+import { Player, State } from ".";
+import { homedir, platform } from "os";
 import {
-  IPCEvent,
   ipcAppspace,
   ipcBroadcastServerId,
   ipcDelimiter,
   ipcServerId,
 } from "@cloudmusic/shared";
-import { Player, State } from ".";
-import { homedir, platform } from "os";
 import { rmdirSync, unlinkSync } from "fs";
 import type { Socket } from "net";
 import { createServer } from "net";
@@ -120,23 +119,23 @@ export class IPCServer {
   }
 
   private static setMaster() {
-    /* const [master, ...slaves] = this._sockets;
-    this.send(master, {});
-    for (const slave of slaves) this.send(slave, {}); */
+    const [master, ...slaves] = this._sockets;
+    this.send(master, { t: "control.master", is: true });
+    for (const slave of slaves) this.send(slave, { t: "control.master" });
   }
 
   private static _handler(data: IPCClientMsg /* , socket: Socket */): void {
     switch (data.t) {
-      case IPCEvent.Play.load:
-        if (Player.load(data.url)) this.broadcast({ t: IPCEvent.Play.load });
+      case "player.load":
+        if (Player.load(data.url)) this.broadcast({ t: "player.load" });
         break;
-      case IPCEvent.Play.toggle:
+      case "player.toggle":
         State.playing ? Player.pause() : Player.play();
         break;
-      case IPCEvent.Play.stop:
+      case "player.stop":
         Player.stop();
         break;
-      case IPCEvent.Play.volume:
+      case "player.volume":
         Player.volume(data.level);
         this.broadcast(data);
         break;

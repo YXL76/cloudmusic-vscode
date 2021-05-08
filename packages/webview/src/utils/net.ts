@@ -1,13 +1,13 @@
 import type { CSConnPool, CSMessage } from "@cloudmusic/shared";
-import { webview } from "@cloudmusic/shared";
+import type { WebviewType } from "@cloudmusic/shared";
 
 export const vscode = acquireVsCodeApi();
 
 const requestPool = new Map() as CSConnPool;
 
-declare const PAGE_PAGE: webview.Type;
+declare const PAGE_PAGE: WebviewType;
 
-if (PAGE_PAGE !== webview.Type.lyric) {
+if (PAGE_PAGE !== "lyric") {
   window.addEventListener(
     "message",
     ({ data: { msg, channel } }: MessageEvent<CSMessage>) => {

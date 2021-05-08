@@ -1,5 +1,4 @@
 import { State, native } from ".";
-import { IPCEvent } from "@cloudmusic/shared";
 import { IPCServer } from "./server";
 
 export class Player {
@@ -108,7 +107,7 @@ setInterval(() => {
 
   if (Player.empty()) {
     State.playing = false;
-    IPCServer.sendToMaster({ t: IPCEvent.Play.end });
+    IPCServer.sendToMaster({ t: "player.end" });
     return;
   }
 

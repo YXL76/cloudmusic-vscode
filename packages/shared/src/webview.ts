@@ -1,12 +1,11 @@
 import type { CSMessage } from ".";
 
-export const enum Type {
-  comment,
-  login,
-  description,
-  lyric,
-  musicRanking,
-}
+export type WebviewType =
+  | "comment"
+  | "login"
+  | "description"
+  | "lyric"
+  | "musicRanking";
 
 export type CommentCSMsg =
   | { command: "init" }

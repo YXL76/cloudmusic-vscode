@@ -1,4 +1,4 @@
-import type { CommentDetail, webview } from "@cloudmusic/shared";
+import type { CommentCSMsg, CommentDetail } from "@cloudmusic/shared";
 import React, { useState } from "react";
 import { request, vscode } from "../utils";
 import { FiThumbsUp } from "react-icons/fi";
@@ -67,7 +67,7 @@ export const Comment = ({
               className="cursor-pointer inline-block"
               onClick={async () => {
                 if (
-                  await request<boolean, webview.CommentCSMsg>({
+                  await request<boolean, CommentCSMsg>({
                     command: "like",
                     id: commentId,
                     t: l ? "unlike" : "like",
