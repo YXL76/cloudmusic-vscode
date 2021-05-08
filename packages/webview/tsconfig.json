@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
+    "isolatedModules": true,
     "jsx": "react-jsx",
     "lib": ["es2020", "DOM", "DOM.Iterable"],
     "module": "commonjs",

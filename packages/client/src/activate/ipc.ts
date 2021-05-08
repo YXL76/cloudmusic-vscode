@@ -63,10 +63,13 @@ export function initIPC(): void {
     .then((firstTry) => {
       if (firstTry.includes(false)) throw Error;
     })
-    .catch(() => {
-      fork(resolve(__dirname, "server.js"), { detached: true, silent: true });
-      Promise.all([ipc.connect(ipcHandler), ipcB.connect(ipcBHandler)]).catch(
-        console.error
-      );
-    });
+    .catch(() =>
+      Promise.resolve(
+        fork(resolve(__dirname, "server.js"), { detached: true, silent: true })
+      )
+    )
+    .then(() =>
+      Promise.all([ipc.connect(ipcHandler), ipcB.connect(ipcBHandler)])
+    )
+    .catch(console.error);
 }

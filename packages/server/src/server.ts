@@ -7,10 +7,15 @@ import {
   ipcServerId,
 } from "@cloudmusic/shared";
 import { Player, State } from ".";
+import { homedir, platform } from "os";
+import { rmdirSync, unlinkSync } from "fs";
 import type { Socket } from "net";
 import { createServer } from "net";
-import { platform } from "os";
-import { unlinkSync } from "fs";
+import { resolve } from "path";
+
+export const HOME_DIR = homedir();
+export const SETTING_DIR = resolve(HOME_DIR, ".cloudmusic");
+export const TMP_DIR = resolve(SETTING_DIR, "tmp");
 
 export class IPCServer {
   private static _timer?: NodeJS.Timeout;
@@ -36,38 +41,11 @@ export class IPCServer {
           clearTimeout(IPCServer._timer);
           IPCServer._timer = undefined;
         }
-        Player.play();
 
         IPCServer._sockets.add(socket);
         socket.setEncoding("utf8");
 
         socket
-          .on("close", (/* err */) => {
-            for (const socket of IPCServer._sockets) {
-              if (socket?.readable) continue;
-              socket?.destroy();
-              IPCServer._sockets.delete(socket);
-              break;
-            }
-
-            if (IPCServer._sockets.size) {
-              /* const [master, ...slaves] = IPCServer._sockets;
-              IPCServer.send(master, {});
-              for (const slave of slaves) IPCServer.send(slave, {}); */
-            } else {
-              Player.pause();
-              IPCServer._timer = setTimeout(() => {
-                if (IPCServer._sockets.size) return;
-                IPCServer.stop();
-                IPCBroadcastServer.stop();
-                /* try {
-                  rmdirSync(TMP_DIR.fsPath, { recursive: true });
-                } catch {} */
-                process.exit();
-              }, 20000);
-            }
-          })
-          // .on("error", (err) => {})
           .on("data", (data) => {
             const buffer =
               (IPCServer._buffer.get(socket) ?? "") + data.toString();
@@ -81,8 +59,35 @@ export class IPCServer {
             const msgs = buffer.split(ipcDelimiter);
             msgs.pop();
             for (const msg of msgs)
-              IPCServer._handler(JSON.parse(msg) /*,socket*/);
+              IPCServer._handler(JSON.parse(msg) /* socket */);
+          })
+          .on("close", (/* err */) => {
+            for (const socket of IPCServer._sockets) {
+              if (socket?.readable) continue;
+              socket?.destroy();
+              IPCServer._sockets.delete(socket);
+              break;
+            }
+
+            if (IPCServer._sockets.size) IPCServer.setMaster();
+            else {
+              Player.pause();
+              IPCServer._timer = setTimeout(() => {
+                if (IPCServer._sockets.size) return;
+                IPCServer.stop();
+                IPCBroadcastServer.stop();
+                try {
+                  rmdirSync(TMP_DIR, { recursive: true });
+                } catch {}
+                process.exit();
+              }, 20000);
+            }
           });
+        // .on("error", (err) => {})
+        if (IPCServer._sockets.size === 1) {
+          IPCServer.setMaster();
+          Player.play();
+        }
       })
         // .on("error", (err) => {})
         .listen(path)
@@ -112,6 +117,12 @@ export class IPCServer {
   private static get _master(): Socket | undefined {
     const [socket] = this._sockets;
     return socket;
+  }
+
+  private static setMaster() {
+    /* const [master, ...slaves] = this._sockets;
+    this.send(master, {});
+    for (const slave of slaves) this.send(slave, {}); */
   }
 
   private static _handler(data: IPCClientMsg /* , socket: Socket */): void {
@@ -153,6 +164,7 @@ export class IPCBroadcastServer {
         socket.setEncoding("utf8");
 
         socket
+          .on("data", (data) => IPCBroadcastServer.broadcast(data))
           .on("close", (/* err */) => {
             for (const socket of IPCBroadcastServer._sockets) {
               if (socket?.readable) continue;
@@ -160,9 +172,8 @@ export class IPCBroadcastServer {
               IPCBroadcastServer._sockets.delete(socket);
               return;
             }
-          })
-          // .on("error", (err) => {})
-          .on("data", (data) => IPCBroadcastServer.broadcast(data));
+          });
+        // .on("error", (err) => {})
       })
         // .on("error", (err) => {})
         .listen(path)

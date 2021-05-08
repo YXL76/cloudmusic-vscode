@@ -1,6 +1,3 @@
-import * as NodeCache from "node-cache";
-import * as Yallist from "yallist";
-import * as md5File from "md5-file";
 import {
   CACHE_DIR,
   LYRIC_CACHE_DIR,
@@ -9,6 +6,9 @@ import {
 } from "../constant";
 import { FileType, Uri, workspace } from "vscode";
 import type { LyricData, MusicCacheNode } from "../constant";
+import NodeCache from "node-cache";
+import Yallist from "yallist";
+import md5File from "md5-file";
 import { writeFileSync } from "fs";
 
 export const apiCache = new NodeCache({

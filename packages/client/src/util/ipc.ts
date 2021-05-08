@@ -43,15 +43,16 @@ class IPCClient<T, U = T> {
   }
 
   connect(handler: (data: U) => void, retry = 4): Promise<boolean> {
-    return new Promise<boolean>(
+    if (this._socket?.readable && this._socket.writable)
+      return Promise.resolve(true);
+    else this.disconnect();
+    return new Promise(
       (resolve) =>
         void this._tryConnect(retry)
           .then((socket) => {
             if (!socket) throw new Error();
 
             this._socket = socket
-              .on("close", () => this.disconnect())
-              .on("error", console.error)
               .on("data", (data) => {
                 const buffer = this._buffer + data.toString();
 
@@ -64,14 +65,13 @@ class IPCClient<T, U = T> {
                 const msgs = buffer.split(ipcDelimiter);
                 msgs.pop();
                 for (const msg of msgs) handler(JSON.parse(msg));
-              });
+              })
+              .on("close", () => this.disconnect())
+              .on("error", console.error);
 
             resolve(true);
           })
-          .catch((err) => {
-            console.error(err);
-            resolve(false);
-          })
+          .catch(() => resolve(false))
     );
   }
 

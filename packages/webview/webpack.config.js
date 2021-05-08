@@ -19,11 +19,21 @@ module.exports = (_, options) =>
           include: rootPath,
           loader: "esbuild-loader",
           options: {
+            loader: "ts",
+            target,
+            tsconfigRaw: require(resolve(__dirname, "tsconfig.json")),
+          },
+          test: /\.ts$/,
+        },
+        {
+          include: rootPath,
+          loader: "esbuild-loader",
+          options: {
             loader: "tsx",
             target,
             tsconfigRaw: require(resolve(__dirname, "tsconfig.json")),
           },
-          test: /\.tsx?$/,
+          test: /\.tsx$/,
         },
       ],
     },
