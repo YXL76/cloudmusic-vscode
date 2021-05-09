@@ -5,7 +5,7 @@ import type {
   LyricSMsg,
   MsicRankingCMsg,
 } from "@cloudmusic/shared";
-import { ColorThemeKind, Uri, ViewColumn, window } from "vscode";
+import { ColorThemeKind, Uri, ViewColumn, commands, window } from "vscode";
 import {
   CommentType,
   SortType,
@@ -19,12 +19,15 @@ import {
 } from "../api";
 import {
   MultiStepInput,
+  State,
   lyric,
   pickAlbum,
   pickArtist,
   pickSong,
   pickUser,
 } from ".";
+import type { WebviewView, WebviewViewProvider } from "vscode";
+import type { QueueContent } from "../treeview";
 import type { WebviewType } from "@cloudmusic/shared";
 import i18n from "../i18n";
 import { resolve } from "path";
@@ -38,6 +41,100 @@ const getNonce = (): string => {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   return text;
 };
+
+export class AccountViewProvider implements WebviewViewProvider {
+  private static _view?: WebviewView;
+
+  constructor(private readonly _extensionUri: Uri) {}
+
+  static master(): void {
+    this._view?.webview.postMessage({ command: "master", is: State.master });
+  }
+
+  static play(): void {
+    this._view?.webview.postMessage({ command: "state", state: "playing" });
+  }
+
+  static pause(): void {
+    this._view?.webview.postMessage({ command: "state", state: "paused" });
+  }
+
+  static stop(): void {
+    this._view?.webview.postMessage({ command: "state", state: "none" });
+  }
+
+  static position(position: number): void {
+    this._view?.webview.postMessage({ command: "position", position });
+  }
+
+  static metadata(item?: QueueContent): void {
+    if (!item) this._view?.webview.postMessage({ command: "metadata" });
+    else
+      this._view?.webview.postMessage({
+        command: "metadata",
+        duration: item.item.dt / 1000,
+        title: item.label,
+        artist: item.description,
+        album: item.tooltip,
+        artwork: [{ src: item.item.al.picUrl }],
+      });
+  }
+
+  resolveWebviewView(
+    webview: WebviewView
+    // context: WebviewViewResolveContext
+    // token: CancellationToken
+  ): void {
+    AccountViewProvider._view = webview;
+
+    webview.title = i18n.word.account;
+    webview.webview.options = {
+      enableScripts: true,
+    };
+
+    type Msg = { command: "toggle" | "previous" | "nexttrack" };
+
+    webview.webview.onDidReceiveMessage(({ command }: Msg) => {
+      if (State.master) void commands.executeCommand(`cloudmusic.${command}`);
+    });
+
+    const files = ["silent.flac", "silent.m4a", "silent.ogg", "silent.opus"];
+
+    const sources = files
+      .map((fn) =>
+        webview.webview
+          .asWebviewUri(Uri.joinPath(this._extensionUri, "media", "audio", fn))
+          .toString()
+      )
+      .map((src) => `<source src=${src} >`)
+      .join();
+
+    const js = webview.webview
+      .asWebviewUri(Uri.joinPath(this._extensionUri, "dist", "provider.js"))
+      .toString();
+
+    webview.webview.html = `
+<!DOCTYPE html>
+<html
+  lang="en"
+  class=${window.activeColorTheme.kind === ColorThemeKind.Light ? "" : "dark"}
+>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>${i18n.word.account}</title>
+    <script type="module" src=${js} nonce=${getNonce()}></script>
+  </head>
+  <body>
+    <div id="root">
+      <audio id="audio" autoPlay loop onplay="window.handleFirstPlay(event)">${sources}</audio>
+    </div>
+  </body>
+</html>`;
+
+    setTimeout(() => AccountViewProvider.master(), 1024);
+  }
+}
+
 export class Webview {
   private static readonly cssUri = Uri.file(resolve(__dirname, "style.css"));
 

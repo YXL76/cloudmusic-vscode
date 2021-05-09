@@ -788,6 +788,11 @@
     "views": {
       "cloudmusic": [
         {
+          "id": "account",
+          "name": "%views.account.name%",
+          "type": "webview"
+        },
+        {
           "id": "local",
           "name": "%views.local.name%"
         },

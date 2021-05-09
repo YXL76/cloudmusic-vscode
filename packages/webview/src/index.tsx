@@ -1,9 +1,9 @@
 import type { CommentCSMsg, RecordData, WebviewType } from "@cloudmusic/shared";
 import { CommentList, Description, Login, Lyric, MusicRanking } from "./pages";
 import type { CommentListProps, DescriptionProps, LoginProps } from "./pages";
+import { request, startEventListener } from "./utils";
 import React from "react";
 import { render } from "react-dom";
-import { request } from "./utils";
 
 declare const PAGE_PAGE: WebviewType;
 
@@ -13,6 +13,7 @@ const root = document.getElementById("root");
   switch (PAGE_PAGE) {
     case "comment":
       {
+        startEventListener();
         const props = await request<CommentListProps, CommentCSMsg>({
           command: "init",
         });
@@ -21,12 +22,14 @@ const root = document.getElementById("root");
       break;
     case "description":
       {
+        startEventListener();
         const props = await request<DescriptionProps>(undefined);
         render(<Description {...props} />, root);
       }
       break;
     case "login":
       {
+        startEventListener();
         const props = await request<LoginProps>(undefined);
         render(<Login {...props} />, root);
       }
@@ -36,6 +39,7 @@ const root = document.getElementById("root");
       break;
     case "musicRanking":
       {
+        startEventListener();
         const record = await request<RecordData[][]>(undefined);
         render(
           <MusicRanking

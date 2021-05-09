@@ -99,6 +99,7 @@ __metadata:
     "@cloudmusic/shared": "workspace:*"
     "@types/react": 17.0.5
     "@types/react-dom": 17.0.3
+    "@types/wicg-mediasession": 1.1.0
     dayjs: 1.10.4
     esbuild-loader: 2.13.0
     react: 17.0.2
@@ -413,6 +414,13 @@ __metadata:
   version: 1.56.0
   resolution: "@types/vscode@npm:1.56.0"
   checksum: 19952726331450e790e98c6396886ec9efcb611931be0f1d6a99bcb2604c8e0c5f548db25aa0d642364a427c600576687b11f781f3317117fd0162e241b6a8f3
+  languageName: node
+  linkType: hard
+
+"@types/wicg-mediasession@npm:1.1.0":
+  version: 1.1.0
+  resolution: "@types/wicg-mediasession@npm:1.1.0"
+  checksum: 488a4a0d1a9197cdce65aa9232240203709515179370779678c8566d5f46d9baa1cd63f147e5e702b0bdb0a98a2a6c0fa741461c54c685959407d292c1af99b0
   languageName: node
   linkType: hard
 

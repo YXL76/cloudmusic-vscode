@@ -16,6 +16,7 @@ import {
   initQueue,
   initRadio,
   initStatusBar,
+  initViewProvide,
 } from "./activate";
 import type { ExtensionContext } from "vscode";
 import { workspace } from "vscode";
@@ -33,6 +34,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   AccountManager.context = context;
   ButtonManager.context = context;
   void initIPC();
+  initViewProvide(context);
   initQueue(context);
   initPlaylist(context);
   initRadio(context);

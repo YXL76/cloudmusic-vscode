@@ -1,6 +1,7 @@
-import { IPC, State, ipc, ipcB } from "../util";
+import { AccountViewProvider, IPC, State, ipc, ipcB, setLyric } from "../util";
 import type { IPCBroadcastMsg, IPCServerMsg } from "@cloudmusic/shared";
 import { ButtonManager } from "../manager";
+import { ICON } from "../constant";
 import type { PlayTreeItemData } from "../treeview";
 import { QueueProvider } from "../treeview";
 import { commands } from "vscode";
@@ -10,7 +11,7 @@ import { resolve } from "path";
 const ipcHandler = (data: IPCServerMsg) => {
   switch (data.t) {
     case "control.master":
-      State.master = data.is ?? false;
+      State.master = !!data.is;
       break;
     case "player.end":
       if (State.repeat) void IPC.load();
@@ -21,9 +22,17 @@ const ipcHandler = (data: IPCServerMsg) => {
       break;
     case "player.pause":
       ButtonManager.buttonPlay(false);
+      AccountViewProvider.pause();
       break;
     case "player.play":
       ButtonManager.buttonPlay(true);
+      AccountViewProvider.play();
+      break;
+    case "player.stop":
+      ButtonManager.buttonSong();
+      ButtonManager.buttonLyric();
+      setLyric(0, [0], { text: [ICON.lyric] }, { text: [ICON.lyric] });
+      AccountViewProvider.stop();
       break;
     case "player.volume":
       ButtonManager.buttonVolume(data.level);

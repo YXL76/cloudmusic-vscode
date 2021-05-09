@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { IPC, apiCache } from ".";
+import { AccountViewProvider, IPC, apiCache } from ".";
 import { PlaylistProvider, QueueItemTreeItem } from "../treeview";
 import type { QueueContent } from "../treeview";
 import { apiUserLevel } from "../api";
@@ -14,11 +14,22 @@ export const enum LikeState {
 }
 
 export class State {
-  static master = false;
+  static _master = false;
 
   static repeat = false;
 
   private static _playItem?: QueueContent;
+
+  static get master(): boolean {
+    return State._master;
+  }
+
+  static set master(value: boolean) {
+    if (value !== this.master) {
+      this._master = value;
+      AccountViewProvider.master();
+    }
+  }
 
   static get playItem(): QueueContent | undefined {
     return State._playItem;
@@ -60,14 +71,15 @@ export class State {
           `$(loading~spin) ${i18n.word.song}: ${i18n.word.loading}`
         );
       else if (this._playItem) {
-        const { name, ar, id } = this._playItem.item;
-        ButtonManager.buttonSong(name, ar.map(({ name }) => name).join("/"));
+        const { name, id } = this._playItem.item;
+        ButtonManager.buttonSong(name, this._playItem.tooltip);
         this.like =
           this._playItem instanceof QueueItemTreeItem && !unplayable.has(id)
             ? AccountManager.likelist.has(id)
               ? LikeState.like
               : LikeState.dislike
             : LikeState.none;
+        AccountViewProvider.metadata(this._playItem);
       }
     }
   }

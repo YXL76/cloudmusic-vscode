@@ -8,3 +8,4 @@ export * from "./queue";
 export * from "./radio";
 export * from "./search";
 export * from "./statusBar";
+export * from "./webview";

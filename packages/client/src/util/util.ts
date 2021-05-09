@@ -1,4 +1,3 @@
-import { AccountManager, ButtonManager } from "../manager";
 import type {
   AlbumsItem,
   Artist,
@@ -8,15 +7,7 @@ import type {
   SongsItem,
   UserDetail,
 } from "../constant";
-import {
-  ButtonAction,
-  IPC,
-  LikeState,
-  MusicCache,
-  State,
-  Webview,
-  setLyric,
-} from ".";
+import { ButtonAction, IPC, LikeState, MusicCache, State, Webview } from ".";
 import {
   CommentType,
   apiAlbum,
@@ -49,6 +40,7 @@ import {
 } from "../treeview";
 import type { QuickPickItem, Uri } from "vscode";
 import { commands, window } from "vscode";
+import { AccountManager } from "../manager";
 import { ICON } from "../constant";
 import type { Readable } from "stream";
 import axios from "axios";
@@ -86,13 +78,6 @@ export async function likeMusic(id: number, like: boolean): Promise<void> {
       like ? i18n.word.like : i18n.word.dislike
     );
   } else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
-}
-
-export function stop(): void {
-  IPC.stop();
-  ButtonManager.buttonSong();
-  ButtonManager.buttonLyric();
-  setLyric(0, [0], { text: [i18n.word.lyric] }, { text: [i18n.word.lyric] });
 }
 
 const enum PickType {

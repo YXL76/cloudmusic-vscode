@@ -124,7 +124,7 @@ export class MultiStepInput {
       return await new Promise<readonly T[] | T | ButtonAction>(
         (resolve, reject) => {
           const input = window.createQuickPick<T>();
-          input.canSelectMany = canSelectMany ?? false;
+          input.canSelectMany = !!canSelectMany;
           input.matchOnDescription = true;
           input.matchOnDetail = true;
           input.ignoreFocusOut = true;

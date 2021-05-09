@@ -10,6 +10,7 @@
   "devDependencies": {
     "@types/react": "17.0.5",
     "@types/react-dom": "17.0.3",
+    "@types/wicg-mediasession": "1.1.0",
     "esbuild-loader": "2.13.0",
     "webpack": "5.36.2",
     "webpack-cli": "4.7.0"

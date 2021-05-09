@@ -36,4 +36,5 @@ export type IPCServerMsg =
   | IPCMsg<IPCEvent.Play$load>
   | IPCMsg<IPCEvent.Play$pause>
   | IPCMsg<IPCEvent.Play$play>
+  | IPCMsg<IPCEvent.Play$stop>
   | IPCMsg<IPCEvent.Play$volume, { level: number }>;

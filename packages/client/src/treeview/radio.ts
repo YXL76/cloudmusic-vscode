@@ -103,11 +103,11 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
 
   readonly label!: string;
 
-  readonly tooltip = this.data.description;
-
   readonly description = this.data.mainSong.ar
     .map(({ name }) => name)
     .join("/");
+
+  readonly tooltip = this.data.dj.nickname;
 
   readonly iconPath = new ThemeIcon("radio-tower");
 
@@ -122,7 +122,11 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
   };
 
   private constructor(readonly data: ProgramTreeItemData) {
-    super(data.mainSong.name);
+    super(
+      `${data.mainSong.name}${
+        data.mainSong.alia[0] ? ` (${data.mainSong.alia.join("/")})` : ""
+      }`
+    );
   }
 
   get valueOf(): number {

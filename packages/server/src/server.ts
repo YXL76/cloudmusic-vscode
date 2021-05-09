@@ -134,6 +134,7 @@ export class IPCServer {
         break;
       case "player.stop":
         Player.stop();
+        this.broadcast(data);
         break;
       case "player.volume":
         Player.volume(data.level);
