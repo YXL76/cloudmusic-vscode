@@ -1,10 +1,10 @@
 import { MusicCard, Tabs } from "../components";
 import React, { useState } from "react";
-import type { RecordData } from "@cloudmusic/shared";
+import type { NeteaseTypings } from "api";
 import i18n from "../i18n";
 
 export interface MusicRankingProps {
-  record: RecordData[][];
+  record: NeteaseTypings.RecordData[][];
   max: number[];
 }
 

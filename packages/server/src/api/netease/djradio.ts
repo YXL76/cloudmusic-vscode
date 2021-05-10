@@ -1,14 +1,13 @@
-import type {
-  ProgramDetail,
-  RadioDetail,
-  RawProgramDetail,
-  UserDetail,
-} from "../constant";
-import { resolveProgramDetail, resolveRadioDetail, weapiRequest } from ".";
-import { apiCache } from "../util";
-import { resolveUserDetail } from "./helper";
+import {
+  resolveProgramDetail,
+  resolveRadioDetail,
+  resolveUserDetail,
+} from "./helper";
+import type { NeteaseTypings } from "api";
+import { apiCache } from "../..";
+import { weapiRequest } from "./request";
 
-/* export async function apiDjCategoryRecommend() {
+/* export async function djCategoryRecommend() {
   const key = "dj_category_recommend";
   const value = apiCache.get<{ name: string; id: number }[]>(key);
   if (value) return value;
@@ -25,7 +24,7 @@ import { resolveUserDetail } from "./helper";
   return [];
 } */
 
-export async function apiDjCatelist(): Promise<{ name: string; id: number }[]> {
+export async function djCatelist(): Promise<{ name: string; id: number }[]> {
   const key = "dj_catelist";
   const value = apiCache.get<{ name: string; id: number }[]>(key);
   if (value) return value;
@@ -42,12 +41,14 @@ export async function apiDjCatelist(): Promise<{ name: string; id: number }[]> {
   return [];
 }
 
-export async function apiDjDetail(id: number): Promise<RadioDetail | void> {
+export async function djDetail(
+  id: number
+): Promise<NeteaseTypings.RadioDetail | void> {
   const key = `dj_detail${id}`;
-  const value = apiCache.get<RadioDetail>(key);
+  const value = apiCache.get<NeteaseTypings.RadioDetail>(key);
   if (value) return value;
   try {
-    const { data } = await weapiRequest<{ data: RadioDetail }>(
+    const { data } = await weapiRequest<{ data: NeteaseTypings.RadioDetail }>(
       "https://music.163.com/api/djradio/v2/get",
       { id }
     );
@@ -60,18 +61,17 @@ export async function apiDjDetail(id: number): Promise<RadioDetail | void> {
   return;
 }
 
-export async function apiDjHot(
+export async function djHot(
   limit: number,
   offset: number
-): Promise<RadioDetail[]> {
+): Promise<NeteaseTypings.RadioDetail[]> {
   const key = `dj_hot${limit}-${offset}`;
-  const value = apiCache.get<RadioDetail[]>(key);
+  const value = apiCache.get<NeteaseTypings.RadioDetail[]>(key);
   if (value) return value;
   try {
-    const { djRadios } = await weapiRequest<{ djRadios: RadioDetail[] }>(
-      "https://music.163.com/weapi/djradio/hot/v1",
-      { limit, offset }
-    );
+    const { djRadios } = await weapiRequest<{
+      djRadios: NeteaseTypings.RadioDetail[];
+    }>("https://music.163.com/weapi/djradio/hot/v1", { limit, offset });
     const ret = djRadios.map(resolveRadioDetail);
     apiCache.set(key, ret);
     return ret;
@@ -81,18 +81,22 @@ export async function apiDjHot(
   return [];
 }
 
-export async function apiDjProgram(
+export async function djProgram(
   radioId: number,
   limit: number
-): Promise<ProgramDetail[]> {
+): Promise<NeteaseTypings.ProgramDetail[]> {
   const key = `dj_program${radioId}`;
-  const value = apiCache.get<ProgramDetail[]>(key);
+  const value = apiCache.get<NeteaseTypings.ProgramDetail[]>(key);
   if (value) return value;
   try {
-    const { programs } = await weapiRequest<{ programs: RawProgramDetail[] }>(
-      "https://music.163.com/weapi/dj/program/byradio",
-      { radioId, limit, offset: 0, asc: false }
-    );
+    const { programs } = await weapiRequest<{
+      programs: NeteaseTypings.RawProgramDetail[];
+    }>("https://music.163.com/weapi/dj/program/byradio", {
+      radioId,
+      limit,
+      offset: 0,
+      asc: false,
+    });
     const ret = programs.map(resolveProgramDetail);
     apiCache.set(key, ret);
     return ret;
@@ -102,17 +106,16 @@ export async function apiDjProgram(
   return [];
 }
 
-export async function apiDjProgramDetail(
+export async function djProgramDetail(
   id: number
-): Promise<ProgramDetail | void> {
+): Promise<NeteaseTypings.ProgramDetail | void> {
   const key = `dj_program_detail${id}`;
-  const value = apiCache.get<ProgramDetail>(key);
+  const value = apiCache.get<NeteaseTypings.ProgramDetail>(key);
   if (value) return value;
   try {
-    const { program } = await weapiRequest<{ program: RawProgramDetail }>(
-      "https://music.163.com/api/dj/program/detail",
-      { id }
-    );
+    const { program } = await weapiRequest<{
+      program: NeteaseTypings.RawProgramDetail;
+    }>("https://music.163.com/api/dj/program/detail", { id });
     const ret = resolveProgramDetail(program);
     apiCache.set(key, ret);
     return ret;
@@ -122,16 +125,16 @@ export async function apiDjProgramDetail(
   return;
 }
 
-export async function apiDjProgramToplist(
+export async function djProgramToplist(
   limit: number,
   offset: number
-): Promise<ProgramDetail[]> {
+): Promise<NeteaseTypings.ProgramDetail[]> {
   const key = `dj_program_toplist${limit}-${offset}`;
-  const value = apiCache.get<ProgramDetail[]>(key);
+  const value = apiCache.get<NeteaseTypings.ProgramDetail[]>(key);
   if (value) return value;
   try {
     const { toplist } = await weapiRequest<{
-      toplist: { program: RawProgramDetail }[];
+      toplist: { program: NeteaseTypings.RawProgramDetail }[];
     }>("https://music.163.com/api/program/toplist/v1", { limit, offset });
     const ret = toplist.map(({ program }) => resolveProgramDetail(program));
     apiCache.set(key, ret);
@@ -142,17 +145,18 @@ export async function apiDjProgramToplist(
   return [];
 }
 
-export async function apiDjProgramToplistHours(): Promise<ProgramDetail[]> {
+export async function djProgramToplistHours(): Promise<
+  NeteaseTypings.ProgramDetail[]
+> {
   const key = "dj_program_toplist_hours";
-  const value = apiCache.get<ProgramDetail[]>(key);
+  const value = apiCache.get<NeteaseTypings.ProgramDetail[]>(key);
   if (value) return value;
   try {
     const {
       data: { list },
-    } = await weapiRequest<{ data: { list: { program: RawProgramDetail }[] } }>(
-      "https://music.163.com/api/djprogram/toplist/hours",
-      { limit: 100 }
-    );
+    } = await weapiRequest<{
+      data: { list: { program: NeteaseTypings.RawProgramDetail }[] };
+    }>("https://music.163.com/api/djprogram/toplist/hours", { limit: 100 });
     const ret = list.map(({ program }) => resolveProgramDetail(program));
     apiCache.set(key, ret);
     return ret;
@@ -162,19 +166,18 @@ export async function apiDjProgramToplistHours(): Promise<ProgramDetail[]> {
   return [];
 }
 
-export async function apiDjRadioHot(
+export async function djRadioHot(
   cateId: number,
   limit: number,
   offset: number
-): Promise<RadioDetail[]> {
+): Promise<NeteaseTypings.RadioDetail[]> {
   const key = `dj_radio_hot${cateId}-${limit}-${offset}`;
-  const value = apiCache.get<RadioDetail[]>(key);
+  const value = apiCache.get<NeteaseTypings.RadioDetail[]>(key);
   if (value) return value;
   try {
-    const { djRadios } = await weapiRequest<{ djRadios: RadioDetail[] }>(
-      "https://music.163.com/api/djradio/hot",
-      { cateId, limit, offset }
-    );
+    const { djRadios } = await weapiRequest<{
+      djRadios: NeteaseTypings.RadioDetail[];
+    }>("https://music.163.com/api/djradio/hot", { cateId, limit, offset });
     const ret = djRadios.map(resolveRadioDetail);
     apiCache.set(key, ret);
     return ret;
@@ -184,15 +187,14 @@ export async function apiDjRadioHot(
   return [];
 }
 
-export async function apiDjRecommend(): Promise<RadioDetail[]> {
+export async function djRecommend(): Promise<NeteaseTypings.RadioDetail[]> {
   const key = "dj_recommend";
-  const value = apiCache.get<RadioDetail[]>(key);
+  const value = apiCache.get<NeteaseTypings.RadioDetail[]>(key);
   if (value) return value;
   try {
-    const { djRadios } = await weapiRequest<{ djRadios: RadioDetail[] }>(
-      "https://music.163.com/weapi/djradio/recommend/v1",
-      {}
-    );
+    const { djRadios } = await weapiRequest<{
+      djRadios: NeteaseTypings.RadioDetail[];
+    }>("https://music.163.com/weapi/djradio/recommend/v1", {});
     const ret = djRadios.map(resolveRadioDetail);
     apiCache.set(key, ret);
     return ret;
@@ -202,17 +204,16 @@ export async function apiDjRecommend(): Promise<RadioDetail[]> {
   return [];
 }
 
-export async function apiDjRecommendType(
+export async function djRecommendType(
   cateId: number
-): Promise<RadioDetail[]> {
+): Promise<NeteaseTypings.RadioDetail[]> {
   const key = `dj_recommend_type${cateId}`;
-  const value = apiCache.get<RadioDetail[]>(key);
+  const value = apiCache.get<NeteaseTypings.RadioDetail[]>(key);
   if (value) return value;
   try {
-    const { djRadios } = await weapiRequest<{ djRadios: RadioDetail[] }>(
-      "https://music.163.com/weapi/djradio/recommend",
-      { cateId }
-    );
+    const { djRadios } = await weapiRequest<{
+      djRadios: NeteaseTypings.RadioDetail[];
+    }>("https://music.163.com/weapi/djradio/recommend", { cateId });
     const ret = djRadios.map(resolveRadioDetail);
     apiCache.set(key, ret);
     return ret;
@@ -222,16 +223,16 @@ export async function apiDjRecommendType(
   return [];
 }
 
-export async function apiProgramRecommend(
+export async function programRecommend(
   limit: number,
   offset: number
-): Promise<ProgramDetail[]> {
+): Promise<NeteaseTypings.ProgramDetail[]> {
   const key = `program_recommend${limit}-${offset}`;
-  const value = apiCache.get<ProgramDetail[]>(key);
+  const value = apiCache.get<NeteaseTypings.ProgramDetail[]>(key);
   if (value) return value;
   try {
     const { programs } = await weapiRequest<{
-      programs: RawProgramDetail[];
+      programs: NeteaseTypings.RawProgramDetail[];
     }>("https://music.163.com/weapi/program/recommend/v1", { limit, offset });
     const ret = programs.map(resolveProgramDetail);
     apiCache.set(key, ret);
@@ -242,13 +243,10 @@ export async function apiProgramRecommend(
   return [];
 }
 
-export async function apiDjSub(
-  id: number,
-  t: "sub" | "unsub"
-): Promise<boolean> {
+export async function djSub(id: number, t: "sub" | "unsub"): Promise<boolean> {
   try {
     await weapiRequest<{
-      djRadios: RadioDetail[];
+      djRadios: NeteaseTypings.RadioDetail[];
     }>(`https://music.163.com/weapi/djradio/${t}`, { id });
     return true;
   } catch (err) {
@@ -257,13 +255,13 @@ export async function apiDjSub(
   return false;
 }
 
-export async function apiDjSublist(): Promise<RadioDetail[]> {
+export async function djSublist(): Promise<NeteaseTypings.RadioDetail[]> {
   const key = "dj_sublist";
-  const value = apiCache.get<RadioDetail[]>(key);
+  const value = apiCache.get<NeteaseTypings.RadioDetail[]>(key);
   if (value) return value;
   try {
     const { djRadios } = await weapiRequest<{
-      djRadios: RadioDetail[];
+      djRadios: NeteaseTypings.RadioDetail[];
     }>("https://music.163.com/weapi/djradio/get/subed", {
       limit: 30,
       offset: 0,
@@ -278,13 +276,13 @@ export async function apiDjSublist(): Promise<RadioDetail[]> {
   return [];
 }
 
-/* export async function apiDjSubscriber(
+/* export async function djSubscriber(
   id: number,
   limit: number,
   lasttime = -1
 ) {
   type Ret = {
-    subscribers: UserDetail[];
+    subscribers: NeteaseTypings.UserDetail[];
     time: number;
     hasMore: boolean;
   };
@@ -309,18 +307,22 @@ export async function apiDjSublist(): Promise<RadioDetail[]> {
   return { subscribers: [], time: -1, hasMore: false };
 } */
 
-export async function apiDjSubscriber(
+export async function djSubscriber(
   id: number,
   limit: number
-): Promise<UserDetail[]> {
+): Promise<NeteaseTypings.UserDetail[]> {
   const key = `dj_subscriber${id}-${limit}`;
-  const value = apiCache.get<UserDetail[]>(key);
+  const value = apiCache.get<NeteaseTypings.UserDetail[]>(key);
   if (value) return value;
   try {
-    const { subscribers } = await weapiRequest<{ subscribers: UserDetail[] }>(
-      "https://music.163.com/api/djradio/subscriber",
-      { time: -1, id, limit, total: "true" }
-    );
+    const { subscribers } = await weapiRequest<{
+      subscribers: NeteaseTypings.UserDetail[];
+    }>("https://music.163.com/api/djradio/subscriber", {
+      time: -1,
+      id,
+      limit,
+      total: "true",
+    });
     const ret = subscribers.map(resolveUserDetail);
     apiCache.set(key, ret);
     return ret;
@@ -331,17 +333,17 @@ export async function apiDjSubscriber(
 }
 
 // 0: 新晋, 1: 热门
-export async function apiDjToplist(
+export async function djToplist(
   type: 0 | 1,
   limit: number,
   offset: number
-): Promise<RadioDetail[]> {
+): Promise<NeteaseTypings.RadioDetail[]> {
   const key = `dj_toplist${type}-${limit}-${offset}`;
-  const value = apiCache.get<RadioDetail[]>(key);
+  const value = apiCache.get<NeteaseTypings.RadioDetail[]>(key);
   if (value) return value;
   try {
     const { toplist } = await weapiRequest<{
-      toplist: RadioDetail[];
+      toplist: NeteaseTypings.RadioDetail[];
     }>("https://music.163.com/api/djradio/toplist", { type, limit, offset });
     const ret = toplist.map(resolveRadioDetail);
     apiCache.set(key, ret);

@@ -9,6 +9,7 @@ import i18n from "../i18n";
 export function initCommand(context: ExtensionContext): void {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.previous", () => {
+      // TODO
       if (/* !PersonalFm.state &&  */ QueueProvider.len) IPC.shift(-1);
     }),
 
@@ -59,6 +60,7 @@ export function initCommand(context: ExtensionContext): void {
       () => void ButtonManager.toggle()
     )
 
+    // TODO
     /* commands.registerCommand(
       "cloudmusic.personalFM",
       () => (PersonalFm.state = true)

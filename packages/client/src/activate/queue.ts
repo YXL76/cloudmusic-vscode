@@ -1,8 +1,8 @@
+import { Disposable, commands, window } from "vscode";
+import { ICON, QUEUE_KEY } from "../constant";
 import { IPC, MultiStepInput, State } from "../util";
 import { QueueProvider, QueueSortOrder, QueueSortType } from "../treeview";
-import { commands, window } from "vscode";
 import type { ExtensionContext } from "vscode";
-import { ICON } from "../constant";
 import type { QueueContent } from "../treeview";
 import i18n from "../i18n";
 
@@ -14,6 +14,10 @@ export function initQueue(context: ExtensionContext): void {
   );
 
   context.subscriptions.push(
+    new Disposable(() =>
+      context.globalState.update(QUEUE_KEY, QueueProvider.toJSON())
+    ),
+
     window.registerTreeDataProvider("queue", queueProvider),
 
     commands.registerCommand("cloudmusic.sortQueue", () => {

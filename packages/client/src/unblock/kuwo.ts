@@ -1,4 +1,4 @@
-import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
+/* import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
 import { MUSIC_QUALITY } from "../constant";
 import axios from "axios";
 import { extname } from "path";
@@ -26,16 +26,16 @@ interface SearchResult {
 async function search(keyword: string) {
   keyword = encodeURIComponent(keyword);
 
-  try {
-    // const token =
-    //   ((await axios.get(`http://kuwo.cn/search/list?key=${keyword}`))
-    //     .headers as { "set-cookie": string[] })["set-cookie"]
-    //     .find((line: string) => line.includes("kw_token"))
-    //     ?.replace(/;.*/, "")
-    //     .split("=")
-    //     .pop() || "";
+  try { */
+// const token =
+//   ((await axios.get(`http://kuwo.cn/search/list?key=${keyword}`))
+//     .headers as { "set-cookie": string[] })["set-cookie"]
+//     .find((line: string) => line.includes("kw_token"))
+//     ?.replace(/;.*/, "")
+//     .split("=")
+//     .pop() || "";
 
-    const token = "WIRAHDP0MZ";
+/* const token = "WIRAHDP0MZ";
     const {
       data: {
         data: { list },
@@ -108,3 +108,6 @@ export default async function kuwo(
   const selected = filter(list, song);
   return selected ? await songUrl(selected) : undefined;
 }
+ */
+
+export default undefined;

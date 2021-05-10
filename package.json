@@ -40,6 +40,7 @@
     "Netease"
   ],
   "activationEvents": [
+    "onView:account",
     "onView:local",
     "onView:playlist",
     "onView:radio",
@@ -352,36 +353,6 @@
             "markdownDescription": "%configuration.music.quality.markdownDescription%",
             "scope": "window",
             "type": "number"
-          },
-          "cloudmusic.music.unblock.joox": {
-            "default": false,
-            "markdownDescription": "[https://www.joox.com/](https://www.joox.com/)",
-            "scope": "window",
-            "type": "boolean"
-          },
-          "cloudmusic.music.unblock.kugou": {
-            "default": false,
-            "markdownDescription": "[https://www.kugou.com/](https://www.kugou.com/)",
-            "scope": "window",
-            "type": "boolean"
-          },
-          "cloudmusic.music.unblock.kuwo": {
-            "default": false,
-            "markdownDescription": "[https://kuwo.cn/](https://kuwo.cn/)",
-            "scope": "window",
-            "type": "boolean"
-          },
-          "cloudmusic.music.unblock.migu": {
-            "default": false,
-            "markdownDescription": "[https://www.migu.cn/](https://www.migu.cn/)",
-            "scope": "window",
-            "type": "boolean"
-          },
-          "cloudmusic.player.mediaControl": {
-            "default": true,
-            "markdownDescription": "%configuration.player.mediaControl.markdownDescription%",
-            "scope": "window",
-            "type": "boolean"
           }
         },
         "title": "Cloudmusic"
@@ -821,6 +792,7 @@
     }
   },
   "resolutions": {
+    "@types/node": "14.14.43",
     "buffer": "latest",
     "buffer-from": "latest",
     "debug": "latest",
@@ -855,7 +827,7 @@
     "postcss": "8.2.14",
     "postcss-cli": "8.3.1",
     "postcss-import": "14.0.1",
-    "prettier": "2.2.1",
+    "prettier": "2.3.0",
     "supports-color": "9.0.0",
     "tailwindcss": "2.1.2",
     "typescript": "4.2.4",

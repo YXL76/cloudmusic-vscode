@@ -1,76 +1,21 @@
-import type {
-  AlbumsItem,
-  Artist,
-  PlaylistItem,
-  ProgramDetail,
-  RadioDetail,
-  SongsItem,
-  UserDetail,
-} from "../constant";
-import { ButtonAction, IPC, LikeState, MusicCache, State, Webview } from ".";
-import {
-  CommentType,
-  apiAlbum,
-  apiAlbumSub,
-  apiArtistAlbum,
-  apiArtistSongs,
-  apiArtistSub,
-  apiArtists,
-  apiDjDetail,
-  apiDjProgram,
-  apiDjSubscriber,
-  apiLike,
-  apiPlaylistDetail,
-  apiPlaylistSubscribe,
-  apiPlaylistSubscribers,
-  apiPlaylistTracks,
-  apiSimiArtist,
-  apiSimiPlaylist,
-  apiSimiSong,
-  apiUserDetail,
-  apiUserFolloweds,
-  apiUserFollows,
-  apiUserPlaylist,
-} from "../api";
+import { ButtonAction, IPC, LikeState, State, Webview } from ".";
 import type { InputStep, MultiStepInput } from ".";
 import {
   PlaylistProvider,
   ProgramTreeItem,
   QueueItemTreeItem,
 } from "../treeview";
-import type { QuickPickItem, Uri } from "vscode";
 import { commands, window } from "vscode";
 import { AccountManager } from "../manager";
 import { ICON } from "../constant";
-import type { Readable } from "stream";
-import axios from "axios";
+import { NeteaseEnum } from "@cloudmusic/shared";
+import type { NeteaseTypings } from "api";
+import type { QuickPickItem } from "vscode";
+
 import i18n from "../i18n";
 
-export async function downloadMusic(
-  url: string,
-  filename: string,
-  path: Uri,
-  cache: boolean,
-  md5?: string
-): Promise<Readable | void> {
-  try {
-    const { data } = await axios.get<Readable>(url, {
-      responseType: "stream",
-      timeout: 8000,
-    });
-
-    if (cache) data.on("end", () => void MusicCache.put(filename, path, md5));
-
-    return data;
-  } catch (err) {
-    console.error(err);
-    void window.showErrorMessage(i18n.sentence.error.network);
-  }
-  return;
-}
-
 export async function likeMusic(id: number, like: boolean): Promise<void> {
-  if (await apiLike(id, like)) {
+  if (await IPC.netease("like", [id, like])) {
     if (id === State.playItem?.valueOf)
       State.like = like ? LikeState.like : LikeState.dislike;
     like ? AccountManager.likelist.add(id) : AccountManager.likelist.delete(id);
@@ -112,10 +57,10 @@ interface T extends QuickPickItem {
 }
 
 interface ST extends T {
-  item: SongsItem;
+  item: NeteaseTypings.SongsItem;
 }
 
-export const pickSongItems = (songs: SongsItem[]): ST[] =>
+export const pickSongItems = (songs: NeteaseTypings.SongsItem[]): ST[] =>
   songs.map((item) => ({
     label: `${ICON.song} ${item.name}`,
     description: item.ar.map((i) => i.name).join("/"),
@@ -132,7 +77,7 @@ export const pickArtistItems = (ars: { id: number; name: string }[]): T[] =>
     type: PickType.artist,
   }));
 
-export const pickAlbumItems = (albums: AlbumsItem[]): T[] =>
+export const pickAlbumItems = (albums: NeteaseTypings.AlbumsItem[]): T[] =>
   albums.map(({ name, alias, artists, id }) => ({
     label: `${ICON.album} ${name}`,
     description: alias.join("/"),
@@ -142,10 +87,12 @@ export const pickAlbumItems = (albums: AlbumsItem[]): T[] =>
   }));
 
 interface PT extends T {
-  item: PlaylistItem;
+  item: NeteaseTypings.PlaylistItem;
 }
 
-export const pickPlaylistItems = (playlists: PlaylistItem[]): PT[] =>
+export const pickPlaylistItems = (
+  playlists: NeteaseTypings.PlaylistItem[]
+): PT[] =>
   playlists.map((playlist) => ({
     label: `${ICON.playlist} ${playlist.name}`,
     description: `${playlist.trackCount}`,
@@ -155,7 +102,7 @@ export const pickPlaylistItems = (playlists: PlaylistItem[]): PT[] =>
     type: PickType.playlist,
   }));
 
-export const pickUserDetails = (users: UserDetail[]): T[] =>
+export const pickUserDetails = (users: NeteaseTypings.UserDetail[]): T[] =>
   users.map(({ nickname, signature, userId }) => ({
     label: `${ICON.artist} ${nickname}`,
     detail: signature,
@@ -164,10 +111,10 @@ export const pickUserDetails = (users: UserDetail[]): T[] =>
   }));
 
 interface RDT extends T {
-  item: RadioDetail;
+  item: NeteaseTypings.RadioDetail;
 }
 
-export const pickRadioDetails = (radios: RadioDetail[]): RDT[] =>
+export const pickRadioDetails = (radios: NeteaseTypings.RadioDetail[]): RDT[] =>
   radios.map((item) => ({
     label: `${ICON.radio} ${item.name}`,
     description: item.dj.nickname,
@@ -177,10 +124,12 @@ export const pickRadioDetails = (radios: RadioDetail[]): RDT[] =>
   }));
 
 interface PDT extends T {
-  item: ProgramDetail;
+  item: NeteaseTypings.ProgramDetail;
 }
 
-export const pickProgramDetails = (programs: ProgramDetail[]): PDT[] =>
+export const pickProgramDetails = (
+  programs: NeteaseTypings.ProgramDetail[]
+): PDT[] =>
   programs.map((item) => ({
     label: `${ICON.program} ${item.mainSong.name}`,
     description: item.mainSong.ar.map(({ name }) => name).join("/"),
@@ -192,7 +141,7 @@ export const pickProgramDetails = (programs: ProgramDetail[]): PDT[] =>
 export async function pickSong(
   input: MultiStepInput,
   step: number,
-  item: SongsItem
+  item: NeteaseTypings.SongsItem
 ): Promise<InputStep> {
   const { name, alia, ar, al, id } = item;
 
@@ -268,7 +217,7 @@ export async function pickSong(
       }
       return (input) => pickSimiPlaylists(input, step + 1, id, 0);
     case PickType.comment:
-      Webview.comment(CommentType.song, id, name);
+      Webview.comment(NeteaseEnum.CommentType.song, id, name);
       break;
     case PickType.like:
       await likeMusic(id, true);
@@ -290,7 +239,7 @@ export async function pickSong(
 export async function pickSongMany(
   input: MultiStepInput,
   step: number,
-  songs: SongsItem[]
+  songs: NeteaseTypings.SongsItem[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
     title: i18n.word.song,
@@ -320,7 +269,7 @@ async function pickSimiSong(
   offset: number
 ): Promise<InputStep> {
   const limit = 50;
-  const songs = await apiSimiSong(id, limit, offset);
+  const songs = await IPC.netease("simiSong", [id, limit, offset]);
   const pick = await input.showQuickPick({
     title: i18n.word.similarSongs,
     step,
@@ -348,7 +297,7 @@ async function pickSimiSong(
 export async function pickSongs(
   input: MultiStepInput,
   step: number,
-  songs: SongsItem[]
+  songs: NeteaseTypings.SongsItem[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
     title: i18n.word.song,
@@ -371,11 +320,11 @@ export async function pickSongs(
 export async function pickProgram(
   input: MultiStepInput,
   step: number,
-  program: ProgramDetail
+  program: NeteaseTypings.ProgramDetail
 ): Promise<InputStep> {
   const { mainSong, dj, id, rid } = program;
   const { name } = mainSong;
-  const radio = await apiDjDetail(rid);
+  const radio = await IPC.netease("djDetail", [rid]);
 
   const pick = await input.showQuickPick({
     title: `${i18n.word.program}-${i18n.word.detail}`,
@@ -418,9 +367,10 @@ export async function pickProgram(
     case PickType.user:
       return (input) => pickUser(input, step + 1, (pick as T).id);
     case PickType.radio:
-      return (input) => pickRadio(input, step + 1, radio as RadioDetail);
+      return (input) =>
+        pickRadio(input, step + 1, radio as NeteaseTypings.RadioDetail);
     case PickType.comment:
-      Webview.comment(CommentType.dj, id, name);
+      Webview.comment(NeteaseEnum.CommentType.dj, id, name);
       break;
     case PickType.add:
       void commands.executeCommand(
@@ -439,7 +389,7 @@ export async function pickProgram(
 export async function pickProgramMany(
   input: MultiStepInput,
   step: number,
-  programs: ProgramDetail[]
+  programs: NeteaseTypings.ProgramDetail[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
     title: i18n.word.program,
@@ -465,7 +415,7 @@ export async function pickProgramMany(
 export async function pickPrograms(
   input: MultiStepInput,
   step: number,
-  programs: ProgramDetail[]
+  programs: NeteaseTypings.ProgramDetail[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
     title: i18n.word.program,
@@ -488,7 +438,7 @@ export async function pickPrograms(
 export async function pickRadio(
   input: MultiStepInput,
   step: number,
-  item: RadioDetail
+  item: NeteaseTypings.RadioDetail
 ): Promise<InputStep> {
   const { name, desc, id, subCount, programCount, playCount, dj } = item;
 
@@ -527,10 +477,20 @@ export async function pickRadio(
       return (input) => pickUser(input, step + 1, (pick as T).id);
     case PickType.subscribed:
       return async (input) =>
-        pickUsers(input, step + 1, apiDjSubscriber, -1, id);
+        pickUsers(
+          input,
+          step + 1,
+          (id, limit) => IPC.netease("djSubscriber", [id, limit]),
+          -1,
+          id
+        );
     case PickType.programs:
       return async (input) =>
-        pickPrograms(input, step + 1, await apiDjProgram(id, programCount));
+        pickPrograms(
+          input,
+          step + 1,
+          await IPC.netease("djProgram", [id, programCount])
+        );
   }
 
   return input.stay();
@@ -539,7 +499,7 @@ export async function pickRadio(
 export async function pickRadios(
   input: MultiStepInput,
   step: number,
-  radios: RadioDetail[]
+  radios: NeteaseTypings.RadioDetail[]
 ): Promise<InputStep> {
   const { item } = await input.showQuickPick({
     title: i18n.word.radio,
@@ -554,7 +514,7 @@ export async function pickArtist(
   step: number,
   id: number
 ): Promise<InputStep> {
-  const { info, songs } = await apiArtists(id);
+  const { info, songs } = await IPC.netease("artists", [id]);
 
   const { name, alias, briefDesc, albumSize, musicSize } = info;
   const pick = await input.showQuickPick({
@@ -607,14 +567,18 @@ export async function pickArtist(
       break;
     case PickType.albums:
       return async (input) =>
-        pickAlbums(input, step + 1, await apiArtistAlbum(pick.id as number));
+        pickAlbums(
+          input,
+          step + 1,
+          await IPC.netease("artistAlbum", [pick.id as number])
+        );
     case PickType.hot:
       return (input) => pickSongs(input, step + 1, songs);
     case PickType.songs:
       return (input) => pickAllSongs(input, step + 1, id, 0);
     case PickType.similar:
       return async (input) =>
-        pickArtists(input, step + 1, await apiSimiArtist(id));
+        pickArtists(input, step + 1, await IPC.netease("simiArtist", [id]));
     case PickType.unsave:
       if (
         await window.showWarningMessage(
@@ -623,10 +587,10 @@ export async function pickArtist(
           i18n.word.confirmation
         )
       )
-        await apiArtistSub(id, "unsub");
+        await IPC.netease("artistSub", [id, "unsub"]);
       break;
     case PickType.save:
-      await apiArtistSub(id, "sub");
+      await IPC.netease("artistSub", [id, "sub"]);
   }
 
   return input.stay();
@@ -638,7 +602,7 @@ export async function pickArtist(
     offset: number
   ): Promise<InputStep> {
     const limit = 100;
-    const songs = await apiArtistSongs(id, limit, offset);
+    const songs = await IPC.netease("artistSongs", [id, limit, offset]);
     const pick = await input.showQuickPick({
       title: i18n.word.song,
       step,
@@ -671,7 +635,7 @@ export async function pickArtist(
 export async function pickArtists(
   input: MultiStepInput,
   step: number,
-  artists: Artist[]
+  artists: NeteaseTypings.Artist[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
     title: i18n.word.artist,
@@ -686,7 +650,7 @@ export async function pickAlbum(
   step: number,
   id: number
 ): Promise<InputStep> {
-  const { info, songs } = await apiAlbum(id);
+  const { info, songs } = await IPC.netease("album", [id]);
 
   const { artists, alias, company, description, name } = info;
   const pick = await input.showQuickPick({
@@ -734,13 +698,13 @@ export async function pickAlbum(
           i18n.word.confirmation
         )
       )
-        await apiAlbumSub(id, "unsub");
+        await IPC.netease("albumSub", [id, "unsub"]);
       break;
     case PickType.comment:
-      Webview.comment(CommentType.album, id, name);
+      Webview.comment(NeteaseEnum.CommentType.album, id, name);
       break;
     case PickType.save:
-      await apiAlbumSub(id, "sub");
+      await IPC.netease("albumSub", [id, "sub"]);
   }
 
   return input.stay();
@@ -749,7 +713,7 @@ export async function pickAlbum(
 export async function pickAlbums(
   input: MultiStepInput,
   step: number,
-  albums: AlbumsItem[]
+  albums: NeteaseTypings.AlbumsItem[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
     title: i18n.word.album,
@@ -762,7 +726,7 @@ export async function pickAlbums(
 export async function pickPlaylist(
   input: MultiStepInput,
   step: number,
-  item: PlaylistItem
+  item: NeteaseTypings.PlaylistItem
 ): Promise<InputStep> {
   const {
     id,
@@ -839,15 +803,22 @@ export async function pickPlaylist(
       break;
     case PickType.songs:
       return async (input) =>
-        pickSongs(input, step + 1, await apiPlaylistDetail(id));
+        pickSongs(input, step + 1, await IPC.netease("playlistDetail", [id]));
     case PickType.subscribed:
       return (input) =>
-        pickUsers(input, step + 1, apiPlaylistSubscribers, 0, id);
+        pickUsers(
+          input,
+          step + 1,
+          (id, limit, offset) =>
+            IPC.netease("playlistSubscribers", [id, limit, offset]),
+          0,
+          id
+        );
     case PickType.user:
       return (input) => pickUser(input, step + 1, (pick as T).id);
     case PickType.add:
       {
-        const songs = await apiPlaylistDetail(id);
+        const songs = await IPC.netease("playlistDetail", [id]);
         IPC.add(
           songs.map((song) => QueueItemTreeItem.new({ ...song, pid: 0 }).data)
         );
@@ -855,7 +826,7 @@ export async function pickPlaylist(
       break;
     case PickType.next:
       {
-        const songs = await apiPlaylistDetail(id);
+        const songs = await IPC.netease("playlistDetail", [id]);
         IPC.add(
           songs.map((song) => QueueItemTreeItem.new({ ...song, pid: 0 }).data),
           1
@@ -863,10 +834,10 @@ export async function pickPlaylist(
       }
       break;
     case PickType.comment:
-      Webview.comment(CommentType.playlist, id, name);
+      Webview.comment(NeteaseEnum.CommentType.playlist, id, name);
       break;
     case PickType.save:
-      await apiPlaylistSubscribe(id, "subscribe");
+      await IPC.netease("playlistSubscribe", [id, "subscribe"]);
   }
   return input.stay();
 }
@@ -878,7 +849,7 @@ async function pickSimiPlaylists(
   offset: number
 ): Promise<InputStep> {
   const limit = 50;
-  const playlists = await apiSimiPlaylist(id, limit, offset);
+  const playlists = await IPC.netease("simiPlaylist", [id, limit, offset]);
   const pick = await input.showQuickPick({
     title: i18n.word.similarPlaylists,
     step,
@@ -900,7 +871,7 @@ async function pickSimiPlaylists(
 export async function pickPlaylists(
   input: MultiStepInput,
   step: number,
-  items: PlaylistItem[]
+  items: NeteaseTypings.PlaylistItem[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
     title: i18n.word.playlist,
@@ -924,7 +895,7 @@ export async function pickAddToPlaylist(
       id,
     })),
   });
-  if (await apiPlaylistTracks("add", pick.id, [id]))
+  if (await IPC.netease("playlistTracks", ["add", pick.id, [id]]))
     PlaylistProvider.refresh(PlaylistProvider.playlists.get(pick.id));
   else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
   return input.stay();
@@ -935,11 +906,11 @@ export async function pickUser(
   step: number,
   uid: number
 ): Promise<InputStep> {
-  const user = await apiUserDetail(uid);
+  const user = await IPC.netease("userDetail", [uid]);
   if (!user) {
     return input.stay();
   }
-  const playlists = await apiUserPlaylist(uid);
+  const playlists = await IPC.netease("userPlaylist", [uid]);
   const pick = await input.showQuickPick({
     title: i18n.word.user,
     step,
@@ -979,12 +950,28 @@ export async function pickUser(
   });
   switch (pick.type) {
     case PickType.followeds:
-      return (input) => pickUsers(input, step + 1, apiUserFolloweds, 0, uid);
+      return (input) =>
+        pickUsers(
+          input,
+          step + 1,
+          (uid, limit, offset) =>
+            IPC.netease("userFolloweds", [uid, limit, offset]),
+          0,
+          uid
+        );
     case PickType.follows:
-      return (input) => pickUsers(input, step + 1, apiUserFollows, 0, uid);
+      return (input) =>
+        pickUsers(
+          input,
+          step + 1,
+          (uid, limit, offset) =>
+            IPC.netease("userFollows", [uid, limit, offset]),
+          0,
+          uid
+        );
     case PickType.playlist:
       return (input) =>
-        pickPlaylist(input, step + 1, pick.item as PlaylistItem);
+        pickPlaylist(input, step + 1, pick.item as NeteaseTypings.PlaylistItem);
   }
   return input.stay();
 }
@@ -994,7 +981,7 @@ const limit = 50;
 export async function pickUsers(
   input: MultiStepInput,
   step: number,
-  func: (...args: number[]) => Promise<UserDetail[]>,
+  func: (...args: number[]) => Promise<NeteaseTypings.UserDetail[]>,
   offset: number,
   id: number
 ): Promise<InputStep> {

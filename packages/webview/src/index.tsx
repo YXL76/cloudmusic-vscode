@@ -1,7 +1,8 @@
-import type { CommentCSMsg, RecordData, WebviewType } from "@cloudmusic/shared";
+import type { CommentCSMsg, WebviewType } from "@cloudmusic/shared";
 import { CommentList, Description, Login, Lyric, MusicRanking } from "./pages";
 import type { CommentListProps, DescriptionProps, LoginProps } from "./pages";
 import { request, startEventListener } from "./utils";
+import type { NeteaseTypings } from "api";
 import React from "react";
 import { render } from "react-dom";
 
@@ -40,7 +41,7 @@ const root = document.getElementById("root");
     case "musicRanking":
       {
         startEventListener();
-        const record = await request<RecordData[][]>(undefined);
+        const record = await request<NeteaseTypings.RecordData[][]>(undefined);
         render(
           <MusicRanking
             record={record}

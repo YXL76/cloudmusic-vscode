@@ -7,17 +7,7 @@ import type {
 } from "@cloudmusic/shared";
 import { ColorThemeKind, Uri, ViewColumn, commands, window } from "vscode";
 import {
-  CommentType,
-  SortType,
-  apiArtistDesc,
-  apiCommentLike,
-  apiCommentNew,
-  apiLoginQrCheck,
-  apiLoginQrKey,
-  apiSongDetail,
-  apiUserRecord,
-} from "../api";
-import {
+  IPC,
   MultiStepInput,
   State,
   lyric,
@@ -27,6 +17,7 @@ import {
   pickUser,
 } from ".";
 import type { WebviewView, WebviewViewProvider } from "vscode";
+import { NeteaseEnum } from "@cloudmusic/shared";
 import type { QueueContent } from "../treeview";
 import type { WebviewType } from "@cloudmusic/shared";
 import i18n from "../i18n";
@@ -63,9 +54,9 @@ export class AccountViewProvider implements WebviewViewProvider {
     this._view?.webview.postMessage({ command: "state", state: "none" });
   }
 
-  static position(position: number): void {
+  /* static position(position: number): void {
     this._view?.webview.postMessage({ command: "position", position });
-  }
+  } */
 
   static metadata(item?: QueueContent): void {
     if (!item) this._view?.webview.postMessage({ command: "metadata" });
@@ -145,7 +136,7 @@ export class Webview {
   );
 
   static async login(): Promise<void> {
-    const key = await apiLoginQrKey();
+    const key = await IPC.netease("loginQrKey", []);
     if (!key) return;
     const imgSrc = await toDataURL(
       `https://music.163.com/login?codekey=${key}`
@@ -159,7 +150,7 @@ export class Webview {
     return new Promise((resolve, reject) => {
       const timer = setInterval(
         () =>
-          void apiLoginQrCheck(key)
+          void IPC.netease("loginQrCheck", [key])
             .then((code) => {
               if (code === 803) {
                 panel.dispose();
@@ -204,7 +195,7 @@ export class Webview {
   }
 
   static async description(id: number, name: string): Promise<void> {
-    const desc = await apiArtistDesc(id);
+    const desc = await IPC.netease("artistDesc", [id]);
     const { panel, setHtml } = this.getPanel(name, "description");
 
     panel.webview.onDidReceiveMessage(({ channel }: CSMessage) => {
@@ -214,7 +205,7 @@ export class Webview {
   }
 
   static async musicRanking(): Promise<void> {
-    const record = await apiUserRecord();
+    const record = await IPC.netease("userRecord", []);
     const { panel, setHtml } = this.getPanel(
       i18n.word.musicRanking,
       "musicRanking"
@@ -230,7 +221,11 @@ export class Webview {
         switch (msg.command) {
           case "song":
             void MultiStepInput.run(async (input) =>
-              pickSong(input, 1, (await apiSongDetail([msg.id]))[0])
+              pickSong(
+                input,
+                1,
+                (await IPC.netease("songDetail", [[msg.id]]))[0]
+              )
             );
             break;
           case "album":
@@ -245,32 +240,40 @@ export class Webview {
     setHtml();
   }
 
-  static comment(type: CommentType, gid: number, title: string): void {
+  static comment(
+    type: NeteaseEnum.CommentType,
+    gid: number,
+    title: string
+  ): void {
     let time = 0;
     let index = 0;
     let pageNo = 1;
     const pageSize = 30;
 
     const sortTypes = [
-      SortType.hottest,
-      ...(type === CommentType.dj ? [] : [SortType.recommendation]),
-      SortType.latest,
+      NeteaseEnum.SortType.hottest,
+      ...(type === NeteaseEnum.CommentType.dj
+        ? []
+        : [NeteaseEnum.SortType.recommendation]),
+      NeteaseEnum.SortType.latest,
     ];
     const titles = [
       i18n.word.hottest,
-      ...(type === CommentType.dj ? [] : [i18n.word.recommendation]),
+      ...(type === NeteaseEnum.CommentType.dj
+        ? []
+        : [i18n.word.recommendation]),
       i18n.word.latest,
     ];
 
     const getList = async () => {
-      const list = await apiCommentNew(
+      const list = await IPC.netease("commentNew", [
         type,
         gid,
         pageNo,
         pageSize,
         sortTypes[index],
-        time
-      );
+        time,
+      ]);
       time = list.comments?.[list.comments.length - 1]?.time || 0;
       return list;
     };
@@ -288,10 +291,10 @@ export class Webview {
               void MultiStepInput.run((input) => pickUser(input, 1, msg.id));
               break;
             /* case "floor":
-            await apiCommentFloor(type, gid, id, pageSize, time);
-            break;
-          case "reply":
-            break; */
+              await apiCommentFloor(type, gid, id, pageSize, time);
+              break;
+            case "reply":
+              break; */
           }
           return;
         }
@@ -305,7 +308,7 @@ export class Webview {
         }
         if (msg.command === "like") {
           void panel.webview.postMessage({
-            msg: await apiCommentLike(type, msg.t, gid, msg.id),
+            msg: await IPC.netease("commentLike", [type, msg.t, gid, msg.id]),
             channel,
           });
           return;

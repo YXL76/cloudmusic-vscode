@@ -74,7 +74,7 @@ impl Player {
         let (control_tx, _) = mpsc::channel();
         let (_, info_rx) = mpsc::channel();
         Self {
-            volume: 85.0,
+            volume: 0.85,
             status: Status::new(),
             control_tx,
             info_rx,

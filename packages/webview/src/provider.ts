@@ -14,9 +14,9 @@ window.addEventListener("message", ({ data }: { data: ProviderSMsg }) => {
     case "state":
       navigator.mediaSession.playbackState = data.state;
       break;
-    case "position":
+    /* case "position":
       navigator.mediaSession.setPositionState?.({ position: data.position });
-      break;
+      break; */
     case "metadata":
       navigator.mediaSession.metadata = new MediaMetadata(data);
       navigator.mediaSession.setPositionState?.({ duration: data.duration });

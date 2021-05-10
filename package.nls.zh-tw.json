@@ -63,7 +63,6 @@
   "configuration.music.quality.enumDescriptions.low": "普通",
   "configuration.music.quality.enumDescriptions.medium": "較高",
   "configuration.music.quality.markdownDescription": "選擇優先播放的音質",
-  "configuration.player.mediaControl.markdownDescription": "開啟媒體控制",
   "views.account.name": "帳號",
   "views.local.name": "本地曲庫",
   "views.playlist.name": "歌單",

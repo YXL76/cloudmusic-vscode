@@ -1,17 +1,20 @@
 import type {
+  CSConnPool,
   IPCBroadcastMsg,
   IPCClientMsg,
   IPCServerMsg,
+  NeteaseAPICMsg,
+  NeteaseAPIKey,
+  NeteaseAPIParameters,
+  NeteaseAPIReturn,
 } from "@cloudmusic/shared";
 import { LocalFileTreeItem, QueueProvider } from "../treeview";
-import { MUSIC_QUALITY, TMP_DIR } from "../constant";
-import { MusicCache, State, downloadMusic } from ".";
+import { MUSIC_CACHE_SIZE, MUSIC_QUALITY } from "../constant";
 import type {
   PlayTreeItemData,
   QueueSortOrder,
   QueueSortType,
 } from "../treeview";
-import { Uri, window } from "vscode";
 import {
   ipcAppspace,
   ipcBroadcastServerId,
@@ -19,10 +22,8 @@ import {
   ipcServerId,
 } from "@cloudmusic/shared";
 import type { Socket } from "net";
-import { apiSongUrl } from "../api";
+import { State } from ".";
 import { connect } from "net";
-import { createWriteStream } from "fs";
-import i18n from "../i18n";
 import { platform } from "os";
 
 class IPCClient<T, U = T> {
@@ -83,13 +84,17 @@ class IPCClient<T, U = T> {
     this._socket?.write(`${JSON.stringify(data)}${ipcDelimiter}`);
   }
 
+  request<D>(data: D): void {
+    this._socket?.write(`${JSON.stringify(data)}${ipcDelimiter}`);
+  }
+
   private _tryConnect(retry: number): Promise<Socket | undefined> {
     return new Promise((resolve) => {
       const setTimer = (remain: number) => {
         const socket = connect({ path: this._path }).setEncoding("utf8");
         const listener = () => {
           socket.destroy();
-          if (remain > 0) setTimeout(() => setTimer(remain - 1), 1000);
+          if (remain > 0) setTimeout(() => setTimer(remain - 1), 512);
           else resolve(undefined);
         };
         socket
@@ -99,7 +104,8 @@ class IPCClient<T, U = T> {
           })
           .once("close", listener);
       };
-      setTimer(retry);
+      if (retry <= 0) setTimer(0);
+      else setTimeout(() => setTimer(retry), 512);
     });
   }
 }
@@ -107,10 +113,10 @@ class IPCClient<T, U = T> {
 export const ipc = new IPCClient<IPCClientMsg, IPCServerMsg>(ipcServerId);
 export const ipcB = new IPCClient<IPCBroadcastMsg>(ipcBroadcastServerId);
 
-const minSize = MUSIC_QUALITY === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
-
 export class IPC {
-  static async load(): Promise<void> {
+  static requestPool = new Map() as CSConnPool;
+
+  static load(): void {
     const { playItem } = State;
     if (!playItem) return;
     State.loading = true;
@@ -119,60 +125,44 @@ export class IPC {
       ipc.send({
         t: "player.load",
         url: playItem.tooltip,
+        local: true,
       });
-      return;
+    } else {
+      const {
+        data: { pid },
+        item: { id },
+      } = playItem;
+      ipc.send({ t: "player.load", url: `${id}`, pid });
     }
+  }
 
-    const {
-      data: { pid },
-      item,
-    } = playItem;
-    const idS = `${item.id}`;
-    {
-      const url = MusicCache.get(idS);
-      if (url) {
-        ipc.send({ t: "player.load", url, pid });
-        return;
-      }
-    }
-    {
-      const { url, md5 } = await apiSongUrl(item);
-      if (!url) {
-        // void commands.executeCommand("cloudmusic.next");
-        return;
-      }
+  static download(url: string, path: string): void {
+    ipc.send({ t: "control.download", url, path });
+  }
 
-      const tmpUri = Uri.joinPath(TMP_DIR, idS);
-      const data = await downloadMusic(
-        url,
-        idS,
-        tmpUri,
-        // !PersonalFm.state,
-        true,
-        md5
-      );
-      if (!data) return;
-      let len = 0;
-      const onData = ({ length }: { length: number }) => {
-        len += length;
-        if (len > minSize) {
-          data.removeListener("data", onData);
-          ipc.send({
-            t: "player.load",
-            url: tmpUri.fsPath,
-            pid,
-          });
-        }
-      };
-      data.on("data", onData);
-      data.once("error", (err) => {
-        console.error(err);
-        void window.showErrorMessage(i18n.sentence.error.network);
-        // void commands.executeCommand("cloudmusic.next");
-      });
-      const file = createWriteStream(tmpUri.fsPath);
-      data.pipe(file);
-    }
+  static init(volume: number): void {
+    ipc.send({
+      t: "control.init",
+      mq: MUSIC_QUALITY,
+      cs: MUSIC_CACHE_SIZE,
+      volume,
+    });
+  }
+
+  static login(profile: { userId: number; nickname: string }): void {
+    ipcB.send({ t: "control.login", ...profile });
+  }
+
+  static logout(): void {
+    ipcB.send({ t: "control.logout" });
+  }
+
+  static lyric(): void {
+    ipc.send({ t: "control.lyric" });
+  }
+
+  static music(): void {
+    ipc.send({ t: "control.music" });
   }
 
   static repeat(r: boolean): void {
@@ -224,5 +214,22 @@ export class IPC {
 
   static sort(type: QueueSortType, order: QueueSortOrder): void {
     ipcB.send({ t: "queue.sort", type, order });
+  }
+
+  static netease<I extends NeteaseAPIKey, P = NeteaseAPIParameters<I>>(
+    i: I,
+    p: P
+  ): Promise<NeteaseAPIReturn<I>> {
+    const channel = `netease-${i}${Date.now()}`;
+    return new Promise((resolve, reject) => {
+      const prev = this.requestPool.get(channel);
+      if (prev) prev.reject();
+      this.requestPool.set(channel, { resolve, reject });
+      ipc.request<NeteaseAPICMsg<I, P>>({
+        t: "api.netease",
+        channel,
+        msg: { i, p },
+      });
+    });
   }
 }

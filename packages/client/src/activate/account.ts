@@ -1,38 +1,7 @@
 import { AUTH_PROVIDER_ID, ICON } from "../constant";
 import {
-  ArtistArea,
-  ArtistType,
-  TopSongType,
-  apiAlbumNewest,
-  apiAlbumSublist,
-  apiArtistList,
-  apiArtistSublist,
-  apiDjCatelist,
-  apiDjHot,
-  apiDjProgramToplist,
-  apiDjProgramToplistHours,
-  apiDjRadioHot,
-  apiDjRecommend,
-  apiDjRecommendType,
-  apiDjToplist,
-  apiHighqualityTags,
-  apiPersonalized,
-  apiPersonalizedDjprogram,
-  apiPersonalizedNewsong,
-  apiPlaylistCatlist,
-  apiRecommendResource,
-  apiRecommendSongs,
-  apiTopAlbum,
-  apiTopArtists,
-  apiTopPlaylist,
-  apiTopPlaylistHighquality,
-  apiTopSong,
-  apiToplist,
-  apiToplistArtist,
-  apiUserLevel,
-} from "../api";
-import {
   ButtonAction,
+  IPC,
   MultiStepInput,
   State,
   Webview,
@@ -51,9 +20,9 @@ import {
 import type { ExtensionContext, QuickPickItem } from "vscode";
 import { authentication, commands, window } from "vscode";
 import { AccountManager } from "../manager";
-import type { ArtistInitial } from "../api";
 import type { InputStep } from "../util";
-import type { RadioDetail } from "../constant";
+import { NeteaseEnum } from "@cloudmusic/shared";
+import type { NeteaseTypings } from "api";
 import i18n from "../i18n";
 import { inputKeyword } from ".";
 
@@ -73,9 +42,9 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
         return;
       }
       let cat = "";
-      let type: ArtistType;
-      let area: ArtistArea;
-      let initial: ArtistInitial;
+      let type: NeteaseEnum.ArtistType;
+      let area: NeteaseEnum.ArtistArea;
+      let initial: NeteaseTypings.ArtistInitial;
       void MultiStepInput.run((input) => pickType(input));
 
       async function pickType(input: MultiStepInput): Promise<InputStep> {
@@ -91,7 +60,7 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           save,
         }
 
-        const level = await apiUserLevel();
+        const level = await IPC.netease("userLevel", []);
 
         const pick = await input.showQuickPick({
           title: i18n.word.account,
@@ -204,32 +173,48 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
         switch (pick.type) {
           case Type.dailyPlaylist:
             return async (input) =>
-              pickPlaylists(input, 3, await apiRecommendResource());
+              pickPlaylists(
+                input,
+                3,
+                await IPC.netease("recommendResource", [])
+              );
           case Type.dailySong:
             return async (input) =>
-              pickSongs(input, 3, await apiRecommendSongs());
+              pickSongs(input, 3, await IPC.netease("recommendSongs", []));
           case Type.playlist:
             return async (input) =>
-              pickPlaylists(input, 3, await apiPersonalized());
+              pickPlaylists(input, 3, await IPC.netease("personalized", []));
           case Type.song:
             return async (input) =>
-              pickSongs(input, 3, await apiPersonalizedNewsong());
+              pickSongs(input, 3, await IPC.netease("personalizedNewsong", []));
           case Type.radio:
             return async (input) =>
-              pickRadioType(input, 3, apiDjRecommend, apiDjRecommendType);
+              pickRadioType(
+                input,
+                3,
+                () => IPC.netease("djRecommend", []),
+                (cateId) => IPC.netease("djRecommendType", [cateId])
+              );
           case Type.program:
             return async (input) =>
-              pickPrograms(input, 3, await apiPersonalizedDjprogram());
+              pickPrograms(
+                input,
+                3,
+                await IPC.netease("personalizedDjprogram", [])
+              );
         }
       }
 
       async function pickRadioType(
         input: MultiStepInput,
         step: number,
-        allFunc: (...args: number[]) => Promise<RadioDetail[]>,
-        typeFunc: (id: number, ...args: number[]) => Promise<RadioDetail[]>
+        allFunc: (...args: number[]) => Promise<NeteaseTypings.RadioDetail[]>,
+        typeFunc: (
+          id: number,
+          ...args: number[]
+        ) => Promise<NeteaseTypings.RadioDetail[]>
       ): Promise<InputStep> {
-        const types = await apiDjCatelist();
+        const types = await IPC.netease("djCatelist", []);
         const pick = await input.showQuickPick({
           title: i18n.word.type,
           step,
@@ -288,22 +273,31 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
         });
         switch (pick.type) {
           case Type.song:
-            return async (input) => pickPlaylists(input, 3, await apiToplist());
+            return async (input) =>
+              pickPlaylists(input, 3, await IPC.netease("toplist", []));
           case Type.artist:
             return async (input) =>
-              pickArtists(input, 3, await apiToplistArtist());
+              pickArtists(input, 3, await IPC.netease("toplistArtist", []));
           case Type.radioNew:
             return async (input) =>
-              pickRadios(input, 3, await apiDjToplist(0, 100, 0));
+              pickRadios(input, 3, await IPC.netease("djToplist", [0, 100, 0]));
           case Type.radioHot:
             return async (input) =>
-              pickRadios(input, 3, await apiDjToplist(1, 100, 0));
+              pickRadios(input, 3, await IPC.netease("djToplist", [1, 100, 0]));
           case Type.program:
             return async (input) =>
-              pickPrograms(input, 3, await apiDjProgramToplist(100, 0));
+              pickPrograms(
+                input,
+                3,
+                await IPC.netease("djProgramToplist", [100, 0])
+              );
           case Type.program24:
             return async (input) =>
-              pickPrograms(input, 3, await apiDjProgramToplistHours());
+              pickPrograms(
+                input,
+                3,
+                await IPC.netease("djProgramToplistHours", [])
+              );
         }
       }
 
@@ -365,18 +359,25 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           case Type.artist:
             return (input) => pickArtistType(input);
           case Type.topAlbums:
-            return async (input) => pickAlbums(input, 3, await apiTopAlbum());
+            return async (input) =>
+              pickAlbums(input, 3, await IPC.netease("topAlbum", []));
           case Type.topArtists:
             return async (input) =>
-              pickArtists(input, 3, await apiTopArtists(50, 0));
+              pickArtists(input, 3, await IPC.netease("topArtists", [50, 0]));
           case Type.topSongs:
             return (input) => pickTopSongs(input);
           case Type.albumNewest:
             return async (input) =>
-              pickAlbums(input, 3, await apiAlbumNewest());
+              pickAlbums(input, 3, await IPC.netease("albumNewest", []));
           case Type.radioHot:
             return async (input) =>
-              pickRadioType(input, 3, apiDjHot, apiDjRadioHot);
+              pickRadioType(
+                input,
+                3,
+                (limit, offset) => IPC.netease("djHot", [limit, offset]),
+                (cateId, limit, offset) =>
+                  IPC.netease("djRadioHot", [cateId, limit, offset])
+              );
         }
       }
 
@@ -388,30 +389,30 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           items: [
             {
               label: i18n.word.zh,
-              type: TopSongType.zh,
+              type: NeteaseEnum.TopSongType.zh,
             },
             {
               label: i18n.word.en,
-              type: TopSongType.ea,
+              type: NeteaseEnum.TopSongType.ea,
             },
             {
               label: i18n.word.ja,
-              type: TopSongType.ja,
+              type: NeteaseEnum.TopSongType.ja,
             },
             {
               label: i18n.word.kr,
-              type: TopSongType.kr,
+              type: NeteaseEnum.TopSongType.kr,
             },
           ],
         });
         return async (input) =>
-          pickSongs(input, 4, await apiTopSong(pick.type));
+          pickSongs(input, 4, await IPC.netease("topSong", [pick.type]));
       }
 
       async function pickPlaylistCategories(
         input: MultiStepInput
       ): Promise<InputStep> {
-        const categories = await apiPlaylistCatlist();
+        const categories = await IPC.netease("playlistCatlist", []);
         const pick = await input.showQuickPick({
           title: i18n.word.categorie,
           step: 3,
@@ -431,7 +432,7 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
       async function pickHighqualitPlaylistCategories(
         input: MultiStepInput
       ): Promise<InputStep> {
-        const categories = await apiHighqualityTags();
+        const categories = await IPC.netease("highqualityTags", []);
         const pick = await input.showQuickPick({
           title: i18n.word.categorie,
           step: 3,
@@ -464,7 +465,11 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
         offset: number
       ): Promise<InputStep> {
         const limit = 50;
-        const playlists = await apiTopPlaylist(cat, limit, offset);
+        const playlists = await IPC.netease("topPlaylist", [
+          cat,
+          limit,
+          offset,
+        ]);
         const pick = await input.showQuickPick({
           title: i18n.word.playlist,
           step: 5,
@@ -484,7 +489,10 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
         input: MultiStepInput
       ): Promise<InputStep> {
         const limit = 50;
-        const playlists = await apiTopPlaylistHighquality(cat, limit);
+        const playlists = await IPC.netease("topPlaylistHighquality", [
+          cat,
+          limit,
+        ]);
         const pick = await input.showQuickPick({
           title: i18n.word.playlist,
           step: 4,
@@ -502,15 +510,15 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           items: [
             {
               label: i18n.word.male,
-              type: ArtistType.male,
+              type: NeteaseEnum.ArtistType.male,
             },
             {
               label: i18n.word.female,
-              type: ArtistType.female,
+              type: NeteaseEnum.ArtistType.female,
             },
             {
               label: i18n.word.band,
-              type: ArtistType.band,
+              type: NeteaseEnum.ArtistType.band,
             },
           ],
         });
@@ -526,27 +534,27 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
           items: [
             {
               label: i18n.word.all,
-              type: ArtistArea.all,
+              type: NeteaseEnum.ArtistArea.all,
             },
             {
               label: i18n.word.zh,
-              type: ArtistArea.zh,
+              type: NeteaseEnum.ArtistArea.zh,
             },
             {
               label: i18n.word.en,
-              type: ArtistArea.ea,
+              type: NeteaseEnum.ArtistArea.ea,
             },
             {
               label: i18n.word.ja,
-              type: ArtistArea.ja,
+              type: NeteaseEnum.ArtistArea.ja,
             },
             {
               label: i18n.word.kr,
-              type: ArtistArea.kr,
+              type: NeteaseEnum.ArtistArea.kr,
             },
             {
               label: i18n.word.other,
-              type: ArtistArea.other,
+              type: NeteaseEnum.ArtistArea.other,
             },
           ],
         });
@@ -557,7 +565,7 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
       async function pickArtistInitial(
         input: MultiStepInput
       ): Promise<InputStep> {
-        const allInitial: ArtistInitial[] = [
+        const allInitial: NeteaseTypings.ArtistInitial[] = [
           "A",
           "B",
           "C",
@@ -610,7 +618,13 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
         offset: number
       ): Promise<InputStep> {
         const limit = 50;
-        const artists = await apiArtistList(type, area, initial, limit, offset);
+        const artists = await IPC.netease("artistList", [
+          type,
+          area,
+          initial,
+          limit,
+          offset,
+        ]);
         const pick = await input.showQuickPick({
           title: i18n.word.artist,
           step: 6,
@@ -650,17 +664,17 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
         switch (pick.type) {
           case Type.album:
             return async (input) =>
-              pickAlbums(input, 3, await apiAlbumSublist());
+              pickAlbums(input, 3, await IPC.netease("albumSublist", []));
           case Type.artist:
             return async (input) =>
-              pickArtists(input, 3, await apiArtistSublist());
+              pickArtists(input, 3, await IPC.netease("artistSublist", []));
         }
       }
     }),
 
     commands.registerCommand("cloudmusic.dailyCheck", async () => {
       if (State.login)
-        if (await AccountManager.dailyCheck())
+        if (await IPC.netease("dailyCheck", []))
           void window.showInformationMessage(i18n.sentence.success.dailyCheck);
         else void window.showErrorMessage(i18n.sentence.error.needSignIn);
     })

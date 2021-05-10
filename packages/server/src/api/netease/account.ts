@@ -1,17 +1,5 @@
-import type {
-  AnotherSongItem,
-  PlaylistItem,
-  ProgramDetail,
-  RadioDetail,
-  RawPlaylistItem,
-  RawProgramDetail,
-  RecordData,
-  SongsItem,
-  SongsItemSt,
-  UserDetail,
-} from "../constant";
 import {
-  eapiRequest,
+  AccountState,
   resolveAnotherSongItem,
   resolvePlaylistItem,
   resolveProgramDetail,
@@ -19,14 +7,33 @@ import {
   resolveSongItem,
   resolveSongItemSt,
   resolveUserDetail,
-  weapiRequest,
-} from ".";
-import { AccountManager } from "../manager";
-import { apiCache } from "../util";
+} from "./helper";
+import { eapiRequest, weapiRequest } from "./request";
+import type { NeteaseTypings } from "api";
+import { apiCache } from "../..";
 
 type Profile = { userId: number; nickname: string };
 
-export async function apiDailySigninAndroid(): Promise<void> {
+export async function dailyCheck(): Promise<boolean> {
+  try {
+    const actions = [];
+    const [yunbei, sign] = await Promise.allSettled([
+      yunbeiToday(),
+      yunbeiInfo(),
+    ]);
+    if (yunbei.status === "fulfilled" && !yunbei.value)
+      actions.push(yunbeiSign());
+    if (sign.status === "fulfilled") {
+      if (!sign.value.mobileSign) actions.push(dailySigninAndroid());
+      if (!sign.value.pcSign) actions.push(dailySigninWeb());
+    }
+    await Promise.allSettled(actions);
+    return true;
+  } catch {}
+  return false;
+}
+
+async function dailySigninAndroid(): Promise<void> {
   try {
     await weapiRequest("https://music.163.com/weapi/point/dailyTask", {
       type: 0,
@@ -36,7 +43,7 @@ export async function apiDailySigninAndroid(): Promise<void> {
   }
 }
 
-export async function apiDailySigninWeb(): Promise<void> {
+async function dailySigninWeb(): Promise<void> {
   try {
     await weapiRequest("https://music.163.com/weapi/point/dailyTask", {
       type: 1,
@@ -46,12 +53,14 @@ export async function apiDailySigninWeb(): Promise<void> {
   }
 }
 
-export async function apiDjPersonalizeRecommend(): Promise<RadioDetail[]> {
+export async function djPersonalizeRecommend(): Promise<
+  NeteaseTypings.RadioDetail[]
+> {
   const key = "dj_personalize_recommend";
-  const value = apiCache.get<RadioDetail[]>(key);
+  const value = apiCache.get<NeteaseTypings.RadioDetail[]>(key);
   if (value) return value;
   try {
-    const { data } = await weapiRequest<{ data: RadioDetail[] }>(
+    const { data } = await weapiRequest<{ data: NeteaseTypings.RadioDetail[] }>(
       "https://music.163.com/api/djradio/personalize/rcmd",
       { limit: 10 }
     );
@@ -64,7 +73,7 @@ export async function apiDjPersonalizeRecommend(): Promise<RadioDetail[]> {
   return [];
 }
 
-export async function apiFmTrash(songId: number): Promise<boolean> {
+export async function fmTrash(songId: number): Promise<boolean> {
   try {
     await weapiRequest(
       `https://music.163.com/weapi/radio/trash/add?alg=RT&songId=${songId}&time=25`,
@@ -77,19 +86,11 @@ export async function apiFmTrash(songId: number): Promise<boolean> {
   return false;
 }
 
-export async function apiLike(
-  trackId: number,
-  like: boolean
-): Promise<boolean> {
+export async function like(trackId: number, like: boolean): Promise<boolean> {
   try {
     await weapiRequest(
       "https://music.163.com/api/radio/like",
-      {
-        alg: "itembased",
-        trackId,
-        like,
-        time: "3",
-      },
+      { alg: "itembased", trackId, like, time: "3" },
       { os: "pc", appver: "2.7.1.198277" }
     );
     return true;
@@ -99,11 +100,11 @@ export async function apiLike(
   return false;
 }
 
-export async function apiLikelist(): Promise<number[]> {
+export async function likelist(): Promise<number[]> {
   try {
     const { ids } = await weapiRequest<{ ids: number[] }>(
       "https://music.163.com/weapi/song/like/get",
-      { uid: AccountManager.uid }
+      { uid: AccountState.uid }
     );
     return ids;
   } catch (err) {
@@ -112,7 +113,7 @@ export async function apiLikelist(): Promise<number[]> {
   return [];
 }
 
-export async function apiLogin(
+export async function login(
   username: string,
   password: string
 ): Promise<Profile | void> {
@@ -131,7 +132,7 @@ export async function apiLogin(
   return;
 }
 
-export async function apiLoginCellphone(
+export async function loginCellphone(
   phone: string,
   countrycode: string,
   password: string
@@ -151,7 +152,7 @@ export async function apiLoginCellphone(
   return;
 }
 
-export async function apiLoginQrCheck(key: string): Promise<number | void> {
+export async function loginQrCheck(key: string): Promise<number | void> {
   try {
     const { code } = await weapiRequest<{ code: number }>(
       "https://music.163.com/weapi/login/qrcode/client/login",
@@ -162,13 +163,11 @@ export async function apiLoginQrCheck(key: string): Promise<number | void> {
   return;
 }
 
-export async function apiLoginQrKey(): Promise<string | void> {
+export async function loginQrKey(): Promise<string | void> {
   try {
     const { unikey } = await weapiRequest<{ unikey: string }>(
       "https://music.163.com/weapi/login/qrcode/unikey",
-      {
-        type: 1,
-      }
+      { type: 1 }
     );
     return unikey;
   } catch (err) {
@@ -177,21 +176,28 @@ export async function apiLoginQrKey(): Promise<string | void> {
   return;
 }
 
-export async function apiLoginStatus(): Promise<Profile | void> {
+export async function loginStatus(cookieStr?: string): Promise<Profile | void> {
+  const key = "loginStatus";
+  const value = apiCache.get<Profile>(key);
+  if (value) return value;
+  if (cookieStr)
+    AccountState.cookie = JSON.parse(cookieStr) as NeteaseTypings.Cookie;
   try {
     const { profile } = await weapiRequest<{
       profile: Profile;
     }>("https://music.163.com/weapi/w/nuser/account/get", {});
     if (profile && "userId" in profile && "nickname" in profile) return profile;
+    apiCache.set(key, profile);
   } catch (err) {
     console.error(err);
   }
   return;
 }
 
-export async function apiLogout(): Promise<boolean> {
+export async function logout(): Promise<boolean> {
   try {
     await weapiRequest("https://music.163.com/weapi/logout", {});
+    AccountState.cookie = {};
     return true;
   } catch (err) {
     console.error(err);
@@ -199,12 +205,11 @@ export async function apiLogout(): Promise<boolean> {
   return false;
 }
 
-export async function apiPersonalFm(): Promise<SongsItem[]> {
+export async function personalFm(): Promise<NeteaseTypings.SongsItem[]> {
   try {
-    const { data } = await weapiRequest<{ data: AnotherSongItem[] }>(
-      "https://music.163.com/weapi/v1/radio/get",
-      {}
-    );
+    const { data } = await weapiRequest<{
+      data: NeteaseTypings.AnotherSongItem[];
+    }>("https://music.163.com/weapi/v1/radio/get", {});
     return data.map(resolveAnotherSongItem);
   } catch (err) {
     console.error(err);
@@ -212,15 +217,18 @@ export async function apiPersonalFm(): Promise<SongsItem[]> {
   return [];
 }
 
-export async function apiPersonalized(): Promise<PlaylistItem[]> {
+export async function personalized(): Promise<NeteaseTypings.PlaylistItem[]> {
   const key = "personalized";
-  const value = apiCache.get<PlaylistItem[]>(key);
+  const value = apiCache.get<NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
   try {
-    const { result } = await weapiRequest<{ result: RawPlaylistItem[] }>(
-      "https://music.163.com/weapi/personalized/playlist",
-      { limit: 30, total: true, n: 1000 }
-    );
+    const { result } = await weapiRequest<{
+      result: NeteaseTypings.RawPlaylistItem[];
+    }>("https://music.163.com/weapi/personalized/playlist", {
+      limit: 30,
+      total: true,
+      n: 1000,
+    });
     const ret = result.map(resolvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
@@ -230,13 +238,15 @@ export async function apiPersonalized(): Promise<PlaylistItem[]> {
   return [];
 }
 
-export async function apiPersonalizedDjprogram(): Promise<ProgramDetail[]> {
+export async function personalizedDjprogram(): Promise<
+  NeteaseTypings.ProgramDetail[]
+> {
   const key = "personalized_djprogram";
-  const value = apiCache.get<ProgramDetail[]>(key);
+  const value = apiCache.get<NeteaseTypings.ProgramDetail[]>(key);
   if (value) return value;
   try {
     const { result } = await weapiRequest<{
-      result: { program: RawProgramDetail }[];
+      result: { program: NeteaseTypings.RawProgramDetail }[];
     }>("https://music.163.com/weapi/personalized/djprogram", {});
     const ret = result.map(({ program }) => resolveProgramDetail(program));
     apiCache.set(key, ret);
@@ -247,13 +257,15 @@ export async function apiPersonalizedDjprogram(): Promise<ProgramDetail[]> {
   return [];
 }
 
-export async function apiPersonalizedNewsong(): Promise<SongsItem[]> {
+export async function personalizedNewsong(): Promise<
+  NeteaseTypings.SongsItem[]
+> {
   const key = "personalized_newsong";
-  const value = apiCache.get<SongsItem[]>(key);
+  const value = apiCache.get<NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
   try {
     const { result } = await weapiRequest<{
-      result: { song: AnotherSongItem }[];
+      result: { song: NeteaseTypings.AnotherSongItem }[];
     }>("https://music.163.com/weapi/personalized/newsong", {
       type: "recommend",
       limit: 10,
@@ -268,15 +280,16 @@ export async function apiPersonalizedNewsong(): Promise<SongsItem[]> {
   return [];
 }
 
-export async function apiRecommendResource(): Promise<PlaylistItem[]> {
+export async function recommendResource(): Promise<
+  NeteaseTypings.PlaylistItem[]
+> {
   const key = "recommend_resource";
-  const value = apiCache.get<PlaylistItem[]>(key);
+  const value = apiCache.get<NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
   try {
-    const { recommend } = await weapiRequest<{ recommend: RawPlaylistItem[] }>(
-      "https://music.163.com/weapi/v1/discovery/recommend/resource",
-      {}
-    );
+    const { recommend } = await weapiRequest<{
+      recommend: NeteaseTypings.RawPlaylistItem[];
+    }>("https://music.163.com/weapi/v1/discovery/recommend/resource", {});
     const ret = recommend.map(resolvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
@@ -286,13 +299,13 @@ export async function apiRecommendResource(): Promise<PlaylistItem[]> {
   return [];
 }
 
-export async function apiRecommendSongs(): Promise<SongsItem[]> {
+export async function recommendSongs(): Promise<NeteaseTypings.SongsItem[]> {
   const key = "recommend_songs";
-  const value = apiCache.get<SongsItem[]>(key);
+  const value = apiCache.get<NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
   try {
     const { data } = await weapiRequest<{
-      data: { dailySongs: SongsItemSt[] };
+      data: { dailySongs: NeteaseTypings.SongsItemSt[] };
     }>("https://music.163.com/api/v3/discovery/recommend/songs", {});
     const ret = data.dailySongs.map(resolveSongItemSt);
     apiCache.set(key, ret);
@@ -303,7 +316,7 @@ export async function apiRecommendSongs(): Promise<SongsItem[]> {
   return [];
 }
 
-export async function apiScrobble(
+export async function scrobble(
   id: number,
   sourceId: number,
   time: number
@@ -330,15 +343,16 @@ export async function apiScrobble(
   }
 }
 
-export async function apiUserDetail(uid: number): Promise<UserDetail | void> {
+export async function userDetail(
+  uid: number
+): Promise<NeteaseTypings.UserDetail | void> {
   const key = `user_detail${uid}`;
-  const value = apiCache.get<UserDetail>(key);
+  const value = apiCache.get<NeteaseTypings.UserDetail>(key);
   if (value) return value;
   try {
-    const { profile } = await weapiRequest<{ profile: UserDetail }>(
-      `https://music.163.com/weapi/v1/user/detail/${uid}`,
-      {}
-    );
+    const { profile } = await weapiRequest<{
+      profile: NeteaseTypings.UserDetail;
+    }>(`https://music.163.com/weapi/v1/user/detail/${uid}`, {});
     const ret = resolveUserDetail(profile);
     return ret;
   } catch (err) {
@@ -347,16 +361,18 @@ export async function apiUserDetail(uid: number): Promise<UserDetail | void> {
   return;
 }
 
-export async function apiUserFolloweds(
+export async function userFolloweds(
   userId: number,
   limit: number,
   offset: number
-): Promise<UserDetail[]> {
+): Promise<NeteaseTypings.UserDetail[]> {
   const key = `user_followeds${userId}-${limit}`;
-  const value = apiCache.get<UserDetail[]>(key);
+  const value = apiCache.get<NeteaseTypings.UserDetail[]>(key);
   if (value) return value;
   try {
-    const { followeds } = await eapiRequest<{ followeds: UserDetail[] }>(
+    const { followeds } = await eapiRequest<{
+      followeds: NeteaseTypings.UserDetail[];
+    }>(
       `https://music.163.com/eapi/user/getfolloweds/${userId}`,
       { userId, time: "0", limit, offset, getcounts: "true" },
       "/api/user/getfolloweds"
@@ -369,23 +385,22 @@ export async function apiUserFolloweds(
   return [];
 }
 
-export async function apiUserFollows(
+export async function userFollows(
   uid: number,
   limit: number,
   offset: number
-): Promise<UserDetail[]> {
+): Promise<NeteaseTypings.UserDetail[]> {
   const key = `user_follows${uid}-${limit}-${offset}`;
-  const value = apiCache.get<UserDetail[]>(key);
+  const value = apiCache.get<NeteaseTypings.UserDetail[]>(key);
   if (value) return value;
   try {
-    const { follow } = await weapiRequest<{ follow: UserDetail[] }>(
-      `https://music.163.com/weapi/user/getfollows/${uid}`,
-      {
-        offset,
-        limit,
-        order: true,
-      }
-    );
+    const { follow } = await weapiRequest<{
+      follow: NeteaseTypings.UserDetail[];
+    }>(`https://music.163.com/weapi/user/getfollows/${uid}`, {
+      offset,
+      limit,
+      order: true,
+    });
     const ret = follow.map(resolveUserDetail);
     return ret;
   } catch (err) {
@@ -396,7 +411,7 @@ export async function apiUserFollows(
 
 type UserLevel = { progress: number; level: number };
 
-export async function apiUserLevel(): Promise<UserLevel> {
+export async function userLevel(): Promise<UserLevel> {
   const key = "user_level";
   const value = apiCache.get<UserLevel>(key);
   if (value) return value;
@@ -416,13 +431,15 @@ export async function apiUserLevel(): Promise<UserLevel> {
   return {} as UserLevel;
 }
 
-export async function apiUserPlaylist(uid: number): Promise<PlaylistItem[]> {
+export async function userPlaylist(
+  uid: number
+): Promise<NeteaseTypings.PlaylistItem[]> {
   const key = `user_playlist${uid}`;
-  const value = apiCache.get<PlaylistItem[]>(key);
+  const value = apiCache.get<NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
   try {
     const { playlist } = await weapiRequest<{
-      playlist: RawPlaylistItem[];
+      playlist: NeteaseTypings.RawPlaylistItem[];
     }>("https://music.163.com/api/user/playlist", {
       uid,
       limit: 30,
@@ -440,17 +457,19 @@ export async function apiUserPlaylist(uid: number): Promise<PlaylistItem[]> {
   return [];
 }
 
-export async function apiUserRecord(): Promise<Array<RecordData[]>> {
+export async function userRecord(): Promise<
+  Array<NeteaseTypings.RecordData[]>
+> {
   const key = `user_record$`;
-  const value = apiCache.get<Array<RecordData[]>>(key);
+  const value = apiCache.get<Array<NeteaseTypings.RecordData[]>>(key);
   if (value) return value;
-  const tasks: Promise<RecordData[]>[] = [
+  const tasks: Promise<NeteaseTypings.RecordData[]>[] = [
     (async () => {
       const { weekData } = await weapiRequest<{
-        weekData: { playCount: number; song: SongsItem }[];
+        weekData: { playCount: number; song: NeteaseTypings.SongsItem }[];
       }>("https://music.163.com/weapi/v1/play/record", {
         type: 1,
-        uid: AccountManager.uid,
+        uid: AccountState.uid,
       });
       return weekData.map(({ playCount, song }) => ({
         ...resolveSongItem(song),
@@ -459,10 +478,10 @@ export async function apiUserRecord(): Promise<Array<RecordData[]>> {
     })(),
     (async () => {
       const { allData } = await weapiRequest<{
-        allData: { playCount: number; song: SongsItem }[];
+        allData: { playCount: number; song: NeteaseTypings.SongsItem }[];
       }>("https://music.163.com/weapi/v1/play/record", {
         type: 0,
-        uid: AccountManager.uid,
+        uid: AccountState.uid,
       });
       return allData.map(({ playCount, song }) => ({
         ...resolveSongItem(song),
@@ -481,7 +500,7 @@ export async function apiUserRecord(): Promise<Array<RecordData[]>> {
   return [[], []];
 }
 
-export async function apiYunbeiInfo(): Promise<{
+async function yunbeiInfo(): Promise<{
   mobileSign: boolean;
   pcSign: boolean;
 }> {
@@ -497,7 +516,7 @@ export async function apiYunbeiInfo(): Promise<{
   return { mobileSign: false, pcSign: false };
 }
 
-export async function apiYunbeiSign(): Promise<void> {
+async function yunbeiSign(): Promise<void> {
   try {
     await weapiRequest("https://music.163.com/api/point/dailyTask", {
       type: 0,
@@ -507,7 +526,7 @@ export async function apiYunbeiSign(): Promise<void> {
   }
 }
 
-export async function apiYunbeiToday(): Promise<boolean> {
+async function yunbeiToday(): Promise<boolean> {
   try {
     const { code } = await weapiRequest<{ code: number }>(
       "https://music.163.com/api/point/today/get",

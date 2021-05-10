@@ -56,7 +56,6 @@ export class ButtonManager {
       i18n.word.play,
       i18n.word.nextTrack,
       i18n.word.repeat,
-      "",
       i18n.word.volume,
       i18n.word.song,
       i18n.word.lyric,
@@ -136,7 +135,6 @@ export class ButtonManager {
   }
 
   static buttonRepeat(r: boolean): void {
-    State.repeat = r;
     this.buttons[Label.repeat].text = r ? "$(sync)" : "$(sync-ignored)";
   }
 

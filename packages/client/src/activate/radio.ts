@@ -1,8 +1,8 @@
-import { CommentType, apiDjSub } from "../api";
 import { IPC, MultiStepInput, Webview, pickRadio } from "../util";
 import type { ProgramTreeItem, RadioTreeItem } from "../treeview";
 import { commands, env, window } from "vscode";
 import type { ExtensionContext } from "vscode";
+import { NeteaseEnum } from "@cloudmusic/shared";
 import { RadioProvider } from "../treeview";
 
 export function initRadio(context: ExtensionContext): void {
@@ -34,7 +34,7 @@ export function initRadio(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.unsubRadio",
-      ({ item: { id } }: RadioTreeItem) => apiDjSub(id, "unsub")
+      ({ item: { id } }: RadioTreeItem) => IPC.netease("djSub", [id, "unsub"])
     ),
 
     commands.registerCommand(
@@ -68,7 +68,7 @@ export function initRadio(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.programComment",
       ({ data: { id }, label }: ProgramTreeItem) =>
-        Webview.comment(CommentType.dj, id, label)
+        Webview.comment(NeteaseEnum.CommentType.dj, id, label)
     ),
 
     commands.registerCommand(

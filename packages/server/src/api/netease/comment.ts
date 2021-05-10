@@ -1,21 +1,20 @@
-import type { CommentDetail, RawCommentDetail } from "../constant";
-import {
-  SortType,
-  eapiRequest,
-  resolveComment,
-  resourceTypeMap,
-  weapiRequest,
-} from ".";
-import type { CommentType } from ".";
+import { eapiRequest, weapiRequest } from "./request";
+import { NeteaseEnum } from "@cloudmusic/shared";
+import type { NeteaseTypings } from "api";
+import { resolveComment } from "./helper";
 
-type CommentRet = {
-  totalCount: number;
-  hasMore: boolean;
-  comments: CommentDetail[];
-};
+const resourceTypeMap = [
+  "R_SO_4_",
+  "R_MV_5_",
+  "A_PL_0_",
+  "R_AL_3_",
+  "A_DJ_1_",
+  "R_VI_62_",
+  "A_EV_2_",
+];
 
-export async function apiCommentAdd(
-  type: CommentType,
+export async function commentAdd(
+  type: NeteaseEnum.CommentType,
   id: number,
   content: string
 ): Promise<boolean> {
@@ -32,8 +31,8 @@ export async function apiCommentAdd(
   return false;
 }
 
-export async function apiCommentReply(
-  type: CommentType,
+export async function commentReply(
+  type: NeteaseEnum.CommentType,
   id: number,
   content: string,
   commentId: number
@@ -51,13 +50,13 @@ export async function apiCommentReply(
   return false;
 }
 
-export async function apiCommentFloor(
-  type: CommentType,
+export async function commentFloor(
+  type: NeteaseEnum.CommentType,
   id: number,
   parentCommentId: number,
   limit: number,
   time: number
-): Promise<CommentRet> {
+): Promise<NeteaseTypings.CommentRet> {
   try {
     const {
       data: { totalCount, hasMore, comments },
@@ -65,7 +64,7 @@ export async function apiCommentFloor(
       data: {
         totalCount: number;
         hasMore: boolean;
-        comments: RawCommentDetail[];
+        comments: NeteaseTypings.RawCommentDetail[];
       };
     }>("https://music.163.com/api/resource/comment/floor/get", {
       parentCommentId,
@@ -84,8 +83,8 @@ export async function apiCommentFloor(
   return { totalCount: 0, hasMore: false, comments: [] };
 }
 
-export async function apiCommentLike(
-  type: CommentType,
+export async function commentLike(
+  type: NeteaseEnum.CommentType,
   t: "like" | "unlike",
   id: number,
   commentId: number
@@ -103,14 +102,14 @@ export async function apiCommentLike(
   return false;
 }
 
-export async function apiCommentNew(
-  type: CommentType,
+export async function commentNew(
+  type: NeteaseEnum.CommentType,
   id: number,
   pageNo: number,
   pageSize: number,
-  sortType: SortType,
+  sortType: NeteaseEnum.SortType,
   cursor: number
-): Promise<CommentRet> {
+): Promise<NeteaseTypings.CommentRet> {
   try {
     const {
       data: { totalCount, hasMore, comments },
@@ -118,7 +117,7 @@ export async function apiCommentNew(
       data: {
         totalCount: number;
         hasMore: boolean;
-        comments: RawCommentDetail[];
+        comments: NeteaseTypings.RawCommentDetail[];
       };
     }>(
       "https://music.163.com/api/v2/resource/comments",
@@ -127,7 +126,10 @@ export async function apiCommentNew(
         pageNo,
         showInner: true,
         pageSize,
-        cursor: sortType === SortType.latest ? cursor : (pageNo - 1) * pageSize,
+        cursor:
+          sortType === NeteaseEnum.SortType.latest
+            ? cursor
+            : (pageNo - 1) * pageSize,
         sortType,
       },
       "/api/v2/resource/comments",

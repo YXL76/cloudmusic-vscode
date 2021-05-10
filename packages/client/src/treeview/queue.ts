@@ -1,10 +1,9 @@
-import { EventEmitter, ThemeIcon, TreeItem, window } from "vscode";
+import { EventEmitter, ThemeIcon, TreeItem } from "vscode";
 import { LocalFileTreeItem, ProgramTreeItem } from ".";
 import type { PlayTreeItem, PlayTreeItemData, QueueContent } from ".";
-import { TreeItemId, UNBLOCK_MUSIC, unplayable } from "../constant";
-import type { SongsItem } from "../constant";
+import type { NeteaseTypings } from "api";
 import type { TreeDataProvider } from "vscode";
-import i18n from "../i18n";
+import { TreeItemId } from "../constant";
 import { unsortInplace } from "array-unsort";
 
 export const enum QueueSortType {
@@ -124,6 +123,10 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     this.add(this._parseRaw(items), index);
   }
 
+  static toJSON(): PlayTreeItemData[] {
+    return this.songs.map(({ data }) => data);
+  }
+
   private static _parseRaw(items: PlayTreeItemData[]): QueueContent[] {
     return items.map((item) => {
       switch (item.itemType) {
@@ -141,16 +144,8 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     elements: QueueContent[],
     index: number = this.len
   ): void {
-    if (UNBLOCK_MUSIC.enabled)
-      elements = elements.filter(
-        ({ valueOf }) => typeof valueOf !== "number" || !unplayable.has(valueOf)
-      );
-
     this.songs.splice(index, 0, ...elements);
     this.songs = [...new Set(this.songs)];
-
-    if (!UNBLOCK_MUSIC.enabled)
-      void window.showInformationMessage(i18n.sentence.hint.noUnplayable);
   }
 
   private static _clear() {
@@ -172,7 +167,7 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   }
 }
 
-export type QueueItemTreeItemData = SongsItem & {
+export type QueueItemTreeItemData = NeteaseTypings.SongsItem & {
   pid: number;
   itemType: TreeItemId.queue;
 };

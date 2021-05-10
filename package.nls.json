@@ -63,7 +63,6 @@
   "configuration.music.quality.enumDescriptions.low": "Low Quality",
   "configuration.music.quality.enumDescriptions.medium": "Medium Quality",
   "configuration.music.quality.markdownDescription": "Choose your prefer music quality",
-  "configuration.player.mediaControl.markdownDescription": "Enable media control",
   "views.account.name": "Account",
   "views.local.name": "Local library",
   "views.playlist.name": "Playlist",

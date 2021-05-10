@@ -1,11 +1,50 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { AccountViewProvider, IPC, apiCache } from ".";
-import { PlaylistProvider, QueueItemTreeItem } from "../treeview";
+import { AccountViewProvider, IPC } from ".";
+import {
+  PlaylistProvider,
+  QueueItemTreeItem,
+  QueueProvider,
+  RadioProvider,
+} from "../treeview";
+import type { ExtensionContext } from "vscode";
+import type { NeteaseTypings } from "api";
+import { QUEUE_KEY } from "../constant";
 import type { QueueContent } from "../treeview";
-import { apiUserLevel } from "../api";
-import { commands } from "vscode";
 import i18n from "../i18n";
-import { unplayable } from "../constant";
+
+export const enum LyricType {
+  original = "o",
+  translation = "t",
+}
+
+type Lyric = {
+  index: number;
+  delay: number;
+  type: LyricType;
+  updatePanel?: (index: number) => void;
+  updateFontSize?: (size: number) => void;
+} & Omit<NeteaseTypings.LyricData, "ctime">;
+
+export const lyric: Lyric = {
+  index: 0,
+  delay: -1.0,
+  type: LyricType.original,
+  time: [0],
+  o: { text: [i18n.word.lyric] },
+  t: { text: [i18n.word.lyric] },
+};
+
+export const setLyric = (
+  index: number,
+  time: number[],
+  o: NeteaseTypings.LyricSpecifyData,
+  t: NeteaseTypings.LyricSpecifyData
+): void => {
+  lyric.index = index;
+  lyric.time = time;
+  lyric.o = o;
+  lyric.t = t;
+};
 
 export const enum LikeState {
   none = -1,
@@ -14,11 +53,11 @@ export const enum LikeState {
 }
 
 export class State {
+  static context: ExtensionContext;
+
+  static first = true;
+
   static _master = false;
-
-  static repeat = false;
-
-  private static _playItem?: QueueContent;
 
   static get master(): boolean {
     return State._master;
@@ -31,6 +70,19 @@ export class State {
     }
   }
 
+  private static _repeat = false;
+
+  static get repeat(): boolean {
+    return State._repeat;
+  }
+
+  static set repeat(value: boolean) {
+    State._repeat = value;
+    ButtonManager.buttonRepeat(value);
+  }
+
+  private static _playItem?: QueueContent;
+
   static get playItem(): QueueContent | undefined {
     return State._playItem;
   }
@@ -39,7 +91,7 @@ export class State {
     if (value !== this._playItem) {
       this._playItem = value;
       if (this.master)
-        if (value) void IPC.load();
+        if (value) IPC.load();
         else IPC.stop();
     }
   }
@@ -74,7 +126,7 @@ export class State {
         const { name, id } = this._playItem.item;
         ButtonManager.buttonSong(name, this._playItem.tooltip);
         this.like =
-          this._playItem instanceof QueueItemTreeItem && !unplayable.has(id)
+          this._playItem instanceof QueueItemTreeItem
             ? AccountManager.likelist.has(id)
               ? LikeState.like
               : LikeState.dislike
@@ -93,29 +145,34 @@ export class State {
   static set login(value: boolean) {
     if (value !== this._login) {
       this._login = value;
-      apiCache.flushAll();
       PlaylistProvider.refresh();
-      // RadioProvider.refresh();
-      if (value) {
-        void apiUserLevel();
-        ButtonManager.buttonAccount(AccountManager.nickname);
-        ButtonManager.show();
-        /* void apiRecommendSongs().then((songs) =>
-          QueueProvider.refresh(() => {
-            QueueProvider.clear();
-            QueueProvider.add(
-              songs.map((song) => new QueueItemTreeItem(song, 0))
-            );
-          })
-        ); */
-      } else {
+      RadioProvider.refresh();
+      if (!value) {
         ButtonManager.hide();
-        void commands.executeCommand("cloudmusic.clearQueue");
+        if (this._master) IPC.clear();
+        return;
       }
+      ButtonManager.buttonAccount(AccountManager.nickname);
+      ButtonManager.show();
+      if (!this.first) {
+        QueueProvider.newRaw(this.context.globalState.get(QUEUE_KEY, []));
+        return;
+      }
+      if (this._master)
+        IPC.netease("recommendSongs", [])
+          .then((songs) =>
+            IPC.new(
+              songs.map(
+                (song) => QueueItemTreeItem.new({ ...song, pid: 0 }).data
+              )
+            )
+          )
+          .catch(console.error);
     }
   }
 }
 
+// TODO
 /* export class PersonalFm {
   private static item: QueueItemTreeItem[] = [];
 

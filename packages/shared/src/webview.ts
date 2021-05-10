@@ -33,7 +33,7 @@ export type MsicRankingCMsg =
 export type ProviderSMsg =
   | { command: "master"; is: boolean }
   | { command: "state"; state: "none" | "paused" | "playing" }
-  | { command: "position"; position: number }
+  // | { command: "position"; position: number }
   | {
       command: "metadata";
       duration?: number;

@@ -5,6 +5,7 @@ export class Player {
   private static readonly player = native.playerNew();
 
   static init(): void {
+    // TODO
     // void this.volume(this.context.globalState.get(VOLUME_KEY, 85));
     // 1000 * 60 * 8 = 480000
     /*  setInterval(
@@ -52,15 +53,6 @@ export class Player {
     } else void commands.executeCommand("cloudmusic.next");
   } */
 
-  /*  static togglePlay(): void {
-    if (!native.playerEmpty(this.player)) {
-      if (State.playing) {
-        native.playerPause(this.player);
-        State.playing = false;
-      } else if (native.playerPlay(this.player)) State.playing = true;
-    }
-  } */
-
   static empty(): boolean {
     return native.playerEmpty(this.player);
   }
@@ -98,6 +90,7 @@ export class Player {
 
 setInterval(() => {
   if (!State.playing) return;
+  // TODO
   // const pos = Player.position();
 
   /* if (pos > 120000 && !this.prefetchLock) {

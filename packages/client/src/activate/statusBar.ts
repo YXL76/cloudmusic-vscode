@@ -1,10 +1,15 @@
-import { LyricCache, MultiStepInput, Webview, lyric, pickUser } from "../util";
+import {
+  IPC,
+  LyricType,
+  MultiStepInput,
+  Webview,
+  lyric,
+  pickUser,
+} from "../util";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import type { InputStep } from "../util";
-import { LyricType } from "../constant";
 import type { QuickPickItem } from "vscode";
-import { apiFmTrash } from "../api";
 import { commands } from "vscode";
 import i18n from "../i18n";
 
@@ -89,7 +94,7 @@ export function initStatusBar(context: ExtensionContext): void {
                 : LyricType.original;
             break;
           case Type.cache:
-            void LyricCache.clear();
+            IPC.lyric();
             break;
           case Type.disable:
             ButtonManager.toggleLyric();
@@ -160,6 +165,7 @@ export function initStatusBar(context: ExtensionContext): void {
       }
     })
 
+    // TODO
     /* commands.registerCommand("cloudmusic.fmTrash", () => {
       if (typeof Player.item?.valueOf === "number")
         void apiFmTrash(Player.item.valueOf);

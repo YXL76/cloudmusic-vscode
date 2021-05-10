@@ -1,23 +1,15 @@
-import type {
-  AlbumsItem,
-  Artist,
-  PlaylistItem,
-  RawPlaylistItem,
-  SongsItem,
-  SongsItemSt,
-} from "../constant";
+import { eapiRequest, weapiRequest } from "./request";
 import {
-  SearchType,
-  eapiRequest,
   resolveAlbumsItem,
   resolveArtist,
   resolvePlaylistItem,
   resolveSongItemSt,
-  weapiRequest,
-} from ".";
-import { apiCache } from "../util";
+} from "./helper";
+import { NeteaseEnum } from "@cloudmusic/shared";
+import type { NeteaseTypings } from "api";
+import { apiCache } from "../..";
 
-export async function apiSearchDefault(): Promise<string> {
+export async function searchDefault(): Promise<string> {
   const key = "search_default";
   const value = apiCache.get<string>(key);
   if (value) return value;
@@ -37,20 +29,20 @@ export async function apiSearchDefault(): Promise<string> {
   return "";
 }
 
-export async function apiSearchSingle(
+export async function searchSingle(
   s: string,
   limit: number,
   offset: number
-): Promise<SongsItem[]> {
-  const key = `cloudsearch${SearchType.single}-${s}-${limit}-${offset}`;
-  const value = apiCache.get<SongsItem[]>(key);
+): Promise<NeteaseTypings.SongsItem[]> {
+  const key = `cloudsearch${NeteaseEnum.SearchType.single}-${s}-${limit}-${offset}`;
+  const value = apiCache.get<NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
   try {
     const {
       result: { songs },
-    } = await weapiRequest<{ result: { songs: SongsItemSt[] } }>(
+    } = await weapiRequest<{ result: { songs: NeteaseTypings.SongsItemSt[] } }>(
       "https://music.163.com/api/cloudsearch/pc",
-      { s, type: SearchType.single, limit, offset, total: true }
+      { s, type: NeteaseEnum.SearchType.single, limit, offset, total: true }
     );
     const ret = songs.map(resolveSongItemSt);
     apiCache.set(key, ret);
@@ -61,20 +53,20 @@ export async function apiSearchSingle(
   return [];
 }
 
-export async function apiSearchAlbum(
+export async function searchAlbum(
   s: string,
   limit: number,
   offset: number
-): Promise<AlbumsItem[]> {
-  const key = `cloudsearch${SearchType.album}-${s}-${limit}-${offset}`;
-  const value = apiCache.get<AlbumsItem[]>(key);
+): Promise<NeteaseTypings.AlbumsItem[]> {
+  const key = `cloudsearch${NeteaseEnum.SearchType.album}-${s}-${limit}-${offset}`;
+  const value = apiCache.get<NeteaseTypings.AlbumsItem[]>(key);
   if (value) return value;
   try {
     const {
       result: { albums },
-    } = await weapiRequest<{ result: { albums: AlbumsItem[] } }>(
+    } = await weapiRequest<{ result: { albums: NeteaseTypings.AlbumsItem[] } }>(
       "https://music.163.com/api/cloudsearch/pc",
-      { s, type: SearchType.album, limit, offset, total: true }
+      { s, type: NeteaseEnum.SearchType.album, limit, offset, total: true }
     );
     const ret = albums.map(resolveAlbumsItem);
     apiCache.set(key, ret);
@@ -85,20 +77,20 @@ export async function apiSearchAlbum(
   return [];
 }
 
-export async function apiSearchArtist(
+export async function searchArtist(
   s: string,
   limit: number,
   offset: number
-): Promise<Artist[]> {
-  const key = `cloudsearch${SearchType.artist}-${s}-${limit}-${offset}`;
-  const value = apiCache.get<Artist[]>(key);
+): Promise<NeteaseTypings.Artist[]> {
+  const key = `cloudsearch${NeteaseEnum.SearchType.artist}-${s}-${limit}-${offset}`;
+  const value = apiCache.get<NeteaseTypings.Artist[]>(key);
   if (value) return value;
   try {
     const {
       result: { artists },
-    } = await weapiRequest<{ result: { artists: Artist[] } }>(
+    } = await weapiRequest<{ result: { artists: NeteaseTypings.Artist[] } }>(
       "https://music.163.com/api/cloudsearch/pc",
-      { s, type: SearchType.artist, limit, offset, total: true }
+      { s, type: NeteaseEnum.SearchType.artist, limit, offset, total: true }
     );
     const ret = artists.map((artist) =>
       resolveArtist({ ...artist, briefDesc: "" })
@@ -111,21 +103,26 @@ export async function apiSearchArtist(
   return [];
 }
 
-export async function apiSearchPlaylist(
+export async function searchPlaylist(
   s: string,
   limit: number,
   offset: number
-): Promise<PlaylistItem[]> {
-  const key = `cloudsearch${SearchType.playlist}-${s}-${limit}-${offset}`;
-  const value = apiCache.get<PlaylistItem[]>(key);
+): Promise<NeteaseTypings.PlaylistItem[]> {
+  const key = `cloudsearch${NeteaseEnum.SearchType.playlist}-${s}-${limit}-${offset}`;
+  const value = apiCache.get<NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
   try {
     const {
       result: { playlists },
-    } = await weapiRequest<{ result: { playlists: RawPlaylistItem[] } }>(
-      "https://music.163.com/api/cloudsearch/pc",
-      { s, type: SearchType.playlist, limit, offset, total: true }
-    );
+    } = await weapiRequest<{
+      result: { playlists: NeteaseTypings.RawPlaylistItem[] };
+    }>("https://music.163.com/api/cloudsearch/pc", {
+      s,
+      type: NeteaseEnum.SearchType.playlist,
+      limit,
+      offset,
+      total: true,
+    });
     const ret = playlists.map(resolvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
@@ -135,24 +132,24 @@ export async function apiSearchPlaylist(
   return [];
 }
 
-type SearchLyricResult = SongsItem & { lyrics: string[] };
+type SearchLyricResult = NeteaseTypings.SongsItem & { lyrics: string[] };
 
-export async function apiSearchLyric(
+export async function searchLyric(
   s: string,
   limit: number,
   offset: number
 ): Promise<SearchLyricResult[]> {
-  const key = `cloudsearch${SearchType.lyric}-${s}-${limit}-${offset}`;
+  const key = `cloudsearch${NeteaseEnum.SearchType.lyric}-${s}-${limit}-${offset}`;
   const value = apiCache.get<SearchLyricResult[]>(key);
   if (value) return value;
   try {
     const {
       result: { songs },
     } = await weapiRequest<{
-      result: { songs: (SongsItemSt & { lyrics: string[] })[] };
+      result: { songs: (NeteaseTypings.SongsItemSt & { lyrics: string[] })[] };
     }>("https://music.163.com/api/cloudsearch/pc", {
       s,
-      type: SearchType.lyric,
+      type: NeteaseEnum.SearchType.lyric,
       limit,
       offset,
       total: true,
@@ -169,7 +166,7 @@ export async function apiSearchLyric(
   return [];
 }
 
-export async function apiSearchHotDetail(): Promise<
+export async function searchHotDetail(): Promise<
   { searchWord: string; content: string }[]
 > {
   const key = "search_hot_detail";
@@ -191,7 +188,7 @@ export async function apiSearchHotDetail(): Promise<
   return [];
 }
 
-export async function apiSearchSuggest(keywords: string): Promise<string[]> {
+export async function searchSuggest(keywords: string): Promise<string[]> {
   const key = `search_suggest${keywords}`;
   const value = apiCache.get<string[]>(key);
   if (value) return value;

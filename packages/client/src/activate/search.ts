@@ -1,5 +1,6 @@
 import {
   ButtonAction,
+  IPC,
   pickAlbum,
   pickAlbumItems,
   pickArtist,
@@ -12,18 +13,8 @@ import {
 } from "../util";
 import type { InputStep, MultiStepInput } from "../util";
 import type { QuickPick, QuickPickItem } from "vscode";
-import {
-  SearchType,
-  apiSearchAlbum,
-  apiSearchArtist,
-  apiSearchDefault,
-  apiSearchHotDetail,
-  apiSearchLyric,
-  apiSearchPlaylist,
-  apiSearchSingle,
-  apiSearchSuggest,
-} from "../api";
 import { ICON } from "../constant";
+import { NeteaseEnum } from "@cloudmusic/shared";
 import i18n from "../i18n";
 import { throttle } from "lodash";
 
@@ -40,7 +31,7 @@ const state = {} as State;
 const updateSuggestions = throttle((that: QuickPick<QuickPickItem>, value) => {
   that.enabled = false;
   that.busy = true;
-  void apiSearchSuggest(value).then((suggestions) => {
+  void IPC.netease("searchSuggest", [value]).then((suggestions) => {
     that.items = [that.items[0], ...suggestions.map((label) => ({ label }))];
     that.enabled = true;
     that.busy = false;
@@ -48,7 +39,7 @@ const updateSuggestions = throttle((that: QuickPick<QuickPickItem>, value) => {
 }, 256);
 
 export async function inputKeyword(input: MultiStepInput): Promise<InputStep> {
-  const items: QuickPickItem[] = (await apiSearchHotDetail()).map(
+  const items: QuickPickItem[] = (await IPC.netease("searchHotDetail", [])).map(
     ({ searchWord, content }) => ({
       label: searchWord,
       description: ICON.hot,
@@ -56,7 +47,9 @@ export async function inputKeyword(input: MultiStepInput): Promise<InputStep> {
     })
   );
 
-  items.unshift({ label: state.keyword ?? (await apiSearchDefault()) });
+  items.unshift({
+    label: state.keyword ?? (await IPC.netease("searchDefault", [])),
+  });
 
   const pick = await input.showQuickPick({
     title,
@@ -85,37 +78,37 @@ async function pickType(input: MultiStepInput): Promise<InputStep> {
     items: [
       {
         label: `${ICON.song} ${i18n.word.single}`,
-        type: SearchType.single,
+        type: NeteaseEnum.SearchType.single,
       },
       {
         label: `${ICON.album} ${i18n.word.album}`,
-        type: SearchType.album,
+        type: NeteaseEnum.SearchType.album,
       },
       {
         label: `${ICON.artist} ${i18n.word.artist}`,
-        type: SearchType.artist,
+        type: NeteaseEnum.SearchType.artist,
       },
       {
         label: `${ICON.playlist} ${i18n.word.playlist}`,
-        type: SearchType.playlist,
+        type: NeteaseEnum.SearchType.playlist,
       },
       {
         label: `${ICON.lyric} ${i18n.word.lyric}`,
-        type: SearchType.lyric,
+        type: NeteaseEnum.SearchType.lyric,
       },
     ],
     placeholder: i18n.sentence.hint.search,
   });
   switch (pick.type) {
-    case SearchType.single:
+    case NeteaseEnum.SearchType.single:
       return (input) => pickSearchSingle(input, 0);
-    case SearchType.album:
+    case NeteaseEnum.SearchType.album:
       return (input) => pickSearchAlbum(input, 0);
-    case SearchType.artist:
+    case NeteaseEnum.SearchType.artist:
       return (input) => pickSearchArtist(input, 0);
-    case SearchType.playlist:
+    case NeteaseEnum.SearchType.playlist:
       return (input) => pickSearchPlaylist(input, 0);
-    case SearchType.lyric:
+    case NeteaseEnum.SearchType.lyric:
       return (input) => pickSearchLyric(input, 0);
   }
   return (input) => pickSearchSingle(input, 0);
@@ -125,7 +118,11 @@ async function pickSearchSingle(
   input: MultiStepInput,
   offset: number
 ): Promise<InputStep | void> {
-  const songs = await apiSearchSingle(state.keyword, limit, offset);
+  const songs = await IPC.netease("searchSingle", [
+    state.keyword,
+    limit,
+    offset,
+  ]);
   const pick = await input.showQuickPick({
     title,
     step: 4,
@@ -154,7 +151,11 @@ async function pickSearchAlbum(
   input: MultiStepInput,
   offset: number
 ): Promise<InputStep> {
-  const albums = await apiSearchAlbum(state.keyword, limit, offset);
+  const albums = await IPC.netease("searchAlbum", [
+    state.keyword,
+    limit,
+    offset,
+  ]);
   const pick = await input.showQuickPick({
     title,
     step: 4,
@@ -174,7 +175,11 @@ async function pickSearchArtist(
   input: MultiStepInput,
   offset: number
 ): Promise<InputStep> {
-  const artists = await apiSearchArtist(state.keyword, limit, offset);
+  const artists = await IPC.netease("searchArtist", [
+    state.keyword,
+    limit,
+    offset,
+  ]);
   const pick = await input.showQuickPick({
     title,
     step: 4,
@@ -194,7 +199,11 @@ async function pickSearchPlaylist(
   input: MultiStepInput,
   offset: number
 ): Promise<InputStep> {
-  const playlists = await apiSearchPlaylist(state.keyword, limit, offset);
+  const playlists = await IPC.netease("searchPlaylist", [
+    state.keyword,
+    limit,
+    offset,
+  ]);
   const pick = await input.showQuickPick({
     title,
     step: 4,
@@ -214,7 +223,11 @@ async function pickSearchLyric(
   input: MultiStepInput,
   offset: number
 ): Promise<InputStep> {
-  const songs = await apiSearchLyric(state.keyword, limit, offset);
+  const songs = await IPC.netease("searchLyric", [
+    state.keyword,
+    limit,
+    offset,
+  ]);
   const pick = await input.showQuickPick({
     title,
     step: 4,

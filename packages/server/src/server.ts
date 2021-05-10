@@ -1,20 +1,30 @@
-import type { IPCClientMsg, IPCServerMsg } from "@cloudmusic/shared";
-import { Player, State } from ".";
-import { homedir, platform } from "os";
 import {
+  CACHE_DIR,
+  LYRIC_CACHE_DIR,
+  MUSIC_CACHE_DIR,
+  SETTING_DIR,
+  TMP_DIR,
   ipcAppspace,
   ipcBroadcastServerId,
   ipcDelimiter,
   ipcServerId,
 } from "@cloudmusic/shared";
-import { rmdirSync, unlinkSync } from "fs";
+import type {
+  IPCClientMsg,
+  IPCServerMsg,
+  NeteaseAPICMsg,
+  NeteaseAPISMsg,
+} from "@cloudmusic/shared";
+import { LyricCache, MusicCache, NeteaseAPI, Player, State } from ".";
+import { createWriteStream, rmdirSync, unlinkSync } from "fs";
+import type { Readable } from "stream";
 import type { Socket } from "net";
+import axios from "axios";
+import { basename } from "path";
 import { createServer } from "net";
+import { mkdir } from "fs/promises";
+import { platform } from "os";
 import { resolve } from "path";
-
-export const HOME_DIR = homedir();
-export const SETTING_DIR = resolve(HOME_DIR, ".cloudmusic");
-export const TMP_DIR = resolve(SETTING_DIR, "tmp");
 
 export class IPCServer {
   private static _timer?: NodeJS.Timeout;
@@ -41,7 +51,6 @@ export class IPCServer {
           IPCServer._timer = undefined;
         }
 
-        IPCServer._sockets.add(socket);
         socket.setEncoding("utf8");
 
         socket
@@ -58,7 +67,7 @@ export class IPCServer {
             const msgs = buffer.split(ipcDelimiter);
             msgs.pop();
             for (const msg of msgs)
-              IPCServer._handler(JSON.parse(msg) /* socket */);
+              void IPCServer._handler(JSON.parse(msg), socket);
           })
           .on("close", (/* err */) => {
             for (const socket of IPCServer._sockets) {
@@ -68,13 +77,14 @@ export class IPCServer {
               break;
             }
 
-            if (IPCServer._sockets.size) IPCServer.setMaster();
+            if (IPCServer._sockets.size) IPCServer._setMaster();
             else {
               Player.pause();
               IPCServer._timer = setTimeout(() => {
                 if (IPCServer._sockets.size) return;
                 IPCServer.stop();
                 IPCBroadcastServer.stop();
+                MusicCache.store();
                 try {
                   rmdirSync(TMP_DIR, { recursive: true });
                 } catch {}
@@ -82,12 +92,21 @@ export class IPCServer {
               }, 20000);
             }
           });
+        // TODO
         // .on("error", (err) => {})
+
+        // TODO
+        // this.send(socket, { t: "control.init" });
+
+        IPCServer._sockets.add(socket);
         if (IPCServer._sockets.size === 1) {
-          IPCServer.setMaster();
+          IPCServer._setMaster();
           Player.play();
+        } else {
+          IPCServer.sendToMaster({ t: "control.new" });
         }
       })
+        // TODO
         // .on("error", (err) => {})
         .listen(path)
     );
@@ -100,7 +119,10 @@ export class IPCServer {
     });
   }
 
-  static send(socket: Socket, data: IPCServerMsg): void {
+  static send(
+    socket: Socket,
+    data: IPCServerMsg | NeteaseAPISMsg<"album">
+  ): void {
     socket.write(`${JSON.stringify(data)}${ipcDelimiter}`);
   }
 
@@ -118,16 +140,92 @@ export class IPCServer {
     return socket;
   }
 
-  private static setMaster() {
+  private static _setMaster() {
     const [master, ...slaves] = this._sockets;
-    this.send(master, { t: "control.master", is: true });
     for (const slave of slaves) this.send(slave, { t: "control.master" });
+    this.send(master, { t: "control.master", is: true });
   }
 
-  private static _handler(data: IPCClientMsg /* , socket: Socket */): void {
+  private static async _handler(
+    data: IPCClientMsg | NeteaseAPICMsg<"album">,
+    socket: Socket
+  ): Promise<void> {
     switch (data.t) {
+      case "api.netease":
+        this.send(socket, {
+          t: data.t,
+          channel: data.channel,
+          msg: await NeteaseAPI[data.msg.i].apply(undefined, data.msg.p),
+        });
+        break;
+      case "control.download":
+        {
+          const fn = basename(data.path);
+          const download = await downloadMusic(data.url, fn, data.path, false);
+          if (!download) break;
+          const file = createWriteStream(data.path);
+          download.pipe(file);
+        }
+        break;
+      case "control.init":
+        State.minSize = data.mq === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
+        State.musicQuality = data.mq;
+        State.cacheSize = data.cs;
+        Player.volume(data.volume);
+        break;
+      case "control.lyric":
+        LyricCache.clear();
+        break;
+      case "control.music":
+        MusicCache.clear();
+        break;
       case "player.load":
-        if (Player.load(data.url)) this.broadcast({ t: "player.load" });
+        if (data?.local) {
+          if (Player.load(data.url)) this.broadcast({ t: "player.load" });
+          break;
+        }
+        {
+          const url = MusicCache.get(data.url);
+          if (url) {
+            if (Player.load(url)) this.broadcast({ t: "player.load" });
+            break;
+          }
+        }
+        {
+          const { url, md5 } = await NeteaseAPI.songUrl(data.url);
+          if (!url) {
+            // TODO
+            // void commands.executeCommand("cloudmusic.next");
+            break;
+          }
+          const tmpUri = resolve(TMP_DIR, data.url);
+          const download = await downloadMusic(
+            url,
+            data.url,
+            tmpUri,
+            // TODO
+            // !PersonalFm.state,
+            true,
+            md5
+          );
+          if (!download) break;
+          let len = 0;
+          const onData = ({ length }: { length: number }) => {
+            len += length;
+            if (len > State.minSize) {
+              download.removeListener("data", onData);
+              if (Player.load(tmpUri)) this.broadcast({ t: "player.load" });
+            }
+          };
+          download.on("data", onData);
+          download.once("error", () => {
+            // TODO
+            // void window.showErrorMessage(i18n.sentence.error.network);
+            // void commands.executeCommand("cloudmusic.next");
+          });
+          const file = createWriteStream(tmpUri);
+          download.pipe(file);
+        }
         break;
       case "player.toggle":
         State.playing ? Player.pause() : Player.play();
@@ -164,7 +262,7 @@ export class IPCBroadcastServer {
         socket.setEncoding("utf8");
 
         socket
-          .on("data", (data) => IPCBroadcastServer.broadcast(data))
+          .on("data", (data) => IPCBroadcastServer._broadcast(data))
           .on("close", (/* err */) => {
             for (const socket of IPCBroadcastServer._sockets) {
               if (socket?.readable) continue;
@@ -173,8 +271,10 @@ export class IPCBroadcastServer {
               return;
             }
           });
+        // TODO
         // .on("error", (err) => {})
       })
+        // TODO
         // .on("error", (err) => {})
         .listen(path)
     );
@@ -187,7 +287,44 @@ export class IPCBroadcastServer {
     });
   }
 
-  static broadcast(data: Buffer): void {
+  private static _broadcast(data: Buffer): void {
     for (const socket of this._sockets) socket.write(data);
   }
 }
+
+async function downloadMusic(
+  url: string,
+  filename: string,
+  path: string,
+  cache: boolean,
+  md5?: string
+): Promise<Readable | void> {
+  try {
+    const { data } = await axios.get<Readable>(url, {
+      responseType: "stream",
+      timeout: 8000,
+    });
+    if (cache) data.on("end", () => void MusicCache.put(filename, path, md5));
+    return data;
+  } catch {}
+  return;
+}
+
+void (async () => {
+  try {
+    await mkdir(SETTING_DIR, { recursive: false }).catch();
+  } catch {}
+  try {
+    await mkdir(TMP_DIR, { recursive: false }).catch();
+  } catch {}
+  try {
+    await mkdir(CACHE_DIR, { recursive: false }).catch();
+  } catch {}
+  try {
+    await mkdir(LYRIC_CACHE_DIR, { recursive: false }).catch();
+  } catch {}
+  try {
+    await mkdir(MUSIC_CACHE_DIR, { recursive: false }).catch();
+  } catch {}
+  void MusicCache.init();
+})();

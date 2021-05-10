@@ -1,17 +1,15 @@
-import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
+/* import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
 import axios from "axios";
 import { extname } from "path";
 
 interface SearchResult {
   tracks: {
-    /* eslint-disable @typescript-eslint/naming-convention */
     album_name: string;
     artist_list: { name: string }[];
     id: string;
     is_playable: boolean;
     name: string;
     play_duration: number;
-    /* eslint-enable @typescript-eslint/naming-convention */
   }[][];
 }
 
@@ -77,3 +75,6 @@ export default async function joox(
   const selected = list.shift();
   return selected ? await songUrl(selected) : undefined;
 }
+ */
+
+export default undefined;

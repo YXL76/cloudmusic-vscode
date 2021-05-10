@@ -1,4 +1,14 @@
+export type Api$netease = "api.netease";
+
+export type Control$cookie = "control.cookie";
+export type Control$download = "control.download";
+export type Control$init = "control.init";
+export type Control$login = "control.login";
+export type Control$logout = "control.logout";
+export type Control$lyric = "control.lyric";
 export type Control$master = "control.master";
+export type Control$music = "control.music";
+export type Control$new = "control.new";
 
 export type Play$end = "player.end";
 export type Play$load = "player.load";

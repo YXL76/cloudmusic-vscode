@@ -1,4 +1,4 @@
-import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
+/* import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
 import {
   constants,
   createCipheriv,
@@ -130,3 +130,6 @@ export default async function migu(
   const selected = filter(list, song);
   return selected ? await songUrl(selected) : undefined;
 }
+ */
+
+export default undefined;

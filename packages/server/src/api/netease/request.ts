@@ -1,12 +1,16 @@
-import type { Cookie, OS } from ".";
-import { anonymousToken, cookieToJson, eapi, jsonToCookie, weapi } from ".";
-import { AccountManager } from "../manager";
+import { AccountState, cookieToJson, jsonToCookie } from "./helper";
+import { eapi, weapi } from "./crypto";
+import { Agent as HttpAgent } from "http";
+import { Agent as HttpsAgent } from "https";
+import { IPCServer } from "../../server";
+import type { NeteaseTypings } from "api";
 import type { ParsedUrlQueryInput } from "querystring";
 import axios from "axios";
-import { Agent as httpAgent } from "http";
-import { Agent as httpsAgent } from "https";
 import { randomBytes } from "crypto";
 import { stringify } from "querystring";
+
+const httpAgent = new HttpAgent({ keepAlive: true });
+const httpsAgent = new HttpsAgent({ keepAlive: true });
 
 const userAgentList = [
   // macOS 10.15.6  Firefox / Chrome / Safari
@@ -63,8 +67,8 @@ const responseHandler = async <T>(
   const res = await axios.post<{ code?: number } & T>(url, stringify(data), {
     withCredentials: true,
     headers,
-    httpAgent: new httpAgent({ keepAlive: true }),
-    httpsAgent: new httpsAgent({ keepAlive: true }),
+    httpAgent,
+    httpsAgent,
     ...(eapi ? { encoding: null } : {}),
   });
 
@@ -72,12 +76,16 @@ const responseHandler = async <T>(
 
   if ([200, 800, 803].includes(status)) {
     if ("set-cookie" in res.headers) {
-      AccountManager.cookie = {
-        ...AccountManager.cookie,
+      AccountState.cookie = {
+        ...AccountState.cookie,
         ...cookieToJson(
           (res.headers as { "set-cookie": string[] })["set-cookie"]
         ),
       };
+      IPCServer.broadcast({
+        t: "control.cookie",
+        cookie: JSON.stringify(AccountState.cookie),
+      });
     }
     return res.data;
   }
@@ -87,11 +95,11 @@ const responseHandler = async <T>(
 export const weapiRequest = async <T = ParsedUrlQueryInput>(
   url: string,
   data: ParsedUrlQueryInput,
-  extraCookie: { os?: OS; appver?: string } = {}
+  extraCookie: { os?: NeteaseTypings.OS; appver?: string } = {}
 ): Promise<T> => {
   const headers = generateHeader(url);
   headers["Cookie"] = jsonToCookie({
-    ...AccountManager.cookie,
+    ...AccountState.cookie,
     ...extraCookie,
   });
   const csrfToken = csrfTokenReg.exec(headers["Cookie"]);
@@ -107,17 +115,18 @@ export const eapiRequest = async <T = ParsedUrlQueryInput>(
   url: string,
   data: ParsedUrlQueryInput & { header?: ParsedUrlQueryInput },
   encryptUrl: string,
-  os?: OS
+  os?: NeteaseTypings.OS
 ): Promise<T> => {
-  const cookie: Cookie = {
-    ...AccountManager.cookie,
+  const cookie: NeteaseTypings.Cookie = {
+    ...AccountState.cookie,
     ...(os ? { os } : {}),
-    ...("MUSIC_U" in AccountManager.cookie
+    ...("MUSIC_U" in AccountState.cookie
       ? // eslint-disable-next-line @typescript-eslint/naming-convention
-        { MUSIC_U: AccountManager.cookie.MUSIC_U }
+        { MUSIC_U: AccountState.cookie.MUSIC_U }
       : {
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          MUSIC_A: anonymousToken,
+          MUSIC_A:
+            "8aae43f148f990410b9a2af38324af24e87ab9227c9265627ddd10145db744295fcd8701dc45b1ab8985e142f491516295dd965bae848761274a577a62b0fdc54a50284d1e434dcc04ca6d1a52333c9a", // anonymousToken
           // eslint-disable-next-line @typescript-eslint/naming-convention
           _ntes_nuid: randomBytes(16).toString("hex"),
         }),
@@ -151,6 +160,6 @@ export const apiRequest = async <T = ParsedUrlQueryInput>(
   data: ParsedUrlQueryInput
 ): Promise<T> => {
   const headers = generateHeader(url);
-  headers["Cookie"] = jsonToCookie(AccountManager.cookie);
+  headers["Cookie"] = jsonToCookie(AccountState.cookie);
   return responseHandler<T>(url, headers, data);
 };
