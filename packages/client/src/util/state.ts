@@ -3,12 +3,9 @@ import { AccountViewProvider, IPC } from ".";
 import {
   PlaylistProvider,
   QueueItemTreeItem,
-  QueueProvider,
   RadioProvider,
 } from "../treeview";
-import type { ExtensionContext } from "vscode";
 import type { NeteaseTypings } from "api";
-import { QUEUE_KEY } from "../constant";
 import type { QueueContent } from "../treeview";
 import i18n from "../i18n";
 
@@ -53,8 +50,6 @@ export const enum LikeState {
 }
 
 export class State {
-  static context: ExtensionContext;
-
   static first = true;
 
   static _master = false;
@@ -116,23 +111,22 @@ export class State {
   }
 
   static set loading(value: boolean) {
-    if (value !== this._loading) {
-      this._loading = value;
-      if (value)
-        ButtonManager.buttonSong(
-          `$(loading~spin) ${i18n.word.song}: ${i18n.word.loading}`
-        );
-      else if (this._playItem) {
-        const { name, id } = this._playItem.item;
-        ButtonManager.buttonSong(name, this._playItem.tooltip);
-        this.like =
-          this._playItem instanceof QueueItemTreeItem
-            ? AccountManager.likelist.has(id)
-              ? LikeState.like
-              : LikeState.dislike
-            : LikeState.none;
-        AccountViewProvider.metadata(this._playItem);
-      }
+    // if (value === this._loading) return;
+    this._loading = value;
+    if (value)
+      ButtonManager.buttonSong(
+        `$(loading~spin) ${i18n.word.song}: ${i18n.word.loading}`
+      );
+    else if (this._playItem) {
+      const { name, id } = this._playItem.item;
+      ButtonManager.buttonSong(name, this._playItem.tooltip);
+      this.like =
+        this._playItem instanceof QueueItemTreeItem
+          ? AccountManager.likelist.has(id)
+            ? LikeState.like
+            : LikeState.dislike
+          : LikeState.none;
+      AccountViewProvider.metadata(this._playItem);
     }
   }
 
@@ -154,10 +148,7 @@ export class State {
       }
       ButtonManager.buttonAccount(AccountManager.nickname);
       ButtonManager.show();
-      if (!this.first) {
-        QueueProvider.newRaw(this.context.globalState.get(QUEUE_KEY, []));
-        return;
-      }
+      if (!this.first) return;
       if (this._master)
         IPC.netease("recommendSongs", [])
           .then((songs) =>

@@ -137,10 +137,6 @@ export class AccountManager implements AuthenticationProvider {
     this.nickname = nickname;
     State.login = true;
 
-    this.likelist.clear();
-    const ids = await IPC.netease("likelist", []);
-    for (const id of ids) this.likelist.add(id);
-
     return true;
   }
 

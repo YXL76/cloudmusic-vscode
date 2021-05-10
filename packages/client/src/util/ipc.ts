@@ -21,6 +21,7 @@ import {
   ipcDelimiter,
   ipcServerId,
 } from "@cloudmusic/shared";
+import { ButtonManager } from "../manager";
 import type { Socket } from "net";
 import { State } from ".";
 import { connect } from "net";
@@ -119,7 +120,7 @@ export class IPC {
   static load(): void {
     const { playItem } = State;
     if (!playItem) return;
-    State.loading = true;
+    ipcB.send({ t: "player.load" });
 
     if (playItem instanceof LocalFileTreeItem) {
       ipc.send({
@@ -146,6 +147,15 @@ export class IPC {
       mq: MUSIC_QUALITY,
       cs: MUSIC_CACHE_SIZE,
       volume,
+    });
+  }
+
+  static initB(): void {
+    ipcB.send({
+      t: "control.init",
+      repeat: State.repeat,
+      like: State.like,
+      playing: ButtonManager.playing,
     });
   }
 
@@ -233,3 +243,16 @@ export class IPC {
     });
   }
 }
+
+const getDate = /-(\d+)$/;
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [k, v] of IPC.requestPool) {
+    const [, date] = getDate.exec(k as string) as RegExpExecArray;
+    if (parseInt(date) - now > 120000) {
+      IPC.requestPool.delete(k);
+      v.reject();
+    } else break;
+  }
+}, 60000);

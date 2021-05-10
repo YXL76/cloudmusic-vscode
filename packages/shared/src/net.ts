@@ -15,8 +15,13 @@ export type CSConnPool = Map<
 export type IPCMsg<T = string, U = Record<never, never>> = { t: T } & U;
 
 export type IPCBroadcastMsg =
+  | IPCMsg<
+      IPCEvent.Control$init,
+      { repeat: boolean; like: number; playing: boolean }
+    >
   | IPCMsg<IPCEvent.Control$login, { userId: number; nickname: string }>
   | IPCMsg<IPCEvent.Control$logout>
+  | IPCMsg<IPCEvent.Play$load>
   | IPCMsg<IPCEvent.Play$repeat, { r: boolean }>
   | IPCMsg<IPCEvent.Queue$add, { items: unknown; index?: number }>
   | IPCMsg<IPCEvent.Queue$clear>

@@ -1,6 +1,6 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { AccountViewProvider, IPC, State, ipc, ipcB, setLyric } from "../util";
-import { COOKIE_KEY, ICON, QUEUE_KEY, VOLUME_KEY } from "../constant";
+import { COOKIE_KEY, ICON, VOLUME_KEY } from "../constant";
 import type {
   IPCBroadcastMsg,
   IPCServerMsg,
@@ -16,11 +16,19 @@ import { resolve } from "path";
 
 const ipcBHandler = (data: IPCBroadcastMsg) => {
   switch (data.t) {
+    case "control.init":
+      State.repeat = data.repeat;
+      State.like = data.like;
+      ButtonManager.buttonPlay(data.playing);
+      break;
     case "control.login":
       // TODO
       AccountManager.uid = data.userId;
       AccountManager.nickname = data.nickname;
-      // AccountManager.likelist.clear();
+      AccountManager.likelist.clear();
+      void IPC.netease("likelist", []).then((ids) => {
+        for (const id of ids) AccountManager.likelist.add(id);
+      });
       State.login = true;
       break;
     case "control.logout":
@@ -28,6 +36,9 @@ const ipcBHandler = (data: IPCBroadcastMsg) => {
       AccountManager.nickname = "";
       AccountManager.likelist.clear();
       State.login = false;
+      break;
+    case "player.load":
+      State.loading = true;
       break;
     case "player.repeat":
       State.repeat = data.r;
@@ -73,7 +84,8 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         State.master = !!data.is;
         break;
       case "control.new":
-        void context.globalState.update(QUEUE_KEY, QueueProvider.toJSON());
+        IPC.new(QueueProvider.toJSON());
+        IPC.initB();
         break;
       case "player.end":
         if (State.repeat) IPC.load();
