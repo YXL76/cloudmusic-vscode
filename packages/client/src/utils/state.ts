@@ -1,6 +1,6 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { AccountViewProvider, IPC } from ".";
-import { FM_KEY, REPEAT_KEY } from "../constant";
+import { FM_KEY, LYRIC_KEY, REPEAT_KEY, SHOW_LYRIC_KEY } from "../constant";
 import {
   PlaylistProvider,
   QueueItemTreeItem,
@@ -16,12 +16,6 @@ type Lyric = {
   updatePanel?: (oi: number, ti: number) => void;
   updateFontSize?: (size: number) => void;
 } & NeteaseTypings.LyricData;
-
-export const lyric: Lyric = {
-  type: "o",
-  o: { time: [0], text: ["~"] },
-  t: { time: [0], text: ["~"] },
-};
 
 export const enum LikeState {
   none = -1,
@@ -41,10 +35,8 @@ export class State {
   }
 
   static set master(value: boolean) {
-    if (value !== this.master) {
-      this._master = value;
-      AccountViewProvider.master();
-    }
+    this._master = value;
+    AccountViewProvider.master();
   }
 
   private static _repeat = false;
@@ -146,11 +138,11 @@ export class State {
 
   private static _fm = false;
 
-  public static get fm(): boolean {
+  static get fm(): boolean {
     return State._fm;
   }
 
-  public static set fm(value: boolean) {
+  static set fm(value: boolean) {
     if (State._fm !== value) {
       this._fm = value;
       ButtonManager.buttonPrevious(value);
@@ -159,8 +151,40 @@ export class State {
     }
   }
 
+  private static _showLyric = false;
+
+  static get showLyric(): boolean {
+    return State._showLyric;
+  }
+
+  static set showLyric(value: boolean) {
+    State._showLyric = value;
+    void this.context.globalState.update(SHOW_LYRIC_KEY, value);
+  }
+
+  private static _lyric: Lyric = {
+    type: "o",
+    o: { time: [0], text: ["~"] },
+    t: { time: [0], text: ["~"] },
+  };
+
+  static get lyric(): Lyric {
+    return State._lyric;
+  }
+
+  static set lyric(value: Lyric) {
+    State._lyric = value;
+    void this.context.globalState.update(LYRIC_KEY, value);
+  }
+
   static init(): void {
     this.repeat = this.context.globalState.get(REPEAT_KEY, false);
     this.fm = this.context.globalState.get(FM_KEY, false);
+    this._showLyric = this.context.globalState.get(SHOW_LYRIC_KEY, false);
+    this._lyric = this.context.globalState.get(LYRIC_KEY, {
+      type: "o",
+      o: { time: [0], text: ["~"] },
+      t: { time: [0], text: ["~"] },
+    });
   }
 }

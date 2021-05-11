@@ -20,7 +20,7 @@ export async function getMusicPath(
   if (!url) return;
 
   const tmpUri = resolve(TMP_DIR, idS);
-  const download = await getMusic(url, idS, tmpUri, State.fm, md5);
+  const download = await getMusic(url, idS, tmpUri, !State.fm, md5);
   if (!download) return;
   return new Promise((resolve) => {
     let len = 0;

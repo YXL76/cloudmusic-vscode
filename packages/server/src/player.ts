@@ -21,15 +21,17 @@ async function prefetch() {
 }
 
 export class Player {
-  static dt = 0;
-
-  static id = 0;
-
-  static pid = 0;
-
   static next = 0;
 
-  static time = 0;
+  private static _dt = 0;
+
+  private static _id = 0;
+
+  private static _pid = 0;
+
+  private static _time = 0;
+
+  private static _loadtime = 0;
 
   private static readonly player = native.playerNew();
 
@@ -62,7 +64,7 @@ export class Player {
       () =>
         void readdir(TMP_DIR).then((files) => {
           for (const file of files)
-            if (file !== `${this.id}`) {
+            if (file !== `${this._id}`) {
               const path = resolve(TMP_DIR, file);
               void stat(path).then(({ mtime }) => {
                 if (Date.now() - mtime.getTime() > 480000)
@@ -82,6 +84,10 @@ export class Player {
   }
 
   static load(url: string, dt = 0, id = 0, pid = 0, next = 0): boolean {
+    const loadtime = Date.now();
+    if (loadtime < this._loadtime) return true;
+    this._loadtime = loadtime;
+
     if (!native.playerLoad(this.player, url)) return false;
     this.next = next;
     prefetchLock = false;
@@ -94,22 +100,22 @@ export class Player {
       });
     }
 
-    const pTime = this.time;
-    this.time = Date.now();
+    const pTime = this._time;
+    this._time = Date.now();
 
-    if (this.id) {
-      const diff = this.time - pTime;
-      if (diff > 60000 && this.dt > 60000)
+    if (this._id) {
+      const diff = this._time - pTime;
+      if (diff > 60000 && this._dt > 60000)
         void NeteaseAPI.scrobble(
-          this.id,
-          this.pid,
-          Math.floor(Math.min(diff, this.dt)) / 1000
+          this._id,
+          this._pid,
+          Math.floor(Math.min(diff, this._dt)) / 1000
         );
     }
 
-    this.dt = dt;
-    this.id = id;
-    this.pid = pid;
+    this._dt = dt;
+    this._id = id;
+    this._pid = pid;
 
     return true;
   }

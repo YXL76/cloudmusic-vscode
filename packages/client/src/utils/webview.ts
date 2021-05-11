@@ -10,7 +10,6 @@ import {
   IPC,
   MultiStepInput,
   State,
-  lyric,
   pickAlbum,
   pickArtist,
   pickSong,
@@ -173,19 +172,19 @@ export class Webview {
     const { panel, setHtml } = this.getPanel(i18n.word.lyric, "lyric");
 
     panel.onDidDispose(() => {
-      lyric.updatePanel = undefined;
-      lyric.updateFontSize = undefined;
+      State.lyric.updatePanel = undefined;
+      State.lyric.updateFontSize = undefined;
     });
 
-    lyric.updatePanel = (oi: number, ti: number) =>
+    State.lyric.updatePanel = (oi: number, ti: number) =>
       panel.webview.postMessage({
         command: "lyric",
         data: {
-          otext: lyric.o.text?.[oi],
-          ttext: lyric.t.text?.[ti],
+          otext: State.lyric.o.text?.[oi],
+          ttext: State.lyric.t.text?.[ti],
         },
       } as LyricSMsg);
-    lyric.updateFontSize = (size: number) =>
+    State.lyric.updateFontSize = (size: number) =>
       panel.webview.postMessage({
         command: "size",
         data: size,

@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { AccountViewProvider, IPC, State, lyric } from "../utils";
+import { AccountViewProvider, IPC, State } from "../utils";
 import { COOKIE_KEY, ICON, VOLUME_KEY } from "../constant";
 import type {
   IPCBroadcastMsg,
@@ -96,6 +96,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         break;
       case "control.retain":
         QueueProvider.newRaw(JSON.parse(data.items) as PlayTreeItemData[]);
+        State.loading = false;
         break;
       case "player.end":
         if (!data.fail && State.repeat) IPC.load();
@@ -105,13 +106,18 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         State.loading = false;
         break;
       case "player.lyric":
-        Object.assign(lyric, data.lyric);
+        State.lyric = {
+          ...State.lyric,
+          ...data.lyric,
+        };
         break;
       case "player.lyricIndex":
         ButtonManager.buttonLyric(
-          lyric[lyric.type].text?.[lyric.type === "o" ? data.oi : data.ti]
+          State.lyric[State.lyric.type].text?.[
+            State.lyric.type === "o" ? data.oi : data.ti
+          ]
         );
-        lyric.updatePanel?.(data.oi, data.ti);
+        State.lyric.updatePanel?.(data.oi, data.ti);
         break;
       case "player.pause":
         ButtonManager.buttonPlay(false);
@@ -124,10 +130,11 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       case "player.stop":
         ButtonManager.buttonSong();
         ButtonManager.buttonLyric();
-        Object.assign(lyric, {
+        State.lyric = {
+          ...State.lyric,
           o: { time: [0], text: [ICON.lyric] },
           t: { time: [0], text: [ICON.lyric] },
-        });
+        };
         AccountViewProvider.stop();
         break;
       case "player.volume":
@@ -142,11 +149,13 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
     }
   };
 
+  State.loading = true;
   try {
     const firstTry = await IPC.connect(ipcHandler, ipcBHandler, 0);
     if (firstTry.includes(false)) throw Error;
     State.first = false;
   } catch {
+    State.loading = false;
     fork(resolve(__dirname, "server.js"), {
       detached: true,
       stdio: "ignore",

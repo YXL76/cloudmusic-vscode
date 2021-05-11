@@ -1,4 +1,4 @@
-import { IPC, MultiStepInput, State, Webview, lyric, pickUser } from "../utils";
+import { IPC, MultiStepInput, State, Webview, pickUser } from "../utils";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import type { InputStep } from "../utils";
@@ -26,7 +26,7 @@ export function initStatusBar(context: ExtensionContext): void {
       }
 
       await MultiStepInput.run(async (input) => {
-        const { time, text, user } = lyric[lyric.type];
+        const { time, text, user } = State.lyric[State.lyric.type];
         const { type } = await input.showQuickPick({
           title,
           step: 1,
@@ -39,7 +39,9 @@ export function initStatusBar(context: ExtensionContext): void {
             },
             {
               label: `$(symbol-type-parameter) ${
-                lyric.type === "o" ? i18n.word.translation : i18n.word.original
+                State.lyric.type === "o"
+                  ? i18n.word.translation
+                  : i18n.word.original
               }`,
               type: Type.type,
             },
@@ -52,7 +54,7 @@ export function initStatusBar(context: ExtensionContext): void {
               type: Type.cache,
             },
             {
-              label: ButtonManager.showLyric
+              label: State.showLyric
                 ? `$(circle-slash) ${i18n.word.disable}`
                 : `$(circle-large-outline) ${i18n.word.enable}`,
               type: Type.disable,
@@ -78,13 +80,13 @@ export function initStatusBar(context: ExtensionContext): void {
           case Type.font:
             return (input) => inputFontSize(input);
           case Type.type:
-            lyric.type = lyric.type === "o" ? "t" : "o";
+            State.lyric.type = State.lyric.type === "o" ? "t" : "o";
             break;
           case Type.cache:
             IPC.lyric();
             break;
           case Type.disable:
-            ButtonManager.toggleLyric();
+            State.showLyric = !State.showLyric;
             break;
           case Type.user:
             return (input) => pickUser(input, 2, user?.userid || 0);
@@ -114,7 +116,7 @@ export function initStatusBar(context: ExtensionContext): void {
           totalSteps,
           prompt: i18n.sentence.hint.lyricFontSize,
         });
-        if (/^\d+$/.test(size)) lyric.updateFontSize?.(parseInt(size));
+        if (/^\d+$/.test(size)) State.lyric.updateFontSize?.(parseInt(size));
         return input.stay();
       }
 

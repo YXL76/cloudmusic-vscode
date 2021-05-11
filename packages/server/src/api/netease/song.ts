@@ -5,7 +5,7 @@ import type { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 
 const resolveLyric = (raw: string): { time: number[]; text: string[] } => {
-  const rawMap = new Map<number, string>();
+  const unsorted: Array<[number, string]> = [];
   const lines = raw.split("\n");
   for (const line of lines) {
     const r = /^\[(\d{2}):(\d{2})(?:[.:](\d{2,3}))\](.*)$/g.exec(line.trim());
@@ -13,30 +13,29 @@ const resolveLyric = (raw: string): { time: number[]; text: string[] } => {
     const minute = parseInt(r[1]);
     const second = parseInt(r[2]);
     const millisecond = parseInt(r[3].length === 2 ? `${r[3]}0` : r[3]);
-    rawMap.set(minute * 60 + second + millisecond / 1000, r[4] ?? "");
+    unsorted.push([minute * 60 + second + millisecond / 1000, r[4] ?? ""]);
   }
 
-  const time = [...rawMap.keys()].sort((a, b) => a - b);
-  const text: string[] = [];
-  for (const i of time) text.push(rawMap.get(i) as string);
+  unsorted.sort(([a], [b]) => a - b);
 
   const ti = [0];
   const te = ["~"];
-  const len = time.length;
+  const len = unsorted.length;
   for (let i = 0; i < len; ++i) {
-    if (text[i]) {
-      ti.push(time[i]);
-      te.push(text[i]);
+    const [time, text] = unsorted[i];
+    if (text) {
+      ti.push(time);
+      te.push(text);
       continue;
     }
     let j = i + 1;
     if (j >= len) break;
-    while (j < len && !text[j]) ++j;
-    if (time[j + 1] - time[i] > 4) {
-      ti.push(time[i]);
+    while (j < len && !unsorted[j][1]) ++j;
+    if (unsorted[j][0] - time > 4) {
+      ti.push(time);
       te.push("~");
     }
-    i = j;
+    i = j - 1;
   }
   return { time: ti, text: te };
 };

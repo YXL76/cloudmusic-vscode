@@ -1,7 +1,7 @@
-import { BUTTON_KEY, LYRIC_KEY } from "../constant";
 import type { ExtensionContext, StatusBarItem } from "vscode";
 import { LikeState, MultiStepInput, State } from "../utils";
 import { StatusBarAlignment, window } from "vscode";
+import { BUTTON_KEY } from "../constant";
 import i18n from "../i18n";
 
 const enum Label {
@@ -19,8 +19,6 @@ const enum Label {
 export class ButtonManager {
   static context: ExtensionContext;
 
-  static showLyric = false;
-
   private static readonly buttons: StatusBarItem[] = [
     window.createStatusBarItem(StatusBarAlignment.Left, -128),
     window.createStatusBarItem(StatusBarAlignment.Left, -129),
@@ -36,8 +34,6 @@ export class ButtonManager {
   private static buttonShow = Array(9).fill(true) as boolean[];
 
   static init(): void {
-    this.showLyric = this.context.globalState.get(LYRIC_KEY, this.showLyric);
-
     [
       "$(account)",
       "$(chevron-left)",
@@ -47,7 +43,7 @@ export class ButtonManager {
       "$(stop)",
       "$(unmute)",
       "$(flame)",
-      this.showLyric ? "$(text-size)" : i18n.word.disabled,
+      State.showLyric ? "$(text-size)" : i18n.word.disabled,
     ].forEach((value, index) => (this.buttons[index].text = value));
 
     [
@@ -172,13 +168,8 @@ export class ButtonManager {
     }
   }
 
-  static toggleLyric(): void {
-    this.showLyric = !this.showLyric;
-    void this.context.globalState.update(LYRIC_KEY, this.showLyric);
-  }
-
   static buttonLyric(text?: string): void {
-    this.buttons[Label.lyric].text = this.showLyric
+    this.buttons[Label.lyric].text = State.showLyric
       ? text ?? "$(text-size)"
       : i18n.word.disabled;
   }

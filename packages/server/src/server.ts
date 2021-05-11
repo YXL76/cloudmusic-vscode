@@ -96,9 +96,9 @@ export class IPCServer {
 
       IPCServer._sockets.add(socket);
       IPCServer._buffer.set(socket, "");
+      IPCServer._setMaster();
 
       if (IPCServer._sockets.size === 1) {
-        IPCServer._setMaster();
         Player.play();
 
         if (IPCServer._retain !== "[]") {
@@ -108,7 +108,12 @@ export class IPCServer {
           });
           IPCServer._retain = "[]";
         }
-      } else IPCServer.sendToMaster({ t: "control.new" });
+      } else {
+        IPCServer.sendToMaster({ t: "control.new" });
+        const tmp = State.playing;
+        State.playing = tmp;
+        setTimeout(() => IPCServer.send(socket, { t: "player.load" }), 1024);
+      }
     })
       .on("error", console.error)
       .listen(path);
