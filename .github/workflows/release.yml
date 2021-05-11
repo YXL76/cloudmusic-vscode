@@ -151,8 +151,6 @@ jobs:
       - name: Copy file
         run: |
           mkdir -p build
-          cp .artifact/macOS-aarch64/index.node   build/darwin-arm64.node
-          cp .artifact/Linux-aarch64/index.node   build/linux-arm64.node
           cp .artifact/Windows-aarch64/index.node build/win32-arm64.node
           cp .artifact/macOS-x86_64/index.node    build/darwin-x86.node
           cp .artifact/Linux-x86_64/index.node    build/linux-x86.node

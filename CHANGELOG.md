@@ -6,6 +6,27 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [8.0.0] - 2021-05-12
+
+🎉🎉🎉 This version has a great improvement in user experience. By using interprocess communication, multiple extension instances can be synchronized, and the previous state can be automatically restored after reloading the window. ([#388](https://github.com/YXL76/cloudmusic-vscode/issues/388))
+
+### Added
+
+- Player
+  - support `mediaSession` ([#401](https://github.com/YXL76/cloudmusic-vscode/issues/401))
+  - skip playing when using the trash ([#415](https://github.com/YXL76/cloudmusic-vscode/issues/415))
+- Native: support arm64 windows
+- Treeview: add `account` panel ([#343](https://github.com/YXL76/cloudmusic-vscode/issues/343), [#342](https://github.com/YXL76/cloudmusic-vscode/issues/342))
+
+### Changed
+
+- API: improve lyrics parsing ([#386](https://github.com/YXL76/cloudmusic-vscode/issues/386))
+- Treeview: combine `user playlist` and `favorite playlist`
+
+### Removed
+
+- Unblocking copyrighted music
+
 ## [7.7.2] - 2021-04-01
 
 ### Fixed
