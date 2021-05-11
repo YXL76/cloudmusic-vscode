@@ -5,8 +5,10 @@ import {
   QueueItemTreeItem,
   RadioProvider,
 } from "../treeview";
+import type { ExtensionContext } from "vscode";
 import type { NeteaseTypings } from "api";
 import type { QueueContent } from "../treeview";
+import { REPEAT_KEY } from "../constant";
 import i18n from "../i18n";
 
 export const enum LyricType {
@@ -50,6 +52,8 @@ export const enum LikeState {
 }
 
 export class State {
+  static context: ExtensionContext;
+
   static first = true;
 
   static _master = false;
@@ -74,6 +78,7 @@ export class State {
   static set repeat(value: boolean) {
     State._repeat = value;
     ButtonManager.buttonRepeat(value);
+    void this.context.globalState.update(REPEAT_KEY, value);
   }
 
   private static _playItem?: QueueContent;
@@ -85,6 +90,13 @@ export class State {
   static set playItem(value: QueueContent | undefined) {
     if (value !== this._playItem) {
       this._playItem = value;
+      this.like =
+        value && value instanceof QueueItemTreeItem
+          ? AccountManager.likelist.has(value.item.id)
+            ? LikeState.like
+            : LikeState.dislike
+          : LikeState.none;
+      AccountViewProvider.metadata(this._playItem);
       if (this.master)
         if (value) IPC.load();
         else IPC.stop();
@@ -117,17 +129,11 @@ export class State {
       ButtonManager.buttonSong(
         `$(loading~spin) ${i18n.word.song}: ${i18n.word.loading}`
       );
-    else if (this._playItem) {
-      const { name, id } = this._playItem.item;
-      ButtonManager.buttonSong(name, this._playItem.tooltip);
-      this.like =
-        this._playItem instanceof QueueItemTreeItem
-          ? AccountManager.likelist.has(id)
-            ? LikeState.like
-            : LikeState.dislike
-          : LikeState.none;
-      AccountViewProvider.metadata(this._playItem);
-    }
+    else if (this._playItem)
+      ButtonManager.buttonSong(
+        this._playItem.item.name,
+        this._playItem.tooltip
+      );
   }
 
   private static _login = false;
@@ -139,8 +145,6 @@ export class State {
   static set login(value: boolean) {
     if (value !== this._login) {
       this._login = value;
-      PlaylistProvider.refresh();
-      RadioProvider.refresh();
       if (!value) {
         ButtonManager.hide();
         if (this._master) IPC.clear();
@@ -148,6 +152,8 @@ export class State {
       }
       ButtonManager.buttonAccount(AccountManager.nickname);
       ButtonManager.show();
+      PlaylistProvider.refresh();
+      RadioProvider.refresh();
       if (!this.first) return;
       if (this._master)
         IPC.netease("recommendSongs", [])
@@ -160,6 +166,10 @@ export class State {
           )
           .catch(console.error);
     }
+  }
+
+  static init(): void {
+    this._repeat = this.context.globalState.get(REPEAT_KEY, false);
   }
 }
 

@@ -21,7 +21,6 @@ import {
   ipcDelimiter,
   ipcServerId,
 } from "@cloudmusic/shared";
-import { ButtonManager } from "../manager";
 import type { Socket } from "net";
 import { State } from ".";
 import { connect } from "net";
@@ -100,7 +99,7 @@ class IPCClient<T, U = T> {
         };
         socket
           .once("connect", () => {
-            resolve(socket);
+            setTimeout(() => resolve(socket), 512);
             socket.off("close", listener);
           })
           .once("close", listener);
@@ -137,6 +136,10 @@ export class IPC {
     }
   }
 
+  static deleteCache(key: string): void {
+    ipc.send({ t: "control.deleteCache", key });
+  }
+
   static download(url: string, path: string): void {
     ipc.send({ t: "control.download", url, path });
   }
@@ -147,15 +150,6 @@ export class IPC {
       mq: MUSIC_QUALITY,
       cs: MUSIC_CACHE_SIZE,
       volume,
-    });
-  }
-
-  static initB(): void {
-    ipcB.send({
-      t: "control.init",
-      repeat: State.repeat,
-      like: State.like,
-      playing: ButtonManager.playing,
     });
   }
 
@@ -173,6 +167,10 @@ export class IPC {
 
   static music(): void {
     ipc.send({ t: "control.music" });
+  }
+
+  static retain(): void {
+    ipc.send({ t: "control.retain", items: QueueProvider.toJSON() });
   }
 
   static repeat(r: boolean): void {
@@ -250,7 +248,7 @@ setInterval(() => {
   const now = Date.now();
   for (const [k, v] of IPC.requestPool) {
     const [, date] = getDate.exec(k as string) as RegExpExecArray;
-    if (parseInt(date) - now > 120000) {
+    if (parseInt(date) - now > 60000) {
       IPC.requestPool.delete(k);
       v.reject();
     } else break;

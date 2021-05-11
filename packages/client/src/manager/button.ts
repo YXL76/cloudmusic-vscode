@@ -134,10 +134,6 @@ export class ButtonManager {
       : i18n.word.play;
   }
 
-  static get playing(): boolean {
-    return this.buttons[Label.play].text === "$(debug-pause)";
-  }
-
   static buttonRepeat(r: boolean): void {
     this.buttons[Label.repeat].text = r ? "$(sync)" : "$(sync-ignored)";
   }

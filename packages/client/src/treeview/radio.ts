@@ -34,12 +34,10 @@ export class RadioProvider
   static refresh(element?: RadioTreeItem, action?: RefreshAction): void {
     if (element) {
       if (action) this.action = action;
-      // TODO
-      // else apiCache.del(`dj_program${element.valueOf}`);
+      else IPC.deleteCache(`dj_program${element.valueOf}`);
     } else {
       this.radios.clear();
-      // TODO
-      // apiCache.del("dj_sublist");
+      IPC.deleteCache("dj_sublist");
     }
     this.instance._onDidChangeTreeData.fire(element);
   }

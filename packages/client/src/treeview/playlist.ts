@@ -34,11 +34,9 @@ export class PlaylistProvider
   static refresh(element?: PlaylistItemTreeItem, action?: RefreshAction): void {
     if (element) {
       if (action) this.action = action;
-      // TODO
-      // else apiCache.del(`playlist_detail${element.item.id}`);
+      else IPC.deleteCache(`playlist_detail${element.item.id}`);
     } else {
-      // TODO
-      // apiCache.del(`user_playlist${AccountManager.uid}`);
+      IPC.deleteCache(`user_playlist${AccountManager.uid}`);
       this.playlists.clear();
     }
     this.instance._onDidChangeTreeData.fire(element);

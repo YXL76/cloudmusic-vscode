@@ -16,13 +16,7 @@ import { resolve } from "path";
 
 const ipcBHandler = (data: IPCBroadcastMsg) => {
   switch (data.t) {
-    case "control.init":
-      State.repeat = data.repeat;
-      State.like = data.like;
-      ButtonManager.buttonPlay(data.playing);
-      break;
     case "control.login":
-      // TODO
       AccountManager.uid = data.userId;
       AccountManager.nickname = data.nickname;
       AccountManager.likelist.clear();
@@ -80,15 +74,20 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       case "control.cookie":
         void context.secrets.store(COOKIE_KEY, data.cookie);
         break;
+      case "control.init":
+        ButtonManager.buttonPlay(data.playing);
+        break;
       case "control.master":
         State.master = !!data.is;
         break;
       case "control.new":
         IPC.new(QueueProvider.toJSON());
-        IPC.initB();
+        break;
+      case "control.retain":
+        QueueProvider.newRaw(data.items as PlayTreeItemData[]);
         break;
       case "player.end":
-        if (State.repeat) IPC.load();
+        if (!data.fail && State.repeat) IPC.load();
         else void commands.executeCommand("cloudmusic.next");
         break;
       case "player.load":

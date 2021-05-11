@@ -18,11 +18,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
   AccountManager.context = context;
   ButtonManager.context = context;
   State.context = context;
+  State.init();
+  initQueue(context);
   await initIPC(context);
   initCommand(context);
   initStatusBar(context);
   initViewProvide(context);
-  initQueue(context);
   initPlaylist(context);
   initRadio(context);
   initCache(context);
