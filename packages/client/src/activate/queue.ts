@@ -1,6 +1,6 @@
-import { Disposable, commands, window } from "vscode";
 import { IPC, MultiStepInput, State } from "../util";
 import { QueueProvider, QueueSortOrder, QueueSortType } from "../treeview";
+import { commands, window } from "vscode";
 import type { ExtensionContext } from "vscode";
 import { ICON } from "../constant";
 import type { QueueContent } from "../treeview";
@@ -9,14 +9,10 @@ import i18n from "../i18n";
 export function initQueue(context: ExtensionContext): void {
   const queueProvider = QueueProvider.getInstance();
 
-  queueProvider.onDidChangeTreeData(
-    () => (State.playItem = QueueProvider.head)
-  );
-
   context.subscriptions.push(
-    new Disposable(() => {
-      if (State.master) IPC.retain();
-    }),
+    queueProvider.onDidChangeTreeData(
+      () => (State.playItem = QueueProvider.head)
+    ),
 
     window.registerTreeDataProvider("queue", queueProvider),
 

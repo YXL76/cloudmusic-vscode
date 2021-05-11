@@ -1,4 +1,5 @@
 import { AccountManager, ButtonManager } from "./manager";
+import { IPC, State } from "./util";
 import {
   initAccount,
   initCache,
@@ -12,7 +13,6 @@ import {
   initViewProvide,
 } from "./activate";
 import type { ExtensionContext } from "vscode";
-import { State } from "./util";
 
 export async function activate(context: ExtensionContext): Promise<void> {
   AccountManager.context = context;
@@ -20,15 +20,18 @@ export async function activate(context: ExtensionContext): Promise<void> {
   State.context = context;
   State.init();
   initQueue(context);
-  await initIPC(context);
   initCommand(context);
   initStatusBar(context);
   initViewProvide(context);
+  await initIPC(context);
+  initCache(context);
   initPlaylist(context);
   initRadio(context);
-  initCache(context);
   initLocal(context);
   await initAccount(context);
 }
 
-// export function deactivate(): void {}
+export function deactivate(): void {
+  if (State.master) IPC.retain();
+  IPC.disconnect();
+}

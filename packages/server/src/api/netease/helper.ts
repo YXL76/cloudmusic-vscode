@@ -31,6 +31,8 @@ export const jsonToCookie = (json: NeteaseTypings.Cookie): string => {
     .join("; ");
 };
 
+const http2Https = (url: string) => url.replace(/^http:/i, "https:");
+
 export const resolveArtist = ({
   name,
   id,
@@ -76,7 +78,7 @@ export const resolveSongItem = ({
   dt,
   alia: alia ?? [""],
   ar: ar.map(({ id, name }) => ({ id, name })),
-  al: { id: al.id, name: al.name, picUrl: al.picUrl },
+  al: { id: al.id, name: al.name, picUrl: http2Https(al.picUrl) },
 });
 
 export const resolveSongItemSt = ({
@@ -94,7 +96,7 @@ export const resolveSongItemSt = ({
     dt,
     alia: alia ?? [""],
     ar: ar.map(({ id, name }) => ({ id, name })),
-    al: { id: al.id, name: al.name, picUrl: al.picUrl },
+    al: { id: al.id, name: al.name, picUrl: http2Https(al.picUrl) },
   };
 };
 
@@ -113,7 +115,7 @@ export const resolveAnotherSongItem = ({
     dt: duration,
     alia: alias,
     ar: artists.map(({ id, name }) => ({ id, name })),
-    al: { id: album.id, name: album.name, picUrl: album.picUrl },
+    al: { id: album.id, name: album.name, picUrl: http2Https(album.picUrl) },
   };
 };
 
@@ -219,7 +221,7 @@ export const resolveProgramDetail = ({
   mainSong: {
     ...resolveAnotherSongItem(mainSong),
     ar: [{ name: dj.nickname, id: 0 }],
-    al: { name: radio.name, id: 0, picUrl: coverUrl },
+    al: { name: radio.name, id: 0, picUrl: http2Https(coverUrl) },
   },
   dj: resolveUserDetail(dj),
   description,

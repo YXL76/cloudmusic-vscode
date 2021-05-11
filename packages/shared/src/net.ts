@@ -34,7 +34,7 @@ export type IPCClientMsg =
   | IPCMsg<IPCEvent.Control$init, { mq: number; cs: number; volume: number }>
   | IPCMsg<IPCEvent.Control$lyric>
   | IPCMsg<IPCEvent.Control$music>
-  | IPCMsg<IPCEvent.Control$retain, { items: unknown[] }>
+  | IPCMsg<IPCEvent.Control$retain, { items: string }>
   | IPCMsg<IPCEvent.Play$load, { url: string; local: true }>
   | IPCMsg<IPCEvent.Play$load, { url: string; pid: number; local?: undefined }>
   | IPCMsg<IPCEvent.Play$stop>
@@ -43,10 +43,9 @@ export type IPCClientMsg =
 
 export type IPCServerMsg =
   | IPCMsg<IPCEvent.Control$cookie, { cookie: string }>
-  | IPCMsg<IPCEvent.Control$init, { playing: boolean }>
   | IPCMsg<IPCEvent.Control$master, { is?: true }>
   | IPCMsg<IPCEvent.Control$new>
-  | IPCMsg<IPCEvent.Control$retain, { items: unknown[] }>
+  | IPCMsg<IPCEvent.Control$retain, { items: string }>
   | IPCMsg<IPCEvent.Play$end, { fail?: true }>
   | IPCMsg<IPCEvent.Play$load>
   | IPCMsg<IPCEvent.Play$pause>

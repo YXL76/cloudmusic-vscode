@@ -27,7 +27,7 @@ import { platform } from "os";
 import { resolve } from "path";
 
 export class IPCServer {
-  private static _retain: unknown[] = [];
+  private static _retain = "[]";
 
   private static _timer?: NodeJS.Timeout;
 
@@ -52,31 +52,23 @@ export class IPCServer {
         IPCServer._timer = undefined;
       }
 
-      socket.setEncoding("utf8");
-
       socket
+        .setEncoding("utf8")
         .on("data", (data) => {
           const buffer =
             (IPCServer._buffer.get(socket) ?? "") + data.toString();
 
-          if (buffer.lastIndexOf(ipcDelimiter) === -1) {
-            IPCServer._buffer.set(socket, buffer);
-            return;
-          }
-
-          IPCServer._buffer.set(socket, "");
           const msgs = buffer.split(ipcDelimiter);
-          msgs.pop();
+          IPCServer._buffer.set(socket, msgs.pop() ?? "");
           for (const msg of msgs)
             void IPCServer._handler(JSON.parse(msg), socket);
         })
-        .on("close", (/* err */) => {
-          for (const socket of IPCServer._sockets) {
-            if (socket?.readable) continue;
-            socket?.destroy();
-            IPCServer._sockets.delete(socket);
-            break;
-          }
+        .on("close", (err) => {
+          console.error(err);
+
+          socket?.destroy();
+          IPCServer._sockets.delete(socket);
+          IPCServer._buffer.set(socket, "");
 
           if (IPCServer._sockets.size) IPCServer._setMaster();
           else {
@@ -94,22 +86,20 @@ export class IPCServer {
           }
         })
         .on("error", console.error);
-      IPCServer._sockets.add(socket);
 
-      IPCServer.send(socket, { t: "control.init", playing: State.playing });
+      IPCServer._sockets.add(socket);
+      IPCServer._buffer.set(socket, "");
+
       if (IPCServer._sockets.size === 1) {
         IPCServer._setMaster();
         Player.play();
-        if (IPCServer._retain.length > 0) {
-          IPCServer.send(socket, {
-            t: "control.retain",
-            items: IPCServer._retain,
-          });
-          IPCServer._retain = [];
-        }
-      } else {
-        IPCServer.sendToMaster({ t: "control.new" });
-      }
+
+        IPCServer.send(socket, {
+          t: "control.retain",
+          items: IPCServer._retain,
+        });
+        IPCServer._retain = "[]";
+      } else IPCServer.sendToMaster({ t: "control.new" });
     })
       .on("error", console.error)
       .listen(path);
@@ -145,8 +135,8 @@ export class IPCServer {
 
   private static _setMaster() {
     const [master, ...slaves] = this._sockets;
-    for (const slave of slaves) this.send(slave, { t: "control.master" });
     this.send(master, { t: "control.master", is: true });
+    for (const slave of slaves) this.send(slave, { t: "control.master" });
   }
 
   private static async _handler(
@@ -229,17 +219,15 @@ export class IPCBroadcastServer {
 
     return createServer((socket) => {
       IPCBroadcastServer._sockets.add(socket);
-      socket.setEncoding("utf8");
 
       socket
+        .setEncoding("utf8")
         .on("data", (data) => IPCBroadcastServer._broadcast(data))
-        .on("close", (/* err */) => {
-          for (const socket of IPCBroadcastServer._sockets) {
-            if (socket?.readable) continue;
-            socket?.destroy();
-            IPCBroadcastServer._sockets.delete(socket);
-            return;
-          }
+        .on("close", (err) => {
+          console.error(err);
+
+          socket?.destroy();
+          IPCBroadcastServer._sockets.delete(socket);
         })
         .on("error", console.error);
     })
@@ -314,21 +302,17 @@ async function downloadMusic(
   return;
 }
 
+const tryMkdir = async (path: string) => {
+  try {
+    await mkdir(path);
+  } catch {}
+};
+
 void (async () => {
-  try {
-    await mkdir(SETTING_DIR, { recursive: false }).catch();
-  } catch {}
-  try {
-    await mkdir(TMP_DIR, { recursive: false }).catch();
-  } catch {}
-  try {
-    await mkdir(CACHE_DIR, { recursive: false }).catch();
-  } catch {}
-  try {
-    await mkdir(LYRIC_CACHE_DIR, { recursive: false }).catch();
-  } catch {}
-  try {
-    await mkdir(MUSIC_CACHE_DIR, { recursive: false }).catch();
-  } catch {}
+  await tryMkdir(SETTING_DIR);
+  await tryMkdir(TMP_DIR);
+  await tryMkdir(CACHE_DIR);
+  await tryMkdir(LYRIC_CACHE_DIR);
+  await tryMkdir(MUSIC_CACHE_DIR);
   void MusicCache.init();
 })();

@@ -42,7 +42,7 @@ class IPCClient<T, U = T> {
         : `/tmp/${ipcAppspace}${id}`;
   }
 
-  connect(handler: (data: U) => void, retry = 4): Promise<boolean> {
+  connect(handler: (data: U) => void, retry: number): Promise<boolean> {
     if (this._socket?.readable && this._socket.writable)
       return Promise.resolve(true);
     else this.disconnect();
@@ -56,14 +56,8 @@ class IPCClient<T, U = T> {
               .on("data", (data) => {
                 const buffer = this._buffer + data.toString();
 
-                if (buffer.lastIndexOf(ipcDelimiter) === -1) {
-                  this._buffer = buffer;
-                  return;
-                }
-
-                this._buffer = "";
                 const msgs = buffer.split(ipcDelimiter);
-                msgs.pop();
+                this._buffer = msgs.pop() ?? "";
                 for (const msg of msgs) handler(JSON.parse(msg));
               })
               .on("close", () => this.disconnect())
@@ -110,11 +104,27 @@ class IPCClient<T, U = T> {
   }
 }
 
-export const ipc = new IPCClient<IPCClientMsg, IPCServerMsg>(ipcServerId);
-export const ipcB = new IPCClient<IPCBroadcastMsg>(ipcBroadcastServerId);
+const ipc = new IPCClient<IPCClientMsg, IPCServerMsg>(ipcServerId);
+const ipcB = new IPCClient<IPCBroadcastMsg>(ipcBroadcastServerId);
 
 export class IPC {
   static requestPool = new Map() as CSConnPool;
+
+  static async connect(
+    ipcHandler: Parameters<typeof ipc.connect>[0],
+    ipcBHandler: Parameters<typeof ipcB.connect>[0],
+    retry = 4
+  ): Promise<[boolean, boolean]> {
+    return await Promise.all([
+      ipc.connect(ipcHandler, retry),
+      ipcB.connect(ipcBHandler, retry),
+    ]);
+  }
+
+  static disconnect(): void {
+    ipc.disconnect();
+    ipcB.disconnect();
+  }
 
   static load(): void {
     const { playItem } = State;
@@ -170,7 +180,10 @@ export class IPC {
   }
 
   static retain(): void {
-    ipc.send({ t: "control.retain", items: QueueProvider.toJSON() });
+    ipc.send({
+      t: "control.retain",
+      items: JSON.stringify(QueueProvider.toJSON()),
+    });
   }
 
   static repeat(r: boolean): void {
@@ -228,10 +241,10 @@ export class IPC {
     i: I,
     p: P
   ): Promise<NeteaseAPIReturn<I>> {
-    const channel = `netease-${i}${Date.now()}`;
+    const channel = `netease-${i}-${Date.now()}`;
     return new Promise((resolve, reject) => {
       const prev = this.requestPool.get(channel);
-      if (prev) prev.reject();
+      prev?.reject();
       this.requestPool.set(channel, { resolve, reject });
       ipc.request<NeteaseAPICMsg<I, P>>({
         t: "api.netease",
@@ -241,16 +254,3 @@ export class IPC {
     });
   }
 }
-
-const getDate = /-(\d+)$/;
-
-setInterval(() => {
-  const now = Date.now();
-  for (const [k, v] of IPC.requestPool) {
-    const [, date] = getDate.exec(k as string) as RegExpExecArray;
-    if (parseInt(date) - now > 60000) {
-      IPC.requestPool.delete(k);
-      v.reject();
-    } else break;
-  }
-}, 60000);

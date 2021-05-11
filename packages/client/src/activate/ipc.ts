@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { AccountViewProvider, IPC, State, ipc, ipcB, setLyric } from "../util";
+import { AccountViewProvider, IPC, State, setLyric } from "../util";
 import { COOKIE_KEY, ICON, VOLUME_KEY } from "../constant";
 import type {
   IPCBroadcastMsg,
@@ -61,6 +61,18 @@ const ipcBHandler = (data: IPCBroadcastMsg) => {
   }
 };
 
+const getDate = /-(\d+)$/;
+const rejectTimout = () => {
+  const now = Date.now();
+  for (const [k, { reject }] of IPC.requestPool) {
+    const [, date] = getDate.exec(k as string) as RegExpExecArray;
+    if (parseInt(date) - now > 40000) {
+      IPC.requestPool.delete(k);
+      reject();
+    } else break;
+  }
+};
+
 export async function initIPC(context: ExtensionContext): Promise<void> {
   const ipcHandler = (data: IPCServerMsg | NeteaseAPISMsg<NeteaseAPIKey>) => {
     switch (data.t) {
@@ -69,13 +81,11 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
           const req = IPC.requestPool.get(data.channel);
           IPC.requestPool.delete(data.channel);
           if (req) req.resolve(data.msg);
+          rejectTimout();
         }
         break;
       case "control.cookie":
         void context.secrets.store(COOKIE_KEY, data.cookie);
-        break;
-      case "control.init":
-        ButtonManager.buttonPlay(data.playing);
         break;
       case "control.master":
         State.master = !!data.is;
@@ -84,7 +94,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         IPC.new(QueueProvider.toJSON());
         break;
       case "control.retain":
-        QueueProvider.newRaw(data.items as PlayTreeItemData[]);
+        QueueProvider.newRaw(JSON.parse(data.items) as PlayTreeItemData[]);
         break;
       case "player.end":
         if (!data.fail && State.repeat) IPC.load();
@@ -114,10 +124,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
   };
 
   try {
-    const firstTry = await Promise.all([
-      ipc.connect(ipcHandler, 0),
-      ipcB.connect(ipcBHandler, 0),
-    ]);
+    const firstTry = await IPC.connect(ipcHandler, ipcBHandler, 0);
     if (firstTry.includes(false)) throw Error;
     State.first = false;
   } catch {
@@ -125,7 +132,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       detached: true,
       stdio: "ignore",
     }).unref();
-    await Promise.all([ipc.connect(ipcHandler), ipcB.connect(ipcBHandler)]);
+    await IPC.connect(ipcHandler, ipcBHandler);
     IPC.init(context.globalState.get(VOLUME_KEY, 85));
   }
 }

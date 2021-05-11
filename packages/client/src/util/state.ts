@@ -97,7 +97,7 @@ export class State {
             : LikeState.dislike
           : LikeState.none;
       AccountViewProvider.metadata(this._playItem);
-      if (this.master)
+      if (this._master && this._login)
         if (value) IPC.load();
         else IPC.stop();
     }
@@ -155,16 +155,14 @@ export class State {
       PlaylistProvider.refresh();
       RadioProvider.refresh();
       if (!this.first) return;
-      if (this._master)
-        IPC.netease("recommendSongs", [])
-          .then((songs) =>
-            IPC.new(
-              songs.map(
-                (song) => QueueItemTreeItem.new({ ...song, pid: 0 }).data
-              )
-            )
+      this.first = false;
+      IPC.netease("recommendSongs", [])
+        .then((songs) =>
+          IPC.new(
+            songs.map((song) => QueueItemTreeItem.new({ ...song, pid: 0 }).data)
           )
-          .catch(console.error);
+        )
+        .catch(console.error);
     }
   }
 

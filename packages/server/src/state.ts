@@ -14,11 +14,9 @@ export class State {
   }
 
   static set playing(value: boolean) {
-    if (value !== this._playing) {
-      State._playing = value;
-      IPCServer.broadcast({
-        t: value ? "player.play" : "player.pause",
-      });
-    }
+    State._playing = value;
+    IPCServer.broadcast({
+      t: value ? "player.play" : "player.pause",
+    });
   }
 }
