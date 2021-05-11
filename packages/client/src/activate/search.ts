@@ -10,8 +10,8 @@ import {
   pickSong,
   pickSongItems,
   pickSongMany,
-} from "../util";
-import type { InputStep, MultiStepInput } from "../util";
+} from "../utils";
+import type { InputStep, MultiStepInput } from "../utils";
 import type { QuickPick, QuickPickItem } from "vscode";
 import { ICON } from "../constant";
 import { NeteaseEnum } from "@cloudmusic/shared";

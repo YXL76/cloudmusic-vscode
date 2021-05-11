@@ -16,11 +16,11 @@ import {
   pickRadios,
   pickSongs,
   pickUser,
-} from "../util";
+} from "../utils";
 import type { ExtensionContext, QuickPickItem } from "vscode";
 import { authentication, commands, window } from "vscode";
 import { AccountManager } from "../manager";
-import type { InputStep } from "../util";
+import type { InputStep } from "../utils";
 import { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import i18n from "../i18n";

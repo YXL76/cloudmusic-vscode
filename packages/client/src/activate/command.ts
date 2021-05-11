@@ -1,4 +1,4 @@
-import { IPC, LikeState, MultiStepInput, State, likeMusic } from "../util";
+import { IPC, LikeState, MultiStepInput, State, likeMusic } from "../utils";
 import { QueueItemTreeItem, QueueProvider } from "../treeview";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
@@ -9,18 +9,12 @@ import i18n from "../i18n";
 export function initCommand(context: ExtensionContext): void {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.previous", () => {
-      // TODO
-      if (/* !PersonalFm.state &&  */ QueueProvider.len) IPC.shift(-1);
+      if (!State.fm && QueueProvider.len) IPC.shift(-1);
     }),
 
     commands.registerCommand("cloudmusic.next", () => {
-      // TODO
-      /* if (repeat) void load(Player.item);
-      else {
-        if (PersonalFm.state) void load(await PersonalFm.head());
-        else  
-      } */
-      if (QueueProvider.len) IPC.shift(1);
+      if (State.fm) IPC.fmNext();
+      else if (QueueProvider.len) IPC.shift(1);
     }),
 
     commands.registerCommand("cloudmusic.toggle", () => IPC.toggle()),
@@ -58,12 +52,8 @@ export function initCommand(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.toggleButton",
       () => void ButtonManager.toggle()
-    )
+    ),
 
-    // TODO
-    /* commands.registerCommand(
-      "cloudmusic.personalFM",
-      () => (PersonalFm.state = true)
-    ) */
+    commands.registerCommand("cloudmusic.personalFM", () => IPC.fm())
   );
 }

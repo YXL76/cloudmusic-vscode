@@ -25,6 +25,7 @@ export type Queue$add = "queue.add";
 export type Queue$clear = "queue.clear";
 export type Queue$delete = "queue.delete";
 export type Queue$fm = "queue.fm";
+export type Queue$fmNext = "queue.fmNext";
 export type Queue$play = "queue.play";
 export type Queue$new = "queue.new";
 export type Queue$random = "queue.random";

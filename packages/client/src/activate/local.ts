@@ -1,7 +1,7 @@
 import type { LocalFileTreeItem, LocalLibraryTreeItem } from "../treeview";
 import { Uri, commands, env, window } from "vscode";
 import type { ExtensionContext } from "vscode";
-import { IPC } from "../util";
+import { IPC } from "../utils";
 import { LOCAL_FOLDER_KEY } from "../constant";
 import { LocalProvider } from "../treeview";
 

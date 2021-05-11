@@ -140,9 +140,10 @@ export class IPC {
     } else {
       const {
         data: { pid },
-        item: { id },
+        item: { dt, id },
       } = playItem;
-      ipc.send({ t: "player.load", url: `${id}`, pid });
+      const next = State.fm ? undefined : QueueProvider.next?.item.id;
+      ipc.send({ t: "player.load", dt, id, pid, next });
     }
   }
 
@@ -212,6 +213,14 @@ export class IPC {
 
   static delete(id: number | string): void {
     ipcB.send({ t: "queue.delete", id });
+  }
+
+  static fm(is = true): void {
+    ipc.send({ t: "queue.fm", is });
+  }
+
+  static fmNext(): void {
+    ipc.send({ t: "queue.fmNext" });
   }
 
   static new(items: PlayTreeItemData[], id?: number): void {

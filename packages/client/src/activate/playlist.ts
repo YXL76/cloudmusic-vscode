@@ -7,7 +7,7 @@ import {
   pickPlaylist,
   pickProgram,
   pickSong,
-} from "../util";
+} from "../utils";
 import type { PlaylistItemTreeItem, QueueContent } from "../treeview";
 import {
   PlaylistProvider,

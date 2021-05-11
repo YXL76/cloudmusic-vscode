@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "./manager";
-import { IPC, State } from "./util";
+import { IPC, State } from "./utils";
 import {
   initAccount,
   initCache,

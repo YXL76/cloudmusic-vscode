@@ -1,4 +1,4 @@
-import { IPC, MultiStepInput, State } from "../util";
+import { IPC, MultiStepInput, State } from "../utils";
 import { QueueProvider, QueueSortOrder, QueueSortType } from "../treeview";
 import { commands, window } from "vscode";
 import type { ExtensionContext } from "vscode";
@@ -10,9 +10,10 @@ export function initQueue(context: ExtensionContext): void {
   const queueProvider = QueueProvider.getInstance();
 
   context.subscriptions.push(
-    queueProvider.onDidChangeTreeData(
-      () => (State.playItem = QueueProvider.head)
-    ),
+    queueProvider.onDidChangeTreeData(() => {
+      State.fm = false;
+      State.playItem = QueueProvider.head;
+    }),
 
     window.registerTreeDataProvider("queue", queueProvider),
 

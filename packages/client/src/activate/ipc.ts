@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { AccountViewProvider, IPC, State, setLyric } from "../util";
+import { AccountViewProvider, IPC, State, setLyric } from "../utils";
 import { COOKIE_KEY, ICON, VOLUME_KEY } from "../constant";
 import type {
   IPCBroadcastMsg,
@@ -9,6 +9,7 @@ import type {
 } from "@cloudmusic/shared";
 import type { ExtensionContext } from "vscode";
 import type { PlayTreeItemData } from "../treeview";
+import { QueueItemTreeItem } from "../treeview";
 import { QueueProvider } from "../treeview";
 import { commands } from "vscode";
 import { fork } from "child_process";
@@ -119,6 +120,12 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         break;
       case "player.volume":
         ButtonManager.buttonVolume(data.level);
+        break;
+      case "queue.fm":
+        State.fm = data.is;
+        break;
+      case "queue.fmNext":
+        State.playItem = QueueItemTreeItem.new({ ...data.item, pid: 0 });
         break;
     }
   };

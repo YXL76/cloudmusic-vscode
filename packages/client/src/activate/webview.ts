@@ -1,4 +1,4 @@
-import { AccountViewProvider } from "../util";
+import { AccountViewProvider } from "../utils";
 import type { ExtensionContext } from "vscode";
 import { window } from "vscode";
 

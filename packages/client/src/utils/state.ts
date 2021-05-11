@@ -166,44 +166,21 @@ export class State {
     }
   }
 
+  private static _fm = false;
+
+  public static get fm(): boolean {
+    return State._fm;
+  }
+
+  public static set fm(value: boolean) {
+    if (State._fm !== value) {
+      this._fm = value;
+      ButtonManager.buttonPrevious(value);
+      if (value && this._master) IPC.fmNext();
+    }
+  }
+
   static init(): void {
     this._repeat = this.context.globalState.get(REPEAT_KEY, false);
   }
 }
-
-// TODO
-/* export class PersonalFm {
-  private static item: QueueItemTreeItem[] = [];
-
-  private static _state = false;
-
-  static get state(): boolean {
-    return this._state;
-  }
-
-  static set state(newValue: boolean) {
-    if (newValue !== this._state) {
-      this._state = newValue;
-      ButtonManager.buttonPrevious(newValue);
-      if (newValue) void this.next().then(load);
-    }
-  }
-
-  static async head(): Promise<QueueItemTreeItem> {
-    if (this.item.length === 0) {
-      const songs = await apiPersonalFm();
-      this.item = songs.map((song) => new QueueItemTreeItem(song, 0));
-    }
-
-    return this.item.splice(0, 1)[0];
-  }
-
-  static async next(): Promise<QueueItemTreeItem> {
-    if (this.item.length <= 1) {
-      const songs = await apiPersonalFm();
-      this.item.push(...songs.map((song) => new QueueItemTreeItem(song, 0)));
-    }
-
-    return this.item[1];
-  }
-} */

@@ -6,7 +6,7 @@ import {
 } from "vscode";
 import type { PlayTreeItem, RefreshAction } from ".";
 import { AccountManager } from "../manager";
-import { IPC } from "../util";
+import { IPC } from "../utils";
 import type { NeteaseTypings } from "api";
 import type { TreeDataProvider } from "vscode";
 import { TreeItemId } from "../constant";

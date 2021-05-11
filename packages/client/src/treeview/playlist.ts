@@ -5,7 +5,7 @@ import {
   TreeItemCollapsibleState,
 } from "vscode";
 import { AccountManager } from "../manager";
-import { IPC } from "../util";
+import { IPC } from "../utils";
 import type { NeteaseTypings } from "api";
 import { QueueItemTreeItem } from ".";
 import type { RefreshAction } from ".";

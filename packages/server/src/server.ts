@@ -15,16 +15,23 @@ import type {
   NeteaseAPICMsg,
   NeteaseAPISMsg,
 } from "@cloudmusic/shared";
-import { LyricCache, MusicCache, NeteaseAPI, Player, State, apiCache } from ".";
-import { createWriteStream, rmdirSync, unlinkSync } from "fs";
-import type { Readable } from "stream";
+import {
+  LyricCache,
+  MusicCache,
+  NeteaseAPI,
+  PersonalFm,
+  Player,
+  State,
+  apiCache,
+  downloadMusic,
+  getMusicPath,
+} from ".";
+import { rmdirSync, unlinkSync } from "fs";
 import type { Socket } from "net";
-import axios from "axios";
 import { basename } from "path";
 import { createServer } from "net";
 import { mkdir } from "fs/promises";
 import { platform } from "os";
-import { resolve } from "path";
 
 export class IPCServer {
   private static _retain = "[]";
@@ -155,13 +162,7 @@ export class IPCServer {
         apiCache.del(data.key);
         break;
       case "control.download":
-        {
-          const fn = basename(data.path);
-          const download = await downloadMusic(data.url, fn, data.path, false);
-          if (!download) break;
-          const file = createWriteStream(data.path);
-          download.pipe(file);
-        }
+        void downloadMusic(data.url, basename(data.path), data.path, false);
         break;
       case "control.init":
         State.minSize = data.mq === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
@@ -181,11 +182,12 @@ export class IPCServer {
       case "player.load":
         {
           const path = await getMusicPath(data);
-          if (path) {
-            if (path && Player.load(path)) this.broadcast({ t: "player.load" });
-            else IPCServer.sendToMaster({ t: "player.end", fail: true });
-            break;
-          }
+          if (
+            path &&
+            Player.load(path, data?.dt, data?.id, data?.pid, data?.next)
+          )
+            this.broadcast({ t: "player.load" });
+          else IPCServer.sendToMaster({ t: "player.end", fail: true });
         }
         break;
       case "player.toggle":
@@ -198,6 +200,13 @@ export class IPCServer {
       case "player.volume":
         Player.volume(data.level);
         this.broadcast(data);
+        break;
+      case "queue.fm":
+        State.fm = data.is;
+        this.broadcast(data);
+        break;
+      case "queue.fmNext":
+        this.broadcast({ t: "queue.fmNext", item: await PersonalFm.head() });
         break;
     }
   }
@@ -245,61 +254,6 @@ export class IPCBroadcastServer {
   private static _broadcast(data: Buffer): void {
     for (const socket of this._sockets) socket.write(data);
   }
-}
-
-async function getMusicPath(
-  data:
-    | { url: string; local: true }
-    | { url: string; pid: number; local?: undefined }
-): Promise<string | void> {
-  if (data?.local) return data.url;
-  const cachaUrl = MusicCache.get(data.url);
-  if (cachaUrl) return cachaUrl;
-  const { url, md5 } = await NeteaseAPI.songUrl(data.url);
-  if (!url) return;
-  const tmpUri = resolve(TMP_DIR, data.url);
-  const download = await downloadMusic(
-    url,
-    data.url,
-    tmpUri,
-    // TODO
-    // !PersonalFm.state,
-    true,
-    md5
-  );
-  if (!download) return;
-  return new Promise((resolve) => {
-    let len = 0;
-    const onData = ({ length }: { length: number }) => {
-      len += length;
-      if (len > State.minSize) {
-        download.removeListener("data", onData);
-        resolve(tmpUri);
-      }
-    };
-    download.on("data", onData);
-    download.once("error", () => resolve());
-    const file = createWriteStream(tmpUri);
-    download.pipe(file);
-  });
-}
-
-async function downloadMusic(
-  url: string,
-  filename: string,
-  path: string,
-  cache: boolean,
-  md5?: string
-): Promise<Readable | void> {
-  try {
-    const { data } = await axios.get<Readable>(url, {
-      responseType: "stream",
-      timeout: 8000,
-    });
-    if (cache) data.on("end", () => void MusicCache.put(filename, path, md5));
-    return data;
-  } catch {}
-  return;
 }
 
 const tryMkdir = async (path: string) => {

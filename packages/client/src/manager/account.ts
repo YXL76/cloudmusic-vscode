@@ -11,8 +11,8 @@ import type {
   ExtensionContext,
 } from "vscode";
 import { EventEmitter, authentication, window } from "vscode";
-import { IPC, MultiStepInput, State, Webview } from "../util";
-import type { InputStep } from "../util";
+import { IPC, MultiStepInput, State, Webview } from "../utils";
+import type { InputStep } from "../utils";
 import type { NeteaseTypings } from "api";
 import { createHash } from "crypto";
 import i18n from "../i18n";

@@ -1,6 +1,6 @@
 import { BUTTON_KEY, LYRIC_KEY } from "../constant";
 import type { ExtensionContext, StatusBarItem } from "vscode";
-import { LikeState, MultiStepInput, State } from "../util";
+import { LikeState, MultiStepInput, State } from "../utils";
 import { StatusBarAlignment, window } from "vscode";
 import i18n from "../i18n";
 

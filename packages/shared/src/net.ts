@@ -1,5 +1,6 @@
 import type { IPCEvent } from ".";
 import type { NeteaseAPI } from "@cloudmusic/server";
+import type { NeteaseTypings } from "api";
 
 export type CSMessage<T = undefined, U = number | string> = {
   channel: U;
@@ -35,11 +36,26 @@ export type IPCClientMsg =
   | IPCMsg<IPCEvent.Control$lyric>
   | IPCMsg<IPCEvent.Control$music>
   | IPCMsg<IPCEvent.Control$retain, { items: string }>
-  | IPCMsg<IPCEvent.Play$load, { url: string; local: true }>
-  | IPCMsg<IPCEvent.Play$load, { url: string; pid: number; local?: undefined }>
+  | IPCMsg<
+      IPCEvent.Play$load,
+      {
+        url: string;
+        dt?: undefined;
+        id?: undefined;
+        pid?: undefined;
+        local: true;
+        next?: undefined;
+      }
+    >
+  | IPCMsg<
+      IPCEvent.Play$load,
+      { dt: number; id: number; pid: number; local?: undefined; next?: number }
+    >
   | IPCMsg<IPCEvent.Play$stop>
   | IPCMsg<IPCEvent.Play$toggle>
-  | IPCMsg<IPCEvent.Play$volume, { level: number }>;
+  | IPCMsg<IPCEvent.Play$volume, { level: number }>
+  | IPCMsg<IPCEvent.Queue$fm, { is: boolean }>
+  | IPCMsg<IPCEvent.Queue$fmNext>;
 
 export type IPCServerMsg =
   | IPCMsg<IPCEvent.Control$cookie, { cookie: string }>
@@ -51,7 +67,9 @@ export type IPCServerMsg =
   | IPCMsg<IPCEvent.Play$pause>
   | IPCMsg<IPCEvent.Play$play>
   | IPCMsg<IPCEvent.Play$stop>
-  | IPCMsg<IPCEvent.Play$volume, { level: number }>;
+  | IPCMsg<IPCEvent.Play$volume, { level: number }>
+  | IPCMsg<IPCEvent.Queue$fm, { is: boolean }>
+  | IPCMsg<IPCEvent.Queue$fmNext, { item: NeteaseTypings.SongsItem }>;
 
 export type NeteaseAPIKey = keyof typeof NeteaseAPI;
 

@@ -1,6 +1,6 @@
 import { CACHE_KEY, LYRIC_CACHE_KEY, MUSIC_CACHE_DIR_NAME } from "../constant";
 import type { ExtensionContext } from "vscode";
-import { IPC } from "../util";
+import { IPC } from "../utils";
 
 export function initCache(context: ExtensionContext): void {
   try {

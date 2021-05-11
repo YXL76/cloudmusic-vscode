@@ -2,13 +2,14 @@ import {
   IPC,
   LyricType,
   MultiStepInput,
+  State,
   Webview,
   lyric,
   pickUser,
-} from "../util";
+} from "../utils";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
-import type { InputStep } from "../util";
+import type { InputStep } from "../utils";
 import type { QuickPickItem } from "vscode";
 import { commands } from "vscode";
 import i18n from "../i18n";
@@ -163,12 +164,13 @@ export function initStatusBar(context: ExtensionContext): void {
           value: select,
         });
       }
-    })
+    }),
 
-    // TODO
-    /* commands.registerCommand("cloudmusic.fmTrash", () => {
-      if (typeof Player.item?.valueOf === "number")
-        void apiFmTrash(Player.item.valueOf);
-    }) */
+    commands.registerCommand("cloudmusic.fmTrash", () => {
+      if (State.fm && typeof State.playItem?.valueOf === "number") {
+        void IPC.netease("fmTrash", [State.playItem.valueOf]);
+        void commands.executeCommand("cloudmusic.next");
+      }
+    })
   );
 }

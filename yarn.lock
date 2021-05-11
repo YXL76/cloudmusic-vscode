@@ -93,6 +93,7 @@ __metadata:
   resolution: "@cloudmusic/shared@workspace:packages/shared"
   dependencies:
     "@cloudmusic/server": "workspace:*"
+    "@types/api": "workspace:*"
   languageName: unknown
   linkType: soft
 
