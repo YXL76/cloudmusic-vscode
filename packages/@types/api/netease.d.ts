@@ -154,14 +154,13 @@ export namespace NeteaseTypings {
     userid: number;
   };
 
-  export type LyricSpecifyData = {
+  type LyricSpecifyData = {
+    time: number[];
     text: string[];
     user?: LyricUser;
   };
 
   export type LyricData = {
-    ctime: number;
-    time: number[];
     o: LyricSpecifyData;
     t: LyricSpecifyData;
   };

@@ -5,20 +5,40 @@ import type { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 
 const resolveLyric = (raw: string): { time: number[]; text: string[] } => {
-  const time = [];
-  const text = [];
+  const rawMap = new Map<number, string>();
   const lines = raw.split("\n");
   for (const line of lines) {
     const r = /^\[(\d{2}):(\d{2})(?:[.:](\d{2,3}))\](.*)$/g.exec(line.trim());
-    if (r) {
-      const minute = parseInt(r[1]);
-      const second = parseInt(r[2]);
-      const millisecond = parseInt(r[3].length === 2 ? `${r[3]}0` : r[3]);
-      time.push((minute * 60 + second) * 1000 + millisecond);
-      text.push(r[4] || "~");
-    }
+    if (!r) continue;
+    const minute = parseInt(r[1]);
+    const second = parseInt(r[2]);
+    const millisecond = parseInt(r[3].length === 2 ? `${r[3]}0` : r[3]);
+    rawMap.set(minute * 60 + second + millisecond / 1000, r[4] ?? "");
   }
-  return { time, text };
+
+  const time = [...rawMap.keys()].sort((a, b) => a - b);
+  const text: string[] = [];
+  for (const i of time) text.push(rawMap.get(i) as string);
+
+  const ti = [0];
+  const te = ["~"];
+  const len = time.length;
+  for (let i = 0; i < len; ++i) {
+    if (text[i]) {
+      ti.push(time[i]);
+      te.push(text[i]);
+      continue;
+    }
+    let j = i + 1;
+    if (j >= len) break;
+    while (j < len && !text[j]) ++j;
+    if (time[j + 1] - time[i] > 4) {
+      ti.push(time[i]);
+      te.push("~");
+    }
+    i = j;
+  }
+  return { time: ti, text: te };
 };
 
 const resolveLyricUser = (
@@ -29,12 +49,6 @@ const resolveLyricUser = (
 export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
   const lyricCache = await LyricCache.get(`${id}`);
   if (lyricCache) return lyricCache;
-  const lyric: NeteaseTypings.LyricData = {
-    ctime: Date.now(),
-    time: [0],
-    o: { text: ["~"] },
-    t: { text: ["~"] },
-  };
 
   try {
     const { lrc, tlyric, lyricUser, transUser } = await apiRequest<{
@@ -44,45 +58,24 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
       transUser?: NeteaseTypings.LyricUser;
     }>("https://music.163.com/api/song/lyric", { id, lv: -1, kv: -1, tv: -1 });
 
-    lyric.o.user = resolveLyricUser(lyricUser);
-    lyric.t.user = resolveLyricUser(transUser);
     const o = resolveLyric(lrc.lyric);
     const t = resolveLyric(tlyric.lyric);
+    const lyric: NeteaseTypings.LyricData & { ctime: number } = {
+      ctime: Date.now(),
+      o,
+      t: t.text.length < 3 ? o : t,
+    };
 
-    if (t.text.length === 0) {
-      lyric.time = [0, ...o.time];
-      lyric.o.text = ["~", ...o.text];
-      lyric.t.text = ["~", ...o.text];
-    } else {
-      let i = 0;
-      let j = 0;
-      while (i < o.time.length && j < t.time.length) {
-        const otime = o.time[i];
-        const otext = o.text[i] || "~";
-        const ttime = t.time[j];
-        const ttext = t.text[j] || "~";
-        lyric.time.push(Math.min(otime, ttime));
-        if (otime === ttime) {
-          lyric.o.text.push(otext);
-          ++i;
-          lyric.t.text.push(ttext);
-          ++j;
-        } else if (otime < ttime) {
-          lyric.o.text.push(otext);
-          ++i;
-          lyric.t.text.push(lyric.t.text[j]);
-        } else if (otime > ttime) {
-          lyric.o.text.push(lyric.o.text[i]);
-          lyric.t.text.push(ttext);
-          ++j;
-        }
-      }
-    }
+    lyric.o.user = resolveLyricUser(lyricUser);
+    lyric.t.user = resolveLyricUser(transUser);
 
     LyricCache.put(`${id}`, lyric);
     return lyric;
   } catch {}
-  return lyric;
+  return {
+    o: { time: [0], text: ["~"] },
+    t: { time: [0], text: ["~"] },
+  };
 }
 
 export async function simiSong(

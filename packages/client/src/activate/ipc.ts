@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { AccountViewProvider, IPC, State, setLyric } from "../utils";
+import { AccountViewProvider, IPC, State, lyric } from "../utils";
 import { COOKIE_KEY, ICON, VOLUME_KEY } from "../constant";
 import type {
   IPCBroadcastMsg,
@@ -62,7 +62,7 @@ const ipcBHandler = (data: IPCBroadcastMsg) => {
   }
 };
 
-const getDate = /-(\d+)$/;
+/* const getDate = /-(\d+)$/;
 const rejectTimout = () => {
   const now = Date.now();
   for (const [k, { reject }] of IPC.requestPool) {
@@ -72,7 +72,7 @@ const rejectTimout = () => {
       reject();
     } else break;
   }
-};
+}; */
 
 export async function initIPC(context: ExtensionContext): Promise<void> {
   const ipcHandler = (data: IPCServerMsg | NeteaseAPISMsg<NeteaseAPIKey>) => {
@@ -82,7 +82,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
           const req = IPC.requestPool.get(data.channel);
           IPC.requestPool.delete(data.channel);
           if (req) req.resolve(data.msg);
-          rejectTimout();
+          // rejectTimout();
         }
         break;
       case "control.cookie":
@@ -104,6 +104,15 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       case "player.load":
         State.loading = false;
         break;
+      case "player.lyric":
+        Object.assign(lyric, data.lyric);
+        break;
+      case "player.lyricIndex":
+        ButtonManager.buttonLyric(
+          lyric[lyric.type].text?.[lyric.type === "o" ? data.oi : data.ti]
+        );
+        lyric.updatePanel?.(data.oi, data.ti);
+        break;
       case "player.pause":
         ButtonManager.buttonPlay(false);
         AccountViewProvider.pause();
@@ -115,7 +124,10 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       case "player.stop":
         ButtonManager.buttonSong();
         ButtonManager.buttonLyric();
-        setLyric(0, [0], { text: [ICON.lyric] }, { text: [ICON.lyric] });
+        Object.assign(lyric, {
+          o: { time: [0], text: [ICON.lyric] },
+          t: { time: [0], text: [ICON.lyric] },
+        });
         AccountViewProvider.stop();
         break;
       case "player.volume":

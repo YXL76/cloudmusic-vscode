@@ -51,6 +51,7 @@ export type IPCClientMsg =
       IPCEvent.Play$load,
       { dt: number; id: number; pid: number; local?: undefined; next?: number }
     >
+  | IPCMsg<IPCEvent.Play$lyricDelay, { delay: number }>
   | IPCMsg<IPCEvent.Play$stop>
   | IPCMsg<IPCEvent.Play$toggle>
   | IPCMsg<IPCEvent.Play$volume, { level: number }>
@@ -64,6 +65,8 @@ export type IPCServerMsg =
   | IPCMsg<IPCEvent.Control$retain, { items: string }>
   | IPCMsg<IPCEvent.Play$end, { fail?: true }>
   | IPCMsg<IPCEvent.Play$load>
+  | IPCMsg<IPCEvent.Play$lyric, { lyric: NeteaseTypings.LyricData }>
+  | IPCMsg<IPCEvent.Play$lyricIndex, { oi: number; ti: number }>
   | IPCMsg<IPCEvent.Play$pause>
   | IPCMsg<IPCEvent.Play$play>
   | IPCMsg<IPCEvent.Play$stop>

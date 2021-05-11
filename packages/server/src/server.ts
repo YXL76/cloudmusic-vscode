@@ -101,11 +101,13 @@ export class IPCServer {
         IPCServer._setMaster();
         Player.play();
 
-        IPCServer.send(socket, {
-          t: "control.retain",
-          items: IPCServer._retain,
-        });
-        IPCServer._retain = "[]";
+        if (IPCServer._retain !== "[]") {
+          IPCServer.send(socket, {
+            t: "control.retain",
+            items: IPCServer._retain,
+          });
+          IPCServer._retain = "[]";
+        }
       } else IPCServer.sendToMaster({ t: "control.new" });
     })
       .on("error", console.error)
@@ -189,6 +191,9 @@ export class IPCServer {
             this.broadcast({ t: "player.load" });
           else IPCServer.sendToMaster({ t: "player.end", fail: true });
         }
+        break;
+      case "player.lyricDelay":
+        State.lyric.delay = data.delay;
         break;
       case "player.toggle":
         State.playing ? Player.pause() : Player.play();

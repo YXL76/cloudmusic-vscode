@@ -160,8 +160,8 @@ impl Player {
     }
 
     #[inline]
-    fn position(&self) -> u128 {
-        self.status.elapsed().as_millis()
+    fn position(&self) -> f64 {
+        self.status.elapsed().as_secs_f64()
     }
 }
 
@@ -226,5 +226,5 @@ pub fn player_position(mut cx: FunctionContext) -> JsResult<JsNumber> {
     let player = cx.argument::<JsBox<RefCell<Player>>>(0)?;
     let res = player.borrow().position();
 
-    Ok(cx.number(res as f64))
+    Ok(cx.number(res))
 }

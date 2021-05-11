@@ -10,6 +10,18 @@ export class State {
 
   static cacheSize = 4096 * 1024 * 1024;
 
+  static lyric: NeteaseTypings.LyricData & {
+    delay: number;
+    oi: number;
+    ti: number;
+  } = {
+    delay: -1.0,
+    oi: 0,
+    ti: 0,
+    o: { time: [0], text: ["~"] },
+    t: { time: [0], text: ["~"] },
+  };
+
   private static _playing = false;
 
   static get playing(): boolean {

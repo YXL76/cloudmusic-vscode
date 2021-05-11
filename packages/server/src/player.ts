@@ -43,16 +43,20 @@ export class Player {
       }
 
       const pos = Player.position();
-      if (pos > 120000 && !prefetchLock) {
+      if (pos > 120 && !prefetchLock) {
         prefetchLock = true;
         void prefetch();
       }
 
-      // TODO
-      /* while (lyric.time[lyric.index] <= pos - lyric.delay * 1000) ++lyric.index;
-      ButtonManager.buttonLyric(lyric[lyric.type].text[lyric.index - 1]);
-      if (lyric.updatePanel) lyric.updatePanel(lyric.index - 1); */
-    }, 1024);
+      const lpos = pos - State.lyric.delay;
+      while (State.lyric.o.time[State.lyric.oi] <= lpos) ++State.lyric.oi;
+      while (State.lyric.t.time[State.lyric.ti] <= lpos) ++State.lyric.ti;
+      IPCServer.broadcast({
+        t: "player.lyricIndex",
+        oi: State.lyric.oi - 1,
+        ti: State.lyric.ti - 1,
+      });
+    }, 800);
 
     setInterval(
       () =>
@@ -83,10 +87,12 @@ export class Player {
     prefetchLock = false;
     State.playing = true;
 
-    /* if (treeitem instanceof QueueItemTreeItem)
-      void apiLyric(treeitem.valueOf).then(({ time, o, t }) =>
-        setLyric(0, time, o, t)
-      ); */
+    if (id) {
+      void NeteaseAPI.lyric(id).then((l) => {
+        Object.assign(State.lyric, l, { oi: 0, ti: 0 });
+        IPCServer.broadcast({ t: "player.lyric", lyric: { o: l.o, t: l.t } });
+      });
+    }
 
     const pTime = this.time;
     this.time = Date.now();

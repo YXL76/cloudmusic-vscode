@@ -187,6 +187,10 @@ export class IPC {
     });
   }
 
+  static lyricDelay(delay: number): void {
+    ipc.send({ t: "player.lyricDelay", delay });
+  }
+
   static repeat(r: boolean): void {
     ipcB.send({ t: "player.repeat", r });
   }

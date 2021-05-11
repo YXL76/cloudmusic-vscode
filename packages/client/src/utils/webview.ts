@@ -63,7 +63,7 @@ export class AccountViewProvider implements WebviewViewProvider {
     else
       this._view?.webview.postMessage({
         command: "metadata",
-        duration: item.item.dt / 1000,
+        // duration: item.item.dt / 1000,
         title: item.label,
         artist: item.description,
         album: item.tooltip,
@@ -177,12 +177,12 @@ export class Webview {
       lyric.updateFontSize = undefined;
     });
 
-    lyric.updatePanel = (index: number) =>
+    lyric.updatePanel = (oi: number, ti: number) =>
       panel.webview.postMessage({
         command: "lyric",
         data: {
-          otext: lyric.o.text[index],
-          ttext: lyric.t.text[index],
+          otext: lyric.o.text?.[oi],
+          ttext: lyric.t.text?.[ti],
         },
       } as LyricSMsg);
     lyric.updateFontSize = (size: number) =>

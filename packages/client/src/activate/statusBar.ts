@@ -1,16 +1,7 @@
-import {
-  IPC,
-  LyricType,
-  MultiStepInput,
-  State,
-  Webview,
-  lyric,
-  pickUser,
-} from "../utils";
+import { IPC, MultiStepInput, State, Webview, lyric, pickUser } from "../utils";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import type { InputStep } from "../utils";
-import type { QuickPickItem } from "vscode";
 import { commands } from "vscode";
 import i18n from "../i18n";
 
@@ -35,7 +26,7 @@ export function initStatusBar(context: ExtensionContext): void {
       }
 
       await MultiStepInput.run(async (input) => {
-        const { text, user } = lyric[lyric.type];
+        const { time, text, user } = lyric[lyric.type];
         const { type } = await input.showQuickPick({
           title,
           step: 1,
@@ -48,9 +39,7 @@ export function initStatusBar(context: ExtensionContext): void {
             },
             {
               label: `$(symbol-type-parameter) ${
-                lyric.type === LyricType.original
-                  ? i18n.word.translation
-                  : i18n.word.original
+                lyric.type === "o" ? i18n.word.translation : i18n.word.original
               }`,
               type: Type.type,
             },
@@ -85,14 +74,11 @@ export function initStatusBar(context: ExtensionContext): void {
           case Type.delay:
             return (input) => inputDelay(input);
           case Type.full:
-            return (input) => pickLyric(input, text);
+            return (input) => pickLyric(input, time, text);
           case Type.font:
             return (input) => inputFontSize(input);
           case Type.type:
-            lyric.type =
-              lyric.type === LyricType.original
-                ? LyricType.translation
-                : LyricType.original;
+            lyric.type = lyric.type === "o" ? "t" : "o";
             break;
           case Type.cache:
             IPC.lyric();
@@ -114,11 +100,10 @@ export function initStatusBar(context: ExtensionContext): void {
           title,
           step: 2,
           totalSteps,
-          value: `${lyric.delay}`,
           prompt: i18n.sentence.hint.lyricDelay,
         });
         if (/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay))
-          lyric.delay = parseFloat(delay);
+          IPC.lyricDelay(parseFloat(delay));
         return input.stay();
       }
 
@@ -135,22 +120,17 @@ export function initStatusBar(context: ExtensionContext): void {
 
       async function pickLyric(
         input: MultiStepInput,
+        time: number[],
         text: string[]
       ): Promise<InputStep> {
-        interface T extends QuickPickItem {
-          description: string;
-        }
-        const items: T[] = [];
-        text.forEach((v, i) => {
-          if (v !== i18n.word.lyric && v !== text[i - 1])
-            items.push({ label: v, description: `[${lyric.time[i]}]` });
-        });
-
         const pick = await input.showQuickPick({
           title,
           step: 2,
           totalSteps: totalSteps + 1,
-          items,
+          items: time.map((v, i) => ({
+            label: text[i],
+            description: `${v}`,
+          })),
         });
         select = pick.label;
         return (input) => showLyric(input);

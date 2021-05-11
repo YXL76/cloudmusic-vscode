@@ -30,6 +30,8 @@ export const apiCache = new NodeCache({
   maxKeys: -1,
 });
 
+type LyricCacheItem = NeteaseTypings.LyricData & { ctime: number };
+
 export class LyricCache {
   static clear(): void {
     rmdir(LYRIC_CACHE_DIR, { recursive: true })
@@ -42,12 +44,12 @@ export class LyricCache {
       });
   }
 
-  static async get(key: string): Promise<NeteaseTypings.LyricData | void> {
+  static async get(key: string): Promise<LyricCacheItem | void> {
     try {
       const path = resolve(LYRIC_CACHE_DIR, key);
       const data = JSON.parse(
         (await readFile(path)).toString()
-      ) as NeteaseTypings.LyricData;
+      ) as LyricCacheItem;
       // 7 * 24 * 60 * 60 * 1000
       if (Date.now() - data.ctime < 604800000) return data;
       void unlink(path);
@@ -55,7 +57,7 @@ export class LyricCache {
     return;
   }
 
-  static put(key: string, data: NeteaseTypings.LyricData): void {
+  static put(key: string, data: LyricCacheItem): void {
     try {
       void writeFile(
         resolve(LYRIC_CACHE_DIR, key),

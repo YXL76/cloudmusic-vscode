@@ -11,13 +11,14 @@ export const MUSIC_CACHE_SIZE = conf.get("cache.size", 4096) * 1024 * 1024;
 
 export const ACCOUNT_KEY = "account";
 export const CACHE_KEY = "cache-v2";
-export const LYRIC_CACHE_KEY = "lyric-cache-v1";
+export const LYRIC_CACHE_KEY = "lyric-cache-v2";
 export const COOKIE_KEY = "cookie";
 export const BUTTON_KEY = "button-v1";
 export const VOLUME_KEY = "volume";
 export const LYRIC_KEY = "lyric";
 export const LOCAL_FOLDER_KEY = "local-folder";
 export const REPEAT_KEY = "repeat-v1";
+export const FM_KEY = "fm-v1";
 
 export const MUSIC_CACHE_DIR_NAME = `${MUSIC_QUALITY}`;
 

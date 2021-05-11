@@ -1,5 +1,6 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { AccountViewProvider, IPC } from ".";
+import { FM_KEY, REPEAT_KEY } from "../constant";
 import {
   PlaylistProvider,
   QueueItemTreeItem,
@@ -8,41 +9,18 @@ import {
 import type { ExtensionContext } from "vscode";
 import type { NeteaseTypings } from "api";
 import type { QueueContent } from "../treeview";
-import { REPEAT_KEY } from "../constant";
 import i18n from "../i18n";
 
-export const enum LyricType {
-  original = "o",
-  translation = "t",
-}
-
 type Lyric = {
-  index: number;
-  delay: number;
-  type: LyricType;
-  updatePanel?: (index: number) => void;
+  type: "o" | "t";
+  updatePanel?: (oi: number, ti: number) => void;
   updateFontSize?: (size: number) => void;
-} & Omit<NeteaseTypings.LyricData, "ctime">;
+} & NeteaseTypings.LyricData;
 
 export const lyric: Lyric = {
-  index: 0,
-  delay: -1.0,
-  type: LyricType.original,
-  time: [0],
-  o: { text: [i18n.word.lyric] },
-  t: { text: [i18n.word.lyric] },
-};
-
-export const setLyric = (
-  index: number,
-  time: number[],
-  o: NeteaseTypings.LyricSpecifyData,
-  t: NeteaseTypings.LyricSpecifyData
-): void => {
-  lyric.index = index;
-  lyric.time = time;
-  lyric.o = o;
-  lyric.t = t;
+  type: "o",
+  o: { time: [0], text: ["~"] },
+  t: { time: [0], text: ["~"] },
 };
 
 export const enum LikeState {
@@ -177,10 +155,12 @@ export class State {
       this._fm = value;
       ButtonManager.buttonPrevious(value);
       if (value && this._master) IPC.fmNext();
+      void this.context.globalState.update(FM_KEY, value);
     }
   }
 
   static init(): void {
-    this._repeat = this.context.globalState.get(REPEAT_KEY, false);
+    this.repeat = this.context.globalState.get(REPEAT_KEY, false);
+    this.fm = this.context.globalState.get(FM_KEY, false);
   }
 }

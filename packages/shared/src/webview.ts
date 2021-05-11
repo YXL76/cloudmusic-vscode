@@ -36,7 +36,7 @@ export type ProviderSMsg =
   // | { command: "position"; position: number }
   | {
       command: "metadata";
-      duration?: number;
+      // duration?: number;
       title?: string;
       artist?: string;
       album?: string;
