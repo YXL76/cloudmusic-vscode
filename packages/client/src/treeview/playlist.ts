@@ -5,16 +5,16 @@ import {
   TreeItemCollapsibleState,
 } from "vscode";
 import { AccountManager } from "../manager";
-import type { PlaylistItem } from "../constant";
+import { IPC } from "../utils";
+import type { NeteaseTypings } from "api";
 import { QueueItemTreeItem } from ".";
 import type { RefreshAction } from ".";
 import type { TreeDataProvider } from "vscode";
-import { apiCache } from "../util";
-import { apiPlaylistDetail } from "../api";
 import i18n from "../i18n";
 
 export class PlaylistProvider
-  implements TreeDataProvider<PlaylistItemTreeItem | QueueItemTreeItem> {
+  implements TreeDataProvider<PlaylistItemTreeItem | QueueItemTreeItem>
+{
   static readonly playlists = new Map<number, PlaylistItemTreeItem>();
 
   private static instance: PlaylistProvider;
@@ -34,16 +34,16 @@ export class PlaylistProvider
   static refresh(element?: PlaylistItemTreeItem, action?: RefreshAction): void {
     if (element) {
       if (action) this.action = action;
-      else apiCache.del(`playlist_detail${element.item.id}`);
+      else IPC.deleteCache(`playlist_detail${element.item.id}`);
     } else {
-      apiCache.del(`user_playlist${AccountManager.uid}`);
+      IPC.deleteCache(`user_playlist${AccountManager.uid}`);
       this.playlists.clear();
     }
     this.instance._onDidChangeTreeData.fire(element);
   }
 
   private static async getPlaylistContent(pid: number) {
-    const songs = await apiPlaylistDetail(pid);
+    const songs = await IPC.netease("playlistDetail", [pid]);
     const ret = songs.map((song) => QueueItemTreeItem.new({ ...song, pid }));
     return ret;
   }
@@ -91,7 +91,7 @@ ${i18n.word.subscribedCount}: ${this.item.subscribedCount}`;
 
   readonly contextValue = "PlaylistItemTreeItem";
 
-  constructor(readonly item: PlaylistItem) {
+  constructor(readonly item: NeteaseTypings.PlaylistItem) {
     super(item.name, TreeItemCollapsibleState.Collapsed);
   }
 

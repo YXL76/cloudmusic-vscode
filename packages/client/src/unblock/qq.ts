@@ -1,3 +1,5 @@
+export default undefined;
+
 /* import type { SongsItem } from "../constant";
 import axios from "axios";
 import { userAgent } from "../api";
@@ -31,7 +33,7 @@ async function search(keyword: string) {
         "User-Agent": userAgent,
       },
     });
-    console.log(res);
+    console.error(res);
     const {
       data: {
         data: {

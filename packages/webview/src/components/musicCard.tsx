@@ -1,9 +1,9 @@
 import { FiPlayCircle } from "react-icons/fi";
+import type { NeteaseTypings } from "api";
 import React from "react";
-import type { RecordData } from "@cloudmusic/shared";
 import { vscode } from "../utils";
 
-export interface MusicCardProps extends RecordData {
+export interface MusicCardProps extends NeteaseTypings.RecordData {
   max: number;
 }
 

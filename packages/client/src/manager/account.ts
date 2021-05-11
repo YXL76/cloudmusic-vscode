@@ -4,7 +4,6 @@ import {
   AUTO_CHECK,
   COOKIE_KEY,
 } from "../constant";
-import type { Account, PlaylistItem, RadioDetail } from "../constant";
 import type {
   AuthenticationProvider,
   AuthenticationProviderAuthenticationSessionsChangeEvent,
@@ -12,36 +11,20 @@ import type {
   ExtensionContext,
 } from "vscode";
 import { EventEmitter, authentication, window } from "vscode";
-import { MultiStepInput, State, Webview } from "../util";
-import {
-  apiDailySigninAndroid,
-  apiDailySigninWeb,
-  apiDjSublist,
-  apiLikelist,
-  apiLogin,
-  apiLoginCellphone,
-  apiLoginStatus,
-  apiLogout,
-  apiUserPlaylist,
-  apiYunbeiInfo,
-  apiYunbeiSign,
-  apiYunbeiToday,
-  cookieToJson,
-} from "../api";
-import type { Cookie } from "../api";
+import { IPC, MultiStepInput, State, Webview } from "../utils";
+import type { InputStep } from "../utils";
+import type { NeteaseTypings } from "api";
 import { createHash } from "crypto";
 import i18n from "../i18n";
 
 export class AccountManager implements AuthenticationProvider {
   static uid = 0;
 
-  static nickname = "0";
+  static nickname = "";
 
   static context: ExtensionContext;
 
-  static cookie = {} as Cookie;
-
-  static userPlaylist: PlaylistItem[];
+  static userPlaylist: NeteaseTypings.PlaylistItem[];
 
   static readonly likelist: Set<number> = new Set<number>();
 
@@ -66,68 +49,45 @@ export class AccountManager implements AuthenticationProvider {
     ];
   }
 
-  _onDidChangeSessions = new EventEmitter<AuthenticationProviderAuthenticationSessionsChangeEvent>();
+  _onDidChangeSessions =
+    new EventEmitter<AuthenticationProviderAuthenticationSessionsChangeEvent>();
 
   readonly onDidChangeSessions = this._onDidChangeSessions.event;
 
   static async getInstance(): Promise<AccountManager> {
     try {
-      const cookieStr = await this.context.secrets.get(COOKIE_KEY);
-      if (cookieStr) {
-        this.cookie = JSON.parse(cookieStr) as Cookie;
-        if ((await this.login()) && AUTO_CHECK) void this.dailyCheck();
-      }
+      if ((await this.login()) && AUTO_CHECK)
+        void IPC.netease("dailyCheck", []);
     } catch (err) {
       console.error(err);
     }
     return this.instance || (this.instance = new AccountManager());
   }
 
-  static async dailyCheck(): Promise<boolean> {
-    try {
-      const actions = [];
-      const [yunbei, { mobileSign, pcSign }] = await Promise.all([
-        apiYunbeiToday(),
-        apiYunbeiInfo(),
-      ]);
-      if (!yunbei) actions.push(apiYunbeiSign());
-      if (!mobileSign) actions.push(apiDailySigninAndroid());
-      if (!pcSign) actions.push(apiDailySigninWeb());
-      await Promise.all(actions);
-      return true;
-    } catch {}
-    return false;
-  }
-
   static isUserPlaylisr(id: number): boolean {
     return this.userPlaylist.findIndex(({ id: vid }) => vid === id) !== -1;
   }
 
-  static async playlist(): Promise<PlaylistItem[]> {
+  static async playlist(): Promise<NeteaseTypings.PlaylistItem[]> {
     if (this.uid === 0) return [];
-    const lists = await apiUserPlaylist(this.uid);
+    const lists = await IPC.netease("userPlaylist", [this.uid]);
     this.userPlaylist = lists.filter(
       ({ creator: { userId } }) => userId === this.uid
     );
     return lists;
   }
 
-  static async djradio(): Promise<RadioDetail[]> {
+  static async djradio(): Promise<NeteaseTypings.RadioDetail[]> {
     if (this.uid === 0) return [];
-    return await apiDjSublist();
+    return await IPC.netease("djSublist", []);
   }
 
   private static async logout(): Promise<boolean> {
-    if (!(await apiLogout())) return false;
+    if (!(await IPC.netease("logout", []))) return false;
 
+    IPC.logout();
     void this.context.secrets.delete(ACCOUNT_KEY);
     void this.context.secrets.delete(COOKIE_KEY);
-
-    this.cookie = {} as Cookie;
-    this.uid = 0;
-    this.nickname = "";
-    this.likelist.clear();
-    State.login = false;
 
     return true;
   }
@@ -135,50 +95,49 @@ export class AccountManager implements AuthenticationProvider {
   private static async login(): Promise<boolean> {
     if (State.login) return true;
 
-    let account: Account | undefined = undefined;
+    let account: NeteaseTypings.Account | undefined = undefined;
     try {
       const accountStr = await this.context.secrets.get(ACCOUNT_KEY);
-      if (accountStr) account = JSON.parse(accountStr) as Account;
-    } catch (err) {
-      console.error(account);
-    }
-
-    try {
-      const res = account
-        ? account.phone.length > 0
-          ? await apiLoginCellphone(
-              account.phone,
-              account.countrycode,
-              account.password
-            )
-          : await apiLogin(account.username, account.password)
-        : await apiLoginStatus();
-
-      if (res) {
-        const { userId, nickname } = res;
-        this.uid = userId;
-        this.nickname = nickname;
-        this.likelist.clear();
-        State.login = true;
-
-        void this.context.secrets.store(
-          COOKIE_KEY,
-          JSON.stringify(this.cookie)
-        );
-
-        void apiLikelist().then((ids) =>
-          ids.forEach((v) => this.likelist.add(v))
-        );
-
-        return true;
-      }
+      if (accountStr)
+        account = JSON.parse(accountStr) as NeteaseTypings.Account;
     } catch (err) {
       console.error(err);
-      void window.showErrorMessage(i18n.sentence.fail.signIn);
-      void this.context.secrets.delete(ACCOUNT_KEY);
-      void this.context.secrets.delete(COOKIE_KEY);
     }
-    return false;
+
+    let cookieStr: string | undefined = undefined;
+    if (!account) {
+      try {
+        cookieStr = await this.context.secrets.get(COOKIE_KEY);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    const res = account
+      ? account.phone.length > 0
+        ? await IPC.netease("loginCellphone", [
+            account.phone,
+            account.countrycode,
+            account.password,
+          ])
+        : await IPC.netease("login", [account.username, account.password])
+      : await IPC.netease("loginStatus", [cookieStr]);
+
+    void this.context.secrets.delete(ACCOUNT_KEY);
+
+    if (!res) {
+      void window.showErrorMessage(i18n.sentence.fail.signIn);
+      void this.context.secrets.delete(COOKIE_KEY);
+      return false;
+    }
+
+    IPC.login(res);
+    const { userId, nickname } = res;
+    this.uid = userId;
+    this.nickname = nickname;
+    State.login = true;
+
+    return true;
   }
 
   private static async loginQuickPick(): Promise<void> {
@@ -186,23 +145,21 @@ export class AccountManager implements AuthenticationProvider {
 
     const title = i18n.word.signIn;
     let totalSteps = 3;
-    const state: Account = {
+    const state: NeteaseTypings.Account = {
       phone: "",
       username: "",
       password: "",
       countrycode: "86",
     };
 
-    await MultiStepInput.run((input) => pickMethod(input));
-
     const enum Type {
       emial,
       phone,
       qrcode,
-      cookie,
+      // cookie,
     }
 
-    async function pickMethod(input: MultiStepInput) {
+    await MultiStepInput.run(async (input) => {
       const pick = await input.showQuickPick({
         title,
         step: 1,
@@ -223,31 +180,31 @@ export class AccountManager implements AuthenticationProvider {
             description: i18n.sentence.label.qrcode,
             type: Type.qrcode,
           },
-          {
+          /* {
             label: "$(database) Cookie",
             type: Type.cookie,
-          },
+          }, */
         ],
         placeholder: i18n.sentence.hint.signIn,
       });
       switch (pick.type) {
         case Type.phone:
           totalSteps = 4;
-          return (input: MultiStepInput) => inputCountrycode(input);
+          return (input) => inputCountrycode(input);
         case Type.emial:
           totalSteps = 3;
-          return (input: MultiStepInput) => inputUsername(input);
-        case Type.cookie:
+          return (input) => inputUsername(input);
+        /* case Type.cookie:
           totalSteps = 2;
-          return (input: MultiStepInput) => inputCookie(input);
+          return (input) => inputCookie(input); */
         case Type.qrcode:
           await Webview.login();
           await AccountManager.context.secrets.delete(ACCOUNT_KEY);
       }
       return;
-    }
+    });
 
-    async function inputCountrycode(input: MultiStepInput) {
+    async function inputCountrycode(input: MultiStepInput): Promise<InputStep> {
       state.countrycode = await input.showInputBox({
         title,
         step: 2,
@@ -255,10 +212,10 @@ export class AccountManager implements AuthenticationProvider {
         value: state.countrycode,
         prompt: i18n.sentence.hint.countrycode,
       });
-      return (input: MultiStepInput) => inputPhone(input);
+      return (input) => inputPhone(input);
     }
 
-    async function inputPhone(input: MultiStepInput) {
+    async function inputPhone(input: MultiStepInput): Promise<InputStep> {
       state.phone = await input.showInputBox({
         title,
         step: totalSteps - 1,
@@ -267,10 +224,10 @@ export class AccountManager implements AuthenticationProvider {
         prompt: i18n.sentence.hint.account,
       });
       state.username = "";
-      return (input: MultiStepInput) => inputPassword(input);
+      return (input) => inputPassword(input);
     }
 
-    async function inputUsername(input: MultiStepInput) {
+    async function inputUsername(input: MultiStepInput): Promise<InputStep> {
       state.username = await input.showInputBox({
         title,
         step: totalSteps - 1,
@@ -279,10 +236,10 @@ export class AccountManager implements AuthenticationProvider {
         prompt: i18n.sentence.hint.account,
       });
       state.phone = "";
-      return (input: MultiStepInput) => inputPassword(input);
+      return (input) => inputPassword(input);
     }
 
-    async function inputCookie(input: MultiStepInput) {
+    /* async function inputCookie(input: MultiStepInput) {
       AccountManager.cookie = cookieToJson([
         await input.showInputBox({
           title,
@@ -293,7 +250,7 @@ export class AccountManager implements AuthenticationProvider {
         }),
       ]);
       await AccountManager.context.secrets.delete(ACCOUNT_KEY);
-    }
+    } */
 
     async function inputPassword(input: MultiStepInput) {
       const password = await input.showInputBox({

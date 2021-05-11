@@ -1,36 +1,23 @@
 import {
-  CommentType,
-  apiPlaylistCreate,
-  apiPlaylistDelete,
-  apiPlaylistSubscribe,
-  apiPlaylistTracks,
-  apiPlaylistUpdate,
-  apiPlaymodeIntelligenceList,
-  apiSongUrl,
-} from "../api";
-import {
-  IPCClient,
+  IPC,
   MultiStepInput,
   State,
   Webview,
-  downloadMusic,
   pickAddToPlaylist,
   pickPlaylist,
   pickProgram,
   pickSong,
-} from "../util";
+} from "../utils";
 import type { PlaylistItemTreeItem, QueueContent } from "../treeview";
 import {
   PlaylistProvider,
   ProgramTreeItem,
   QueueItemTreeItem,
 } from "../treeview";
-import { Uri, commands, env, window } from "vscode";
-import { basename, dirname } from "path";
+import { commands, env, window } from "vscode";
 import { AccountManager } from "../manager";
 import type { ExtensionContext } from "vscode";
-import { HOME_DIR } from "../constant";
-import { createWriteStream } from "fs";
+import { NeteaseEnum } from "@cloudmusic/shared";
 import i18n from "../i18n";
 
 export function initPlaylist(context: ExtensionContext): void {
@@ -46,9 +33,7 @@ export function initPlaylist(context: ExtensionContext): void {
     commands.registerCommand("cloudmusic.createPlaylist", () => {
       let name: undefined | string = undefined;
 
-      void MultiStepInput.run((input) => inputName(input));
-
-      async function inputName(input: MultiStepInput) {
+      void MultiStepInput.run(async (input) => {
         name = await input.showInputBox({
           title: i18n.word.createPlaylist,
           step: 1,
@@ -57,8 +42,8 @@ export function initPlaylist(context: ExtensionContext): void {
           prompt: i18n.sentence.hint.name,
         });
 
-        return (input: MultiStepInput) => pickType(input);
-      }
+        return (input) => pickType(input);
+      });
 
       async function pickType(input: MultiStepInput) {
         const enum Type {
@@ -83,10 +68,12 @@ export function initPlaylist(context: ExtensionContext): void {
 
         if (
           name &&
-          (await apiPlaylistCreate(name, pick.type === Type.public ? 0 : 10))
-        ) {
+          (await IPC.netease("playlistCreate", [
+            name,
+            pick.type === Type.public ? 0 : 10,
+          ]))
+        )
           PlaylistProvider.refresh();
-        }
       }
     }),
 
@@ -99,7 +86,7 @@ export function initPlaylist(context: ExtensionContext): void {
       "cloudmusic.playPlaylist",
       (element: PlaylistItemTreeItem) =>
         PlaylistProvider.refresh(element, (items) =>
-          IPCClient.new(items.map(({ data }) => data))
+          IPC.new(items.map(({ data }) => data))
         )
     ),
 
@@ -113,8 +100,8 @@ export function initPlaylist(context: ExtensionContext): void {
             i18n.word.confirmation
           )) &&
           (await (AccountManager.isUserPlaylisr(id)
-            ? apiPlaylistDelete(id)
-            : apiPlaylistSubscribe(id, "unsubscribe")))
+            ? IPC.netease("playlistDelete", [id])
+            : IPC.netease("playlistSubscribe", [id, "unsubscribe"])))
         )
           PlaylistProvider.refresh();
       }
@@ -136,7 +123,7 @@ export function initPlaylist(context: ExtensionContext): void {
             value: state.name,
             prompt: i18n.sentence.hint.name,
           });
-          return (input: MultiStepInput) => inputDesc(input);
+          return (input) => inputDesc(input);
         });
 
         async function inputDesc(input: MultiStepInput) {
@@ -147,7 +134,7 @@ export function initPlaylist(context: ExtensionContext): void {
             value: state.desc,
             prompt: i18n.sentence.hint.desc,
           });
-          if (await apiPlaylistUpdate(id, state.name, state.desc))
+          if (await IPC.netease("playlistUpdate", [id, state.name, state.desc]))
             PlaylistProvider.refresh();
         }
       }
@@ -157,7 +144,7 @@ export function initPlaylist(context: ExtensionContext): void {
       "cloudmusic.addPlaylist",
       (element: PlaylistItemTreeItem) =>
         PlaylistProvider.refresh(element, (items) =>
-          IPCClient.add(items.map(({ data }) => data))
+          IPC.add(items.map(({ data }) => data))
         )
     ),
 
@@ -170,7 +157,7 @@ export function initPlaylist(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.playlistComment",
       ({ item: { id, name } }: PlaylistItemTreeItem) =>
-        Webview.comment(CommentType.playlist, id, name)
+        Webview.comment(NeteaseEnum.CommentType.playlist, id, name)
     ),
 
     commands.registerCommand(
@@ -185,8 +172,11 @@ export function initPlaylist(context: ExtensionContext): void {
       "cloudmusic.intelligence",
       async (element: QueueItemTreeItem) => {
         const { data } = element;
-        const songs = await apiPlaymodeIntelligenceList(data.id, data.pid);
-        IPCClient.new([
+        const songs = await IPC.netease("playmodeIntelligenceList", [
+          data.id,
+          data.pid,
+        ]);
+        IPC.new([
           data,
           ...songs.map(
             (song) => QueueItemTreeItem.new({ ...song, pid: data.pid }).data
@@ -197,14 +187,14 @@ export function initPlaylist(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.addSong",
-      ({ data }: QueueItemTreeItem) => IPCClient.add([data])
+      ({ data }: QueueItemTreeItem) => IPC.add([data])
     ),
 
     commands.registerCommand(
       "cloudmusic.playSongWithPlaylist",
       ({ data: { id, pid } }: QueueItemTreeItem) =>
         PlaylistProvider.refresh(PlaylistProvider.playlists.get(pid), (items) =>
-          IPCClient.new(
+          IPC.new(
             items.map(({ data }) => data),
             id
           )
@@ -221,7 +211,7 @@ export function initPlaylist(context: ExtensionContext): void {
             { modal: true },
             i18n.word.confirmation
           )) &&
-          (await apiPlaylistTracks("del", pid, [id]))
+          (await IPC.netease("playlistTracks", ["del", pid, [id]]))
         )
           PlaylistProvider.refresh(PlaylistProvider.playlists.get(pid));
       }
@@ -252,7 +242,7 @@ export function initPlaylist(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.songComment",
       ({ item: { id, name } }: QueueItemTreeItem) =>
-        Webview.comment(CommentType.song, id, name)
+        Webview.comment(NeteaseEnum.CommentType.song, id, name)
     ),
 
     commands.registerCommand(
@@ -264,32 +254,14 @@ export function initPlaylist(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.downloadSong",
       async ({ item }: QueueItemTreeItem | ProgramTreeItem) => {
-        const { url, type } = await apiSongUrl(item);
+        const { url, type } = await IPC.netease("songUrl", [item]);
         if (!url) return;
 
         const uri = await window.showSaveDialog({
-          defaultUri: Uri.joinPath(HOME_DIR, `${item.name}.${type || "mp3"}`),
-          filters: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            Music: [type || "mp3"],
-          },
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          filters: { Music: [type || "mp3"] },
         });
-        if (uri && uri.scheme === "file") {
-          const filename = basename(uri.fsPath);
-          const data = await downloadMusic(url, filename, uri, false);
-          if (data) {
-            data.on("error", (err) => {
-              console.error(err);
-              void window.showErrorMessage(i18n.sentence.error.network);
-            });
-            data.on(
-              "close",
-              () => void env.openExternal(Uri.file(dirname(uri.fsPath)))
-            );
-            const file = createWriteStream(uri.fsPath);
-            data.pipe(file);
-          }
-        }
+        if (uri && uri.scheme === "file") IPC.download(url, uri.fsPath);
       }
     )
   );

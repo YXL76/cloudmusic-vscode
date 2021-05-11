@@ -1,4 +1,4 @@
-import { IPCClient, MultiStepInput, State, stop } from "../util";
+import { IPC, MultiStepInput, State } from "../utils";
 import { QueueProvider, QueueSortOrder, QueueSortType } from "../treeview";
 import { commands, window } from "vscode";
 import type { ExtensionContext } from "vscode";
@@ -9,17 +9,16 @@ import i18n from "../i18n";
 export function initQueue(context: ExtensionContext): void {
   const queueProvider = QueueProvider.getInstance();
 
-  queueProvider.onDidChangeTreeData(
-    () => (State.playItem = QueueProvider.head)
-  );
-
   context.subscriptions.push(
+    queueProvider.onDidChangeTreeData(() => {
+      State.fm = false;
+      State.playItem = QueueProvider.head;
+    }),
+
     window.registerTreeDataProvider("queue", queueProvider),
 
     commands.registerCommand("cloudmusic.sortQueue", () => {
-      void MultiStepInput.run((input: MultiStepInput) => pickType(input));
-
-      async function pickType(input: MultiStepInput) {
+      void MultiStepInput.run(async (input) => {
         const pick = await input.showQuickPick({
           title: i18n.word.account,
           step: 1,
@@ -64,30 +63,26 @@ export function initQueue(context: ExtensionContext): void {
           ],
         });
 
-        stop();
-        IPCClient.sort(pick.type, pick.order);
+        IPC.sort(pick.type, pick.order);
         return input.stay();
-      }
+      });
     }),
 
-    commands.registerCommand("cloudmusic.clearQueue", () => IPCClient.clear()),
+    commands.registerCommand("cloudmusic.clearQueue", () => IPC.clear()),
 
-    commands.registerCommand("cloudmusic.randomQueue", () =>
-      IPCClient.random()
-    ),
+    commands.registerCommand("cloudmusic.randomQueue", () => IPC.random()),
 
-    commands.registerCommand(
-      "cloudmusic.playSong",
-      ({ valueOf }: QueueContent) => IPCClient.playSong(valueOf)
+    commands.registerCommand("cloudmusic.play", ({ valueOf }: QueueContent) =>
+      IPC.playSong(valueOf)
     ),
 
     commands.registerCommand(
       "cloudmusic.deleteSong",
-      ({ valueOf }: QueueContent) => IPCClient.delete(valueOf)
+      ({ valueOf }: QueueContent) => IPC.delete(valueOf)
     ),
 
-    commands.registerCommand("cloudmusic.playNext", (element: QueueContent) =>
-      IPCClient.add([element.data], 1)
+    commands.registerCommand("cloudmusic.playNext", ({ data }: QueueContent) =>
+      IPC.add([data], 1)
     )
   );
 }

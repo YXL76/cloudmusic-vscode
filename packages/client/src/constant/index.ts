@@ -1,30 +1,26 @@
-export * from "./setting";
-export * from "./type";
-import { MUSIC_QUALITY, UNBLOCK_MUSIC } from "./setting";
-import { Uri } from "vscode";
-import { homedir } from "os";
+import { workspace } from "vscode";
 
-export const unplayable = new Set<number>();
+const conf = workspace.getConfiguration("cloudmusic");
+
+export const AUTO_CHECK = conf.get("account.autoCheck", false);
+export const MUSIC_QUALITY = conf.get<128000 | 192000 | 320000 | 999000>(
+  "music.quality",
+  192000
+);
+export const MUSIC_CACHE_SIZE = conf.get("cache.size", 4096) * 1024 * 1024;
 
 export const ACCOUNT_KEY = "account";
 export const CACHE_KEY = "cache-v2";
-export const LYRIC_CACHE_KEY = "lyric-cache-v1";
+export const LYRIC_CACHE_KEY = "lyric-cache-v2";
 export const COOKIE_KEY = "cookie";
 export const BUTTON_KEY = "button-v1";
 export const VOLUME_KEY = "volume";
 export const LYRIC_KEY = "lyric";
 export const LOCAL_FOLDER_KEY = "local-folder";
-export const QUEUE_KEY = "queue";
+export const REPEAT_KEY = "repeat-v1";
+export const FM_KEY = "fm-v1";
 
-export const HOME_DIR = Uri.file(homedir());
-export const SETTING_DIR = Uri.joinPath(HOME_DIR, ".cloudmusic");
-export const TMP_DIR = Uri.joinPath(SETTING_DIR, "tmp");
-export const CACHE_DIR = Uri.joinPath(SETTING_DIR, "cache");
-export const MUSIC_CACHE_DIR_NAME = `${MUSIC_QUALITY}${
-  UNBLOCK_MUSIC.enabled ? "u" : ""
-}`;
-export const MUSIC_CACHE_DIR = Uri.joinPath(CACHE_DIR, "music");
-export const LYRIC_CACHE_DIR = Uri.joinPath(CACHE_DIR, "lyric");
+export const MUSIC_CACHE_DIR_NAME = `${MUSIC_QUALITY}`;
 
 export const AUTH_PROVIDER_ID = "cloudmusic-auth-provider";
 

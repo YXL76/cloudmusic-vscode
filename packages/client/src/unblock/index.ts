@@ -1,4 +1,4 @@
-import type { SongDetail, SongsItem } from "../constant";
+/* import type { SongDetail, SongsItem } from "../constant";
 import { UNBLOCK_MUSIC } from "../constant";
 import joox from "./joox";
 import kugou from "./kugou";
@@ -16,4 +16,6 @@ export default async function unblock(
   song: SongsItem
 ): Promise<SongDetail | void> {
   return (await Promise.all(provider.map((i) => i(song)))).find((item) => item);
-}
+} */
+
+export default undefined;

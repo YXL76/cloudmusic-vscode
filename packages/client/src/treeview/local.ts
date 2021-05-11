@@ -14,7 +14,8 @@ import { fromFile } from "file-type";
 import { resolve } from "path";
 
 export class LocalProvider
-  implements TreeDataProvider<LocalFileTreeItem | LocalLibraryTreeItem> {
+  implements TreeDataProvider<LocalFileTreeItem | LocalLibraryTreeItem>
+{
   static readonly folders: string[] = [];
 
   static readonly files = new Map<string, LocalFileTreeItem[]>();

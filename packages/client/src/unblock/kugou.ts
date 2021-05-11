@@ -1,4 +1,4 @@
-import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
+/* import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
 import axios from "axios";
 import { createHash } from "crypto";
 import { extname } from "path";
@@ -7,7 +7,6 @@ import filter from "./filter";
 interface SearchResult {
   data: {
     lists: {
-      /* eslint-disable @typescript-eslint/naming-convention */
       AlbumName: string;
       SingerName: string;
       SongName: string;
@@ -20,7 +19,6 @@ interface SearchResult {
       SQExtName: string;
       SuperFileHash: string;
       SuperExtName: string;
-      /* eslint-enable @typescript-eslint/naming-convention */
     }[];
   };
 }
@@ -40,30 +38,28 @@ async function search(keyword: string) {
     );
     return lists.map(
       ({
-        /* eslint-disable @typescript-eslint/naming-convention */
         AlbumName,
         SingerName,
         SongName,
         FileHash,
-        /* ExtName,
-        HQFileHash,
-        HQExtName,
-        SQFileHash,
-        SQExtName, */
-        /* eslint-enable @typescript-eslint/naming-convention */
+        // ExtName,
+        // HQFileHash,
+        // HQExtName,
+        // SQFileHash,
+        // SQExtName,
       }) => ({
         album: AlbumName,
         artist: SingerName.split("、"),
         dt: 0,
         id: FileHash,
         name: SongName,
-        /* ...[
-          { hash: SQFileHash, type: SQExtName },
-          { hash: HQFileHash, type: HQExtName },
-          { hash: FileHash, type: ExtName },
-        ]
-          .slice(format)
-          .filter(({ hash }) => hash)[0], */
+        // ...[
+        //   { hash: SQFileHash, type: SQExtName },
+        //   { hash: HQFileHash, type: HQExtName },
+        //   { hash: FileHash, type: ExtName },
+        // ]
+        //   .slice(format)
+        //   .filter(({ hash }) => hash)[0],
       })
     );
   } catch {}
@@ -91,3 +87,6 @@ export default async function kugou(
   const selected = filter(list, song);
   return selected ? await songUrl(selected) : undefined;
 }
+ */
+
+export default undefined;

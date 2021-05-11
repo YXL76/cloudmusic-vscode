@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
     "lib": ["es2020"],
     "module": "commonjs",
     "noEmit": true,
@@ -11,5 +13,5 @@
     "strictNullChecks": true,
     "target": "es2020"
   },
-  "include": ["node-ipc"]
+  "include": ["."]
 }

@@ -1,93 +1,117 @@
-import { State, native } from ".";
+import { IPCServer, MusicCache, State, downloadMusic, native } from ".";
+import { readdir, stat, unlink } from "fs/promises";
+import { NeteaseAPI } from "./api";
+import { PersonalFm } from "./state";
+import { TMP_DIR } from "@cloudmusic/shared";
+import { resolve } from "path";
+
+let prefetchLock = false;
+
+async function prefetch() {
+  const id = State.fm ? (await PersonalFm.next()).id : Player.next;
+  const idS = `${id}`;
+  if (idS === "0" || MusicCache.get(idS)) return;
+
+  const { url, md5 } = await NeteaseAPI.songUrl(idS);
+  if (!url) return;
+
+  const path = resolve(TMP_DIR, idS);
+  void downloadMusic(url, idS, path, !State.fm, md5);
+  void NeteaseAPI.lyric(id);
+}
 
 export class Player {
+  static dt = 0;
+
+  static id = 0;
+
+  static pid = 0;
+
+  static next = 0;
+
+  static time = 0;
+
   private static readonly player = native.playerNew();
 
   static init(): void {
-    // void this.volume(this.context.globalState.get(VOLUME_KEY, 85));
-    /*  setInterval(() => {
-      if (State.playing) {
-        const pos = native.playerPosition(this.player);
-        if (pos > 120000 && !this.prefetchLock) {
-          this.prefetchLock = true;
-          void prefetch();
-        }
-        if (native.playerEmpty(this.player)) {
-          State.playing = false;
-          void commands.executeCommand("cloudmusic.next", ButtonManager.repeat);
-        } else {
-          while (lyric.time[lyric.index] <= pos - lyric.delay * 1000)
-            ++lyric.index;
-          ButtonManager.buttonLyric(lyric[lyric.type].text[lyric.index - 1]);
-          if (lyric.updatePanel) lyric.updatePanel(lyric.index - 1);
-        }
+    setInterval(() => {
+      if (!State.playing) return;
+      if (Player.empty()) {
+        State.playing = false;
+        IPCServer.sendToMaster({ t: "player.end" });
+        return;
       }
-    }, 1000); */
-    // 1000 * 60 * 8 = 480000
-    /*  setInterval(
+
+      const pos = Player.position();
+      if (pos > 120 && !prefetchLock) {
+        prefetchLock = true;
+        void prefetch();
+      }
+
+      const lpos = pos - State.lyric.delay;
+      while (State.lyric.o.time[State.lyric.oi] <= lpos) ++State.lyric.oi;
+      while (State.lyric.t.time[State.lyric.ti] <= lpos) ++State.lyric.ti;
+      IPCServer.broadcast({
+        t: "player.lyricIndex",
+        oi: State.lyric.oi - 1,
+        ti: State.lyric.ti - 1,
+      });
+    }, 800);
+
+    setInterval(
       () =>
-        void workspace.fs.readDirectory(TMP_DIR).then((items) => {
-          for (const [item] of items)
-            if (item !== `${this.treeitem?.id || 0}`) {
-              const path = Uri.joinPath(TMP_DIR, item);
-              void workspace.fs.stat(path).then(({ mtime }) => {
-                // 8 * 60 * 1000 = 960000
-                if (Date.now() - mtime > 480000) void workspace.fs.delete(path);
+        void readdir(TMP_DIR).then((files) => {
+          for (const file of files)
+            if (file !== `${this.id}`) {
+              const path = resolve(TMP_DIR, file);
+              void stat(path).then(({ mtime }) => {
+                if (Date.now() - mtime.getTime() > 480000)
+                  unlink(path).catch(() => {
+                    //
+                  });
               });
             }
         }),
+      // 1000 * 60 * 8 = 480000
       480000
-    ); */
+    );
   }
-
-  /* static load(url: string, pid: number, treeitem: QueueContent): void {
-    if (native.playerLoad(this.player, url)) {
-      native.playerSetVolume(
-        this.player,
-        this.context.globalState.get(VOLUME_KEY, 85)
-      );
-      State.playing = true;
-
-      if (treeitem instanceof QueueItemTreeItem)
-        void apiLyric(treeitem.valueOf).then(({ time, o, t }) =>
-          setLyric(0, time, o, t)
-        );
-
-      const pTime = this.time;
-      this.time = Date.now();
-      if (this.treeitem instanceof QueueItemTreeItem) {
-        const diff = this.time - pTime;
-        const { id, dt } = this.treeitem.item;
-        if (diff > 60000 && dt > 60000)
-          void apiScrobble(id, this.pid, Math.floor(Math.min(diff, dt)) / 1000);
-      }
-
-      this.treeitem = treeitem;
-      this.pid = pid;
-      this.prefetchLock = false;
-      State.loading = false;
-    } else void commands.executeCommand("cloudmusic.next");
-  } */
-
-  /*  static togglePlay(): void {
-    if (!native.playerEmpty(this.player)) {
-      if (State.playing) {
-        native.playerPause(this.player);
-        State.playing = false;
-      } else if (native.playerPlay(this.player)) State.playing = true;
-    }
-  } */
 
   static empty(): boolean {
     return native.playerEmpty(this.player);
   }
 
-  static load(url: string): boolean {
-    if (native.playerLoad(this.player, url)) {
-      State.playing = true;
-      return true;
+  static load(url: string, dt = 0, id = 0, pid = 0, next = 0): boolean {
+    if (!native.playerLoad(this.player, url)) return false;
+    this.next = next;
+    prefetchLock = false;
+    State.playing = true;
+
+    if (id) {
+      void NeteaseAPI.lyric(id).then((l) => {
+        Object.assign(State.lyric, l, { oi: 0, ti: 0 });
+        IPCServer.broadcast({ t: "player.lyric", lyric: { o: l.o, t: l.t } });
+      });
     }
-    return false;
+
+    const pTime = this.time;
+    this.time = Date.now();
+
+    if (this.id) {
+      const diff = this.time - pTime;
+      if (diff > 60000 && this.dt > 60000)
+        void NeteaseAPI.scrobble(
+          this.id,
+          this.pid,
+          Math.floor(Math.min(diff, this.dt)) / 1000
+        );
+    }
+
+    this.dt = dt;
+    this.id = id;
+    this.pid = pid;
+
+    return true;
   }
 
   static pause(): void {
@@ -112,3 +136,5 @@ export class Player {
     native.playerSetVolume(this.player, level);
   }
 }
+
+Player.init();

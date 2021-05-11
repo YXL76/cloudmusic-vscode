@@ -1,10 +1,9 @@
-import { EventEmitter, ThemeIcon, TreeItem, window } from "vscode";
-import type { ExtensionContext, TreeDataProvider } from "vscode";
+import { EventEmitter, ThemeIcon, TreeItem } from "vscode";
 import { LocalFileTreeItem, ProgramTreeItem } from ".";
 import type { PlayTreeItem, PlayTreeItemData, QueueContent } from ".";
-import { QUEUE_KEY, TreeItemId, UNBLOCK_MUSIC, unplayable } from "../constant";
-import type { SongsItem } from "../constant";
-import i18n from "../i18n";
+import type { NeteaseTypings } from "api";
+import type { TreeDataProvider } from "vscode";
+import { TreeItemId } from "../constant";
 import { unsortInplace } from "array-unsort";
 
 export const enum QueueSortType {
@@ -19,8 +18,6 @@ export const enum QueueSortOrder {
 }
 
 export class QueueProvider implements TreeDataProvider<QueueContent> {
-  static context: ExtensionContext;
-
   private static songs: QueueContent[] = [];
 
   private static instance: QueueProvider;
@@ -126,6 +123,10 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     this.add(this._parseRaw(items), index);
   }
 
+  static toJSON(): PlayTreeItemData[] {
+    return this.songs.map(({ data }) => data);
+  }
+
   private static _parseRaw(items: PlayTreeItemData[]): QueueContent[] {
     return items.map((item) => {
       switch (item.itemType) {
@@ -143,16 +144,8 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     elements: QueueContent[],
     index: number = this.len
   ): void {
-    if (UNBLOCK_MUSIC.enabled)
-      elements = elements.filter(
-        ({ valueOf }) => typeof valueOf !== "number" || !unplayable.has(valueOf)
-      );
-
     this.songs.splice(index, 0, ...elements);
     this.songs = [...new Set(this.songs)];
-
-    if (!UNBLOCK_MUSIC.enabled)
-      void window.showInformationMessage(i18n.sentence.hint.noUnplayable);
   }
 
   private static _clear() {
@@ -170,16 +163,11 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   }
 
   getChildren(): QueueContent[] {
-    // TODO only master
-    void QueueProvider.context.globalState.update(
-      QUEUE_KEY,
-      JSON.stringify(QueueProvider.songs.map(({ data }) => data))
-    );
     return QueueProvider.songs;
   }
 }
 
-export type QueueItemTreeItemData = SongsItem & {
+export type QueueItemTreeItemData = NeteaseTypings.SongsItem & {
   pid: number;
   itemType: TreeItemId.queue;
 };

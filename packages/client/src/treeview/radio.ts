@@ -5,16 +5,16 @@ import {
   TreeItemCollapsibleState,
 } from "vscode";
 import type { PlayTreeItem, RefreshAction } from ".";
-import type { ProgramDetail, RadioDetail } from "../constant";
 import { AccountManager } from "../manager";
+import { IPC } from "../utils";
+import type { NeteaseTypings } from "api";
 import type { TreeDataProvider } from "vscode";
 import { TreeItemId } from "../constant";
-import { apiCache } from "../util";
-import { apiDjProgram } from "../api";
 import i18n from "../i18n";
 
 export class RadioProvider
-  implements TreeDataProvider<RadioTreeItem | ProgramTreeItem> {
+  implements TreeDataProvider<RadioTreeItem | ProgramTreeItem>
+{
   static readonly radios = new Map<number, RadioTreeItem>();
 
   private static instance: RadioProvider;
@@ -34,10 +34,10 @@ export class RadioProvider
   static refresh(element?: RadioTreeItem, action?: RefreshAction): void {
     if (element) {
       if (action) this.action = action;
-      else apiCache.del(`dj_program${element.valueOf}`);
+      else IPC.deleteCache(`dj_program${element.valueOf}`);
     } else {
       this.radios.clear();
-      apiCache.del("dj_sublist");
+      IPC.deleteCache("dj_sublist");
     }
     this.instance._onDidChangeTreeData.fire(element);
   }
@@ -54,7 +54,10 @@ export class RadioProvider
     if (element) {
       const pid = element.valueOf;
       const programs = (
-        await apiDjProgram(element.valueOf, element.item.programCount)
+        await IPC.netease("djProgram", [
+          element.valueOf,
+          element.item.programCount,
+        ])
       ).map((program) => ProgramTreeItem.new({ ...program, pid }));
       const localAction = RadioProvider.action;
       if (localAction) {
@@ -84,7 +87,7 @@ ${i18n.word.subscribedCount}: ${this.item.subCount}`;
 
   readonly contextValue = "RadioTreeItem";
 
-  constructor(readonly item: RadioDetail) {
+  constructor(readonly item: NeteaseTypings.RadioDetail) {
     super(item.name, TreeItemCollapsibleState.Collapsed);
   }
 
@@ -93,7 +96,7 @@ ${i18n.word.subscribedCount}: ${this.item.subCount}`;
   }
 }
 
-export type ProgramTreeItemData = ProgramDetail & {
+export type ProgramTreeItemData = NeteaseTypings.ProgramDetail & {
   pid: number;
   itemType: TreeItemId.program;
 };
@@ -103,11 +106,11 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
 
   readonly label!: string;
 
-  readonly tooltip = this.data.description;
-
   readonly description = this.data.mainSong.ar
     .map(({ name }) => name)
     .join("/");
+
+  readonly tooltip = this.data.dj.nickname;
 
   readonly iconPath = new ThemeIcon("radio-tower");
 
@@ -122,7 +125,11 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
   };
 
   private constructor(readonly data: ProgramTreeItemData) {
-    super(data.mainSong.name);
+    super(
+      `${data.mainSong.name}${
+        data.mainSong.alia[0] ? ` (${data.mainSong.alia.join("/")})` : ""
+      }`
+    );
   }
 
   get valueOf(): number {

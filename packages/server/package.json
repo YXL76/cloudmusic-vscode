@@ -2,20 +2,25 @@
   "name": "@cloudmusic/server",
   "version": "1.0.0",
   "private": true,
+  "main": "./src/index.ts",
   "scripts": {
     "build": "webpack --mode production",
     "build-dev": "webpack --mode development",
     "test": "tsc -p tsconfig.json"
   },
   "devDependencies": {
+    "@types/api": "workspace:*",
     "@types/node": "14.14.43",
-    "@types/node-ipc": "workspace:*",
+    "@types/yallist": "4.0.0",
     "esbuild-loader": "2.13.0",
-    "webpack": "5.36.2",
-    "webpack-cli": "4.6.0"
+    "webpack": "5.37.0",
+    "webpack-cli": "4.7.0"
   },
   "dependencies": {
     "@cloudmusic/shared": "workspace:*",
-    "node-ipc": "9.1.4"
+    "axios": "0.21.1",
+    "md5-file": "5.0.0",
+    "node-cache": "5.1.2",
+    "yallist": "4.0.0"
   }
 }

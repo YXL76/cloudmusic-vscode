@@ -1,43 +1,47 @@
+import type { CommentCSMsg, WebviewType } from "@cloudmusic/shared";
 import { CommentList, Description, Login, Lyric, MusicRanking } from "./pages";
 import type { CommentListProps, DescriptionProps, LoginProps } from "./pages";
+import { request, startEventListener } from "./utils";
+import type { NeteaseTypings } from "api";
 import React from "react";
-import type { RecordData } from "@cloudmusic/shared";
 import { render } from "react-dom";
-import { request } from "./utils";
-import { webview } from "@cloudmusic/shared";
 
-declare const PAGE_PAGE: webview.Type;
+declare const PAGE_PAGE: WebviewType;
 
 const root = document.getElementById("root");
 
 (async () => {
   switch (PAGE_PAGE) {
-    case webview.Type.comment:
+    case "comment":
       {
-        const props = await request<CommentListProps, webview.CommentCSMsg>({
+        startEventListener();
+        const props = await request<CommentListProps, CommentCSMsg>({
           command: "init",
         });
         render(<CommentList {...props} />, root);
       }
       break;
-    case webview.Type.description:
+    case "description":
       {
+        startEventListener();
         const props = await request<DescriptionProps>(undefined);
         render(<Description {...props} />, root);
       }
       break;
-    case webview.Type.login:
+    case "login":
       {
+        startEventListener();
         const props = await request<LoginProps>(undefined);
         render(<Login {...props} />, root);
       }
       break;
-    case webview.Type.lyric:
+    case "lyric":
       render(<Lyric />, root);
       break;
-    case webview.Type.musicRanking:
+    case "musicRanking":
       {
-        const record = await request<RecordData[][]>(undefined);
+        startEventListener();
+        const record = await request<NeteaseTypings.RecordData[][]>(undefined);
         render(
           <MusicRanking
             record={record}

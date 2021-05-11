@@ -1,14 +1,15 @@
-import type { CommentDetail, webview } from "@cloudmusic/shared";
 import React, { useState } from "react";
 import { request, vscode } from "../utils";
+import type { CommentCSMsg } from "@cloudmusic/shared";
 import { FiThumbsUp } from "react-icons/fi";
+import type { NeteaseTypings } from "api";
 import dayjs from "dayjs";
 import i18n from "../i18n";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 dayjs.extend(relativeTime);
 
-type CommentProps = CommentDetail;
+type CommentProps = NeteaseTypings.CommentDetail;
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const Comment = ({
@@ -67,7 +68,7 @@ export const Comment = ({
               className="cursor-pointer inline-block"
               onClick={async () => {
                 if (
-                  await request<boolean, webview.CommentCSMsg>({
+                  await request<boolean, CommentCSMsg>({
                     command: "like",
                     id: commentId,
                     t: l ? "unlike" : "like",

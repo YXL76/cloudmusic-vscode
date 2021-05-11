@@ -1,12 +1,13 @@
 import { Comment, Tabs } from "../components";
-import type { CommentRet, webview } from "@cloudmusic/shared";
 import React, { useState } from "react";
+import type { CommentCSMsg } from "@cloudmusic/shared";
+import type { NeteaseTypings } from "api";
 import i18n from "../i18n";
 import { request } from "../utils";
 
 export type CommentListProps = {
   titles: string[];
-} & CommentRet;
+} & NeteaseTypings.CommentRet;
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const CommentList = ({
@@ -29,12 +30,13 @@ export const CommentList = ({
           title={`${i18n.word.comment} (${state.totalCount})`}
           titles={titles}
           selectd={state.index}
-          // TODO
           switchTab={async (index) => {
-            const list = await request<CommentRet, webview.CommentCSMsg>({
-              command: "tabs",
-              index,
-            });
+            const list = await request<NeteaseTypings.CommentRet, CommentCSMsg>(
+              {
+                command: "tabs",
+                index,
+              }
+            );
             setState({ ...state, ...list, index });
           }}
         />
@@ -47,7 +49,10 @@ export const CommentList = ({
           <button
             className="cursor-pointer mr-4 p-2 rounded-md bg-transparent text-lg text-blue-600 border-solid border-2 border-blue-600 focus:outline-none"
             onClick={async () => {
-              const list = await request<CommentRet, webview.CommentCSMsg>({
+              const list = await request<
+                NeteaseTypings.CommentRet,
+                CommentCSMsg
+              >({
                 command: "prev",
               });
               setState({ ...state, ...list });
@@ -60,7 +65,10 @@ export const CommentList = ({
           <button
             className="cursor-pointer ml-4 p-2 rounded-md bg-transparent text-lg text-blue-600 border-solid border-2 border-blue-600 focus:outline-none"
             onClick={async () => {
-              const list = await request<CommentRet, webview.CommentCSMsg>({
+              const list = await request<
+                NeteaseTypings.CommentRet,
+                CommentCSMsg
+              >({
                 command: "next",
               });
               setState({ ...state, ...list });

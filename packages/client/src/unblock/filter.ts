@@ -1,4 +1,4 @@
-import type { SongsItem, UnlockSongItem } from "../constant";
+/* import type { SongsItem, UnlockSongItem } from "../constant";
 
 export default function filter(
   list: UnlockSongItem[],
@@ -25,3 +25,6 @@ export default function filter(
 
   return (newList.length > 0 ? newList : list).shift();
 }
+ */
+
+export default undefined;

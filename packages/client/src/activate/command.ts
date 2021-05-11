@@ -1,10 +1,4 @@
-import {
-  IPCClient,
-  LikeState,
-  MultiStepInput,
-  State,
-  likeMusic,
-} from "../util";
+import { IPC, LikeState, MultiStepInput, State, likeMusic } from "../utils";
 import { QueueItemTreeItem, QueueProvider } from "../treeview";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
@@ -15,32 +9,27 @@ import i18n from "../i18n";
 export function initCommand(context: ExtensionContext): void {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.previous", () => {
-      if (/* !PersonalFm.state &&  */ QueueProvider.len) IPCClient.shift(1);
+      if (!State.fm && QueueProvider.len) IPC.shift(-1);
     }),
 
     commands.registerCommand("cloudmusic.next", () => {
-      // TODO
-      /* if (repeat) void load(Player.item);
-      else {
-        if (PersonalFm.state) void load(await PersonalFm.head());
-        else  
-      } */
-      if (QueueProvider.len) IPCClient.shift(-1);
+      if (State.fm) IPC.fmNext();
+      else if (QueueProvider.len) IPC.shift(1);
     }),
 
-    commands.registerCommand("cloudmusic.play", () => IPCClient.toggle()),
+    commands.registerCommand("cloudmusic.toggle", () => IPC.toggle()),
 
     commands.registerCommand("cloudmusic.repeat", () =>
-      ButtonManager.buttonRepeat()
+      IPC.repeat(!State.repeat)
     ),
 
-    /* commands.registerCommand("cloudmusic.like", () => {
+    commands.registerCommand("cloudmusic.like", () => {
       if (
-        Player.item instanceof QueueItemTreeItem &&
+        State.playItem instanceof QueueItemTreeItem &&
         State.like !== LikeState.none
       )
-        void likeMusic(Player.item.valueOf, !State.like);
-    }), */
+        void likeMusic(State.playItem.valueOf, !State.like);
+    }),
 
     commands.registerCommand("cloudmusic.volume", () => {
       void MultiStepInput.run(async (input) => {
@@ -53,7 +42,7 @@ export function initCommand(context: ExtensionContext): void {
         });
         if (/^[1-9]\d$|^\d$|^100$/.exec(levelS)) {
           const level = parseInt(levelS);
-          IPCClient.volume(level);
+          IPC.volume(level);
           await context.globalState.update(VOLUME_KEY, level);
         }
         return input.stay();
@@ -63,11 +52,8 @@ export function initCommand(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.toggleButton",
       () => void ButtonManager.toggle()
-    )
+    ),
 
-    /* commands.registerCommand(
-      "cloudmusic.personalFM",
-      () => (PersonalFm.state = true)
-    ) */
+    commands.registerCommand("cloudmusic.personalFM", () => IPC.fm())
   );
 }
