@@ -19,6 +19,7 @@ import { State } from ".";
 import Yallist from "yallist";
 import md5File from "md5-file";
 import { resolve } from "path";
+import { writeFileSync } from "fs";
 
 export const apiCache = new NodeCache({
   stdTTL: 300,
@@ -98,10 +99,12 @@ export class MusicCache {
           set.delete(value.key);
           this._addNode(value);
         });
-    } catch {}
+    } catch (err) {
+      console.error(err);
+    }
 
     try {
-      const names = [...set] as string[];
+      const names = [...set];
       (
         await Promise.all(
           names.map((name) => stat(resolve(MUSIC_CACHE_DIR, name)))
@@ -109,7 +112,10 @@ export class MusicCache {
       ).forEach(({ size }, index) =>
         this._addNode({ key: names[index], size })
       );
-    } catch {}
+      this.store();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   static clear(): void {
@@ -128,8 +134,10 @@ export class MusicCache {
 
   static store(): void {
     try {
-      void writeFile(this.listPath, JSON.stringify(this.list.toArray()));
-    } catch {}
+      writeFileSync(this.listPath, JSON.stringify(this.list.toArray()));
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   static get(key: string): string | void {
