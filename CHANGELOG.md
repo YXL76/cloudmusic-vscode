@@ -6,6 +6,23 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [8.1.0] - 2021-05-12
+
+### Added
+
+- IPC: redirect the server process' output into file
+- Player
+  - Set loading timeout to 30s
+
+### Changed
+
+- Treeview: improve performance and reduce memory usage
+
+### Fixed
+
+- API: fix lyric parsing and reject free trial
+- Player: multiple pages competing for `mediaSession`
+
 ## [8.0.0] - 2021-05-12
 
 🎉🎉🎉 This version has a great improvement in user experience. By using interprocess communication, multiple extension instances can be synchronized, and the previous state can be automatically restored after reloading the window. ([#388](https://github.com/YXL76/cloudmusic-vscode/issues/388))

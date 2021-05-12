@@ -57,7 +57,7 @@
 
 ## Requirements
 
-一般来说，不需要进行任何额外的操作就可以正常使用。对于`Windows`用户，如果扩展无法正常初始化，请尝试安装[Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
+支持`Windows arm64`、`Windows x64`、`Mac OS x64`、`Linux x64`
 
 ## Usage
 
