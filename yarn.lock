@@ -56,7 +56,7 @@ __metadata:
   dependencies:
     "@cloudmusic/shared": "workspace:*"
     "@types/api": "workspace:*"
-    "@types/lodash": 4.14.168
+    "@types/lodash": 4.14.169
     "@types/node": 14.14.43
     "@types/qrcode": "workspace:*"
     "@types/vscode": 1.56.0
@@ -305,10 +305,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:4.14.168":
-  version: 4.14.168
-  resolution: "@types/lodash@npm:4.14.168"
-  checksum: 3326966ee089debde7a7d819e13b64991756e879945852c3357df14a7be837130f697c2cb451be9dd599eb7213fed0975bc9ca0f8f56b46fa73c46a83815b79c
+"@types/lodash@npm:4.14.169":
+  version: 4.14.169
+  resolution: "@types/lodash@npm:4.14.169"
+  checksum: 78c9e49f4c9d21e72bdf5d7f64da3a2db4daad9e8b72cbd72605dacfddec49038e0ddc21e6646e169e78d4f365fb8abb34a03dbb29cbb1112f332adb81be3e4f
   languageName: node
   linkType: hard
 
@@ -1528,12 +1528,6 @@ __metadata:
   checksum: aaf106e9bc025b21333e2f4c12da539b568db4925c0501a1bf4070836c9e848c892fa22c35548ce0d1132b08bbbfa17a00144fe58fccdab6fa900fec4250f67d
   languageName: node
   linkType: hard
-
-"cloudmusic-wasi@workspace:packages/wasi":
-  version: 0.0.0-use.local
-  resolution: "cloudmusic-wasi@workspace:packages/wasi"
-  languageName: unknown
-  linkType: soft
 
 "cloudmusic@workspace:.":
   version: 0.0.0-use.local
