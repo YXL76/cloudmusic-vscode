@@ -18,144 +18,160 @@ export const enum QueueSortOrder {
 }
 
 export class QueueProvider implements TreeDataProvider<QueueContent> {
-  private static songs: QueueContent[] = [];
+  private static _songs: PlayTreeItemData[] = [];
 
-  private static instance: QueueProvider;
+  private static _instance: QueueProvider;
 
   _onDidChangeTreeData = new EventEmitter<QueueContent | void>();
 
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
   static getInstance(): QueueProvider {
-    return this.instance || (this.instance = new QueueProvider());
+    return this._instance || (this._instance = new QueueProvider());
   }
 
   static get len(): number {
-    return this.songs.length;
+    return this._songs.length;
   }
 
   static get head(): QueueContent | undefined {
-    return this.songs?.[0];
+    return this._songs?.[0] ? this._parseRaw(this._songs[0]) : undefined;
   }
 
   static get next(): QueueContent | undefined {
-    return this.songs?.[1];
+    return this._songs?.[1] ? this._parseRaw(this._songs[1]) : undefined;
+  }
+
+  static get songs(): PlayTreeItemData[] {
+    return this._songs;
   }
 
   static random(): PlayTreeItemData[] {
-    const [head, ...rest] = this.songs;
-    return head
-      ? [head.data, ...unsortInplace(rest.map(({ data }) => data))]
-      : [];
+    const [head, ...rest] = this._songs;
+    return head ? [head, ...unsortInplace(rest)] : [];
   }
 
-  static new(elements: QueueContent[], id?: number): void {
+  static new(elements: PlayTreeItemData[], id?: number): void {
     this._clear();
     this._add(elements);
-    id ? this.top(id) : this.instance._onDidChangeTreeData.fire();
+
+    id ? this.top(id) : this._instance._onDidChangeTreeData.fire();
   }
 
   static clear(): void {
     this._clear();
 
-    this.instance._onDidChangeTreeData.fire();
+    this._instance._onDidChangeTreeData.fire();
   }
 
-  static top(id: number | string): void {
-    this.shift(this.songs.findIndex((value) => value.valueOf === id));
+  static top(that: number | string): void {
+    this.shift(this._songs.findIndex(({ id }) => that === id));
   }
 
   static shift(index: number): void {
     this._shift(index);
 
-    this.instance._onDidChangeTreeData.fire();
+    this._instance._onDidChangeTreeData.fire();
   }
 
-  static add(elements: QueueContent[], index: number = this.len): void {
+  static add(elements: PlayTreeItemData[], index: number = this.len): void {
     this._add(elements, index);
 
-    this.instance._onDidChangeTreeData.fire();
+    this._instance._onDidChangeTreeData.fire();
   }
 
-  static delete(id: number | string): void {
-    const index = this.songs.findIndex(({ valueOf }) => valueOf === id);
-    if (index >= 0) this.songs.splice(index, 1);
+  static delete(that: number | string): void {
+    const index = this._songs.findIndex(({ id }) => that === id);
+    if (index >= 0) this._songs.splice(index, 1);
 
-    this.instance._onDidChangeTreeData.fire();
+    this._instance._onDidChangeTreeData.fire();
   }
 
-  static sort(type: QueueSortType, order: QueueSortOrder): void {
+  static sort(type: QueueSortType, order: QueueSortOrder): PlayTreeItemData[] {
+    const getName = (item: PlayTreeItemData): string => {
+      switch (item.itemType) {
+        case TreeItemId.local:
+          return item.filename;
+        case TreeItemId.program:
+          return item.mainSong.name;
+        case TreeItemId.queue:
+          return item.name;
+      }
+    };
+    const getAlbum = (item: PlayTreeItemData): string => {
+      switch (item.itemType) {
+        case TreeItemId.local:
+          return item.ext;
+        case TreeItemId.program:
+          return item.mainSong.al.name;
+        case TreeItemId.queue:
+          return item.al.name;
+      }
+    };
+    const getArtist = (item: PlayTreeItemData): string => {
+      switch (item.itemType) {
+        case TreeItemId.local:
+          return "";
+        case TreeItemId.program:
+          return item.mainSong.ar?.[0].name ?? "";
+        case TreeItemId.queue:
+          return item.ar?.[0].name ?? "";
+      }
+    };
+
     switch (type) {
       case QueueSortType.song:
-        this.songs.sort(
+        this._songs.sort(
           order === QueueSortOrder.ascending
-            ? ({ label: a }, { label: b }) => a.localeCompare(b)
-            : ({ label: a }, { label: b }) => b.localeCompare(a)
+            ? (a, b) => getName(a).localeCompare(getName(b))
+            : (a, b) => getName(b).localeCompare(getName(a))
         );
         break;
       case QueueSortType.album:
-        this.songs.sort(
+        this._songs.sort(
           order === QueueSortOrder.ascending
-            ? ({ item: { al: a } }, { item: { al: b } }) =>
-                a.name.localeCompare(b.name)
-            : ({ item: { al: a } }, { item: { al: b } }) =>
-                b.name.localeCompare(a.name)
+            ? (a, b) => getAlbum(a).localeCompare(getAlbum(b))
+            : (a, b) => getAlbum(b).localeCompare(getAlbum(a))
         );
         break;
       case QueueSortType.artist:
-        this.songs.sort(
+        this._songs.sort(
           order === QueueSortOrder.ascending
-            ? ({ item: { ar: a } }, { item: { ar: b } }) =>
-                a?.[0].name.localeCompare(b?.[0].name)
-            : ({ item: { ar: a } }, { item: { ar: b } }) =>
-                b?.[0].name.localeCompare(a?.[0].name)
+            ? (a, b) => getArtist(a).localeCompare(getArtist(b))
+            : (a, b) => getArtist(b).localeCompare(getArtist(a))
         );
     }
-
-    this.instance._onDidChangeTreeData.fire();
+    return this._songs;
   }
 
-  static newRaw(items: PlayTreeItemData[], id?: number): void {
-    this.new(this._parseRaw(items), id);
-  }
-
-  static addRaw(items: PlayTreeItemData[], index?: number): void {
-    this.add(this._parseRaw(items), index);
-  }
-
-  static toJSON(): PlayTreeItemData[] {
-    return this.songs.map(({ data }) => data);
-  }
-
-  private static _parseRaw(items: PlayTreeItemData[]): QueueContent[] {
-    return items.map((item) => {
-      switch (item.itemType) {
-        case TreeItemId.local:
-          return LocalFileTreeItem.new(item.filename, item.ext, item.path);
-        case TreeItemId.program:
-          return ProgramTreeItem.new(item);
-        default:
-          return QueueItemTreeItem.new(item);
-      }
-    });
+  private static _parseRaw(item: PlayTreeItemData): QueueContent {
+    switch (item.itemType) {
+      case TreeItemId.local:
+        return LocalFileTreeItem.new(item.filename, item.ext, item.id);
+      case TreeItemId.program:
+        return ProgramTreeItem.new(item);
+      default:
+        return QueueItemTreeItem.new(item);
+    }
   }
 
   private static _add(
-    elements: QueueContent[],
+    elements: PlayTreeItemData[],
     index: number = this.len
   ): void {
-    this.songs.splice(index, 0, ...elements);
-    this.songs = [...new Set(this.songs)];
+    this._songs.splice(index, 0, ...elements);
+    // TODO
+    // this._songs = [...new Set(this._songs)];
   }
 
   private static _clear() {
-    this.songs = [];
+    this._songs = [];
   }
 
   private static _shift(index: number): void {
     if (index === 0) return;
     while (index < 0) index += this.len;
-    this.songs.push(...this.songs.splice(0, index));
+    this._songs.push(...this._songs.splice(0, index));
   }
 
   getTreeItem(element: QueueContent): QueueContent {
@@ -163,7 +179,11 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   }
 
   getChildren(): QueueContent[] {
-    return QueueProvider.songs;
+    const treeitem = [
+      ...new Set(QueueProvider._songs.map((i) => QueueProvider._parseRaw(i))),
+    ];
+    QueueProvider._songs = treeitem.map(({ data }) => data);
+    return treeitem;
   }
 }
 

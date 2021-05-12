@@ -63,7 +63,7 @@ export function initQueue(context: ExtensionContext): void {
           ],
         });
 
-        IPC.sort(pick.type, pick.order);
+        IPC.new(QueueProvider.sort(pick.type, pick.order));
         return input.stay();
       });
     }),

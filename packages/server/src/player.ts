@@ -103,6 +103,7 @@ export class Player {
     const pTime = this._time;
     this._time = Date.now();
 
+    // TODO
     if (this._id) {
       const diff = this._time - pTime;
       if (diff > 60000 && this._dt > 60000)

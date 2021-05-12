@@ -80,7 +80,7 @@ export class LocalProvider
       const localAction = LocalProvider.action;
       if (localAction) {
         LocalProvider.action = undefined;
-        localAction(items);
+        localAction(items.map(({ data }) => data));
       }
       return items;
     }
@@ -105,7 +105,7 @@ export class LocalLibraryTreeItem extends TreeItem {
 export type LocalFileTreeItemData = {
   filename: string;
   ext: string;
-  path: string;
+  id: string; // path
   itemType: TreeItemId.local;
 };
 
@@ -126,7 +126,7 @@ export class LocalFileTreeItem extends TreeItem implements PlayTreeItem {
   readonly data = {
     filename: this.label,
     ext: this.description,
-    path: this.tooltip,
+    id: this.tooltip,
     itemType: TreeItemId.local as TreeItemId.local,
   };
 

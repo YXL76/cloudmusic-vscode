@@ -26,8 +26,7 @@ export type IPCBroadcastMsg =
   | IPCMsg<IPCEvent.Queue$new, { items: unknown[]; id?: number }>
   | IPCMsg<IPCEvent.Queue$play, { id: string | number }>
   | IPCMsg<IPCEvent.Queue$random, { items: unknown[] }>
-  | IPCMsg<IPCEvent.Queue$shift, { index: number }>
-  | IPCMsg<IPCEvent.Queue$sort, { type: number; order: number }>;
+  | IPCMsg<IPCEvent.Queue$shift, { index: number }>;
 
 export type IPCClientMsg =
   | IPCMsg<IPCEvent.Control$deleteCache, { key: string }>
@@ -35,7 +34,7 @@ export type IPCClientMsg =
   | IPCMsg<IPCEvent.Control$init, { mq: number; cs: number; volume: number }>
   | IPCMsg<IPCEvent.Control$lyric>
   | IPCMsg<IPCEvent.Control$music>
-  | IPCMsg<IPCEvent.Control$retain, { items: string }>
+  | IPCMsg<IPCEvent.Control$retain, { items: unknown[] }>
   | IPCMsg<
       IPCEvent.Play$load,
       {
@@ -62,7 +61,7 @@ export type IPCServerMsg =
   | IPCMsg<IPCEvent.Control$cookie, { cookie: string }>
   | IPCMsg<IPCEvent.Control$master, { is?: true }>
   | IPCMsg<IPCEvent.Control$new>
-  | IPCMsg<IPCEvent.Control$retain, { items: string }>
+  | IPCMsg<IPCEvent.Control$retain, { items: unknown[] }>
   | IPCMsg<IPCEvent.Play$end, { fail?: true }>
   | IPCMsg<IPCEvent.Play$load>
   | IPCMsg<IPCEvent.Play$lyric, { lyric: NeteaseTypings.LyricData }>

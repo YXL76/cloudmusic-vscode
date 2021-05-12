@@ -10,37 +10,22 @@ import type {
 } from "@cloudmusic/shared";
 import { LocalFileTreeItem, QueueProvider } from "../treeview";
 import { MUSIC_CACHE_SIZE, MUSIC_QUALITY } from "../constant";
-import type {
-  PlayTreeItemData,
-  QueueSortOrder,
-  QueueSortType,
-} from "../treeview";
 import {
-  ipcAppspace,
-  ipcBroadcastServerId,
+  ipcBroadcastServerPath,
   ipcDelimiter,
-  ipcServerId,
+  ipcServerPath,
 } from "@cloudmusic/shared";
+import type { PlayTreeItemData } from "../treeview";
 import type { Socket } from "net";
 import { State } from ".";
 import { connect } from "net";
-import { platform } from "os";
 
 class IPCClient<T, U = T> {
   private _buffer = "";
 
   private _socket?: Socket;
 
-  private readonly _path: string;
-
-  constructor(id: string) {
-    this._path =
-      platform() === "win32"
-        ? `\\\\.\\pipe\\${`/tmp/${ipcAppspace}${id}`
-            .replace(/^\//, "")
-            .replace(/\//g, "-")}`
-        : `/tmp/${ipcAppspace}${id}`;
-  }
+  constructor(private readonly _path: string) {}
 
   connect(handler: (data: U) => void, retry: number): Promise<boolean> {
     if (this._socket?.readable && this._socket.writable)
@@ -104,8 +89,8 @@ class IPCClient<T, U = T> {
   }
 }
 
-const ipc = new IPCClient<IPCClientMsg, IPCServerMsg>(ipcServerId);
-const ipcB = new IPCClient<IPCBroadcastMsg>(ipcBroadcastServerId);
+const ipc = new IPCClient<IPCClientMsg, IPCServerMsg>(ipcServerPath);
+const ipcB = new IPCClient<IPCBroadcastMsg>(ipcBroadcastServerPath);
 
 export class IPC {
   static requestPool = new Map() as CSConnPool;
@@ -183,7 +168,7 @@ export class IPC {
   static retain(): void {
     ipc.send({
       t: "control.retain",
-      items: JSON.stringify(QueueProvider.toJSON()),
+      items: QueueProvider.songs,
     });
   }
 
@@ -244,10 +229,6 @@ export class IPC {
 
   static shift(index: number): void {
     ipcB.send({ t: "queue.shift", index });
-  }
-
-  static sort(type: QueueSortType, order: QueueSortOrder): void {
-    ipcB.send({ t: "queue.sort", type, order });
   }
 
   static netease<I extends NeteaseAPIKey, P = NeteaseAPIParameters<I>>(

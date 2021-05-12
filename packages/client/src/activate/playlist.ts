@@ -85,9 +85,7 @@ export function initPlaylist(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.playPlaylist",
       (element: PlaylistItemTreeItem) =>
-        PlaylistProvider.refresh(element, (items) =>
-          IPC.new(items.map(({ data }) => data))
-        )
+        PlaylistProvider.refresh(element, (items) => IPC.new(items))
     ),
 
     commands.registerCommand(
@@ -143,9 +141,7 @@ export function initPlaylist(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.addPlaylist",
       (element: PlaylistItemTreeItem) =>
-        PlaylistProvider.refresh(element, (items) =>
-          IPC.add(items.map(({ data }) => data))
-        )
+        PlaylistProvider.refresh(element, (items) => IPC.add(items))
     ),
 
     commands.registerCommand(
@@ -170,8 +166,7 @@ export function initPlaylist(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.intelligence",
-      async (element: QueueItemTreeItem) => {
-        const { data } = element;
+      async ({ data }: QueueItemTreeItem) => {
         const songs = await IPC.netease("playmodeIntelligenceList", [
           data.id,
           data.pid,
@@ -194,10 +189,7 @@ export function initPlaylist(context: ExtensionContext): void {
       "cloudmusic.playSongWithPlaylist",
       ({ data: { id, pid } }: QueueItemTreeItem) =>
         PlaylistProvider.refresh(PlaylistProvider.playlists.get(pid), (items) =>
-          IPC.new(
-            items.map(({ data }) => data),
-            id
-          )
+          IPC.new(items, id)
         )
     ),
 

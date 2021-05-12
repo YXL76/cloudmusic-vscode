@@ -20,7 +20,7 @@ export type QueueContent =
   | LocalFileTreeItem
   | ProgramTreeItem;
 
-export type RefreshAction = (items: QueueContent[]) => void;
+export type RefreshAction = (items: PlayTreeItemData[]) => void;
 
 export type PlayTreeItemData =
   | ({ itemType: TreeItemId.local } & LocalFileTreeItemData)

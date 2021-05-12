@@ -39,7 +39,7 @@ const ipcBHandler = (data: IPCBroadcastMsg) => {
       State.repeat = data.r;
       break;
     case "queue.add":
-      QueueProvider.addRaw(data.items as PlayTreeItemData[], data.index);
+      QueueProvider.add(data.items as PlayTreeItemData[], data.index);
       break;
     case "queue.clear":
       QueueProvider.clear();
@@ -48,16 +48,13 @@ const ipcBHandler = (data: IPCBroadcastMsg) => {
       QueueProvider.delete(data.id);
       break;
     case "queue.new":
-      QueueProvider.newRaw(data.items as PlayTreeItemData[], data.id);
+      QueueProvider.new(data.items as PlayTreeItemData[], data.id);
       break;
     case "queue.play":
       QueueProvider.top(data.id);
       break;
     case "queue.shift":
       QueueProvider.shift(data.index);
-      break;
-    case "queue.sort":
-      QueueProvider.sort(data.type, data.order);
       break;
   }
 };
@@ -92,10 +89,10 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         State.master = !!data.is;
         break;
       case "control.new":
-        IPC.new(QueueProvider.toJSON());
+        IPC.new(QueueProvider.songs);
         break;
       case "control.retain":
-        QueueProvider.newRaw(JSON.parse(data.items) as PlayTreeItemData[]);
+        QueueProvider.new(data.items as PlayTreeItemData[]);
         State.loading = false;
         break;
       case "player.end":

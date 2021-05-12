@@ -62,7 +62,7 @@ export class RadioProvider
       const localAction = RadioProvider.action;
       if (localAction) {
         RadioProvider.action = undefined;
-        localAction(programs);
+        localAction(programs.map(({ data }) => data));
       }
       return programs;
     }

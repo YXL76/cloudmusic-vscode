@@ -42,12 +42,6 @@ export class PlaylistProvider
     this.instance._onDidChangeTreeData.fire(element);
   }
 
-  private static async getPlaylistContent(pid: number) {
-    const songs = await IPC.netease("playlistDetail", [pid]);
-    const ret = songs.map((song) => QueueItemTreeItem.new({ ...song, pid }));
-    return ret;
-  }
-
   getTreeItem(
     element: PlaylistItemTreeItem | QueueItemTreeItem
   ): PlaylistItemTreeItem | QueueItemTreeItem {
@@ -58,12 +52,13 @@ export class PlaylistProvider
     element?: PlaylistItemTreeItem
   ): Promise<(PlaylistItemTreeItem | QueueItemTreeItem)[]> {
     if (element) {
-      const { id } = element.item;
-      const ret = await PlaylistProvider.getPlaylistContent(id);
+      const { id: pid } = element.item;
+      const songs = await IPC.netease("playlistDetail", [pid]);
+      const ret = songs.map((song) => QueueItemTreeItem.new({ ...song, pid }));
       const localAction = PlaylistProvider.action;
       if (localAction) {
         PlaylistProvider.action = undefined;
-        localAction(ret);
+        localAction(ret.map(({ data }) => data));
       }
       return ret;
     }

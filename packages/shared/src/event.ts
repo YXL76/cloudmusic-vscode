@@ -33,4 +33,3 @@ export type Queue$play = "queue.play";
 export type Queue$new = "queue.new";
 export type Queue$random = "queue.random";
 export type Queue$shift = "queue.shift";
-export type Queue$sort = "queue.sort";

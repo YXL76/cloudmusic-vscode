@@ -21,15 +21,11 @@ export function initRadio(context: ExtensionContext): void {
     ),
 
     commands.registerCommand("cloudmusic.playRadio", (element: RadioTreeItem) =>
-      RadioProvider.refresh(element, (items) =>
-        IPC.new(items.map(({ data }) => data))
-      )
+      RadioProvider.refresh(element, (items) => IPC.new(items))
     ),
 
     commands.registerCommand("cloudmusic.addRadio", (element: RadioTreeItem) =>
-      RadioProvider.refresh(element, (items) =>
-        IPC.add(items.map(({ data }) => data))
-      )
+      RadioProvider.refresh(element, (items) => IPC.add(items))
     ),
 
     commands.registerCommand(
@@ -47,10 +43,7 @@ export function initRadio(context: ExtensionContext): void {
       "cloudmusic.playProgram",
       ({ data: { id, pid } }: ProgramTreeItem) =>
         RadioProvider.refresh(RadioProvider.radios.get(pid), (items) =>
-          IPC.new(
-            items.map(({ data }) => data),
-            id
-          )
+          IPC.new(items, id)
         )
     ),
 

@@ -1,11 +1,25 @@
-export const ipcAppspace = "cm-vsc";
-export const ipcServerId = "server";
-export const ipcBroadcastServerId = "bc-server";
+import { homedir, platform } from "os";
+import { resolve } from "path";
+
+const ipcAppspace = "cm-vsc";
+const ipcServerId = "server";
+const ipcBroadcastServerId = "bc-server";
+
+export const ipcServerPath =
+  platform() === "win32"
+    ? `\\\\.\\pipe\\${`/tmp/${ipcAppspace}${ipcServerId}`
+        .replace(/^\//, "")
+        .replace(/\//g, "-")}`
+    : `/tmp/${ipcAppspace}${ipcServerId}`;
+
+export const ipcBroadcastServerPath =
+  platform() === "win32"
+    ? `\\\\.\\pipe\\${`/tmp/${ipcAppspace}${ipcBroadcastServerId}`
+        .replace(/^\//, "")
+        .replace(/\//g, "-")}`
+    : `/tmp/${ipcAppspace}${ipcBroadcastServerId}`;
 
 export const ipcDelimiter = "\f";
-
-import { homedir } from "os";
-import { resolve } from "path";
 
 export const HOME_DIR = homedir();
 export const SETTING_DIR = resolve(HOME_DIR, ".cloudmusic");

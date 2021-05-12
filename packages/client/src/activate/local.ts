@@ -57,17 +57,13 @@ export function initLocal(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.playLocalLibrary",
       (element: LocalLibraryTreeItem) =>
-        LocalProvider.refresh(element, (items) =>
-          IPC.new(items.map(({ data }) => data))
-        )
+        LocalProvider.refresh(element, (items) => IPC.new(items))
     ),
 
     commands.registerCommand(
       "cloudmusic.addLocalLibrary",
       (element: LocalLibraryTreeItem) =>
-        LocalProvider.refresh(element, (items) =>
-          IPC.add(items.map(({ data }) => data))
-        )
+        LocalProvider.refresh(element, (items) => IPC.add(items))
     ),
 
     commands.registerCommand(
