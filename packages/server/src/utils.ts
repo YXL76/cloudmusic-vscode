@@ -24,15 +24,23 @@ export async function getMusicPath(
   const tmpUri = resolve(TMP_DIR, idS);
   const download = await getMusic(url, idS, tmpUri, !State.fm, md5);
   if (!download) return;
+
   return new Promise((resolve) => {
+    const timer = setTimeout(() => {
+      download.destroy();
+      resolve();
+    }, 30000);
+
     let len = 0;
     const onData = ({ length }: { length: number }) => {
       len += length;
       if (len > State.minSize) {
         download.removeListener("data", onData);
+        clearTimeout(timer);
         resolve(tmpUri);
       }
     };
+
     download.on("data", onData);
     download.once("error", () => resolve());
     const file = createWriteStream(tmpUri);
