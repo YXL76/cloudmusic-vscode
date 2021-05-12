@@ -60,20 +60,27 @@ export class AccountViewProvider implements WebviewViewProvider {
 
   static metadata(): void {
     const item = State.playItem;
-    if (!item) this._view?.webview.postMessage({ command: "metadata" });
-    else
-      this._view?.webview.postMessage({
-        command: "metadata",
-        // duration: item.item.dt / 1000,
-        title: item.label,
-        artist: item.description,
-        album: item.tooltip,
-        artwork: [{ src: item.item.al.picUrl }],
-      });
+    this._view?.webview.postMessage(
+      item
+        ? {
+            command: "metadata",
+            // duration: item.item.dt / 1000,
+            title: item.label,
+            artist: item.description,
+            album: item.tooltip,
+            artwork: [{ src: item.item.al.picUrl }],
+          }
+        : { command: "metadata" }
+    );
   }
 
   static toggleHTML(master: boolean): void {
-    if (this._view?.webview) this._view.webview.html = master ? this._html : "";
+    if (this._view?.webview) {
+      if (master) {
+        this._view.webview.html = this._html;
+        setTimeout(() => AccountViewProvider.metadata(), 4096);
+      } else this._view.webview.html = "";
+    }
   }
 
   resolveWebviewView(
