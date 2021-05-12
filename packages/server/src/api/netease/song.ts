@@ -31,7 +31,7 @@ const resolveLyric = (raw: string): { time: number[]; text: string[] } => {
     let j = i + 1;
     if (j >= len) break;
     while (j < len && !unsorted[j][1]) ++j;
-    if (unsorted[j][0] - time > 4) {
+    if (j >= len || unsorted[j][0] - time > 4) {
       ti.push(time);
       te.push("~");
     }
@@ -151,9 +151,9 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
       "/api/song/enhance/player/url",
       "pc"
     );
-    const [{ url, md5, type }] = data;
+    const [{ url, md5, type, freeTrialInfo }] = data;
 
-    // if (freeTrialInfo) {}
+    if (freeTrialInfo) return {} as NeteaseTypings.SongDetail;
     return { url, md5, type };
   } catch (err) {
     logError(err);
