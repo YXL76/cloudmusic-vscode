@@ -1,3 +1,4 @@
+import { apiCache, logError } from "../..";
 import { eapiRequest, weapiRequest } from "./request";
 import {
   resolveAlbumsItem,
@@ -7,7 +8,6 @@ import {
 } from "./helper";
 import { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
-import { apiCache } from "../..";
 
 export async function searchDefault(): Promise<string> {
   const key = "search_default";
@@ -24,7 +24,7 @@ export async function searchDefault(): Promise<string> {
     apiCache.set(key, realkeyword);
     return realkeyword;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return "";
 }
@@ -48,7 +48,7 @@ export async function searchSingle(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -72,7 +72,7 @@ export async function searchAlbum(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -98,7 +98,7 @@ export async function searchArtist(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -127,7 +127,7 @@ export async function searchPlaylist(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -161,7 +161,7 @@ export async function searchLyric(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -183,7 +183,7 @@ export async function searchHotDetail(): Promise<
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -202,7 +202,7 @@ export async function searchSuggest(keywords: string): Promise<string[]> {
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }

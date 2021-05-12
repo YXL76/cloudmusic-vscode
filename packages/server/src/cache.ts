@@ -3,6 +3,7 @@ import {
   LYRIC_CACHE_DIR,
   MUSIC_CACHE_DIR,
 } from "@cloudmusic/shared";
+import { State, logError } from ".";
 import {
   copyFile,
   mkdir,
@@ -15,7 +16,6 @@ import {
 } from "fs/promises";
 import type { NeteaseTypings } from "api";
 import NodeCache from "node-cache";
-import { State } from ".";
 import Yallist from "yallist";
 import md5File from "md5-file";
 import { resolve } from "path";
@@ -102,7 +102,7 @@ export class MusicCache {
           this._addNode(value);
         });
     } catch (err) {
-      console.error(err);
+      logError(err);
     }
 
     try {
@@ -116,7 +116,7 @@ export class MusicCache {
       );
       this.store();
     } catch (err) {
-      console.error(err);
+      logError(err);
     }
   }
 
@@ -138,7 +138,7 @@ export class MusicCache {
     try {
       writeFileSync(this.listPath, JSON.stringify(this.list.toArray()));
     } catch (err) {
-      console.error(err);
+      logError(err);
     }
   }
 

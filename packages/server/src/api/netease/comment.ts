@@ -1,6 +1,7 @@
 import { eapiRequest, weapiRequest } from "./request";
 import { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
+import { logError } from "../..";
 import { resolveComment } from "./helper";
 
 const resourceTypeMap = [
@@ -26,7 +27,7 @@ export async function commentAdd(
     );
     return true;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return false;
 }
@@ -45,7 +46,7 @@ export async function commentReply(
     );
     return true;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return false;
 }
@@ -78,7 +79,7 @@ export async function commentFloor(
       comments: comments.map(resolveComment),
     };
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return { totalCount: 0, hasMore: false, comments: [] };
 }
@@ -97,7 +98,7 @@ export async function commentLike(
     );
     return true;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return false;
 }
@@ -141,7 +142,7 @@ export async function commentNew(
       comments: comments.map(resolveComment),
     };
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return { totalCount: 0, hasMore: false, comments: [] };
 }

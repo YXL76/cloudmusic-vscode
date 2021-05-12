@@ -8,9 +8,9 @@ import {
   resolveSongItemSt,
   resolveUserDetail,
 } from "./helper";
+import { apiCache, logError } from "../..";
 import { eapiRequest, weapiRequest } from "./request";
 import type { NeteaseTypings } from "api";
-import { apiCache } from "../..";
 
 type Profile = { userId: number; nickname: string };
 
@@ -39,7 +39,7 @@ async function dailySigninAndroid(): Promise<void> {
       type: 0,
     });
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
 }
 
@@ -49,7 +49,7 @@ async function dailySigninWeb(): Promise<void> {
       type: 1,
     });
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
 }
 
@@ -68,7 +68,7 @@ export async function djPersonalizeRecommend(): Promise<
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -81,7 +81,7 @@ export async function fmTrash(songId: number): Promise<boolean> {
     );
     return true;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return false;
 }
@@ -95,7 +95,7 @@ export async function like(trackId: number, like: boolean): Promise<boolean> {
     );
     return true;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return false;
 }
@@ -108,7 +108,7 @@ export async function likelist(): Promise<number[]> {
     );
     return ids;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -127,7 +127,7 @@ export async function login(
     );
     return profile;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return;
 }
@@ -147,7 +147,7 @@ export async function loginCellphone(
     );
     return profile;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return;
 }
@@ -171,7 +171,7 @@ export async function loginQrKey(): Promise<string | void> {
     );
     return unikey;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return;
 }
@@ -189,7 +189,7 @@ export async function loginStatus(cookieStr?: string): Promise<Profile | void> {
     if (profile && "userId" in profile && "nickname" in profile) return profile;
     apiCache.set(key, profile);
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return;
 }
@@ -200,7 +200,7 @@ export async function logout(): Promise<boolean> {
     AccountState.cookie = {};
     return true;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return false;
 }
@@ -212,7 +212,7 @@ export async function personalFm(): Promise<NeteaseTypings.SongsItem[]> {
     }>("https://music.163.com/weapi/v1/radio/get", {});
     return data.map(resolveAnotherSongItem);
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -233,7 +233,7 @@ export async function personalized(): Promise<NeteaseTypings.PlaylistItem[]> {
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -252,7 +252,7 @@ export async function personalizedDjprogram(): Promise<
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -275,7 +275,7 @@ export async function personalizedNewsong(): Promise<
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -294,7 +294,7 @@ export async function recommendResource(): Promise<
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -311,7 +311,7 @@ export async function recommendSongs(): Promise<NeteaseTypings.SongsItem[]> {
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -339,7 +339,7 @@ export async function scrobble(
       ]),
     });
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
 }
 
@@ -356,7 +356,7 @@ export async function userDetail(
     const ret = resolveUserDetail(profile);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return;
 }
@@ -380,7 +380,7 @@ export async function userFolloweds(
     const ret = followeds.map(resolveUserDetail);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -404,7 +404,7 @@ export async function userFollows(
     const ret = follow.map(resolveUserDetail);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -426,7 +426,7 @@ export async function userLevel(): Promise<UserLevel> {
     apiCache.set(key, ret, 0);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return {} as UserLevel;
 }
@@ -452,7 +452,7 @@ export async function userPlaylist(
     }
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -495,7 +495,7 @@ export async function userRecord(): Promise<
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [[], []];
 }
@@ -511,7 +511,7 @@ async function yunbeiInfo(): Promise<{
     }>("https://music.163.com/api/v1/user/info", {});
     return { mobileSign, pcSign };
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return { mobileSign: false, pcSign: false };
 }
@@ -522,7 +522,7 @@ async function yunbeiSign(): Promise<void> {
       type: 0,
     });
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
 }
 
@@ -534,7 +534,7 @@ async function yunbeiToday(): Promise<boolean> {
     );
     if (code === 400) return false;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return true;
 }

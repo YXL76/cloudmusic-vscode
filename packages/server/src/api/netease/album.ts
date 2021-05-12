@@ -1,6 +1,6 @@
+import { apiCache, logError } from "../..";
 import { resolveAlbumsItem, resolveSongItem } from "./helper";
 import type { NeteaseTypings } from "api";
-import { apiCache } from "../..";
 import { weapiRequest } from "./request";
 
 export async function album(id: number): Promise<{
@@ -27,7 +27,7 @@ export async function album(id: number): Promise<{
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return { info: {} as NeteaseTypings.AlbumsItem, songs: [] };
 }
@@ -44,7 +44,7 @@ export async function albumNewest(): Promise<NeteaseTypings.AlbumsItem[]> {
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -59,7 +59,7 @@ export async function albumSub(
     });
     return true;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return false;
 }
@@ -82,7 +82,7 @@ export async function albumSublist(): Promise<NeteaseTypings.AlbumsItem[]> {
       offset += limit;
     }
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return ret;
 }
@@ -109,7 +109,7 @@ export async function topAlbum(): Promise<NeteaseTypings.AlbumsItem[]> {
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }

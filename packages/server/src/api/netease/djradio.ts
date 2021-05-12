@@ -1,10 +1,10 @@
+import { apiCache, logError } from "../..";
 import {
   resolveProgramDetail,
   resolveRadioDetail,
   resolveUserDetail,
 } from "./helper";
 import type { NeteaseTypings } from "api";
-import { apiCache } from "../..";
 import { weapiRequest } from "./request";
 
 /* export async function djCategoryRecommend() {
@@ -19,7 +19,7 @@ import { weapiRequest } from "./request";
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 } */
@@ -36,7 +36,7 @@ export async function djCatelist(): Promise<{ name: string; id: number }[]> {
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -56,7 +56,7 @@ export async function djDetail(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return;
 }
@@ -76,7 +76,7 @@ export async function djHot(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -101,7 +101,7 @@ export async function djProgram(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -120,7 +120,7 @@ export async function djProgramDetail(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return;
 }
@@ -140,7 +140,7 @@ export async function djProgramToplist(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -161,7 +161,7 @@ export async function djProgramToplistHours(): Promise<
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -182,7 +182,7 @@ export async function djRadioHot(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -199,7 +199,7 @@ export async function djRecommend(): Promise<NeteaseTypings.RadioDetail[]> {
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -218,7 +218,7 @@ export async function djRecommendType(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -238,7 +238,7 @@ export async function programRecommend(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -250,7 +250,7 @@ export async function djSub(id: number, t: "sub" | "unsub"): Promise<boolean> {
     }>(`https://music.163.com/weapi/djradio/${t}`, { id });
     return true;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return false;
 }
@@ -271,7 +271,7 @@ export async function djSublist(): Promise<NeteaseTypings.RadioDetail[]> {
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -302,7 +302,7 @@ export async function djSublist(): Promise<NeteaseTypings.RadioDetail[]> {
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return { subscribers: [], time: -1, hasMore: false };
 } */
@@ -327,7 +327,7 @@ export async function djSubscriber(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -349,7 +349,7 @@ export async function djToplist(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }

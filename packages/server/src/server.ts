@@ -24,6 +24,7 @@ import {
   apiCache,
   downloadMusic,
   getMusicPath,
+  logError,
 } from ".";
 import { rmdirSync, unlinkSync } from "fs";
 import type { Socket } from "net";
@@ -85,7 +86,7 @@ export class IPCServer {
           }, 20000);
         }
       })
-      .on("error", console.error);
+      .on("error", logError);
 
     IPCServer._setMaster();
 
@@ -104,7 +105,7 @@ export class IPCServer {
       setTimeout(() => IPCServer.send(socket, { t: "player.load" }), 1024);
     }
   })
-    .on("error", console.error)
+    .on("error", logError)
     .listen(ipcServerPath);
 
   static stop(): void {
@@ -223,9 +224,9 @@ export class IPCBroadcastServer {
         socket?.destroy();
         IPCBroadcastServer._sockets.delete(socket);
       })
-      .on("error", console.error);
+      .on("error", logError);
   })
-    .on("error", console.error)
+    .on("error", logError)
     .listen(ipcBroadcastServerPath);
 
   static stop(): void {

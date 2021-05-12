@@ -1,4 +1,4 @@
-import { LyricCache, State, apiCache } from "../..";
+import { LyricCache, State, apiCache, logError } from "../..";
 import { apiRequest, eapiRequest, weapiRequest } from "./request";
 import { resolveAnotherSongItem, resolveSongItem } from "./helper";
 import type { NeteaseEnum } from "@cloudmusic/shared";
@@ -97,7 +97,7 @@ export async function simiSong(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -134,7 +134,7 @@ export async function songDetail(
     if (trackIds.length === 1) apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -156,7 +156,7 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
     // if (freeTrialInfo) {}
     return { url, md5, type };
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return {} as NeteaseTypings.SongDetail;
 }
@@ -180,7 +180,7 @@ export async function topSong(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }

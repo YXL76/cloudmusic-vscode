@@ -5,6 +5,8 @@ import axios from "axios";
 import { createWriteStream } from "fs";
 import { resolve } from "path";
 
+export const logError = (err: unknown): void => console.error(Date.now(), err);
+
 export async function getMusicPath(
   data:
     | { url: string; local: true }

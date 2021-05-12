@@ -1,3 +1,4 @@
+import { apiCache, logError } from "../..";
 import { apiRequest, weapiRequest } from "./request";
 import {
   resolvePlaylistItem,
@@ -6,7 +7,6 @@ import {
   resolveUserDetail,
 } from "./helper";
 import type { NeteaseTypings } from "api";
-import { apiCache } from "../..";
 import { songDetail } from ".";
 
 type PlaylistCatlistItem = { name: string; category?: number; hot: boolean };
@@ -31,7 +31,7 @@ export async function playlistCatlist(): Promise<PlaylistCatlist> {
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return {};
 }
@@ -52,7 +52,7 @@ export async function playlistCreate(
     );
     return true;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return false;
 }
@@ -66,7 +66,7 @@ export async function playlistDelete(id: number): Promise<boolean> {
     );
     return true;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return false;
 }
@@ -98,7 +98,7 @@ export async function playlistDetail(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -118,7 +118,7 @@ export async function highqualityTags(): Promise<PlaylistCatlistItem[]> {
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -133,7 +133,7 @@ export async function playlistSubscribe(
     });
     return true;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return false;
 }
@@ -158,7 +158,7 @@ export async function playlistSubscribers(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -176,7 +176,7 @@ export async function playlistTracks(
     );
     return true;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return false;
 }
@@ -197,7 +197,7 @@ export async function playlistUpdate(
     );
     return true;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return false;
 }
@@ -218,7 +218,7 @@ export async function playmodeIntelligenceList(
     });
     return data.map(({ songInfo }) => resolveSongItemSt(songInfo));
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -243,7 +243,7 @@ export async function simiPlaylist(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -270,7 +270,7 @@ export async function topPlaylist(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -295,7 +295,7 @@ export async function topPlaylistHighquality(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -312,7 +312,7 @@ export async function toplist(): Promise<NeteaseTypings.PlaylistItem[]> {
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }

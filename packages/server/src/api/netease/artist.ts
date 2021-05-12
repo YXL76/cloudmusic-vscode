@@ -1,3 +1,4 @@
+import { apiCache, logError } from "../..";
 import {
   resolveAlbumsItem,
   resolveArtist,
@@ -6,7 +7,6 @@ import {
 } from "./helper";
 import type { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
-import { apiCache } from "../..";
 import { weapiRequest } from "./request";
 
 export async function artists(
@@ -31,7 +31,7 @@ export async function artists(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return { info: {} as NeteaseTypings.Artist, songs: [] };
 }
@@ -60,7 +60,7 @@ export async function artistAlbum(
       else break;
     }
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   if (ret.length > 0) {
     apiCache.set(key, ret);
@@ -82,7 +82,7 @@ export async function artistDesc(id: number): Promise<ArtistDesc> {
     apiCache.set(key, introduction);
     return introduction;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -114,7 +114,7 @@ export async function artistList(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -148,7 +148,7 @@ export async function artistSongs(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -164,7 +164,7 @@ export async function artistSub(
     });
     return true;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return false;
 }
@@ -184,7 +184,7 @@ export async function artistSublist(): Promise<NeteaseTypings.Artist[]> {
       offset += limit;
     }
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return ret;
 }
@@ -203,7 +203,7 @@ export async function simiArtist(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -227,7 +227,7 @@ export async function topArtists(
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }
@@ -247,7 +247,7 @@ export async function toplistArtist(): Promise<NeteaseTypings.Artist[]> {
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
-    console.error(err);
+    logError(err);
   }
   return [];
 }

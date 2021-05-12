@@ -8,11 +8,13 @@ import type {
   NeteaseAPISMsg,
 } from "@cloudmusic/shared";
 import type { ExtensionContext } from "vscode";
+import { LOG_FILE } from "@cloudmusic/shared";
 import type { PlayTreeItemData } from "../treeview";
 import { QueueItemTreeItem } from "../treeview";
 import { QueueProvider } from "../treeview";
 import { commands } from "vscode";
 import { fork } from "child_process";
+import { openSync } from "fs";
 import { resolve } from "path";
 
 const ipcBHandler = (data: IPCBroadcastMsg) => {
@@ -155,7 +157,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
     State.loading = false;
     fork(resolve(__dirname, "server.js"), {
       detached: true,
-      stdio: "ignore",
+      stdio: ["ignore", "ignore", openSync(LOG_FILE, "a"), "ipc"],
     }).unref();
     await IPC.connect(ipcHandler, ipcBHandler);
     IPC.init(context.globalState.get(VOLUME_KEY, 85));
