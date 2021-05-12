@@ -1,5 +1,5 @@
 declare interface Window {
-  master?: boolean;
+  // master?: boolean;
   audioTarget?: HTMLAudioElement;
   handleFirstPlay?: (event: { target: HTMLAudioElement }) => void;
 }

@@ -35,8 +35,10 @@ export class State {
   }
 
   static set master(value: boolean) {
-    this._master = value;
-    AccountViewProvider.master();
+    if (this._master !== value) {
+      this._master = value;
+      AccountViewProvider.toggleHTML(value);
+    }
   }
 
   private static _repeat = false;
@@ -66,7 +68,7 @@ export class State {
             ? LikeState.like
             : LikeState.dislike
           : LikeState.none;
-      AccountViewProvider.metadata(this._playItem);
+      AccountViewProvider.metadata();
       if (this._master && this._login)
         if (value) IPC.load();
         else IPC.stop();

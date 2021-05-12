@@ -17,7 +17,6 @@ import {
 } from ".";
 import type { WebviewView, WebviewViewProvider } from "vscode";
 import { NeteaseEnum } from "@cloudmusic/shared";
-import type { QueueContent } from "../treeview";
 import type { WebviewType } from "@cloudmusic/shared";
 import i18n from "../i18n";
 import { resolve } from "path";
@@ -33,13 +32,15 @@ const getNonce = (): string => {
 };
 
 export class AccountViewProvider implements WebviewViewProvider {
+  private static _html = "";
+
   private static _view?: WebviewView;
 
   constructor(private readonly _extensionUri: Uri) {}
 
-  static master(): void {
+  /* static master(): void {
     this._view?.webview.postMessage({ command: "master", is: State.master });
-  }
+  } */
 
   static play(): void {
     this._view?.webview.postMessage({ command: "state", state: "playing" });
@@ -57,7 +58,8 @@ export class AccountViewProvider implements WebviewViewProvider {
     this._view?.webview.postMessage({ command: "position", position });
   } */
 
-  static metadata(item?: QueueContent): void {
+  static metadata(): void {
+    const item = State.playItem;
     if (!item) this._view?.webview.postMessage({ command: "metadata" });
     else
       this._view?.webview.postMessage({
@@ -70,11 +72,16 @@ export class AccountViewProvider implements WebviewViewProvider {
       });
   }
 
+  static toggleHTML(master: boolean): void {
+    if (this._view?.webview) this._view.webview.html = master ? this._html : "";
+  }
+
   resolveWebviewView(
     webview: WebviewView
     // context: WebviewViewResolveContext
     // token: CancellationToken
   ): void {
+    // TODO
     AccountViewProvider._view = webview;
 
     webview.title = i18n.word.account;
@@ -84,9 +91,13 @@ export class AccountViewProvider implements WebviewViewProvider {
 
     type Msg = { command: "toggle" | "previous" | "nexttrack" };
 
-    webview.webview.onDidReceiveMessage(({ command }: Msg) => {
+    /* webview.webview.onDidReceiveMessage(({ command }: Msg) => {
       if (State.master) void commands.executeCommand(`cloudmusic.${command}`);
-    });
+    }); */
+
+    webview.webview.onDidReceiveMessage(({ command }: Msg) =>
+      commands.executeCommand(`cloudmusic.${command}`)
+    );
 
     const files = ["silent.flac", "silent.m4a", "silent.ogg", "silent.opus"];
 
@@ -103,7 +114,7 @@ export class AccountViewProvider implements WebviewViewProvider {
       .asWebviewUri(Uri.joinPath(this._extensionUri, "dist", "provider.js"))
       .toString();
 
-    webview.webview.html = `
+    AccountViewProvider._html = `
 <!DOCTYPE html>
 <html
   lang="en"
@@ -121,7 +132,12 @@ export class AccountViewProvider implements WebviewViewProvider {
   </body>
 </html>`;
 
-    setTimeout(() => AccountViewProvider.master(), 1024);
+    if (State.master) {
+      webview.webview.html = AccountViewProvider._html;
+      setTimeout(() => AccountViewProvider.metadata(), 4096);
+    }
+
+    // setTimeout(() => AccountViewProvider.master(), 1024);
   }
 }
 

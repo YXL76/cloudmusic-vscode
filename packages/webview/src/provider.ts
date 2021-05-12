@@ -4,12 +4,12 @@ import type { ProviderSMsg } from "@cloudmusic/shared";
 import { vscode } from "./utils";
 
 window.addEventListener("message", ({ data }: { data: ProviderSMsg }) => {
-  if (data.command === "master") {
+  /* if (data.command === "master") {
     window.master = !!data.is;
     if (window.audioTarget) window.audioTarget.muted = !!data.is;
     return;
-  }
-  if (!window.master || !navigator.mediaSession) return;
+  } */
+  if (/* !window.master || */ !navigator.mediaSession) return;
   switch (data.command) {
     case "state":
       navigator.mediaSession.playbackState = data.state;
