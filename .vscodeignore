@@ -28,12 +28,12 @@ Cargo.*
 .vim
 .vscode
 
-# scoure code
+# source code
 scripts
 packages
 crates
 *.rs
-./style.css
+style.css
 
 # cache and build file
 .cache
