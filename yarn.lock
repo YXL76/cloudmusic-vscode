@@ -104,7 +104,7 @@ __metadata:
     "@cloudmusic/shared": "workspace:*"
     "@types/api": "workspace:*"
     "@types/react": 17.0.5
-    "@types/react-dom": 17.0.4
+    "@types/react-dom": 17.0.5
     "@types/wicg-mediasession": 1.1.0
     dayjs: 1.10.4
     esbuild-loader: 2.13.0
@@ -341,12 +341,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@types/react-dom@npm:17.0.4":
-  version: 17.0.4
-  resolution: "@types/react-dom@npm:17.0.4"
+"@types/react-dom@npm:17.0.5":
+  version: 17.0.5
+  resolution: "@types/react-dom@npm:17.0.5"
   dependencies:
     "@types/react": "*"
-  checksum: 871ffb0dbd2ee4b73023ae3f32bf9df69549ccfb0d47451769c476a495437c55f198128ecbee8417c41a8fa8762f2153e53f9d4eac1853de5b9ef7b02b9c07f9
+  checksum: ff301198c621864e1ee6c566285dc5cdc9eb5d881ca7fe7fcb8ebf29afe0357ffb7f77e401ab81ff444c64ff1375f653eeb28f04cd088a361915dee31cb3f4a8
   languageName: node
   linkType: hard
 
@@ -1528,12 +1528,6 @@ __metadata:
   checksum: aaf106e9bc025b21333e2f4c12da539b568db4925c0501a1bf4070836c9e848c892fa22c35548ce0d1132b08bbbfa17a00144fe58fccdab6fa900fec4250f67d
   languageName: node
   linkType: hard
-
-"cloudmusic-wasi@workspace:packages/wasi":
-  version: 0.0.0-use.local
-  resolution: "cloudmusic-wasi@workspace:packages/wasi"
-  languageName: unknown
-  linkType: soft
 
 "cloudmusic@workspace:.":
   version: 0.0.0-use.local
