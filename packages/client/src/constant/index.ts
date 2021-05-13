@@ -3,11 +3,10 @@ import { workspace } from "vscode";
 const conf = workspace.getConfiguration("cloudmusic");
 
 export const AUTO_CHECK = conf.get("account.autoCheck", false);
-export const MUSIC_QUALITY = conf.get<128000 | 192000 | 320000 | 999000>(
-  "music.quality",
-  192000
-);
-export const MUSIC_CACHE_SIZE = conf.get("cache.size", 4096) * 1024 * 1024;
+export const MUSIC_QUALITY = (): number =>
+  conf.get<128000 | 192000 | 320000 | 999000>("music.quality", 192000);
+export const MUSIC_CACHE_SIZE = (): number =>
+  conf.get("cache.size", 4096) * 1024 * 1024;
 
 export const ACCOUNT_KEY = "account";
 export const CACHE_KEY = "cache-v2";
@@ -21,7 +20,7 @@ export const REPEAT_KEY = "repeat-v1";
 export const FM_KEY = "fm-v1";
 export const SHOW_LYRIC_KEY = "show-lyric-v1";
 
-export const MUSIC_CACHE_DIR_NAME = `${MUSIC_QUALITY}`;
+export const MUSIC_CACHE_DIR_NAME = (): string => `${MUSIC_QUALITY()}`;
 
 export const AUTH_PROVIDER_ID = "cloudmusic-auth-provider";
 

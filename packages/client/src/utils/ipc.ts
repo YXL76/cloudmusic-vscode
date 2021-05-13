@@ -140,11 +140,11 @@ export class IPC {
     ipc.send({ t: "control.download", url, path });
   }
 
-  static init(volume: number): void {
+  static init(volume?: number): void {
     ipc.send({
       t: "control.init",
-      mq: MUSIC_QUALITY,
-      cs: MUSIC_CACHE_SIZE,
+      mq: MUSIC_QUALITY(),
+      cs: MUSIC_CACHE_SIZE(),
       volume,
     });
   }

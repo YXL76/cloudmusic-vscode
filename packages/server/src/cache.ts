@@ -132,6 +132,7 @@ export class MusicCache {
     this.cache.clear();
     this.size = 0;
     while (this.list.length) this.list.pop();
+    this.store();
   }
 
   static store(): void {
