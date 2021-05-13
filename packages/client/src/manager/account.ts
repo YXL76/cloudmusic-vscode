@@ -28,19 +28,19 @@ export class AccountManager implements AuthenticationProvider {
 
   static readonly likelist: Set<number> = new Set<number>();
 
-  private static instance: AccountManager;
+  private static _instance: AccountManager;
 
   // like AuthenticationSession
-  private static readonly session = {
+  private static readonly _session = {
     id: "cloudmusic-auth-session",
     accessToken: "",
     scopes: [] as readonly string[],
   };
 
-  private static get sessions() {
+  private static get _sessions() {
     return [
       {
-        ...AccountManager.session,
+        ...AccountManager._session,
         account: {
           id: `${AccountManager.uid}`,
           label: AccountManager.nickname,
@@ -56,12 +56,12 @@ export class AccountManager implements AuthenticationProvider {
 
   static async getInstance(): Promise<AccountManager> {
     try {
-      if ((await this.login()) && AUTO_CHECK)
+      if ((await this._login()) && AUTO_CHECK)
         void IPC.netease("dailyCheck", []);
     } catch (err) {
       console.error(err);
     }
-    return this.instance || (this.instance = new AccountManager());
+    return this._instance || (this._instance = new AccountManager());
   }
 
   static isUserPlaylisr(id: number): boolean {
@@ -82,7 +82,7 @@ export class AccountManager implements AuthenticationProvider {
     return await IPC.netease("djSublist", []);
   }
 
-  private static async logout(): Promise<boolean> {
+  private static async _logout(): Promise<boolean> {
     if (!(await IPC.netease("logout", []))) return false;
 
     IPC.logout();
@@ -92,7 +92,7 @@ export class AccountManager implements AuthenticationProvider {
     return true;
   }
 
-  private static async login(): Promise<boolean> {
+  private static async _login(): Promise<boolean> {
     if (State.login) return true;
 
     let account: NeteaseTypings.Account | undefined = undefined;
@@ -105,13 +105,14 @@ export class AccountManager implements AuthenticationProvider {
     }
 
     let cookieStr: string | undefined = undefined;
-    if (!account) {
+    if (!account)
       try {
         cookieStr = await this.context.secrets.get(COOKIE_KEY);
       } catch (err) {
         console.error(err);
       }
-    }
+
+    if (!account && !cookieStr) return false;
 
     const res = account
       ? account.phone.length > 0
@@ -140,7 +141,7 @@ export class AccountManager implements AuthenticationProvider {
     return true;
   }
 
-  private static async loginQuickPick(): Promise<void> {
+  private static async _loginQuickPick(): Promise<void> {
     if (State.login) return;
 
     const title = i18n.word.signIn;
@@ -269,24 +270,24 @@ export class AccountManager implements AuthenticationProvider {
   }
 
   getSessions(): Promise<ReadonlyArray<AuthenticationSession>> {
-    return Promise.resolve(State.login ? AccountManager.sessions : []);
+    return Promise.resolve(State.login ? AccountManager._sessions : []);
   }
 
   async createSession(): Promise<AuthenticationSession> {
     try {
-      await AccountManager.loginQuickPick();
-      if (!(await AccountManager.login())) throw Error();
+      await AccountManager._loginQuickPick();
+      if (!(await AccountManager._login())) throw Error();
     } catch {
       throw Error();
     }
-    const added = AccountManager.sessions;
+    const added = AccountManager._sessions;
     this._onDidChangeSessions.fire({ added });
     return added[0];
   }
 
   async removeSession(): Promise<void> {
-    if (!(await AccountManager.logout())) throw Error();
-    this._onDidChangeSessions.fire({ removed: AccountManager.sessions });
+    if (!(await AccountManager._logout())) throw Error();
+    this._onDidChangeSessions.fire({ removed: AccountManager._sessions });
     await authentication.getSession(AUTH_PROVIDER_ID, []);
     return;
   }

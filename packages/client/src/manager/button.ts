@@ -71,7 +71,6 @@ export class ButtonManager {
     ].forEach((value, index) => (this.buttons[index].command = value));
 
     this.buttonShow = this.context.globalState.get(BUTTON_KEY, this.buttonShow);
-    this.show();
   }
 
   static toggle(): void {

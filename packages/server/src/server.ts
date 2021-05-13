@@ -2,7 +2,6 @@ import {
   CACHE_DIR,
   LYRIC_CACHE_DIR,
   MUSIC_CACHE_DIR,
-  SETTING_DIR,
   TMP_DIR,
   ipcBroadcastServerPath,
   ipcDelimiter,
@@ -248,7 +247,6 @@ const tryMkdir = async (path: string) => {
 };
 
 void (async () => {
-  await tryMkdir(SETTING_DIR);
   await tryMkdir(TMP_DIR);
   await tryMkdir(CACHE_DIR);
   await tryMkdir(LYRIC_CACHE_DIR);
