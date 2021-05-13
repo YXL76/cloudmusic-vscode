@@ -6,7 +6,9 @@ export class AccountState {
   static cookie: NeteaseTypings.Cookie = {};
 }
 
-export const cookieToJson = (cookie: string[]): NeteaseTypings.Cookie => {
+export const cookieToJson = (
+  cookie: readonly string[]
+): NeteaseTypings.Cookie => {
   if (!cookie) return {} as NeteaseTypings.Cookie;
 
   const obj: Record<string, string> = {};

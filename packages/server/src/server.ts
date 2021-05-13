@@ -173,7 +173,7 @@ export class IPCServer {
         MusicCache.clear();
         break;
       case "control.retain":
-        this._retain = data.items;
+        this._retain = data.items as unknown[];
         break;
       case "player.load":
         {

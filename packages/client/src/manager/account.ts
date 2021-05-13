@@ -24,7 +24,7 @@ export class AccountManager implements AuthenticationProvider {
 
   static context: ExtensionContext;
 
-  static userPlaylist: NeteaseTypings.PlaylistItem[];
+  static userPlaylist: readonly NeteaseTypings.PlaylistItem[];
 
   static readonly likelist: Set<number> = new Set<number>();
 
@@ -34,7 +34,7 @@ export class AccountManager implements AuthenticationProvider {
   private static readonly session = {
     id: "cloudmusic-auth-session",
     accessToken: "",
-    scopes: [] as string[],
+    scopes: [] as readonly string[],
   };
 
   private static get sessions() {
@@ -68,7 +68,7 @@ export class AccountManager implements AuthenticationProvider {
     return this.userPlaylist.findIndex(({ id: vid }) => vid === id) !== -1;
   }
 
-  static async playlist(): Promise<NeteaseTypings.PlaylistItem[]> {
+  static async playlist(): Promise<readonly NeteaseTypings.PlaylistItem[]> {
     if (this.uid === 0) return [];
     const lists = await IPC.netease("userPlaylist", [this.uid]);
     this.userPlaylist = lists.filter(
@@ -77,7 +77,7 @@ export class AccountManager implements AuthenticationProvider {
     return lists;
   }
 
-  static async djradio(): Promise<NeteaseTypings.RadioDetail[]> {
+  static async djradio(): Promise<readonly NeteaseTypings.RadioDetail[]> {
     if (this.uid === 0) return [];
     return await IPC.netease("djSublist", []);
   }

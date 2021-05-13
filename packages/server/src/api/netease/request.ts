@@ -79,7 +79,7 @@ const responseHandler = async <T>(
       AccountState.cookie = {
         ...AccountState.cookie,
         ...cookieToJson(
-          (res.headers as { "set-cookie": string[] })["set-cookie"]
+          (res.headers as { "set-cookie": readonly string[] })["set-cookie"]
         ),
       };
       IPCServer.broadcast({

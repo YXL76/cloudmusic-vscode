@@ -41,16 +41,16 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     return this._songs?.[1] ? this._parseRaw(this._songs[1]) : undefined;
   }
 
-  static get songs(): PlayTreeItemData[] {
+  static get songs(): readonly PlayTreeItemData[] {
     return this._songs;
   }
 
-  static random(): PlayTreeItemData[] {
+  static random(): readonly PlayTreeItemData[] {
     const [head, ...rest] = this._songs;
     return head ? [head, ...unsortInplace(rest)] : [];
   }
 
-  static new(elements: PlayTreeItemData[], id?: number): void {
+  static new(elements: readonly PlayTreeItemData[], id?: number): void {
     this._clear();
     this._add(elements);
 
@@ -73,7 +73,10 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     this._instance._onDidChangeTreeData.fire();
   }
 
-  static add(elements: PlayTreeItemData[], index: number = this.len): void {
+  static add(
+    elements: readonly PlayTreeItemData[],
+    index: number = this.len
+  ): void {
     this._add(elements, index);
 
     this._instance._onDidChangeTreeData.fire();
@@ -86,7 +89,10 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     this._instance._onDidChangeTreeData.fire();
   }
 
-  static sort(type: QueueSortType, order: QueueSortOrder): PlayTreeItemData[] {
+  static sort(
+    type: QueueSortType,
+    order: QueueSortOrder
+  ): readonly PlayTreeItemData[] {
     const getName = (item: PlayTreeItemData): string => {
       switch (item.itemType) {
         case "q":
@@ -155,7 +161,7 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   }
 
   private static _add(
-    elements: PlayTreeItemData[],
+    elements: readonly PlayTreeItemData[],
     index: number = this.len
   ): void {
     this._songs.splice(index, 0, ...elements);

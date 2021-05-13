@@ -41,7 +41,9 @@ const root = document.getElementById("root");
     case "musicRanking":
       {
         startEventListener();
-        const record = await request<NeteaseTypings.RecordData[][]>(undefined);
+        const record = await request<
+          ReadonlyArray<readonly NeteaseTypings.RecordData[]>
+        >(undefined);
         render(
           <MusicRanking
             record={record}

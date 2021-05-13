@@ -41,7 +41,7 @@ const ipcBHandler = (data: IPCBroadcastMsg) => {
       State.repeat = data.r;
       break;
     case "queue.add":
-      QueueProvider.add(data.items as PlayTreeItemData[], data.index);
+      QueueProvider.add(data.items as readonly PlayTreeItemData[], data.index);
       break;
     case "queue.clear":
       QueueProvider.clear();
@@ -50,7 +50,7 @@ const ipcBHandler = (data: IPCBroadcastMsg) => {
       QueueProvider.delete(data.id);
       break;
     case "queue.new":
-      QueueProvider.new(data.items as PlayTreeItemData[], data.id);
+      QueueProvider.new(data.items as readonly PlayTreeItemData[], data.id);
       break;
     case "queue.play":
       QueueProvider.top(data.id);

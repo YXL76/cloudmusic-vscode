@@ -20,10 +20,10 @@ export type IPCBroadcastMsg =
   | IPCMsg<IPCEvent.Control$logout>
   | IPCMsg<IPCEvent.Play$load>
   | IPCMsg<IPCEvent.Play$repeat, { r: boolean }>
-  | IPCMsg<IPCEvent.Queue$add, { items: unknown[]; index?: number }>
+  | IPCMsg<IPCEvent.Queue$add, { items: readonly unknown[]; index?: number }>
   | IPCMsg<IPCEvent.Queue$clear>
   | IPCMsg<IPCEvent.Queue$delete, { id: string | number }>
-  | IPCMsg<IPCEvent.Queue$new, { items: unknown[]; id?: number }>
+  | IPCMsg<IPCEvent.Queue$new, { items: readonly unknown[]; id?: number }>
   | IPCMsg<IPCEvent.Queue$play, { id: string | number }>
   | IPCMsg<IPCEvent.Queue$shift, { index: number }>;
 
@@ -33,7 +33,7 @@ export type IPCClientMsg =
   | IPCMsg<IPCEvent.Control$init, { mq: number; cs: number; volume?: number }>
   | IPCMsg<IPCEvent.Control$lyric>
   | IPCMsg<IPCEvent.Control$music>
-  | IPCMsg<IPCEvent.Control$retain, { items: unknown[] }>
+  | IPCMsg<IPCEvent.Control$retain, { items: readonly unknown[] }>
   | IPCMsg<
       IPCEvent.Play$load,
       {
@@ -60,7 +60,7 @@ export type IPCServerMsg =
   | IPCMsg<IPCEvent.Control$cookie, { cookie: string }>
   | IPCMsg<IPCEvent.Control$master, { is?: true }>
   | IPCMsg<IPCEvent.Control$new>
-  | IPCMsg<IPCEvent.Control$retain, { items: unknown[] }>
+  | IPCMsg<IPCEvent.Control$retain, { items: readonly unknown[] }>
   | IPCMsg<IPCEvent.Play$end, { fail?: true }>
   | IPCMsg<IPCEvent.Play$load>
   | IPCMsg<IPCEvent.Play$lyric, { lyric: NeteaseTypings.LyricData }>

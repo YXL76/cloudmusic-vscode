@@ -60,7 +60,9 @@ interface ST extends T {
   item: NeteaseTypings.SongsItem;
 }
 
-export const pickSongItems = (songs: NeteaseTypings.SongsItem[]): ST[] =>
+export const pickSongItems = (
+  songs: readonly NeteaseTypings.SongsItem[]
+): readonly ST[] =>
   songs.map((item) => ({
     label: `${ICON.song} ${item.name}`,
     description: item.ar.map((i) => i.name).join("/"),
@@ -70,14 +72,18 @@ export const pickSongItems = (songs: NeteaseTypings.SongsItem[]): ST[] =>
     type: PickType.song,
   }));
 
-export const pickArtistItems = (ars: { id: number; name: string }[]): T[] =>
+export const pickArtistItems = (
+  ars: readonly { id: number; name: string }[]
+): readonly T[] =>
   ars.map(({ name, id }) => ({
     label: `${ICON.artist} ${name}`,
     id,
     type: PickType.artist,
   }));
 
-export const pickAlbumItems = (albums: NeteaseTypings.AlbumsItem[]): T[] =>
+export const pickAlbumItems = (
+  albums: readonly NeteaseTypings.AlbumsItem[]
+): readonly T[] =>
   albums.map(({ name, alias, artists, id }) => ({
     label: `${ICON.album} ${name}`,
     description: alias.join("/"),
@@ -91,8 +97,8 @@ interface PT extends T {
 }
 
 export const pickPlaylistItems = (
-  playlists: NeteaseTypings.PlaylistItem[]
-): PT[] =>
+  playlists: readonly NeteaseTypings.PlaylistItem[]
+): readonly PT[] =>
   playlists.map((playlist) => ({
     label: `${ICON.playlist} ${playlist.name}`,
     description: `${playlist.trackCount}`,
@@ -102,7 +108,9 @@ export const pickPlaylistItems = (
     type: PickType.playlist,
   }));
 
-export const pickUserDetails = (users: NeteaseTypings.UserDetail[]): T[] =>
+export const pickUserDetails = (
+  users: readonly NeteaseTypings.UserDetail[]
+): readonly T[] =>
   users.map(({ nickname, signature, userId }) => ({
     label: `${ICON.artist} ${nickname}`,
     detail: signature,
@@ -114,7 +122,9 @@ interface RDT extends T {
   item: NeteaseTypings.RadioDetail;
 }
 
-export const pickRadioDetails = (radios: NeteaseTypings.RadioDetail[]): RDT[] =>
+export const pickRadioDetails = (
+  radios: readonly NeteaseTypings.RadioDetail[]
+): readonly RDT[] =>
   radios.map((item) => ({
     label: `${ICON.radio} ${item.name}`,
     description: item.dj.nickname,
@@ -128,8 +138,8 @@ interface PDT extends T {
 }
 
 export const pickProgramDetails = (
-  programs: NeteaseTypings.ProgramDetail[]
-): PDT[] =>
+  programs: readonly NeteaseTypings.ProgramDetail[]
+): readonly PDT[] =>
   programs.map((item) => ({
     label: `${ICON.program} ${item.mainSong.name}`,
     description: item.mainSong.ar.map(({ name }) => name).join("/"),
@@ -239,7 +249,7 @@ export async function pickSong(
 export async function pickSongMany(
   input: MultiStepInput,
   step: number,
-  songs: NeteaseTypings.SongsItem[]
+  songs: readonly NeteaseTypings.SongsItem[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
     title: i18n.word.song,
@@ -297,7 +307,7 @@ async function pickSimiSong(
 export async function pickSongs(
   input: MultiStepInput,
   step: number,
-  songs: NeteaseTypings.SongsItem[]
+  songs: readonly NeteaseTypings.SongsItem[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
     title: i18n.word.song,
@@ -389,7 +399,7 @@ export async function pickProgram(
 export async function pickProgramMany(
   input: MultiStepInput,
   step: number,
-  programs: NeteaseTypings.ProgramDetail[]
+  programs: readonly NeteaseTypings.ProgramDetail[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
     title: i18n.word.program,
@@ -415,7 +425,7 @@ export async function pickProgramMany(
 export async function pickPrograms(
   input: MultiStepInput,
   step: number,
-  programs: NeteaseTypings.ProgramDetail[]
+  programs: readonly NeteaseTypings.ProgramDetail[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
     title: i18n.word.program,
@@ -499,7 +509,7 @@ export async function pickRadio(
 export async function pickRadios(
   input: MultiStepInput,
   step: number,
-  radios: NeteaseTypings.RadioDetail[]
+  radios: readonly NeteaseTypings.RadioDetail[]
 ): Promise<InputStep> {
   const { item } = await input.showQuickPick({
     title: i18n.word.radio,
@@ -635,7 +645,7 @@ export async function pickArtist(
 export async function pickArtists(
   input: MultiStepInput,
   step: number,
-  artists: NeteaseTypings.Artist[]
+  artists: readonly NeteaseTypings.Artist[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
     title: i18n.word.artist,
@@ -713,7 +723,7 @@ export async function pickAlbum(
 export async function pickAlbums(
   input: MultiStepInput,
   step: number,
-  albums: NeteaseTypings.AlbumsItem[]
+  albums: readonly NeteaseTypings.AlbumsItem[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
     title: i18n.word.album,
@@ -871,7 +881,7 @@ async function pickSimiPlaylists(
 export async function pickPlaylists(
   input: MultiStepInput,
   step: number,
-  items: NeteaseTypings.PlaylistItem[]
+  items: readonly NeteaseTypings.PlaylistItem[]
 ): Promise<InputStep> {
   const pick = await input.showQuickPick({
     title: i18n.word.playlist,
@@ -981,7 +991,7 @@ const limit = 50;
 export async function pickUsers(
   input: MultiStepInput,
   step: number,
-  func: (...args: number[]) => Promise<NeteaseTypings.UserDetail[]>,
+  func: (...args: number[]) => Promise<readonly NeteaseTypings.UserDetail[]>,
   offset: number,
   id: number
 ): Promise<InputStep> {

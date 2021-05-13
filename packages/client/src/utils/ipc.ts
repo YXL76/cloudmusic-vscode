@@ -192,7 +192,7 @@ export class IPC {
     ipc.send({ t: "player.volume", level });
   }
 
-  static add(items: PlayTreeItemData[], index?: number): void {
+  static add(items: readonly PlayTreeItemData[], index?: number): void {
     ipcB.send({ t: "queue.add", items, index });
   }
 
@@ -212,7 +212,7 @@ export class IPC {
     ipc.send({ t: "queue.fmNext" });
   }
 
-  static new(items: PlayTreeItemData[], id?: number): void {
+  static new(items: readonly PlayTreeItemData[], id?: number): void {
     ipcB.send({ t: "queue.new", items, id });
   }
 

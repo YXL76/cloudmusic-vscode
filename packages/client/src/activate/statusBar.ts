@@ -122,8 +122,8 @@ export function initStatusBar(context: ExtensionContext): void {
 
       async function pickLyric(
         input: MultiStepInput,
-        time: number[],
-        text: string[]
+        time: readonly number[],
+        text: readonly string[]
       ): Promise<InputStep> {
         const pick = await input.showQuickPick({
           title,

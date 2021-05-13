@@ -2,7 +2,7 @@ import React from "react";
 
 export interface TabsProps {
   title?: string;
-  titles: string[];
+  titles: readonly string[];
   selectd: number;
   switchTab: (index: number) => void;
 }

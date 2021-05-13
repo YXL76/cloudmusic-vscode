@@ -21,7 +21,7 @@ export type QueueContent =
 
 export type TreeItemId = "q" | "p" | "l";
 
-export type RefreshAction = (items: PlayTreeItemData[]) => void;
+export type RefreshAction = (items: readonly PlayTreeItemData[]) => void;
 
 export type PlayTreeItemData =
   | (LocalFileTreeItemData & { itemType: "l" })

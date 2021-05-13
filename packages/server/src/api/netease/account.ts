@@ -54,16 +54,15 @@ async function dailySigninWeb(): Promise<void> {
 }
 
 export async function djPersonalizeRecommend(): Promise<
-  NeteaseTypings.RadioDetail[]
+  readonly NeteaseTypings.RadioDetail[]
 > {
   const key = "dj_personalize_recommend";
-  const value = apiCache.get<NeteaseTypings.RadioDetail[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.RadioDetail[]>(key);
   if (value) return value;
   try {
-    const { data } = await weapiRequest<{ data: NeteaseTypings.RadioDetail[] }>(
-      "https://music.163.com/api/djradio/personalize/rcmd",
-      { limit: 10 }
-    );
+    const { data } = await weapiRequest<{
+      data: readonly NeteaseTypings.RadioDetail[];
+    }>("https://music.163.com/api/djradio/personalize/rcmd", { limit: 10 });
     const ret = data.map(resolveRadioDetail);
     apiCache.set(key, ret);
     return ret;
@@ -100,9 +99,9 @@ export async function like(trackId: number, like: boolean): Promise<boolean> {
   return false;
 }
 
-export async function likelist(): Promise<number[]> {
+export async function likelist(): Promise<readonly number[]> {
   try {
-    const { ids } = await weapiRequest<{ ids: number[] }>(
+    const { ids } = await weapiRequest<{ ids: readonly number[] }>(
       "https://music.163.com/weapi/song/like/get",
       { uid: AccountState.uid }
     );
@@ -205,10 +204,12 @@ export async function logout(): Promise<boolean> {
   return false;
 }
 
-export async function personalFm(): Promise<NeteaseTypings.SongsItem[]> {
+export async function personalFm(): Promise<
+  readonly NeteaseTypings.SongsItem[]
+> {
   try {
     const { data } = await weapiRequest<{
-      data: NeteaseTypings.AnotherSongItem[];
+      data: readonly NeteaseTypings.AnotherSongItem[];
     }>("https://music.163.com/weapi/v1/radio/get", {});
     return data.map(resolveAnotherSongItem);
   } catch (err) {
@@ -217,13 +218,15 @@ export async function personalFm(): Promise<NeteaseTypings.SongsItem[]> {
   return [];
 }
 
-export async function personalized(): Promise<NeteaseTypings.PlaylistItem[]> {
+export async function personalized(): Promise<
+  readonly NeteaseTypings.PlaylistItem[]
+> {
   const key = "personalized";
-  const value = apiCache.get<NeteaseTypings.PlaylistItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
   try {
     const { result } = await weapiRequest<{
-      result: NeteaseTypings.RawPlaylistItem[];
+      result: readonly NeteaseTypings.RawPlaylistItem[];
     }>("https://music.163.com/weapi/personalized/playlist", {
       limit: 30,
       total: true,
@@ -239,14 +242,14 @@ export async function personalized(): Promise<NeteaseTypings.PlaylistItem[]> {
 }
 
 export async function personalizedDjprogram(): Promise<
-  NeteaseTypings.ProgramDetail[]
+  readonly NeteaseTypings.ProgramDetail[]
 > {
   const key = "personalized_djprogram";
-  const value = apiCache.get<NeteaseTypings.ProgramDetail[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.ProgramDetail[]>(key);
   if (value) return value;
   try {
     const { result } = await weapiRequest<{
-      result: { program: NeteaseTypings.RawProgramDetail }[];
+      result: readonly { program: NeteaseTypings.RawProgramDetail }[];
     }>("https://music.163.com/weapi/personalized/djprogram", {});
     const ret = result.map(({ program }) => resolveProgramDetail(program));
     apiCache.set(key, ret);
@@ -258,14 +261,14 @@ export async function personalizedDjprogram(): Promise<
 }
 
 export async function personalizedNewsong(): Promise<
-  NeteaseTypings.SongsItem[]
+  readonly NeteaseTypings.SongsItem[]
 > {
   const key = "personalized_newsong";
-  const value = apiCache.get<NeteaseTypings.SongsItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
   try {
     const { result } = await weapiRequest<{
-      result: { song: NeteaseTypings.AnotherSongItem }[];
+      result: readonly { song: NeteaseTypings.AnotherSongItem }[];
     }>("https://music.163.com/weapi/personalized/newsong", {
       type: "recommend",
       limit: 10,
@@ -281,14 +284,14 @@ export async function personalizedNewsong(): Promise<
 }
 
 export async function recommendResource(): Promise<
-  NeteaseTypings.PlaylistItem[]
+  readonly NeteaseTypings.PlaylistItem[]
 > {
   const key = "recommend_resource";
-  const value = apiCache.get<NeteaseTypings.PlaylistItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
   try {
     const { recommend } = await weapiRequest<{
-      recommend: NeteaseTypings.RawPlaylistItem[];
+      recommend: readonly NeteaseTypings.RawPlaylistItem[];
     }>("https://music.163.com/weapi/v1/discovery/recommend/resource", {});
     const ret = recommend.map(resolvePlaylistItem);
     apiCache.set(key, ret);
@@ -299,13 +302,15 @@ export async function recommendResource(): Promise<
   return [];
 }
 
-export async function recommendSongs(): Promise<NeteaseTypings.SongsItem[]> {
+export async function recommendSongs(): Promise<
+  readonly NeteaseTypings.SongsItem[]
+> {
   const key = "recommend_songs";
-  const value = apiCache.get<NeteaseTypings.SongsItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
   try {
     const { data } = await weapiRequest<{
-      data: { dailySongs: NeteaseTypings.SongsItemSt[] };
+      data: { dailySongs: readonly NeteaseTypings.SongsItemSt[] };
     }>("https://music.163.com/api/v3/discovery/recommend/songs", {});
     const ret = data.dailySongs.map(resolveSongItemSt);
     apiCache.set(key, ret);
@@ -365,13 +370,13 @@ export async function userFolloweds(
   userId: number,
   limit: number,
   offset: number
-): Promise<NeteaseTypings.UserDetail[]> {
+): Promise<readonly NeteaseTypings.UserDetail[]> {
   const key = `user_followeds${userId}-${limit}`;
-  const value = apiCache.get<NeteaseTypings.UserDetail[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.UserDetail[]>(key);
   if (value) return value;
   try {
     const { followeds } = await eapiRequest<{
-      followeds: NeteaseTypings.UserDetail[];
+      followeds: readonly NeteaseTypings.UserDetail[];
     }>(
       `https://music.163.com/eapi/user/getfolloweds/${userId}`,
       { userId, time: "0", limit, offset, getcounts: "true" },
@@ -389,9 +394,9 @@ export async function userFollows(
   uid: number,
   limit: number,
   offset: number
-): Promise<NeteaseTypings.UserDetail[]> {
+): Promise<readonly NeteaseTypings.UserDetail[]> {
   const key = `user_follows${uid}-${limit}-${offset}`;
-  const value = apiCache.get<NeteaseTypings.UserDetail[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.UserDetail[]>(key);
   if (value) return value;
   try {
     const { follow } = await weapiRequest<{
@@ -433,13 +438,13 @@ export async function userLevel(): Promise<UserLevel> {
 
 export async function userPlaylist(
   uid: number
-): Promise<NeteaseTypings.PlaylistItem[]> {
+): Promise<readonly NeteaseTypings.PlaylistItem[]> {
   const key = `user_playlist${uid}`;
-  const value = apiCache.get<NeteaseTypings.PlaylistItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
   try {
     const { playlist } = await weapiRequest<{
-      playlist: NeteaseTypings.RawPlaylistItem[];
+      playlist: readonly NeteaseTypings.RawPlaylistItem[];
     }>("https://music.163.com/api/user/playlist", {
       uid,
       limit: 30,
@@ -458,16 +463,20 @@ export async function userPlaylist(
 }
 
 export async function userRecord(): Promise<
-  Array<NeteaseTypings.RecordData[]>
+  ReadonlyArray<readonly NeteaseTypings.RecordData[]>
 > {
   const key = "user_record";
-  const value = apiCache.get<Array<NeteaseTypings.RecordData[]>>(key);
+  const value =
+    apiCache.get<ReadonlyArray<readonly NeteaseTypings.RecordData[]>>(key);
   if (value) return value;
 
-  const tasks: Promise<NeteaseTypings.RecordData[]>[] = [
+  const tasks: readonly Promise<readonly NeteaseTypings.RecordData[]>[] = [
     (async () => {
       const { weekData } = await weapiRequest<{
-        weekData: { playCount: number; song: NeteaseTypings.SongsItem }[];
+        weekData: readonly {
+          playCount: number;
+          song: NeteaseTypings.SongsItem;
+        }[];
       }>("https://music.163.com/weapi/v1/play/record", {
         type: 1,
         uid: AccountState.uid,
@@ -479,7 +488,10 @@ export async function userRecord(): Promise<
     })(),
     (async () => {
       const { allData } = await weapiRequest<{
-        allData: { playCount: number; song: NeteaseTypings.SongsItem }[];
+        allData: readonly {
+          playCount: number;
+          song: NeteaseTypings.SongsItem;
+        }[];
       }>("https://music.163.com/weapi/v1/play/record", {
         type: 0,
         uid: AccountState.uid,

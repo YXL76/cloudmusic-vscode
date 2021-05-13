@@ -7,7 +7,7 @@ import { LocalProvider } from "../treeview";
 
 export function initLocal(context: ExtensionContext): void {
   context.globalState
-    .get<string[]>(LOCAL_FOLDER_KEY)
+    .get<readonly string[]>(LOCAL_FOLDER_KEY)
     ?.forEach((folder) => LocalProvider.folders.push(folder));
 
   const localProvider = LocalProvider.getInstance();

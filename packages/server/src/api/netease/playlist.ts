@@ -11,7 +11,7 @@ import { songDetail } from ".";
 
 type PlaylistCatlistItem = { name: string; category?: number; hot: boolean };
 
-type PlaylistCatlist = Record<string, PlaylistCatlistItem[]>;
+type PlaylistCatlist = Record<string, readonly PlaylistCatlistItem[]>;
 
 export async function playlistCatlist(): Promise<PlaylistCatlist> {
   const key = "playlist_catlist";
@@ -19,7 +19,7 @@ export async function playlistCatlist(): Promise<PlaylistCatlist> {
   if (value) return value;
   try {
     const { sub, categories } = await weapiRequest<{
-      sub: PlaylistCatlistItem[];
+      sub: readonly PlaylistCatlistItem[];
       categories: { [key: string]: string };
     }>("https://music.163.com/weapi/playlist/catalogue", {});
     const ret: PlaylistCatlist = {};
@@ -73,21 +73,21 @@ export async function playlistDelete(id: number): Promise<boolean> {
 
 export async function playlistDetail(
   id: number
-): Promise<NeteaseTypings.SongsItem[]> {
+): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `playlist_detail${id}`;
-  const value = apiCache.get<NeteaseTypings.SongsItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
-  let ret!: NeteaseTypings.SongsItem[];
+  let ret!: readonly NeteaseTypings.SongsItem[];
   try {
     const {
       playlist: { tracks, trackIds },
       privileges,
     } = await apiRequest<{
       playlist: {
-        tracks: NeteaseTypings.SongsItem[];
-        trackIds: NeteaseTypings.TrackIdsItem[];
+        tracks: readonly NeteaseTypings.SongsItem[];
+        trackIds: readonly NeteaseTypings.TrackIdsItem[];
       };
-      privileges: { st: number }[];
+      privileges: readonly { st: number }[];
     }>("https://music.163.com/api/v6/playlist/detail", { id, n: 100000, s: 8 });
 
     const ids = trackIds.map(({ id }) => id);
@@ -103,13 +103,15 @@ export async function playlistDetail(
   return [];
 }
 
-export async function highqualityTags(): Promise<PlaylistCatlistItem[]> {
+export async function highqualityTags(): Promise<
+  readonly PlaylistCatlistItem[]
+> {
   const key = "playlist_highquality_tags";
-  const value = apiCache.get<PlaylistCatlistItem[]>(key);
+  const value = apiCache.get<readonly PlaylistCatlistItem[]>(key);
   if (value) return value;
   try {
     const { tags } = await weapiRequest<{
-      tags: {
+      tags: readonly {
         name: string;
         hot: boolean;
       }[];
@@ -142,13 +144,13 @@ export async function playlistSubscribers(
   id: number,
   limit: number,
   offset: number
-): Promise<NeteaseTypings.UserDetail[]> {
+): Promise<readonly NeteaseTypings.UserDetail[]> {
   const key = `playlist_subscribers${id}-${limit}-${offset}`;
-  const value = apiCache.get<NeteaseTypings.UserDetail[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.UserDetail[]>(key);
   if (value) return value;
   try {
     const { subscribers } = await weapiRequest<{
-      subscribers: NeteaseTypings.UserDetail[];
+      subscribers: readonly NeteaseTypings.UserDetail[];
     }>("https://music.163.com/weapi/playlist/subscribers", {
       id,
       limit,
@@ -166,7 +168,7 @@ export async function playlistSubscribers(
 export async function playlistTracks(
   op: "add" | "del",
   pid: number,
-  tracks: number[]
+  tracks: readonly number[]
 ): Promise<boolean> {
   try {
     await weapiRequest(
@@ -205,10 +207,10 @@ export async function playlistUpdate(
 export async function playmodeIntelligenceList(
   songId: number,
   playlistId: number
-): Promise<NeteaseTypings.SongsItem[]> {
+): Promise<readonly NeteaseTypings.SongsItem[]> {
   try {
     const { data } = await weapiRequest<{
-      data: { songInfo: NeteaseTypings.SongsItemSt }[];
+      data: readonly { songInfo: NeteaseTypings.SongsItemSt }[];
     }>("https://music.163.com/weapi/playmode/intelligence/list", {
       songId,
       type: "fromPlayOne",
@@ -227,13 +229,13 @@ export async function simiPlaylist(
   songid: number,
   limit: number,
   offset: number
-): Promise<NeteaseTypings.PlaylistItem[]> {
+): Promise<readonly NeteaseTypings.PlaylistItem[]> {
   const key = `simi_playlist${songid}-${limit}-${offset}`;
-  const value = apiCache.get<NeteaseTypings.PlaylistItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
   try {
     const { playlists } = await weapiRequest<{
-      playlists: NeteaseTypings.RawPlaylistItem[];
+      playlists: readonly NeteaseTypings.RawPlaylistItem[];
     }>("https://music.163.com/weapi/discovery/simiPlaylist", {
       songid,
       limit,
@@ -252,13 +254,13 @@ export async function topPlaylist(
   cat: string,
   limit: number,
   offset: number
-): Promise<NeteaseTypings.PlaylistItem[]> {
+): Promise<readonly NeteaseTypings.PlaylistItem[]> {
   const key = `top_playlist${cat}-${limit}-${offset}`;
-  const value = apiCache.get<NeteaseTypings.PlaylistItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
   try {
     const { playlists } = await weapiRequest<{
-      playlists: NeteaseTypings.PlaylistItem[];
+      playlists: readonly NeteaseTypings.PlaylistItem[];
     }>("https://music.163.com/weapi/playlist/list", {
       cat, // 全部,华语,欧美,日语,韩语,粤语,小语种,流行,摇滚,民谣,电子,舞曲,说唱,轻音乐,爵士,乡村,R&B/Soul,古典,民族,英伦,金属,朋克,蓝调,雷鬼,世界音乐,拉丁,另类/独立,New Age,古风,后摇,Bossa Nova,清晨,夜晚,学习,工作,午休,下午茶,地铁,驾车,运动,旅行,散步,酒吧,怀旧,清新,浪漫,性感,伤感,治愈,放松,孤独,感动,兴奋,快乐,安静,思念,影视原声,ACG,儿童,校园,游戏,70后,80后,90后,网络歌曲,KTV,经典,翻唱,吉他,钢琴,器乐,榜单,00后
       order: "hot", // hot,new
@@ -278,13 +280,13 @@ export async function topPlaylist(
 export async function topPlaylistHighquality(
   cat: string,
   limit: number
-): Promise<NeteaseTypings.PlaylistItem[]> {
+): Promise<readonly NeteaseTypings.PlaylistItem[]> {
   const key = `top_playlist_highquality${cat}-${limit}`;
-  const value = apiCache.get<NeteaseTypings.PlaylistItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
   try {
     const { playlists } = await weapiRequest<{
-      playlists: NeteaseTypings.PlaylistItem[];
+      playlists: readonly NeteaseTypings.PlaylistItem[];
     }>("https://music.163.com/api/playlist/highquality/list", {
       cat: cat, // 全部,华语,欧美,韩语,日语,粤语,小语种,运动,ACG,影视原声,流行,摇滚,后摇,古风,民谣,轻音乐,电子,器乐,说唱,古典,爵士
       limit,
@@ -300,13 +302,15 @@ export async function topPlaylistHighquality(
   return [];
 }
 
-export async function toplist(): Promise<NeteaseTypings.PlaylistItem[]> {
+export async function toplist(): Promise<
+  readonly NeteaseTypings.PlaylistItem[]
+> {
   const key = "toplist";
-  const value = apiCache.get<NeteaseTypings.PlaylistItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
   try {
     const { list } = await apiRequest<{
-      list: NeteaseTypings.RawPlaylistItem[];
+      list: readonly NeteaseTypings.RawPlaylistItem[];
     }>("https://music.163.com/api/toplist", {});
     const ret = list.map(resolvePlaylistItem);
     apiCache.set(key, ret);

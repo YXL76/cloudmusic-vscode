@@ -4,8 +4,8 @@ import type { NeteaseTypings } from "api";
 import i18n from "../i18n";
 
 export interface MusicRankingProps {
-  record: NeteaseTypings.RecordData[][];
-  max: number[];
+  record: ReadonlyArray<readonly NeteaseTypings.RecordData[]>;
+  max: readonly number[];
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

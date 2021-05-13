@@ -6,7 +6,7 @@ import i18n from "../i18n";
 import { request } from "../utils";
 
 export type CommentListProps = {
-  titles: string[];
+  titles: readonly string[];
 } & NeteaseTypings.CommentRet;
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -7,7 +7,7 @@ const i18n: typeof en | typeof zhCn | typeof zhTw = en;
 
 type AvailableLanguages = "en" | "zh-cn" | "zh-tw";
 
-const availableLanguages: Exclude<AvailableLanguages, "en">[] = [
+const availableLanguages: readonly Exclude<AvailableLanguages, "en">[] = [
   "zh-cn",
   "zh-tw",
 ];

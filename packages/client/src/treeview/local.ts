@@ -17,7 +17,7 @@ export class LocalProvider
 {
   static readonly folders: string[] = [];
 
-  static readonly files = new Map<string, LocalFileTreeItem[]>();
+  static readonly files = new Map<string, readonly LocalFileTreeItem[]>();
 
   private static instance: LocalProvider;
 

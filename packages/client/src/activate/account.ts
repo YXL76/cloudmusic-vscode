@@ -208,11 +208,13 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
       async function pickRadioType(
         input: MultiStepInput,
         step: number,
-        allFunc: (...args: number[]) => Promise<NeteaseTypings.RadioDetail[]>,
+        allFunc: (
+          ...args: readonly number[]
+        ) => Promise<readonly NeteaseTypings.RadioDetail[]>,
         typeFunc: (
           id: number,
-          ...args: number[]
-        ) => Promise<NeteaseTypings.RadioDetail[]>
+          ...args: readonly number[]
+        ) => Promise<readonly NeteaseTypings.RadioDetail[]>
       ): Promise<InputStep> {
         const types = await IPC.netease("djCatelist", []);
         const pick = await input.showQuickPick({
@@ -448,7 +450,7 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
 
       async function pickPlaylistSubCategories(
         input: MultiStepInput,
-        items: QuickPickItem[]
+        items: readonly QuickPickItem[]
       ): Promise<InputStep> {
         const pick = await input.showQuickPick({
           title: i18n.word.categorie,
@@ -565,7 +567,7 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
       async function pickArtistInitial(
         input: MultiStepInput
       ): Promise<InputStep> {
-        const allInitial: NeteaseTypings.ArtistInitial[] = [
+        const allInitial: readonly NeteaseTypings.ArtistInitial[] = [
           "A",
           "B",
           "C",

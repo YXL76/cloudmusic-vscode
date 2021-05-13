@@ -155,8 +155,8 @@ export namespace NeteaseTypings {
   };
 
   type LyricSpecifyData = {
-    time: number[];
-    text: string[];
+    time: readonly number[];
+    text: readonly string[];
     user?: LyricUser;
   };
 

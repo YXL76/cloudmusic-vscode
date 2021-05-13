@@ -65,7 +65,7 @@ export async function commentFloor(
       data: {
         totalCount: number;
         hasMore: boolean;
-        comments: NeteaseTypings.RawCommentDetail[];
+        comments: readonly NeteaseTypings.RawCommentDetail[];
       };
     }>("https://music.163.com/api/resource/comment/floor/get", {
       parentCommentId,
@@ -118,7 +118,7 @@ export async function commentNew(
       data: {
         totalCount: number;
         hasMore: boolean;
-        comments: NeteaseTypings.RawCommentDetail[];
+        comments: readonly NeteaseTypings.RawCommentDetail[];
       };
     }>(
       "https://music.163.com/api/v2/resource/comments",

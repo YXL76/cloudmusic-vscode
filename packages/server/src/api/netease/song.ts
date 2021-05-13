@@ -4,7 +4,9 @@ import { resolveAnotherSongItem, resolveSongItem } from "./helper";
 import type { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 
-const resolveLyric = (raw: string): { time: number[]; text: string[] } => {
+const resolveLyric = (
+  raw: string
+): { time: readonly number[]; text: readonly string[] } => {
   const unsorted: Array<[number, string]> = [];
   const lines = raw.split("\n");
   for (const line of lines) {
@@ -81,13 +83,13 @@ export async function simiSong(
   songid: number,
   limit: number,
   offset: number
-): Promise<NeteaseTypings.SongsItem[]> {
+): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `simi_song${songid}-${limit}-${offset}`;
-  const value = apiCache.get<NeteaseTypings.SongsItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
   try {
     const { songs } = await weapiRequest<{
-      songs: NeteaseTypings.AnotherSongItem[];
+      songs: readonly NeteaseTypings.AnotherSongItem[];
     }>("https://music.163.com/weapi/v1/discovery/simiSong", {
       songid,
       limit,
@@ -103,23 +105,23 @@ export async function simiSong(
 }
 
 export async function songDetail(
-  trackIds: number[]
-): Promise<NeteaseTypings.SongsItem[]> {
+  trackIds: readonly number[]
+): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `song_detail${trackIds[0]}`;
   if (trackIds.length === 1) {
-    const value = apiCache.get<NeteaseTypings.SongsItem[]>(key);
+    const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
     if (value) return value;
   }
 
   const limit = 1000;
-  const tasks: Promise<NeteaseTypings.SongsItem[]>[] = [];
+  const tasks: Promise<readonly NeteaseTypings.SongsItem[]>[] = [];
   for (let i = 0; i < trackIds.length; i += limit) {
     const ids = trackIds.slice(i, i + limit);
     tasks.push(
       (async () => {
         const { songs, privileges } = await weapiRequest<{
-          songs: NeteaseTypings.SongsItem[];
-          privileges: { st: number }[];
+          songs: readonly NeteaseTypings.SongsItem[];
+          privileges: readonly { st: number }[];
         }>("https://music.163.com/weapi/v3/song/detail", {
           c: `[${ids.map((id) => `{"id":${id}}`).join(",")}]`,
         });
@@ -142,7 +144,7 @@ export async function songDetail(
 export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
   try {
     const { data } = await eapiRequest<{
-      data: (NeteaseTypings.SongDetail & {
+      data: readonly (NeteaseTypings.SongDetail & {
         freeTrialInfo?: { start: number; end: number };
       })[];
     }>(
@@ -163,13 +165,13 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
 
 export async function topSong(
   areaId: NeteaseEnum.TopSongType
-): Promise<NeteaseTypings.SongsItem[]> {
+): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `top_song${areaId}`;
-  const value = apiCache.get<NeteaseTypings.SongsItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
   try {
     const { data } = await weapiRequest<{
-      data: NeteaseTypings.AnotherSongItem[];
+      data: readonly NeteaseTypings.AnotherSongItem[];
     }>("https://music.163.com/weapi/v1/discovery/new/songs", {
       areaId, // 全部:0 华语:7 欧美:96 日本:8 韩国:16
       // limit: query.limit || 100,

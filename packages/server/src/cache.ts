@@ -93,7 +93,7 @@ export class MusicCache {
     try {
       const list = JSON.parse(
         (await readFile(this.listPath)).toString()
-      ) as MusicCacheNode[];
+      ) as readonly MusicCacheNode[];
       list
         .filter(({ key }) => set.has(key))
         .reverse()

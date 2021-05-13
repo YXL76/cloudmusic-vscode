@@ -39,17 +39,18 @@ const updateSuggestions = throttle((that: QuickPick<QuickPickItem>, value) => {
 }, 256);
 
 export async function inputKeyword(input: MultiStepInput): Promise<InputStep> {
-  const items: QuickPickItem[] = (await IPC.netease("searchHotDetail", [])).map(
-    ({ searchWord, content }) => ({
-      label: searchWord,
-      description: ICON.hot,
-      detail: content,
-    })
-  );
-
-  items.unshift({
-    label: state.keyword ?? (await IPC.netease("searchDefault", [])),
-  });
+  const items: QuickPickItem[] = [
+    {
+      label: state.keyword ?? (await IPC.netease("searchDefault", [])),
+    },
+    ...(await IPC.netease("searchHotDetail", [])).map(
+      ({ searchWord, content }) => ({
+        label: searchWord,
+        description: ICON.hot,
+        detail: content,
+      })
+    ),
+  ];
 
   const pick = await input.showQuickPick({
     title,

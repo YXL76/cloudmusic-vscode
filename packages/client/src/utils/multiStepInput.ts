@@ -21,8 +21,8 @@ interface QuickPickParameters<T extends QuickPickItem> {
   title: string;
   step: number;
   totalSteps?: number;
-  items: T[];
-  activeItems?: T[];
+  items: readonly T[];
+  // activeItems?: readonly T[];
   placeholder?: string;
   changeCallback?: (input: QuickPick<T>, value: string) => void;
 }
@@ -110,7 +110,7 @@ export class MultiStepInput {
     step,
     totalSteps,
     items,
-    activeItems,
+    // activeItems,
     placeholder,
     changeCallback,
     canSelectMany,
@@ -137,9 +137,9 @@ export class MultiStepInput {
           );
           input.placeholder = placeholder;
           input.items = items;
-          if (activeItems) {
+          /* if (activeItems) {
             input.activeItems = activeItems;
-          }
+          } */
           const button: QuickInputButton[] = [];
           if (previous) button.push(pickButtons.previous);
           if (next) button.push(pickButtons.next);

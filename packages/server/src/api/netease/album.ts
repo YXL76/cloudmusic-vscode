@@ -5,19 +5,19 @@ import { weapiRequest } from "./request";
 
 export async function album(id: number): Promise<{
   info: NeteaseTypings.AlbumsItem;
-  songs: NeteaseTypings.SongsItem[];
+  songs: readonly NeteaseTypings.SongsItem[];
 }> {
   const key = `album${id}`;
   const value =
     apiCache.get<{
       info: NeteaseTypings.AlbumsItem;
-      songs: NeteaseTypings.SongsItem[];
+      songs: readonly NeteaseTypings.SongsItem[];
     }>(key);
   if (value) return value;
   try {
     const { album, songs } = await weapiRequest<{
       album: NeteaseTypings.AlbumsItem;
-      songs: NeteaseTypings.SongsItem[];
+      songs: readonly NeteaseTypings.SongsItem[];
     }>(`https://music.163.com/weapi/v1/album/${id}`, {});
     const info = resolveAlbumsItem(album);
     const ret = {
@@ -32,13 +32,15 @@ export async function album(id: number): Promise<{
   return { info: {} as NeteaseTypings.AlbumsItem, songs: [] };
 }
 
-export async function albumNewest(): Promise<NeteaseTypings.AlbumsItem[]> {
+export async function albumNewest(): Promise<
+  readonly NeteaseTypings.AlbumsItem[]
+> {
   const key = "album_newest";
-  const value = apiCache.get<NeteaseTypings.AlbumsItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.AlbumsItem[]>(key);
   if (value) return value;
   try {
     const { albums } = await weapiRequest<{
-      albums: NeteaseTypings.AlbumsItem[];
+      albums: readonly NeteaseTypings.AlbumsItem[];
     }>("https://music.163.com/api/discovery/newAlbum", {});
     const ret = albums.map(resolveAlbumsItem);
     apiCache.set(key, ret);
@@ -64,14 +66,16 @@ export async function albumSub(
   return false;
 }
 
-export async function albumSublist(): Promise<NeteaseTypings.AlbumsItem[]> {
+export async function albumSublist(): Promise<
+  readonly NeteaseTypings.AlbumsItem[]
+> {
   const limit = 100;
   let offset = 0;
   const ret: NeteaseTypings.AlbumsItem[] = [];
   try {
     for (let i = 0; i < 16; ++i) {
       const { data } = await weapiRequest<{
-        data: NeteaseTypings.AlbumsItem[];
+        data: readonly NeteaseTypings.AlbumsItem[];
       }>("https://music.163.com/weapi/album/sublist", {
         limit,
         offset,
@@ -87,14 +91,16 @@ export async function albumSublist(): Promise<NeteaseTypings.AlbumsItem[]> {
   return ret;
 }
 
-export async function topAlbum(): Promise<NeteaseTypings.AlbumsItem[]> {
+export async function topAlbum(): Promise<
+  readonly NeteaseTypings.AlbumsItem[]
+> {
   const key = "top_album";
-  const value = apiCache.get<NeteaseTypings.AlbumsItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.AlbumsItem[]>(key);
   if (value) return value;
   const date = new Date();
   try {
     const { monthData } = await weapiRequest<{
-      monthData: NeteaseTypings.AlbumsItem[];
+      monthData: readonly NeteaseTypings.AlbumsItem[];
     }>("https://music.163.com/api/discovery/new/albums/area", {
       area: "ALL", // //ALL:全部,ZH:华语,EA:欧美,KR:韩国,JP:日本
       limit: 50,

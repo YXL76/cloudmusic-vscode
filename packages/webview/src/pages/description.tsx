@@ -2,7 +2,7 @@ import React from "react";
 
 export interface DescriptionProps {
   name: string;
-  desc: { ti: string; txt: string }[];
+  desc: readonly { ti: string; txt: string }[];
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -33,17 +33,22 @@ export async function searchSingle(
   s: string,
   limit: number,
   offset: number
-): Promise<NeteaseTypings.SongsItem[]> {
+): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `cloudsearch${NeteaseEnum.SearchType.single}-${s}-${limit}-${offset}`;
-  const value = apiCache.get<NeteaseTypings.SongsItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
   try {
     const {
       result: { songs },
-    } = await weapiRequest<{ result: { songs: NeteaseTypings.SongsItemSt[] } }>(
-      "https://music.163.com/api/cloudsearch/pc",
-      { s, type: NeteaseEnum.SearchType.single, limit, offset, total: true }
-    );
+    } = await weapiRequest<{
+      result: { songs: readonly NeteaseTypings.SongsItemSt[] };
+    }>("https://music.163.com/api/cloudsearch/pc", {
+      s,
+      type: NeteaseEnum.SearchType.single,
+      limit,
+      offset,
+      total: true,
+    });
     const ret = songs.map(resolveSongItemSt);
     apiCache.set(key, ret);
     return ret;
@@ -57,17 +62,22 @@ export async function searchAlbum(
   s: string,
   limit: number,
   offset: number
-): Promise<NeteaseTypings.AlbumsItem[]> {
+): Promise<readonly NeteaseTypings.AlbumsItem[]> {
   const key = `cloudsearch${NeteaseEnum.SearchType.album}-${s}-${limit}-${offset}`;
-  const value = apiCache.get<NeteaseTypings.AlbumsItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.AlbumsItem[]>(key);
   if (value) return value;
   try {
     const {
       result: { albums },
-    } = await weapiRequest<{ result: { albums: NeteaseTypings.AlbumsItem[] } }>(
-      "https://music.163.com/api/cloudsearch/pc",
-      { s, type: NeteaseEnum.SearchType.album, limit, offset, total: true }
-    );
+    } = await weapiRequest<{
+      result: { albums: readonly NeteaseTypings.AlbumsItem[] };
+    }>("https://music.163.com/api/cloudsearch/pc", {
+      s,
+      type: NeteaseEnum.SearchType.album,
+      limit,
+      offset,
+      total: true,
+    });
     const ret = albums.map(resolveAlbumsItem);
     apiCache.set(key, ret);
     return ret;
@@ -81,17 +91,22 @@ export async function searchArtist(
   s: string,
   limit: number,
   offset: number
-): Promise<NeteaseTypings.Artist[]> {
+): Promise<readonly NeteaseTypings.Artist[]> {
   const key = `cloudsearch${NeteaseEnum.SearchType.artist}-${s}-${limit}-${offset}`;
-  const value = apiCache.get<NeteaseTypings.Artist[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.Artist[]>(key);
   if (value) return value;
   try {
     const {
       result: { artists },
-    } = await weapiRequest<{ result: { artists: NeteaseTypings.Artist[] } }>(
-      "https://music.163.com/api/cloudsearch/pc",
-      { s, type: NeteaseEnum.SearchType.artist, limit, offset, total: true }
-    );
+    } = await weapiRequest<{
+      result: { artists: readonly NeteaseTypings.Artist[] };
+    }>("https://music.163.com/api/cloudsearch/pc", {
+      s,
+      type: NeteaseEnum.SearchType.artist,
+      limit,
+      offset,
+      total: true,
+    });
     const ret = artists.map((artist) =>
       resolveArtist({ ...artist, briefDesc: "" })
     );
@@ -107,15 +122,15 @@ export async function searchPlaylist(
   s: string,
   limit: number,
   offset: number
-): Promise<NeteaseTypings.PlaylistItem[]> {
+): Promise<readonly NeteaseTypings.PlaylistItem[]> {
   const key = `cloudsearch${NeteaseEnum.SearchType.playlist}-${s}-${limit}-${offset}`;
-  const value = apiCache.get<NeteaseTypings.PlaylistItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
   try {
     const {
       result: { playlists },
     } = await weapiRequest<{
-      result: { playlists: NeteaseTypings.RawPlaylistItem[] };
+      result: { playlists: readonly NeteaseTypings.RawPlaylistItem[] };
     }>("https://music.163.com/api/cloudsearch/pc", {
       s,
       type: NeteaseEnum.SearchType.playlist,
@@ -132,21 +147,27 @@ export async function searchPlaylist(
   return [];
 }
 
-type SearchLyricResult = NeteaseTypings.SongsItem & { lyrics: string[] };
+type SearchLyricResult = NeteaseTypings.SongsItem & {
+  lyrics: readonly string[];
+};
 
 export async function searchLyric(
   s: string,
   limit: number,
   offset: number
-): Promise<SearchLyricResult[]> {
+): Promise<readonly SearchLyricResult[]> {
   const key = `cloudsearch${NeteaseEnum.SearchType.lyric}-${s}-${limit}-${offset}`;
-  const value = apiCache.get<SearchLyricResult[]>(key);
+  const value = apiCache.get<readonly SearchLyricResult[]>(key);
   if (value) return value;
   try {
     const {
       result: { songs },
     } = await weapiRequest<{
-      result: { songs: (NeteaseTypings.SongsItemSt & { lyrics: string[] })[] };
+      result: {
+        songs: readonly (NeteaseTypings.SongsItemSt & {
+          lyrics: readonly string[];
+        })[];
+      };
     }>("https://music.163.com/api/cloudsearch/pc", {
       s,
       type: NeteaseEnum.SearchType.lyric,
@@ -166,15 +187,15 @@ export async function searchLyric(
   return [];
 }
 
-export async function searchHotDetail(): Promise<
-  { searchWord: string; content: string }[]
-> {
+type HotDetail = readonly { searchWord: string; content: string }[];
+
+export async function searchHotDetail(): Promise<HotDetail> {
   const key = "search_hot_detail";
-  const value = apiCache.get<{ searchWord: string; content: string }[]>(key);
+  const value = apiCache.get<HotDetail>(key);
   if (value) return value;
   try {
     const { data } = await weapiRequest<{
-      data: { searchWord: string; content: string }[];
+      data: HotDetail;
     }>("https://music.163.com/weapi/hotsearchlist/get", {});
     const ret = data.map(({ searchWord, content }) => ({
       searchWord,
@@ -188,15 +209,17 @@ export async function searchHotDetail(): Promise<
   return [];
 }
 
-export async function searchSuggest(keywords: string): Promise<string[]> {
+export async function searchSuggest(
+  keywords: string
+): Promise<readonly string[]> {
   const key = `search_suggest${keywords}`;
-  const value = apiCache.get<string[]>(key);
+  const value = apiCache.get<readonly string[]>(key);
   if (value) return value;
   try {
     const {
       result: { allMatch },
     } = await weapiRequest<{
-      result: { allMatch: { keyword: string }[] };
+      result: { allMatch: readonly { keyword: string }[] };
     }>("https://music.163.com/weapi/search/suggest/keyword", { s: keywords });
     const ret = allMatch.map(({ keyword }) => keyword);
     apiCache.set(key, ret);

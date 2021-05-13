@@ -9,20 +9,21 @@ import type { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import { weapiRequest } from "./request";
 
-export async function artists(
-  id: number
-): Promise<{ info: NeteaseTypings.Artist; songs: NeteaseTypings.SongsItem[] }> {
+export async function artists(id: number): Promise<{
+  info: NeteaseTypings.Artist;
+  songs: readonly NeteaseTypings.SongsItem[];
+}> {
   const key = `artists${id}`;
   const value =
     apiCache.get<{
       info: NeteaseTypings.Artist;
-      songs: NeteaseTypings.SongsItem[];
+      songs: readonly NeteaseTypings.SongsItem[];
     }>(key);
   if (value) return value;
   try {
     const { artist, hotSongs } = await weapiRequest<{
       artist: NeteaseTypings.Artist;
-      hotSongs: NeteaseTypings.SongsItem[];
+      hotSongs: readonly NeteaseTypings.SongsItem[];
     }>(`https://music.163.com/weapi/v1/artist/${id}`, {});
     const ret = {
       info: resolveArtist(artist),
@@ -38,9 +39,9 @@ export async function artists(
 
 export async function artistAlbum(
   id: number
-): Promise<NeteaseTypings.AlbumsItem[]> {
+): Promise<readonly NeteaseTypings.AlbumsItem[]> {
   const key = `artist_album${id}`;
-  const value = apiCache.get<NeteaseTypings.AlbumsItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.AlbumsItem[]>(key);
   if (value) return value;
   const ret: NeteaseTypings.AlbumsItem[] = [];
   const limit = 50;
@@ -48,7 +49,7 @@ export async function artistAlbum(
   try {
     for (let i = 0; i < 16; ++i) {
       const { hotAlbums, more } = await weapiRequest<{
-        hotAlbums: NeteaseTypings.AlbumsItem[];
+        hotAlbums: readonly NeteaseTypings.AlbumsItem[];
         more: boolean;
       }>(`https://music.163.com/weapi/artist/albums/${id}`, {
         limit,
@@ -68,7 +69,7 @@ export async function artistAlbum(
   return ret;
 }
 
-type ArtistDesc = { ti: string; txt: string }[];
+type ArtistDesc = readonly { ti: string; txt: string }[];
 
 export async function artistDesc(id: number): Promise<ArtistDesc> {
   const key = `artist_desc${id}`;
@@ -93,15 +94,15 @@ export async function artistList(
   initial: NeteaseTypings.ArtistInitial,
   limit: number,
   offset: number
-): Promise<NeteaseTypings.Artist[]> {
+): Promise<readonly NeteaseTypings.Artist[]> {
   const key = `artist_album${type}-${area}-${
     initial as string
   }-${limit}-${offset}`;
-  const value = apiCache.get<NeteaseTypings.Artist[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.Artist[]>(key);
   if (value) return value;
   try {
     const { artists } = await weapiRequest<{
-      artists: NeteaseTypings.Artist[];
+      artists: readonly NeteaseTypings.Artist[];
     }>("https://music.163.com/api/v1/artist/list", {
       initial: initial.toUpperCase().charCodeAt(0) || undefined,
       offset,
@@ -123,13 +124,13 @@ export async function artistSongs(
   id: number,
   limit: number,
   offset: number
-): Promise<NeteaseTypings.SongsItem[]> {
+): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `artist_songs${id}-${limit}-${offset}`;
-  const value = apiCache.get<NeteaseTypings.SongsItem[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
   try {
     const { songs } = await weapiRequest<{
-      songs: NeteaseTypings.SongsItemSt[];
+      songs: readonly NeteaseTypings.SongsItemSt[];
     }>(
       "https://music.163.com/api/v1/artist/songs",
       {
@@ -169,16 +170,21 @@ export async function artistSub(
   return false;
 }
 
-export async function artistSublist(): Promise<NeteaseTypings.Artist[]> {
+export async function artistSublist(): Promise<
+  readonly NeteaseTypings.Artist[]
+> {
   const limit = 100;
   let offset = 0;
   const ret: NeteaseTypings.Artist[] = [];
   try {
     for (let i = 0; i < 16; ++i) {
-      const { data } = await weapiRequest<{ data: NeteaseTypings.Artist[] }>(
-        "https://music.163.com/weapi/artist/sublist",
-        { limit, offset, total: true }
-      );
+      const { data } = await weapiRequest<{
+        data: readonly NeteaseTypings.Artist[];
+      }>("https://music.163.com/weapi/artist/sublist", {
+        limit,
+        offset,
+        total: true,
+      });
       ret.push(...data.map(resolveArtist));
       if (data.length < limit) break;
       offset += limit;
@@ -191,13 +197,13 @@ export async function artistSublist(): Promise<NeteaseTypings.Artist[]> {
 
 export async function simiArtist(
   artistid: number
-): Promise<NeteaseTypings.Artist[]> {
+): Promise<readonly NeteaseTypings.Artist[]> {
   const key = `simi_artist${artistid}`;
-  const value = apiCache.get<NeteaseTypings.Artist[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.Artist[]>(key);
   if (value) return value;
   try {
     const { artists } = await weapiRequest<{
-      artists: NeteaseTypings.Artist[];
+      artists: readonly NeteaseTypings.Artist[];
     }>("https://music.163.com/weapi/discovery/simiArtist", { artistid });
     const ret = artists.map(resolveArtist);
     apiCache.set(key, ret);
@@ -211,13 +217,13 @@ export async function simiArtist(
 export async function topArtists(
   limit: number,
   offset: number
-): Promise<NeteaseTypings.Artist[]> {
+): Promise<readonly NeteaseTypings.Artist[]> {
   const key = `top_artists${limit}-${offset}`;
-  const value = apiCache.get<NeteaseTypings.Artist[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.Artist[]>(key);
   if (value) return value;
   try {
     const { artists } = await weapiRequest<{
-      artists: NeteaseTypings.Artist[];
+      artists: readonly NeteaseTypings.Artist[];
     }>("https://music.163.com/weapi/artist/top", {
       limit,
       offset,
@@ -232,17 +238,23 @@ export async function topArtists(
   return [];
 }
 
-export async function toplistArtist(): Promise<NeteaseTypings.Artist[]> {
+export async function toplistArtist(): Promise<
+  readonly NeteaseTypings.Artist[]
+> {
   const key = "toplist_artist";
-  const value = apiCache.get<NeteaseTypings.Artist[]>(key);
+  const value = apiCache.get<readonly NeteaseTypings.Artist[]>(key);
   if (value) return value;
   try {
     const {
       list: { artists },
-    } = await weapiRequest<{ list: { artists: NeteaseTypings.Artist[] } }>(
-      "https://music.163.com/weapi/toplist/artist",
-      { type: 1, limit: 100, offset: 0, total: true }
-    );
+    } = await weapiRequest<{
+      list: { artists: readonly NeteaseTypings.Artist[] };
+    }>("https://music.163.com/weapi/toplist/artist", {
+      type: 1,
+      limit: 100,
+      offset: 0,
+      total: true,
+    });
     const ret = artists.map(resolveArtist);
     apiCache.set(key, ret);
     return ret;
