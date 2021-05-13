@@ -16,7 +16,7 @@ export const COOKIE_KEY = "cookie";
 export const BUTTON_KEY = "button-v1";
 export const VOLUME_KEY = "volume";
 export const LYRIC_KEY = "lyric-v2";
-export const LOCAL_FOLDER_KEY = "local-folder";
+export const LOCAL_FOLDER_KEY = "local-folder-v2";
 export const REPEAT_KEY = "repeat-v1";
 export const FM_KEY = "fm-v1";
 export const SHOW_LYRIC_KEY = "show-lyric-v1";
@@ -24,12 +24,6 @@ export const SHOW_LYRIC_KEY = "show-lyric-v1";
 export const MUSIC_CACHE_DIR_NAME = `${MUSIC_QUALITY}`;
 
 export const AUTH_PROVIDER_ID = "cloudmusic-auth-provider";
-
-export const enum TreeItemId {
-  queue,
-  program,
-  local,
-}
 
 export const enum ICON {
   album = "$(circuit-board)",

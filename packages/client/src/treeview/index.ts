@@ -13,19 +13,20 @@ import type {
 } from ".";
 import type { ThemeIcon, TreeItem } from "vscode";
 import type { NeteaseTypings } from "api";
-import type { TreeItemId } from "../constant";
 
 export type QueueContent =
   | QueueItemTreeItem
   | LocalFileTreeItem
   | ProgramTreeItem;
 
+export type TreeItemId = "q" | "p" | "l";
+
 export type RefreshAction = (items: PlayTreeItemData[]) => void;
 
 export type PlayTreeItemData =
-  | ({ itemType: TreeItemId.local } & LocalFileTreeItemData)
-  | ({ itemType: TreeItemId.program } & ProgramTreeItemData)
-  | ({ itemType: TreeItemId.queue } & QueueItemTreeItemData);
+  | (LocalFileTreeItemData & { itemType: "l" })
+  | (ProgramTreeItemData & { itemType: "p" })
+  | (QueueItemTreeItemData & { itemType: "q" });
 
 export interface PlayTreeItem extends TreeItem {
   readonly iconPath: ThemeIcon;

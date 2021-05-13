@@ -9,7 +9,6 @@ import { AccountManager } from "../manager";
 import { IPC } from "../utils";
 import type { NeteaseTypings } from "api";
 import type { TreeDataProvider } from "vscode";
-import { TreeItemId } from "../constant";
 import i18n from "../i18n";
 
 export class RadioProvider
@@ -98,7 +97,7 @@ ${i18n.word.subscribedCount}: ${this.item.subCount}`;
 
 export type ProgramTreeItemData = NeteaseTypings.ProgramDetail & {
   pid: number;
-  itemType: TreeItemId.program;
+  itemType: "p";
 };
 
 export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
@@ -142,7 +141,7 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
       if (element.data.pid === 0) element.data.pid = data.pid;
       return element;
     }
-    element = new this({ ...data, itemType: TreeItemId.program });
+    element = new this({ ...data, itemType: "p" });
     this._set.set(data.id, element);
     return element;
   }

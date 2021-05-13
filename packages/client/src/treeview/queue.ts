@@ -3,7 +3,6 @@ import { LocalFileTreeItem, ProgramTreeItem } from ".";
 import type { PlayTreeItem, PlayTreeItemData, QueueContent } from ".";
 import type { NeteaseTypings } from "api";
 import type { TreeDataProvider } from "vscode";
-import { TreeItemId } from "../constant";
 import { unsortInplace } from "array-unsort";
 
 export const enum QueueSortType {
@@ -90,32 +89,32 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   static sort(type: QueueSortType, order: QueueSortOrder): PlayTreeItemData[] {
     const getName = (item: PlayTreeItemData): string => {
       switch (item.itemType) {
-        case TreeItemId.local:
-          return item.filename;
-        case TreeItemId.program:
-          return item.mainSong.name;
-        case TreeItemId.queue:
+        case "q":
           return item.name;
+        case "p":
+          return item.mainSong.name;
+        case "l":
+          return item.filename;
       }
     };
     const getAlbum = (item: PlayTreeItemData): string => {
       switch (item.itemType) {
-        case TreeItemId.local:
-          return item.ext;
-        case TreeItemId.program:
-          return item.mainSong.al.name;
-        case TreeItemId.queue:
+        case "q":
           return item.al.name;
+        case "p":
+          return item.mainSong.al.name;
+        case "l":
+          return item.ext ?? "";
       }
     };
     const getArtist = (item: PlayTreeItemData): string => {
       switch (item.itemType) {
-        case TreeItemId.local:
-          return "";
-        case TreeItemId.program:
-          return item.mainSong.ar?.[0].name ?? "";
-        case TreeItemId.queue:
+        case "q":
           return item.ar?.[0].name ?? "";
+        case "p":
+          return item.mainSong.ar?.[0].name ?? "";
+        case "l":
+          return "";
       }
     };
 
@@ -146,12 +145,12 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
 
   private static _parseRaw(item: PlayTreeItemData): QueueContent {
     switch (item.itemType) {
-      case TreeItemId.local:
-        return LocalFileTreeItem.new(item.filename, item.ext, item.id);
-      case TreeItemId.program:
+      case "q":
+        return QueueItemTreeItem.new(item);
+      case "p":
         return ProgramTreeItem.new(item);
       default:
-        return QueueItemTreeItem.new(item);
+        return LocalFileTreeItem.new(item);
     }
   }
 
@@ -160,8 +159,9 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     index: number = this.len
   ): void {
     this._songs.splice(index, 0, ...elements);
-    // TODO
-    // this._songs = [...new Set(this._songs)];
+    this._songs = [...new Set(this._songs.map((i) => this._parseRaw(i)))].map(
+      ({ data }) => data
+    );
   }
 
   private static _clear() {
@@ -179,17 +179,13 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   }
 
   getChildren(): QueueContent[] {
-    const treeitem = [
-      ...new Set(QueueProvider._songs.map((i) => QueueProvider._parseRaw(i))),
-    ];
-    QueueProvider._songs = treeitem.map(({ data }) => data);
-    return treeitem;
+    return QueueProvider._songs.map((i) => QueueProvider._parseRaw(i));
   }
 }
 
 export type QueueItemTreeItemData = NeteaseTypings.SongsItem & {
   pid: number;
-  itemType: TreeItemId.queue;
+  itemType: "q";
 };
 
 export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
@@ -227,7 +223,7 @@ export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
       if (element.data.pid === 0) element.data.pid = data.pid;
       return element;
     }
-    element = new this({ ...data, itemType: TreeItemId.queue });
+    element = new this({ ...data, itemType: "q" });
     this._set.set(data.id, element);
     return element;
   }

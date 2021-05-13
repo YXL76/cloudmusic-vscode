@@ -88,7 +88,6 @@ export class AccountViewProvider implements WebviewViewProvider {
     // context: WebviewViewResolveContext
     // token: CancellationToken
   ): void {
-    // TODO
     AccountViewProvider._view = webview;
 
     webview.title = i18n.word.account;

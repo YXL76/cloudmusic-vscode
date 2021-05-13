@@ -460,9 +460,10 @@ export async function userPlaylist(
 export async function userRecord(): Promise<
   Array<NeteaseTypings.RecordData[]>
 > {
-  const key = `user_record$`;
+  const key = "user_record";
   const value = apiCache.get<Array<NeteaseTypings.RecordData[]>>(key);
   if (value) return value;
+
   const tasks: Promise<NeteaseTypings.RecordData[]>[] = [
     (async () => {
       const { weekData } = await weapiRequest<{

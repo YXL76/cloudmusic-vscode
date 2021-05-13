@@ -9,7 +9,6 @@ import {
 } from "vscode";
 import type { PlayTreeItem, RefreshAction } from ".";
 import type { TreeDataProvider } from "vscode";
-import { TreeItemId } from "../constant";
 import { fromFile } from "file-type";
 import { resolve } from "path";
 
@@ -49,44 +48,60 @@ export class LocalProvider
   async getChildren(
     element?: LocalLibraryTreeItem
   ): Promise<(LocalFileTreeItem | LocalLibraryTreeItem)[]> {
-    if (element) {
-      let items: LocalFileTreeItem[] = [];
-      const { label } = element;
-      if (LocalProvider.files.has(label))
-        items = LocalProvider.files.get(label) as LocalFileTreeItem[];
-      else {
-        try {
-          const files = await workspace.fs.readDirectory(Uri.file(label));
-          items = (
+    if (!element)
+      return LocalProvider.folders.map(
+        (folder) => new LocalLibraryTreeItem(folder)
+      );
+
+    const localAction = LocalProvider.action;
+    LocalProvider.action = undefined;
+
+    let items: LocalFileTreeItem[] = [];
+    const { label } = element;
+    if (LocalProvider.files.has(label))
+      items = LocalProvider.files.get(label) as LocalFileTreeItem[];
+    else {
+      let index = 0;
+      const folders: string[] = [label];
+      try {
+        while (index < folders.length) {
+          const folder = folders[index];
+          const files = await workspace.fs.readDirectory(Uri.file(folder));
+          const paths: string[] = [];
+
+          for (const [name, type] of files) {
+            if (type === FileType.File) paths.push(name);
+            else if (type === FileType.Directory)
+              folders.push(resolve(folder, name));
+          }
+
+          const treeitems = (
             await Promise.all(
-              files
-                .filter(([, type]) => type === FileType.File)
-                .map(async ([filename]) => ({
+              paths.map(async (filename) => {
+                const id = resolve(folder, filename);
+                return {
                   filename,
-                  ...(await fromFile(resolve(label, filename))),
-                }))
+                  id,
+                  ...(await fromFile(id)),
+                };
+              })
             )
           )
             .filter(
               ({ mime }) =>
                 mime && (mime === "audio/x-flac" || mime === "audio/mpeg")
             )
-            .map(({ filename: fn, ext }) =>
-              LocalFileTreeItem.new(fn, ext ?? "", resolve(label, fn))
-            );
-          LocalProvider.files.set(label, items);
-        } catch {}
-      }
-      const localAction = LocalProvider.action;
-      if (localAction) {
-        LocalProvider.action = undefined;
-        localAction(items.map(({ data }) => data));
-      }
-      return items;
+            .map((item) => LocalFileTreeItem.new(item));
+          items.push(...treeitems);
+
+          ++index;
+        }
+      } catch {}
+      LocalProvider.files.set(label, items);
     }
-    return LocalProvider.folders.map(
-      (folder) => new LocalLibraryTreeItem(folder)
-    );
+
+    localAction?.(items.map(({ data }) => data));
+    return items;
   }
 }
 
@@ -104,9 +119,9 @@ export class LocalLibraryTreeItem extends TreeItem {
 
 export type LocalFileTreeItemData = {
   filename: string;
-  ext: string;
+  ext?: string;
   id: string; // path
-  itemType: TreeItemId.local;
+  itemType: "l";
 };
 
 const fakeItem = {
@@ -123,38 +138,29 @@ export class LocalFileTreeItem extends TreeItem implements PlayTreeItem {
 
   readonly iconPath = new ThemeIcon("file-media");
 
-  readonly data = {
-    filename: this.label,
-    ext: this.description,
-    id: this.tooltip,
-    itemType: TreeItemId.local as TreeItemId.local,
-  };
+  readonly label = this.data.filename;
+
+  readonly description = this.data.ext ?? "";
+
+  readonly tooltip = this.data.id;
 
   readonly item = fakeItem;
 
   readonly contextValue = "LocalFileTreeItem";
 
-  private constructor(
-    readonly label: string,
-    readonly description: string,
-    readonly tooltip: string
-  ) {
-    super(label);
+  private constructor(readonly data: LocalFileTreeItemData) {
+    super(data.filename, TreeItemCollapsibleState.None);
   }
 
   get valueOf(): string {
     return this.tooltip;
   }
 
-  static new(
-    label: string,
-    description: string,
-    tooltip: string
-  ): LocalFileTreeItem {
-    let element = this._set.get(tooltip);
+  static new(data: Omit<LocalFileTreeItemData, "itemType">): LocalFileTreeItem {
+    let element = this._set.get(data.id);
     if (element) return element;
-    element = new this(label, description, tooltip);
-    this._set.set(tooltip, element);
+    element = new this({ ...data, itemType: "l" });
+    this._set.set(data.id, element);
     return element;
   }
 }
