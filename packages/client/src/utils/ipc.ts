@@ -222,7 +222,7 @@ export class IPC {
 
   static random(): void {
     ipcB.send({
-      t: "queue.random",
+      t: "queue.new",
       items: QueueProvider.random(),
     });
   }

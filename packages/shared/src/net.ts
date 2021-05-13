@@ -25,7 +25,6 @@ export type IPCBroadcastMsg =
   | IPCMsg<IPCEvent.Queue$delete, { id: string | number }>
   | IPCMsg<IPCEvent.Queue$new, { items: unknown[]; id?: number }>
   | IPCMsg<IPCEvent.Queue$play, { id: string | number }>
-  | IPCMsg<IPCEvent.Queue$random, { items: unknown[] }>
   | IPCMsg<IPCEvent.Queue$shift, { index: number }>;
 
 export type IPCClientMsg =
