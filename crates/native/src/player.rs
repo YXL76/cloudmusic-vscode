@@ -69,8 +69,6 @@ impl Finalize for Player {}
 impl Player {
     #[inline]
     fn new() -> Self {
-        let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
-        let _ = rodio::Sink::try_new(&handle).unwrap();
         let (control_tx, _) = mpsc::channel();
         let (_, info_rx) = mpsc::channel();
         Self {
@@ -92,27 +90,30 @@ impl Player {
 
                 let volume = self.volume;
 
-                thread::spawn(move || {
-                    let (_stream, handle) = rodio::OutputStream::try_default().unwrap();
-                    let sink = rodio::Sink::try_new(&handle).unwrap();
-                    sink.append(source.fade_in(Duration::from_secs(2)));
-                    sink.set_volume(volume);
+                thread::spawn(move || match rodio::OutputStream::try_default() {
+                    Ok(device) => {
+                        let (_stream, handle) = device;
+                        let sink = rodio::Sink::try_new(&handle).unwrap();
+                        sink.append(source.fade_in(Duration::from_secs(2)));
+                        sink.set_volume(volume);
 
-                    let _ = info_tx.send(true);
-                    loop {
-                        match control_rx.recv() {
-                            Ok(ControlEvent::Play) => sink.play(),
-                            Ok(ControlEvent::Pause) => sink.pause(),
-                            Ok(ControlEvent::Volume(level)) => sink.set_volume(level),
-                            Ok(ControlEvent::Empty) => {
-                                let _ = info_tx.send(sink.empty());
-                            }
-                            _ => {
-                                drop(sink);
-                                break;
+                        let _ = info_tx.send(true);
+                        loop {
+                            match control_rx.recv() {
+                                Ok(ControlEvent::Play) => sink.play(),
+                                Ok(ControlEvent::Pause) => sink.pause(),
+                                Ok(ControlEvent::Volume(level)) => sink.set_volume(level),
+                                Ok(ControlEvent::Empty) => {
+                                    let _ = info_tx.send(sink.empty());
+                                }
+                                _ => {
+                                    drop(sink);
+                                    break;
+                                }
                             }
                         }
                     }
+                    _ => return,
                 });
 
                 self.control_tx = control_tx;
