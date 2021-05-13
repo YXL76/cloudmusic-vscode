@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [8.2.2] - 2021-05-13
+
+### Fixed
+
+- Login process ([#418](https://github.com/YXL76/cloudmusic-vscode/issues/418))
+
 ## [8.2.1] - 2021-05-13
 
 ### Fixed
