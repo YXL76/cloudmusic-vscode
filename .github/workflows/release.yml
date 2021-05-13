@@ -196,7 +196,6 @@ jobs:
         run: yarn dlx vsce publish --packagePath ${{ env.VSIX_PATH }} -p ${{ secrets.VSCE_TOKEN }}
 
       - name: Publish to Open VSX Registry
-        continue-on-error: true
         run: yarn dlx ovsx publish ${{ env.VSIX_PATH }} -p ${{ secrets.OVSX_TOKEN }}
 
       - uses: actions/create-release@v1

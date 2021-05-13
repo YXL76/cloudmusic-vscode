@@ -806,8 +806,8 @@
     "build-dev": "yarn workspaces foreach -p run build-dev",
     "generate-css": "postcss style.css -o dist/style.css",
     "list": "node scripts/list.js",
-    "pnp": "yarn pnpify --sdk vscode vim",
     "test": "yarn workspaces foreach -p run test",
+    "postinstall": "yarn pnpify --sdk vscode vim",
     "vscode:prepublish": "yarn generate-css && yarn build"
   },
   "devDependencies": {
