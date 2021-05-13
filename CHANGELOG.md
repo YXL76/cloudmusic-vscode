@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [8.2.1] - 2021-05-13
+
+### Fixed
+
+- Media session: `play`/`pause` does not work when playback is paused
+
 ## [8.2.0] - 2021-05-13
 
 ### Added
