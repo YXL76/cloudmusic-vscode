@@ -33,5 +33,5 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
 export function deactivate(): void {
   if (State.master) IPC.retain();
-  IPC.disconnect();
+  // IPC.disconnect();
 }

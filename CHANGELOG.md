@@ -6,6 +6,20 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [8.2.0] - 2021-05-13
+
+### Added
+
+- Configuration: listening for change
+- Treeview: support a recursive directory reading
+
+### Fixed
+
+- Button: add missing label
+- Native: do not panic when there is no device
+- Player: set metadata when toggling HTML
+- Treeview: shuffle
+
 ## [8.1.0] - 2021-05-12
 
 ### Added
