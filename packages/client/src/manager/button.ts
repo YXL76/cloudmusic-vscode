@@ -52,6 +52,7 @@ export class ButtonManager {
       i18n.word.play,
       i18n.word.nextTrack,
       i18n.word.repeat,
+      i18n.word.like,
       i18n.word.volume,
       i18n.word.song,
       i18n.word.lyric,

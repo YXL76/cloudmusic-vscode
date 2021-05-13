@@ -49,9 +49,8 @@ export function initCommand(context: ExtensionContext): void {
       });
     }),
 
-    commands.registerCommand(
-      "cloudmusic.toggleButton",
-      () => void ButtonManager.toggle()
+    commands.registerCommand("cloudmusic.toggleButton", () =>
+      ButtonManager.toggle()
     ),
 
     commands.registerCommand("cloudmusic.personalFM", () => IPC.fm())
