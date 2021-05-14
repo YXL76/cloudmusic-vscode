@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [8.2.3] - 2021-05-14
+
+### Fixed
+
+- API: parameters error
+
 ## [8.2.2] - 2021-05-13
 
 ### Fixed
