@@ -16,6 +16,7 @@ import {
   pickUser,
 } from ".";
 import type { WebviewView, WebviewViewProvider } from "vscode";
+import { AccountManager } from "../manager";
 import { NeteaseEnum } from "@cloudmusic/shared";
 import type { WebviewType } from "@cloudmusic/shared";
 import i18n from "../i18n";
@@ -226,7 +227,7 @@ export class Webview {
   }
 
   static async musicRanking(): Promise<void> {
-    const record = await IPC.netease("userRecord", []);
+    const record = await IPC.netease("userRecord", [AccountManager.uid]);
     const { panel, setHtml } = this.getPanel(
       i18n.word.musicRanking,
       "musicRanking"

@@ -23,7 +23,7 @@ const ipcBHandler = (data: IPCBroadcastMsg) => {
       AccountManager.uid = data.userId;
       AccountManager.nickname = data.nickname;
       AccountManager.likelist.clear();
-      void IPC.netease("likelist", []).then((ids) => {
+      void IPC.netease("likelist", [data.userId]).then((ids) => {
         for (const id of ids) AccountManager.likelist.add(id);
       });
       State.login = true;
@@ -143,7 +143,10 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         State.fm = data.is;
         break;
       case "queue.fmNext":
-        State.playItem = QueueItemTreeItem.new({ ...data.item, pid: 0 });
+        State.playItem = QueueItemTreeItem.new({
+          ...data.item,
+          pid: data.item.al.id,
+        });
         break;
     }
   };

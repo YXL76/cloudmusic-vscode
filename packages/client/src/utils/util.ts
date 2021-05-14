@@ -235,11 +235,14 @@ export async function pickSong(
     case PickType.add:
       void commands.executeCommand(
         "cloudmusic.addSong",
-        QueueItemTreeItem.new({ ...item, pid: 0 })
+        QueueItemTreeItem.new({ ...item, pid: item.al.id })
       );
       break;
     case PickType.next:
-      IPC.add([QueueItemTreeItem.new({ ...item, pid: 0 }).data], 1);
+      void commands.executeCommand(
+        "cloudmusic.playNext",
+        QueueItemTreeItem.new({ ...item, pid: item.al.id }).data
+      );
       break;
   }
 
@@ -266,7 +269,9 @@ export async function pickSongMany(
     ],
   });
   IPC.add(
-    songs.map((song) => QueueItemTreeItem.new({ ...song, pid: 0 }).data),
+    songs.map(
+      (song) => QueueItemTreeItem.new({ ...song, pid: song.al.id }).data
+    ),
     pick.type === PickType.add ? undefined : 1
   );
   return input.stay();
@@ -389,7 +394,10 @@ export async function pickProgram(
       );
       break;
     case PickType.next:
-      IPC.add([ProgramTreeItem.new({ ...program, pid: 0 }).data], 1);
+      IPC.add(
+        [ProgramTreeItem.new({ ...program, pid: program.mainSong.al.id }).data],
+        1
+      );
       break;
   }
 
@@ -416,7 +424,10 @@ export async function pickProgramMany(
     ],
   });
   IPC.add(
-    programs.map((program) => ProgramTreeItem.new({ ...program, pid: 0 }).data),
+    programs.map(
+      (program) =>
+        ProgramTreeItem.new({ ...program, pid: program.mainSong.id }).data
+    ),
     pick.type === PickType.add ? undefined : 1
   );
   return input.stay();
@@ -830,7 +841,7 @@ export async function pickPlaylist(
       {
         const songs = await IPC.netease("playlistDetail", [id]);
         IPC.add(
-          songs.map((song) => QueueItemTreeItem.new({ ...song, pid: 0 }).data)
+          songs.map((song) => QueueItemTreeItem.new({ ...song, pid: id }).data)
         );
       }
       break;
@@ -838,7 +849,7 @@ export async function pickPlaylist(
       {
         const songs = await IPC.netease("playlistDetail", [id]);
         IPC.add(
-          songs.map((song) => QueueItemTreeItem.new({ ...song, pid: 0 }).data),
+          songs.map((song) => QueueItemTreeItem.new({ ...song, pid: id }).data),
           1
         );
       }

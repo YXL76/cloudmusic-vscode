@@ -231,16 +231,16 @@ export class IPC {
     ipcB.send({ t: "queue.shift", index });
   }
 
-  static netease<I extends NeteaseAPIKey, P = NeteaseAPIParameters<I>>(
+  static netease<I extends NeteaseAPIKey>(
     i: I,
-    p: P
+    p: NeteaseAPIParameters<I>
   ): Promise<NeteaseAPIReturn<I>> {
     const channel = `netease-${i}-${Date.now()}`;
     return new Promise((resolve, reject) => {
       const prev = this.requestPool.get(channel);
       prev?.reject();
       this.requestPool.set(channel, { resolve, reject });
-      ipc.request<NeteaseAPICMsg<I, P>>({
+      ipc.request<NeteaseAPICMsg<I, NeteaseAPIParameters<I>>>({
         t: "api.netease",
         channel,
         msg: { i, p },

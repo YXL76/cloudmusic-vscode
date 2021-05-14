@@ -128,13 +128,13 @@ export class State {
       RadioProvider.refresh();
       if (!this.first) return;
       this.first = false;
-      IPC.netease("recommendSongs", [])
-        .then((songs) =>
-          IPC.new(
-            songs.map((song) => QueueItemTreeItem.new({ ...song, pid: 0 }).data)
+      void IPC.netease("recommendSongs", []).then((songs) =>
+        IPC.new(
+          songs.map(
+            (song) => QueueItemTreeItem.new({ ...song, pid: song.al.id }).data
           )
         )
-        .catch(console.error);
+      );
     }
   }
 

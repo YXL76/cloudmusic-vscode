@@ -1,8 +1,6 @@
 import type { NeteaseTypings } from "api";
 
 export class AccountState {
-  static uid = 0;
-
   static cookie: NeteaseTypings.Cookie = {};
 }
 

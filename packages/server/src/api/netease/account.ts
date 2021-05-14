@@ -99,11 +99,11 @@ export async function like(trackId: number, like: boolean): Promise<boolean> {
   return false;
 }
 
-export async function likelist(): Promise<readonly number[]> {
+export async function likelist(uid: number): Promise<readonly number[]> {
   try {
     const { ids } = await weapiRequest<{ ids: readonly number[] }>(
       "https://music.163.com/weapi/song/like/get",
-      { uid: AccountState.uid }
+      { uid }
     );
     return ids;
   } catch (err) {
@@ -462,9 +462,9 @@ export async function userPlaylist(
   return [];
 }
 
-export async function userRecord(): Promise<
-  ReadonlyArray<readonly NeteaseTypings.RecordData[]>
-> {
+export async function userRecord(
+  uid: number
+): Promise<ReadonlyArray<readonly NeteaseTypings.RecordData[]>> {
   const key = "user_record";
   const value =
     apiCache.get<ReadonlyArray<readonly NeteaseTypings.RecordData[]>>(key);
@@ -479,7 +479,7 @@ export async function userRecord(): Promise<
         }[];
       }>("https://music.163.com/weapi/v1/play/record", {
         type: 1,
-        uid: AccountState.uid,
+        uid,
       });
       return weekData.map(({ playCount, song }) => ({
         ...resolveSongItem(song),
@@ -494,7 +494,7 @@ export async function userRecord(): Promise<
         }[];
       }>("https://music.163.com/weapi/v1/play/record", {
         type: 0,
-        uid: AccountState.uid,
+        uid,
       });
       return allData.map(({ playCount, song }) => ({
         ...resolveSongItem(song),
