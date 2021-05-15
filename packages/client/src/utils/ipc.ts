@@ -240,7 +240,7 @@ export class IPC {
       const prev = this.requestPool.get(channel);
       prev?.reject();
       this.requestPool.set(channel, { resolve, reject });
-      ipc.request<NeteaseAPICMsg<I, NeteaseAPIParameters<I>>>({
+      ipc.request<NeteaseAPICMsg<I>>({
         t: "api.netease",
         channel,
         msg: { i, p },

@@ -465,7 +465,7 @@ export async function userPlaylist(
 export async function userRecord(
   uid: number
 ): Promise<ReadonlyArray<readonly NeteaseTypings.RecordData[]>> {
-  const key = "user_record";
+  const key = `user_record${uid}`;
   const value =
     apiCache.get<ReadonlyArray<readonly NeteaseTypings.RecordData[]>>(key);
   if (value) return value;
