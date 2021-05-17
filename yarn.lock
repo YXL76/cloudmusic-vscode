@@ -61,7 +61,7 @@ __metadata:
     "@types/qrcode": "workspace:*"
     "@types/vscode": 1.56.0
     array-unsort: 1.1.6
-    esbuild-loader: 2.13.0
+    esbuild-loader: 2.13.1
     file-type: 16.4.0
     lodash: 4.17.21
     qrcode: 1.4.4
@@ -79,7 +79,7 @@ __metadata:
     "@types/node": 14.14.43
     "@types/yallist": 4.0.0
     axios: 0.21.1
-    esbuild-loader: 2.13.0
+    esbuild-loader: 2.13.1
     md5-file: 5.0.0
     node-cache: 5.1.2
     webpack: 5.37.0
@@ -107,7 +107,7 @@ __metadata:
     "@types/react-dom": 17.0.5
     "@types/wicg-mediasession": 1.1.0
     dayjs: 1.10.4
-    esbuild-loader: 2.13.0
+    esbuild-loader: 2.13.1
     react: 17.0.2
     react-dom: 17.0.2
     react-icons: 4.2.0
@@ -1529,12 +1529,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cloudmusic-wasi@workspace:packages/wasi":
-  version: 0.0.0-use.local
-  resolution: "cloudmusic-wasi@workspace:packages/wasi"
-  languageName: unknown
-  linkType: soft
-
 "cloudmusic@workspace:.":
   version: 0.0.0-use.local
   resolution: "cloudmusic@workspace:."
@@ -1547,7 +1541,7 @@ __metadata:
     autoprefixer: 10.2.5
     cssnano: 5.0.2
     debug: 4.3.1
-    esbuild-loader: 2.13.0
+    esbuild-loader: 2.13.1
     eslint: 7.26.0
     eslint-config-prettier: 8.3.0
     eslint-plugin-prettier: 3.4.0
@@ -2211,19 +2205,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-loader@npm:2.13.0":
-  version: 2.13.0
-  resolution: "esbuild-loader@npm:2.13.0"
+"esbuild-loader@npm:2.13.1":
+  version: 2.13.1
+  resolution: "esbuild-loader@npm:2.13.1"
   dependencies:
     esbuild: ^0.11.19
     joycon: ^3.0.1
     json5: ^2.2.0
     loader-utils: ^2.0.0
+    tapable: ^2.2.0
     type-fest: ^1.0.1
     webpack-sources: ^2.2.0
   peerDependencies:
     webpack: ^4.40.0 || ^5.0.0
-  checksum: 280b878cc9c6cb6bc582d80ad3fb8038ce0abb7a9babe9a0bdfe59b610d78c45b22c68b9d6638158ec9dd0836ebabb969da745ce913fbdc5f4016cf035c83345
+  checksum: 2b2cad7c7f0364d210706bab6558e9adfc3325b1ba0447b18a816260ea450f48e3846f11670c505162b19bebe9c77fe81cc21f9e7820f1304a74df3edfd0c131
   languageName: node
   linkType: hard
 
