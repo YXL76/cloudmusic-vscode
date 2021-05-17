@@ -1,18 +1,18 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { AccountViewProvider, IPC, State } from "../utils";
-import { COOKIE_KEY, ICON, VOLUME_KEY } from "../constant";
+import { COOKIE_KEY, ICON, STRICT_SSL, VOLUME_KEY } from "../constant";
 import type {
   IPCBroadcastMsg,
   IPCServerMsg,
   NeteaseAPIKey,
   NeteaseAPISMsg,
 } from "@cloudmusic/shared";
+import { commands, workspace } from "vscode";
 import type { ExtensionContext } from "vscode";
 import { LOG_FILE } from "@cloudmusic/shared";
 import type { PlayTreeItemData } from "../treeview";
 import { QueueItemTreeItem } from "../treeview";
 import { QueueProvider } from "../treeview";
-import { commands } from "vscode";
 import { fork } from "child_process";
 import { openSync } from "fs";
 import { resolve } from "path";
@@ -158,9 +158,19 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
     State.first = false;
   } catch {
     State.loading = false;
+    const httpProxy = workspace.getConfiguration("http").get<string>("proxy");
     fork(resolve(__dirname, "server.js"), {
       detached: true,
       stdio: ["ignore", "ignore", openSync(LOG_FILE, "a"), "ipc"],
+      env: {
+        ...process.env,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        ...(STRICT_SSL ? {} : { NODE_TLS_REJECT_UNAUTHORIZED: "0" }),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        http_proxy: httpProxy,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        https_proxy: httpProxy,
+      },
     }).unref();
     await IPC.connect(ipcHandler, ipcBHandler);
     IPC.init(context.globalState.get(VOLUME_KEY, 85));

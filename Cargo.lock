@@ -441,7 +441,7 @@ checksum = "c44922cb3dbb1c70b5e5f443d63b64363a898564d739ba5198e3a9138442868d"
 [[package]]
 name = "neon"
 version = "0.8.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#2f2bfca92a325bc318738b8997b4fe9c2b3a5adc"
+source = "git+https://github.com/neon-bindings/neon?branch=main#c5c277e98bb24933af9491880f5acece5ba8be8d"
 dependencies = [
  "cslice",
  "neon-build",
@@ -454,12 +454,12 @@ dependencies = [
 [[package]]
 name = "neon-build"
 version = "0.8.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#2f2bfca92a325bc318738b8997b4fe9c2b3a5adc"
+source = "git+https://github.com/neon-bindings/neon?branch=main#c5c277e98bb24933af9491880f5acece5ba8be8d"
 
 [[package]]
 name = "neon-macros"
 version = "0.8.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#2f2bfca92a325bc318738b8997b4fe9c2b3a5adc"
+source = "git+https://github.com/neon-bindings/neon?branch=main#c5c277e98bb24933af9491880f5acece5ba8be8d"
 dependencies = [
  "quote",
  "syn",
@@ -468,7 +468,7 @@ dependencies = [
 [[package]]
 name = "neon-runtime"
 version = "0.8.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#2f2bfca92a325bc318738b8997b4fe9c2b3a5adc"
+source = "git+https://github.com/neon-bindings/neon?branch=main#c5c277e98bb24933af9491880f5acece5ba8be8d"
 dependencies = [
  "cfg-if",
  "libloading 0.6.7",

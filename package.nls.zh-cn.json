@@ -63,6 +63,7 @@
   "configuration.music.quality.enumDescriptions.low": "普通",
   "configuration.music.quality.enumDescriptions.medium": "较高",
   "configuration.music.quality.markdownDescription": "选择优先播放的音质",
+  "configuration.network.strictSSL.markdownDescription": "SSL 证书检查",
   "views.account.name": "帐号",
   "views.local.name": "本地曲库",
   "views.playlist.name": "歌单",

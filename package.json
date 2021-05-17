@@ -353,6 +353,12 @@
             "markdownDescription": "%configuration.music.quality.markdownDescription%",
             "scope": "window",
             "type": "number"
+          },
+          "cloudmusic.network.strictSSL": {
+            "default": true,
+            "markdownDescription": "%configuration.network.strictSSL.markdownDescription%",
+            "scope": "window",
+            "type": "boolean"
           }
         },
         "title": "Cloudmusic"
