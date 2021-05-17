@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [8.2.4] - 2021-05-17
+
+### Added
+
+- IPC: pass proxy setting to shared process ([#438](https://github.com/YXL76/cloudmusic-vscode/issues/438))
+
 ## [8.2.3] - 2021-05-14
 
 ### Fixed
