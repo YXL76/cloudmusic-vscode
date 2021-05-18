@@ -1529,6 +1529,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cloudmusic-wasi@workspace:packages/wasi":
+  version: 0.0.0-use.local
+  resolution: "cloudmusic-wasi@workspace:packages/wasi"
+  languageName: unknown
+  linkType: soft
+
 "cloudmusic@workspace:.":
   version: 0.0.0-use.local
   resolution: "cloudmusic@workspace:."
@@ -2004,13 +2010,13 @@ __metadata:
   linkType: hard
 
 "dom-serializer@npm:^1.0.1":
-  version: 1.3.1
-  resolution: "dom-serializer@npm:1.3.1"
+  version: 1.3.2
+  resolution: "dom-serializer@npm:1.3.2"
   dependencies:
     domelementtype: ^2.0.1
-    domhandler: ^4.0.0
+    domhandler: ^4.2.0
     entities: ^2.0.0
-  checksum: abe0c27e9577c16793efdbe4839bae35b25c846df811a8ea0ba216fe93ba6bad9b85afc81ee7cd99c90c1563d056e72932f8ff9076462cf04f23470902ce2711
+  checksum: bff48714944d67b160db71ba244fb0f3fe72e77ef2ec8414e2eeb56f2d926e404a13456b8b83a5392e217ba47dec2ec0c368801b31481813e94d185276c3e964
   languageName: node
   linkType: hard
 
@@ -2051,9 +2057,9 @@ __metadata:
   linkType: hard
 
 "electron-to-chromium@npm:^1.3.723":
-  version: 1.3.728
-  resolution: "electron-to-chromium@npm:1.3.728"
-  checksum: cce118349c60872ae6bb9f27effbf5052c7be708dc63c5dc19c07a1c617165ee3d1282afbb85461a40196e93c99cacda1e37f401cb5494a23f7b04e82d200daf
+  version: 1.3.730
+  resolution: "electron-to-chromium@npm:1.3.730"
+  checksum: 69f1d28d46eed1be87b1f5f12d26c7047102439888b7f2d1a71b0c9204b747016eeb9431a457f5b98de99da59b1f6c847bafae88c08dd8a80e7916aa6a9ad87c
   languageName: node
   linkType: hard
 
@@ -2223,11 +2229,11 @@ __metadata:
   linkType: hard
 
 "esbuild@npm:latest":
-  version: 0.11.23
-  resolution: "esbuild@npm:0.11.23"
+  version: 0.12.0
+  resolution: "esbuild@npm:0.12.0"
   bin:
     esbuild: bin/esbuild
-  checksum: d55bea84f94e7854fa6fb013ffc63747f2286001b3d73c2a7beb605e6e4847c24ff2cde0660f03045d06d083695c8082423b007a9ee8687e70b52719458bfdd6
+  checksum: 53c4e48bd68fad5d4c0c43e53d4538e8a27d8c6cf38ae01537d499753d57926ceec52dba34b220238d1955eb0fd27954f92d69259dd72e99c56532ab0bbc1b0a
   languageName: node
   linkType: hard
 
@@ -5950,9 +5956,9 @@ resolve@^2.0.0-next.3:
   linkType: hard
 
 "type-fest@npm:^1.0.1":
-  version: 1.1.1
-  resolution: "type-fest@npm:1.1.1"
-  checksum: 1c85552d8f55c5b05bd9f574537589fad3670c969008a0a2098f69b6a9dd79747ec1cb8f4e42c1010b8da1eb7615c8a031e384672f669b950a7e1a05d3987501
+  version: 1.1.2
+  resolution: "type-fest@npm:1.1.2"
+  checksum: a3715bc8624451fa6585fef85c7b861ac992e786e7d69e2d497909dc0529de57db1f0a1bf44a1546c9b7e51bb8cd5d0a703c8d7d94299ba61ccc73dc6d7987d5
   languageName: node
   linkType: hard
 
