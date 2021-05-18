@@ -57,7 +57,7 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
       tlyric: { lyric: string };
       lyricUser?: NeteaseTypings.LyricUser;
       transUser?: NeteaseTypings.LyricUser;
-    }>("https://music.163.com/api/song/lyric", { id, lv: -1, kv: -1, tv: -1 });
+    }>("music.163.com/api/song/lyric", { id, lv: -1, kv: -1, tv: -1 });
 
     const o = resolveLyric(lrc.lyric);
     const t = resolveLyric(tlyric.lyric);
@@ -90,7 +90,7 @@ export async function simiSong(
   try {
     const { songs } = await weapiRequest<{
       songs: readonly NeteaseTypings.AnotherSongItem[];
-    }>("https://music.163.com/weapi/v1/discovery/simiSong", {
+    }>("music.163.com/weapi/v1/discovery/simiSong", {
       songid,
       limit,
       offset,
@@ -122,7 +122,7 @@ export async function songDetail(
         const { songs, privileges } = await weapiRequest<{
           songs: readonly NeteaseTypings.SongsItem[];
           privileges: readonly { st: number }[];
-        }>("https://music.163.com/weapi/v3/song/detail", {
+        }>("music.163.com/weapi/v3/song/detail", {
           c: `[${ids.map((id) => `{"id":${id}}`).join(",")}]`,
         });
         return songs
@@ -148,7 +148,7 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
         freeTrialInfo?: { start: number; end: number };
       })[];
     }>(
-      "https://interface3.music.163.com/eapi/song/enhance/player/url",
+      "interface3.music.163.com/eapi/song/enhance/player/url",
       { ids: `[${id}]`, br: State.musicQuality },
       "/api/song/enhance/player/url",
       "pc"
@@ -172,7 +172,7 @@ export async function topSong(
   try {
     const { data } = await weapiRequest<{
       data: readonly NeteaseTypings.AnotherSongItem[];
-    }>("https://music.163.com/weapi/v1/discovery/new/songs", {
+    }>("music.163.com/weapi/v1/discovery/new/songs", {
       areaId, // 全部:0 华语:7 欧美:96 日本:8 韩国:16
       // limit: query.limit || 100,
       // offset: query.offset || 0,

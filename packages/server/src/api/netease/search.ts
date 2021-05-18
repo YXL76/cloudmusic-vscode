@@ -17,7 +17,7 @@ export async function searchDefault(): Promise<string> {
     const {
       data: { realkeyword },
     } = await eapiRequest<{ data: { realkeyword: string } }>(
-      "https://interface3.music.163.com/eapi/search/defaultkeyword/get",
+      "interface3.music.163.com/eapi/search/defaultkeyword/get",
       {},
       "/api/search/defaultkeyword/get"
     );
@@ -42,7 +42,7 @@ export async function searchSingle(
       result: { songs },
     } = await weapiRequest<{
       result: { songs: readonly NeteaseTypings.SongsItemSt[] };
-    }>("https://music.163.com/api/cloudsearch/pc", {
+    }>("music.163.com/api/cloudsearch/pc", {
       s,
       type: NeteaseEnum.SearchType.single,
       limit,
@@ -71,7 +71,7 @@ export async function searchAlbum(
       result: { albums },
     } = await weapiRequest<{
       result: { albums: readonly NeteaseTypings.AlbumsItem[] };
-    }>("https://music.163.com/api/cloudsearch/pc", {
+    }>("music.163.com/api/cloudsearch/pc", {
       s,
       type: NeteaseEnum.SearchType.album,
       limit,
@@ -100,7 +100,7 @@ export async function searchArtist(
       result: { artists },
     } = await weapiRequest<{
       result: { artists: readonly NeteaseTypings.Artist[] };
-    }>("https://music.163.com/api/cloudsearch/pc", {
+    }>("music.163.com/api/cloudsearch/pc", {
       s,
       type: NeteaseEnum.SearchType.artist,
       limit,
@@ -131,7 +131,7 @@ export async function searchPlaylist(
       result: { playlists },
     } = await weapiRequest<{
       result: { playlists: readonly NeteaseTypings.RawPlaylistItem[] };
-    }>("https://music.163.com/api/cloudsearch/pc", {
+    }>("music.163.com/api/cloudsearch/pc", {
       s,
       type: NeteaseEnum.SearchType.playlist,
       limit,
@@ -168,7 +168,7 @@ export async function searchLyric(
           lyrics: readonly string[];
         })[];
       };
-    }>("https://music.163.com/api/cloudsearch/pc", {
+    }>("music.163.com/api/cloudsearch/pc", {
       s,
       type: NeteaseEnum.SearchType.lyric,
       limit,
@@ -196,7 +196,7 @@ export async function searchHotDetail(): Promise<HotDetail> {
   try {
     const { data } = await weapiRequest<{
       data: HotDetail;
-    }>("https://music.163.com/weapi/hotsearchlist/get", {});
+    }>("music.163.com/weapi/hotsearchlist/get", {});
     const ret = data.map(({ searchWord, content }) => ({
       searchWord,
       content,
@@ -220,7 +220,7 @@ export async function searchSuggest(
       result: { allMatch },
     } = await weapiRequest<{
       result: { allMatch: readonly { keyword: string }[] };
-    }>("https://music.163.com/weapi/search/suggest/keyword", { s: keywords });
+    }>("music.163.com/weapi/search/suggest/keyword", { s: keywords });
     const ret = allMatch.map(({ keyword }) => keyword);
     apiCache.set(key, ret);
     return ret;

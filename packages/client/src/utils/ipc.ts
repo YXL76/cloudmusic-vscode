@@ -8,8 +8,8 @@ import type {
   NeteaseAPIParameters,
   NeteaseAPIReturn,
 } from "@cloudmusic/shared";
+import { HTTPS_API, MUSIC_CACHE_SIZE, MUSIC_QUALITY } from "../constant";
 import { LocalFileTreeItem, QueueProvider } from "../treeview";
-import { MUSIC_CACHE_SIZE, MUSIC_QUALITY } from "../constant";
 import {
   ipcBroadcastServerPath,
   ipcDelimiter,
@@ -146,6 +146,7 @@ export class IPC {
       mq: MUSIC_QUALITY(),
       cs: MUSIC_CACHE_SIZE(),
       volume,
+      https: HTTPS_API(),
     });
   }
 

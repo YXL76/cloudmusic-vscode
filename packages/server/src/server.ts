@@ -1,10 +1,5 @@
-import type {
-  IPCClientMsg,
-  IPCServerMsg,
-  NeteaseAPICMsg,
-  NeteaseAPISMsg,
-} from "@cloudmusic/shared";
 import {
+  APISetting,
   LyricCache,
   MusicCache,
   NeteaseAPI,
@@ -16,6 +11,12 @@ import {
   getMusicPath,
   logError,
 } from ".";
+import type {
+  IPCClientMsg,
+  IPCServerMsg,
+  NeteaseAPICMsg,
+  NeteaseAPISMsg,
+} from "@cloudmusic/shared";
 import type { Server, Socket } from "net";
 import {
   TMP_DIR,
@@ -160,6 +161,7 @@ export class IPCServer {
         State.musicQuality = data.mq;
         State.cacheSize = data.cs;
         if (data.volume) Player.volume(data.volume);
+        APISetting.apiProtocol = data.https ? "https" : "http";
         break;
       case "control.lyric":
         LyricCache.clear();

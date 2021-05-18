@@ -21,7 +21,7 @@ export async function commentAdd(
 ): Promise<boolean> {
   try {
     await weapiRequest(
-      `https://music.163.com/weapi/resource/comments/add`,
+      `music.163.com/weapi/resource/comments/add`,
       { threadId: `${resourceTypeMap[type]}${id}`, content },
       { os: "pc" }
     );
@@ -40,7 +40,7 @@ export async function commentReply(
 ): Promise<boolean> {
   try {
     await weapiRequest(
-      `https://music.163.com/weapi/resource/comments/reply`,
+      `music.163.com/weapi/resource/comments/reply`,
       { threadId: `${resourceTypeMap[type]}${id}`, content, commentId },
       { os: "pc" }
     );
@@ -67,7 +67,7 @@ export async function commentFloor(
         hasMore: boolean;
         comments: readonly NeteaseTypings.RawCommentDetail[];
       };
-    }>("https://music.163.com/api/resource/comment/floor/get", {
+    }>("music.163.com/api/resource/comment/floor/get", {
       parentCommentId,
       threadId: `${resourceTypeMap[type]}${id}`,
       time,
@@ -92,7 +92,7 @@ export async function commentLike(
 ): Promise<boolean> {
   try {
     await weapiRequest(
-      `https://music.163.com/weapi/v1/comment/${t}`,
+      `music.163.com/weapi/v1/comment/${t}`,
       { threadId: `${resourceTypeMap[type]}${id}`, commentId },
       { os: "pc" }
     );
@@ -121,7 +121,7 @@ export async function commentNew(
         comments: readonly NeteaseTypings.RawCommentDetail[];
       };
     }>(
-      "https://music.163.com/api/v2/resource/comments",
+      "music.163.com/api/v2/resource/comments",
       {
         threadId: `${resourceTypeMap[type]}${id}`,
         pageNo,

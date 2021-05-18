@@ -18,7 +18,7 @@ export async function album(id: number): Promise<{
     const { album, songs } = await weapiRequest<{
       album: NeteaseTypings.AlbumsItem;
       songs: readonly NeteaseTypings.SongsItem[];
-    }>(`https://music.163.com/weapi/v1/album/${id}`, {});
+    }>(`music.163.com/weapi/v1/album/${id}`, {});
     const info = resolveAlbumsItem(album);
     const ret = {
       info,
@@ -41,7 +41,7 @@ export async function albumNewest(): Promise<
   try {
     const { albums } = await weapiRequest<{
       albums: readonly NeteaseTypings.AlbumsItem[];
-    }>("https://music.163.com/api/discovery/newAlbum", {});
+    }>("music.163.com/api/discovery/newAlbum", {});
     const ret = albums.map(resolveAlbumsItem);
     apiCache.set(key, ret);
     return ret;
@@ -56,7 +56,7 @@ export async function albumSub(
   t: "sub" | "unsub"
 ): Promise<boolean> {
   try {
-    await weapiRequest(`https://music.163.com/api/album/${t}`, {
+    await weapiRequest(`music.163.com/api/album/${t}`, {
       id,
     });
     return true;
@@ -76,7 +76,7 @@ export async function albumSublist(): Promise<
     for (let i = 0; i < 16; ++i) {
       const { data } = await weapiRequest<{
         data: readonly NeteaseTypings.AlbumsItem[];
-      }>("https://music.163.com/weapi/album/sublist", {
+      }>("music.163.com/weapi/album/sublist", {
         limit,
         offset,
         total: true,
@@ -101,7 +101,7 @@ export async function topAlbum(): Promise<
   try {
     const { monthData } = await weapiRequest<{
       monthData: readonly NeteaseTypings.AlbumsItem[];
-    }>("https://music.163.com/api/discovery/new/albums/area", {
+    }>("music.163.com/api/discovery/new/albums/area", {
       area: "ALL", // //ALL:全部,ZH:华语,EA:欧美,KR:韩国,JP:日本
       limit: 50,
       offset: 0,

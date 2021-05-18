@@ -24,7 +24,7 @@ export async function artists(id: number): Promise<{
     const { artist, hotSongs } = await weapiRequest<{
       artist: NeteaseTypings.Artist;
       hotSongs: readonly NeteaseTypings.SongsItem[];
-    }>(`https://music.163.com/weapi/v1/artist/${id}`, {});
+    }>(`music.163.com/weapi/v1/artist/${id}`, {});
     const ret = {
       info: resolveArtist(artist),
       songs: hotSongs.map(resolveSongItem),
@@ -51,7 +51,7 @@ export async function artistAlbum(
       const { hotAlbums, more } = await weapiRequest<{
         hotAlbums: readonly NeteaseTypings.AlbumsItem[];
         more: boolean;
-      }>(`https://music.163.com/weapi/artist/albums/${id}`, {
+      }>(`music.163.com/weapi/artist/albums/${id}`, {
         limit,
         offset,
         total: true,
@@ -77,7 +77,7 @@ export async function artistDesc(id: number): Promise<ArtistDesc> {
   if (value) return value;
   try {
     const { introduction } = await weapiRequest<{ introduction: ArtistDesc }>(
-      "https://music.163.com/weapi/artist/introduction",
+      "music.163.com/weapi/artist/introduction",
       { id }
     );
     apiCache.set(key, introduction);
@@ -103,7 +103,7 @@ export async function artistList(
   try {
     const { artists } = await weapiRequest<{
       artists: readonly NeteaseTypings.Artist[];
-    }>("https://music.163.com/api/v1/artist/list", {
+    }>("music.163.com/api/v1/artist/list", {
       initial: initial.toUpperCase().charCodeAt(0) || undefined,
       offset,
       limit,
@@ -132,7 +132,7 @@ export async function artistSongs(
     const { songs } = await weapiRequest<{
       songs: readonly NeteaseTypings.SongsItemSt[];
     }>(
-      "https://music.163.com/api/v1/artist/songs",
+      "music.163.com/api/v1/artist/songs",
       {
         id,
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -159,7 +159,7 @@ export async function artistSub(
   t: "sub" | "unsub"
 ): Promise<boolean> {
   try {
-    await weapiRequest(`https://music.163.com/weapi/artist/${t}`, {
+    await weapiRequest(`music.163.com/weapi/artist/${t}`, {
       artistId: id,
       artistIds: `[${id}]`,
     });
@@ -180,7 +180,7 @@ export async function artistSublist(): Promise<
     for (let i = 0; i < 16; ++i) {
       const { data } = await weapiRequest<{
         data: readonly NeteaseTypings.Artist[];
-      }>("https://music.163.com/weapi/artist/sublist", {
+      }>("music.163.com/weapi/artist/sublist", {
         limit,
         offset,
         total: true,
@@ -204,7 +204,7 @@ export async function simiArtist(
   try {
     const { artists } = await weapiRequest<{
       artists: readonly NeteaseTypings.Artist[];
-    }>("https://music.163.com/weapi/discovery/simiArtist", { artistid });
+    }>("music.163.com/weapi/discovery/simiArtist", { artistid });
     const ret = artists.map(resolveArtist);
     apiCache.set(key, ret);
     return ret;
@@ -224,7 +224,7 @@ export async function topArtists(
   try {
     const { artists } = await weapiRequest<{
       artists: readonly NeteaseTypings.Artist[];
-    }>("https://music.163.com/weapi/artist/top", {
+    }>("music.163.com/weapi/artist/top", {
       limit,
       offset,
       total: true,
@@ -249,7 +249,7 @@ export async function toplistArtist(): Promise<
       list: { artists },
     } = await weapiRequest<{
       list: { artists: readonly NeteaseTypings.Artist[] };
-    }>("https://music.163.com/weapi/toplist/artist", {
+    }>("music.163.com/weapi/toplist/artist", {
       type: 1,
       limit: 100,
       offset: 0,

@@ -30,7 +30,10 @@ export type IPCBroadcastMsg =
 export type IPCClientMsg =
   | IPCMsg<IPCEvent.Control$deleteCache, { key: string }>
   | IPCMsg<IPCEvent.Control$download, { url: string; path: string }>
-  | IPCMsg<IPCEvent.Control$init, { mq: number; cs: number; volume?: number }>
+  | IPCMsg<
+      IPCEvent.Control$init,
+      { mq: number; cs: number; volume?: number; https: boolean }
+    >
   | IPCMsg<IPCEvent.Control$lyric>
   | IPCMsg<IPCEvent.Control$music>
   | IPCMsg<IPCEvent.Control$retain, { items: readonly unknown[] }>

@@ -1,16 +1,12 @@
 import { AccountState, cookieToJson, jsonToCookie } from "./helper";
 import { eapi, weapi } from "./crypto";
-import { Agent as HttpAgent } from "http";
-import { Agent as HttpsAgent } from "https";
-import { IPCServer } from "../../server";
+import { APISetting } from "..";
+import { IPCServer } from "../..";
 import type { NeteaseTypings } from "api";
 import type { ParsedUrlQueryInput } from "querystring";
 import axios from "axios";
 import { randomBytes } from "crypto";
 import { stringify } from "querystring";
-
-const httpAgent = new HttpAgent({ keepAlive: true });
-const httpsAgent = new HttpsAgent({ keepAlive: true });
 
 const userAgentList = [
   // macOS 10.15.6  Firefox / Chrome / Safari
@@ -51,9 +47,9 @@ export const generateHeader = (url: string): Headers => {
     "User-Agent": userAgent,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     "X-Real-IP": "118.88.88.88",
-    ...(url.startsWith("https://music.163.com/")
+    ...(url.startsWith("music.163.com/")
       ? // eslint-disable-next-line @typescript-eslint/naming-convention
-        { Referer: "https://music.163.com" }
+        { Referer: "music.163.com" }
       : {}),
   };
 };
@@ -67,9 +63,10 @@ const responseHandler = async <T>(
   const res = await axios.post<{ code?: number } & T>(url, stringify(data), {
     withCredentials: true,
     headers,
-    httpAgent,
-    httpsAgent,
-    ...(eapi ? { encoding: null } : {}),
+    httpAgent: APISetting.httpAgent,
+    httpsAgent: APISetting.httpsAgent,
+    ...(APISetting.proxy ? { proxy: APISetting.proxy } : {}),
+    ...(eapi ? { encoding: null, responseType: "arraybuffer" } : {}),
   });
 
   const status = res.data.code || res.status;
@@ -97,6 +94,8 @@ export const weapiRequest = async <T = ParsedUrlQueryInput>(
   data: ParsedUrlQueryInput,
   extraCookie: { os?: NeteaseTypings.OS; appver?: string } = {}
 ): Promise<T> => {
+  url = `${APISetting.apiProtocol}://${url}`;
+
   const headers = generateHeader(url);
   headers["Cookie"] = jsonToCookie({
     ...AccountState.cookie,
@@ -117,6 +116,8 @@ export const eapiRequest = async <T = ParsedUrlQueryInput>(
   encryptUrl: string,
   os?: NeteaseTypings.OS
 ): Promise<T> => {
+  url = `${APISetting.apiProtocol}://${url}`;
+
   const cookie: NeteaseTypings.Cookie = {
     ...AccountState.cookie,
     ...(os ? { os } : {}),
@@ -159,6 +160,8 @@ export const apiRequest = async <T = ParsedUrlQueryInput>(
   url: string,
   data: ParsedUrlQueryInput
 ): Promise<T> => {
+  url = `${APISetting.apiProtocol}://${url}`;
+
   const headers = generateHeader(url);
   headers["Cookie"] = jsonToCookie(AccountState.cookie);
   return responseHandler<T>(url, headers, data);

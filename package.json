@@ -354,6 +354,11 @@
             "scope": "window",
             "type": "number"
           },
+          "cloudmusic.network.httpsAPI": {
+            "default": true,
+            "scope": "window",
+            "type": "boolean"
+          },
           "cloudmusic.network.strictSSL": {
             "default": true,
             "markdownDescription": "%configuration.network.strictSSL.markdownDescription%",

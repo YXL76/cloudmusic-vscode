@@ -21,7 +21,7 @@ export async function playlistCatlist(): Promise<PlaylistCatlist> {
     const { sub, categories } = await weapiRequest<{
       sub: readonly PlaylistCatlistItem[];
       categories: { [key: string]: string };
-    }>("https://music.163.com/weapi/playlist/catalogue", {});
+    }>("music.163.com/weapi/playlist/catalogue", {});
     const ret: PlaylistCatlist = {};
     for (const [key, value] of Object.entries(categories)) {
       ret[value] = sub
@@ -42,7 +42,7 @@ export async function playlistCreate(
 ): Promise<boolean> {
   try {
     await weapiRequest(
-      "https://music.163.com/api/playlist/create",
+      "music.163.com/api/playlist/create",
       {
         name,
         privacy, //0 为普通歌单，10 为隐私歌单
@@ -60,7 +60,7 @@ export async function playlistCreate(
 export async function playlistDelete(id: number): Promise<boolean> {
   try {
     await weapiRequest(
-      `https://music.163.com/weapi/playlist/remove`,
+      `music.163.com/weapi/playlist/remove`,
       { ids: `[${id}]` },
       { os: "pc" }
     );
@@ -88,7 +88,7 @@ export async function playlistDetail(
         trackIds: readonly NeteaseTypings.TrackIdsItem[];
       };
       privileges: readonly { st: number }[];
-    }>("https://music.163.com/api/v6/playlist/detail", { id, n: 100000, s: 8 });
+    }>("music.163.com/api/v6/playlist/detail", { id, n: 100000, s: 8 });
 
     const ids = trackIds.map(({ id }) => id);
     if (tracks.length === trackIds.length) {
@@ -115,7 +115,7 @@ export async function highqualityTags(): Promise<
         name: string;
         hot: boolean;
       }[];
-    }>("https://music.163.com/api/playlist/highquality/tags", {});
+    }>("music.163.com/api/playlist/highquality/tags", {});
     const ret = tags.map(({ name, hot }) => ({ name, hot }));
     apiCache.set(key, ret);
     return ret;
@@ -130,7 +130,7 @@ export async function playlistSubscribe(
   t: "subscribe" | "unsubscribe"
 ): Promise<boolean> {
   try {
-    await weapiRequest(`https://music.163.com/weapi/playlist/${t}`, {
+    await weapiRequest(`music.163.com/weapi/playlist/${t}`, {
       id,
     });
     return true;
@@ -151,7 +151,7 @@ export async function playlistSubscribers(
   try {
     const { subscribers } = await weapiRequest<{
       subscribers: readonly NeteaseTypings.UserDetail[];
-    }>("https://music.163.com/weapi/playlist/subscribers", {
+    }>("music.163.com/weapi/playlist/subscribers", {
       id,
       limit,
       offset,
@@ -172,7 +172,7 @@ export async function playlistTracks(
 ): Promise<boolean> {
   try {
     await weapiRequest(
-      "https://music.163.com/api/playlist/manipulate/tracks",
+      "music.163.com/api/playlist/manipulate/tracks",
       { op, pid, trackIds: JSON.stringify(tracks), imme: "true" },
       { os: "pc" }
     );
@@ -190,7 +190,7 @@ export async function playlistUpdate(
 ): Promise<boolean> {
   try {
     await weapiRequest(
-      "https://music.163.com/weapi/batch",
+      "music.163.com/weapi/batch",
       {
         "/api/playlist/desc/update": `{"id":${id},"desc":"${desc}"}`,
         "/api/playlist/update/name": `{"id":${id},"name":"${name}"}`,
@@ -211,7 +211,7 @@ export async function playmodeIntelligenceList(
   try {
     const { data } = await weapiRequest<{
       data: readonly { songInfo: NeteaseTypings.SongsItemSt }[];
-    }>("https://music.163.com/weapi/playmode/intelligence/list", {
+    }>("music.163.com/weapi/playmode/intelligence/list", {
       songId,
       type: "fromPlayOne",
       playlistId,
@@ -236,7 +236,7 @@ export async function simiPlaylist(
   try {
     const { playlists } = await weapiRequest<{
       playlists: readonly NeteaseTypings.RawPlaylistItem[];
-    }>("https://music.163.com/weapi/discovery/simiPlaylist", {
+    }>("music.163.com/weapi/discovery/simiPlaylist", {
       songid,
       limit,
       offset,
@@ -261,7 +261,7 @@ export async function topPlaylist(
   try {
     const { playlists } = await weapiRequest<{
       playlists: readonly NeteaseTypings.PlaylistItem[];
-    }>("https://music.163.com/weapi/playlist/list", {
+    }>("music.163.com/weapi/playlist/list", {
       cat, // 全部,华语,欧美,日语,韩语,粤语,小语种,流行,摇滚,民谣,电子,舞曲,说唱,轻音乐,爵士,乡村,R&B/Soul,古典,民族,英伦,金属,朋克,蓝调,雷鬼,世界音乐,拉丁,另类/独立,New Age,古风,后摇,Bossa Nova,清晨,夜晚,学习,工作,午休,下午茶,地铁,驾车,运动,旅行,散步,酒吧,怀旧,清新,浪漫,性感,伤感,治愈,放松,孤独,感动,兴奋,快乐,安静,思念,影视原声,ACG,儿童,校园,游戏,70后,80后,90后,网络歌曲,KTV,经典,翻唱,吉他,钢琴,器乐,榜单,00后
       order: "hot", // hot,new
       limit,
@@ -287,7 +287,7 @@ export async function topPlaylistHighquality(
   try {
     const { playlists } = await weapiRequest<{
       playlists: readonly NeteaseTypings.PlaylistItem[];
-    }>("https://music.163.com/api/playlist/highquality/list", {
+    }>("music.163.com/api/playlist/highquality/list", {
       cat: cat, // 全部,华语,欧美,韩语,日语,粤语,小语种,运动,ACG,影视原声,流行,摇滚,后摇,古风,民谣,轻音乐,电子,器乐,说唱,古典,爵士
       limit,
       lasttime: 0, // 歌单updateTime
@@ -311,7 +311,7 @@ export async function toplist(): Promise<
   try {
     const { list } = await apiRequest<{
       list: readonly NeteaseTypings.RawPlaylistItem[];
-    }>("https://music.163.com/api/toplist", {});
+    }>("music.163.com/api/toplist", {});
     const ret = list.map(resolvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
