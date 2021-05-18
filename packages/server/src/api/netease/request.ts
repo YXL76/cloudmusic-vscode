@@ -63,10 +63,8 @@ const responseHandler = async <T>(
   const res = await axios.post<{ code?: number } & T>(url, stringify(data), {
     withCredentials: true,
     headers,
-    httpAgent: APISetting.httpAgent,
-    httpsAgent: APISetting.httpsAgent,
-    ...(APISetting.proxy ? { proxy: APISetting.proxy } : {}),
-    ...(eapi ? { encoding: null, responseType: "arraybuffer" } : {}),
+    ...APISetting.agent,
+    ...(eapi ? { encoding: null } : {}),
   });
 
   const status = res.data.code || res.status;

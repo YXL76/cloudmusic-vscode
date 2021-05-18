@@ -167,9 +167,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         ...(STRICT_SSL ? {} : { NODE_TLS_REJECT_UNAUTHORIZED: "0" }),
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        http_proxy: httpProxy,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        https_proxy: httpProxy,
+        ...(httpProxy ? { GLOBAL_AGENT_HTTP_PROXY: httpProxy } : {}),
       },
     }).unref();
     await IPC.connect(ipcHandler, ipcBHandler);

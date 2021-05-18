@@ -10,6 +10,7 @@
   },
   "devDependencies": {
     "@types/api": "workspace:*",
+    "@types/global-agent": "2.1.0",
     "@types/node": "14.14.43",
     "@types/yallist": "4.0.0",
     "esbuild-loader": "2.13.1",
@@ -19,6 +20,7 @@
   "dependencies": {
     "@cloudmusic/shared": "workspace:*",
     "axios": "0.21.1",
+    "global-agent": "2.2.0",
     "md5-file": "5.0.0",
     "node-cache": "5.1.2",
     "yallist": "4.0.0"
