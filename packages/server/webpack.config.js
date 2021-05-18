@@ -12,7 +12,7 @@ module.exports = (_, options) =>
     experiments: { asyncWebAssembly: true },
     // devtool: options.mode === "production" ? undefined : "source-map",
     context: rootPath,
-    entry: resolve(srcPath, "server.ts"),
+    entry: resolve(srcPath, "init.ts"),
     module: {
       rules: [
         {
