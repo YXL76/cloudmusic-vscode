@@ -4,8 +4,11 @@ import {
   MUSIC_CACHE_DIR,
   TMP_DIR,
 } from "@cloudmusic/shared";
-import { IPCBroadcastServer, IPCServer, MusicCache } from ".";
+import { IPCBroadcastServer, IPCServer, MusicCache, logError } from ".";
 import { mkdirSync } from "fs";
+
+process.setUncaughtExceptionCaptureCallback(logError);
+process.on("unhandledRejection", logError);
 
 const tryMkdir = (path: string) => {
   try {
