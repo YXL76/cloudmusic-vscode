@@ -14,6 +14,9 @@ A clear and concise description of what the bug is.
 Paste or screenshot the content in `Help->Toggle Developer Tools->Console`
 粘贴或截屏`帮助->切换开发者工具->控制台`中的内容
 
+- Linux/MacOS: `~/.cloudmusic/err.log`
+- Windows: `%homepath%/.cloudmusic/err.log`
+
 **Environment (Help->About)**
 Paste the content in `Help->About`
 粘贴`帮助->关于`中的内容

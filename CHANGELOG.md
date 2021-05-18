@@ -6,6 +6,15 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [8.3.0] - 2021-05-18
+
+### Added
+
+- API
+  - support http request
+  - support https over http ([#438](https://github.com/YXL76/cloudmusic-vscode/issues/438))
+- IPC: handle `uncaught exception` and `unhandled rejection`
+
 ## [8.2.4] - 2021-05-17
 
 ### Added
@@ -398,7 +407,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Fixed
 
-- Api: load comment correctly when `sortType` is 3
+- API: load comment correctly when `sortType` is 3
 
 ## [5.2.0] - 2020-10-07
 
@@ -434,7 +443,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Added
 
-- Api: comment (single/playlist/album)
+- API: comment (single/playlist/album)
 - Webview: commentList
 
 ### Changed
@@ -480,7 +489,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Added
 
-- Api: add `user_level` and `playlist_highquality_tags`
+- API: add `user_level` and `playlist_highquality_tags`
 
 ## [4.6.4] - 2020-09-19
 
@@ -542,7 +551,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Added
 
 - Command: `cloudmusic.playNext`, `cloudmusic.sortQueue`
-- Api: `top_playlist`, `top_playlist_highquality`, `artist_list`
+- API: `top_playlist`, `top_playlist_highquality`, `artist_list`
 - When there is only one song in the queue, it is played in a loop
 
 ### Changed
