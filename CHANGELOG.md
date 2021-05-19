@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [8.3.1] - 2021-05-19
+
+### Fixed
+
+- Cache: music cache was removed every time loading this extension
+
 ## [8.3.0] - 2021-05-18
 
 ### Added
