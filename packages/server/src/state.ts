@@ -1,4 +1,4 @@
-import { IPCServer, MusicCache, NeteaseAPI } from ".";
+import { IPCServer, NeteaseAPI } from ".";
 import type { NeteaseTypings } from "api";
 
 export class State {
@@ -7,6 +7,8 @@ export class State {
   static minSize = 256 * 1024;
 
   static cacheSize = 4096 * 1024 * 1024;
+
+  static musicQuality = 192000;
 
   static lyric: NeteaseTypings.LyricData & {
     delay: number;
@@ -19,19 +21,6 @@ export class State {
     o: { time: [0], text: ["~"] },
     t: { time: [0], text: ["~"] },
   };
-
-  private static _musicQuality = 192000;
-
-  static get musicQuality(): number {
-    return State._musicQuality;
-  }
-
-  static set musicQuality(value: number) {
-    if (State._musicQuality !== value) {
-      State._musicQuality = value;
-      MusicCache.clear();
-    }
-  }
 
   private static _playing = false;
 

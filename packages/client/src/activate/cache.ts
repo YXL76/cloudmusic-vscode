@@ -4,17 +4,23 @@ import { IPC } from "../utils";
 import { workspace } from "vscode";
 
 export function initCache(context: ExtensionContext): void {
-  try {
+  const updateMQ = () => {
     if (context.globalState.get<string>(CACHE_KEY) !== MUSIC_CACHE_DIR_NAME())
       IPC.music();
     void context.globalState.update(CACHE_KEY, MUSIC_CACHE_DIR_NAME());
-  } catch {}
+  };
+
+  updateMQ();
+
   if (!context.globalState.get(LYRIC_CACHE_KEY)) IPC.lyric();
   void context.globalState.update(LYRIC_CACHE_KEY, LYRIC_CACHE_KEY);
 
   context.subscriptions.push(
     workspace.onDidChangeConfiguration(({ affectsConfiguration }) => {
-      if (affectsConfiguration("cloudmusic")) IPC.init();
+      if (affectsConfiguration("cloudmusic")) {
+        updateMQ();
+        IPC.init();
+      }
     })
   );
 }
