@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [8.3.2] - 2021-05-20
+
+### Added
+
+- Configuration: add `cloudmusic.network.foreignUser`
+
 ## [8.3.1] - 2021-05-19
 
 ### Fixed
