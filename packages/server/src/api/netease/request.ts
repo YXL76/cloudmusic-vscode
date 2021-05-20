@@ -1,7 +1,7 @@
 import { AccountState, cookieToJson, jsonToCookie } from "./helper";
+import { IPCServer, State } from "../..";
 import { eapi, weapi } from "./crypto";
 import { APISetting } from "..";
-import { IPCServer } from "../..";
 import type { NeteaseTypings } from "api";
 import type { ParsedUrlQueryInput } from "querystring";
 import axios from "axios";
@@ -34,7 +34,7 @@ type Headers = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   "User-Agent": string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  "X-Real-IP": string;
+  "X-Real-IP"?: string;
 };
 
 export const generateHeader = (url: string): Headers => {
@@ -46,7 +46,7 @@ export const generateHeader = (url: string): Headers => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     "User-Agent": userAgent,
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    "X-Real-IP": "118.88.88.88",
+    ...(State.foreign ? { "X-Real-IP": "118.88.88.88" } : {}),
     ...(url.startsWith("music.163.com/")
       ? // eslint-disable-next-line @typescript-eslint/naming-convention
         { Referer: "music.163.com" }

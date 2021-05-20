@@ -4,6 +4,8 @@ import type { NeteaseTypings } from "api";
 export class State {
   static fm = false;
 
+  static foreign = false;
+
   static minSize = 256 * 1024;
 
   static cacheSize = 4096 * 1024 * 1024;

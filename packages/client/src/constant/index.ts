@@ -9,6 +9,7 @@ export const MUSIC_CACHE_SIZE = (): number =>
   conf.get("cache.size", 4096) * 1024 * 1024;
 export const STRICT_SSL = conf.get("network.strictSSL", true);
 export const HTTPS_API = (): boolean => conf.get("network.httpsAPI", true);
+export const FOREIGN = (): boolean => conf.get("network.foreignUser", false);
 
 export const ACCOUNT_KEY = "account";
 export const CACHE_KEY = "cache-v2";

@@ -32,7 +32,13 @@ export type IPCClientMsg =
   | IPCMsg<IPCEvent.Control$download, { url: string; path: string }>
   | IPCMsg<
       IPCEvent.Control$init,
-      { mq: number; cs: number; volume?: number; https: boolean }
+      {
+        mq: number;
+        cs: number;
+        volume?: number;
+        https: boolean;
+        foreign: boolean;
+      }
     >
   | IPCMsg<IPCEvent.Control$lyric>
   | IPCMsg<IPCEvent.Control$music>

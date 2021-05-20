@@ -359,6 +359,11 @@
             "scope": "window",
             "type": "boolean"
           },
+          "cloudmusic.network.foreignUser": {
+            "default": false,
+            "scope": "window",
+            "type": "boolean"
+          },
           "cloudmusic.network.strictSSL": {
             "default": true,
             "markdownDescription": "%configuration.network.strictSSL.markdownDescription%",

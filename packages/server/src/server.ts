@@ -160,6 +160,7 @@ export class IPCServer {
         State.minSize = data.mq === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
         State.musicQuality = data.mq;
         State.cacheSize = data.cs;
+        State.foreign = data.foreign;
         if (data.volume) Player.volume(data.volume);
         APISetting.apiProtocol = data.https ? "https" : "http";
         break;

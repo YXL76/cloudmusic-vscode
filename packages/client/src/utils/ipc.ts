@@ -147,6 +147,7 @@ export class IPC {
       cs: MUSIC_CACHE_SIZE(),
       volume,
       https: HTTPS_API(),
+      foreign: FOREIGN(),
     });
   }
 
