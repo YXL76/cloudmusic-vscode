@@ -43,7 +43,7 @@ Realized functions:
 - Personal FM
 - Comments (single/playlist...)
 - Lyric display
-- Unblock copyrighted music
+- ~~Unblock copyrighted music~~
 - Search (hot/single/album/artist...)
 - Top list (Music List/Singer List...)
 - Explore (New song express/New discs on shelves...)
@@ -63,7 +63,7 @@ Support `Windows arm64`、`Windows x64`、`Mac OS x64`、`Linux x64`
 
 ![Usage](https://s3.ax1x.com/2021/02/04/y3yJU0.png)
 
-Support unlocking copyrighted music, you can turn on the required audio source in the settings (`cloudmusic.music.unblock`)
+Support foreign user, you can enable it in the settings (`cloudmusic.network.foreignUser`)
 
 ## Contributions
 

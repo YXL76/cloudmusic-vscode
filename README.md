@@ -43,7 +43,7 @@
 - 私人 FM
 - 评论（单曲/歌单...）
 - 歌词显示
-- 解锁变灰音乐
+- ~~解锁变灰音乐~~
 - 搜索（热搜/单曲/专辑/歌手...）
 - 排行榜（音乐榜/歌手榜...）
 - 发现（新歌速递/新碟上架...）
@@ -63,7 +63,7 @@
 
 ![Usage](https://s3.ax1x.com/2021/02/04/y3yJU0.png)
 
-支持解锁变灰音乐，可以在设置中开启需要的音源（`cloudmusic.music.unblock`）
+支持海外用户，可以在设置中开启（`cloudmusic.network.foreignUser`）
 
 ## Contributions
 
