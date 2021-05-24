@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [8.3.4] - 2021-05-24
+
+### Fixed
+
+- Player: stay silent on next load
+
 ## [8.3.2] - 2021-05-20
 
 ### Added

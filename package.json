@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "Cloudmusic",
   "description": "Netease Music for VS Code",
-  "version": "8.3.3",
+  "version": "8.3.4",
   "publisher": "YXL",
   "private": true,
   "preview": false,
@@ -827,26 +827,26 @@
     "vscode:prepublish": "yarn generate-css && yarn build"
   },
   "devDependencies": {
-    "@types/eslint": "7.2.10",
+    "@types/eslint": "7.2.11",
     "@types/tailwindcss": "2.0.3",
     "@typescript-eslint/eslint-plugin": "4.24.0",
     "@typescript-eslint/parser": "4.24.0",
     "@yarnpkg/pnpify": "3.0.0-rc.3",
     "autoprefixer": "10.2.5",
-    "cssnano": "5.0.2",
+    "cssnano": "5.0.4",
     "debug": "4.3.1",
     "esbuild-loader": "2.13.1",
-    "eslint": "7.26.0",
+    "eslint": "7.27.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.0",
     "eslint-plugin-react": "7.23.2",
-    "postcss": "8.2.15",
+    "postcss": "8.3.0",
     "postcss-cli": "8.3.1",
     "postcss-import": "14.0.2",
     "prettier": "2.3.0",
     "supports-color": "9.0.0",
     "tailwindcss": "2.1.2",
     "typescript": "4.2.4",
-    "webpack": "5.37.0"
+    "webpack": "5.37.1"
   }
 }

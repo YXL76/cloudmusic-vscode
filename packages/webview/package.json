@@ -13,7 +13,7 @@
     "@types/react-dom": "17.0.5",
     "@types/wicg-mediasession": "1.1.0",
     "esbuild-loader": "2.13.1",
-    "webpack": "5.37.0",
+    "webpack": "5.37.1",
     "webpack-cli": "4.7.0"
   },
   "dependencies": {

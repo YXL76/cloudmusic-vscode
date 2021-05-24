@@ -9,12 +9,12 @@
   },
   "devDependencies": {
     "@types/api": "workspace:*",
-    "@types/lodash": "4.14.169",
+    "@types/lodash": "4.14.170",
     "@types/node": "14.14.43",
     "@types/qrcode": "workspace:*",
     "@types/vscode": "1.56.0",
     "esbuild-loader": "2.13.1",
-    "webpack": "5.37.0",
+    "webpack": "5.37.1",
     "webpack-cli": "4.7.0"
   },
   "dependencies": {

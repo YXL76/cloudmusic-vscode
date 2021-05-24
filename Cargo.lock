@@ -440,8 +440,8 @@ checksum = "c44922cb3dbb1c70b5e5f443d63b64363a898564d739ba5198e3a9138442868d"
 
 [[package]]
 name = "neon"
-version = "0.8.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#73390414ee2df87b72edcb7e582620966c7c3fee"
+version = "0.8.2"
+source = "git+https://github.com/neon-bindings/neon?branch=main#f3a96aaa7d79e5980d5e8d51bedc94cb56df5701"
 dependencies = [
  "cslice",
  "neon-build",
@@ -453,13 +453,13 @@ dependencies = [
 
 [[package]]
 name = "neon-build"
-version = "0.8.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#73390414ee2df87b72edcb7e582620966c7c3fee"
+version = "0.8.2"
+source = "git+https://github.com/neon-bindings/neon?branch=main#f3a96aaa7d79e5980d5e8d51bedc94cb56df5701"
 
 [[package]]
 name = "neon-macros"
-version = "0.8.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#73390414ee2df87b72edcb7e582620966c7c3fee"
+version = "0.8.2"
+source = "git+https://github.com/neon-bindings/neon?branch=main#f3a96aaa7d79e5980d5e8d51bedc94cb56df5701"
 dependencies = [
  "quote",
  "syn",
@@ -467,8 +467,8 @@ dependencies = [
 
 [[package]]
 name = "neon-runtime"
-version = "0.8.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#73390414ee2df87b72edcb7e582620966c7c3fee"
+version = "0.8.2"
+source = "git+https://github.com/neon-bindings/neon?branch=main#f3a96aaa7d79e5980d5e8d51bedc94cb56df5701"
 dependencies = [
  "cfg-if",
  "libloading 0.6.7",
@@ -541,9 +541,9 @@ dependencies = [
 
 [[package]]
 name = "oboe"
-version = "0.4.1"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4cfb2390bddb9546c0f7448fd1d2abdd39e6075206f960991eb28c7fa7f126c4"
+checksum = "dfa187b38ae20374617b7ad418034ed3dc90ac980181d211518bd03537ae8f8d"
 dependencies = [
  "jni",
  "ndk",
@@ -555,9 +555,9 @@ dependencies = [
 
 [[package]]
 name = "oboe-sys"
-version = "0.4.0"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fe069264d082fc820dfa172f79be3f2e088ecfece9b1c47b0c9fd838d2bef103"
+checksum = "b88e64835aa3f579c08d182526dc34e3907343d5b97e87b71a40ba5bca7aca9e"
 dependencies = [
  "cc",
 ]
@@ -610,9 +610,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.26"
+version = "1.0.27"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a152013215dca273577e18d2bf00fa862b89b24169fb78c4c95aeb07992c9cec"
+checksum = "f0d8caf72986c1a598726adc988bb5984792ef84f5ee5aa50209145ee8077038"
 dependencies = [
  "unicode-xid",
 ]
@@ -750,18 +750,18 @@ dependencies = [
 
 [[package]]
 name = "thiserror"
-version = "1.0.24"
+version = "1.0.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e0f4a65597094d4483ddaed134f409b2cb7c1beccf25201a9f73c719254fa98e"
+checksum = "fa6f76457f59514c7eeb4e59d891395fab0b2fd1d40723ae737d64153392e9c6"
 dependencies = [
  "thiserror-impl",
 ]
 
 [[package]]
 name = "thiserror-impl"
-version = "1.0.24"
+version = "1.0.25"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7765189610d8241a44529806d6fd1f2e0a08734313a35d5b3a556f92b381f3c0"
+checksum = "8a36768c0fbf1bb15eca10defa29526bda730a2376c2ab4393ccfa16fb1a318d"
 dependencies = [
  "proc-macro2",
  "quote",
