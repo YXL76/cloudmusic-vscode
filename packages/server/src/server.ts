@@ -161,7 +161,7 @@ export class IPCServer {
         State.musicQuality = data.mq;
         State.cacheSize = data.cs;
         State.foreign = data.foreign;
-        if (data.volume) Player.volume(data.volume);
+        if (typeof data.volume === "number") Player.volume(data.volume);
         APISetting.apiProtocol = data.https ? "https" : "http";
         break;
       case "control.lyric":

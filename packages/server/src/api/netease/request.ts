@@ -37,22 +37,20 @@ type Headers = {
   "X-Real-IP"?: string;
 };
 
-export const generateHeader = (url: string): Headers => {
-  return {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    Cookie: "",
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    "Content-Type": "application/x-www-form-urlencoded",
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    "User-Agent": userAgent,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    ...(State.foreign ? { "X-Real-IP": "118.88.88.88" } : {}),
-    ...(url.startsWith("music.163.com/")
-      ? // eslint-disable-next-line @typescript-eslint/naming-convention
-        { Referer: "music.163.com" }
-      : {}),
-  };
-};
+export const generateHeader = (url: string): Headers => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Cookie: "",
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  "Content-Type": "application/x-www-form-urlencoded",
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  "User-Agent": userAgent,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ...(State.foreign ? { "X-Real-IP": "118.88.88.88" } : {}),
+  ...(url.startsWith("music.163.com/")
+    ? // eslint-disable-next-line @typescript-eslint/naming-convention
+      { Referer: "music.163.com" }
+    : {}),
+});
 
 const responseHandler = async <T>(
   url: string,
