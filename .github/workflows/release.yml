@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - uses: actions/cache@v2.1.5
+      - uses: actions/cache@v2.1.6
         id: cargo-cache
         with:
           path: |
@@ -61,7 +61,7 @@ jobs:
           sudo apt-get install -y libasound2-dev
           sudo apt-get install -y libx11-dev
 
-      - uses: actions/cache@v2.1.5
+      - uses: actions/cache@v2.1.6
         id: cargo-cache
         with:
           path: |
@@ -103,7 +103,7 @@ jobs:
           version: "11"
           directory: ${{ runner.temp }}/llvm
 
-      - uses: actions/cache@v2.1.5
+      - uses: actions/cache@v2.1.6
         id: cargo-cache
         with:
           path: |
@@ -159,7 +159,7 @@ jobs:
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
         run: echo "::set-output name=dir::$(yarn cache dir)"
-      - uses: actions/cache@v2.1.5
+      - uses: actions/cache@v2.1.6
         id: yarn-cache
         with:
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
@@ -167,7 +167,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
 
-      - uses: actions/cache@v2.1.5
+      - uses: actions/cache@v2.1.6
         id: cargo-cache
         with:
           path: |
