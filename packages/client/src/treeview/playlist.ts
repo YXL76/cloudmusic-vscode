@@ -75,22 +75,22 @@ export class PlaylistProvider
 }
 
 export class PlaylistItemTreeItem extends TreeItem {
-  readonly label!: string;
+  override readonly label!: string;
 
-  readonly tooltip = `${i18n.word.description}: ${this.item.description || ""}
+  override readonly tooltip = `${i18n.word.description}: ${this.item.description || ""}
 ${i18n.word.trackCount}: ${this.item.trackCount}
 ${i18n.word.playCount}: ${this.item.playCount}
 ${i18n.word.subscribedCount}: ${this.item.subscribedCount}`;
 
-  readonly iconPath = new ThemeIcon("selection");
+  override readonly iconPath = new ThemeIcon("selection");
 
-  readonly contextValue = "PlaylistItemTreeItem";
+  override readonly contextValue = "PlaylistItemTreeItem";
 
   constructor(readonly item: NeteaseTypings.PlaylistItem) {
     super(item.name, TreeItemCollapsibleState.Collapsed);
   }
 
-  get valueOf(): number {
+  override get valueOf(): number {
     return this.item.id;
   }
 }

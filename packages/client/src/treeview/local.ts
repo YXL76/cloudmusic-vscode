@@ -106,13 +106,13 @@ export class LocalProvider
 }
 
 export class LocalLibraryTreeItem extends TreeItem {
-  readonly tooltip = this.label;
+  override readonly tooltip = this.label;
 
-  readonly iconPath = new ThemeIcon("file-directory");
+  override readonly iconPath = new ThemeIcon("file-directory");
 
-  readonly contextValue = "LocalLibraryTreeItem";
+  override readonly contextValue = "LocalLibraryTreeItem";
 
-  constructor(readonly label: string) {
+  constructor(override readonly label: string) {
     super(label, TreeItemCollapsibleState.Collapsed);
   }
 }
@@ -136,23 +136,23 @@ const fakeItem = {
 export class LocalFileTreeItem extends TreeItem implements PlayTreeItem {
   private static readonly _set = new Map<string, LocalFileTreeItem>();
 
-  readonly iconPath = new ThemeIcon("file-media");
+  override readonly iconPath = new ThemeIcon("file-media");
 
-  readonly label = this.data.filename;
+  override readonly label = this.data.filename;
 
-  readonly description = this.data.ext ?? "";
+  override readonly description = this.data.ext ?? "";
 
-  readonly tooltip = this.data.id;
+  override readonly tooltip = this.data.id;
 
   readonly item = fakeItem;
 
-  readonly contextValue = "LocalFileTreeItem";
+  override readonly contextValue = "LocalFileTreeItem";
 
   private constructor(readonly data: LocalFileTreeItemData) {
     super(data.filename, TreeItemCollapsibleState.None);
   }
 
-  get valueOf(): string {
+  override get valueOf(): string {
     return this.tooltip;
   }
 

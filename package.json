@@ -827,12 +827,12 @@
     "vscode:prepublish": "yarn generate-css && yarn build"
   },
   "devDependencies": {
-    "@types/eslint": "7.2.11",
+    "@types/eslint": "7.2.12",
     "@types/tailwindcss": "2.0.3",
-    "@typescript-eslint/eslint-plugin": "4.24.0",
-    "@typescript-eslint/parser": "4.24.0",
+    "@typescript-eslint/eslint-plugin": "4.25.0",
+    "@typescript-eslint/parser": "4.25.0",
     "@yarnpkg/pnpify": "3.0.0-rc.3",
-    "autoprefixer": "10.2.5",
+    "autoprefixer": "10.2.6",
     "cssnano": "5.0.4",
     "debug": "4.3.1",
     "esbuild-loader": "2.13.1",
@@ -846,7 +846,7 @@
     "prettier": "2.3.0",
     "supports-color": "9.0.0",
     "tailwindcss": "2.1.2",
-    "typescript": "4.2.4",
-    "webpack": "5.37.1"
+    "typescript": "4.3.2",
+    "webpack": "5.38.1"
   }
 }

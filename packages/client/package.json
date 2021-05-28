@@ -14,7 +14,7 @@
     "@types/qrcode": "workspace:*",
     "@types/vscode": "1.56.0",
     "esbuild-loader": "2.13.1",
-    "webpack": "5.37.1",
+    "webpack": "5.38.1",
     "webpack-cli": "4.7.0"
   },
   "dependencies": {

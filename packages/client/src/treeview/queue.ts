@@ -197,19 +197,19 @@ export type QueueItemTreeItemData = NeteaseTypings.SongsItem & {
 export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
   private static readonly _set = new Map<number, QueueItemTreeItem>();
 
-  readonly label!: string;
+  override readonly label!: string;
 
-  readonly description = this.data.ar.map(({ name }) => name).join("/");
+  override readonly description = this.data.ar.map(({ name }) => name).join("/");
 
-  readonly tooltip = this.data.al.name;
+  override readonly tooltip = this.data.al.name;
 
-  readonly iconPath = new ThemeIcon("zap");
+  override readonly iconPath = new ThemeIcon("zap");
 
-  readonly contextValue = "QueueItemTreeItem";
+  override readonly contextValue = "QueueItemTreeItem";
 
   readonly item = this.data;
 
-  readonly command = {
+  override readonly command = {
     title: "Detail",
     command: "cloudmusic.songDetail",
     arguments: [this],
@@ -219,7 +219,7 @@ export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
     super(`${data.name}${data.alia[0] ? ` (${data.alia.join("/")})` : ""}`);
   }
 
-  get valueOf(): number {
+  override get valueOf(): number {
     return this.data.id;
   }
 
