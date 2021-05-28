@@ -229,6 +229,8 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |           user_update            |      编辑用户信息      |   ❌   |
 |              yunbei              |      云贝签到信息      |   ❌   |
 |           yunbei_info            |      云贝账户信息      |   ✔️   |
+|         yunbei_rcmd_song         |        云贝推歌        |        |
+|     yunbei_rcmd_song_history     |    云贝推歌历史记录    |        |
 |           yunbei_sign            |        云贝签到        |   ✔️   |
 |           yunbei_tasks           |      云贝所有任务      |   ❌   |
 |        yunbei_tasks_todo         |     云贝 todo 任务     |   ❌   |
