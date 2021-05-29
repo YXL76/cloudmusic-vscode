@@ -142,6 +142,8 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |    playlist_track_add    |   收藏视频到视频歌单   |   ❌   |
 |  playlist_track_delete   |  删除视频歌单里的视频  |   ❌   |
 |  playlist_video_recent   |     最近播放的视频     |   ❌   |
+|      mlog_to_video       | 将 mlog id 转为视频 id |   ❌   |
+|         mlog_url         |   获取 mlog 播放地址   |   ❌   |
 |   video_category_list    |      视频分类列表      |   ❌   |
 |       video_detail       |        视频详情        |   ❌   |
 |    video_detail_info     | 视频点赞转发评论数数据 |   ❌   |
@@ -208,6 +210,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |             setting              |          设置          |   ❌   |
 |          share_resource          |     分享歌曲到动态     |        |
 |            simi_user             |        相似用户        |   ❌   |
+|          song_purchased          |        已购单曲        |        |
 |          topic_sub_list          |       收藏的专栏       |        |
 |           user_account           |      获取账号信息      |   ❌   |
 |            user_audio            |     用户创建的电台     |        |
@@ -227,6 +230,10 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |           user_record            |        听歌排行        |   ✔️   |
 |          user_subcount           |        收藏计数        |   ❌   |
 |           user_update            |      编辑用户信息      |   ❌   |
+|         vip_growthpoint          |       vip 成长值       |        |
+|     vip_growthpoint_details      |   vip 成长值获取记录   |        |
+|       vip_growthpoint_get        |    领取 vip 成长值     |        |
+|            vip_tasks             |        vip 任务        |        |
 |              yunbei              |      云贝签到信息      |   ❌   |
 |           yunbei_info            |      云贝账户信息      |   ✔️   |
 |         yunbei_rcmd_song         |        云贝推歌        |        |
