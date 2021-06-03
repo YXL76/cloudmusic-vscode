@@ -4,6 +4,7 @@ default-members = ["crates/native"]
 
 [patch.crates-io]
 minimp3 = { git = "https://github.com/YXL76/minimp3-rs", branch = "dev" }
+cpal = { git = "https://github.com/RustAudio/cpal", branch = "master" }
 
 [profile.release]
 lto = true

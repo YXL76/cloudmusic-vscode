@@ -20,8 +20,8 @@ default-features = false
 features = ["napi-6", "event-queue-api"]
 
 [dependencies.rodio]
-git = "https://github.com/YXL76/rodio"
-branch = "dev"
+git = "https://github.com/RustAudio/rodio"
+branch = "master"
 default-features = false
 features = ["flac", "mp3"]
 
