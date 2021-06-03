@@ -1,6 +1,6 @@
 Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to provide `API`, the following is a complete list, ✔️ means realized, ❌ means no implementation plan
 
-- 专辑类
+## 专辑类
 
 |        module        |        function        | status |
 | :------------------: | :--------------------: | :----: |
@@ -8,20 +8,23 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |      album_list      |   数字专辑-新碟上架    |   ❌   |
 |      album_new       |        全部新碟        |   ❌   |
 |      album_sub       |   收藏与取消收藏专辑   |   ✔️   |
-|     album_detail     |      数字专辑详情      |   ❌   |
+|     album_detail     |        专辑详情        |   ❌   |
 |     album_newest     |        最新专辑        |   ✔️   |
 |    album_sublist     |     已收藏专辑列表     |   ✔️   |
 |   album_list_style   |  数字专辑-语种风格馆   |   ❌   |
 | album_detail_dynamic |      专辑动态信息      |   ❌   |
 | album_songsaleboard  | 数字专辑&数字单曲-榜单 |   ❌   |
+| digitalAlbum_detail  |      数字专辑详情      |   ❌   |
+|  digitalAlbum_sales  |      数字专辑销量      |   ❌   |
 
-- 歌手类
+## 歌手类
 
 |     module      |      function      | status |
 | :-------------: | :----------------: | :----: |
 |  artist_album   |    歌手专辑列表    |   ✔️   |
 |   artist_desc   |      歌手介绍      |   ✔️   |
 |  artist_detail  |      歌手详情      |        |
+|   artist_fans   |      歌手粉丝      |        |
 |   artist_list   |      歌手分类      |   ✔️   |
 |    artist_mv    |    歌手相关 MV     |   ❌   |
 |  artist_new_mv  |    歌手最新 MV     |   ❌   |
@@ -33,7 +36,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |     artists     |      歌手单曲      |   ✔️   |
 |   simi_artist   |      相似歌手      |   ✔️   |
 
-- 歌曲类
+## 歌曲类
 
 |   module    |      function      | status |
 | :---------: | :----------------: | :----: |
@@ -44,7 +47,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |  song_url   |      歌曲链接      |   ✔️   |
 |    like     | 红心与取消红心歌曲 |   ✔️   |
 
-- 评论类
+## 评论类
 
 |        module        |      function      | status |
 | :------------------: | :----------------: | :----: |
@@ -64,7 +67,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |    comment_video     |      视频评论      |   ❌   |
 |     hug_comment      |     抱一抱评论     |        |
 
-- 电台类
+## 电台类
 
 |          module          |       function        | status |
 | :----------------------: | :-------------------: | :----: |
@@ -91,7 +94,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |      dj_toplist_pay      |       付费精品        |   ❌   |
 |    dj_toplist_popular    |    电台最热主播榜     |   ❌   |
 
-- 歌单类
+## 歌单类
 
 |           module           |           function            | status |
 | :------------------------: | :---------------------------: | :----: |
@@ -119,7 +122,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |        top_playlist        |           分类歌单            |   ✔️   |
 |  top_playlist_highquality  |           精品歌单            |   ✔️   |
 
-- MV 类
+## MV 类
 
 |      module       |       function        | status |
 | :---------------: | :-------------------: | :----: |
@@ -134,7 +137,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 | related_allvideo  |       相关视频        |   ❌   |
 |      simi_mv      |        相似 MV        |   ❌   |
 
-- 视频类
+## 视频类
 
 |          module          |        function        | status |
 | :----------------------: | :--------------------: | :----: |
@@ -154,7 +157,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 | video_timeline_recommend |        推荐视频        |   ❌   |
 |        video_url         |        视频链接        |   ❌   |
 
-- 帐号类
+## 帐号类
 
 |              module              |        function        | status |
 | :------------------------------: | :--------------------: | :----: |
@@ -246,18 +249,28 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |        yunbei_task_finish        |      云贝完成任务      |   ❌   |
 |           yunbei_today           |    云贝今日签到信息    |   ✔️   |
 
-- 搜索类
+## 搜索类
 
 |       module       |    function    | status |
 | :----------------: | :------------: | :----: |
-| cloudsearch/search |      搜索      |   ✔️   |
+| cloudsearch_search |      搜索      |   ✔️   |
 |   search_default   | 默认搜索关键词 |   ✔️   |
 |     search_hot     |    热门搜索    |   ❌   |
 | search_hot_detail  |    热搜列表    |   ✔️   |
 | search_multimatch  |   多类型搜索   |   ❌   |
 |   search_suggest   |    搜索建议    |   ✔️   |
 
-- 杂项
+## 音乐人
+
+|          module           |    function    | status |
+| :-----------------------: | :------------: | :----: |
+|  musician_data_overview`  | 音乐人数据概况 |   ❌   |
+|    musician_play_trend    | 音乐人播放趋势 |   ❌   |
+|      musician_tasks       |   音乐人任务   |   ❌   |
+|    musician_cloudbean     |   账号云豆数   |   ❌   |
+| musician_cloudbean_obtain |    领取云豆    |   ❌   |
+
+## 杂项
 
 |         module         |       function        | status |
 | :--------------------: | :-------------------: | :----: |
