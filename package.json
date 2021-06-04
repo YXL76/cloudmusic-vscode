@@ -828,7 +828,7 @@
   },
   "devDependencies": {
     "@types/eslint": "7.2.12",
-    "@types/tailwindcss": "2.0.3",
+    "@types/tailwindcss": "2.0.5",
     "@typescript-eslint/eslint-plugin": "4.26.0",
     "@typescript-eslint/parser": "4.26.0",
     "@yarnpkg/pnpify": "3.0.0-rc.6",
@@ -845,7 +845,7 @@
     "postcss-import": "14.0.2",
     "prettier": "2.3.0",
     "supports-color": "9.0.0",
-    "tailwindcss": "2.1.2",
+    "tailwindcss": "2.1.4",
     "typescript": "4.3.2",
     "webpack": "5.38.1"
   }
