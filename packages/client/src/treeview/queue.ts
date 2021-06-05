@@ -199,7 +199,9 @@ export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
 
   override readonly label!: string;
 
-  override readonly description = this.data.ar.map(({ name }) => name).join("/");
+  override readonly description = this.data.ar
+    .map(({ name }) => name)
+    .join("/");
 
   override readonly tooltip = this.data.al.name;
 

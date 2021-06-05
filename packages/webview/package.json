@@ -9,12 +9,9 @@
   },
   "devDependencies": {
     "@types/api": "workspace:*",
-    "@types/react": "17.0.8",
-    "@types/react-dom": "17.0.5",
-    "@types/wicg-mediasession": "1.1.0",
-    "esbuild-loader": "2.13.1",
-    "webpack": "5.38.1",
-    "webpack-cli": "4.7.0"
+    "@types/react": "17.0.9",
+    "@types/react-dom": "17.0.6",
+    "@types/wicg-mediasession": "1.1.0"
   },
   "dependencies": {
     "@cloudmusic/shared": "workspace:*",

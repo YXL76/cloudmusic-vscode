@@ -106,13 +106,15 @@ export class LocalProvider
 }
 
 export class LocalLibraryTreeItem extends TreeItem {
+  override readonly label!: string;
+
   override readonly tooltip = this.label;
 
   override readonly iconPath = new ThemeIcon("file-directory");
 
   override readonly contextValue = "LocalLibraryTreeItem";
 
-  constructor(override readonly label: string) {
+  constructor(label: string) {
     super(label, TreeItemCollapsibleState.Collapsed);
   }
 }
