@@ -1,3 +1,8 @@
+// @ts-check
+
+/**
+ * @type {Partial<import('eslint').Linter.RulesRecord>}
+ */
 const baseNodeTsRules = {
   "@typescript-eslint/consistent-type-imports": "warn",
   "@typescript-eslint/lines-between-class-members": "error",
@@ -55,7 +60,7 @@ const browserTsConfig = (files, project) => ({
 });
 
 /**@type {import('eslint').Linter.Config}*/
-module.exports = {
+const config = {
   env: { browser: false, node: true },
   extends: ["eslint:recommended", "plugin:prettier/recommended"],
   ignorePatterns: ["./packages/wasi/**/*.*", "*.jsom"],
@@ -101,3 +106,5 @@ module.exports = {
     ),
   ],
 };
+
+module.exports = config;

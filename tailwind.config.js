@@ -1,5 +1,8 @@
-/** @type {import("@types/tailwindcss/tailwind-config").TailwindConfig } */
-module.exports = {
+// @ts-check
+
+/** @type {import("tailwindcss/tailwind-config").TailwindConfig } */
+const config = {
+  // @ts-ignore
   corePlugins: { preflight: false },
   darkMode: "class",
   plugins: [],
@@ -11,8 +14,11 @@ module.exports = {
   },
   theme: {
     extend: {
+      // @ts-ignore
       zIndex: { "-10": -10 },
     },
   },
   variants: {},
 };
+
+module.exports = config;
