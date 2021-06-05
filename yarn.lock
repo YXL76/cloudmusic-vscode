@@ -1549,7 +1549,7 @@ __metadata:
     postcss-cli: 8.3.1
     postcss-import: 14.0.2
     prettier: 2.3.1
-    supports-color: 9.0.0
+    supports-color: 9.0.1
     tailwindcss: 2.1.2
     typescript: 4.3.2
     webpack: 5.38.1
@@ -5753,12 +5753,12 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"supports-color@npm:9.0.0":
-  version: 9.0.0
-  resolution: "supports-color@npm:9.0.0"
+"supports-color@npm:9.0.1":
+  version: 9.0.1
+  resolution: "supports-color@npm:9.0.1"
   dependencies:
     has-flag: ^5.0.0
-  checksum: ef253bd7db818d2869d284d082c87a126d47b8eb99f777b0c6b4b41ab82a29350d9dca286d6eea786a868d88fa821414e22279fa9ecad608bdf612deab30e558
+  checksum: 56071f46f8e5d44a8a0351a5de5683d3b8b652bc84cf45585f62c342e16bbeab22172cf955fe6ac25c376933551b412b9ccf53ecd5a633a078dbf246fd00d9f4
   languageName: node
   linkType: hard
 
