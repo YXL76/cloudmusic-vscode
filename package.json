@@ -827,7 +827,7 @@
     "vscode:prepublish": "yarn generate-css && yarn build"
   },
   "devDependencies": {
-    "@types/eslint": "7.2.12",
+    "@types/eslint": "7.2.13",
     "@types/tailwindcss": "2.0.3",
     "@typescript-eslint/eslint-plugin": "4.26.0",
     "@typescript-eslint/parser": "4.26.0",
@@ -836,7 +836,7 @@
     "cssnano": "5.0.4",
     "debug": "4.3.1",
     "esbuild-loader": "2.13.1",
-    "eslint": "7.27.0",
+    "eslint": "7.28.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.0",
     "eslint-plugin-react": "7.23.2",
