@@ -1548,7 +1548,7 @@ __metadata:
     postcss: 8.3.0
     postcss-cli: 8.3.1
     postcss-import: 14.0.2
-    prettier: 2.3.0
+    prettier: 2.3.1
     supports-color: 9.0.0
     tailwindcss: 2.1.2
     typescript: 4.3.2
@@ -4873,12 +4873,12 @@ fsevents@~2.3.1:
   languageName: node
   linkType: hard
 
-"prettier@npm:2.3.0":
-  version: 2.3.0
-  resolution: "prettier@npm:2.3.0"
+"prettier@npm:2.3.1":
+  version: 2.3.1
+  resolution: "prettier@npm:2.3.1"
   bin:
     prettier: bin-prettier.js
-  checksum: e8851a45f60f2994775f96e07964646c299b8a8f9c64da4fbd8efafc20db3458bdcedac79aed34e1d5477540b3aa04f6499adc4979cb7937f8ebd058a767d8ff
+  checksum: 3b37731ff7150feecf19736c77c790e7e276b404ac9af81cbaf87cfecefc48ef9a864f34c2a5caf5955378b8f2525984b8611703a0d9c1f052b4cfa6eb35899f
   languageName: node
   linkType: hard
 
