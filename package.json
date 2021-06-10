@@ -832,7 +832,7 @@
     "@typescript-eslint/parser": "4.26.0",
     "@yarnpkg/pnpify": "3.0.0-rc.6",
     "autoprefixer": "10.2.6",
-    "cssnano": "5.0.5",
+    "cssnano": "5.0.6",
     "debug": "4.3.1",
     "esbuild": "0.12.6",
     "eslint": "7.28.0",
