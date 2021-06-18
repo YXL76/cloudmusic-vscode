@@ -1274,7 +1274,7 @@ __metadata:
     cssnano: 5.0.5
     debug: 4.3.1
     esbuild: 0.12.6
-    eslint: 7.28.0
+    eslint: 7.29.0
     eslint-config-prettier: 8.3.0
     eslint-plugin-prettier: 3.4.0
     eslint-plugin-react: 7.24.0
@@ -2015,9 +2015,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:7.28.0":
-  version: 7.28.0
-  resolution: "eslint@npm:7.28.0"
+"eslint@npm:7.29.0":
+  version: 7.29.0
+  resolution: "eslint@npm:7.29.0"
   dependencies:
     "@babel/code-frame": 7.12.11
     "@eslint/eslintrc": ^0.4.2
@@ -2060,7 +2060,7 @@ __metadata:
     v8-compile-cache: ^2.0.3
   bin:
     eslint: bin/eslint.js
-  checksum: 624ed594c909a8e54129b8e659c521de9e31f1f363c5f96f95af674c83887e0b27bf3e8b50ce4b57e6691658f6053be6d62849ab515fd62a54a3a2a85a0f1dfb
+  checksum: 8a18377c761560a29fb48b27458517f260f7854882e40cf7e2d38f0ba60ac1038f39404e0ea849abdda18699530fe055adc5bdbf1ef726ce91ac1482cac9d38c
   languageName: node
   linkType: hard
 

@@ -835,7 +835,7 @@
     "cssnano": "5.0.5",
     "debug": "4.3.1",
     "esbuild": "0.12.6",
-    "eslint": "7.28.0",
+    "eslint": "7.29.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.0",
     "eslint-plugin-react": "7.24.0",
