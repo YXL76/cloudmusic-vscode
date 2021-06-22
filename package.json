@@ -830,7 +830,7 @@
     "@types/tailwindcss": "2.0.5",
     "@typescript-eslint/eslint-plugin": "4.26.0",
     "@typescript-eslint/parser": "4.26.0",
-    "@yarnpkg/pnpify": "3.0.0-rc.6",
+    "@yarnpkg/pnpify": "3.0.0-rc.7",
     "autoprefixer": "10.2.6",
     "cssnano": "5.0.5",
     "debug": "4.3.1",
