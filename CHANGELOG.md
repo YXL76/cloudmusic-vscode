@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [8.3.6] - 2021-06-23
+
+### Fixed
+
+- Do not ignore css output
+
 ## [8.3.5] - 2021-06-23
 
 ### Fixed
