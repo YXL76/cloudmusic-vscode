@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [8.3.5] - 2021-06-23
+
+### Fixed
+
+- Commands: fix parameters typo ([#465](https://github.com/YXL76/cloudmusic-vscode/issues/465))
+- Treeview: `Local library` always reads only local directories ([#470](https://github.com/YXL76/cloudmusic-vscode/issues/470))
+
 ## [8.3.4] - 2021-05-24
 
 ### Fixed
