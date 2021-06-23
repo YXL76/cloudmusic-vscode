@@ -21,6 +21,7 @@ export function request<T = undefined, U = undefined>(msg: U): Promise<T> {
     const prev = requestPool.get(channel);
     prev?.reject();
     requestPool.set(channel, { resolve, reject });
-    vscode.postMessage<CSMessage<U>>({ msg, channel });
+    const x: CSMessage<U> = { msg, channel };
+    vscode.postMessage(x);
   });
 }

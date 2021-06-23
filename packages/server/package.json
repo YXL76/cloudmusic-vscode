@@ -4,14 +4,16 @@
   "private": true,
   "main": "./src/index.ts",
   "scripts": {
-    "build": "webpack --mode production",
-    "build-dev": "webpack --mode development",
+    "build": "yarn node build.js --prod",
+    "build-dev": "yarn node build.js",
     "test": "tsc -p tsconfig.json"
   },
   "devDependencies": {
     "@types/api": "workspace:*",
     "@types/node": "14.14.43",
-    "@types/yallist": "4.0.0"
+    "@types/yallist": "4.0.0",
+    "@yarnpkg/esbuild-plugin-pnp": "1.0.0-rc.6",
+    "esbuild": "0.12.9"
   },
   "dependencies": {
     "@cloudmusic/shared": "workspace:*",

@@ -14,14 +14,10 @@ interface NativeModule {
   playerStop(player: NativePlayer): void;
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-declare function __non_webpack_require__(_: string): unknown;
-
-export const native = __non_webpack_require__(
-  resolve(
-    __dirname,
-    "..",
-    "build",
-    `${platform()}-${arch() === "x64" ? "x86" : arch()}.node`
-  )
-) as NativeModule;
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+export const native = require(resolve(
+  __dirname,
+  "..",
+  "build",
+  `${platform()}-${arch() === "x64" ? "x86" : arch()}.node`
+)) as NativeModule;

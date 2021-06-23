@@ -3,15 +3,18 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "webpack --mode production",
-    "build-dev": "webpack --mode development",
+    "build": "yarn node build.js --prod",
+    "build-dev": "yarn node build.js",
     "test": "tsc -p tsconfig.json"
   },
   "devDependencies": {
     "@types/api": "workspace:*",
-    "@types/react": "17.0.9",
-    "@types/react-dom": "17.0.6",
-    "@types/wicg-mediasession": "1.1.0"
+    "@types/react": "17.0.11",
+    "@types/react-dom": "17.0.8",
+    "@types/vscode-webview": "1.57.0",
+    "@types/wicg-mediasession": "1.1.0",
+    "@yarnpkg/esbuild-plugin-pnp": "1.0.0-rc.6",
+    "esbuild": "0.12.9"
   },
   "dependencies": {
     "@cloudmusic/shared": "workspace:*",

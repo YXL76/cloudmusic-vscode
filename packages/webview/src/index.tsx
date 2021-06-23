@@ -1,3 +1,5 @@
+///<reference types="@types/vscode-webview"/>
+
 import type { CommentCSMsg, WebviewType } from "@cloudmusic/shared";
 import { CommentList, Description, Login, Lyric, MusicRanking } from "./pages";
 import type { CommentListProps, DescriptionProps, LoginProps } from "./pages";
