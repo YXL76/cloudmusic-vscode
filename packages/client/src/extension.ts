@@ -1,6 +1,5 @@
 import { AccountManager, ButtonManager } from "./manager";
 import { IPC, State } from "./utils";
-import { Uri, workspace } from "vscode";
 import {
   initAccount,
   initCache,
@@ -15,10 +14,11 @@ import {
 } from "./activate";
 import type { ExtensionContext } from "vscode";
 import { SETTING_DIR } from "@cloudmusic/shared";
+import { mkdirSync } from "fs";
 
 export async function activate(context: ExtensionContext): Promise<void> {
   try {
-    await workspace.fs.createDirectory(Uri.file(SETTING_DIR));
+    mkdirSync(SETTING_DIR);
   } catch {}
   AccountManager.context = context;
   ButtonManager.context = context;

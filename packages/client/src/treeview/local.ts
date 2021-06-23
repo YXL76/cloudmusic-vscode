@@ -1,15 +1,13 @@
 import {
   EventEmitter,
-  FileType,
   ThemeIcon,
   TreeItem,
   TreeItemCollapsibleState,
-  Uri,
-  workspace,
 } from "vscode";
 import type { PlayTreeItem, RefreshAction } from ".";
 import type { TreeDataProvider } from "vscode";
 import { fromFile } from "file-type";
+import { readdir } from "fs/promises";
 import { resolve } from "path";
 
 export class LocalProvider
@@ -66,13 +64,12 @@ export class LocalProvider
       try {
         while (index < folders.length) {
           const folder = folders[index];
-          const files = await workspace.fs.readDirectory(Uri.file(folder));
+          const dirents = await readdir(folder, { withFileTypes: true });
           const paths: string[] = [];
 
-          for (const [name, type] of files) {
-            if (type === FileType.File) paths.push(name);
-            else if (type === FileType.Directory)
-              folders.push(resolve(folder, name));
+          for (const { name, isFile, isDirectory } of dirents) {
+            if (isFile()) paths.push(name);
+            else if (isDirectory()) folders.push(resolve(folder, name));
           }
 
           const treeitems = (
