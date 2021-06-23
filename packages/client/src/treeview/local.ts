@@ -67,9 +67,10 @@ export class LocalProvider
           const dirents = await readdir(folder, { withFileTypes: true });
           const paths: string[] = [];
 
-          for (const { name, isFile, isDirectory } of dirents) {
-            if (isFile()) paths.push(name);
-            else if (isDirectory()) folders.push(resolve(folder, name));
+          for (const dirent of dirents) {
+            if (dirent.isFile()) paths.push(dirent.name);
+            else if (dirent.isDirectory())
+              folders.push(resolve(folder, dirent.name));
           }
 
           const treeitems = (
