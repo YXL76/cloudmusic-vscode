@@ -1,5 +1,10 @@
 import { ButtonAction, IPC, LikeState, State, Webview } from ".";
 import type { InputStep, MultiStepInput } from ".";
+import type {
+  PlaylistItemTreeItem,
+  QueueContent,
+  RadioTreeItem,
+} from "../treeview";
 import {
   PlaylistProvider,
   ProgramTreeItem,
@@ -210,10 +215,14 @@ export async function pickSong(
   });
   switch (pick.type) {
     case PickType.copy:
-      void commands.executeCommand("cloudmusic.copySongLink", { item });
+      void commands.executeCommand("cloudmusic.copySongLink", {
+        item,
+      } as QueueItemTreeItem);
       break;
     case PickType.download:
-      void commands.executeCommand("cloudmusic.downloadSong", { item });
+      void commands.executeCommand("cloudmusic.downloadSong", { item } as
+        | QueueItemTreeItem
+        | ProgramTreeItem);
       break;
     case PickType.album:
       return (input) => pickAlbum(input, step + 1, (pick as T).id);
@@ -241,7 +250,7 @@ export async function pickSong(
     case PickType.next:
       void commands.executeCommand(
         "cloudmusic.playNext",
-        QueueItemTreeItem.new({ ...item, pid: item.al.id }).data
+        QueueItemTreeItem.new({ ...item, pid: item.al.id }) as QueueContent
       );
       break;
   }
@@ -372,12 +381,14 @@ export async function pickProgram(
   });
   switch (pick.type) {
     case PickType.copy:
-      void commands.executeCommand("cloudmusic.copyProgramLink", { id });
+      void commands.executeCommand("cloudmusic.copyProgramLink", {
+        data: { id },
+      } as ProgramTreeItem);
       break;
     case PickType.download:
       void commands.executeCommand("cloudmusic.downloadSong", {
         item: mainSong,
-      });
+      } as QueueItemTreeItem | ProgramTreeItem);
       break;
     case PickType.user:
       return (input) => pickUser(input, step + 1, (pick as T).id);
@@ -492,7 +503,9 @@ export async function pickRadio(
   });
   switch (pick.type) {
     case PickType.copy:
-      void commands.executeCommand("cloudmusic.copyRadioLink", { id });
+      void commands.executeCommand("cloudmusic.copyRadioLink", {
+        item: { id },
+      } as RadioTreeItem);
       break;
     case PickType.user:
       return (input) => pickUser(input, step + 1, (pick as T).id);
@@ -820,7 +833,9 @@ export async function pickPlaylist(
   });
   switch (pick.type) {
     case PickType.copy:
-      void commands.executeCommand("cloudmusic.copyPlaylistLink", { item });
+      void commands.executeCommand("cloudmusic.copyPlaylistLink", {
+        item,
+      } as PlaylistItemTreeItem);
       break;
     case PickType.songs:
       return async (input) =>
