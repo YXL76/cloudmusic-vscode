@@ -4,7 +4,7 @@ const { build } = require("esbuild");
 const { resolve } = require("path");
 const { pnpPlugin } = require("@yarnpkg/esbuild-plugin-pnp");
 
-const target = "es2020";
+const target = "chrome89";
 const prod = process.argv.includes("--prod");
 
 const rootPath = resolve(__dirname, "..", "..");
@@ -15,7 +15,7 @@ const tsconfig = resolve(__dirname, "tsconfig.json");
 
 /**@type {import('esbuild').BuildOptions}*/
 const sharedConfig = {
-  // sourcemap: true,
+  sourcemap: false,
   legalComments: "none",
   sourceRoot: rootPath,
   format: "esm",
