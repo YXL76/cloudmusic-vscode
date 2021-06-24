@@ -33,7 +33,6 @@ scripts
 packages
 crates
 *.rs
-/style.css
 
 # cache and build file
 .cache

@@ -819,7 +819,7 @@
   "scripts": {
     "build": "yarn node scripts/build.js --prod",
     "build-dev": "yarn node scripts/build.js",
-    "generate-css": "yarn tailwindcss --no-autoprefixer -i style.css -o dist/style.css",
+    "generate-css": "yarn tailwindcss --no-autoprefixer -o dist/style.css",
     "list": "node scripts/list.js",
     "test": "yarn workspaces foreach -p run test",
     "postinstall": "yarn pnpify --sdk vscode vim",
