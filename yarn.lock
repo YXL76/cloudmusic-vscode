@@ -60,9 +60,7 @@ __metadata:
     "@types/node": 14.14.43
     "@types/qrcode": "workspace:*"
     "@types/vscode": 1.57.0
-    "@yarnpkg/esbuild-plugin-pnp": 1.0.0-rc.6
     array-unsort: 1.1.6
-    esbuild: 0.12.9
     file-type: 16.5.0
     lodash: 4.17.21
     qrcode: 1.4.4
@@ -77,9 +75,7 @@ __metadata:
     "@types/api": "workspace:*"
     "@types/node": 14.14.43
     "@types/yallist": 4.0.0
-    "@yarnpkg/esbuild-plugin-pnp": 1.0.0-rc.6
     axios: 0.21.1
-    esbuild: 0.12.9
     global-agent: "https://github.com/YXL76/global-agent.git#self-use"
     md5-file: 5.0.0
     node-cache: 5.1.2
@@ -106,9 +102,7 @@ __metadata:
     "@types/react-dom": 17.0.8
     "@types/vscode-webview": 1.57.0
     "@types/wicg-mediasession": 1.1.0
-    "@yarnpkg/esbuild-plugin-pnp": 1.0.0-rc.6
     dayjs: 1.10.5
-    esbuild: 0.12.9
     react: 17.0.2
     react-dom: 17.0.2
     react-icons: 4.2.0
@@ -1213,6 +1207,7 @@ __metadata:
     "@types/tailwindcss": 2.2.0
     "@typescript-eslint/eslint-plugin": 4.28.0
     "@typescript-eslint/parser": 4.28.0
+    "@yarnpkg/esbuild-plugin-pnp": 1.0.0-rc.6
     "@yarnpkg/pnpify": 3.0.0-rc.7
     debug: 4.3.1
     esbuild: 0.12.9
