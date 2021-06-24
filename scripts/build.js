@@ -13,36 +13,53 @@ const rootPath = resolve(__dirname, "..");
 const distPath = resolve(rootPath, "dist");
 const pkgsPath = resolve(rootPath, "packages");
 
+/**@type {import('@yarnpkg/esbuild-plugin-pnp').PluginOptions["onResolve"]}*/
+const onResolve = (args, { resolvedPath, error }) => {
+  if (resolvedPath !== null) {
+    return Promise.resolve({ /* namespace: `pnp`, */ path: resolvedPath });
+  }
+
+  const problems = error ? [{ text: error.message }] : [];
+  // Sometimes dynamic resolve calls might be wrapped in a try / catch,
+  // but ESBuild neither skips them nor does it provide a way for us to tell.
+  // Because of that, we downgrade all errors to warnings in these situations.
+  // Issue: https://github.com/evanw/esbuild/issues/1127
+  switch (args.kind) {
+    case `require-call`:
+    case `require-resolve`:
+    case `dynamic-import`:
+      return Promise.resolve({ external: true, warnings: problems });
+    default:
+      return Promise.resolve({ external: true, errors: problems });
+  }
+};
+
 /**@type {import('esbuild').BuildOptions}*/
 const globalSharedConfig = {
+  sourcemap: false,
   legalComments: "none",
-  sourceRoot: rootPath,
+  // sourceRoot: rootPath,
   color: true,
   logLevel: "warning",
 
   bundle: true,
-  loader: {
-    ".ts": "ts",
-    ".js": "js",
-    ".tsx": "tsx",
-    ".jsx": "jsx",
-    ".css": "css",
-  },
-  resolveExtensions: [".ts", ".js", ".tsx", ".jsx", ".css"],
+  loader: { ".ts": "ts", ".js": "js", ".tsx": "tsx", ".jsx": "jsx" },
+  resolveExtensions: [".ts", ".js", ".tsx", ".jsx"],
   // incremental: true,
-  plugins: [pnpPlugin()],
+  plugins: [pnpPlugin({ onResolve })],
 };
 
 // css
 build({
   ...globalSharedConfig,
-  sourcemap: false,
   target: browserTarget,
   minify: true,
 
   outfile: resolve(distPath, "style.css"),
   platform: "browser",
   allowOverwrite: true,
+  loader: { ".css": "css" },
+  resolveExtensions: [".css"],
   entryPoints: [resolve(distPath, "style.css")],
 });
 
@@ -73,7 +90,6 @@ build({
 
   build({
     ...globalSharedConfig,
-    sourcemap: !prod,
     format: "cjs",
     target: nodeTarget,
     minify: prod,
@@ -94,7 +110,6 @@ build({
   /**@type {import('esbuild').BuildOptions}*/
   const sharedConfig = {
     ...globalSharedConfig,
-    sourcemap: false,
     format: "esm",
     target: browserTarget,
     minify: prod,
