@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [8.3.8] - 2021-06-25
+
+### Fixed
+
+- CSS: support dark mode ([#478](https://github.com/YXL76/cloudmusic-vscode/issues/478))
+
 ## [8.3.7] - 2021-06-23
 
 ### Fixed
