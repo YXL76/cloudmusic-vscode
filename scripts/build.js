@@ -1,8 +1,9 @@
 // @ts-check
 
 const { build } = require("esbuild");
-const { resolve } = require("path");
 const { pnpPlugin } = require("@yarnpkg/esbuild-plugin-pnp");
+const { readdir } = require("fs/promises");
+const { resolve } = require("path");
 
 const prod = process.argv.includes("--prod");
 
@@ -105,27 +106,20 @@ build({
 //webview
 {
   const srcPath = resolve(pkgsPath, "webview", "src");
+  const entriesPath = resolve(srcPath, "entries");
   const tsconfig = resolve(pkgsPath, "webview", "tsconfig.json");
 
-  /**@type {import('esbuild').BuildOptions}*/
-  const sharedConfig = {
-    ...globalSharedConfig,
-    format: "esm",
-    target: browserTarget,
-    minify: prod,
-    platform: "browser",
-    tsconfig,
-  };
-
-  build({
-    ...sharedConfig,
-    outfile: resolve(distPath, "webview.js"),
-    entryPoints: [resolve(srcPath, "index.tsx")],
-  });
-
-  build({
-    ...sharedConfig,
-    outfile: resolve(distPath, "provider.js"),
-    entryPoints: [resolve(srcPath, "provider.ts")],
-  });
+  readdir(entriesPath).then((files) =>
+    build({
+      ...globalSharedConfig,
+      splitting: true,
+      format: "esm",
+      target: browserTarget,
+      minify: prod,
+      platform: "browser",
+      tsconfig,
+      outdir: distPath,
+      entryPoints: files.map((file) => resolve(entriesPath, file)),
+    })
+  );
 }

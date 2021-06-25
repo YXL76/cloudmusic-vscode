@@ -1,7 +1,7 @@
-/// <reference types="./provider" />
+/// <reference types="../provider" />
 
 import type { ProviderSMsg } from "@cloudmusic/shared";
-import { vscode } from "./utils";
+import { vscode } from "../utils";
 
 window.addEventListener("message", ({ data }: { data: ProviderSMsg }) => {
   /* if (data.command === "master") {

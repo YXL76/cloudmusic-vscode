@@ -151,8 +151,6 @@ export class AccountViewProvider implements WebviewViewProvider {
 export class Webview {
   private static readonly cssUri = Uri.file(resolve(__dirname, "style.css"));
 
-  private static readonly jsUri = Uri.file(resolve(__dirname, "webview.js"));
-
   private static readonly iconUri = Uri.file(
     resolve(__dirname, "..", "media", "icon.ico")
   );
@@ -369,19 +367,16 @@ export class Webview {
     );
     panel.iconPath = this.iconUri;
     const css = panel.webview.asWebviewUri(this.cssUri).toString();
-    const js = panel.webview.asWebviewUri(this.jsUri).toString();
+    const js = panel.webview
+      .asWebviewUri(Uri.file(resolve(__dirname, `${type}.js`)))
+      .toString();
     return {
       panel,
-      setHtml: () => (panel.webview.html = this.layout(title, type, css, js)),
+      setHtml: () => (panel.webview.html = this.layout(title, css, js)),
     };
   }
 
-  private static layout(
-    title: string,
-    type: WebviewType,
-    css: string,
-    js: string
-  ) {
+  private static layout(title: string, css: string, js: string) {
     const nonce = getNonce();
     return `
 <!DOCTYPE html>
@@ -393,7 +388,6 @@ export class Webview {
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>${title}</title>
     <link rel="stylesheet" type="text/css" href=${css} />
-    <script>const PAGE_PAGE = "${type}"</script>
   </head>
   <body>
     <div id="root"></div>
