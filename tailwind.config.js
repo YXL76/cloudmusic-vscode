@@ -5,12 +5,16 @@ const config = {
   // @ts-ignore
   corePlugins: { preflight: false },
   darkMode: "class",
-  plugins: [],
   purge: {
     content: ["./packages/webview/src/**/*.tsx"],
     enabled: true,
     mode: "all",
     preserveHtmlElements: false,
+    // @ts-ignore
+    options: {
+      safelist: { greedy: [/^dark:text-white$/] },
+      keyframes: true,
+    },
   },
   theme: {
     extend: {
@@ -18,7 +22,11 @@ const config = {
       zIndex: { "-10": -10 },
     },
   },
-  variants: {},
+  variants: {
+    extend: {
+      textColor: ["dark"],
+    },
+  },
 };
 
 module.exports = config;

@@ -54,7 +54,7 @@ const globalSharedConfig = {
 build({
   ...globalSharedConfig,
   target: browserTarget,
-  minify: true,
+  minify: prod,
 
   outfile: resolve(distPath, "style.css"),
   platform: "browser",

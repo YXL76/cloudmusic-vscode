@@ -47,7 +47,7 @@ export const Comment = ({
         </div>
         <div className="mt-1">{content}</div>
         {beReplied && (
-          <div className="text-base mt-1 ml-2 border-solid border-l-4 border-blue-600">
+          <div className="text-base mt-1 ml-2 p-2 rounded-xl border-solid border-blue-600">
             <div
               className="cursor-pointer inline-block text-blue-600"
               onClick={() =>

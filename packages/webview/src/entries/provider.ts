@@ -30,7 +30,7 @@ window.handleFirstPlay = ({ target }) => {
   if (firstPlay) return;
   firstPlay = true;
 
-  window.audioTarget = target;
+  // window.audioTarget = target;
   // target.pause();
   target.muted = true;
   target.onplay = null;

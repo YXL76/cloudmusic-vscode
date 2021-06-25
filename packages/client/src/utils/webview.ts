@@ -125,7 +125,7 @@ export class AccountViewProvider implements WebviewViewProvider {
 <!DOCTYPE html>
 <html
   lang="en"
-  class=${window.activeColorTheme.kind === ColorThemeKind.Light ? "" : "dark"}
+  ${window.activeColorTheme.kind === ColorThemeKind.Light ? "" : 'class="dark"'}
 >
   <head>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -382,7 +382,7 @@ export class Webview {
 <!DOCTYPE html>
 <html
   lang="en"
-  class=${window.activeColorTheme.kind === ColorThemeKind.Light ? "" : "dark"}
+  ${window.activeColorTheme.kind === ColorThemeKind.Light ? "" : 'class="dark"'}
 >
   <head>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
