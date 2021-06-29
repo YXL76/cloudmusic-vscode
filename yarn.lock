@@ -101,7 +101,7 @@ __metadata:
     "@types/react": 17.0.11
     "@types/react-dom": 17.0.8
     "@types/vscode-webview": 1.57.0
-    "@types/wicg-mediasession": 1.1.0
+    "@types/wicg-mediasession": 1.1.1
     dayjs: 1.10.5
     react: 17.0.2
     react-dom: 17.0.2
@@ -393,10 +393,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/wicg-mediasession@npm:1.1.0":
-  version: 1.1.0
-  resolution: "@types/wicg-mediasession@npm:1.1.0"
-  checksum: 5247fff806e747a86fbbac491d48f5c1de11978ca4bdcb8e329f30fa67ca790f0bbebc3c1a31034b4b4426463e52b10fef3fa2c90d22b7b052cf6e693085ebe9
+"@types/wicg-mediasession@npm:1.1.1":
+  version: 1.1.1
+  resolution: "@types/wicg-mediasession@npm:1.1.1"
+  checksum: 12f88f02123bc22c9def59dc0f1df6a098565f9ff0784c38255dca5d9aad8699083981e5380e029459796f2f120b7a441c30dedb105ef8dc58d4af29ae21540a
   languageName: node
   linkType: hard
 
