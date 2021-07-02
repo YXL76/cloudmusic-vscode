@@ -84,7 +84,7 @@ ${i18n.word.trackCount}: ${this.item.trackCount}
 ${i18n.word.playCount}: ${this.item.playCount}
 ${i18n.word.subscribedCount}: ${this.item.subscribedCount}`;
 
-  override readonly iconPath = new ThemeIcon("selection");
+  override readonly iconPath = new ThemeIcon("list-ordered");
 
   override readonly contextValue = "PlaylistItemTreeItem";
 

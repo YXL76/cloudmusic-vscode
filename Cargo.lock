@@ -168,7 +168,7 @@ dependencies = [
 [[package]]
 name = "cpal"
 version = "0.13.3"
-source = "git+https://github.com/RustAudio/cpal?branch=master#9503ab729e2c9a3911fe39d706b16091041ac004"
+source = "git+https://github.com/RustAudio/cpal?branch=master#116ee431a6def8c7dd0cfb4bb1ed6313400ab31a"
 dependencies = [
  "alsa",
  "core-foundation-sys",
@@ -443,7 +443,7 @@ checksum = "c44922cb3dbb1c70b5e5f443d63b64363a898564d739ba5198e3a9138442868d"
 [[package]]
 name = "neon"
 version = "0.8.3"
-source = "git+https://github.com/neon-bindings/neon?branch=main#399c77b516261d56be35f616e01f0e2403ecdc30"
+source = "git+https://github.com/neon-bindings/neon?branch=main#65c076829d403f04cd3ea7a5f0f3457ad525e955"
 dependencies = [
  "cslice",
  "neon-build",
@@ -456,12 +456,12 @@ dependencies = [
 [[package]]
 name = "neon-build"
 version = "0.8.3"
-source = "git+https://github.com/neon-bindings/neon?branch=main#399c77b516261d56be35f616e01f0e2403ecdc30"
+source = "git+https://github.com/neon-bindings/neon?branch=main#65c076829d403f04cd3ea7a5f0f3457ad525e955"
 
 [[package]]
 name = "neon-macros"
 version = "0.8.3"
-source = "git+https://github.com/neon-bindings/neon?branch=main#399c77b516261d56be35f616e01f0e2403ecdc30"
+source = "git+https://github.com/neon-bindings/neon?branch=main#65c076829d403f04cd3ea7a5f0f3457ad525e955"
 dependencies = [
  "quote",
  "syn",
@@ -470,7 +470,7 @@ dependencies = [
 [[package]]
 name = "neon-runtime"
 version = "0.8.3"
-source = "git+https://github.com/neon-bindings/neon?branch=main#399c77b516261d56be35f616e01f0e2403ecdc30"
+source = "git+https://github.com/neon-bindings/neon?branch=main#65c076829d403f04cd3ea7a5f0f3457ad525e955"
 dependencies = [
  "cfg-if",
  "libloading 0.6.7",
@@ -655,7 +655,7 @@ checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
 [[package]]
 name = "rodio"
 version = "0.14.0"
-source = "git+https://github.com/RustAudio/rodio?branch=master#dfb4bd62b9c7940a21c2ed894e47bb1a0f795afb"
+source = "git+https://github.com/RustAudio/rodio?branch=master#f6bb97e0d32b81ad7dbd9d20e6b7dc32e23a658f"
 dependencies = [
  "claxon",
  "cpal",
