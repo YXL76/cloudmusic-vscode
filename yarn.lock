@@ -74,7 +74,7 @@ __metadata:
     "@cloudmusic/shared": "workspace:*"
     "@types/api": "workspace:*"
     "@types/node": 14.14.43
-    "@types/yallist": 4.0.0
+    "@types/yallist": 4.0.1
     axios: 0.21.1
     global-agent: "https://github.com/YXL76/global-agent.git#self-use"
     md5-file: 5.0.0
@@ -418,10 +418,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/yallist@npm:4.0.0":
-  version: 4.0.0
-  resolution: "@types/yallist@npm:4.0.0"
-  checksum: b42b800c223c051d25dfba2b3d1b83f171b98819b13a32f245057f5ebfb8f27df3462eb9621aa390ce25af436247de7e493df7beb49c4b5ef638441151f2c7fc
+"@types/yallist@npm:4.0.1":
+  version: 4.0.1
+  resolution: "@types/yallist@npm:4.0.1"
+  checksum: 8f01bd9b36828de6c2cb4870528057228b64daa0723e6195bb0615ce29c272b7db3d532f44bcbb2a0402cd47ec6cb738cb8a834ad5e1050bcd012ecca583c67e
   languageName: node
   linkType: hard
 
