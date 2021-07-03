@@ -383,10 +383,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/tailwindcss@npm:2.2.0":
-  version: 2.2.0
-  resolution: "@types/tailwindcss@npm:2.2.0"
-  checksum: 8fccac24e3f930c3fbfb8edda1e74ea0faea21bac58833cac6ddb162f17fab5f0b6cd21c2a13e9ffd7684ae105ac9f444f672b16a3472574318e44107e126ce4
+"@types/tailwindcss@npm:2.2.1":
+  version: 2.2.1
+  resolution: "@types/tailwindcss@npm:2.2.1"
+  checksum: 4e3a625707caf345786825f8b4eba47cc5a6fc8f5417a8dc0b7776de4ef499b2ea08f5d2c05fbaf793c236b14765ab06b02737c432da1801279fe33bddf82624
   languageName: node
   linkType: hard
 
@@ -1222,7 +1222,7 @@ __metadata:
   resolution: "cloudmusic@workspace:."
   dependencies:
     "@types/eslint": 7.2.13
-    "@types/tailwindcss": 2.2.0
+    "@types/tailwindcss": 2.2.1
     "@typescript-eslint/eslint-plugin": 4.28.1
     "@typescript-eslint/parser": 4.28.1
     "@yarnpkg/esbuild-plugin-pnp": 1.0.0-rc.6
