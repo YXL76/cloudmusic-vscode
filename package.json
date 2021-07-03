@@ -823,7 +823,7 @@
     "list": "node scripts/list.js",
     "test": "yarn workspaces foreach -p run test",
     "postinstall": "yarn pnpify --sdk vscode vim",
-    "vscode:prepublish": "yarn generate-css && yarn build"
+    "vscode:prepublish": "yarn build"
   },
   "devDependencies": {
     "@types/eslint": "7.2.13",

@@ -1,9 +1,10 @@
 // @ts-check
 
+const { readdir, stat } = require("fs/promises");
 const { build } = require("esbuild");
 const { pnpPlugin } = require("@yarnpkg/esbuild-plugin-pnp");
-const { readdir } = require("fs/promises");
 const { resolve } = require("path");
+const { spawn } = require("child_process");
 
 const prod = process.argv.includes("--prod");
 
@@ -40,10 +41,14 @@ const globalSharedConfig = {
   sourcemap: false,
   legalComments: "none",
   // sourceRoot: rootPath,
+  format: "cjs",
+  target: nodeTarget,
+  minify: prod,
   color: true,
   logLevel: "warning",
 
   bundle: true,
+  platform: "node",
   loader: { ".ts": "ts", ".js": "js", ".tsx": "tsx", ".jsx": "jsx" },
   resolveExtensions: [".ts", ".js", ".tsx", ".jsx"],
   // incremental: true,
@@ -51,18 +56,35 @@ const globalSharedConfig = {
 };
 
 // css
-build({
-  ...globalSharedConfig,
-  target: browserTarget,
-  minify: prod,
+{
+  const outfile = resolve(distPath, "style.css");
+  stat(outfile)
+    .catch(
+      () =>
+        new Promise((resolve, reject) =>
+          spawn("yarn", ["generate-css"], {
+            cwd: rootPath,
+            shell: false,
+            windowsHide: true,
+          })
+            .once("close", resolve)
+            .once("error", reject)
+        )
+    )
+    .then(() =>
+      build({
+        ...globalSharedConfig,
+        target: browserTarget,
 
-  outfile: resolve(distPath, "style.css"),
-  platform: "browser",
-  allowOverwrite: true,
-  loader: { ".css": "css" },
-  resolveExtensions: [".css"],
-  entryPoints: [resolve(distPath, "style.css")],
-});
+        outfile,
+        platform: "browser",
+        allowOverwrite: true,
+        loader: { ".css": "css" },
+        resolveExtensions: [".css"],
+        entryPoints: [resolve(distPath, "style.css")],
+      })
+    );
+}
 
 // client
 {
@@ -72,12 +94,8 @@ build({
   build({
     ...globalSharedConfig,
     sourcemap: !prod,
-    format: "cjs",
-    target: nodeTarget,
-    minify: prod,
 
     outfile: resolve(distPath, "extension.js"),
-    platform: "node",
     external: ["vscode"],
     tsconfig,
     entryPoints: [resolve(srcPath, "extension.ts")],
@@ -91,12 +109,8 @@ build({
 
   build({
     ...globalSharedConfig,
-    format: "cjs",
-    target: nodeTarget,
-    minify: prod,
 
     outfile: resolve(distPath, "server.js"),
-    platform: "node",
     external: ["vscode"],
     tsconfig,
     entryPoints: [resolve(srcPath, "init.ts")],
@@ -112,10 +126,10 @@ build({
   readdir(entriesPath).then((files) =>
     build({
       ...globalSharedConfig,
+
       splitting: true,
       format: "esm",
       target: browserTarget,
-      minify: prod,
       platform: "browser",
       tsconfig,
       outdir: distPath,
