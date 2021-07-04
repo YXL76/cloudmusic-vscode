@@ -811,7 +811,7 @@
     "@types/node": "14.14.43",
     "buffer": "latest",
     "buffer-from": "latest",
-    "debug": "latest",
+    "debug": "4.3.2",
     "isarray": "latest",
     "loose-envify": "latest",
     "object-assign": "latest"
@@ -832,7 +832,7 @@
     "@typescript-eslint/parser": "4.28.1",
     "@yarnpkg/esbuild-plugin-pnp": "1.0.0-rc.6",
     "@yarnpkg/pnpify": "3.0.0-rc.7",
-    "debug": "4.3.1",
+    "debug": "4.3.2",
     "esbuild": "0.12.14",
     "eslint": "7.30.0",
     "eslint-config-prettier": "8.3.0",
