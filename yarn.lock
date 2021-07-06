@@ -1228,7 +1228,7 @@ __metadata:
     "@yarnpkg/esbuild-plugin-pnp": 1.0.0-rc.6
     "@yarnpkg/pnpify": 3.0.0-rc.7
     debug: 4.3.1
-    esbuild: 0.12.14
+    esbuild: 0.12.15
     eslint: 7.30.0
     eslint-config-prettier: 8.3.0
     eslint-plugin-prettier: 3.4.0
@@ -1649,12 +1649,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild@npm:0.12.14":
-  version: 0.12.14
-  resolution: "esbuild@npm:0.12.14"
+"esbuild@npm:0.12.15":
+  version: 0.12.15
+  resolution: "esbuild@npm:0.12.15"
   bin:
     esbuild: bin/esbuild
-  checksum: ef3006e154c994146e07cfdbd95c297df0f365e51b74165f29e93d93d299e199903b346760dcd6b44c719878a4f622db54fbd42561d1b0105f8b43e29cb1a21c
+  checksum: 7d496cb355d6612506639002224a48469d3bff546cbb3acababfdb84dd5a927973e8b9646ef4af8716647113d4dd25ae6309b7b8956251f73749f7e59c005cb6
   languageName: node
   linkType: hard
 

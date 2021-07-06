@@ -833,7 +833,7 @@
     "@yarnpkg/esbuild-plugin-pnp": "1.0.0-rc.6",
     "@yarnpkg/pnpify": "3.0.0-rc.7",
     "debug": "4.3.1",
-    "esbuild": "0.12.14",
+    "esbuild": "0.12.15",
     "eslint": "7.30.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.0",
