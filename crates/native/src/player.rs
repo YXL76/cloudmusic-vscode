@@ -81,49 +81,51 @@ impl Player {
 
     #[inline]
     fn load(&mut self, url: String) -> bool {
-        if let Ok(file) = File::open(url) {
-            if let Ok(source) = rodio::Decoder::new(BufReader::new(file)) {
-                self.stop();
+        let file = match File::open(url) {
+            Ok(f) => f,
+            _ => return false,
+        };
 
-                let (control_tx, control_rx) = mpsc::channel();
-                let (info_tx, info_rx) = mpsc::channel();
+        let source = match rodio::Decoder::new(BufReader::new(file)) {
+            Ok(s) => s,
+            _ => return false,
+        };
 
-                let volume = self.volume;
+        self.stop();
+        let volume = self.volume;
 
-                thread::spawn(move || match rodio::OutputStream::try_default() {
-                    Ok(device) => {
-                        let (_stream, handle) = device;
-                        let sink = rodio::Sink::try_new(&handle).unwrap();
-                        sink.append(source.fade_in(Duration::from_secs(2)));
-                        sink.set_volume(volume);
+        let (control_tx, control_rx) = mpsc::channel();
+        let (info_tx, info_rx) = mpsc::channel();
 
-                        let _ = info_tx.send(true);
-                        loop {
-                            match control_rx.recv() {
-                                Ok(ControlEvent::Play) => sink.play(),
-                                Ok(ControlEvent::Pause) => sink.pause(),
-                                Ok(ControlEvent::Volume(level)) => sink.set_volume(level),
-                                Ok(ControlEvent::Empty) => {
-                                    let _ = info_tx.send(sink.empty());
-                                }
-                                _ => {
-                                    drop(sink);
-                                    break;
-                                }
-                            }
-                        }
+        thread::spawn(move || {
+            if let Ok(device) = rodio::OutputStream::try_default() {
+                let (_stream, handle) = device;
+                let sink = rodio::Sink::try_new(&handle).unwrap();
+                sink.append(source.fade_in(Duration::from_secs(2)));
+                sink.set_volume(volume);
+
+                let _ = info_tx.send(true);
+
+                while let Ok(ce) = control_rx.recv() {
+                    match ce {
+                        ControlEvent::Play => sink.play(),
+                        ControlEvent::Pause => sink.pause(),
+                        ControlEvent::Volume(level) => sink.set_volume(level),
+                        ControlEvent::Empty => info_tx.send(sink.empty()).unwrap_or(()),
+                        _ => break,
                     }
-                    _ => return,
-                });
+                }
 
-                self.control_tx = control_tx;
-                self.info_rx = info_rx;
-                let _ = self.info_rx.recv();
-                self.status.play();
-                return true;
+                drop(sink);
             }
-        }
-        false
+        });
+
+        self.control_tx = control_tx;
+        self.info_rx = info_rx;
+        let _ = self.info_rx.recv();
+        self.status.play();
+
+        true
     }
 
     #[inline]

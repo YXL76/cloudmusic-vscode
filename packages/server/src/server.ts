@@ -64,7 +64,7 @@ export class IPCServer {
         .on("close", (/* err */) => {
           socket?.destroy();
           this._sockets.delete(socket);
-          this._buffer.set(socket, "");
+          this._buffer.delete(socket);
 
           if (this._sockets.size) this._setMaster();
           else {

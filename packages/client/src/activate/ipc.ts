@@ -171,6 +171,6 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       },
     }).unref();
     await IPC.connect(ipcHandler, ipcBHandler);
-    setTimeout(() => IPC.init(context.globalState.get(VOLUME_KEY, 85)), 128);
   }
+  setTimeout(() => IPC.init(context.globalState.get(VOLUME_KEY, 85)), 128);
 }
