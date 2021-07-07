@@ -655,7 +655,7 @@ checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
 [[package]]
 name = "rodio"
 version = "0.14.0"
-source = "git+https://github.com/RustAudio/rodio?branch=master#f6bb97e0d32b81ad7dbd9d20e6b7dc32e23a658f"
+source = "git+https://github.com/RustAudio/rodio?branch=master#ba78af2070593149fd8c33d74dc7b0011cbdfad0"
 dependencies = [
  "claxon",
  "cpal",
