@@ -6,6 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [8.3.9] - 2021-07-07
+
+### Changed
+
+- Treeview: `Playlist` icon
+
+### Fixed
+
+- Parsing lyrics in uncommon format ([#486](https://github.com/YXL76/cloudmusic-vscode/pull/486)) ([@yume-chan](https://github.com/yume-chan))
+
 ## [8.3.8] - 2021-06-25
 
 ### Fixed
