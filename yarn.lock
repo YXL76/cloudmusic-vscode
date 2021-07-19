@@ -1235,7 +1235,7 @@ __metadata:
     eslint-plugin-react: 7.24.0
     postcss: 8.3.5
     prettier: 2.3.2
-    supports-color: 9.0.1
+    supports-color: 9.0.2
     tailwindcss: 2.2.4
     typescript: 4.3.5
   languageName: unknown
@@ -4195,12 +4195,12 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"supports-color@npm:9.0.1":
-  version: 9.0.1
-  resolution: "supports-color@npm:9.0.1"
+"supports-color@npm:9.0.2":
+  version: 9.0.2
+  resolution: "supports-color@npm:9.0.2"
   dependencies:
     has-flag: ^5.0.0
-  checksum: 56071f46f8e5d44a8a0351a5de5683d3b8b652bc84cf45585f62c342e16bbeab22172cf955fe6ac25c376933551b412b9ccf53ecd5a633a078dbf246fd00d9f4
+  checksum: 690c21f61945a1ebab61fbc9dc861672b1d9678359ce75312b8b7ecb873f37f2ed2df56daa4ef4265300bea2e51f8285831ffb0a190ac46aaeed1d5b44fd51fe
   languageName: node
   linkType: hard
 
