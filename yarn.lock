@@ -61,7 +61,7 @@ __metadata:
     "@types/qrcode": "workspace:*"
     "@types/vscode": 1.57.1
     array-unsort: 1.1.6
-    file-type: 16.5.1
+    file-type: 16.5.2
     lodash: 4.17.21
     qrcode: 1.4.4
   languageName: unknown
@@ -237,13 +237,6 @@ __metadata:
     "@types/node": "*"
     "@types/responselike": "*"
   checksum: 667d25808dbf46fe104d6f029e0281ff56058d50c7c1b9182774b3e38bb9c1124f56e4c367ba54f92dbde2d1cc573f26eb0e9748710b2822bc0fd1e5498859c6
-  languageName: node
-  linkType: hard
-
-"@types/debug@npm:^4.1.5":
-  version: 4.1.6
-  resolution: "@types/debug@npm:4.1.6"
-  checksum: b4c5d07fb383527b1416ab7911dd85c47da276d32f4a337425c0d54f84f36c55cac76ff2d5cd3c5b5f32d213912fcc4e5aa44aa5206e49929328b465bb63f310
   languageName: node
   linkType: hard
 
@@ -1940,14 +1933,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-type@npm:16.5.1":
-  version: 16.5.1
-  resolution: "file-type@npm:16.5.1"
+"file-type@npm:16.5.2":
+  version: 16.5.2
+  resolution: "file-type@npm:16.5.2"
   dependencies:
     readable-web-to-node-stream: ^3.0.0
-    strtok3: ^6.0.3
-    token-types: ^2.0.0
-  checksum: f7c05d17d10b1a36aebb054d8037141bb4eb0f0bc6ce2abd7eefd4b15f760f2013d25387cc61f09e48d4662d27b37dfaabbac1d5e03c5599a04f77ca8e41f983
+    strtok3: 6.1.3
+    token-types: ^3.0.0
+  checksum: 93f776843f5aa9ae4fcaa4c6d555836349abed724238ae13d28053c0d4793ac36433c9c483d9968986af77535a3e3e0aad0c4be811728e7ec1848196f96c413d
   languageName: node
   linkType: hard
 
@@ -3335,10 +3328,10 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"peek-readable@npm:^3.1.3":
-  version: 3.1.3
-  resolution: "peek-readable@npm:3.1.3"
-  checksum: c37ca828014419dadccc38fd1715d1e670144b48a4aee0ed17fd162f3faa5e5321589b56a7b503413d0669dd53f2d621e0a929ab9ed9719a61dd5af1416e6f67
+"peek-readable@npm:^3.1.4":
+  version: 3.1.4
+  resolution: "peek-readable@npm:3.1.4"
+  checksum: fe774e720ab8ae969186535e959f9d5b2c0ee46f12b89f8272fd7447d85f65fa5302de8f8bce54666f452c4ba4ee143f3d4a9d541c7be61c87d32cb6cbfcdfba
   languageName: node
   linkType: hard
 
@@ -4184,14 +4177,13 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"strtok3@npm:^6.0.3":
-  version: 6.0.8
-  resolution: "strtok3@npm:6.0.8"
+"strtok3@npm:6.1.3":
+  version: 6.1.3
+  resolution: "strtok3@npm:6.1.3"
   dependencies:
     "@tokenizer/token": ^0.1.1
-    "@types/debug": ^4.1.5
-    peek-readable: ^3.1.3
-  checksum: c732686a2d220e3f9a8dfc09a3311861781934e63256cd52f9b3f15e8fb02812c121b14428528b276eb0be5026824192cbbfb551607a222e6dd800debbf53657
+    peek-readable: ^3.1.4
+  checksum: 5026b36b67f18c84b62fd209861205b8432a205acb2984569d84938e1bcfc1ac328f104ad9474c61384d36f8a27240c62dbd0b716423db36909cdae323e78d20
   languageName: node
   linkType: hard
 
@@ -4320,13 +4312,13 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"token-types@npm:^2.0.0":
-  version: 2.1.1
-  resolution: "token-types@npm:2.1.1"
+"token-types@npm:^3.0.0":
+  version: 3.1.0
+  resolution: "token-types@npm:3.1.0"
   dependencies:
     "@tokenizer/token": ^0.1.1
     ieee754: ^1.2.1
-  checksum: e5874d0a5055e10f292585aabaf76a4c4c2833d9f252d0317c33256121b3bbcf9ae2d951e08f85484fb6485070a37edd14c750ba7d4255664c9962c7f6205265
+  checksum: 7130355c511a398b5c246313cc8b9220c235b3eb5d597c0ebb9188aaaed2afe88a752228af06913fa6e0a5d23656c33d1401a141923d300c2965db0056cba8a4
   languageName: node
   linkType: hard
 

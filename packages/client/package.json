@@ -15,7 +15,7 @@
   "dependencies": {
     "@cloudmusic/shared": "workspace:*",
     "array-unsort": "1.1.6",
-    "file-type": "16.5.1",
+    "file-type": "16.5.2",
     "lodash": "4.17.21",
     "qrcode": "1.4.4"
   }
