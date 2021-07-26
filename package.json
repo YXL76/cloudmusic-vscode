@@ -831,7 +831,7 @@
     "@typescript-eslint/eslint-plugin": "4.28.2",
     "@typescript-eslint/parser": "4.28.2",
     "@yarnpkg/esbuild-plugin-pnp": "1.0.0-rc.9",
-    "@yarnpkg/pnpify": "3.0.0-rc.10",
+    "@yarnpkg/pnpify": "3.0.0-rc.14",
     "debug": "4.3.2",
     "esbuild": "0.12.15",
     "eslint": "7.30.0",
