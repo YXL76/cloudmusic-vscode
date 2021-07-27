@@ -13,7 +13,7 @@ export const FOREIGN = (): boolean => conf.get("network.foreignUser", false);
 
 export const ACCOUNT_KEY = "account";
 export const CACHE_KEY = "cache-v2";
-export const LYRIC_CACHE_KEY = "lyric-cache-v2";
+export const LYRIC_CACHE_KEY = "lyric-cache-v3";
 export const COOKIE_KEY = "cookie";
 export const BUTTON_KEY = "button-v1";
 export const VOLUME_KEY = "volume";

@@ -15,7 +15,10 @@ const resolveLyric = (
     const minute = parseInt(r[1]);
     const second = parseInt(r[2]);
     const millisecond = parseInt(r[3].length === 2 ? `${r[3]}0` : r[3]);
-    unsorted.push([minute * 60 + second + millisecond / 1000, r[4]?.trim() ?? ""]);
+    unsorted.push([
+      minute * 60 + second + millisecond / 1000,
+      r[4]?.trim() ?? "",
+    ]);
   }
 
   unsorted.sort(([a], [b]) => a - b);

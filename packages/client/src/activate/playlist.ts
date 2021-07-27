@@ -197,7 +197,7 @@ export function initPlaylist(context: ExtensionContext): void {
       "cloudmusic.deleteFromPlaylist",
       async ({ data: { id, pid } }: QueueItemTreeItem) => {
         if (
-          AccountManager.isUserPlaylisr(id) &&
+          AccountManager.isUserPlaylisr(pid) &&
           (await window.showWarningMessage(
             i18n.sentence.hint.confirmation,
             { modal: true },
