@@ -1,4 +1,3 @@
-import { arch, platform } from "os";
 import { resolve } from "path";
 
 type NativePlayer = unknown;
@@ -19,5 +18,5 @@ export const native = require(resolve(
   __dirname,
   "..",
   "build",
-  `${platform()}-${arch() === "x64" ? "x86" : arch()}.node`
+  `${process.platform}-${process.arch === "x64" ? "x86" : process.arch}.node`
 )) as NativeModule;

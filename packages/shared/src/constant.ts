@@ -1,4 +1,4 @@
-import { homedir, platform } from "os";
+import { homedir } from "os";
 import { resolve } from "path";
 
 const ipcAppspace = "cm-vsc";
@@ -6,14 +6,14 @@ const ipcServerId = "server";
 const ipcBroadcastServerId = "bc-server";
 
 export const ipcServerPath =
-  platform() === "win32"
+  process.platform === "win32"
     ? `\\\\.\\pipe\\${`/tmp/${ipcAppspace}${ipcServerId}`
         .replace(/^\//, "")
         .replace(/\//g, "-")}`
     : `/tmp/${ipcAppspace}${ipcServerId}`;
 
 export const ipcBroadcastServerPath =
-  platform() === "win32"
+  process.platform === "win32"
     ? `\\\\.\\pipe\\${`/tmp/${ipcAppspace}${ipcBroadcastServerId}`
         .replace(/^\//, "")
         .replace(/\//g, "-")}`
