@@ -73,16 +73,16 @@ type MusicCacheNode = {
 };
 
 export class MusicCache {
-  private static size = 0;
+  private static _size = 0;
 
-  private static readonly list = new Yallist<MusicCacheNode>();
+  private static readonly _list = new Yallist<MusicCacheNode>();
 
-  private static readonly cache = new Map<
+  private static readonly _cache = new Map<
     string,
     Yallist.Node<MusicCacheNode>
   >();
 
-  private static readonly listPath = resolve(CACHE_DIR, "music-list");
+  private static readonly _listPath = resolve(CACHE_DIR, "music-list");
 
   static async init(): Promise<void> {
     const set = new Set(
@@ -92,7 +92,7 @@ export class MusicCache {
     );
     try {
       const list = JSON.parse(
-        (await readFile(this.listPath)).toString()
+        (await readFile(this._listPath)).toString()
       ) as readonly MusicCacheNode[];
       list
         .filter(({ key }) => set.has(key))
@@ -129,24 +129,24 @@ export class MusicCache {
       .catch(() => {
         //
       });
-    this.cache.clear();
-    this.size = 0;
-    while (this.list.length) this.list.pop();
+    this._cache.clear();
+    this._size = 0;
+    while (this._list.length) this._list.pop();
     this.store();
   }
 
   static store(): void {
     try {
-      writeFileSync(this.listPath, JSON.stringify(this.list.toArray()));
+      writeFileSync(this._listPath, JSON.stringify(this._list.toArray()));
     } catch (err) {
       logError(err);
     }
   }
 
   static get(key: string): string | void {
-    const node = this.cache.get(key);
+    const node = this._cache.get(key);
     if (node) {
-      this.list.unshiftNode(node);
+      this._list.unshiftNode(node);
       return resolve(MUSIC_CACHE_DIR, key);
     }
     /* try {
@@ -176,22 +176,22 @@ export class MusicCache {
   }
 
   private static _addNode(value: MusicCacheNode) {
-    this.list.unshift(value);
-    this.cache.set(value.key, this.list.head as Yallist.Node<MusicCacheNode>);
-    this.size += value.size;
-    while (this.size > State.cacheSize) {
-      const { tail } = this.list;
+    this._list.unshift(value);
+    this._cache.set(value.key, this._list.head as Yallist.Node<MusicCacheNode>);
+    this._size += value.size;
+    while (this._size > State.cacheSize) {
+      const { tail } = this._list;
       if (tail) this._deleteNode(tail.value.key);
       else void this.clear();
     }
   }
 
   private static _deleteNode(key: string) {
-    const node = this.cache.get(key);
+    const node = this._cache.get(key);
     if (node) {
-      this.list.removeNode(node);
-      this.cache.delete(key);
-      this.size -= node.value.size;
+      this._list.removeNode(node);
+      this._cache.delete(key);
+      this._size -= node.value.size;
       try {
         void unlink(resolve(MUSIC_CACHE_DIR, key));
       } catch {}

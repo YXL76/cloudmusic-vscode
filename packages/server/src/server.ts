@@ -26,6 +26,7 @@ import {
 } from "@cloudmusic/shared";
 import { rmdirSync, unlinkSync } from "fs";
 import { basename } from "path";
+import { broadcastProfiles } from "./api/netease/helper";
 import { createServer } from "net";
 
 export class IPCServer {
@@ -97,7 +98,6 @@ export class IPCServer {
         this.sendToMaster({ t: "control.new" });
         const tmp = State.playing;
         State.playing = tmp;
-        setTimeout(() => this.send(socket, { t: "player.load" }), 1024);
       }
     })
       .on("error", logError)
@@ -161,11 +161,14 @@ export class IPCServer {
         State.musicQuality = data.mq;
         State.cacheSize = data.cs;
         State.foreign = data.foreign;
-        if (typeof data.volume === "number") Player.volume(data.volume);
         APISetting.apiProtocol = data.https ? "https" : "http";
+        if (typeof data.volume === "number") Player.volume(data.volume);
         break;
       case "control.lyric":
         LyricCache.clear();
+        break;
+      case "control.netease":
+        broadcastProfiles(socket);
         break;
       case "control.music":
         MusicCache.clear();

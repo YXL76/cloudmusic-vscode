@@ -1,7 +1,33 @@
+import { IPCServer } from "../..";
+import type { IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
+import type { Socket } from "net";
 
 export class AccountState {
-  static cookie: NeteaseTypings.Cookie = {};
+  static cookies = new Map<number, NeteaseTypings.Cookie>();
+
+  static profile = new Map<number, NeteaseTypings.Profile>();
+
+  static get defaultCookie(): NeteaseTypings.Cookie {
+    if (this.cookies.size) {
+      const [[, cookie]] = this.cookies;
+      return cookie;
+    } else {
+      return {};
+    }
+  }
+}
+
+export function broadcastProfiles(socket?: Socket): void {
+  const msg: IPCServerMsg = {
+    t: "control.netease",
+    cookies: [...AccountState.cookies].map(([uid, c]) => ({
+      uid,
+      cookie: JSON.stringify(c),
+    })),
+    profiles: [...AccountState.profile.values()],
+  };
+  socket ? IPCServer.send(socket, msg) : IPCServer.broadcast(msg);
 }
 
 export const cookieToJson = (
@@ -26,7 +52,7 @@ export const jsonToCookie = (json: NeteaseTypings.Cookie): string => {
   return Object.entries(json)
     .map(
       ([key, value]) =>
-        `${encodeURIComponent(key)}=${encodeURIComponent(value as string)}`
+        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
     )
     .join("; ");
 };
@@ -88,17 +114,14 @@ export const resolveSongItemSt = ({
   alia,
   ar,
   al,
-}: NeteaseTypings.SongsItemSt): NeteaseTypings.SongsItem => {
-  // if (privilege && privilege?.st < 0) unplayable.add(id);
-  return {
-    name,
-    id,
-    dt,
-    alia: alia ?? [""],
-    ar: ar.map(({ id, name }) => ({ id, name })),
-    al: { id: al.id, name: al.name, picUrl: http2Https(al.picUrl) },
-  };
-};
+}: NeteaseTypings.SongsItemSt): NeteaseTypings.SongsItem => ({
+  name,
+  id,
+  dt,
+  alia: alia ?? [""],
+  ar: ar.map(({ id, name }) => ({ id, name })),
+  al: { id: al.id, name: al.name, picUrl: http2Https(al.picUrl) },
+});
 
 export const resolveAnotherSongItem = ({
   name,
@@ -107,17 +130,14 @@ export const resolveAnotherSongItem = ({
   alias,
   artists,
   album,
-}: NeteaseTypings.AnotherSongItem): NeteaseTypings.SongsItem => {
-  // if (privilege && privilege?.st < 0) unplayable.add(id);
-  return {
-    name,
-    id,
-    dt: duration,
-    alia: alias,
-    ar: artists.map(({ id, name }) => ({ id, name })),
-    al: { id: album.id, name: album.name, picUrl: http2Https(album.picUrl) },
-  };
-};
+}: NeteaseTypings.AnotherSongItem): NeteaseTypings.SongsItem => ({
+  name,
+  id,
+  dt: duration,
+  alia: alias,
+  ar: artists.map(({ id, name }) => ({ id, name })),
+  al: { id: album.id, name: album.name, picUrl: http2Https(album.picUrl) },
+});
 
 export const resolvePlaylistItem = ({
   bookCount,

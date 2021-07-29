@@ -33,7 +33,7 @@ export class Player {
 
   private static _loadtime = 0;
 
-  private static readonly player = native.playerNew();
+  private static readonly _player = native.playerNew();
 
   static init(): void {
     setInterval(() => {
@@ -44,6 +44,7 @@ export class Player {
         return;
       }
 
+      // TODO
       const pos = Player.position();
       if (pos > 120 && !prefetchLock) {
         prefetchLock = true;
@@ -80,7 +81,7 @@ export class Player {
   }
 
   static empty(): boolean {
-    return native.playerEmpty(this.player);
+    return native.playerEmpty(this._player);
   }
 
   static load(url: string, dt = 0, id = 0, pid = 0, next = 0): boolean {
@@ -88,7 +89,7 @@ export class Player {
     if (loadtime < this._loadtime) return true;
     this._loadtime = loadtime;
 
-    if (!native.playerLoad(this.player, url)) return false;
+    if (!native.playerLoad(this._player, url)) return false;
     this.next = next;
     prefetchLock = false;
     State.playing = true;
@@ -122,26 +123,24 @@ export class Player {
   }
 
   static pause(): void {
-    native.playerPause(this.player);
+    native.playerPause(this._player);
     State.playing = false;
   }
 
   static play(): void {
-    if (native.playerPlay(this.player)) State.playing = true;
+    if (native.playerPlay(this._player)) State.playing = true;
   }
 
   static position(): number {
-    return native.playerPosition(this.player);
+    return native.playerPosition(this._player);
   }
 
   static stop(): void {
-    native.playerStop(this.player);
+    native.playerStop(this._player);
     State.playing = false;
   }
 
   static volume(level: number): void {
-    native.playerSetVolume(this.player, level);
+    native.playerSetVolume(this._player, level);
   }
 }
-
-Player.init();

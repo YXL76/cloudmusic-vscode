@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "Cloudmusic",
   "description": "Netease Music for VS Code",
-  "version": "8.3.9",
+  "version": "9.0.0",
   "publisher": "YXL",
   "private": true,
   "preview": false,
@@ -60,11 +60,6 @@
       },
       {
         "category": "Cloudmusic",
-        "command": "cloudmusic.account",
-        "title": "%commands.account.title%"
-      },
-      {
-        "category": "Cloudmusic",
         "command": "cloudmusic.previous",
         "title": "%commands.previous.title%"
       },
@@ -102,6 +97,11 @@
         "category": "Cloudmusic",
         "command": "cloudmusic.personalFM",
         "title": "%commands.personalFM.title%"
+      },
+      {
+        "command": "cloudmusic.addAccount",
+        "icon": "$(sign-in)",
+        "title": "%commands.addAccount.title%"
       },
       {
         "command": "cloudmusic.newLocalLibrary",
@@ -377,6 +377,10 @@
     "menus": {
       "commandPalette": [
         {
+          "command": "cloudmusic.addAccount",
+          "when": "false"
+        },
+        {
           "command": "cloudmusic.newLocalLibrary",
           "when": "false"
         },
@@ -599,6 +603,16 @@
           "when": "view == local && viewItem == LocalFileTreeItem"
         },
         {
+          "command": "cloudmusic.refreshPlaylist",
+          "group": "inline",
+          "when": "view == playlist && viewItem == UserTreeItem"
+        },
+        {
+          "command": "cloudmusic.createPlaylist",
+          "group": "inline",
+          "when": "view == playlist && viewItem == UserTreeItem"
+        },
+        {
           "command": "cloudmusic.refreshPlaylistContent",
           "group": "inline",
           "when": "view == playlist && viewItem == PlaylistItemTreeItem"
@@ -731,6 +745,11 @@
       ],
       "view/title": [
         {
+          "command": "cloudmusic.addAccount",
+          "group": "navigation",
+          "when": "view == account"
+        },
+        {
           "command": "cloudmusic.newLocalLibrary",
           "group": "navigation",
           "when": "view == local"
@@ -739,16 +758,6 @@
           "command": "cloudmusic.refreshLocalLibrary",
           "group": "navigation",
           "when": "view == local"
-        },
-        {
-          "command": "cloudmusic.refreshPlaylist",
-          "group": "navigation",
-          "when": "view == playlist"
-        },
-        {
-          "command": "cloudmusic.createPlaylist",
-          "group": "navigation",
-          "when": "view == playlist"
         },
         {
           "command": "cloudmusic.refreshRadio",

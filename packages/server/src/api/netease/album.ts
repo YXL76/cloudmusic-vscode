@@ -3,25 +3,21 @@ import { resolveAlbumsItem, resolveSongItem } from "./helper";
 import type { NeteaseTypings } from "api";
 import { weapiRequest } from "./request";
 
-export async function album(id: number): Promise<{
-  info: NeteaseTypings.AlbumsItem;
-  songs: readonly NeteaseTypings.SongsItem[];
-}> {
+type AlbumRet = {
+  readonly album: NeteaseTypings.AlbumsItem;
+  readonly songs: readonly NeteaseTypings.SongsItem[];
+};
+
+export async function album(id: number): Promise<AlbumRet> {
   const key = `album${id}`;
-  const value =
-    apiCache.get<{
-      info: NeteaseTypings.AlbumsItem;
-      songs: readonly NeteaseTypings.SongsItem[];
-    }>(key);
+  const value = apiCache.get<AlbumRet>(key);
   if (value) return value;
   try {
-    const { album, songs } = await weapiRequest<{
-      album: NeteaseTypings.AlbumsItem;
-      songs: readonly NeteaseTypings.SongsItem[];
-    }>(`music.163.com/weapi/v1/album/${id}`, {});
-    const info = resolveAlbumsItem(album);
+    const { album, songs } = await weapiRequest<AlbumRet>(
+      `music.163.com/weapi/v1/album/${id}`
+    );
     const ret = {
-      info,
+      album: resolveAlbumsItem(album),
       songs: songs.map(resolveSongItem),
     };
     apiCache.set(key, ret);
@@ -29,7 +25,7 @@ export async function album(id: number): Promise<{
   } catch (err) {
     logError(err);
   }
-  return { info: {} as NeteaseTypings.AlbumsItem, songs: [] };
+  return { album: {} as NeteaseTypings.AlbumsItem, songs: [] };
 }
 
 export async function albumNewest(): Promise<
@@ -41,7 +37,7 @@ export async function albumNewest(): Promise<
   try {
     const { albums } = await weapiRequest<{
       albums: readonly NeteaseTypings.AlbumsItem[];
-    }>("music.163.com/api/discovery/newAlbum", {});
+    }>("music.163.com/api/discovery/newAlbum");
     const ret = albums.map(resolveAlbumsItem);
     apiCache.set(key, ret);
     return ret;

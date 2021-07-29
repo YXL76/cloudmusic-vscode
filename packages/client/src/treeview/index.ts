@@ -2,6 +2,7 @@ export * from "./radio";
 export * from "./local";
 export * from "./playlist";
 export * from "./queue";
+export * from "./user";
 
 import type {
   LocalFileTreeItem,
@@ -20,8 +21,6 @@ export type QueueContent =
   | ProgramTreeItem;
 
 export type TreeItemId = "q" | "p" | "l";
-
-export type RefreshAction = (items: readonly PlayTreeItemData[]) => void;
 
 export type PlayTreeItemData =
   | (LocalFileTreeItemData & { itemType: "l" })

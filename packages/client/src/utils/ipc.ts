@@ -147,21 +147,13 @@ export class IPC {
 
   static init(volume?: number): void {
     ipc.send({
+      volume,
       t: "control.init",
       mq: MUSIC_QUALITY(),
       cs: MUSIC_CACHE_SIZE(),
-      volume,
       https: HTTPS_API(),
       foreign: FOREIGN(),
     });
-  }
-
-  static login(profile: { userId: number; nickname: string }): void {
-    ipcB.send({ t: "control.login", ...profile });
-  }
-
-  static logout(): void {
-    ipcB.send({ t: "control.logout" });
   }
 
   static lyric(): void {
@@ -170,6 +162,10 @@ export class IPC {
 
   static music(): void {
     ipc.send({ t: "control.music" });
+  }
+
+  static neteaseAc(): void {
+    ipc.send({ t: "control.netease" });
   }
 
   static retain(): void {

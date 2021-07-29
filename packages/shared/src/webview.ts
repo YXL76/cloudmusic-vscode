@@ -1,4 +1,5 @@
 import type { CSMessage } from ".";
+import type { NeteaseTypings } from "api";
 
 export type WebviewType =
   | "comment"
@@ -41,4 +42,5 @@ export type ProviderSMsg =
       artist?: string;
       album?: string;
       artwork?: { src: string; sizes?: string; type?: string }[];
-    };
+    }
+  | { command: "account"; profiles: NeteaseTypings.Profile[] };

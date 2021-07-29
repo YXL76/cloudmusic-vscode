@@ -1,6 +1,10 @@
+import {
+  AccountState,
+  resolveAnotherSongItem,
+  resolveSongItem,
+} from "./helper";
 import { LyricCache, State, apiCache, logError } from "../..";
 import { apiRequest, eapiRequest, weapiRequest } from "./request";
-import { resolveAnotherSongItem, resolveSongItem } from "./helper";
 import type { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 
@@ -154,7 +158,7 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
       "interface3.music.163.com/eapi/song/enhance/player/url",
       { ids: `[${id}]`, br: State.musicQuality },
       "/api/song/enhance/player/url",
-      "pc"
+      { ...AccountState.defaultCookie, os: "pc" }
     );
     const [{ url, md5, type, freeTrialInfo }] = data;
 

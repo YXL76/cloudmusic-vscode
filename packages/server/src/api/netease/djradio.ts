@@ -1,9 +1,10 @@
-import { apiCache, logError } from "../..";
 import {
+  AccountState,
   resolveProgramDetail,
   resolveRadioDetail,
   resolveUserDetail,
 } from "./helper";
+import { apiCache, logError } from "../..";
 import type { NeteaseTypings } from "api";
 import { weapiRequest } from "./request";
 
@@ -14,7 +15,7 @@ import { weapiRequest } from "./request";
   try {
     const { categories } = await weapiRequest<{
       categories: { name: string; id: number }[];
-    }>("music.163.com/weapi/djradio/home/category/recommend", {});
+    }>("music.163.com/weapi/djradio/home/category/recommend");
     const ret = categories.map(({ name, id }) => ({ name, id }));
     apiCache.set(key, ret);
     return ret;
@@ -33,7 +34,7 @@ export async function djCatelist(): Promise<
   try {
     const { categories } = await weapiRequest<{
       categories: readonly { name: string; id: number }[];
-    }>("music.163.com/weapi/djradio/category/get", {});
+    }>("music.163.com/weapi/djradio/category/get");
     const ret = categories.map(({ name, id }) => ({ name, id }));
     apiCache.set(key, ret);
     return ret;
@@ -189,16 +190,20 @@ export async function djRadioHot(
   return [];
 }
 
-export async function djRecommend(): Promise<
-  readonly NeteaseTypings.RadioDetail[]
-> {
+export async function djRecommend(
+  uid: number
+): Promise<readonly NeteaseTypings.RadioDetail[]> {
   const key = "dj_recommend";
   const value = apiCache.get<readonly NeteaseTypings.RadioDetail[]>(key);
   if (value) return value;
   try {
     const { djRadios } = await weapiRequest<{
       djRadios: readonly NeteaseTypings.RadioDetail[];
-    }>("music.163.com/weapi/djradio/recommend/v1", {});
+    }>(
+      "music.163.com/weapi/djradio/recommend/v1",
+      {},
+      AccountState.cookies.get(uid)
+    );
     const ret = djRadios.map(resolveRadioDetail);
     apiCache.set(key, ret);
     return ret;
@@ -209,6 +214,7 @@ export async function djRecommend(): Promise<
 }
 
 export async function djRecommendType(
+  uid: number,
   cateId: number
 ): Promise<readonly NeteaseTypings.RadioDetail[]> {
   const key = `dj_recommend_type${cateId}`;
@@ -217,7 +223,11 @@ export async function djRecommendType(
   try {
     const { djRadios } = await weapiRequest<{
       djRadios: readonly NeteaseTypings.RadioDetail[];
-    }>("music.163.com/weapi/djradio/recommend", { cateId });
+    }>(
+      "music.163.com/weapi/djradio/recommend",
+      { cateId },
+      AccountState.cookies.get(uid)
+    );
     const ret = djRadios.map(resolveRadioDetail);
     apiCache.set(key, ret);
     return ret;
@@ -259,20 +269,24 @@ export async function djSub(id: number, t: "sub" | "unsub"): Promise<boolean> {
   return false;
 }
 
-export async function djSublist(): Promise<
-  readonly NeteaseTypings.RadioDetail[]
-> {
-  const key = "dj_sublist";
+export async function djSublist(
+  uid: number
+): Promise<readonly NeteaseTypings.RadioDetail[]> {
+  const key = `dj_sublist${uid}`;
   const value = apiCache.get<readonly NeteaseTypings.RadioDetail[]>(key);
   if (value) return value;
   try {
     const { djRadios } = await weapiRequest<{
       djRadios: readonly NeteaseTypings.RadioDetail[];
-    }>("music.163.com/weapi/djradio/get/subed", {
-      limit: 30,
-      offset: 0,
-      total: true,
-    });
+    }>(
+      "music.163.com/weapi/djradio/get/subed",
+      {
+        limit: 30,
+        offset: 0,
+        total: true,
+      },
+      AccountState.cookies.get(uid)
+    );
     const ret = djRadios.map(resolveRadioDetail);
     apiCache.set(key, ret);
     return ret;

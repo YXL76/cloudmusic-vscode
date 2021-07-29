@@ -1,40 +1,38 @@
-import { apiCache, logError } from "../..";
 import {
+  AccountState,
   resolveAlbumsItem,
   resolveArtist,
   resolveSongItem,
   resolveSongItemSt,
 } from "./helper";
+import { apiCache, logError } from "../..";
 import type { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import { weapiRequest } from "./request";
 
-export async function artists(id: number): Promise<{
-  info: NeteaseTypings.Artist;
-  songs: readonly NeteaseTypings.SongsItem[];
-}> {
+type ArtistsRet = {
+  readonly artist: NeteaseTypings.Artist;
+  readonly hotSongs: readonly NeteaseTypings.SongsItem[];
+};
+
+export async function artists(id: number): Promise<ArtistsRet> {
   const key = `artists${id}`;
-  const value =
-    apiCache.get<{
-      info: NeteaseTypings.Artist;
-      songs: readonly NeteaseTypings.SongsItem[];
-    }>(key);
+  const value = apiCache.get<ArtistsRet>(key);
   if (value) return value;
   try {
-    const { artist, hotSongs } = await weapiRequest<{
-      artist: NeteaseTypings.Artist;
-      hotSongs: readonly NeteaseTypings.SongsItem[];
-    }>(`music.163.com/weapi/v1/artist/${id}`, {});
+    const { artist, hotSongs } = await weapiRequest<ArtistsRet>(
+      `music.163.com/weapi/v1/artist/${id}`
+    );
     const ret = {
-      info: resolveArtist(artist),
-      songs: hotSongs.map(resolveSongItem),
+      artist: resolveArtist(artist),
+      hotSongs: hotSongs.map(resolveSongItem),
     };
     apiCache.set(key, ret);
     return ret;
   } catch (err) {
     logError(err);
   }
-  return { info: {} as NeteaseTypings.Artist, songs: [] };
+  return { artist: {} as NeteaseTypings.Artist, hotSongs: [] };
 }
 
 export async function artistAlbum(
@@ -143,7 +141,7 @@ export async function artistSongs(
         offset,
         limit,
       },
-      { os: "pc" }
+      { ...AccountState.defaultCookie, os: "pc" }
     );
     const ret = songs.map(resolveSongItemSt);
     apiCache.set(key, ret);

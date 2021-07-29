@@ -29,10 +29,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
   initStatusBar(context);
   initViewProvide(context);
   await initIPC(context);
+  initLocal(context);
   initCache(context);
   initPlaylist(context);
   initRadio(context);
-  initLocal(context);
   await initAccount(context);
 }
 

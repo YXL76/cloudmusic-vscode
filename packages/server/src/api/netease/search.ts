@@ -1,15 +1,16 @@
-import { apiCache, logError } from "../..";
-import { eapiRequest, weapiRequest } from "./request";
 import {
+  AccountState,
   resolveAlbumsItem,
   resolveArtist,
   resolvePlaylistItem,
   resolveSongItemSt,
 } from "./helper";
+import { apiCache, logError } from "../..";
+import { eapiRequest, weapiRequest } from "./request";
 import { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 
-export async function searchDefault(): Promise<string> {
+export async function searchDefault(uid: number): Promise<string> {
   const key = "search_default";
   const value = apiCache.get<string>(key);
   if (value) return value;
@@ -19,7 +20,8 @@ export async function searchDefault(): Promise<string> {
     } = await eapiRequest<{ data: { realkeyword: string } }>(
       "interface3.music.163.com/eapi/search/defaultkeyword/get",
       {},
-      "/api/search/defaultkeyword/get"
+      "/api/search/defaultkeyword/get",
+      AccountState.cookies.get(uid)
     );
     apiCache.set(key, realkeyword);
     return realkeyword;
@@ -30,6 +32,7 @@ export async function searchDefault(): Promise<string> {
 }
 
 export async function searchSingle(
+  uid: number,
   s: string,
   limit: number,
   offset: number
@@ -42,13 +45,11 @@ export async function searchSingle(
       result: { songs },
     } = await weapiRequest<{
       result: { songs: readonly NeteaseTypings.SongsItemSt[] };
-    }>("music.163.com/api/cloudsearch/pc", {
-      s,
-      type: NeteaseEnum.SearchType.single,
-      limit,
-      offset,
-      total: true,
-    });
+    }>(
+      "music.163.com/api/cloudsearch/pc",
+      { s, type: NeteaseEnum.SearchType.single, limit, offset, total: true },
+      AccountState.cookies.get(uid)
+    );
     const ret = songs.map(resolveSongItemSt);
     apiCache.set(key, ret);
     return ret;
@@ -59,6 +60,7 @@ export async function searchSingle(
 }
 
 export async function searchAlbum(
+  uid: number,
   s: string,
   limit: number,
   offset: number
@@ -71,13 +73,11 @@ export async function searchAlbum(
       result: { albums },
     } = await weapiRequest<{
       result: { albums: readonly NeteaseTypings.AlbumsItem[] };
-    }>("music.163.com/api/cloudsearch/pc", {
-      s,
-      type: NeteaseEnum.SearchType.album,
-      limit,
-      offset,
-      total: true,
-    });
+    }>(
+      "music.163.com/api/cloudsearch/pc",
+      { s, type: NeteaseEnum.SearchType.album, limit, offset, total: true },
+      AccountState.cookies.get(uid)
+    );
     const ret = albums.map(resolveAlbumsItem);
     apiCache.set(key, ret);
     return ret;
@@ -88,6 +88,7 @@ export async function searchAlbum(
 }
 
 export async function searchArtist(
+  uid: number,
   s: string,
   limit: number,
   offset: number
@@ -100,13 +101,11 @@ export async function searchArtist(
       result: { artists },
     } = await weapiRequest<{
       result: { artists: readonly NeteaseTypings.Artist[] };
-    }>("music.163.com/api/cloudsearch/pc", {
-      s,
-      type: NeteaseEnum.SearchType.artist,
-      limit,
-      offset,
-      total: true,
-    });
+    }>(
+      "music.163.com/api/cloudsearch/pc",
+      { s, type: NeteaseEnum.SearchType.artist, limit, offset, total: true },
+      AccountState.cookies.get(uid)
+    );
     const ret = artists.map((artist) =>
       resolveArtist({ ...artist, briefDesc: "" })
     );
@@ -119,6 +118,7 @@ export async function searchArtist(
 }
 
 export async function searchPlaylist(
+  uid: number,
   s: string,
   limit: number,
   offset: number
@@ -131,13 +131,11 @@ export async function searchPlaylist(
       result: { playlists },
     } = await weapiRequest<{
       result: { playlists: readonly NeteaseTypings.RawPlaylistItem[] };
-    }>("music.163.com/api/cloudsearch/pc", {
-      s,
-      type: NeteaseEnum.SearchType.playlist,
-      limit,
-      offset,
-      total: true,
-    });
+    }>(
+      "music.163.com/api/cloudsearch/pc",
+      { s, type: NeteaseEnum.SearchType.playlist, limit, offset, total: true },
+      AccountState.cookies.get(uid)
+    );
     const ret = playlists.map(resolvePlaylistItem);
     apiCache.set(key, ret);
     return ret;
@@ -152,6 +150,7 @@ type SearchLyricResult = NeteaseTypings.SongsItem & {
 };
 
 export async function searchLyric(
+  uid: number,
   s: string,
   limit: number,
   offset: number
@@ -168,13 +167,11 @@ export async function searchLyric(
           lyrics: readonly string[];
         })[];
       };
-    }>("music.163.com/api/cloudsearch/pc", {
-      s,
-      type: NeteaseEnum.SearchType.lyric,
-      limit,
-      offset,
-      total: true,
-    });
+    }>(
+      "music.163.com/api/cloudsearch/pc",
+      { s, type: NeteaseEnum.SearchType.lyric, limit, offset, total: true },
+      AccountState.cookies.get(uid)
+    );
     const ret = songs.map((song) => ({
       ...resolveSongItemSt(song),
       lyrics: song.lyrics,
@@ -189,14 +186,18 @@ export async function searchLyric(
 
 type HotDetail = readonly { searchWord: string; content: string }[];
 
-export async function searchHotDetail(): Promise<HotDetail> {
+export async function searchHotDetail(uid: number): Promise<HotDetail> {
   const key = "search_hot_detail";
   const value = apiCache.get<HotDetail>(key);
   if (value) return value;
   try {
     const { data } = await weapiRequest<{
       data: HotDetail;
-    }>("music.163.com/weapi/hotsearchlist/get", {});
+    }>(
+      "music.163.com/weapi/hotsearchlist/get",
+      {},
+      AccountState.cookies.get(uid)
+    );
     const ret = data.map(({ searchWord, content }) => ({
       searchWord,
       content,
@@ -210,6 +211,7 @@ export async function searchHotDetail(): Promise<HotDetail> {
 }
 
 export async function searchSuggest(
+  uid: number,
   keywords: string
 ): Promise<readonly string[]> {
   const key = `search_suggest${keywords}`;
@@ -220,7 +222,11 @@ export async function searchSuggest(
       result: { allMatch },
     } = await weapiRequest<{
       result: { allMatch: readonly { keyword: string }[] };
-    }>("music.163.com/weapi/search/suggest/keyword", { s: keywords });
+    }>(
+      "music.163.com/weapi/search/suggest/keyword",
+      { s: keywords },
+      AccountState.cookies.get(uid)
+    );
     const ret = allMatch.map(({ keyword }) => keyword);
     apiCache.set(key, ret);
     return ret;

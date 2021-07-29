@@ -18,6 +18,7 @@ import {
 import type { WebviewView, WebviewViewProvider } from "vscode";
 import { AccountManager } from "../manager";
 import { NeteaseEnum } from "@cloudmusic/shared";
+import type { NeteaseTypings } from "api";
 import type { WebviewType } from "@cloudmusic/shared";
 import i18n from "../i18n";
 import { resolve } from "path";
@@ -59,6 +60,10 @@ export class AccountViewProvider implements WebviewViewProvider {
     this._view?.webview.postMessage({ command: "position", position });
   } */
 
+  static account(profiles: NeteaseTypings.Profile[]): void {
+    this._view?.webview.postMessage({ command: "account", profiles });
+  }
+
   static metadata(): void {
     const item = State.playItem;
     this._view?.webview.postMessage(
@@ -79,7 +84,7 @@ export class AccountViewProvider implements WebviewViewProvider {
     if (this._view?.webview) {
       if (master) {
         this._view.webview.html = this._html;
-        setTimeout(() => AccountViewProvider.metadata(), 4096);
+        setTimeout(() => AccountViewProvider.metadata(), 1024);
       } else this._view.webview.html = "";
     }
   }
@@ -96,17 +101,24 @@ export class AccountViewProvider implements WebviewViewProvider {
       enableScripts: true,
     };
 
-    type Msg = { command: "toggle" | "previous" | "nexttrack" };
+    type Msg =
+      | { command: "toggle" }
+      | { command: "previous" }
+      | { command: "nexttrack" }
+      | { command: "account"; userId: number };
 
-    /* webview.webview.onDidReceiveMessage(({ command }: Msg) => {
-      if (State.master) void commands.executeCommand(`cloudmusic.${command}`);
-    }); */
+    webview.webview.onDidReceiveMessage((msg: Msg) => {
+      switch (msg.command) {
+        case "account":
+          AccountManager.accountQuickPick(msg.userId);
+          break;
+        default:
+          // TODO master
+          void commands.executeCommand(`cloudmusic.${msg.command}`);
+      }
+    });
 
-    webview.webview.onDidReceiveMessage(({ command }: Msg) =>
-      commands.executeCommand(`cloudmusic.${command}`)
-    );
-
-    const files = ["silent.flac", "silent.m4a", "silent.ogg", "silent.opus"];
+    /* const files = ["silent.flac", "silent.m4a", "silent.ogg", "silent.opus"];
 
     const sources = files
       .map((fn) =>
@@ -115,10 +127,13 @@ export class AccountViewProvider implements WebviewViewProvider {
           .toString()
       )
       .map((src) => `<source src=${src} >`)
-      .join();
+      .join(); */
 
     const js = webview.webview
       .asWebviewUri(Uri.joinPath(this._extensionUri, "dist", "provider.js"))
+      .toString();
+    const css = webview.webview
+      .asWebviewUri(Uri.joinPath(this._extensionUri, "dist", "style.css"))
       .toString();
 
     AccountViewProvider._html = `
@@ -130,28 +145,26 @@ export class AccountViewProvider implements WebviewViewProvider {
   <head>
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>${i18n.word.account}</title>
-    <script type="module" src=${js} nonce=${getNonce()}></script>
+    <link rel="stylesheet" type="text/css" href=${css} />
   </head>
   <body>
-    <div id="root">
-      <audio id="audio" autoPlay loop onplay="window.handleFirstPlay(event)">${sources}</audio>
-    </div>
+    <div id="root"></div>
   </body>
+  <script type="module" src=${js} nonce=${getNonce()}></script>
 </html>`;
 
-    if (State.master) {
-      webview.webview.html = AccountViewProvider._html;
-      setTimeout(() => AccountViewProvider.metadata(), 4096);
-    }
-
-    // setTimeout(() => AccountViewProvider.master(), 1024);
+    webview.webview.html = AccountViewProvider._html;
+    setTimeout(() => {
+      // AccountViewProvider.metadata();
+      AccountViewProvider.account([...AccountManager.accounts.values()]);
+    }, 1024);
   }
 }
 
 export class Webview {
-  private static readonly cssUri = Uri.file(resolve(__dirname, "style.css"));
+  private static readonly _cssUri = Uri.file(resolve(__dirname, "style.css"));
 
-  private static readonly iconUri = Uri.file(
+  private static readonly _iconUri = Uri.file(
     resolve(__dirname, "..", "media", "icon.ico")
   );
 
@@ -161,7 +174,7 @@ export class Webview {
     const imgSrc = await toDataURL(
       `https://music.163.com/login?codekey=${key}`
     );
-    const { panel, setHtml } = this.getPanel(i18n.word.signIn, "login");
+    const { panel, setHtml } = this._getPanel(i18n.word.signIn, "login");
 
     panel.webview.onDidReceiveMessage(({ channel }: CSMessage) => {
       void panel.webview.postMessage({ msg: { imgSrc }, channel });
@@ -181,7 +194,7 @@ export class Webview {
                 reject();
               }
             })
-            .catch(resolve),
+            .catch(reject),
         512
       );
       panel.onDidDispose(() => clearInterval(timer));
@@ -190,7 +203,7 @@ export class Webview {
   }
 
   static lyric(): void {
-    const { panel, setHtml } = this.getPanel(i18n.word.lyric, "lyric");
+    const { panel, setHtml } = this._getPanel(i18n.word.lyric, "lyric");
 
     panel.onDidDispose(() => {
       State.lyric.updatePanel = undefined;
@@ -216,7 +229,7 @@ export class Webview {
 
   static async description(id: number, name: string): Promise<void> {
     const desc = await IPC.netease("artistDesc", [id]);
-    const { panel, setHtml } = this.getPanel(name, "description");
+    const { panel, setHtml } = this._getPanel(name, "description");
 
     panel.webview.onDidReceiveMessage(({ channel }: CSMessage) => {
       void panel.webview.postMessage({ msg: { name, desc }, channel });
@@ -224,9 +237,9 @@ export class Webview {
     setHtml();
   }
 
-  static async musicRanking(): Promise<void> {
-    const record = await IPC.netease("userRecord", [AccountManager.uid]);
-    const { panel, setHtml } = this.getPanel(
+  static async musicRanking(uid: number): Promise<void> {
+    const record = await IPC.netease("userRecord", [uid]);
+    const { panel, setHtml } = this._getPanel(
       i18n.word.musicRanking,
       "musicRanking"
     );
@@ -298,7 +311,7 @@ export class Webview {
       return list;
     };
 
-    const { panel, setHtml } = this.getPanel(
+    const { panel, setHtml } = this._getPanel(
       `${i18n.word.comment} (${title})`,
       "comment"
     );
@@ -358,25 +371,25 @@ export class Webview {
     setHtml();
   }
 
-  private static getPanel(title: string, type: WebviewType) {
+  private static _getPanel(title: string, type: WebviewType) {
     const panel = window.createWebviewPanel(
       "Cloudmusic",
       title,
       ViewColumn.One,
       { enableScripts: true, retainContextWhenHidden: true }
     );
-    panel.iconPath = this.iconUri;
-    const css = panel.webview.asWebviewUri(this.cssUri).toString();
+    panel.iconPath = this._iconUri;
+    const css = panel.webview.asWebviewUri(this._cssUri).toString();
     const js = panel.webview
       .asWebviewUri(Uri.file(resolve(__dirname, `${type}.js`)))
       .toString();
     return {
       panel,
-      setHtml: () => (panel.webview.html = this.layout(title, css, js)),
+      setHtml: () => (panel.webview.html = this._layout(title, css, js)),
     };
   }
 
-  private static layout(title: string, css: string, js: string) {
+  private static _layout(title: string, css: string, js: string) {
     const nonce = getNonce();
     return `
 <!DOCTYPE html>

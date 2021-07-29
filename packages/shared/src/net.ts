@@ -16,8 +16,6 @@ export type CSConnPool = Map<
 export type IPCMsg<T = string, U = Record<never, never>> = { t: T } & U;
 
 export type IPCBroadcastMsg =
-  | IPCMsg<IPCEvent.Control$login, { userId: number; nickname: string }>
-  | IPCMsg<IPCEvent.Control$logout>
   | IPCMsg<IPCEvent.Play$load>
   | IPCMsg<IPCEvent.Play$repeat, { r: boolean }>
   | IPCMsg<IPCEvent.Queue$add, { items: readonly unknown[]; index?: number }>
@@ -42,6 +40,7 @@ export type IPCClientMsg =
     >
   | IPCMsg<IPCEvent.Control$lyric>
   | IPCMsg<IPCEvent.Control$music>
+  | IPCMsg<IPCEvent.Control$netease>
   | IPCMsg<IPCEvent.Control$retain, { items: readonly unknown[] }>
   | IPCMsg<
       IPCEvent.Play$load,
@@ -66,8 +65,14 @@ export type IPCClientMsg =
   | IPCMsg<IPCEvent.Queue$fmNext>;
 
 export type IPCServerMsg =
-  | IPCMsg<IPCEvent.Control$cookie, { cookie: string }>
   | IPCMsg<IPCEvent.Control$master, { is?: true }>
+  | IPCMsg<
+      IPCEvent.Control$netease,
+      {
+        cookies: { uid: number; cookie: string }[];
+        profiles: NeteaseTypings.Profile[];
+      }
+    >
   | IPCMsg<IPCEvent.Control$new>
   | IPCMsg<IPCEvent.Control$retain, { items: readonly unknown[] }>
   | IPCMsg<IPCEvent.Play$end, { fail?: true }>

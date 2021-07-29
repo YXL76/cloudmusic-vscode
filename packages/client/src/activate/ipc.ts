@@ -1,17 +1,21 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { AccountViewProvider, IPC, State } from "../utils";
-import { COOKIE_KEY, ICON, STRICT_SSL, VOLUME_KEY } from "../constant";
+import { COOKIE_KEY, STRICT_SSL, VOLUME_KEY } from "../constant";
 import type {
   IPCBroadcastMsg,
   IPCServerMsg,
   NeteaseAPIKey,
   NeteaseAPISMsg,
 } from "@cloudmusic/shared";
+import {
+  PlaylistProvider,
+  QueueItemTreeItem,
+  RadioProvider,
+} from "../treeview";
 import { commands, workspace } from "vscode";
 import type { ExtensionContext } from "vscode";
 import { LOG_FILE } from "@cloudmusic/shared";
 import type { PlayTreeItemData } from "../treeview";
-import { QueueItemTreeItem } from "../treeview";
 import { QueueProvider } from "../treeview";
 import { fork } from "child_process";
 import { openSync } from "fs";
@@ -19,21 +23,6 @@ import { resolve } from "path";
 
 const ipcBHandler = (data: IPCBroadcastMsg) => {
   switch (data.t) {
-    case "control.login":
-      AccountManager.uid = data.userId;
-      AccountManager.nickname = data.nickname;
-      AccountManager.likelist.clear();
-      void IPC.netease("likelist", [data.userId]).then((ids) => {
-        for (const id of ids) AccountManager.likelist.add(id);
-      });
-      State.login = true;
-      break;
-    case "control.logout":
-      AccountManager.uid = 0;
-      AccountManager.nickname = "";
-      AccountManager.likelist.clear();
-      State.login = false;
-      break;
     case "player.load":
       State.loading = true;
       break;
@@ -84,8 +73,16 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
           // rejectTimout();
         }
         break;
-      case "control.cookie":
-        void context.secrets.store(COOKIE_KEY, data.cookie);
+      case "control.netease":
+        AccountManager.accounts.clear();
+        AccountManager.userPlaylist.clear();
+        data.profiles.forEach((i) => AccountManager.accounts.set(i.userId, i));
+        if (!data.cookies.length && State.master) IPC.clear();
+        PlaylistProvider.refresh();
+        RadioProvider.refresh();
+        AccountViewProvider.account(data.profiles);
+        if (State.master)
+          void context.secrets.store(COOKIE_KEY, JSON.stringify(data.cookies));
         break;
       case "control.master":
         State.master = !!data.is;
@@ -131,8 +128,8 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         ButtonManager.buttonLyric();
         State.lyric = {
           ...State.lyric,
-          o: { time: [0], text: [ICON.lyric] },
-          t: { time: [0], text: [ICON.lyric] },
+          o: { time: [0], text: ["$(text-size)"] },
+          t: { time: [0], text: ["$(text-size)"] },
         };
         AccountViewProvider.stop();
         break;
@@ -151,13 +148,10 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
     }
   };
 
-  State.loading = true;
   try {
     const firstTry = await IPC.connect(ipcHandler, ipcBHandler, 0);
     if (firstTry.includes(false)) throw Error;
-    State.first = false;
   } catch {
-    State.loading = false;
     const httpProxy = workspace.getConfiguration("http").get<string>("proxy");
     fork(resolve(__dirname, "server.js"), {
       detached: true,
@@ -171,6 +165,6 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       },
     }).unref();
     await IPC.connect(ipcHandler, ipcBHandler);
+    setTimeout(() => IPC.init(context.globalState.get(VOLUME_KEY, 85)), 128);
   }
-  setTimeout(() => IPC.init(context.globalState.get(VOLUME_KEY, 85)), 128);
 }

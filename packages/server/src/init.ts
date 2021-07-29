@@ -4,7 +4,7 @@ import {
   MUSIC_CACHE_DIR,
   TMP_DIR,
 } from "@cloudmusic/shared";
-import { IPCBroadcastServer, IPCServer, MusicCache, logError } from ".";
+import { IPCBroadcastServer, IPCServer, MusicCache, Player, logError } from ".";
 import { bootstrap } from "global-agent";
 import { mkdirSync } from "fs";
 
@@ -19,6 +19,7 @@ const tryMkdir = (path: string) => {
   } catch {}
 };
 
+Player.init();
 IPCServer.init();
 IPCBroadcastServer.init();
 

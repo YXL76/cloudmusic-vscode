@@ -1,8 +1,8 @@
+import { AccountState, resolveComment } from "./helper";
 import { eapiRequest, weapiRequest } from "./request";
 import { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import { logError } from "../..";
-import { resolveComment } from "./helper";
 
 const resourceTypeMap = [
   "R_SO_4_",
@@ -23,7 +23,7 @@ export async function commentAdd(
     await weapiRequest(
       `music.163.com/weapi/resource/comments/add`,
       { threadId: `${resourceTypeMap[type]}${id}`, content },
-      { os: "pc" }
+      { ...AccountState.defaultCookie, os: "pc" }
     );
     return true;
   } catch (err) {
@@ -42,7 +42,7 @@ export async function commentReply(
     await weapiRequest(
       `music.163.com/weapi/resource/comments/reply`,
       { threadId: `${resourceTypeMap[type]}${id}`, content, commentId },
-      { os: "pc" }
+      { ...AccountState.defaultCookie, os: "pc" }
     );
     return true;
   } catch (err) {
@@ -94,7 +94,7 @@ export async function commentLike(
     await weapiRequest(
       `music.163.com/weapi/v1/comment/${t}`,
       { threadId: `${resourceTypeMap[type]}${id}`, commentId },
-      { os: "pc" }
+      { ...AccountState.defaultCookie, os: "pc" }
     );
     return true;
   } catch (err) {
@@ -134,7 +134,7 @@ export async function commentNew(
         sortType,
       },
       "/api/v2/resource/comments",
-      "pc"
+      { ...AccountState.defaultCookie, os: "pc" }
     );
     return {
       totalCount,
