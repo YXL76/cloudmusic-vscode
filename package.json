@@ -834,7 +834,7 @@
     "@yarnpkg/sdks": "2.4.1-rc.4",
     "debug": "4.3.2",
     "esbuild": "0.12.16",
-    "eslint": "7.31.0",
+    "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.0",
     "eslint-plugin-react": "7.24.0",
