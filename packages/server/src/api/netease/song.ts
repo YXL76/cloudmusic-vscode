@@ -10,22 +10,25 @@ import type { NeteaseTypings } from "api";
 import { State } from "../../state";
 import { logError } from "../../utils";
 
-// TODO Parklife
 const resolveLyric = (
   raw: string
 ): { time: readonly number[]; text: readonly string[] } => {
   const unsorted: Array<[number, string]> = [];
   const lines = raw.split("\n");
   for (const line of lines) {
-    const r = /^\[(\d+):(\d{2})(?:[.:](\d{2,3}))\](.*)$/g.exec(line.trim());
+    const r = /^((\[\d+:\d{2}[.:]\d{2,3}\])+)(.*)$/g.exec(line.trim());
     if (!r) continue;
-    const minute = parseInt(r[1]);
-    const second = parseInt(r[2]);
-    const millisecond = parseInt(r[3].length === 2 ? `${r[3]}0` : r[3]);
-    unsorted.push([
-      minute * 60 + second + millisecond / 1000,
-      r[4]?.trim() ?? "",
-    ]);
+    const text = r[3]?.trim() ?? "";
+    let t = r[1];
+    while (t) {
+      const r = /^\[(\d+):(\d{2})[.:](\d{2,3})\](.*)$/g.exec(t);
+      if (!r) break;
+      const minute = parseInt(r[1]);
+      const second = parseInt(r[2]);
+      const millisecond = parseInt(r[3].length === 2 ? `${r[3]}0` : r[3]);
+      unsorted.push([minute * 60 + second + millisecond / 1000, text]);
+      t = r[4];
+    }
   }
 
   unsorted.sort(([a], [b]) => a - b);

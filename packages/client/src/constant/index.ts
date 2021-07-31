@@ -16,7 +16,7 @@ export const playerMode = conf.get<"native" | "wasm">("player.mode", "native");
 
 export const ACCOUNT_KEY = "account-v2";
 export const CACHE_KEY = "cache-v2";
-export const LYRIC_CACHE_KEY = "lyric-cache-v3";
+export const LYRIC_CACHE_KEY = "lyric-cache-v4";
 export const COOKIE_KEY = "cookie-v2";
 export const BUTTON_KEY = "button-v1";
 export const VOLUME_KEY = "volume";
