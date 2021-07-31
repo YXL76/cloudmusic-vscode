@@ -7,8 +7,8 @@ assignees: ""
 ---
 
 **Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
-清楚简洁地说明问题所在。例如，当[...]时，我总是感到沮丧
+A clear and concise description of what the problem is. Ex. I'm always frustrated when [...].
+清楚简洁地说明问题所在。例如，当[...]时，我总是感到沮丧。
 
 **Describe the solution you'd like**
 A clear and concise description of what you want to happen.
