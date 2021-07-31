@@ -6,6 +6,26 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.0.0] - 2021-07-31
+
+### Added
+
+- Accessibility: Sign in hint
+- Multiple accounts ([#342](https://github.com/YXL76/cloudmusic-vscode/issues/342), [#439](https://github.com/YXL76/cloudmusic-vscode/issues/439), [#496](https://github.com/YXL76/cloudmusic-vscode/issues/496), [#502](https://github.com/YXL76/cloudmusic-vscode/issues/502))
+- Player: `wasm` mode ([#344](https://github.com/YXL76/cloudmusic-vscode/issues/344), [#414](https://github.com/YXL76/cloudmusic-vscode/issues/414), [#503](https://github.com/YXL76/cloudmusic-vscode/issues/503))
+- Configuration: `cloudmusic.player.mode`
+
+### Changed
+
+- Activation events: only `onView:account`
+- Server
+  - Logfile name
+  - Catch axios error
+
+### Fixed
+
+- Commands: `cloudmusic.deleteFromPlaylist` ([#517](https://github.com/YXL76/cloudmusic-vscode/issues/517))
+
 ## [8.3.9] - 2021-07-07
 
 ### Changed
