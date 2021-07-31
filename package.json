@@ -40,11 +40,7 @@
     "Netease"
   ],
   "activationEvents": [
-    "onView:account",
-    "onView:local",
-    "onView:playlist",
-    "onView:radio",
-    "onView:queue"
+    "onView:account"
   ],
   "icon": "media/icon-300.png",
   "main": "./dist/extension.js",
