@@ -68,7 +68,9 @@ export async function getMusic(
     });
     if (cache) data.on("end", () => void MusicCache.put(fn, path, md5));
     return data;
-  } catch {}
+  } catch (err) {
+    logError(err);
+  }
   return;
 }
 

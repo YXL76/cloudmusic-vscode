@@ -10,6 +10,7 @@ import type { NeteaseTypings } from "api";
 import type { ParsedUrlQueryInput } from "querystring";
 import { State } from "../../state";
 import axios from "axios";
+import { logError } from "../../utils";
 import { loginStatus } from ".";
 import { platform } from "os";
 import { randomBytes } from "crypto";
@@ -63,38 +64,43 @@ const responseHandler = async <T>(
   headers: Headers,
   data: ParsedUrlQueryInput,
   eapi?: boolean
-): Promise<T> => {
-  const res = await axios.post<{ code?: number } & T>(url, stringify(data), {
-    withCredentials: true,
-    headers,
-    ...APISetting.agent,
-    ...(eapi ? { encoding: null } : {}),
-  });
+): Promise<T | void> => {
+  const res = await axios
+    .post<{ code?: number } & T>(url, stringify(data), {
+      withCredentials: true,
+      headers,
+      ...APISetting.agent,
+      ...(eapi ? { encoding: null } : {}),
+    })
+    .catch(logError);
+  if (!res) return;
   const status = res.data.code || res.status;
-  if (!spStatus.has(status)) throw status;
+  if (!spStatus.has(status)) return;
   return res.data;
 };
 
 export const loginRequest = async (
   url: string,
   data: ParsedUrlQueryInput
-): Promise<NeteaseTypings.Profile> => {
+): Promise<NeteaseTypings.Profile | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
   const headers = generateHeader(url);
   headers["Cookie"] = jsonToCookie({ os: "pc" });
-  const res = await axios.post<{
-    readonly code?: number;
-    profile?: NeteaseTypings.Profile;
-  }>(url.replace(/\w*api/, "weapi"), stringify(weapi(data)), {
-    withCredentials: true,
-    headers,
-    ...APISetting.agent,
-  });
+  const res = await axios
+    .post<{
+      readonly code?: number;
+      profile?: NeteaseTypings.Profile;
+    }>(url.replace(/\w*api/, "weapi"), stringify(weapi(data)), {
+      withCredentials: true,
+      headers,
+      ...APISetting.agent,
+    })
+    .catch(logError);
+  if (!res) return;
   const status = res.data.code || res.status;
-  if (!spStatus.has(status)) throw status;
+  if (!spStatus.has(status)) return;
   const profile = res.data.profile;
-  if (!profile || !("userId" in profile) || !("nickname" in profile))
-    throw Error;
+  if (!profile || !("userId" in profile) || !("nickname" in profile)) return;
   if ("set-cookie" in res.headers) {
     const cookie = cookieToJson(
       (res.headers as { "set-cookie": readonly string[] })["set-cookie"]
@@ -109,18 +115,21 @@ export const loginRequest = async (
 export const qrloginRequest = async (
   url: string,
   data: ParsedUrlQueryInput
-): Promise<number> => {
+): Promise<number | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
   const headers = generateHeader(url);
-  const res = await axios.post<{
-    readonly code?: number;
-  }>(url.replace(/\w*api/, "weapi"), stringify(weapi(data)), {
-    withCredentials: true,
-    headers,
-    ...APISetting.agent,
-  });
+  const res = await axios
+    .post<{
+      readonly code?: number;
+    }>(url.replace(/\w*api/, "weapi"), stringify(weapi(data)), {
+      withCredentials: true,
+      headers,
+      ...APISetting.agent,
+    })
+    .catch(logError);
+  if (!res) return;
   const status = res.data.code || res.status;
-  if (!spStatus.has(status)) throw status;
+  if (!spStatus.has(status)) return;
   if ("set-cookie" in res.headers) {
     const cookie = cookieToJson(
       (res.headers as { "set-cookie": readonly string[] })["set-cookie"]
@@ -136,7 +145,7 @@ export const weapiRequest = async <T = ParsedUrlQueryInput>(
   url: string,
   data: ParsedUrlQueryInput = {},
   cookie = AccountState.defaultCookie
-): Promise<T> => {
+): Promise<T | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
   const headers = generateHeader(url);
   headers["Cookie"] = jsonToCookie(cookie);
@@ -154,7 +163,7 @@ export const eapiRequest = async <T = ParsedUrlQueryInput>(
   data: ParsedUrlQueryInput,
   encryptUrl: string,
   rawCookie = AccountState.defaultCookie
-): Promise<T> => {
+): Promise<T | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
   const cookie: NeteaseTypings.Cookie = {
     ...rawCookie,
@@ -197,7 +206,7 @@ export const apiRequest = async <T = ParsedUrlQueryInput>(
   url: string,
   data: ParsedUrlQueryInput = {},
   cookie = AccountState.defaultCookie
-): Promise<T> => {
+): Promise<T | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
   const headers = generateHeader(url);
   headers["Cookie"] = jsonToCookie(cookie);
