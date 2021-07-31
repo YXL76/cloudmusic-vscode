@@ -145,10 +145,14 @@ export class IPC {
     ipc.send({ t: "control.download", url, path });
   }
 
-  static init(volume?: number): void {
+  static init(
+    volume?: number,
+    player?: { wasm: boolean; name?: string }
+  ): void {
     ipc.send({
-      volume,
       t: "control.init",
+      volume,
+      player,
       mq: MUSIC_QUALITY(),
       cs: MUSIC_CACHE_SIZE(),
       https: HTTPS_API(),
@@ -253,9 +257,5 @@ export class IPC {
         msg: { i, p },
       });
     });
-  }
-
-  static wasm(wasm: boolean, name?: string): void {
-    ipc.send({ t: "wasm.init", wasm, name });
   }
 }

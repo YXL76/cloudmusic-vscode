@@ -1,6 +1,6 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { AccountViewProvider, IPC, State } from "../utils";
-import { COOKIE_KEY, LOG_FILE, STRICT_SSL, VOLUME_KEY } from "../constant";
+import { COOKIE_KEY, LOG_FILE, STRICT_SSL } from "../constant";
 import type { IPCBroadcastMsg, IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseAPIKey, NeteaseAPISMsg } from "@cloudmusic/server";
 import {
@@ -175,6 +175,5 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       },
     }).unref();
     await IPC.connect(ipcHandler, ipcBHandler);
-    setTimeout(() => IPC.init(context.globalState.get(VOLUME_KEY, 85)), 128);
   }
 }

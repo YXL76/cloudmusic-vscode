@@ -147,7 +147,8 @@ export class IPCServer {
         State.cacheSize = data.cs;
         State.foreign = data.foreign;
         APISetting.apiProtocol = data.https ? "https" : "http";
-        if (typeof data.volume === "number") Player.volume(data.volume);
+        if (data.player)
+          Player.init(data.player.wasm, data.player.name, data.volume);
         break;
       case "control.lyric":
         LyricCache.clear();
@@ -190,9 +191,6 @@ export class IPCServer {
         PersonalFm.head()
           .then((item) => this.broadcast({ t: "queue.fmNext", item }))
           .catch(logError);
-        break;
-      case "wasm.init":
-        Player.init(data.wasm, data.name);
         break;
     }
   }

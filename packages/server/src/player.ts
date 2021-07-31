@@ -93,12 +93,13 @@ export class Player {
 
   private static _native?: NativeModule;
 
-  static init(wasm: boolean, name = ""): void {
+  static init(wasm: boolean, name = "", volume?: number): void {
     if (!wasm) {
       const path = resolve(__dirname, "..", "build", name);
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       this._native = require(path) as NativeModule;
       this._player = this._native.playerNew();
+      if (volume) this._native.playerSetVolume(this._player, volume);
 
       setInterval(() => {
         if (!State.playing) return;
@@ -109,9 +110,7 @@ export class Player {
         }
         posHandler(Player.position());
       }, 800);
-    } else {
-      this._wasm = new WasmPlayer();
-    }
+    } else this._wasm = new WasmPlayer();
 
     setInterval(
       () =>

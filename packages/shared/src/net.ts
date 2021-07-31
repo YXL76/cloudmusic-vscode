@@ -30,9 +30,10 @@ export type IPCClientMsg =
   | IPCMsg<
       IPCEvent.Control$init,
       {
+        volume?: number;
+        player?: { wasm: boolean; name?: string };
         mq: number;
         cs: number;
-        volume?: number;
         https: boolean;
         foreign: boolean;
       }
@@ -52,8 +53,7 @@ export type IPCClientMsg =
   | IPCMsg<IPCEvent.Play$toggle>
   | IPCMsg<IPCEvent.Play$volume, { level: number }>
   | IPCMsg<IPCEvent.Queue$fm, { uid: number; is: boolean }>
-  | IPCMsg<IPCEvent.Queue$fmNext>
-  | IPCMsg<IPCEvent.Wasm$init, { wasm: boolean; name?: string }>;
+  | IPCMsg<IPCEvent.Queue$fmNext>;
 
 export type IPCServerMsg =
   | IPCMsg<IPCEvent.Control$master, { is?: true }>

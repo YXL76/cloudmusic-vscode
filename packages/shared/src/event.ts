@@ -32,7 +32,6 @@ export type Queue$play = "queue.play";
 export type Queue$new = "queue.new";
 export type Queue$shift = "queue.shift";
 
-export type Wasm$init = "wasm.init";
 export type Wasm$load = "wasm.load";
 export type Wasm$pause = "wasm.pause";
 export type Wasm$play = "wasm.play";
