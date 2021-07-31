@@ -152,23 +152,24 @@ export async function songDetail(
 }
 
 export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
-  try {
-    const { data } = await eapiRequest<{
-      data: readonly (NeteaseTypings.SongDetail & {
-        freeTrialInfo?: { start: number; end: number };
-      })[];
-    }>(
-      "interface3.music.163.com/eapi/song/enhance/player/url",
-      { ids: `[${id}]`, br: State.musicQuality },
-      "/api/song/enhance/player/url",
-      { ...AccountState.defaultCookie, os: "pc" }
-    );
-    const [{ url, md5, type, freeTrialInfo }] = data;
+  for (const [, cookie] of AccountState.cookies) {
+    try {
+      const { data } = await eapiRequest<{
+        data: readonly (NeteaseTypings.SongDetail & {
+          freeTrialInfo?: { start: number; end: number };
+        })[];
+      }>(
+        "interface3.music.163.com/eapi/song/enhance/player/url",
+        { ids: `[${id}]`, br: State.musicQuality },
+        "/api/song/enhance/player/url",
+        { ...cookie, os: "pc" }
+      );
+      const [{ url, md5, type, freeTrialInfo }] = data;
 
-    if (freeTrialInfo) return {} as NeteaseTypings.SongDetail;
-    return { url, md5, type };
-  } catch (err) {
-    logError(err);
+      if (!freeTrialInfo) return { url, md5, type };
+    } catch (err) {
+      logError(err);
+    }
   }
   return {} as NeteaseTypings.SongDetail;
 }
