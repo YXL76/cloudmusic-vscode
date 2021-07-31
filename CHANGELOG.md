@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.0.1] - 2021-07-31
+
+### Fixed
+
+- Treeview: playlist id
+- Lyrics parsing (Check [Parklife](https://music.163.com/#/song?id=16880947))
+
 ## [9.0.0] - 2021-07-31
 
 ### Added
