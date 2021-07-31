@@ -3,27 +3,27 @@ import type {
   IPCBroadcastMsg,
   IPCClientMsg,
   IPCServerMsg,
-  NeteaseAPICMsg,
-  NeteaseAPIKey,
-  NeteaseAPIParameters,
-  NeteaseAPIReturn,
 } from "@cloudmusic/shared";
 import {
   FOREIGN,
   HTTPS_API,
   MUSIC_CACHE_SIZE,
   MUSIC_QUALITY,
+  ipcBroadcastServerPath,
+  ipcServerPath,
 } from "../constant";
 import { LocalFileTreeItem, QueueProvider } from "../treeview";
-import {
-  ipcBroadcastServerPath,
-  ipcDelimiter,
-  ipcServerPath,
-} from "@cloudmusic/shared";
+import type {
+  NeteaseAPICMsg,
+  NeteaseAPIKey,
+  NeteaseAPIParameters,
+  NeteaseAPIReturn,
+} from "@cloudmusic/server";
 import type { PlayTreeItemData } from "../treeview";
 import type { Socket } from "net";
 import { State } from ".";
 import { connect } from "net";
+import { ipcDelimiter } from "@cloudmusic/shared";
 
 class IPCClient<T, U = T> {
   private _buffer = "";
@@ -179,6 +179,10 @@ export class IPC {
     ipc.send({ t: "player.lyricDelay", delay });
   }
 
+  static position(pos: number): void {
+    ipc.send({ t: "player.position", pos });
+  }
+
   static repeat(r: boolean): void {
     ipcB.send({ t: "player.repeat", r });
   }
@@ -249,5 +253,9 @@ export class IPC {
         msg: { i, p },
       });
     });
+  }
+
+  static wasm(wasm: boolean, name?: string): void {
+    ipc.send({ t: "wasm.init", wasm, name });
   }
 }

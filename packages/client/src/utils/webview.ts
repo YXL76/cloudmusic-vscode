@@ -6,6 +6,11 @@ import type {
   MsicRankingCMsg,
 } from "@cloudmusic/shared";
 import { ColorThemeKind, Uri, ViewColumn, commands, window } from "vscode";
+import type {
+  ExtensionContext,
+  WebviewView,
+  WebviewViewProvider,
+} from "vscode";
 import {
   IPC,
   MultiStepInput,
@@ -15,11 +20,11 @@ import {
   pickSong,
   pickUser,
 } from ".";
-import type { WebviewView, WebviewViewProvider } from "vscode";
+import type { ProviderSMsg, WebviewType } from "@cloudmusic/shared";
+import { SETTING_DIR, VOLUME_KEY } from "../constant";
 import { AccountManager } from "../manager";
 import { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
-import type { WebviewType } from "@cloudmusic/shared";
 import i18n from "../i18n";
 import { resolve } from "path";
 import { toDataURL } from "qrcode";
@@ -34,40 +39,93 @@ const getNonce = (): string => {
 };
 
 export class AccountViewProvider implements WebviewViewProvider {
-  private static _html = "";
+  static context: ExtensionContext;
 
   private static _view?: WebviewView;
 
-  constructor(private readonly _extensionUri: Uri) {}
-
-  /* static master(): void {
-    this._view?.webview.postMessage({ command: "master", is: State.master });
-  } */
+  static master(): void {
+    if (this._view) {
+      const msg: ProviderSMsg = { command: "master", is: State.master };
+      void this._view.webview.postMessage(msg);
+      setTimeout(
+        () => this.wasmVolume(this.context.globalState.get(VOLUME_KEY, 85)),
+        1024
+      );
+    }
+  }
 
   static play(): void {
-    this._view?.webview.postMessage({ command: "state", state: "playing" });
+    if (this._view) {
+      const msg: ProviderSMsg = { command: "state", state: "playing" };
+      void this._view.webview.postMessage(msg);
+    }
   }
 
   static pause(): void {
-    this._view?.webview.postMessage({ command: "state", state: "paused" });
+    if (this._view) {
+      const msg: ProviderSMsg = { command: "state", state: "paused" };
+      void this._view.webview.postMessage(msg);
+    }
   }
 
   static stop(): void {
-    this._view?.webview.postMessage({ command: "state", state: "none" });
+    if (this._view) {
+      const msg: ProviderSMsg = { command: "state", state: "none" };
+      void this._view.webview.postMessage(msg);
+    }
+  }
+
+  static wasmLoad(path: string): void {
+    if (this._view) {
+      const url = this._view.webview.asWebviewUri(Uri.file(path)).toString();
+      const msg: ProviderSMsg = { command: "load", url };
+      void this._view.webview.postMessage(msg);
+    }
+  }
+
+  static wasmPause(): void {
+    if (this._view) {
+      const msg: ProviderSMsg = { command: "pause" };
+      void this._view.webview.postMessage(msg);
+    }
+  }
+
+  static wasmPlay(): void {
+    if (this._view) {
+      const msg: ProviderSMsg = { command: "play" };
+      void this._view.webview.postMessage(msg);
+    }
+  }
+
+  static wasmStop(): void {
+    if (this._view) {
+      const msg: ProviderSMsg = { command: "stop" };
+      void this._view.webview.postMessage(msg);
+    }
+  }
+
+  static wasmVolume(level: number): void {
+    if (this._view) {
+      const msg: ProviderSMsg = { command: "volume", level };
+      void this._view.webview.postMessage(msg);
+    }
   }
 
   /* static position(position: number): void {
-    this._view?.webview.postMessage({ command: "position", position });
+    const msg: ProviderSMsg = { command: "position", position });
   } */
 
   static account(profiles: NeteaseTypings.Profile[]): void {
-    this._view?.webview.postMessage({ command: "account", profiles });
+    if (this._view) {
+      const msg: ProviderSMsg = { command: "account", profiles };
+      void this._view.webview.postMessage(msg);
+    }
   }
 
   static metadata(): void {
-    const item = State.playItem;
-    this._view?.webview.postMessage(
-      item
+    if (this._view) {
+      const item = State.playItem;
+      const msg: ProviderSMsg = item
         ? {
             command: "metadata",
             // duration: item.item.dt / 1000,
@@ -76,16 +134,8 @@ export class AccountViewProvider implements WebviewViewProvider {
             album: item.tooltip,
             artwork: [{ src: item.item.al.picUrl }],
           }
-        : { command: "metadata" }
-    );
-  }
-
-  static toggleHTML(master: boolean): void {
-    if (this._view?.webview) {
-      if (master) {
-        this._view.webview.html = this._html;
-        setTimeout(() => AccountViewProvider.metadata(), 1024);
-      } else this._view.webview.html = "";
+        : { command: "metadata" };
+      void this._view.webview.postMessage(msg);
     }
   }
 
@@ -96,47 +146,52 @@ export class AccountViewProvider implements WebviewViewProvider {
   ): void {
     AccountViewProvider._view = webview;
 
+    const extUri = AccountManager.context.extensionUri;
+
     webview.title = i18n.word.account;
     webview.webview.options = {
       enableScripts: true,
+      localResourceRoots: [extUri, Uri.file(SETTING_DIR)],
     };
 
     type Msg =
       | { command: "toggle" }
       | { command: "previous" }
       | { command: "nexttrack" }
-      | { command: "account"; userId: number };
+      | { command: "account"; userId: number }
+      | { command: "end" }
+      | { command: "load" }
+      | { command: "position"; pos: number };
 
     webview.webview.onDidReceiveMessage((msg: Msg) => {
       switch (msg.command) {
         case "account":
           AccountManager.accountQuickPick(msg.userId);
           break;
+        case "end":
+          if (State.repeat) IPC.load();
+          else void commands.executeCommand("cloudmusic.next");
+          break;
+        case "load":
+          State.loading = false;
+          break;
+        case "position":
+          IPC.position(msg.pos);
+          break;
         default:
-          // TODO master
           void commands.executeCommand(`cloudmusic.${msg.command}`);
+          break;
       }
     });
 
-    /* const files = ["silent.flac", "silent.m4a", "silent.ogg", "silent.opus"];
-
-    const sources = files
-      .map((fn) =>
-        webview.webview
-          .asWebviewUri(Uri.joinPath(this._extensionUri, "media", "audio", fn))
-          .toString()
-      )
-      .map((src) => `<source src=${src} >`)
-      .join(); */
-
     const js = webview.webview
-      .asWebviewUri(Uri.joinPath(this._extensionUri, "dist", "provider.js"))
+      .asWebviewUri(Uri.joinPath(extUri, "dist", "provider.js"))
       .toString();
     const css = webview.webview
-      .asWebviewUri(Uri.joinPath(this._extensionUri, "dist", "style.css"))
+      .asWebviewUri(Uri.joinPath(extUri, "dist", "style.css"))
       .toString();
 
-    AccountViewProvider._html = `
+    webview.webview.html = `
 <!DOCTYPE html>
 <html
   lang="en"
@@ -153,10 +208,10 @@ export class AccountViewProvider implements WebviewViewProvider {
   <script type="module" src=${js} nonce=${getNonce()}></script>
 </html>`;
 
-    webview.webview.html = AccountViewProvider._html;
     setTimeout(() => {
-      // AccountViewProvider.metadata();
+      AccountViewProvider.master();
       AccountViewProvider.account([...AccountManager.accounts.values()]);
+      AccountViewProvider.metadata();
     }, 1024);
   }
 }

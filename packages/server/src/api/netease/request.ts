@@ -8,14 +8,15 @@ import { eapi, weapi } from "./crypto";
 import { APISetting } from "..";
 import type { NeteaseTypings } from "api";
 import type { ParsedUrlQueryInput } from "querystring";
-import { State } from "../..";
+import { State } from "../../state";
 import axios from "axios";
 import { loginStatus } from ".";
+import { platform } from "os";
 import { randomBytes } from "crypto";
 import { stringify } from "querystring";
 
 const userAgent = (() => {
-  switch (process.platform) {
+  switch (platform()) {
     case "win32":
       return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36	";
     case "darwin":

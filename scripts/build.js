@@ -5,6 +5,7 @@ const { build } = require("esbuild");
 const { pnpPlugin } = require("@yarnpkg/esbuild-plugin-pnp");
 const { resolve } = require("path");
 const { spawn } = require("child_process");
+const { wasmLoader } = require("esbuild-plugin-wasm");
 
 const prod = process.argv.includes("--prod");
 
@@ -52,7 +53,7 @@ const globalSharedConfig = {
   loader: { ".ts": "ts", ".js": "js", ".tsx": "tsx", ".jsx": "jsx" },
   resolveExtensions: [".ts", ".js", ".tsx", ".jsx"],
   // incremental: true,
-  plugins: [pnpPlugin({ onResolve })],
+  plugins: [wasmLoader({ mode: "embedded" }), pnpPlugin({ onResolve })],
 };
 
 // css

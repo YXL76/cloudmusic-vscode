@@ -1,3 +1,5 @@
+export * from "./shared";
+
 import { workspace } from "vscode";
 
 const conf = workspace.getConfiguration("cloudmusic");

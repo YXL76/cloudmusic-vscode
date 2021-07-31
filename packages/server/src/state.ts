@@ -1,4 +1,5 @@
-import { IPCServer, NeteaseAPI } from ".";
+import { IPCServer } from "./server";
+import { NeteaseAPI } from "./api";
 import type { NeteaseTypings } from "api";
 
 export class State {

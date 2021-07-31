@@ -5,9 +5,10 @@ import {
   resolveSongItem,
   resolveSongItemSt,
 } from "./helper";
-import { apiCache, logError } from "../..";
 import type { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
+import { apiCache } from "../../cache";
+import { logError } from "../../utils";
 import { weapiRequest } from "./request";
 
 type ArtistsRet = {

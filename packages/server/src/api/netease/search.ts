@@ -5,10 +5,11 @@ import {
   resolvePlaylistItem,
   resolveSongItemSt,
 } from "./helper";
-import { apiCache, logError } from "../..";
 import { eapiRequest, weapiRequest } from "./request";
 import { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
+import { apiCache } from "../../cache";
+import { logError } from "../../utils";
 
 export async function searchDefault(uid: number): Promise<string> {
   const key = "search_default";

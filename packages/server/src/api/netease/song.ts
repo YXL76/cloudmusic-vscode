@@ -3,11 +3,14 @@ import {
   resolveAnotherSongItem,
   resolveSongItem,
 } from "./helper";
-import { LyricCache, State, apiCache, logError } from "../..";
+import { LyricCache, apiCache } from "../../cache";
 import { apiRequest, eapiRequest, weapiRequest } from "./request";
 import type { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
+import { State } from "../../state";
+import { logError } from "../../utils";
 
+// TODO Parklife
 const resolveLyric = (
   raw: string
 ): { time: readonly number[]; text: readonly string[] } => {

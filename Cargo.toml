@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/native", "crates/wasi"]
+members = ["crates/native", "crates/wasi", "crates/wasm"]
 default-members = ["crates/native"]
 
 [patch.crates-io]

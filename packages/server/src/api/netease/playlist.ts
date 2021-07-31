@@ -5,9 +5,10 @@ import {
   resolveSongItemSt,
   resolveUserDetail,
 } from "./helper";
-import { apiCache, logError } from "../..";
 import { apiRequest, weapiRequest } from "./request";
 import type { NeteaseTypings } from "api";
+import { apiCache } from "../../cache";
+import { logError } from "../../utils";
 import { songDetail } from ".";
 
 type PlaylistCatlistItem = { name: string; category?: number; hot: boolean };

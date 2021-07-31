@@ -26,7 +26,7 @@ export class State {
   static set master(value: boolean) {
     if (this._master !== value) {
       this._master = value;
-      AccountViewProvider.toggleHTML(value);
+      AccountViewProvider.master();
     }
   }
 
@@ -52,7 +52,7 @@ export class State {
     if (value !== this._playItem) {
       this._playItem = value;
       this.like = !!(value && value instanceof QueueItemTreeItem);
-      // AccountViewProvider.metadata();
+      AccountViewProvider.metadata();
       if (this._master) value ? IPC.load() : IPC.stop();
     }
   }

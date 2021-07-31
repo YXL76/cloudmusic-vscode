@@ -2,7 +2,7 @@ import { AccountState, resolveComment } from "./helper";
 import { eapiRequest, weapiRequest } from "./request";
 import { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
-import { logError } from "../..";
+import { logError } from "../../utils";
 
 const resourceTypeMap = [
   "R_SO_4_",

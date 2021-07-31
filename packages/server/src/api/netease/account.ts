@@ -8,7 +8,6 @@ import {
   resolveSongItemSt,
   resolveUserDetail,
 } from "./helper";
-import { apiCache, logError } from "../..";
 import {
   eapiRequest,
   loginRequest,
@@ -16,6 +15,8 @@ import {
   weapiRequest,
 } from "./request";
 import type { NeteaseTypings } from "api";
+import { apiCache } from "../../cache";
+import { logError } from "../../utils";
 
 export async function dailyCheck(uid: number): Promise<boolean> {
   try {

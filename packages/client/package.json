@@ -13,6 +13,7 @@
     "@types/vscode": "1.57.1"
   },
   "dependencies": {
+    "@cloudmusic/server": "workspace:*",
     "@cloudmusic/shared": "workspace:*",
     "array-unsort": "1.1.6",
     "file-type": "16.5.2",

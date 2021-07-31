@@ -1,12 +1,8 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { AccountViewProvider, IPC, State } from "../utils";
-import { COOKIE_KEY, STRICT_SSL, VOLUME_KEY } from "../constant";
-import type {
-  IPCBroadcastMsg,
-  IPCServerMsg,
-  NeteaseAPIKey,
-  NeteaseAPISMsg,
-} from "@cloudmusic/shared";
+import { COOKIE_KEY, LOG_FILE, STRICT_SSL, VOLUME_KEY } from "../constant";
+import type { IPCBroadcastMsg, IPCServerMsg } from "@cloudmusic/shared";
+import type { NeteaseAPIKey, NeteaseAPISMsg } from "@cloudmusic/server";
 import {
   PlaylistProvider,
   QueueItemTreeItem,
@@ -14,7 +10,6 @@ import {
 } from "../treeview";
 import { commands, workspace } from "vscode";
 import type { ExtensionContext } from "vscode";
-import { LOG_FILE } from "@cloudmusic/shared";
 import type { PlayTreeItemData } from "../treeview";
 import { QueueProvider } from "../treeview";
 import { fork } from "child_process";
@@ -144,6 +139,21 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
           ...data.item,
           pid: data.item.al.id,
         });
+        break;
+      case "wasm.load":
+        AccountViewProvider.wasmLoad(data.path);
+        break;
+      case "wasm.pause":
+        AccountViewProvider.wasmPause();
+        break;
+      case "wasm.play":
+        AccountViewProvider.wasmPlay();
+        break;
+      case "wasm.stop":
+        AccountViewProvider.wasmStop();
+        break;
+      case "wasm.volume":
+        AccountViewProvider.wasmVolume(data.level);
         break;
     }
   };

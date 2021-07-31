@@ -3,6 +3,7 @@ export * from "./cache";
 export * from "./command";
 export * from "./ipc";
 export * from "./local";
+export * from "./player";
 export * from "./playlist";
 export * from "./queue";
 export * from "./radio";

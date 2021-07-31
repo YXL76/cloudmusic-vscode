@@ -1,9 +1,4 @@
-import {
-  CACHE_DIR,
-  LYRIC_CACHE_DIR,
-  MUSIC_CACHE_DIR,
-} from "@cloudmusic/shared";
-import { State, logError } from ".";
+import { CACHE_DIR, LYRIC_CACHE_DIR, MUSIC_CACHE_DIR } from "./constant";
 import {
   copyFile,
   mkdir,
@@ -16,7 +11,9 @@ import {
 } from "fs/promises";
 import type { NeteaseTypings } from "api";
 import NodeCache from "node-cache";
+import { State } from "./state";
 import Yallist from "yallist";
+import { logError } from "./utils";
 import md5File from "md5-file";
 import { resolve } from "path";
 import { writeFileSync } from "fs";

@@ -1,0 +1,16 @@
+{
+  "name": "cloudmusic-wasm",
+  "collaborators": [
+    "YXL <chenxin.lan.76@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "index_bg.wasm",
+    "index.js",
+    "index_bg.js",
+    "index.d.ts"
+  ],
+  "module": "index.js",
+  "types": "index.d.ts",
+  "sideEffects": false
+}

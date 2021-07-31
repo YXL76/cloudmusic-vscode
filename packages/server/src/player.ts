@@ -1,9 +1,25 @@
-import { IPCServer, MusicCache, State, downloadMusic, native } from ".";
+import { downloadMusic, getMusicPath, logError } from "./utils";
 import { readdir, stat, unlink } from "fs/promises";
+import { IPCServer } from "./server";
+import { MusicCache } from "./cache";
 import { NeteaseAPI } from "./api";
 import { PersonalFm } from "./state";
-import { TMP_DIR } from "@cloudmusic/shared";
+import { State } from "./state";
+import { TMP_DIR } from "./constant";
 import { resolve } from "path";
+
+type NativePlayer = unknown;
+
+interface NativeModule {
+  playerEmpty(player: NativePlayer): boolean;
+  playerLoad(player: NativePlayer, url: string): boolean;
+  playerNew(): NativePlayer;
+  playerPause(player: NativePlayer): void;
+  playerPlay(player: NativePlayer): boolean;
+  playerPosition(player: NativePlayer): number;
+  playerSetVolume(player: NativePlayer, level: number): void;
+  playerStop(player: NativePlayer): void;
+}
 
 let prefetchLock = false;
 
@@ -20,6 +36,44 @@ async function prefetch() {
   void NeteaseAPI.lyric(id);
 }
 
+export function posHandler(pos: number): void {
+  if (pos > 120 && !prefetchLock) {
+    prefetchLock = true;
+    void prefetch();
+  }
+
+  const lpos = pos - State.lyric.delay;
+  while (State.lyric.o.time[State.lyric.oi] <= lpos) ++State.lyric.oi;
+  while (State.lyric.t.time[State.lyric.ti] <= lpos) ++State.lyric.ti;
+  IPCServer.broadcast({
+    t: "player.lyricIndex",
+    oi: State.lyric.oi - 1,
+    ti: State.lyric.ti - 1,
+  });
+}
+
+class WasmPlayer {
+  load(path: string) {
+    IPCServer.sendToMaster({ t: "wasm.load", path });
+  }
+
+  pause() {
+    IPCServer.sendToMaster({ t: "wasm.pause" });
+  }
+
+  play() {
+    IPCServer.sendToMaster({ t: "wasm.play" });
+  }
+
+  stop() {
+    IPCServer.sendToMaster({ t: "wasm.stop" });
+  }
+
+  volume(level: number) {
+    IPCServer.sendToMaster({ t: "wasm.volume", level });
+  }
+}
+
 export class Player {
   static next = 0;
 
@@ -33,33 +87,31 @@ export class Player {
 
   private static _loadtime = 0;
 
-  private static readonly _player = native.playerNew();
+  private static _player: NativePlayer;
 
-  static init(): void {
-    setInterval(() => {
-      if (!State.playing) return;
-      if (Player.empty()) {
-        State.playing = false;
-        IPCServer.sendToMaster({ t: "player.end" });
-        return;
-      }
+  private static _wasm: WasmPlayer;
 
-      // TODO
-      const pos = Player.position();
-      if (pos > 120 && !prefetchLock) {
-        prefetchLock = true;
-        void prefetch();
-      }
+  private static _native?: NativeModule;
 
-      const lpos = pos - State.lyric.delay;
-      while (State.lyric.o.time[State.lyric.oi] <= lpos) ++State.lyric.oi;
-      while (State.lyric.t.time[State.lyric.ti] <= lpos) ++State.lyric.ti;
-      IPCServer.broadcast({
-        t: "player.lyricIndex",
-        oi: State.lyric.oi - 1,
-        ti: State.lyric.ti - 1,
-      });
-    }, 800);
+  static init(wasm: boolean, name = ""): void {
+    if (!wasm) {
+      const path = resolve(__dirname, "..", "build", name);
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      this._native = require(path) as NativeModule;
+      this._player = this._native.playerNew();
+
+      setInterval(() => {
+        if (!State.playing) return;
+        if (Player.empty()) {
+          State.playing = false;
+          IPCServer.sendToMaster({ t: "player.end" });
+          return;
+        }
+        posHandler(Player.position());
+      }, 800);
+    } else {
+      this._wasm = new WasmPlayer();
+    }
 
     setInterval(
       () =>
@@ -69,9 +121,7 @@ export class Player {
               const path = resolve(TMP_DIR, file);
               void stat(path).then(({ mtime }) => {
                 if (Date.now() - mtime.getTime() > 480000)
-                  unlink(path).catch(() => {
-                    //
-                  });
+                  unlink(path).catch(logError);
               });
             }
         }),
@@ -81,21 +131,48 @@ export class Player {
   }
 
   static empty(): boolean {
-    return native.playerEmpty(this._player);
+    return this._native ? this._native.playerEmpty(this._player) : true;
   }
 
-  static load(url: string, dt = 0, id = 0, pid = 0, next = 0): boolean {
+  static async load(
+    data:
+      | { url: string; local: true }
+      | { dt: number; id: number; pid: number; next: number | undefined }
+  ): Promise<void> {
+    const e = () => IPCServer.sendToMaster({ t: "player.end", fail: true });
+
     const loadtime = Date.now();
-    if (loadtime < this._loadtime) return true;
+    if (loadtime < this._loadtime) {
+      e();
+      return;
+    }
     this._loadtime = loadtime;
 
-    if (!native.playerLoad(this._player, url)) return false;
-    this.next = next;
+    let path: string | void = undefined;
+    if ("local" in data && data.local) path = data.url;
+    else if ("id" in data && data.id)
+      path = await getMusicPath(data.id, !!this._wasm);
+    if (!path) {
+      e();
+      return;
+    }
+
+    if (this._native) {
+      if (!this._native.playerLoad(this._player, path)) {
+        e();
+        return;
+      }
+      IPCServer.broadcast({ t: "player.load" });
+    } else if (this._wasm) {
+      this._wasm.load(path);
+    }
+
+    this.next = "next" in data ? data["next"] ?? 0 : 0;
     prefetchLock = false;
     State.playing = true;
 
-    if (id) {
-      void NeteaseAPI.lyric(id).then((l) => {
+    if ("id" in data) {
+      void NeteaseAPI.lyric(data.id).then((l) => {
         Object.assign(State.lyric, l, { oi: 0, ti: 0 });
         IPCServer.broadcast({ t: "player.lyric", lyric: { o: l.o, t: l.t } });
       });
@@ -107,40 +184,39 @@ export class Player {
     // TODO
     if (this._id) {
       const diff = this._time - pTime;
+      const time = Math.floor(Math.min(diff, this._dt)) / 1000;
       if (diff > 60000 && this._dt > 60000)
-        void NeteaseAPI.scrobble(
-          this._id,
-          this._pid,
-          Math.floor(Math.min(diff, this._dt)) / 1000
-        );
+        void NeteaseAPI.scrobble(this._id, this._pid, time);
     }
 
-    this._dt = dt;
-    this._id = id;
-    this._pid = pid;
-
-    return true;
+    this._dt = "dt" in data ? data.dt : 0;
+    this._id = "id" in data ? data.id : 0;
+    this._pid = "pid" in data ? data.pid : 0;
   }
 
   static pause(): void {
-    native.playerPause(this._player);
+    this._native?.playerPause(this._player);
+    this._wasm?.pause();
     State.playing = false;
   }
 
   static play(): void {
-    if (native.playerPlay(this._player)) State.playing = true;
+    if (this._native?.playerPlay(this._player)) State.playing = true;
+    this._wasm?.play();
   }
 
   static position(): number {
-    return native.playerPosition(this._player);
+    return this._native ? this._native.playerPosition(this._player) : 0;
   }
 
   static stop(): void {
-    native.playerStop(this._player);
+    this._native?.playerStop(this._player);
+    this._wasm?.stop();
     State.playing = false;
   }
 
   static volume(level: number): void {
-    native.playerSetVolume(this._player, level);
+    this._native?.playerSetVolume(this._player, level);
+    this._wasm?.volume(level);
   }
 }

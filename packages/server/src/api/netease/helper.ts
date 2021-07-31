@@ -1,4 +1,4 @@
-import { IPCServer } from "../..";
+import { IPCServer } from "../../server";
 import type { IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import type { Socket } from "net";

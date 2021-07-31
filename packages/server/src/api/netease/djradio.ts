@@ -4,8 +4,9 @@ import {
   resolveRadioDetail,
   resolveUserDetail,
 } from "./helper";
-import { apiCache, logError } from "../..";
 import type { NeteaseTypings } from "api";
+import { apiCache } from "../../cache";
+import { logError } from "../../utils";
 import { weapiRequest } from "./request";
 
 /* export async function djCategoryRecommend() {

@@ -1,6 +1,7 @@
-import { apiCache, logError } from "../..";
 import { resolveAlbumsItem, resolveSongItem } from "./helper";
 import type { NeteaseTypings } from "api";
+import { apiCache } from "../../cache";
+import { logError } from "../../utils";
 import { weapiRequest } from "./request";
 
 type AlbumRet = {

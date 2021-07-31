@@ -1,5 +1,4 @@
 import type { IPCEvent } from ".";
-import type { NeteaseAPI } from "@cloudmusic/server";
 import type { NeteaseTypings } from "api";
 
 export type CSMessage<T = undefined, U = number | string> = {
@@ -42,27 +41,19 @@ export type IPCClientMsg =
   | IPCMsg<IPCEvent.Control$music>
   | IPCMsg<IPCEvent.Control$netease>
   | IPCMsg<IPCEvent.Control$retain, { items: readonly unknown[] }>
+  | IPCMsg<IPCEvent.Play$load, { url: string; local: true }>
   | IPCMsg<
       IPCEvent.Play$load,
-      {
-        url: string;
-        dt?: undefined;
-        id?: undefined;
-        pid?: undefined;
-        local: true;
-        next?: undefined;
-      }
-    >
-  | IPCMsg<
-      IPCEvent.Play$load,
-      { dt: number; id: number; pid: number; local?: undefined; next?: number }
+      { dt: number; id: number; pid: number; next: number | undefined }
     >
   | IPCMsg<IPCEvent.Play$lyricDelay, { delay: number }>
+  | IPCMsg<IPCEvent.Play$position, { pos: number }>
   | IPCMsg<IPCEvent.Play$stop>
   | IPCMsg<IPCEvent.Play$toggle>
   | IPCMsg<IPCEvent.Play$volume, { level: number }>
   | IPCMsg<IPCEvent.Queue$fm, { is: boolean }>
-  | IPCMsg<IPCEvent.Queue$fmNext>;
+  | IPCMsg<IPCEvent.Queue$fmNext>
+  | IPCMsg<IPCEvent.Wasm$init, { wasm: boolean; name?: string }>;
 
 export type IPCServerMsg =
   | IPCMsg<IPCEvent.Control$master, { is?: true }>
@@ -84,26 +75,9 @@ export type IPCServerMsg =
   | IPCMsg<IPCEvent.Play$stop>
   | IPCMsg<IPCEvent.Play$volume, { level: number }>
   | IPCMsg<IPCEvent.Queue$fm, { is: boolean }>
-  | IPCMsg<IPCEvent.Queue$fmNext, { item: NeteaseTypings.SongsItem }>;
-
-export type NeteaseAPIKey = keyof typeof NeteaseAPI;
-
-export type NeteaseAPIParameters<T extends NeteaseAPIKey> = Parameters<
-  typeof NeteaseAPI[T]
->;
-
-export type NeteaseAPIReturn<T extends NeteaseAPIKey> = ReturnType<
-  typeof NeteaseAPI[T]
-> extends PromiseLike<infer U>
-  ? U
-  : ReturnType<typeof NeteaseAPI[T]>;
-
-export type NeteaseAPICMsg<T extends NeteaseAPIKey> = IPCMsg<
-  IPCEvent.Api$netease,
-  CSMessage<{ i: T; p: NeteaseAPIParameters<T> }>
->;
-
-export type NeteaseAPISMsg<T extends NeteaseAPIKey> = IPCMsg<
-  IPCEvent.Api$netease,
-  CSMessage<NeteaseAPIReturn<T>>
->;
+  | IPCMsg<IPCEvent.Queue$fmNext, { item: NeteaseTypings.SongsItem }>
+  | IPCMsg<IPCEvent.Wasm$load, { path: string }>
+  | IPCMsg<IPCEvent.Wasm$pause>
+  | IPCMsg<IPCEvent.Wasm$play>
+  | IPCMsg<IPCEvent.Wasm$stop>
+  | IPCMsg<IPCEvent.Wasm$volume, { level: number }>;

@@ -1,11 +1,12 @@
 import { AccountManager, ButtonManager } from "./manager";
-import { IPC, State } from "./utils";
+import { AccountViewProvider, IPC, State } from "./utils";
 import {
   initAccount,
   initCache,
   initCommand,
   initIPC,
   initLocal,
+  initPlayer,
   initPlaylist,
   initQueue,
   initRadio,
@@ -13,13 +14,14 @@ import {
   initViewProvide,
 } from "./activate";
 import type { ExtensionContext } from "vscode";
-import { SETTING_DIR } from "@cloudmusic/shared";
+import { SETTING_DIR } from "./constant";
 import { mkdirSync } from "fs";
 
 export async function activate(context: ExtensionContext): Promise<void> {
   try {
     mkdirSync(SETTING_DIR);
   } catch {}
+  AccountViewProvider.context = context;
   AccountManager.context = context;
   ButtonManager.context = context;
   State.context = context;
@@ -29,6 +31,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   initStatusBar(context);
   initViewProvide(context);
   await initIPC(context);
+  initPlayer();
   initLocal(context);
   initCache(context);
   initPlaylist(context);

@@ -4,7 +4,6 @@
   "private": true,
   "main": "./src/index.ts",
   "devDependencies": {
-    "@cloudmusic/server": "workspace:*",
     "@types/api": "workspace:*"
   }
 }
