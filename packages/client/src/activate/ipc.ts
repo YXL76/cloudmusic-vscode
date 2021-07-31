@@ -1,6 +1,6 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { AccountViewProvider, IPC, State } from "../utils";
-import { COOKIE_KEY, LOG_FILE, STRICT_SSL } from "../constant";
+import { COOKIE_KEY, SETTING_DIR, STRICT_SSL } from "../constant";
 import type { IPCBroadcastMsg, IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseAPIKey, NeteaseAPISMsg } from "@cloudmusic/server";
 import {
@@ -9,6 +9,7 @@ import {
   RadioProvider,
 } from "../treeview";
 import { commands, workspace } from "vscode";
+import { readdir, unlink } from "fs/promises";
 import type { ExtensionContext } from "vscode";
 import type { PlayTreeItemData } from "../treeview";
 import { QueueProvider } from "../treeview";
@@ -165,10 +166,14 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
     const firstTry = await IPC.connect(ipcHandler, ipcBHandler, 0);
     if (firstTry.includes(false)) throw Error;
   } catch {
+    const version = (context.extension.packageJSON as { version: string })
+      .version;
+    const log = `err-${version}.log`;
+    const logPath = resolve(SETTING_DIR, log);
     const httpProxy = workspace.getConfiguration("http").get<string>("proxy");
     fork(resolve(__dirname, "server.js"), {
       detached: true,
-      stdio: ["ignore", "ignore", openSync(LOG_FILE, "a"), "ipc"],
+      stdio: ["ignore", "ignore", openSync(logPath, "a"), "ipc"],
       env: {
         ...process.env,
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -178,5 +183,17 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       },
     }).unref();
     await IPC.connect(ipcHandler, ipcBHandler);
+    readdir(SETTING_DIR, { withFileTypes: true })
+      .then((dirents) => {
+        for (const dirent of dirents) {
+          if (
+            dirent.isFile() &&
+            dirent.name.startsWith("err") &&
+            dirent.name !== log
+          )
+            unlink(resolve(SETTING_DIR, dirent.name)).catch(console.error);
+        }
+      })
+      .catch(console.error);
   }
 }

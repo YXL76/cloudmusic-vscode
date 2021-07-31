@@ -21,8 +21,3 @@ export const ipcBroadcastServerPath =
     : `/tmp/${ipcAppspace}${ipcBroadcastServerId}`;
 
 export const SETTING_DIR = resolve(homedir(), ".cloudmusic");
-export const LOG_FILE = resolve(SETTING_DIR, "err.log");
-export const TMP_DIR = resolve(SETTING_DIR, "tmp");
-export const CACHE_DIR = resolve(SETTING_DIR, "cache");
-export const MUSIC_CACHE_DIR = resolve(CACHE_DIR, "music");
-export const LYRIC_CACHE_DIR = resolve(CACHE_DIR, "lyric");
