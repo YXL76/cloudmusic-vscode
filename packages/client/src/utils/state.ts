@@ -16,7 +16,6 @@ type Lyric = {
 export class State {
   static context: ExtensionContext;
 
-  // TODO
   private static _master = false;
 
   static get master(): boolean {

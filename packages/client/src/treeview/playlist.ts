@@ -125,7 +125,7 @@ ${i18n.word.subscribedCount}: ${this.item.subscribedCount}`;
     let element = this._set.get(item.id);
     if (element) return element;
     element = new this(item, uid);
-    this._set.set(uid, element);
+    this._set.set(item.id, element);
     return element;
   }
 

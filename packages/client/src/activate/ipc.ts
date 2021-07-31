@@ -74,7 +74,6 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         break;
       case "control.netease":
         AccountManager.accounts.clear();
-        AccountManager.userPlaylist.clear();
         data.profiles.forEach((i) => AccountManager.accounts.set(i.userId, i));
         if (!data.cookies.length && State.master) IPC.clear();
         PlaylistProvider.refresh();
