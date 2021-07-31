@@ -19,12 +19,12 @@ import {
   pickUser,
 } from "../utils";
 import type { ExtensionContext, QuickPickItem } from "vscode";
+import { commands, window } from "vscode";
 import type { InputStep } from "../utils";
 import { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import { createHash } from "crypto";
 import i18n from "../i18n";
-import { window } from "vscode";
 
 type CookieState = { uid: number; cookie: string }[];
 
@@ -47,9 +47,20 @@ export class AccountManager {
       } catch (err) {
         console.error(err);
       }
-      for (const { uid, cookie } of cookies)
-        if ((await IPC.netease("loginStatus", [cookie])) && AUTO_CHECK)
-          void IPC.netease("dailyCheck", [uid]);
+      if (!cookies.length)
+        void window
+          .showInformationMessage(
+            i18n.sentence.hint.trySignIn,
+            i18n.word.signIn
+          )
+          .then((action) => {
+            if (action === i18n.word.signIn)
+              void commands.executeCommand("cloudmusic.addAccount");
+          });
+      else
+        for (const { uid, cookie } of cookies)
+          if ((await IPC.netease("loginStatus", [cookie])) && AUTO_CHECK)
+            void IPC.netease("dailyCheck", [uid]);
     }
     IPC.neteaseAc();
   }
