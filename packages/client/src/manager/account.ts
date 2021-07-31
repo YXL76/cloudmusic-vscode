@@ -19,12 +19,12 @@ import {
   pickUser,
 } from "../utils";
 import type { ExtensionContext, QuickPickItem } from "vscode";
-import { commands, window } from "vscode";
 import type { InputStep } from "../utils";
 import { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import { createHash } from "crypto";
 import i18n from "../i18n";
+import { window } from "vscode";
 
 type CookieState = { uid: number; cookie: string }[];
 
@@ -284,7 +284,7 @@ export class AccountManager {
         case Type.save:
           return (input) => pickSave(input);
         case Type.fm:
-          void commands.executeCommand("cloudmusic.personalFM");
+          IPC.fm(uid);
           break;
         case Type.musicRanking:
           await Webview.musicRanking(uid);

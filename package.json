@@ -94,11 +94,6 @@
         "title": "%commands.toggleButton.title%"
       },
       {
-        "category": "Cloudmusic",
-        "command": "cloudmusic.personalFM",
-        "title": "%commands.personalFM.title%"
-      },
-      {
         "command": "cloudmusic.addAccount",
         "icon": "$(sign-in)",
         "title": "%commands.addAccount.title%"

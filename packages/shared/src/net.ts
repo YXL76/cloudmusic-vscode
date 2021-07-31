@@ -51,7 +51,7 @@ export type IPCClientMsg =
   | IPCMsg<IPCEvent.Play$stop>
   | IPCMsg<IPCEvent.Play$toggle>
   | IPCMsg<IPCEvent.Play$volume, { level: number }>
-  | IPCMsg<IPCEvent.Queue$fm, { is: boolean }>
+  | IPCMsg<IPCEvent.Queue$fm, { uid: number; is: boolean }>
   | IPCMsg<IPCEvent.Queue$fmNext>
   | IPCMsg<IPCEvent.Wasm$init, { wasm: boolean; name?: string }>;
 

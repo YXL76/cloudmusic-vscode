@@ -40,7 +40,7 @@ export class State {
 }
 
 export class PersonalFm {
-  private static _uid: number;
+  static uid: number;
 
   private static _songs: NeteaseTypings.SongsItem[] = [];
 
@@ -55,6 +55,6 @@ export class PersonalFm {
   }
 
   private static async _getSongs() {
-    this._songs.push(...(await NeteaseAPI.personalFm(this._uid)));
+    this._songs.push(...(await NeteaseAPI.personalFm(this.uid)));
   }
 }

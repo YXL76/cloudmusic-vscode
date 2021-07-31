@@ -211,8 +211,8 @@ export class IPC {
     ipcB.send({ t: "queue.delete", id });
   }
 
-  static fm(is = true): void {
-    ipc.send({ t: "queue.fm", is });
+  static fm(uid: number, is = true): void {
+    ipc.send({ t: "queue.fm", uid, is });
   }
 
   static fmNext(): void {

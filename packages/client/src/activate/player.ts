@@ -1,6 +1,6 @@
 import { arch, platform } from "os";
 import { IPC } from "../utils";
-import { isWasm } from "../constant";
+import { playerMode } from "../constant";
 
 const available = [
   "win32-arm64.node",
@@ -11,5 +11,7 @@ const available = [
 
 export function initPlayer(): void {
   const name = `${platform()}-${arch() === "x64" ? "x86" : arch()}.node`;
-  IPC.wasm(isWasm || !available.includes(name), name);
+  const wasm = playerMode === "wasm" || !available.includes(name);
+  console.log("Cloudmusic:", playerMode, "mode.");
+  IPC.wasm(wasm, name);
 }

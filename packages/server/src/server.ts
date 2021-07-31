@@ -183,6 +183,7 @@ export class IPCServer {
         break;
       case "queue.fm":
         State.fm = data.is;
+        PersonalFm.uid = data.uid;
         this.broadcast(data);
         break;
       case "queue.fmNext":
