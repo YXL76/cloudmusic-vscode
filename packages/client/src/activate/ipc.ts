@@ -21,6 +21,9 @@ const ipcBHandler = (data: IPCBroadcastMsg) => {
     case "player.load":
       State.loading = true;
       break;
+    case "player.loaded":
+      State.loading = false;
+      break;
     case "player.repeat":
       State.repeat = data.r;
       break;
@@ -93,7 +96,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         if (!data.fail && State.repeat) IPC.load();
         else void commands.executeCommand("cloudmusic.next");
         break;
-      case "player.load":
+      case "player.loaded":
         State.loading = false;
         break;
       case "player.lyric":

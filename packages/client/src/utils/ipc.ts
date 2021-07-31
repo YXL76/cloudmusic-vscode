@@ -137,6 +137,10 @@ export class IPC {
     }
   }
 
+  static loaded(): void {
+    ipcB.send({ t: "player.loaded" });
+  }
+
   static deleteCache(key: string): void {
     ipc.send({ t: "control.deleteCache", key });
   }
@@ -181,6 +185,10 @@ export class IPC {
 
   static lyricDelay(delay: number): void {
     ipc.send({ t: "player.lyricDelay", delay });
+  }
+
+  static playing(playing: boolean): void {
+    ipc.send({ t: "player.playing", playing });
   }
 
   static position(pos: number): void {

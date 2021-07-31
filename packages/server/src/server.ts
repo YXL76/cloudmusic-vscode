@@ -51,8 +51,10 @@ export class IPCServer {
           this._sockets.delete(socket);
           this._buffer.delete(socket);
 
-          if (this._sockets.size) this._setMaster();
-          else {
+          if (this._sockets.size) {
+            this._setMaster();
+            Player.wasmOpen();
+          } else {
             Player.pause();
             this._timer = setTimeout(() => {
               if (this._sockets.size) return;
@@ -78,6 +80,8 @@ export class IPCServer {
           items: IPCServer._retain,
         });
         this._retain = [];
+
+        Player.wasmOpen();
       } else {
         this.sendToMaster({ t: "control.new" });
         const tmp = State.playing;
@@ -167,6 +171,9 @@ export class IPCServer {
         break;
       case "player.lyricDelay":
         State.lyric.delay = data.delay;
+        break;
+      case "player.playing":
+        State.playing = data.playing;
         break;
       case "player.position":
         posHandler(data.pos);

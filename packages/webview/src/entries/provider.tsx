@@ -123,6 +123,7 @@ const Provider = (): JSX.Element => {
         case "play":
           if (!playing) i = Date.now();
           playing = !!player?.play();
+          vscode.postMessage({ command: "playing", playing });
           break;
         case "pause":
           if (playing) d = Date.now() - i;

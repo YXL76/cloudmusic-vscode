@@ -161,7 +161,8 @@ export class AccountViewProvider implements WebviewViewProvider {
       | { command: "account"; userId: number }
       | { command: "end" }
       | { command: "load" }
-      | { command: "position"; pos: number };
+      | { command: "position"; pos: number }
+      | { command: "playing"; playing: boolean };
 
     webview.webview.onDidReceiveMessage((msg: Msg) => {
       switch (msg.command) {
@@ -173,10 +174,13 @@ export class AccountViewProvider implements WebviewViewProvider {
           else void commands.executeCommand("cloudmusic.next");
           break;
         case "load":
-          State.loading = false;
+          IPC.loaded();
           break;
         case "position":
           IPC.position(msg.pos);
+          break;
+        case "playing":
+          IPC.playing(msg.playing);
           break;
         default:
           void commands.executeCommand(`cloudmusic.${msg.command}`);

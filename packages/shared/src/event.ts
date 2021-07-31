@@ -12,11 +12,13 @@ export type Control$retain = "control.retain";
 
 export type Play$end = "player.end";
 export type Play$load = "player.load";
+export type Play$loaded = "player.loaded";
 export type Play$lyric = "player.lyric";
 export type Play$lyricDelay = "player.lyricDelay";
 export type Play$lyricIndex = "player.lyricIndex";
 export type Play$pause = "player.pause";
 export type Play$play = "player.play";
+export type Play$playing = "player.playing";
 export type Play$position = "player.position";
 export type Play$repeat = "player.repeat";
 export type Play$stop = "player.stop";

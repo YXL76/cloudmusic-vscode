@@ -16,6 +16,7 @@ export type IPCMsg<T = string, U = Record<never, never>> = { t: T } & U;
 
 export type IPCBroadcastMsg =
   | IPCMsg<IPCEvent.Play$load>
+  | IPCMsg<IPCEvent.Play$loaded>
   | IPCMsg<IPCEvent.Play$repeat, { r: boolean }>
   | IPCMsg<IPCEvent.Queue$add, { items: readonly unknown[]; index?: number }>
   | IPCMsg<IPCEvent.Queue$clear>
@@ -48,6 +49,7 @@ export type IPCClientMsg =
       { dt: number; id: number; pid: number; next: number | undefined }
     >
   | IPCMsg<IPCEvent.Play$lyricDelay, { delay: number }>
+  | IPCMsg<IPCEvent.Play$playing, { playing: boolean }>
   | IPCMsg<IPCEvent.Play$position, { pos: number }>
   | IPCMsg<IPCEvent.Play$stop>
   | IPCMsg<IPCEvent.Play$toggle>
@@ -67,7 +69,7 @@ export type IPCServerMsg =
   | IPCMsg<IPCEvent.Control$new>
   | IPCMsg<IPCEvent.Control$retain, { items: readonly unknown[] }>
   | IPCMsg<IPCEvent.Play$end, { fail?: true }>
-  | IPCMsg<IPCEvent.Play$load>
+  | IPCMsg<IPCEvent.Play$loaded>
   | IPCMsg<IPCEvent.Play$lyric, { lyric: NeteaseTypings.LyricData }>
   | IPCMsg<IPCEvent.Play$lyricIndex, { oi: number; ti: number }>
   | IPCMsg<IPCEvent.Play$pause>

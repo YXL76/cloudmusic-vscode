@@ -138,11 +138,9 @@ export class Player {
       | { url: string; local: true }
       | { dt: number; id: number; pid: number; next: number | undefined }
   ): Promise<void> {
-    const e = () => IPCServer.sendToMaster({ t: "player.end", fail: true });
-
     const loadtime = Date.now();
     if (loadtime < this._loadtime) {
-      e();
+      this._failedEnd();
       return;
     }
     this._loadtime = loadtime;
@@ -152,23 +150,23 @@ export class Player {
     else if ("id" in data && data.id)
       path = await getMusicPath(data.id, !!this._wasm);
     if (!path) {
-      e();
+      this._failedEnd();
       return;
     }
 
     if (this._native) {
       if (!this._native.playerLoad(this._player, path)) {
-        e();
+        this._failedEnd();
         return;
       }
-      IPCServer.broadcast({ t: "player.load" });
+      IPCServer.broadcast({ t: "player.loaded" });
     } else if (this._wasm) {
       this._wasm.load(path);
     }
 
     this.next = "next" in data ? data["next"] ?? 0 : 0;
-    prefetchLock = false;
     State.playing = true;
+    prefetchLock = false;
 
     if ("id" in data) {
       void NeteaseAPI.lyric(data.id).then((l) => {
@@ -217,5 +215,13 @@ export class Player {
   static volume(level: number): void {
     this._native?.playerSetVolume(this._player, level);
     this._wasm?.volume(level);
+  }
+
+  static wasmOpen(): void {
+    if (this._wasm) setTimeout(() => this._failedEnd(), 1024);
+  }
+
+  private static _failedEnd(): void {
+    IPCServer.sendToMaster({ t: "player.end", fail: true });
   }
 }
