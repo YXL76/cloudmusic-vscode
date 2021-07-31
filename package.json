@@ -369,6 +369,15 @@
             "markdownDescription": "%configuration.network.strictSSL.markdownDescription%",
             "scope": "window",
             "type": "boolean"
+          },
+          "cloudmusic.player.mode": {
+            "default": "native",
+            "enum": [
+              "native",
+              "wasm"
+            ],
+            "scope": "window",
+            "type": "string"
           }
         },
         "title": "Cloudmusic"

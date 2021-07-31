@@ -12,6 +12,8 @@ export const MUSIC_CACHE_SIZE = (): number =>
 export const STRICT_SSL = conf.get("network.strictSSL", true);
 export const HTTPS_API = (): boolean => conf.get("network.httpsAPI", true);
 export const FOREIGN = (): boolean => conf.get("network.foreignUser", false);
+export const isWasm =
+  conf.get<"native" | "wasm">("player.mode", "native") === "native";
 
 export const ACCOUNT_KEY = "account-v2";
 export const CACHE_KEY = "cache-v2";
