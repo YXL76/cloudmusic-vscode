@@ -3,27 +3,27 @@ import type {
   IPCBroadcastMsg,
   IPCClientMsg,
   IPCServerMsg,
-  NeteaseAPICMsg,
-  NeteaseAPIKey,
-  NeteaseAPIParameters,
-  NeteaseAPIReturn,
 } from "@cloudmusic/shared";
 import {
   FOREIGN,
   HTTPS_API,
   MUSIC_CACHE_SIZE,
   MUSIC_QUALITY,
+  ipcBroadcastServerPath,
+  ipcServerPath,
 } from "../constant";
 import { LocalFileTreeItem, QueueProvider } from "../treeview";
-import {
-  ipcBroadcastServerPath,
-  ipcDelimiter,
-  ipcServerPath,
-} from "@cloudmusic/shared";
+import type {
+  NeteaseAPICMsg,
+  NeteaseAPIKey,
+  NeteaseAPIParameters,
+  NeteaseAPIReturn,
+} from "@cloudmusic/server";
 import type { PlayTreeItemData } from "../treeview";
 import type { Socket } from "net";
 import { State } from ".";
 import { connect } from "net";
+import { ipcDelimiter } from "@cloudmusic/shared";
 
 class IPCClient<T, U = T> {
   private _buffer = "";
@@ -137,6 +137,10 @@ export class IPC {
     }
   }
 
+  static loaded(): void {
+    ipcB.send({ t: "player.loaded" });
+  }
+
   static deleteCache(key: string): void {
     ipc.send({ t: "control.deleteCache", key });
   }
@@ -145,23 +149,19 @@ export class IPC {
     ipc.send({ t: "control.download", url, path });
   }
 
-  static init(volume?: number): void {
+  static init(
+    volume?: number,
+    player?: { wasm: boolean; name?: string }
+  ): void {
     ipc.send({
       t: "control.init",
+      volume,
+      player,
       mq: MUSIC_QUALITY(),
       cs: MUSIC_CACHE_SIZE(),
-      volume,
       https: HTTPS_API(),
       foreign: FOREIGN(),
     });
-  }
-
-  static login(profile: { userId: number; nickname: string }): void {
-    ipcB.send({ t: "control.login", ...profile });
-  }
-
-  static logout(): void {
-    ipcB.send({ t: "control.logout" });
   }
 
   static lyric(): void {
@@ -170,6 +170,10 @@ export class IPC {
 
   static music(): void {
     ipc.send({ t: "control.music" });
+  }
+
+  static neteaseAc(): void {
+    ipc.send({ t: "control.netease" });
   }
 
   static retain(): void {
@@ -181,6 +185,14 @@ export class IPC {
 
   static lyricDelay(delay: number): void {
     ipc.send({ t: "player.lyricDelay", delay });
+  }
+
+  static playing(playing: boolean): void {
+    ipc.send({ t: "player.playing", playing });
+  }
+
+  static position(pos: number): void {
+    ipc.send({ t: "player.position", pos });
   }
 
   static repeat(r: boolean): void {
@@ -211,8 +223,8 @@ export class IPC {
     ipcB.send({ t: "queue.delete", id });
   }
 
-  static fm(is = true): void {
-    ipc.send({ t: "queue.fm", is });
+  static fm(uid: number, is = true): void {
+    ipc.send({ t: "queue.fm", uid, is });
   }
 
   static fmNext(): void {

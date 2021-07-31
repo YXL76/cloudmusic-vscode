@@ -1,5 +1,5 @@
 {
-  "commands.account.title": "帳號",
+  "commands.addAccount.title": "添加",
   "commands.addLocalFile.title": "添加",
   "commands.addLocalLibrary.title": "添加",
   "commands.addPlaylist.title": "添加",
@@ -26,7 +26,6 @@
   "commands.newLocalLibrary.title": "添加",
   "commands.next.title": "下一首",
   "commands.openLocalLibrary.title": "打開",
-  "commands.personalFM.title": "私人 FM",
   "commands.play.title": "播放",
   "commands.playlistComment.title": "評論",
   "commands.playlistDetail.title": "詳情",

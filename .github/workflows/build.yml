@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - "crates/*"
-      - "packages/*"
       - "Cargo.*"
       - ".github/workflows/build.yml"
     branches:
@@ -32,8 +31,8 @@ jobs:
       # - name: Setup Xcode
       #   run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer/
 
-      - name: Install rust target
-        run: rustup target add aarch64-apple-darwin
+      # - name: Install rust target
+      #   run: rustup target add aarch64-apple-darwin
 
       - name: Build x86-64
         run: cargo build --release
@@ -78,6 +77,15 @@ jobs:
 
       # - name: Install rust target
       #   run: rustup target add aarch64-unknown-linux-gnu
+
+      - name: Install rust target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      - name: Build wasm
+        run: wasm-pack build crates/wasm/ --out-dir ../../packages/wasm --out-name index
 
       - name: Build x86-64
         run: cargo build --release

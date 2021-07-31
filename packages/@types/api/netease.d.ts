@@ -49,6 +49,13 @@ export namespace NeteaseTypings {
     MUSIC_U?: string;
   };
 
+  export type Profile = {
+    userId: number;
+    nickname: string;
+    avatarUrl: string;
+    backgroundUrl: string;
+  };
+
   export type Account = {
     phone: string;
     username: string;

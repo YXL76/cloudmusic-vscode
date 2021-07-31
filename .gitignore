@@ -3,6 +3,7 @@ node_modules
 .DS_Store
 
 !packages/wasi/package.json
+!packages/wasm/package.json
 
 # yarn
 .yarn/*

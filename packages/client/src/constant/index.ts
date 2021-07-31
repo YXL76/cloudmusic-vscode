@@ -1,3 +1,5 @@
+export * from "./shared";
+
 import { workspace } from "vscode";
 
 const conf = workspace.getConfiguration("cloudmusic");
@@ -10,11 +12,12 @@ export const MUSIC_CACHE_SIZE = (): number =>
 export const STRICT_SSL = conf.get("network.strictSSL", true);
 export const HTTPS_API = (): boolean => conf.get("network.httpsAPI", true);
 export const FOREIGN = (): boolean => conf.get("network.foreignUser", false);
+export const playerMode = conf.get<"native" | "wasm">("player.mode", "native");
 
-export const ACCOUNT_KEY = "account";
+export const ACCOUNT_KEY = "account-v2";
 export const CACHE_KEY = "cache-v2";
 export const LYRIC_CACHE_KEY = "lyric-cache-v3";
-export const COOKIE_KEY = "cookie";
+export const COOKIE_KEY = "cookie-v2";
 export const BUTTON_KEY = "button-v1";
 export const VOLUME_KEY = "volume";
 export const LYRIC_KEY = "lyric-v2";
@@ -25,31 +28,4 @@ export const SHOW_LYRIC_KEY = "show-lyric-v1";
 
 export const MUSIC_CACHE_DIR_NAME = (): string => `${MUSIC_QUALITY()}`;
 
-export const AUTH_PROVIDER_ID = "cloudmusic-auth-provider";
-
-export const enum ICON {
-  album = "$(circuit-board)",
-  artist = "$(account)",
-  comment = "$(comment)",
-  copy = "$(link)",
-  description = "$(markdown)",
-  download = "$(cloud-download)",
-  fm = "$(radio-tower)",
-  level = "$(graph)",
-  like = "$(heart)",
-  lyric = "$(text-size)",
-  name = "$(code)",
-  number = "$(symbol-number)",
-  playlist = "$(list-unordered)",
-  rankinglist = "$(list-ordered)",
-  save = "$(diff-added)",
-  unsave = "$(diff-removed)",
-  add = "$(add)",
-  search = "$(search)",
-  similar = "$(library)",
-  song = "$(zap)",
-  radio = "$(rss)",
-  program = "$(radio-tower)",
-  hot = "$(flame)",
-  play = "$(play)",
-}
+// export const AUTH_PROVIDER_ID = "cloudmusic-auth-provider";

@@ -1,9 +1,16 @@
-import { LyricCache, State, apiCache, logError } from "../..";
+import {
+  AccountState,
+  resolveAnotherSongItem,
+  resolveSongItem,
+} from "./helper";
+import { LyricCache, apiCache } from "../../cache";
 import { apiRequest, eapiRequest, weapiRequest } from "./request";
-import { resolveAnotherSongItem, resolveSongItem } from "./helper";
 import type { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
+import { State } from "../../state";
+import { logError } from "../../utils";
 
+// TODO Parklife
 const resolveLyric = (
   raw: string
 ): { time: readonly number[]; text: readonly string[] } => {
@@ -54,32 +61,34 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
   const lyricCache = await LyricCache.get(`${id}`);
   if (lyricCache) return lyricCache;
 
-  try {
-    const { lrc, tlyric, lyricUser, transUser } = await apiRequest<{
-      lrc: { lyric: string };
-      tlyric: { lyric: string };
-      lyricUser?: NeteaseTypings.LyricUser;
-      transUser?: NeteaseTypings.LyricUser;
-    }>("music.163.com/api/song/lyric", { id, lv: -1, kv: -1, tv: -1 });
+  const res = await apiRequest<{
+    lrc: { lyric: string };
+    tlyric: { lyric: string };
+    lyricUser?: NeteaseTypings.LyricUser;
+    transUser?: NeteaseTypings.LyricUser;
+  }>("music.163.com/api/song/lyric", { id, lv: -1, kv: -1, tv: -1 });
 
-    const o = resolveLyric(lrc.lyric);
-    const t = resolveLyric(tlyric.lyric);
-    const lyric: NeteaseTypings.LyricData & { ctime: number } = {
-      ctime: Date.now(),
-      o,
-      t: t.text.length < 3 ? o : t,
+  if (!res)
+    return {
+      o: { time: [0], text: ["~"] },
+      t: { time: [0], text: ["~"] },
     };
 
-    lyric.o.user = resolveLyricUser(lyricUser);
-    lyric.t.user = resolveLyricUser(transUser);
+  const { lrc, tlyric, lyricUser, transUser } = res;
 
-    LyricCache.put(`${id}`, lyric);
-    return lyric;
-  } catch {}
-  return {
-    o: { time: [0], text: ["~"] },
-    t: { time: [0], text: ["~"] },
+  const o = resolveLyric(lrc.lyric);
+  const t = resolveLyric(tlyric.lyric);
+  const lyric: NeteaseTypings.LyricData & { ctime: number } = {
+    ctime: Date.now(),
+    o,
+    t: t.text.length < 3 ? o : t,
   };
+
+  lyric.o.user = resolveLyricUser(lyricUser);
+  lyric.t.user = resolveLyricUser(transUser);
+
+  LyricCache.put(`${id}`, lyric);
+  return lyric;
 }
 
 export async function simiSong(
@@ -90,21 +99,13 @@ export async function simiSong(
   const key = `simi_song${songid}-${limit}-${offset}`;
   const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
-  try {
-    const { songs } = await weapiRequest<{
-      songs: readonly NeteaseTypings.AnotherSongItem[];
-    }>("music.163.com/weapi/v1/discovery/simiSong", {
-      songid,
-      limit,
-      offset,
-    });
-    const ret = songs.map(resolveAnotherSongItem);
-    apiCache.set(key, ret);
-    return ret;
-  } catch (err) {
-    logError(err);
-  }
-  return [];
+  const res = await weapiRequest<{
+    songs: readonly NeteaseTypings.AnotherSongItem[];
+  }>("music.163.com/weapi/v1/discovery/simiSong", { songid, limit, offset });
+  if (!res) return [];
+  const ret = res.songs.map(resolveAnotherSongItem);
+  apiCache.set(key, ret);
+  return ret;
 }
 
 export async function songDetail(
@@ -122,12 +123,14 @@ export async function songDetail(
     const ids = trackIds.slice(i, i + limit);
     tasks.push(
       (async () => {
-        const { songs, privileges } = await weapiRequest<{
+        const res = await weapiRequest<{
           songs: readonly NeteaseTypings.SongsItem[];
           privileges: readonly { st: number }[];
         }>("music.163.com/weapi/v3/song/detail", {
           c: `[${ids.map((id) => `{"id":${id}}`).join(",")}]`,
         });
+        if (!res) throw Error("");
+        const { songs, privileges } = res;
         return songs
           .filter((_, i) => privileges[i].st >= 0)
           .map(resolveSongItem);
@@ -145,8 +148,8 @@ export async function songDetail(
 }
 
 export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
-  try {
-    const { data } = await eapiRequest<{
+  for (const [, cookie] of AccountState.cookies) {
+    const res = await eapiRequest<{
       data: readonly (NeteaseTypings.SongDetail & {
         freeTrialInfo?: { start: number; end: number };
       })[];
@@ -154,14 +157,11 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
       "interface3.music.163.com/eapi/song/enhance/player/url",
       { ids: `[${id}]`, br: State.musicQuality },
       "/api/song/enhance/player/url",
-      "pc"
+      { ...cookie, os: "pc" }
     );
-    const [{ url, md5, type, freeTrialInfo }] = data;
-
-    if (freeTrialInfo) return {} as NeteaseTypings.SongDetail;
-    return { url, md5, type };
-  } catch (err) {
-    logError(err);
+    if (!res) continue;
+    const [{ url, md5, type, freeTrialInfo }] = res.data;
+    if (!freeTrialInfo) return { url, md5, type };
   }
   return {} as NeteaseTypings.SongDetail;
 }
@@ -172,20 +172,16 @@ export async function topSong(
   const key = `top_song${areaId}`;
   const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
-  try {
-    const { data } = await weapiRequest<{
-      data: readonly NeteaseTypings.AnotherSongItem[];
-    }>("music.163.com/weapi/v1/discovery/new/songs", {
-      areaId, // 全部:0 华语:7 欧美:96 日本:8 韩国:16
-      // limit: query.limit || 100,
-      // offset: query.offset || 0,
-      total: true,
-    });
-    const ret = data.map(resolveAnotherSongItem);
-    apiCache.set(key, ret);
-    return ret;
-  } catch (err) {
-    logError(err);
-  }
-  return [];
+  const res = await weapiRequest<{
+    data: readonly NeteaseTypings.AnotherSongItem[];
+  }>("music.163.com/weapi/v1/discovery/new/songs", {
+    areaId, // 全部:0 华语:7 欧美:96 日本:8 韩国:16
+    // limit: query.limit || 100,
+    // offset: query.offset || 0,
+    total: true,
+  });
+  if (!res) return [];
+  const ret = res.data.map(resolveAnotherSongItem);
+  apiCache.set(key, ret);
+  return ret;
 }

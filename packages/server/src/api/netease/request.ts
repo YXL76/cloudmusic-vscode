@@ -1,26 +1,31 @@
-import { AccountState, cookieToJson, jsonToCookie } from "./helper";
-import { IPCServer, State } from "../..";
+import {
+  AccountState,
+  broadcastProfiles,
+  cookieToJson,
+  jsonToCookie,
+} from "./helper";
 import { eapi, weapi } from "./crypto";
 import { APISetting } from "..";
 import type { NeteaseTypings } from "api";
 import type { ParsedUrlQueryInput } from "querystring";
+import { State } from "../../state";
 import axios from "axios";
+import { logError } from "../../utils";
+import { loginStatus } from ".";
+import { platform } from "os";
 import { randomBytes } from "crypto";
 import { stringify } from "querystring";
 
-const userAgentList = [
-  // macOS 10.15.6  Firefox / Chrome / Safari
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:80.0) Gecko/20100101 Firefox/80.0",
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.30 Safari/537.36",
-  "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Safari/605.1.15",
-  // Windows 10 Firefox / Chrome / Edge
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0",
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.30 Safari/537.36",
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/13.10586",
-];
-
-export const userAgent =
-  userAgentList[Math.floor(Math.random() * userAgentList.length)];
+const userAgent = (() => {
+  switch (platform()) {
+    case "win32":
+      return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36	";
+    case "darwin":
+      return "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15";
+    default:
+      return "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36";
+  }
+})();
 
 const csrfTokenReg = RegExp(/_csrf=([^(;|$)]+)/);
 
@@ -52,51 +57,98 @@ export const generateHeader = (url: string): Headers => ({
     : {}),
 });
 
+const spStatus = new Set([200, 800, 803]);
+
 const responseHandler = async <T>(
   url: string,
   headers: Headers,
   data: ParsedUrlQueryInput,
   eapi?: boolean
-): Promise<T> => {
-  const res = await axios.post<{ code?: number } & T>(url, stringify(data), {
-    withCredentials: true,
-    headers,
-    ...APISetting.agent,
-    ...(eapi ? { encoding: null } : {}),
-  });
-
+): Promise<T | void> => {
+  const res = await axios
+    .post<{ code?: number } & T>(url, stringify(data), {
+      withCredentials: true,
+      headers,
+      ...APISetting.agent,
+      ...(eapi ? { encoding: null } : {}),
+    })
+    .catch(logError);
+  if (!res) return;
   const status = res.data.code || res.status;
+  if (!spStatus.has(status)) return;
+  return res.data;
+};
 
-  if ([200, 800, 803].includes(status)) {
-    if ("set-cookie" in res.headers) {
-      AccountState.cookie = {
-        ...AccountState.cookie,
-        ...cookieToJson(
-          (res.headers as { "set-cookie": readonly string[] })["set-cookie"]
-        ),
-      };
-      IPCServer.broadcast({
-        t: "control.cookie",
-        cookie: JSON.stringify(AccountState.cookie),
-      });
-    }
-    return res.data;
+export const loginRequest = async (
+  url: string,
+  data: ParsedUrlQueryInput
+): Promise<NeteaseTypings.Profile | void> => {
+  url = `${APISetting.apiProtocol}://${url}`;
+  const headers = generateHeader(url);
+  headers["Cookie"] = jsonToCookie({ os: "pc" });
+  const res = await axios
+    .post<{
+      readonly code?: number;
+      profile?: NeteaseTypings.Profile;
+    }>(url.replace(/\w*api/, "weapi"), stringify(weapi(data)), {
+      withCredentials: true,
+      headers,
+      ...APISetting.agent,
+    })
+    .catch(logError);
+  if (!res) return;
+  const status = res.data.code || res.status;
+  if (!spStatus.has(status)) return;
+  const profile = res.data.profile;
+  if (!profile || !("userId" in profile) || !("nickname" in profile)) return;
+  if ("set-cookie" in res.headers) {
+    const cookie = cookieToJson(
+      (res.headers as { "set-cookie": readonly string[] })["set-cookie"]
+    );
+    AccountState.cookies.set(profile.userId, cookie);
+    AccountState.profile.set(profile.userId, profile);
+    broadcastProfiles();
   }
-  throw status;
+  return profile;
+};
+
+export const qrloginRequest = async (
+  url: string,
+  data: ParsedUrlQueryInput
+): Promise<number | void> => {
+  url = `${APISetting.apiProtocol}://${url}`;
+  const headers = generateHeader(url);
+  const res = await axios
+    .post<{
+      readonly code?: number;
+    }>(url.replace(/\w*api/, "weapi"), stringify(weapi(data)), {
+      withCredentials: true,
+      headers,
+      ...APISetting.agent,
+    })
+    .catch(logError);
+  if (!res) return;
+  const status = res.data.code || res.status;
+  if (!spStatus.has(status)) return;
+  if ("set-cookie" in res.headers) {
+    const cookie = cookieToJson(
+      (res.headers as { "set-cookie": readonly string[] })["set-cookie"]
+    );
+    void loginStatus(JSON.stringify(cookie)).then(() =>
+      setTimeout(() => broadcastProfiles(), 1024)
+    );
+  }
+  return status;
 };
 
 export const weapiRequest = async <T = ParsedUrlQueryInput>(
   url: string,
-  data: ParsedUrlQueryInput,
-  extraCookie: { os?: NeteaseTypings.OS; appver?: string } = {}
-): Promise<T> => {
+  data: ParsedUrlQueryInput = {},
+  cookie = AccountState.defaultCookie
+): Promise<T | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
-
   const headers = generateHeader(url);
-  headers["Cookie"] = jsonToCookie({
-    ...AccountState.cookie,
-    ...extraCookie,
-  });
+  headers["Cookie"] = jsonToCookie(cookie);
   const csrfToken = csrfTokenReg.exec(headers["Cookie"]);
   data.csrf_token = csrfToken ? csrfToken[1] : "";
   return await responseHandler<T>(
@@ -108,18 +160,16 @@ export const weapiRequest = async <T = ParsedUrlQueryInput>(
 
 export const eapiRequest = async <T = ParsedUrlQueryInput>(
   url: string,
-  data: ParsedUrlQueryInput & { header?: ParsedUrlQueryInput },
+  data: ParsedUrlQueryInput,
   encryptUrl: string,
-  os?: NeteaseTypings.OS
-): Promise<T> => {
+  rawCookie = AccountState.defaultCookie
+): Promise<T | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
-
   const cookie: NeteaseTypings.Cookie = {
-    ...AccountState.cookie,
-    ...(os ? { os } : {}),
-    ...("MUSIC_U" in AccountState.cookie
+    ...rawCookie,
+    ...("MUSIC_U" in rawCookie
       ? // eslint-disable-next-line @typescript-eslint/naming-convention
-        { MUSIC_U: AccountState.cookie.MUSIC_U }
+        { MUSIC_U: rawCookie.MUSIC_U }
       : {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           MUSIC_A:
@@ -128,37 +178,37 @@ export const eapiRequest = async <T = ParsedUrlQueryInput>(
           _ntes_nuid: randomBytes(16).toString("hex"),
         }),
   };
-  const headers = generateHeader(url);
+  const now = Date.now();
   const header = {
     appver: "8.1.20",
     versioncode: "140",
-    buildver: Date.now().toString().substr(0, 10),
+    buildver: now.toString().substr(0, 10),
     resolution: "1920x1080",
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __csrf: "",
     os: "android" as const,
-    requestId: `${Date.now()}_${Math.floor(Math.random() * 1000)
+    requestId: `${now}_${Math.floor(Math.random() * 1000)
       .toString()
       .padStart(4, "0")}`,
     ...cookie,
   };
+  const headers = generateHeader(url);
   headers["Cookie"] = jsonToCookie(header);
-  data.header = header;
   return responseHandler<T>(
     url.replace(/\w*api/, "eapi"),
     headers,
-    eapi(encryptUrl, data),
+    eapi(encryptUrl, { ...data, header }),
     true
   );
 };
 
 export const apiRequest = async <T = ParsedUrlQueryInput>(
   url: string,
-  data: ParsedUrlQueryInput
-): Promise<T> => {
+  data: ParsedUrlQueryInput = {},
+  cookie = AccountState.defaultCookie
+): Promise<T | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
-
   const headers = generateHeader(url);
-  headers["Cookie"] = jsonToCookie(AccountState.cookie);
+  headers["Cookie"] = jsonToCookie(cookie);
   return responseHandler<T>(url, headers, data);
 };

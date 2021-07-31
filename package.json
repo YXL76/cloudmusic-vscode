@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "Cloudmusic",
   "description": "Netease Music for VS Code",
-  "version": "8.3.9",
+  "version": "9.0.0",
   "publisher": "YXL",
   "private": true,
   "preview": false,
@@ -40,11 +40,7 @@
     "Netease"
   ],
   "activationEvents": [
-    "onView:account",
-    "onView:local",
-    "onView:playlist",
-    "onView:radio",
-    "onView:queue"
+    "onView:account"
   ],
   "icon": "media/icon-300.png",
   "main": "./dist/extension.js",
@@ -57,11 +53,6 @@
         "category": "Cloudmusic",
         "command": "cloudmusic.dailyCheck",
         "title": "%commands.dailyCheck.title%"
-      },
-      {
-        "category": "Cloudmusic",
-        "command": "cloudmusic.account",
-        "title": "%commands.account.title%"
       },
       {
         "category": "Cloudmusic",
@@ -99,9 +90,9 @@
         "title": "%commands.toggleButton.title%"
       },
       {
-        "category": "Cloudmusic",
-        "command": "cloudmusic.personalFM",
-        "title": "%commands.personalFM.title%"
+        "command": "cloudmusic.addAccount",
+        "icon": "$(sign-in)",
+        "title": "%commands.addAccount.title%"
       },
       {
         "command": "cloudmusic.newLocalLibrary",
@@ -369,6 +360,15 @@
             "markdownDescription": "%configuration.network.strictSSL.markdownDescription%",
             "scope": "window",
             "type": "boolean"
+          },
+          "cloudmusic.player.mode": {
+            "default": "native",
+            "enum": [
+              "native",
+              "wasm"
+            ],
+            "scope": "window",
+            "type": "string"
           }
         },
         "title": "Cloudmusic"
@@ -376,6 +376,10 @@
     ],
     "menus": {
       "commandPalette": [
+        {
+          "command": "cloudmusic.addAccount",
+          "when": "false"
+        },
         {
           "command": "cloudmusic.newLocalLibrary",
           "when": "false"
@@ -599,6 +603,16 @@
           "when": "view == local && viewItem == LocalFileTreeItem"
         },
         {
+          "command": "cloudmusic.refreshPlaylist",
+          "group": "inline",
+          "when": "view == playlist && viewItem == UserTreeItem"
+        },
+        {
+          "command": "cloudmusic.createPlaylist",
+          "group": "inline",
+          "when": "view == playlist && viewItem == UserTreeItem"
+        },
+        {
           "command": "cloudmusic.refreshPlaylistContent",
           "group": "inline",
           "when": "view == playlist && viewItem == PlaylistItemTreeItem"
@@ -731,6 +745,11 @@
       ],
       "view/title": [
         {
+          "command": "cloudmusic.addAccount",
+          "group": "navigation",
+          "when": "view == account"
+        },
+        {
           "command": "cloudmusic.newLocalLibrary",
           "group": "navigation",
           "when": "view == local"
@@ -739,16 +758,6 @@
           "command": "cloudmusic.refreshLocalLibrary",
           "group": "navigation",
           "when": "view == local"
-        },
-        {
-          "command": "cloudmusic.refreshPlaylist",
-          "group": "navigation",
-          "when": "view == playlist"
-        },
-        {
-          "command": "cloudmusic.createPlaylist",
-          "group": "navigation",
-          "when": "view == playlist"
         },
         {
           "command": "cloudmusic.refreshRadio",
@@ -833,8 +842,9 @@
     "@yarnpkg/esbuild-plugin-pnp": "1.0.0",
     "@yarnpkg/sdks": "2.4.1-rc.4",
     "debug": "4.3.2",
-    "esbuild": "0.12.16",
-    "eslint": "7.31.0",
+    "esbuild": "0.12.17",
+    "esbuild-plugin-wasm": "1.0.0",
+    "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "3.4.0",
     "eslint-plugin-react": "7.24.0",

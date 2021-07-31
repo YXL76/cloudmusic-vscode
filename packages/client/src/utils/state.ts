@@ -1,14 +1,10 @@
-import { AccountManager, ButtonManager } from "../manager";
 import { AccountViewProvider, IPC } from ".";
 import { FM_KEY, LYRIC_KEY, REPEAT_KEY, SHOW_LYRIC_KEY } from "../constant";
-import {
-  PlaylistProvider,
-  QueueItemTreeItem,
-  RadioProvider,
-} from "../treeview";
+import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import type { NeteaseTypings } from "api";
 import type { QueueContent } from "../treeview";
+import { QueueItemTreeItem } from "../treeview";
 import i18n from "../i18n";
 
 type Lyric = {
@@ -17,18 +13,11 @@ type Lyric = {
   updateFontSize?: (size: number) => void;
 } & NeteaseTypings.LyricData;
 
-export const enum LikeState {
-  none = -1,
-  like = 1,
-  dislike = 0,
-}
-
 export class State {
   static context: ExtensionContext;
 
-  static first = true;
-
-  static _master = false;
+  // TODO
+  private static _master = false;
 
   static get master(): boolean {
     return State._master;
@@ -37,7 +26,7 @@ export class State {
   static set master(value: boolean) {
     if (this._master !== value) {
       this._master = value;
-      AccountViewProvider.toggleHTML(value);
+      AccountViewProvider.master();
     }
   }
 
@@ -62,26 +51,19 @@ export class State {
   static set playItem(value: QueueContent | undefined) {
     if (value !== this._playItem) {
       this._playItem = value;
-      this.like =
-        value && value instanceof QueueItemTreeItem
-          ? AccountManager.likelist.has(value.item.id)
-            ? LikeState.like
-            : LikeState.dislike
-          : LikeState.none;
+      this.like = !!(value && value instanceof QueueItemTreeItem);
       AccountViewProvider.metadata();
-      if (this._master && this._login)
-        if (value) IPC.load();
-        else IPC.stop();
+      if (this._master) value ? IPC.load() : IPC.stop();
     }
   }
 
-  private static _like = LikeState.none;
+  private static _like = false;
 
-  static get like(): LikeState {
+  static get like(): boolean {
     return this._like;
   }
 
-  static set like(newValue: LikeState) {
+  static set like(newValue: boolean) {
     if (newValue !== this._like) {
       this._like = newValue;
       ButtonManager.buttonLike(newValue);
@@ -106,36 +88,6 @@ export class State {
         this._playItem.item.name,
         this._playItem.tooltip
       );
-  }
-
-  private static _login = false;
-
-  static get login(): boolean {
-    return this._login;
-  }
-
-  static set login(value: boolean) {
-    if (value !== this._login) {
-      this._login = value;
-      if (!value) {
-        ButtonManager.hide();
-        if (this._master) IPC.clear();
-        return;
-      }
-      ButtonManager.buttonAccount(AccountManager.nickname);
-      ButtonManager.show();
-      PlaylistProvider.refresh();
-      RadioProvider.refresh();
-      if (!this.first) return;
-      this.first = false;
-      void IPC.netease("recommendSongs", []).then((songs) =>
-        IPC.new(
-          songs.map(
-            (song) => QueueItemTreeItem.new({ ...song, pid: song.al.id }).data
-          )
-        )
-      );
-    }
   }
 
   private static _fm = false;

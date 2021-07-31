@@ -1,33 +1,39 @@
-import { ButtonAction, IPC, LikeState, State, Webview } from ".";
+import { ButtonAction, IPC, Webview } from ".";
 import type { InputStep, MultiStepInput } from ".";
-import type {
-  PlaylistItemTreeItem,
-  QueueContent,
-  RadioTreeItem,
-} from "../treeview";
 import {
+  PlaylistItemTreeItem,
   PlaylistProvider,
   ProgramTreeItem,
   QueueItemTreeItem,
 } from "../treeview";
+import type { QueueContent, RadioTreeItem } from "../treeview";
 import { commands, window } from "vscode";
 import { AccountManager } from "../manager";
-import { ICON } from "../constant";
 import { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import type { QuickPickItem } from "vscode";
 
 import i18n from "../i18n";
 
-export async function likeMusic(id: number, like: boolean): Promise<void> {
-  if (await IPC.netease("like", [id, like])) {
-    if (id === State.playItem?.valueOf)
-      State.like = like ? LikeState.like : LikeState.dislike;
-    like ? AccountManager.likelist.add(id) : AccountManager.likelist.delete(id);
+export async function likeMusic(
+  input: MultiStepInput,
+  step: number,
+  id: number
+): Promise<InputStep> {
+  const title = i18n.word.like;
+  const items = [];
+  for (const [uid, { nickname }] of AccountManager.accounts)
+    items.push(
+      { label: `$(star-empty) ${nickname}`, uid, like: false },
+      { label: `$(star-full) ${nickname}`, uid, like: false }
+    );
+  const { uid, like } = await input.showQuickPick({ title, step, items });
+  if (await IPC.netease("like", [uid, id, like]))
     void window.showInformationMessage(
       like ? i18n.word.like : i18n.word.dislike
     );
-  } else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
+  else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
+  return input.stay();
 }
 
 const enum PickType {
@@ -69,7 +75,7 @@ export const pickSongItems = (
   songs: readonly NeteaseTypings.SongsItem[]
 ): readonly ST[] =>
   songs.map((item) => ({
-    label: `${ICON.song} ${item.name}`,
+    label: `$(zap) ${item.name}`,
     description: item.ar.map((i) => i.name).join("/"),
     detail: item.alia.join("/"),
     id: item.id,
@@ -81,7 +87,7 @@ export const pickArtistItems = (
   ars: readonly { id: number; name: string }[]
 ): readonly T[] =>
   ars.map(({ name, id }) => ({
-    label: `${ICON.artist} ${name}`,
+    label: `$(account) ${name}`,
     id,
     type: PickType.artist,
   }));
@@ -90,7 +96,7 @@ export const pickAlbumItems = (
   albums: readonly NeteaseTypings.AlbumsItem[]
 ): readonly T[] =>
   albums.map(({ name, alias, artists, id }) => ({
-    label: `${ICON.album} ${name}`,
+    label: `$(circuit-board) ${name}`,
     description: alias.join("/"),
     detail: artists.map((artist) => artist.name).join("/"),
     id,
@@ -105,7 +111,7 @@ export const pickPlaylistItems = (
   playlists: readonly NeteaseTypings.PlaylistItem[]
 ): readonly PT[] =>
   playlists.map((playlist) => ({
-    label: `${ICON.playlist} ${playlist.name}`,
+    label: `$(list-unordered) ${playlist.name}`,
     description: `${playlist.trackCount}`,
     detail: playlist.description || "",
     id: playlist.id,
@@ -117,7 +123,7 @@ export const pickUserDetails = (
   users: readonly NeteaseTypings.UserDetail[]
 ): readonly T[] =>
   users.map(({ nickname, signature, userId }) => ({
-    label: `${ICON.artist} ${nickname}`,
+    label: `$(account) ${nickname}`,
     detail: signature,
     id: userId,
     type: PickType.user,
@@ -131,7 +137,7 @@ export const pickRadioDetails = (
   radios: readonly NeteaseTypings.RadioDetail[]
 ): readonly RDT[] =>
   radios.map((item) => ({
-    label: `${ICON.radio} ${item.name}`,
+    label: `$(rss) ${item.name}`,
     description: item.dj.nickname,
     id: item.id,
     item,
@@ -146,7 +152,7 @@ export const pickProgramDetails = (
   programs: readonly NeteaseTypings.ProgramDetail[]
 ): readonly PDT[] =>
   programs.map((item) => ({
-    label: `${ICON.program} ${item.mainSong.name}`,
+    label: `$(radio-tower) ${item.mainSong.name}`,
     description: item.mainSong.ar.map(({ name }) => name).join("/"),
     id: item.id,
     item,
@@ -165,50 +171,50 @@ export async function pickSong(
     step,
     items: [
       {
-        label: `${ICON.name} ${name}`,
+        label: `$(code) ${name}`,
         detail: alia.join("/"),
       },
       {
-        label: `${ICON.copy} ${i18n.word.copyLink}`,
+        label: `$(link) ${i18n.word.copyLink}`,
         type: PickType.copy,
       },
       {
-        label: `${ICON.download} ${i18n.word.download}`,
+        label: `$(cloud-download) ${i18n.word.download}`,
         type: PickType.download,
       },
       ...pickArtistItems(ar),
       {
-        label: `${ICON.album} ${i18n.word.album}`,
+        label: `$(circuit-board) ${i18n.word.album}`,
         detail: al.name,
         id: al.id,
         type: PickType.album,
       },
       {
-        label: `${ICON.like} ${i18n.word.like}`,
+        label: `$(heart) ${i18n.word.like}`,
         type: PickType.like,
       },
       {
-        label: `${ICON.comment} ${i18n.word.comment}`,
+        label: `$(comment) ${i18n.word.comment}`,
         type: PickType.comment,
       },
       {
-        label: `${ICON.add} ${i18n.word.addToQueue}`,
+        label: `$(add) ${i18n.word.addToQueue}`,
         type: PickType.add,
       },
       {
-        label: `${ICON.play} ${i18n.word.nextTrack}`,
+        label: `$(play) ${i18n.word.nextTrack}`,
         type: PickType.next,
       },
       {
-        label: `${ICON.save} ${i18n.word.saveToPlaylist}`,
+        label: `$(diff-added) ${i18n.word.saveToPlaylist}`,
         type: PickType.save,
       },
       {
-        label: `${ICON.similar} ${i18n.word.similarSongs}`,
+        label: `$(library) ${i18n.word.similarSongs}`,
         type: PickType.similar,
       },
       {
-        label: `${ICON.similar} ${i18n.word.similarPlaylists}`,
+        label: `$(library) ${i18n.word.similarPlaylists}`,
         type: PickType.similar,
       },
     ],
@@ -231,7 +237,7 @@ export async function pickSong(
     case PickType.save:
       return (input) => pickAddToPlaylist(input, step + 1, id);
     case PickType.similar:
-      if (pick.label === `${ICON.similar} ${i18n.word.similarSongs}`) {
+      if (pick.label === `$(library) ${i18n.word.similarSongs}`) {
         return (input) => pickSimiSong(input, step + 1, id, 0);
       }
       return (input) => pickSimiPlaylists(input, step + 1, id, 0);
@@ -239,8 +245,7 @@ export async function pickSong(
       Webview.comment(NeteaseEnum.CommentType.song, id, name);
       break;
     case PickType.like:
-      await likeMusic(id, true);
-      break;
+      return (input) => likeMusic(input, step + 1, id);
     case PickType.add:
       void commands.executeCommand(
         "cloudmusic.addSong",
@@ -268,11 +273,11 @@ export async function pickSongMany(
     step,
     items: [
       {
-        label: `${ICON.add} ${i18n.word.addToQueue}`,
+        label: `$(add) ${i18n.word.addToQueue}`,
         type: PickType.add,
       },
       {
-        label: `${ICON.play} ${i18n.word.nextTrack}`,
+        label: `$(play) ${i18n.word.nextTrack}`,
         type: PickType.next,
       },
     ],
@@ -354,27 +359,27 @@ export async function pickProgram(
     title: `${i18n.word.program}-${i18n.word.detail}`,
     step,
     items: [
-      { label: `${ICON.name} ${name}` },
+      { label: `$(code) ${name}` },
       {
-        label: `${ICON.copy} ${i18n.word.copyLink}`,
+        label: `$(link) ${i18n.word.copyLink}`,
         type: PickType.copy,
       },
       {
-        label: `${ICON.download} ${i18n.word.download}`,
+        label: `$(cloud-download) ${i18n.word.download}`,
         type: PickType.download,
       },
       ...pickUserDetails([dj]),
       ...pickRadioDetails(radio ? [radio] : []),
       {
-        label: `${ICON.comment} ${i18n.word.comment}`,
+        label: `$(comment) ${i18n.word.comment}`,
         type: PickType.comment,
       },
       {
-        label: `${ICON.add} ${i18n.word.addToQueue}`,
+        label: `$(add) ${i18n.word.addToQueue}`,
         type: PickType.add,
       },
       {
-        label: `${ICON.play} ${i18n.word.nextTrack}`,
+        label: `$(play) ${i18n.word.nextTrack}`,
         type: PickType.next,
       },
     ],
@@ -425,11 +430,11 @@ export async function pickProgramMany(
     step,
     items: [
       {
-        label: `${ICON.add} ${i18n.word.addToQueue}`,
+        label: `$(add) ${i18n.word.addToQueue}`,
         type: PickType.add,
       },
       {
-        label: `${ICON.play} ${i18n.word.nextTrack}`,
+        label: `$(play) ${i18n.word.nextTrack}`,
         type: PickType.next,
       },
     ],
@@ -478,24 +483,24 @@ export async function pickRadio(
     title: `${i18n.word.radio}-${i18n.word.detail}`,
     step,
     items: [
-      { label: `${ICON.name} ${name}` },
-      { label: `${ICON.description} ${desc}` },
+      { label: `$(code) ${name}` },
+      { label: `$(markdown) ${desc}` },
       {
-        label: `${ICON.copy} ${i18n.word.copyLink}`,
+        label: `$(link) ${i18n.word.copyLink}`,
         type: PickType.copy,
       },
       ...pickUserDetails([dj]),
       {
-        label: `${ICON.number} ${i18n.word.playCount}`,
+        label: `$(symbol-number) ${i18n.word.playCount}`,
         description: `${playCount}`,
       },
       {
-        label: `${ICON.number} ${i18n.word.subscribedCount}`,
+        label: `$(symbol-number) ${i18n.word.subscribedCount}`,
         description: `${subCount}`,
         type: PickType.subscribed,
       },
       {
-        label: `${ICON.number} ${i18n.word.trackCount}`,
+        label: `$(symbol-number) ${i18n.word.trackCount}`,
         description: `${programCount}`,
         type: PickType.programs,
       },
@@ -548,49 +553,49 @@ export async function pickArtist(
   step: number,
   id: number
 ): Promise<InputStep> {
-  const { info, songs } = await IPC.netease("artists", [id]);
+  const { artist, hotSongs } = await IPC.netease("artists", [id]);
 
-  const { name, alias, briefDesc, albumSize, musicSize } = info;
+  const { name, alias, briefDesc, albumSize, musicSize } = artist;
   const pick = await input.showQuickPick({
     title: `${i18n.word.artist}-${i18n.word.detail}`,
     step,
     items: [
       {
-        label: `${ICON.name} ${name}`,
+        label: `$(code) ${name}`,
         detail: alias.join("/"),
       },
       {
-        label: `${ICON.description} ${i18n.word.description}`,
+        label: `$(markdown) ${i18n.word.description}`,
         detail: briefDesc,
         type: PickType.description,
       },
       {
-        label: `${ICON.album} ${i18n.word.album}`,
+        label: `$(circuit-board) ${i18n.word.album}`,
         description: `${albumSize}`,
         id,
         type: PickType.albums,
       },
       {
-        label: `${ICON.hot} ${i18n.word.hotSongs}`,
-        description: `${songs.length}`,
+        label: `$(flame) ${i18n.word.hotSongs}`,
+        description: `${hotSongs.length}`,
         type: PickType.hot,
       },
       {
-        label: `${ICON.number} ${i18n.word.trackCount}`,
+        label: `$(symbol-number) ${i18n.word.trackCount}`,
         description: `${musicSize}`,
         id,
         type: PickType.songs,
       },
       {
-        label: `${ICON.similar} ${i18n.word.similarArtists}`,
+        label: `$(library) ${i18n.word.similarArtists}`,
         type: PickType.similar,
       },
       {
-        label: `${ICON.save} ${i18n.word.save}`,
+        label: `$(diff-added) ${i18n.word.save}`,
         type: PickType.save,
       },
       {
-        label: `${ICON.unsave} ${i18n.word.unsave}`,
+        label: `$(diff-removed) ${i18n.word.unsave}`,
         type: PickType.unsave,
       },
     ],
@@ -607,7 +612,7 @@ export async function pickArtist(
           await IPC.netease("artistAlbum", [pick.id as number])
         );
     case PickType.hot:
-      return (input) => pickSongs(input, step + 1, songs);
+      return (input) => pickSongs(input, step + 1, hotSongs);
     case PickType.songs:
       return (input) => pickAllSongs(input, step + 1, id, 0);
     case PickType.similar:
@@ -684,37 +689,37 @@ export async function pickAlbum(
   step: number,
   id: number
 ): Promise<InputStep> {
-  const { info, songs } = await IPC.netease("album", [id]);
+  const { album, songs } = await IPC.netease("album", [id]);
 
-  const { artists, alias, company, description, name } = info;
+  const { artists, alias, company, description, name } = album;
   const pick = await input.showQuickPick({
     title: `${i18n.word.album}-${i18n.word.detail}`,
     step,
     items: [
       {
-        label: `${ICON.name} ${name}`,
+        label: `$(code) ${name}`,
         description: alias.join("/"),
         detail: company,
       },
       {
-        label: `${ICON.description} ${i18n.word.description}`,
+        label: `$(markdown) ${i18n.word.description}`,
         detail: description,
       },
       {
-        label: `${ICON.song} ${i18n.word.content}`,
+        label: `$(zap) ${i18n.word.content}`,
         type: PickType.songs,
       },
       {
-        label: `${ICON.comment} ${i18n.word.comment}`,
+        label: `$(comment) ${i18n.word.comment}`,
         type: PickType.comment,
       },
       ...pickArtistItems(artists),
       {
-        label: `${ICON.save} ${i18n.word.save}`,
+        label: `$(diff-added) ${i18n.word.save}`,
         type: PickType.save,
       },
       {
-        label: `${ICON.unsave} ${i18n.word.unsave}`,
+        label: `$(diff-removed) ${i18n.word.unsave}`,
         type: PickType.unsave,
       },
     ],
@@ -776,24 +781,24 @@ export async function pickPlaylist(
     step,
     items: [
       {
-        label: `${ICON.name} ${name}`,
+        label: `$(code) ${name}`,
       },
       {
-        label: `${ICON.description} ${i18n.word.description}`,
+        label: `$(markdown) ${i18n.word.description}`,
         detail: description || "",
       },
       {
-        label: `${ICON.copy} ${i18n.word.copyLink}`,
+        label: `$(link) ${i18n.word.copyLink}`,
         type: PickType.copy,
       },
       {
-        label: `${ICON.comment} ${i18n.word.comment}`,
+        label: `$(comment) ${i18n.word.comment}`,
         type: PickType.comment,
       },
       ...(playCount
         ? [
             {
-              label: `${ICON.number} ${i18n.word.playCount}`,
+              label: `$(symbol-number) ${i18n.word.playCount}`,
               description: `${playCount}`,
             },
           ]
@@ -801,7 +806,7 @@ export async function pickPlaylist(
       ...(subscribedCount
         ? [
             {
-              label: `${ICON.number} ${i18n.word.subscribedCount}`,
+              label: `$(symbol-number) ${i18n.word.subscribedCount}`,
               description: `${subscribedCount}`,
               type: PickType.subscribed,
             },
@@ -810,7 +815,7 @@ export async function pickPlaylist(
       ...(trackCount
         ? [
             {
-              label: `${ICON.number} ${i18n.word.trackCount}`,
+              label: `$(symbol-number) ${i18n.word.trackCount}`,
               description: `${trackCount}`,
               type: PickType.songs,
             },
@@ -818,15 +823,15 @@ export async function pickPlaylist(
         : []),
       ...pickUserDetails([creator]),
       {
-        label: `${ICON.add} ${i18n.word.addToQueue}`,
+        label: `$(add) ${i18n.word.addToQueue}`,
         type: PickType.add,
       },
       {
-        label: `${ICON.play} ${i18n.word.nextTrack}`,
+        label: `$(play) ${i18n.word.nextTrack}`,
         type: PickType.next,
       },
       {
-        label: `${ICON.save} ${i18n.word.save}`,
+        label: `$(diff-added) ${i18n.word.save}`,
         type: PickType.save,
       },
     ],
@@ -922,19 +927,36 @@ export async function pickAddToPlaylist(
   step: number,
   id: number
 ): Promise<InputStep | void> {
-  const lists = AccountManager.userPlaylist;
-  const pick = await input.showQuickPick({
-    title: i18n.word.saveToPlaylist,
+  const items = [];
+  for (const [uid, { nickname }] of AccountManager.accounts)
+    items.push({ label: `$(account) ${nickname}`, uid });
+  const { uid } = await input.showQuickPick({
+    title: i18n.word.user,
     step,
-    items: lists.map(({ name, id }) => ({
-      label: `${ICON.playlist} ${name}`,
-      id,
-    })),
+    items,
   });
-  if (await IPC.netease("playlistTracks", ["add", pick.id, [id]]))
-    PlaylistProvider.refresh(PlaylistProvider.playlists.get(pick.id));
-  else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
-  return input.stay();
+  return (input) => _pickPlaylist(input, step + 1, uid);
+
+  async function _pickPlaylist(
+    input: MultiStepInput,
+    step: number,
+    uid: number
+  ) {
+    const lists = AccountManager.userPlaylist.get(uid) ?? [];
+    const pick = await input.showQuickPick({
+      title: i18n.word.saveToPlaylist,
+      step,
+      items: lists.map(({ name, id }) => ({
+        label: `$(list-unordered) ${name}`,
+        id,
+      })),
+    });
+    if (await IPC.netease("playlistTracks", [uid, "add", pick.id, [id]])) {
+      const element = PlaylistItemTreeItem.get(pick.id);
+      if (element) PlaylistProvider.refreshPlaylistHard(element);
+    } else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
+    return input.stay();
+  }
 }
 
 export async function pickUser(
@@ -952,18 +974,18 @@ export async function pickUser(
     step,
     items: [
       {
-        label: `${ICON.artist} ${user.nickname}`,
+        label: `$(account) ${user.nickname}`,
         detail: user.signature,
         item: 0,
       },
       {
-        label: `${ICON.number} ${i18n.word.followeds}`,
+        label: `$(symbol-number) ${i18n.word.followeds}`,
         description: `${user.followeds}`,
         type: PickType.followeds,
         item: 0,
       },
       {
-        label: `${ICON.number} ${i18n.word.follows}`,
+        label: `$(symbol-number) ${i18n.word.follows}`,
         description: `${user.follows}`,
         type: PickType.follows,
         item: 0,

@@ -98,11 +98,10 @@ impl Player {
         let (info_tx, info_rx) = mpsc::channel();
 
         thread::spawn(move || {
-            if let Ok(device) = rodio::OutputStream::try_default() {
-                let (_stream, handle) = device;
+            if let Ok((_stream, handle)) = rodio::OutputStream::try_default() {
                 let sink = rodio::Sink::try_new(&handle).unwrap();
-                sink.append(source.fade_in(Duration::from_secs(2)));
                 sink.set_volume(volume);
+                sink.append(source.fade_in(Duration::from_secs(2)));
 
                 let _ = info_tx.send(true);
 

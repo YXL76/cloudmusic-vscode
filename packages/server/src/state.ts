@@ -1,4 +1,5 @@
-import { IPCServer, NeteaseAPI } from ".";
+import { IPCServer } from "./server";
+import { NeteaseAPI } from "./api";
 import type { NeteaseTypings } from "api";
 
 export class State {
@@ -39,6 +40,8 @@ export class State {
 }
 
 export class PersonalFm {
+  static uid: number;
+
   private static _songs: NeteaseTypings.SongsItem[] = [];
 
   static async head(): Promise<NeteaseTypings.SongsItem> {
@@ -52,6 +55,6 @@ export class PersonalFm {
   }
 
   private static async _getSongs() {
-    this._songs.push(...(await NeteaseAPI.personalFm()));
+    this._songs.push(...(await NeteaseAPI.personalFm(this.uid)));
   }
 }

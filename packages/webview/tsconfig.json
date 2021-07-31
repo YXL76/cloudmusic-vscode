@@ -15,7 +15,14 @@
     "noUnusedParameters": true,
     "strict": true,
     "strictNullChecks": true,
-    "target": "es2020"
+    "target": "es2020",
+    "types": [
+      "api",
+      "react",
+      "react-dom",
+      "vscode-webview",
+      "wicg-mediasession"
+    ]
   },
   "include": ["src"]
 }

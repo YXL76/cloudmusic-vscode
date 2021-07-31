@@ -228,7 +228,7 @@ export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
   static new(data: Omit<QueueItemTreeItemData, "itemType">): QueueItemTreeItem {
     let element = this._set.get(data.id);
     if (element) {
-      // if (element.data.pid === 0) element.data.pid = data.pid;
+      if (element.data.pid === 0) element.data.pid = data.pid;
       return element;
     }
     element = new this({ ...data, itemType: "q" });

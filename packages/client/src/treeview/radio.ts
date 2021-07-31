@@ -4,77 +4,97 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import type { PlayTreeItem, RefreshAction } from ".";
+import type { PlayTreeItem, PlayTreeItemData } from ".";
 import { AccountManager } from "../manager";
 import { IPC } from "../utils";
 import type { NeteaseTypings } from "api";
 import type { TreeDataProvider } from "vscode";
+import { UserTreeItem } from ".";
 import i18n from "../i18n";
 
 export class RadioProvider
-  implements TreeDataProvider<RadioTreeItem | ProgramTreeItem>
+  implements TreeDataProvider<UserTreeItem | RadioTreeItem | ProgramTreeItem>
 {
-  static readonly radios = new Map<number, RadioTreeItem>();
+  private static _instance: RadioProvider;
 
-  private static instance: RadioProvider;
-
-  private static action?: RefreshAction;
+  private static readonly _actions = new Map<
+    RadioTreeItem,
+    { resolve: (value: PlayTreeItemData[]) => void; reject: () => void }
+  >();
 
   _onDidChangeTreeData = new EventEmitter<
-    RadioTreeItem | ProgramTreeItem | void
+    UserTreeItem | RadioTreeItem | ProgramTreeItem | void
   >();
 
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
   static getInstance(): RadioProvider {
-    return this.instance || (this.instance = new RadioProvider());
+    return this._instance || (this._instance = new RadioProvider());
   }
 
-  static refresh(element?: RadioTreeItem, action?: RefreshAction): void {
-    if (element) {
-      if (action) this.action = action;
-      else IPC.deleteCache(`dj_program${element.valueOf}`);
-    } else {
-      this.radios.clear();
-      IPC.deleteCache("dj_sublist");
-    }
-    this.instance._onDidChangeTreeData.fire(element);
+  static refresh(): void {
+    this._instance._onDidChangeTreeData.fire();
+  }
+
+  static refreshUser(element: UserTreeItem): void {
+    IPC.deleteCache(`dj_sublist${element.uid}`);
+    this._instance._onDidChangeTreeData.fire(element);
+  }
+
+  static async refreshRadio(
+    element: RadioTreeItem
+  ): Promise<readonly PlayTreeItemData[]> {
+    const old = this._actions.get(element);
+    old?.reject();
+    return new Promise((resolve, reject) => {
+      this._actions.set(element, { resolve, reject });
+      this._instance._onDidChangeTreeData.fire(element);
+    });
+  }
+
+  static refreshRadioHard(element: RadioTreeItem): void {
+    IPC.deleteCache(`dj_program${element.valueOf}`);
+    this._instance._onDidChangeTreeData.fire(element);
   }
 
   getTreeItem(
-    element: RadioTreeItem | ProgramTreeItem
-  ): RadioTreeItem | ProgramTreeItem {
+    element: UserTreeItem | RadioTreeItem | ProgramTreeItem
+  ): UserTreeItem | RadioTreeItem | ProgramTreeItem {
     return element;
   }
 
   async getChildren(
-    element?: RadioTreeItem
-  ): Promise<(RadioTreeItem | ProgramTreeItem)[]> {
-    if (element) {
-      const pid = element.valueOf;
-      const programs = (
-        await IPC.netease("djProgram", [
-          element.valueOf,
-          element.item.programCount,
-        ])
-      ).map((program) => ProgramTreeItem.new({ ...program, pid }));
-      const localAction = RadioProvider.action;
-      if (localAction) {
-        RadioProvider.action = undefined;
-        localAction(programs.map(({ data }) => data));
-      }
-      return programs;
+    element?: UserTreeItem | RadioTreeItem
+  ): Promise<UserTreeItem[] | RadioTreeItem[] | ProgramTreeItem[]> {
+    if (!element) {
+      const accounts = [];
+      for (const [, { userId, nickname }] of AccountManager.accounts)
+        accounts.push(UserTreeItem.new(nickname, userId));
+      return accounts;
     }
-    const radios = await AccountManager.djradio();
-    return radios.map((radio) => {
-      const item = new RadioTreeItem(radio);
-      RadioProvider.radios.set(radio.id, item);
-      return item;
-    });
+    if (element instanceof UserTreeItem) {
+      const { uid } = element;
+      return (await AccountManager.djradio(uid)).map((radio) =>
+        RadioTreeItem.new(radio, uid)
+      );
+    }
+    const { id: pid, programCount } = element.item;
+    const programs = await IPC.netease("djProgram", [pid, programCount]);
+    const ret = programs.map((program) =>
+      ProgramTreeItem.new({ ...program, pid })
+    );
+    const action = RadioProvider._actions.get(element);
+    if (action) {
+      RadioProvider._actions.delete(element);
+      action.resolve(ret.map(({ data }) => data));
+    }
+    return ret;
   }
 }
 
 export class RadioTreeItem extends TreeItem {
+  private static readonly _set = new Map<number, RadioTreeItem>();
+
   override readonly label!: string;
 
   override readonly tooltip = `${i18n.word.description}: ${this.item.desc || ""}
@@ -86,12 +106,24 @@ ${i18n.word.subscribedCount}: ${this.item.subCount}`;
 
   override readonly contextValue = "RadioTreeItem";
 
-  constructor(readonly item: NeteaseTypings.RadioDetail) {
+  constructor(readonly item: NeteaseTypings.RadioDetail, readonly uid: number) {
     super(item.name, TreeItemCollapsibleState.Collapsed);
   }
 
   override get valueOf(): number {
     return this.item.id;
+  }
+
+  static new(item: NeteaseTypings.RadioDetail, uid: number): RadioTreeItem {
+    let element = this._set.get(item.id);
+    if (element) return element;
+    element = new this(item, uid);
+    this._set.set(item.id, element);
+    return element;
+  }
+
+  static get(id: number): RadioTreeItem | void {
+    return this._set.get(id);
   }
 }
 
@@ -138,7 +170,7 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
   static new(data: Omit<ProgramTreeItemData, "itemType">): ProgramTreeItem {
     let element = this._set.get(data.id);
     if (element) {
-      // if (element.data.pid === 0) element.data.pid = data.pid;
+      if (element.data.pid === 0) element.data.pid = data.pid;
       return element;
     }
     element = new this({ ...data, itemType: "p" });

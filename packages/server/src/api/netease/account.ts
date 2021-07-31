@@ -8,24 +8,28 @@ import {
   resolveSongItemSt,
   resolveUserDetail,
 } from "./helper";
-import { apiCache, logError } from "../..";
-import { eapiRequest, weapiRequest } from "./request";
+import {
+  eapiRequest,
+  loginRequest,
+  qrloginRequest,
+  weapiRequest,
+} from "./request";
 import type { NeteaseTypings } from "api";
+import { apiCache } from "../../cache";
+import { logError } from "../../utils";
 
-type Profile = { userId: number; nickname: string };
-
-export async function dailyCheck(): Promise<boolean> {
+export async function dailyCheck(uid: number): Promise<boolean> {
   try {
     const actions = [];
     const [yunbei, sign] = await Promise.allSettled([
-      yunbeiToday(),
-      yunbeiInfo(),
+      (() => yunbeiToday(uid))(),
+      (() => yunbeiInfo(uid))(),
     ]);
     if (yunbei.status === "fulfilled" && !yunbei.value)
-      actions.push(yunbeiSign());
+      actions.push(yunbeiSign(uid));
     if (sign.status === "fulfilled") {
-      if (!sign.value.mobileSign) actions.push(dailySigninAndroid());
-      if (!sign.value.pcSign) actions.push(dailySigninWeb());
+      if (!sign.value.mobileSign) actions.push(dailySigninAndroid(uid));
+      if (!sign.value.pcSign) actions.push(dailySigninWeb(uid));
     }
     await Promise.allSettled(actions);
     return true;
@@ -33,292 +37,239 @@ export async function dailyCheck(): Promise<boolean> {
   return false;
 }
 
-async function dailySigninAndroid(): Promise<void> {
-  try {
-    await weapiRequest("music.163.com/weapi/point/dailyTask", {
-      type: 0,
-    });
-  } catch (err) {
-    logError(err);
-  }
+async function dailySigninAndroid(uid: number): Promise<void> {
+  await weapiRequest(
+    "music.163.com/weapi/point/dailyTask",
+    { type: 0 },
+    AccountState.cookies.get(uid)
+  );
 }
 
-async function dailySigninWeb(): Promise<void> {
-  try {
-    await weapiRequest("music.163.com/weapi/point/dailyTask", {
-      type: 1,
-    });
-  } catch (err) {
-    logError(err);
-  }
+async function dailySigninWeb(uid: number): Promise<void> {
+  await weapiRequest(
+    "music.163.com/weapi/point/dailyTask",
+    { type: 1 },
+    AccountState.cookies.get(uid)
+  );
 }
 
-export async function djPersonalizeRecommend(): Promise<
-  readonly NeteaseTypings.RadioDetail[]
-> {
+export async function djPersonalizeRecommend(
+  uid: number
+): Promise<readonly NeteaseTypings.RadioDetail[]> {
   const key = "dj_personalize_recommend";
   const value = apiCache.get<readonly NeteaseTypings.RadioDetail[]>(key);
   if (value) return value;
-  try {
-    const { data } = await weapiRequest<{
-      data: readonly NeteaseTypings.RadioDetail[];
-    }>("music.163.com/api/djradio/personalize/rcmd", { limit: 10 });
-    const ret = data.map(resolveRadioDetail);
-    apiCache.set(key, ret);
-    return ret;
-  } catch (err) {
-    logError(err);
-  }
-  return [];
+  const res = await weapiRequest<{
+    data: readonly NeteaseTypings.RadioDetail[];
+  }>(
+    "music.163.com/api/djradio/personalize/rcmd",
+    { limit: 10 },
+    AccountState.cookies.get(uid)
+  );
+  if (!res) return [];
+  const ret = res.data.map(resolveRadioDetail);
+  apiCache.set(key, ret);
+  return ret;
 }
 
 export async function fmTrash(songId: number): Promise<boolean> {
-  try {
-    await weapiRequest(
-      `music.163.com/weapi/radio/trash/add?alg=RT&songId=${songId}&time=25`,
-      { songId }
-    );
-    return true;
-  } catch (err) {
-    logError(err);
-  }
-  return false;
+  return !!(await weapiRequest(
+    `music.163.com/weapi/radio/trash/add?alg=RT&songId=${songId}&time=25`,
+    { songId }
+  ));
 }
 
-export async function like(trackId: number, like: boolean): Promise<boolean> {
-  try {
-    await weapiRequest(
-      "music.163.com/api/radio/like",
-      { alg: "itembased", trackId, like, time: "3" },
-      { os: "pc", appver: "2.7.1.198277" }
-    );
-    return true;
-  } catch (err) {
-    logError(err);
-  }
-  return false;
+export async function like(
+  uid: number,
+  trackId: number,
+  like: boolean
+): Promise<boolean> {
+  return !!(await weapiRequest(
+    "music.163.com/api/radio/like",
+    { alg: "itembased", trackId, like, time: "3" },
+    { ...AccountState.cookies.get(uid), os: "pc", appver: "2.7.1.198277" }
+  ));
 }
 
 export async function likelist(uid: number): Promise<readonly number[]> {
-  try {
-    const { ids } = await weapiRequest<{ ids: readonly number[] }>(
-      "music.163.com/weapi/song/like/get",
-      { uid }
-    );
-    return ids;
-  } catch (err) {
-    logError(err);
-  }
-  return [];
+  const res = await weapiRequest<{ ids: readonly number[] }>(
+    "music.163.com/weapi/song/like/get",
+    { uid },
+    AccountState.cookies.get(uid)
+  );
+  if (!res) return [];
+  return res.ids;
 }
 
 export async function login(
   username: string,
   password: string
-): Promise<Profile | void> {
-  try {
-    const { profile } = await weapiRequest<{
-      profile: Profile;
-    }>(
-      "music.163.com/weapi/login",
-      { username, password, rememberLogin: "true" },
-      { os: "pc" }
-    );
-    return profile;
-  } catch (err) {
-    logError(err);
-  }
-  return;
+): Promise<NeteaseTypings.Profile | void> {
+  return await loginRequest("music.163.com/weapi/login", {
+    username,
+    password,
+    rememberLogin: "true",
+  });
 }
 
 export async function loginCellphone(
   phone: string,
   countrycode: string,
   password: string
-): Promise<Profile | void> {
-  try {
-    const { profile } = await weapiRequest<{
-      profile: Profile;
-    }>(
-      "music.163.com/weapi/login/cellphone",
-      { phone, countrycode, password, rememberLogin: "true" },
-      { os: "pc" }
-    );
-    return profile;
-  } catch (err) {
-    logError(err);
-  }
-  return;
+): Promise<NeteaseTypings.Profile | void> {
+  return await loginRequest("music.163.com/weapi/login/cellphone", {
+    phone,
+    countrycode,
+    password,
+    rememberLogin: "true",
+  });
 }
 
 export async function loginQrCheck(key: string): Promise<number | void> {
-  try {
-    const { code } = await weapiRequest<{ code: number }>(
-      "music.163.com/weapi/login/qrcode/client/login",
-      { key, type: 1 }
-    );
-    return code;
-  } catch {}
-  return;
+  return await qrloginRequest("music.163.com/weapi/login/qrcode/client/login", {
+    key,
+    type: 1,
+  });
 }
 
 export async function loginQrKey(): Promise<string | void> {
-  try {
-    const { unikey } = await weapiRequest<{ unikey: string }>(
-      "music.163.com/weapi/login/qrcode/unikey",
-      { type: 1 }
-    );
-    return unikey;
-  } catch (err) {
-    logError(err);
-  }
-  return;
+  const res = await weapiRequest<{ unikey: string }>(
+    "music.163.com/weapi/login/qrcode/unikey",
+    { type: 1 }
+  );
+  if (!res) return;
+  return res.unikey;
 }
 
-export async function loginStatus(cookieStr?: string): Promise<Profile | void> {
-  const key = "loginStatus";
-  const value = apiCache.get<Profile>(key);
-  if (value) return value;
-  if (cookieStr)
-    AccountState.cookie = JSON.parse(cookieStr) as NeteaseTypings.Cookie;
-  try {
-    const { profile } = await weapiRequest<{
-      profile: Profile;
-    }>("music.163.com/weapi/w/nuser/account/get", {});
-    if (profile && "userId" in profile && "nickname" in profile) return profile;
-    apiCache.set(key, profile);
-  } catch (err) {
-    logError(err);
-  }
-  return;
+export async function loginStatus(cookieStr: string): Promise<true | void> {
+  const cookie = JSON.parse(cookieStr) as NeteaseTypings.Cookie;
+  const res = await weapiRequest<{ profile: NeteaseTypings.Profile }>(
+    "music.163.com/weapi/w/nuser/account/get",
+    {},
+    cookie
+  );
+  if (!res) return;
+  const { profile } = res;
+  AccountState.cookies.set(profile.userId, cookie);
+  AccountState.profile.set(profile.userId, profile);
+  return true;
 }
 
-export async function logout(): Promise<boolean> {
-  try {
-    await weapiRequest("music.163.com/weapi/logout", {});
-    AccountState.cookie = {};
-    return true;
-  } catch (err) {
-    logError(err);
-  }
-  return false;
+export async function logout(uid: number): Promise<boolean> {
+  const res = await weapiRequest(
+    "music.163.com/weapi/logout",
+    {},
+    AccountState.cookies.get(uid)
+  );
+  if (!res) return false;
+  AccountState.cookies.delete(uid);
+  AccountState.profile.delete(uid);
+  return true;
 }
 
-export async function personalFm(): Promise<
-  readonly NeteaseTypings.SongsItem[]
-> {
-  try {
-    const { data } = await weapiRequest<{
-      data: readonly NeteaseTypings.AnotherSongItem[];
-    }>("music.163.com/weapi/v1/radio/get", {});
-    return data.map(resolveAnotherSongItem);
-  } catch (err) {
-    logError(err);
-  }
-  return [];
+export async function personalFm(
+  uid: number
+): Promise<readonly NeteaseTypings.SongsItem[]> {
+  const res = await weapiRequest<{
+    data: readonly NeteaseTypings.AnotherSongItem[];
+  }>("music.163.com/weapi/v1/radio/get", {}, AccountState.cookies.get(uid));
+  if (!res) return [];
+  return res.data.map(resolveAnotherSongItem);
 }
 
-export async function personalized(): Promise<
-  readonly NeteaseTypings.PlaylistItem[]
-> {
+export async function personalized(
+  uid: number
+): Promise<readonly NeteaseTypings.PlaylistItem[]> {
   const key = "personalized";
   const value = apiCache.get<readonly NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
-  try {
-    const { result } = await weapiRequest<{
-      result: readonly NeteaseTypings.RawPlaylistItem[];
-    }>("music.163.com/weapi/personalized/playlist", {
-      limit: 30,
-      total: true,
-      n: 1000,
-    });
-    const ret = result.map(resolvePlaylistItem);
-    apiCache.set(key, ret);
-    return ret;
-  } catch (err) {
-    logError(err);
-  }
-  return [];
+  const res = await weapiRequest<{
+    result: readonly NeteaseTypings.RawPlaylistItem[];
+  }>(
+    "music.163.com/weapi/personalized/playlist",
+    { limit: 30, total: true, n: 1000 },
+    AccountState.cookies.get(uid)
+  );
+  if (!res) return [];
+  const ret = res.result.map(resolvePlaylistItem);
+  apiCache.set(key, ret);
+  return ret;
 }
 
-export async function personalizedDjprogram(): Promise<
-  readonly NeteaseTypings.ProgramDetail[]
-> {
+export async function personalizedDjprogram(
+  uid: number
+): Promise<readonly NeteaseTypings.ProgramDetail[]> {
   const key = "personalized_djprogram";
   const value = apiCache.get<readonly NeteaseTypings.ProgramDetail[]>(key);
   if (value) return value;
-  try {
-    const { result } = await weapiRequest<{
-      result: readonly { program: NeteaseTypings.RawProgramDetail }[];
-    }>("music.163.com/weapi/personalized/djprogram", {});
-    const ret = result.map(({ program }) => resolveProgramDetail(program));
-    apiCache.set(key, ret);
-    return ret;
-  } catch (err) {
-    logError(err);
-  }
-  return [];
+  const res = await weapiRequest<{
+    result: readonly { program: NeteaseTypings.RawProgramDetail }[];
+  }>(
+    "music.163.com/weapi/personalized/djprogram",
+    {},
+    AccountState.cookies.get(uid)
+  );
+  if (!res) return [];
+  const ret = res.result.map(({ program }) => resolveProgramDetail(program));
+  apiCache.set(key, ret);
+  return ret;
 }
 
-export async function personalizedNewsong(): Promise<
-  readonly NeteaseTypings.SongsItem[]
-> {
+export async function personalizedNewsong(
+  uid: number
+): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = "personalized_newsong";
   const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
-  try {
-    const { result } = await weapiRequest<{
-      result: readonly { song: NeteaseTypings.AnotherSongItem }[];
-    }>("music.163.com/weapi/personalized/newsong", {
-      type: "recommend",
-      limit: 10,
-      areaId: 0,
-    });
-    const ret = result.map(({ song }) => resolveAnotherSongItem(song));
-    apiCache.set(key, ret);
-    return ret;
-  } catch (err) {
-    logError(err);
-  }
-  return [];
+  const res = await weapiRequest<{
+    result: readonly { song: NeteaseTypings.AnotherSongItem }[];
+  }>(
+    "music.163.com/weapi/personalized/newsong",
+    { type: "recommend", limit: 10, areaId: 0 },
+    AccountState.cookies.get(uid)
+  );
+  if (!res) return [];
+  const ret = res.result.map(({ song }) => resolveAnotherSongItem(song));
+  apiCache.set(key, ret);
+  return ret;
 }
 
-export async function recommendResource(): Promise<
-  readonly NeteaseTypings.PlaylistItem[]
-> {
+export async function recommendResource(
+  uid: number
+): Promise<readonly NeteaseTypings.PlaylistItem[]> {
   const key = "recommend_resource";
   const value = apiCache.get<readonly NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
-  try {
-    const { recommend } = await weapiRequest<{
-      recommend: readonly NeteaseTypings.RawPlaylistItem[];
-    }>("music.163.com/weapi/v1/discovery/recommend/resource", {});
-    const ret = recommend.map(resolvePlaylistItem);
-    apiCache.set(key, ret);
-    return ret;
-  } catch (err) {
-    logError(err);
-  }
-  return [];
+  const res = await weapiRequest<{
+    recommend: readonly NeteaseTypings.RawPlaylistItem[];
+  }>(
+    "music.163.com/weapi/v1/discovery/recommend/resource",
+    {},
+    AccountState.cookies.get(uid)
+  );
+  if (!res) return [];
+  const ret = res.recommend.map(resolvePlaylistItem);
+  apiCache.set(key, ret);
+  return ret;
 }
 
-export async function recommendSongs(): Promise<
-  readonly NeteaseTypings.SongsItem[]
-> {
+export async function recommendSongs(
+  uid: number
+): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = "recommend_songs";
   const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
-  try {
-    const { data } = await weapiRequest<{
-      data: { dailySongs: readonly NeteaseTypings.SongsItemSt[] };
-    }>("music.163.com/api/v3/discovery/recommend/songs", {});
-    const ret = data.dailySongs.map(resolveSongItemSt);
-    apiCache.set(key, ret);
-    return ret;
-  } catch (err) {
-    logError(err);
-  }
-  return [];
+  const res = await weapiRequest<{
+    data: { dailySongs: readonly NeteaseTypings.SongsItemSt[] };
+  }>(
+    "music.163.com/api/v3/discovery/recommend/songs",
+    {},
+    AccountState.cookies.get(uid)
+  );
+  if (!res) return [];
+  const ret = res.data.dailySongs.map(resolveSongItemSt);
+  apiCache.set(key, ret);
+  return ret;
 }
 
 export async function scrobble(
@@ -326,26 +277,22 @@ export async function scrobble(
   sourceId: number,
   time: number
 ): Promise<void> {
-  try {
-    await weapiRequest("music.163.com/weapi/feedback/weblog", {
-      logs: JSON.stringify([
-        {
-          action: "play",
-          json: {
-            download: 0,
-            end: "playend",
-            id,
-            sourceId,
-            time,
-            type: "song",
-            wifi: 0,
-          },
+  await weapiRequest("music.163.com/weapi/feedback/weblog", {
+    logs: JSON.stringify([
+      {
+        action: "play",
+        json: {
+          download: 0,
+          end: "playend",
+          id,
+          sourceId,
+          time,
+          type: "song",
+          wifi: 0,
         },
-      ]),
-    });
-  } catch (err) {
-    logError(err);
-  }
+      },
+    ]),
+  });
 }
 
 export async function userDetail(
@@ -354,16 +301,16 @@ export async function userDetail(
   const key = `user_detail${uid}`;
   const value = apiCache.get<NeteaseTypings.UserDetail>(key);
   if (value) return value;
-  try {
-    const { profile } = await weapiRequest<{
-      profile: NeteaseTypings.UserDetail;
-    }>(`music.163.com/weapi/v1/user/detail/${uid}`, {});
-    const ret = resolveUserDetail(profile);
-    return ret;
-  } catch (err) {
-    logError(err);
-  }
-  return;
+  const res = await weapiRequest<{
+    profile: NeteaseTypings.UserDetail;
+  }>(
+    `music.163.com/weapi/v1/user/detail/${uid}`,
+    {},
+    AccountState.cookies.get(uid)
+  );
+  if (!res) return;
+  const ret = resolveUserDetail(res.profile);
+  return ret;
 }
 
 export async function userFolloweds(
@@ -374,20 +321,17 @@ export async function userFolloweds(
   const key = `user_followeds${userId}-${limit}`;
   const value = apiCache.get<readonly NeteaseTypings.UserDetail[]>(key);
   if (value) return value;
-  try {
-    const { followeds } = await eapiRequest<{
-      followeds: readonly NeteaseTypings.UserDetail[];
-    }>(
-      `music.163.com/eapi/user/getfolloweds/${userId}`,
-      { userId, time: "0", limit, offset, getcounts: "true" },
-      "/api/user/getfolloweds"
-    );
-    const ret = followeds.map(resolveUserDetail);
-    return ret;
-  } catch (err) {
-    logError(err);
-  }
-  return [];
+  const res = await eapiRequest<{
+    followeds: readonly NeteaseTypings.UserDetail[];
+  }>(
+    `music.163.com/eapi/user/getfolloweds/${userId}`,
+    { userId, time: "0", limit, offset, getcounts: "true" },
+    "/api/user/getfolloweds",
+    AccountState.cookies.get(userId)
+  );
+  if (!res) return [];
+  const ret = res.followeds.map(resolveUserDetail);
+  return ret;
 }
 
 export async function userFollows(
@@ -398,42 +342,36 @@ export async function userFollows(
   const key = `user_follows${uid}-${limit}-${offset}`;
   const value = apiCache.get<readonly NeteaseTypings.UserDetail[]>(key);
   if (value) return value;
-  try {
-    const { follow } = await weapiRequest<{
-      follow: NeteaseTypings.UserDetail[];
-    }>(`music.163.com/weapi/user/getfollows/${uid}`, {
-      offset,
-      limit,
-      order: true,
-    });
-    const ret = follow.map(resolveUserDetail);
-    return ret;
-  } catch (err) {
-    logError(err);
-  }
-  return [];
+  const res = await weapiRequest<{
+    follow: NeteaseTypings.UserDetail[];
+  }>(
+    `music.163.com/weapi/user/getfollows/${uid}`,
+    { offset, limit, order: true },
+    AccountState.cookies.get(uid)
+  );
+  if (!res) return [];
+  const ret = res.follow.map(resolveUserDetail);
+  return ret;
 }
 
 type UserLevel = { progress: number; level: number };
 
-export async function userLevel(): Promise<UserLevel> {
+export async function userLevel(uid: number): Promise<UserLevel> {
   const key = "user_level";
   const value = apiCache.get<UserLevel>(key);
   if (value) return value;
-  try {
-    const {
-      data: { progress, level },
-    } = await weapiRequest<{ data: UserLevel }>(
-      "music.163.com/weapi/user/level",
-      {}
-    );
-    const ret = { progress, level };
-    apiCache.set(key, ret, 0);
-    return ret;
-  } catch (err) {
-    logError(err);
-  }
-  return {} as UserLevel;
+  const res = await weapiRequest<{ data: UserLevel }>(
+    "music.163.com/weapi/user/level",
+    {},
+    AccountState.cookies.get(uid)
+  );
+  if (!res) return {} as UserLevel;
+  const {
+    data: { progress, level },
+  } = res;
+  const ret = { progress, level };
+  apiCache.set(key, ret, 0);
+  return ret;
 }
 
 export async function userPlaylist(
@@ -442,24 +380,19 @@ export async function userPlaylist(
   const key = `user_playlist${uid}`;
   const value = apiCache.get<readonly NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
-  try {
-    const { playlist } = await weapiRequest<{
-      playlist: readonly NeteaseTypings.RawPlaylistItem[];
-    }>("music.163.com/api/user/playlist", {
-      uid,
-      limit: 30,
-      offset: 0,
-      includeVideo: true,
-    });
-    const ret = playlist.map(resolvePlaylistItem);
-    if (ret.length > 0) {
-      apiCache.set(key, ret);
-    }
-    return ret;
-  } catch (err) {
-    logError(err);
+  const res = await weapiRequest<{
+    playlist: readonly NeteaseTypings.RawPlaylistItem[];
+  }>(
+    "music.163.com/api/user/playlist",
+    { uid, limit: 30, offset: 0, includeVideo: true },
+    AccountState.cookies.get(uid)
+  );
+  if (!res) return [];
+  const ret = res.playlist.map(resolvePlaylistItem);
+  if (ret.length > 0) {
+    apiCache.set(key, ret);
   }
-  return [];
+  return ret;
 }
 
 export async function userRecord(
@@ -472,31 +405,35 @@ export async function userRecord(
 
   const tasks: readonly Promise<readonly NeteaseTypings.RecordData[]>[] = [
     (async () => {
-      const { weekData } = await weapiRequest<{
+      const res = await weapiRequest<{
         weekData: readonly {
           playCount: number;
           song: NeteaseTypings.SongsItem;
         }[];
-      }>("music.163.com/weapi/v1/play/record", {
-        type: 1,
-        uid,
-      });
-      return weekData.map(({ playCount, song }) => ({
+      }>(
+        "music.163.com/weapi/v1/play/record",
+        { type: 1, uid },
+        AccountState.cookies.get(uid)
+      );
+      if (!res) throw Error("");
+      return res.weekData.map(({ playCount, song }) => ({
         ...resolveSongItem(song),
         playCount,
       }));
     })(),
     (async () => {
-      const { allData } = await weapiRequest<{
+      const res = await weapiRequest<{
         allData: readonly {
           playCount: number;
           song: NeteaseTypings.SongsItem;
         }[];
-      }>("music.163.com/weapi/v1/play/record", {
-        type: 0,
-        uid,
-      });
-      return allData.map(({ playCount, song }) => ({
+      }>(
+        "music.163.com/weapi/v1/play/record",
+        { type: 0, uid },
+        AccountState.cookies.get(uid)
+      );
+      if (!res) throw Error("");
+      return res.allData.map(({ playCount, song }) => ({
         ...resolveSongItem(song),
         playCount,
       }));
@@ -513,41 +450,33 @@ export async function userRecord(
   return [[], []];
 }
 
-async function yunbeiInfo(): Promise<{
+async function yunbeiInfo(uid: number): Promise<{
   mobileSign: boolean;
   pcSign: boolean;
 }> {
-  try {
-    const { mobileSign, pcSign } = await weapiRequest<{
-      mobileSign: boolean;
-      pcSign: boolean;
-    }>("music.163.com/api/v1/user/info", {});
-    return { mobileSign, pcSign };
-  } catch (err) {
-    logError(err);
-  }
-  return { mobileSign: false, pcSign: false };
+  const res = await weapiRequest<{
+    mobileSign: boolean;
+    pcSign: boolean;
+  }>("music.163.com/api/v1/user/info", {}, AccountState.cookies.get(uid));
+  if (!res) return { mobileSign: false, pcSign: false };
+  const { mobileSign, pcSign } = res;
+  return { mobileSign, pcSign };
 }
 
-async function yunbeiSign(): Promise<void> {
-  try {
-    await weapiRequest("music.163.com/api/point/dailyTask", {
-      type: 0,
-    });
-  } catch (err) {
-    logError(err);
-  }
+async function yunbeiSign(uid: number): Promise<void> {
+  await weapiRequest(
+    "music.163.com/api/point/dailyTask",
+    { type: 0 },
+    AccountState.cookies.get(uid)
+  );
 }
 
-async function yunbeiToday(): Promise<boolean> {
-  try {
-    const { code } = await weapiRequest<{ code: number }>(
-      "music.163.com/api/point/today/get",
-      {}
-    );
-    if (code === 400) return false;
-  } catch (err) {
-    logError(err);
-  }
+async function yunbeiToday(uid: number): Promise<boolean> {
+  const res = await weapiRequest<{ code: number }>(
+    "music.163.com/api/point/today/get",
+    {},
+    AccountState.cookies.get(uid)
+  );
+  if (!res || res.code === 400) return false;
   return true;
 }

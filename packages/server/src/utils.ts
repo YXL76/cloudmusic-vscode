@@ -1,6 +1,8 @@
-import { MusicCache, NeteaseAPI, State } from ".";
+import { MusicCache } from "./cache";
+import { NeteaseAPI } from "./api";
 import type { Readable } from "stream";
-import { TMP_DIR } from "@cloudmusic/shared";
+import { State } from "./state";
+import { TMP_DIR } from "./constant";
 import axios from "axios";
 import { createWriteStream } from "fs";
 import { resolve } from "path";
@@ -8,13 +10,10 @@ import { resolve } from "path";
 export const logError = (err: unknown): void => console.error(Date.now(), err);
 
 export async function getMusicPath(
-  data:
-    | { url: string; local: true }
-    | { dt: number; id: number; pid: number; local?: undefined; next?: number }
+  id: number,
+  wasm?: boolean
 ): Promise<string | void> {
-  if (data?.local) return data.url;
-
-  const idS = `${data.id}`;
+  const idS = `${id}`;
   const cachaUrl = MusicCache.get(idS);
   if (cachaUrl) return cachaUrl;
 
@@ -30,21 +29,28 @@ export async function getMusicPath(
       download.destroy();
       resolve();
     }, 30000);
+    const ret = () => {
+      clearTimeout(timer);
+      resolve(tmpUri);
+    };
 
     let len = 0;
     const onData = ({ length }: { length: number }) => {
       len += length;
       if (len > State.minSize) {
         download.removeListener("data", onData);
-        clearTimeout(timer);
-        resolve(tmpUri);
+        ret();
       }
     };
 
-    download.on("data", onData);
-    download.once("error", () => resolve());
     const file = createWriteStream(tmpUri);
-    download.pipe(file);
+    if (wasm) {
+      file.once("finish", () => {
+        file.close();
+        ret();
+      });
+    } else download.on("data", onData);
+    download.once("error", resolve).pipe(file);
   });
 }
 
@@ -62,7 +68,9 @@ export async function getMusic(
     });
     if (cache) data.on("end", () => void MusicCache.put(fn, path, md5));
     return data;
-  } catch {}
+  } catch (err) {
+    logError(err);
+  }
   return;
 }
 

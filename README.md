@@ -57,11 +57,9 @@
 
 ## Requirements
 
-支持`Windows arm64`、`Windows x64`、`Mac OS x64`、`Linux x64`
-
 ## Usage
 
-![Usage](https://s3.ax1x.com/2021/02/04/y3yJU0.png)
+![Usage](https://z3.ax1x.com/2021/07/31/WjLd61.png)
 
 支持海外用户，可以在设置中开启（`cloudmusic.network.foreignUser`）
 

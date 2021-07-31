@@ -3,9 +3,11 @@ import {
   LYRIC_CACHE_DIR,
   MUSIC_CACHE_DIR,
   TMP_DIR,
-} from "@cloudmusic/shared";
-import { IPCBroadcastServer, IPCServer, MusicCache, logError } from ".";
+} from "./constant";
+import { IPCBroadcastServer, IPCServer } from "./server";
+import { MusicCache } from "./cache";
 import { bootstrap } from "global-agent";
+import { logError } from "./utils";
 import { mkdirSync } from "fs";
 
 process.setUncaughtExceptionCaptureCallback(logError);

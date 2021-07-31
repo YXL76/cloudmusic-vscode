@@ -1,5 +1,4 @@
 import type { IPCEvent } from ".";
-import type { NeteaseAPI } from "@cloudmusic/server";
 import type { NeteaseTypings } from "api";
 
 export type CSMessage<T = undefined, U = number | string> = {
@@ -16,9 +15,8 @@ export type CSConnPool = Map<
 export type IPCMsg<T = string, U = Record<never, never>> = { t: T } & U;
 
 export type IPCBroadcastMsg =
-  | IPCMsg<IPCEvent.Control$login, { userId: number; nickname: string }>
-  | IPCMsg<IPCEvent.Control$logout>
   | IPCMsg<IPCEvent.Play$load>
+  | IPCMsg<IPCEvent.Play$loaded>
   | IPCMsg<IPCEvent.Play$repeat, { r: boolean }>
   | IPCMsg<IPCEvent.Queue$add, { items: readonly unknown[]; index?: number }>
   | IPCMsg<IPCEvent.Queue$clear>
@@ -33,45 +31,45 @@ export type IPCClientMsg =
   | IPCMsg<
       IPCEvent.Control$init,
       {
+        volume?: number;
+        player?: { wasm: boolean; name?: string };
         mq: number;
         cs: number;
-        volume?: number;
         https: boolean;
         foreign: boolean;
       }
     >
   | IPCMsg<IPCEvent.Control$lyric>
   | IPCMsg<IPCEvent.Control$music>
+  | IPCMsg<IPCEvent.Control$netease>
   | IPCMsg<IPCEvent.Control$retain, { items: readonly unknown[] }>
+  | IPCMsg<IPCEvent.Play$load, { url: string; local: true }>
   | IPCMsg<
       IPCEvent.Play$load,
-      {
-        url: string;
-        dt?: undefined;
-        id?: undefined;
-        pid?: undefined;
-        local: true;
-        next?: undefined;
-      }
-    >
-  | IPCMsg<
-      IPCEvent.Play$load,
-      { dt: number; id: number; pid: number; local?: undefined; next?: number }
+      { dt: number; id: number; pid: number; next: number | undefined }
     >
   | IPCMsg<IPCEvent.Play$lyricDelay, { delay: number }>
+  | IPCMsg<IPCEvent.Play$playing, { playing: boolean }>
+  | IPCMsg<IPCEvent.Play$position, { pos: number }>
   | IPCMsg<IPCEvent.Play$stop>
   | IPCMsg<IPCEvent.Play$toggle>
   | IPCMsg<IPCEvent.Play$volume, { level: number }>
-  | IPCMsg<IPCEvent.Queue$fm, { is: boolean }>
+  | IPCMsg<IPCEvent.Queue$fm, { uid: number; is: boolean }>
   | IPCMsg<IPCEvent.Queue$fmNext>;
 
 export type IPCServerMsg =
-  | IPCMsg<IPCEvent.Control$cookie, { cookie: string }>
   | IPCMsg<IPCEvent.Control$master, { is?: true }>
+  | IPCMsg<
+      IPCEvent.Control$netease,
+      {
+        cookies: { uid: number; cookie: string }[];
+        profiles: NeteaseTypings.Profile[];
+      }
+    >
   | IPCMsg<IPCEvent.Control$new>
   | IPCMsg<IPCEvent.Control$retain, { items: readonly unknown[] }>
   | IPCMsg<IPCEvent.Play$end, { fail?: true }>
-  | IPCMsg<IPCEvent.Play$load>
+  | IPCMsg<IPCEvent.Play$loaded>
   | IPCMsg<IPCEvent.Play$lyric, { lyric: NeteaseTypings.LyricData }>
   | IPCMsg<IPCEvent.Play$lyricIndex, { oi: number; ti: number }>
   | IPCMsg<IPCEvent.Play$pause>
@@ -79,26 +77,9 @@ export type IPCServerMsg =
   | IPCMsg<IPCEvent.Play$stop>
   | IPCMsg<IPCEvent.Play$volume, { level: number }>
   | IPCMsg<IPCEvent.Queue$fm, { is: boolean }>
-  | IPCMsg<IPCEvent.Queue$fmNext, { item: NeteaseTypings.SongsItem }>;
-
-export type NeteaseAPIKey = keyof typeof NeteaseAPI;
-
-export type NeteaseAPIParameters<T extends NeteaseAPIKey> = Parameters<
-  typeof NeteaseAPI[T]
->;
-
-export type NeteaseAPIReturn<T extends NeteaseAPIKey> = ReturnType<
-  typeof NeteaseAPI[T]
-> extends PromiseLike<infer U>
-  ? U
-  : ReturnType<typeof NeteaseAPI[T]>;
-
-export type NeteaseAPICMsg<T extends NeteaseAPIKey> = IPCMsg<
-  IPCEvent.Api$netease,
-  CSMessage<{ i: T; p: NeteaseAPIParameters<T> }>
->;
-
-export type NeteaseAPISMsg<T extends NeteaseAPIKey> = IPCMsg<
-  IPCEvent.Api$netease,
-  CSMessage<NeteaseAPIReturn<T>>
->;
+  | IPCMsg<IPCEvent.Queue$fmNext, { item: NeteaseTypings.SongsItem }>
+  | IPCMsg<IPCEvent.Wasm$load, { path: string }>
+  | IPCMsg<IPCEvent.Wasm$pause>
+  | IPCMsg<IPCEvent.Wasm$play>
+  | IPCMsg<IPCEvent.Wasm$stop>
+  | IPCMsg<IPCEvent.Wasm$volume, { level: number }>;

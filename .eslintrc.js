@@ -63,7 +63,11 @@ const browserTsConfig = (files, project) => ({
 const config = {
   env: { browser: false, node: true },
   extends: ["eslint:recommended", "plugin:prettier/recommended"],
-  ignorePatterns: ["./packages/wasi/**/*.*", "*.jsom"],
+  ignorePatterns: [
+    "./packages/wasi/**/*.*",
+    "./packages/wasm/**/*.*",
+    "*.jsom",
+  ],
   parser: "@typescript-eslint/parser",
   plugins: ["prettier"],
   rules: {

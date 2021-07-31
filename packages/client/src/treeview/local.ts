@@ -4,7 +4,7 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import type { PlayTreeItem, RefreshAction } from ".";
+import type { PlayTreeItem, PlayTreeItemData } from ".";
 import type { TreeDataProvider } from "vscode";
 import { fromFile } from "file-type";
 import { readdir } from "fs/promises";
@@ -15,26 +15,41 @@ export class LocalProvider
 {
   static readonly folders: string[] = [];
 
-  static readonly files = new Map<string, readonly LocalFileTreeItem[]>();
+  private static _instance: LocalProvider;
 
-  private static instance: LocalProvider;
+  private static readonly _files = new Map<
+    LocalLibraryTreeItem,
+    LocalFileTreeItem[]
+  >();
 
-  private static action?: RefreshAction;
+  private static _actions = new Map<
+    LocalLibraryTreeItem,
+    { resolve: (value: PlayTreeItemData[]) => void; reject: () => void }
+  >();
 
   _onDidChangeTreeData = new EventEmitter<LocalLibraryTreeItem | void>();
 
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
   static getInstance(): LocalProvider {
-    return this.instance || (this.instance = new LocalProvider());
+    return this._instance || (this._instance = new LocalProvider());
   }
 
-  static refresh(element?: LocalLibraryTreeItem, action?: RefreshAction): void {
-    if (element) {
-      if (action) this.action = action;
-      else this.files.delete(element.label);
-    }
-    this.instance._onDidChangeTreeData.fire(element);
+  static refresh(): void {
+    this._instance._onDidChangeTreeData.fire();
+  }
+
+  static async refreshLibrary(
+    element: LocalLibraryTreeItem,
+    hard?: boolean
+  ): Promise<readonly PlayTreeItemData[]> {
+    if (hard) this._files.delete(element);
+    const old = this._actions.get(element);
+    old?.reject();
+    return new Promise((resolve, reject) => {
+      this._actions.set(element, { resolve, reject });
+      this._instance._onDidChangeTreeData.fire(element);
+    });
   }
 
   getTreeItem(
@@ -51,54 +66,49 @@ export class LocalProvider
         (folder) => new LocalLibraryTreeItem(folder)
       );
 
-    const localAction = LocalProvider.action;
-    LocalProvider.action = undefined;
+    const action = LocalProvider._actions.get(element);
+    LocalProvider._actions.delete(element);
 
     let items: LocalFileTreeItem[] = [];
-    const { label } = element;
-    if (LocalProvider.files.has(label))
-      items = LocalProvider.files.get(label) as LocalFileTreeItem[];
-    else {
-      let index = 0;
-      const folders: string[] = [label];
-      try {
-        while (index < folders.length) {
-          const folder = folders[index];
-          const dirents = await readdir(folder, { withFileTypes: true });
-          const paths: string[] = [];
-
-          for (const dirent of dirents) {
-            if (dirent.isFile()) paths.push(dirent.name);
-            else if (dirent.isDirectory())
-              folders.push(resolve(folder, dirent.name));
-          }
-
-          const treeitems = (
-            await Promise.all(
-              paths.map(async (filename) => {
-                const id = resolve(folder, filename);
-                return {
-                  filename,
-                  id,
-                  ...(await fromFile(id)),
-                };
-              })
-            )
-          )
-            .filter(
-              ({ mime }) =>
-                mime && (mime === "audio/x-flac" || mime === "audio/mpeg")
-            )
-            .map((item) => LocalFileTreeItem.new(item));
-          items.push(...treeitems);
-
-          ++index;
-        }
-      } catch {}
-      LocalProvider.files.set(label, items);
+    if (LocalProvider._files.has(element)) {
+      items = LocalProvider._files.get(element) ?? [];
+      action?.resolve(items.map(({ data }) => data));
+      return items;
     }
 
-    localAction?.(items.map(({ data }) => data));
+    const folders: string[] = [element.label];
+    try {
+      for (let idx = 0; idx < folders.length; ++idx) {
+        const folder = folders[idx];
+        const dirents = await readdir(folder, { withFileTypes: true });
+        const paths: string[] = [];
+
+        for (const dirent of dirents) {
+          if (dirent.isFile()) paths.push(dirent.name);
+          else if (dirent.isDirectory())
+            folders.push(resolve(folder, dirent.name));
+        }
+
+        const treeitems = (
+          await Promise.all(
+            paths.map(async (filename) => {
+              const id = resolve(folder, filename);
+              const mime = await fromFile(id);
+              return { filename, id, ...mime };
+            })
+          )
+        )
+          .filter(
+            ({ mime }) =>
+              mime && (mime === "audio/x-flac" || mime === "audio/mpeg")
+          )
+          .map((item) => LocalFileTreeItem.new(item));
+        items.push(...treeitems);
+      }
+    } catch {}
+    LocalProvider._files.set(element, items);
+
+    action?.resolve(items.map(({ data }) => data));
     return items;
   }
 }

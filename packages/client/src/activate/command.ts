@@ -1,4 +1,4 @@
-import { IPC, LikeState, MultiStepInput, State, likeMusic } from "../utils";
+import { IPC, MultiStepInput, State, likeMusic } from "../utils";
 import { QueueItemTreeItem, QueueProvider } from "../treeview";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
@@ -24,35 +24,34 @@ export function initCommand(context: ExtensionContext): void {
     ),
 
     commands.registerCommand("cloudmusic.like", () => {
-      if (
-        State.playItem instanceof QueueItemTreeItem &&
-        State.like !== LikeState.none
-      )
-        void likeMusic(State.playItem.valueOf, !State.like);
+      if (State.like && State.playItem instanceof QueueItemTreeItem) {
+        const id = State.playItem.valueOf;
+        void MultiStepInput.run((input) => likeMusic(input, 1, id));
+      }
     }),
 
-    commands.registerCommand("cloudmusic.volume", () => {
-      void MultiStepInput.run(async (input) => {
-        const levelS = await input.showInputBox({
-          title: i18n.word.volume,
-          step: 1,
-          totalSteps: 1,
-          value: `${context.globalState.get(VOLUME_KEY, 85)}`,
-          prompt: `${i18n.sentence.hint.volume} (0~100)`,
-        });
-        if (/^[1-9]\d$|^\d$|^100$/.exec(levelS)) {
-          const level = parseInt(levelS);
-          IPC.volume(level);
-          await context.globalState.update(VOLUME_KEY, level);
-        }
-        return input.stay();
-      });
-    }),
+    commands.registerCommand(
+      "cloudmusic.volume",
+      () =>
+        void MultiStepInput.run(async (input) => {
+          const levelS = await input.showInputBox({
+            title: i18n.word.volume,
+            step: 1,
+            totalSteps: 1,
+            value: `${context.globalState.get(VOLUME_KEY, 85)}`,
+            prompt: `${i18n.sentence.hint.volume} (0~100)`,
+          });
+          if (/^[1-9]\d$|^\d$|^100$/.exec(levelS)) {
+            const level = parseInt(levelS);
+            IPC.volume(level);
+            await context.globalState.update(VOLUME_KEY, level);
+          }
+          return input.stay();
+        })
+    ),
 
     commands.registerCommand("cloudmusic.toggleButton", () =>
       ButtonManager.toggle()
-    ),
-
-    commands.registerCommand("cloudmusic.personalFM", () => IPC.fm())
+    )
   );
 }

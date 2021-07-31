@@ -1,17 +1,17 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { AccountViewProvider, IPC, State } from "../utils";
-import { COOKIE_KEY, ICON, STRICT_SSL, VOLUME_KEY } from "../constant";
-import type {
-  IPCBroadcastMsg,
-  IPCServerMsg,
-  NeteaseAPIKey,
-  NeteaseAPISMsg,
-} from "@cloudmusic/shared";
+import { COOKIE_KEY, SETTING_DIR, STRICT_SSL } from "../constant";
+import type { IPCBroadcastMsg, IPCServerMsg } from "@cloudmusic/shared";
+import type { NeteaseAPIKey, NeteaseAPISMsg } from "@cloudmusic/server";
+import {
+  PlaylistProvider,
+  QueueItemTreeItem,
+  RadioProvider,
+} from "../treeview";
 import { commands, workspace } from "vscode";
+import { readdir, unlink } from "fs/promises";
 import type { ExtensionContext } from "vscode";
-import { LOG_FILE } from "@cloudmusic/shared";
 import type { PlayTreeItemData } from "../treeview";
-import { QueueItemTreeItem } from "../treeview";
 import { QueueProvider } from "../treeview";
 import { fork } from "child_process";
 import { openSync } from "fs";
@@ -19,23 +19,11 @@ import { resolve } from "path";
 
 const ipcBHandler = (data: IPCBroadcastMsg) => {
   switch (data.t) {
-    case "control.login":
-      AccountManager.uid = data.userId;
-      AccountManager.nickname = data.nickname;
-      AccountManager.likelist.clear();
-      void IPC.netease("likelist", [data.userId]).then((ids) => {
-        for (const id of ids) AccountManager.likelist.add(id);
-      });
-      State.login = true;
-      break;
-    case "control.logout":
-      AccountManager.uid = 0;
-      AccountManager.nickname = "";
-      AccountManager.likelist.clear();
-      State.login = false;
-      break;
     case "player.load":
       State.loading = true;
+      break;
+    case "player.loaded":
+      State.loading = false;
       break;
     case "player.repeat":
       State.repeat = data.r;
@@ -84,8 +72,16 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
           // rejectTimout();
         }
         break;
-      case "control.cookie":
-        void context.secrets.store(COOKIE_KEY, data.cookie);
+      case "control.netease":
+        AccountManager.accounts.clear();
+        AccountManager.userPlaylist.clear();
+        data.profiles.forEach((i) => AccountManager.accounts.set(i.userId, i));
+        if (!data.cookies.length && State.master) IPC.clear();
+        PlaylistProvider.refresh();
+        RadioProvider.refresh();
+        AccountViewProvider.account(data.profiles);
+        if (State.master)
+          void context.secrets.store(COOKIE_KEY, JSON.stringify(data.cookies));
         break;
       case "control.master":
         State.master = !!data.is;
@@ -101,7 +97,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         if (!data.fail && State.repeat) IPC.load();
         else void commands.executeCommand("cloudmusic.next");
         break;
-      case "player.load":
+      case "player.loaded":
         State.loading = false;
         break;
       case "player.lyric":
@@ -131,8 +127,8 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         ButtonManager.buttonLyric();
         State.lyric = {
           ...State.lyric,
-          o: { time: [0], text: [ICON.lyric] },
-          t: { time: [0], text: [ICON.lyric] },
+          o: { time: [0], text: ["$(text-size)"] },
+          t: { time: [0], text: ["$(text-size)"] },
         };
         AccountViewProvider.stop();
         break;
@@ -148,20 +144,36 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
           pid: data.item.al.id,
         });
         break;
+      case "wasm.load":
+        AccountViewProvider.wasmLoad(data.path);
+        break;
+      case "wasm.pause":
+        AccountViewProvider.wasmPause();
+        break;
+      case "wasm.play":
+        AccountViewProvider.wasmPlay();
+        break;
+      case "wasm.stop":
+        AccountViewProvider.wasmStop();
+        break;
+      case "wasm.volume":
+        AccountViewProvider.wasmVolume(data.level);
+        break;
     }
   };
 
-  State.loading = true;
   try {
     const firstTry = await IPC.connect(ipcHandler, ipcBHandler, 0);
     if (firstTry.includes(false)) throw Error;
-    State.first = false;
   } catch {
-    State.loading = false;
+    const version = (context.extension.packageJSON as { version: string })
+      .version;
+    const log = `err-${version}.log`;
+    const logPath = resolve(SETTING_DIR, log);
     const httpProxy = workspace.getConfiguration("http").get<string>("proxy");
     fork(resolve(__dirname, "server.js"), {
       detached: true,
-      stdio: ["ignore", "ignore", openSync(LOG_FILE, "a"), "ipc"],
+      stdio: ["ignore", "ignore", openSync(logPath, "a"), "ipc"],
       env: {
         ...process.env,
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -171,6 +183,17 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       },
     }).unref();
     await IPC.connect(ipcHandler, ipcBHandler);
+    readdir(SETTING_DIR, { withFileTypes: true })
+      .then((dirents) => {
+        for (const dirent of dirents) {
+          if (
+            dirent.isFile() &&
+            dirent.name.startsWith("err") &&
+            dirent.name !== log
+          )
+            unlink(resolve(SETTING_DIR, dirent.name)).catch(console.error);
+        }
+      })
+      .catch(console.error);
   }
-  setTimeout(() => IPC.init(context.globalState.get(VOLUME_KEY, 85)), 128);
 }

@@ -1,4 +1,5 @@
 import type { CSMessage } from ".";
+import type { NeteaseTypings } from "api";
 
 export type WebviewType =
   | "comment"
@@ -31,7 +32,7 @@ export type MsicRankingCMsg =
   | CSMessage<{ command: "artist"; id: number }, undefined>;
 
 export type ProviderSMsg =
-  // | { command: "master"; is: boolean }
+  | { command: "master"; is: boolean }
   | { command: "state"; state: "none" | "paused" | "playing" }
   // | { command: "position"; position: number }
   | {
@@ -41,4 +42,10 @@ export type ProviderSMsg =
       artist?: string;
       album?: string;
       artwork?: { src: string; sizes?: string; type?: string }[];
-    };
+    }
+  | { command: "account"; profiles: NeteaseTypings.Profile[] }
+  | { command: "load"; url: string }
+  | { command: "play" }
+  | { command: "pause" }
+  | { command: "stop" }
+  | { command: "volume"; level: number };
