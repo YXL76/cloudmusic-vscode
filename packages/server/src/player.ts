@@ -111,10 +111,7 @@ export class Player {
         }
         posHandler(Player.position());
       }, 800);
-    } else {
-      this._wasm = new WasmPlayer();
-      if (volume) setTimeout(() => this._wasm?.volume(volume), 8192);
-    }
+    } else this._wasm = new WasmPlayer();
 
     setInterval(
       () =>

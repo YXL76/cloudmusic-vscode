@@ -48,6 +48,7 @@ Realized functions:
 - Top list (Music List/Singer List...)
 - Explore (New song express/New discs on shelves...)
 - Radio/Program
+- Local library
 - Cache management
 - Optional lossless music
 - Media control support

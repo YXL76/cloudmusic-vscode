@@ -37,7 +37,10 @@ const getNonce = (): string => {
 export class AccountViewProvider implements WebviewViewProvider {
   private static _view?: WebviewView;
 
-  constructor(private readonly _extUri: Uri) {}
+  constructor(
+    private readonly _extUri: Uri,
+    private readonly _volume: number
+  ) {}
 
   static master(): void {
     if (this._view) {
@@ -171,6 +174,7 @@ export class AccountViewProvider implements WebviewViewProvider {
             AccountViewProvider.account([...AccountManager.accounts.values()]);
             AccountViewProvider.metadata();
             void webview.webview.postMessage(msg);
+            AccountViewProvider.wasmVolume(this._volume);
           }
           break;
         case "account":

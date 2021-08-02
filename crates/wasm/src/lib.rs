@@ -78,10 +78,10 @@ impl Player {
 
     #[wasm_bindgen]
     pub fn set_volume(&mut self, level: f32) {
+        let level = level / 100.0;
+        self.volume = level;
         if let Some(ref sink) = self.sink {
-            let level = level / 100.0;
             sink.set_volume(level);
-            self.volume = level;
         }
     }
 
