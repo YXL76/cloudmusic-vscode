@@ -6,11 +6,6 @@ import type {
   MsicRankingCMsg,
 } from "@cloudmusic/shared";
 import { ColorThemeKind, Uri, ViewColumn, commands, window } from "vscode";
-import type {
-  ExtensionContext,
-  WebviewView,
-  WebviewViewProvider,
-} from "vscode";
 import {
   IPC,
   MultiStepInput,
@@ -21,10 +16,11 @@ import {
   pickUser,
 } from ".";
 import type { ProviderSMsg, WebviewType } from "@cloudmusic/shared";
-import { SETTING_DIR, VOLUME_KEY } from "../constant";
+import type { WebviewView, WebviewViewProvider } from "vscode";
 import { AccountManager } from "../manager";
 import { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
+import { SETTING_DIR } from "../constant";
 import i18n from "../i18n";
 import { resolve } from "path";
 import { toDataURL } from "qrcode";
@@ -39,18 +35,14 @@ const getNonce = (): string => {
 };
 
 export class AccountViewProvider implements WebviewViewProvider {
-  static context: ExtensionContext;
-
   private static _view?: WebviewView;
+
+  constructor(private readonly _extUri: Uri) {}
 
   static master(): void {
     if (this._view) {
       const msg: ProviderSMsg = { command: "master", is: State.master };
       void this._view.webview.postMessage(msg);
-      setTimeout(
-        () => this.wasmVolume(this.context.globalState.get(VOLUME_KEY, 85)),
-        512
-      );
     }
   }
 
@@ -146,15 +138,14 @@ export class AccountViewProvider implements WebviewViewProvider {
   ): void {
     AccountViewProvider._view = webview;
 
-    const extUri = AccountManager.context.extensionUri;
-
     webview.title = i18n.word.account;
     webview.webview.options = {
       enableScripts: true,
-      localResourceRoots: [extUri, Uri.file(SETTING_DIR)],
+      localResourceRoots: [this._extUri, Uri.file(SETTING_DIR)],
     };
 
     type Msg =
+      | { command: "pageLoaded" }
       | { command: "toggle" }
       | { command: "previous" }
       | { command: "nexttrack" }
@@ -166,6 +157,22 @@ export class AccountViewProvider implements WebviewViewProvider {
 
     webview.webview.onDidReceiveMessage((msg: Msg) => {
       switch (msg.command) {
+        case "pageLoaded":
+          {
+            const files = ["flac", "m4a", "ogg", "opus"].map((ext) =>
+              webview.webview
+                .asWebviewUri(
+                  Uri.joinPath(this._extUri, "media", "audio", `silent.${ext}`)
+                )
+                .toString()
+            );
+            const msg: ProviderSMsg = { command: "test", files };
+            AccountViewProvider.master();
+            AccountViewProvider.account([...AccountManager.accounts.values()]);
+            AccountViewProvider.metadata();
+            void webview.webview.postMessage(msg);
+          }
+          break;
         case "account":
           AccountManager.accountQuickPick(msg.userId);
           break;
@@ -189,10 +196,10 @@ export class AccountViewProvider implements WebviewViewProvider {
     });
 
     const js = webview.webview
-      .asWebviewUri(Uri.joinPath(extUri, "dist", "provider.js"))
+      .asWebviewUri(Uri.joinPath(this._extUri, "dist", "provider.js"))
       .toString();
     const css = webview.webview
-      .asWebviewUri(Uri.joinPath(extUri, "dist", "style.css"))
+      .asWebviewUri(Uri.joinPath(this._extUri, "dist", "style.css"))
       .toString();
 
     webview.webview.html = `
@@ -211,19 +218,6 @@ export class AccountViewProvider implements WebviewViewProvider {
   </body>
   <script type="module" src=${js} nonce=${getNonce()}></script>
 </html>`;
-
-    setTimeout(() => {
-      const files = ["flac", "m4a", "ogg", "opus"].map((ext) =>
-        webview.webview
-          .asWebviewUri(Uri.joinPath(extUri, "media", "audio", `silent.${ext}`))
-          .toString()
-      );
-      const msg: ProviderSMsg = { command: "test", files };
-      AccountViewProvider.master();
-      AccountViewProvider.account([...AccountManager.accounts.values()]);
-      AccountViewProvider.metadata();
-      void webview.webview.postMessage(msg);
-    }, 512);
   }
 }
 

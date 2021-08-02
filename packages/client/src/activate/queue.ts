@@ -9,11 +9,6 @@ export function initQueue(context: ExtensionContext): void {
   const queueProvider = QueueProvider.getInstance();
 
   context.subscriptions.push(
-    queueProvider.onDidChangeTreeData(() => {
-      State.fm = false;
-      State.playItem = QueueProvider.head;
-    }),
-
     window.registerTreeDataProvider("queue", queueProvider),
 
     commands.registerCommand("cloudmusic.sortQueue", () => {

@@ -7,20 +7,18 @@ import { vscode } from "../utils";
 
 const root = document.getElementById("root");
 
+const toggle = () => vscode.postMessage({ command: "toggle" });
+const previous = () => vscode.postMessage({ command: "previous" });
+const next = () => vscode.postMessage({ command: "next" });
+
 function setMSAHandler() {
   if (!navigator.mediaSession) return;
-  navigator.mediaSession.setActionHandler("play", () =>
-    vscode.postMessage({ command: "toggle" })
-  );
-  navigator.mediaSession.setActionHandler("pause", () =>
-    vscode.postMessage({ command: "toggle" })
-  );
-  navigator.mediaSession.setActionHandler("previoustrack", () =>
-    vscode.postMessage({ command: "previous" })
-  );
-  navigator.mediaSession.setActionHandler("nexttrack", () =>
-    vscode.postMessage({ command: "next" })
-  );
+  navigator.mediaSession.setActionHandler("play", toggle);
+  navigator.mediaSession.setActionHandler("pause", toggle);
+  navigator.mediaSession.setActionHandler("stop", toggle);
+
+  navigator.mediaSession.setActionHandler("previoustrack", previous);
+  navigator.mediaSession.setActionHandler("nexttrack", next);
 }
 
 function deleteMSAHandler() {
@@ -38,18 +36,11 @@ function deleteMSAHandler() {
 deleteMSAHandler();
 
 let master = false;
+const player: Player = new Player();
 let timerId: number | null = null;
-let player: Player | null = null;
 let playing = false;
 let d = 0;
 let i = 0;
-
-const dropPlayer = () => {
-  if (player !== null) {
-    player.free();
-    player = null;
-  }
-};
 
 const dropTimer = () => {
   if (timerId !== null) {
@@ -71,7 +62,7 @@ const pHandler = () => {
 
 // https://github.com/w3c/mediasession/issues/213
 let audioEle: HTMLAudioElement | null = null;
-const playable: string[] = [];
+let playable = "";
 
 const testAudioSrc = async (files: string[]) => {
   const a = new Audio();
@@ -79,8 +70,8 @@ const testAudioSrc = async (files: string[]) => {
     a.src = file;
     try {
       await a.play();
-      playable.push(file);
-      a.pause();
+      playable = file;
+      break;
     } catch {}
   }
   a.pause();
@@ -88,9 +79,8 @@ const testAudioSrc = async (files: string[]) => {
 
 const startSilent = () => {
   audioEle?.pause();
-  const file = playable?.[0];
-  if (!file) return;
-  audioEle = new Audio(file);
+  if (!playable) return;
+  audioEle = new Audio(playable);
   audioEle.loop = true;
   audioEle
     .play()
@@ -113,12 +103,11 @@ const Provider = (): JSX.Element => {
         dropTimer();
         master = data.is;
         if (master) {
-          player = new Player();
           setMSAHandler();
           timerId = setInterval(pHandler, 800);
           startSilent();
         } else {
-          dropPlayer();
+          player.stop();
           deleteMSAHandler();
           stopSilent();
         }
@@ -127,7 +116,9 @@ const Provider = (): JSX.Element => {
       if (!navigator.mediaSession) return;
       switch (data.command) {
         case "test":
-          testAudioSrc(data.files).then(startSilent).catch(console.error);
+          testAudioSrc(data.files)
+            .then(() => master && startSilent())
+            .catch(console.error);
           break;
         case "state":
           navigator.mediaSession.playbackState = data.state;
@@ -150,7 +141,7 @@ const Provider = (): JSX.Element => {
           fetch(data.url)
             .then((r) => r.arrayBuffer())
             .then((a) => {
-              playing = !!player?.load(new Uint8Array(a));
+              playing = !!player.load(new Uint8Array(a));
               i = Date.now();
               if (playing) vscode.postMessage({ command: "load" });
             })
@@ -161,21 +152,21 @@ const Provider = (): JSX.Element => {
           break;
         case "play":
           if (!playing) i = Date.now();
-          playing = !!player?.play();
+          playing = !!player.play();
           vscode.postMessage({ command: "playing", playing });
           break;
         case "pause":
           if (playing) d = Date.now() - i;
-          player?.pause();
+          player.pause();
           playing = false;
           break;
         case "stop":
           d = 0;
-          player?.stop();
+          player.stop();
           playing = false;
           break;
         case "volume":
-          player?.set_volume(data.level);
+          player.set_volume(data.level);
           break;
       }
     };
@@ -208,4 +199,10 @@ const Provider = (): JSX.Element => {
   );
 };
 
-render(<Provider />, root);
+let loaded = false;
+
+render(<Provider />, root, () => {
+  if (loaded) return;
+  loaded = true;
+  vscode.postMessage({ command: "pageLoaded" });
+});

@@ -75,15 +75,16 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         }
         break;
       case "control.netease":
-        State.first = false;
         AccountManager.accounts.clear();
         data.profiles.forEach((i) => AccountManager.accounts.set(i.userId, i));
-        if (!data.cookies.length && State.master) IPC.clear();
         PlaylistProvider.refresh();
         RadioProvider.refresh();
         AccountViewProvider.account(data.profiles);
-        if (State.master)
+        State.first = false;
+        if (State.master) {
+          if (!data.cookies.length) IPC.clear();
           void context.secrets.store(COOKIE_KEY, JSON.stringify(data.cookies));
+        }
         break;
       case "control.master":
         State.master = !!data.is;
@@ -93,6 +94,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         break;
       case "control.retain":
         QueueProvider.new(data.items as PlayTreeItemData[]);
+        State.loading = false;
         break;
       case "player.end":
         if (!data.fail && State.repeat) IPC.load();

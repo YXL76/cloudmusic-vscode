@@ -12,14 +12,15 @@ import {
 } from "./constant";
 import type { Server, Socket } from "net";
 import { downloadMusic, logError } from "./utils";
-import { rmdirSync, unlinkSync, writeFileSync } from "fs";
+import { readFileSync, rmdirSync, unlinkSync, writeFileSync } from "fs";
 import { basename } from "path";
 import { broadcastProfiles } from "./api/netease/helper";
 import { createServer } from "net";
 import { ipcDelimiter } from "@cloudmusic/shared";
-import { readFile } from "fs/promises";
 
 export class IPCServer {
+  private static _first = true;
+
   private static _retain: unknown[] = [];
 
   private static _timer?: NodeJS.Timeout;
@@ -34,6 +35,16 @@ export class IPCServer {
     try {
       unlinkSync(ipcServerPath);
     } catch {}
+
+    try {
+      this._retain = JSON.parse(
+        readFileSync(RETAIN_FILE).toString()
+      ) as unknown[];
+    } catch {}
+
+    /* readFile(RETAIN_FILE)
+      .then((data) => (this._retain = JSON.parse(data.toString()) as unknown[]))
+      .catch(logError); */
 
     this._server = createServer((socket) => {
       if (this._timer) {
@@ -82,12 +93,14 @@ export class IPCServer {
       this._setMaster();
 
       if (this._sockets.size === 1) {
-        Player.play();
+        if (!this._first) {
+          Player.play();
 
-        this.send(socket, { t: "control.retain", items: this._retain });
-        this._retain = [];
+          this.send(socket, { t: "control.retain", items: this._retain });
+          this._retain = [];
 
-        Player.wasmOpen();
+          Player.wasmOpen();
+        } else this._first = false;
       } else {
         this.sendToMaster({ t: "control.new" });
         const tmp = State.playing;
@@ -96,10 +109,6 @@ export class IPCServer {
     })
       .on("error", logError)
       .listen(ipcServerPath);
-
-    readFile(RETAIN_FILE)
-      .then((data) => (this._retain = JSON.parse(data.toString()) as unknown[]))
-      .catch(logError);
   }
 
   static stop(): void {

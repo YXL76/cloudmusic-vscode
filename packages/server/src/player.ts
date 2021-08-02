@@ -89,7 +89,7 @@ export class Player {
 
   private static _player: NativePlayer;
 
-  private static _wasm: WasmPlayer;
+  private static _wasm?: WasmPlayer;
 
   private static _native?: NativeModule;
 
@@ -111,7 +111,10 @@ export class Player {
         }
         posHandler(Player.position());
       }, 800);
-    } else this._wasm = new WasmPlayer();
+    } else {
+      this._wasm = new WasmPlayer();
+      if (volume) setTimeout(() => this._wasm?.volume(volume), 8192);
+    }
 
     setInterval(
       () =>

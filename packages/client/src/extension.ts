@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "./manager";
-import { AccountViewProvider, IPC, State } from "./utils";
+import { IPC, State } from "./utils";
 import {
   initAccount,
   initCache,
@@ -22,15 +22,14 @@ export async function activate(context: ExtensionContext): Promise<void> {
   try {
     mkdirSync(SETTING_DIR);
   } catch {}
-  AccountViewProvider.context = context;
   AccountManager.context = context;
   ButtonManager.context = context;
   State.context = context;
   State.init();
+  initViewProvide(context);
   initQueue(context);
   initCommand(context);
   initStatusBar(context);
-  initViewProvide(context);
   await initIPC(context);
   initPlayer(context);
   initLocal(context);

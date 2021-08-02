@@ -7,10 +7,10 @@ import {
   REPEAT_KEY,
   SHOW_LYRIC_KEY,
 } from "../constant";
+import { QueueItemTreeItem, QueueProvider } from "../treeview";
 import type { ExtensionContext } from "vscode";
 import type { NeteaseTypings } from "api";
 import type { QueueContent } from "../treeview";
-import { QueueItemTreeItem } from "../treeview";
 import i18n from "../i18n";
 
 type Lyric = {
@@ -25,6 +25,14 @@ export class State {
   private static _first = false;
 
   static set first(value: boolean) {
+    if (!value) {
+      this.context.subscriptions.push(
+        QueueProvider.getInstance().onDidChangeTreeData(() => {
+          this.fm = false;
+          this.playItem = QueueProvider.head;
+        })
+      );
+    }
     if (this._first !== value) {
       this._first = value;
       if (value || QUEUE_INIT === "none") return;

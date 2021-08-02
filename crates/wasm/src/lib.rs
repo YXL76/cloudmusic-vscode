@@ -71,6 +71,8 @@ impl Player {
     pub fn stop(&mut self) {
         if let Some(ref sink) = self.sink {
             sink.stop();
+            self.sink = None;
+            self.stream = None;
         }
     }
 
