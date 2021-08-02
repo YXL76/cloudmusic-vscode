@@ -25,6 +25,11 @@ export class State {
   private static _first = false;
 
   static set first(value: boolean) {
+    const { head } = QueueProvider;
+    this._playItem = head;
+    this.like = !!(head && head instanceof QueueItemTreeItem);
+    AccountViewProvider.metadata();
+    this.loading = false;
     if (!value) {
       this.context.subscriptions.push(
         QueueProvider.getInstance().onDidChangeTreeData(() => {
