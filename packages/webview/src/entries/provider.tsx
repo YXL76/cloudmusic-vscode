@@ -151,16 +151,18 @@ const Provider = (): JSX.Element => {
       {profiles.map(({ userId, nickname, avatarUrl, backgroundUrl }, key) => (
         <div
           key={key}
-          className="flex flex-row items-center h-16 rounded-lg cursor-pointer mx-1 my-2 p-2 bg-center bg-cover"
+          className="rounded-lg cursor-pointer mx-1 my-2 bg-center bg-cover"
           style={{ backgroundImage: `url("${backgroundUrl}")` }}
           onClick={() => vscode.postMessage({ command: "account", userId })}
         >
-          <img
-            className="rounded-full mx-4"
-            src={avatarUrl}
-            alt={nickname}
-          ></img>
-          <div className="text-white font-bold text-xl">{nickname}</div>
+          <div className="h-16 flex flex-row items-center overflow-hidden p-2 bg-black bg-opacity-30">
+            <img
+              className="rounded-full mx-4"
+              src={avatarUrl}
+              alt={nickname}
+            ></img>
+            <div className="text-white font-bold text-xl">{nickname}</div>
+          </div>
         </div>
       ))}
     </div>
