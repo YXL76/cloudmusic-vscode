@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.1.1] - 2021-08-02
+
+### Fixed
+
+- Player: volume in `wasm` mode
+- Status bar: init song button
+
 ## [9.1.0] - 2021-08-02
 
 ### Added
