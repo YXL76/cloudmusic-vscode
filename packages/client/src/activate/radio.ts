@@ -1,9 +1,9 @@
 import { IPC, MultiStepInput, Webview, pickRadio } from "../utils";
-import type { ProgramTreeItem, UserTreeItem } from "../treeview";
-import { RadioProvider, RadioTreeItem } from "../treeview";
+import type { ProgramTreeItem, RadioTreeItem, UserTreeItem } from "../treeview";
 import { commands, env, window } from "vscode";
 import type { ExtensionContext } from "vscode";
 import { NeteaseEnum } from "@cloudmusic/shared";
+import { RadioProvider } from "../treeview";
 
 export function initRadio(context: ExtensionContext): void {
   const djRadioProvider = RadioProvider.getInstance();
@@ -46,16 +46,6 @@ export function initRadio(context: ExtensionContext): void {
       "cloudmusic.radioDetail",
       ({ item }: RadioTreeItem) =>
         void MultiStepInput.run((input) => pickRadio(input, 1, item))
-    ),
-
-    commands.registerCommand(
-      "cloudmusic.playProgram",
-      async ({ data: { id, pid, uid } }: ProgramTreeItem) => {
-        const element = RadioTreeItem.get(pid, uid ?? 0);
-        if (!element) return;
-        const items = await RadioProvider.refreshRadio(element);
-        IPC.new(items, id);
-      }
     ),
 
     commands.registerCommand(

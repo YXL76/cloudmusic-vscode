@@ -39,6 +39,7 @@ export default {
       showInEditor: "Show in editor",
     },
     success: {
+      addToPlaylist: "Added to playlist",
       dailyCheck: "Daily check successful",
       signIn: "Sign in successful",
     },

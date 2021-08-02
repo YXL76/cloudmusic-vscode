@@ -8,18 +8,20 @@ import {
   pickProgram,
   pickSong,
 } from "../utils";
-import {
+import type {
   PlaylistItemTreeItem,
+  QueueContent,
+  UserTreeItem,
+} from "../treeview";
+import {
   PlaylistProvider,
   ProgramTreeItem,
   QueueItemTreeItem,
-  UserTreeItem,
 } from "../treeview";
 import { commands, env, window } from "vscode";
 import { AccountManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import { NeteaseEnum } from "@cloudmusic/shared";
-import type { QueueContent } from "../treeview";
 import i18n from "../i18n";
 
 export function initPlaylist(context: ExtensionContext): void {
@@ -97,51 +99,73 @@ export function initPlaylist(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.deletePlaylist",
-      async ({ item: { id }, uid }: PlaylistItemTreeItem) => {
-        const confirm = await window.showWarningMessage(
-          i18n.sentence.hint.confirmation,
-          { modal: true },
-          i18n.word.confirmation
-        );
-        if (!confirm) return;
-        if (
-          await (AccountManager.isUserPlaylisr(uid, id)
-            ? IPC.netease("playlistDelete", [id])
-            : IPC.netease("playlistSubscribe", [id, "unsubscribe"]))
-        )
-          PlaylistProvider.refreshUser(UserTreeItem.get(uid) as UserTreeItem);
-      }
+      (element: UserTreeItem) =>
+        void MultiStepInput.run(async (input) => {
+          const { uid } = element;
+          const items = (AccountManager.userPlaylist.get(uid) ?? []).map(
+            ({ name, id }) => ({ label: `$(list-unordered) ${name}`, id })
+          );
+          const title = i18n.word.saveToPlaylist;
+          const pick = await input.showQuickPick({ title, step: 1, items });
+          if (!pick || !pick.id) return;
+          const confirm = await window.showWarningMessage(
+            i18n.sentence.hint.confirmation,
+            { modal: true },
+            i18n.word.confirmation
+          );
+          if (!confirm) return;
+          if (
+            await (AccountManager.isUserPlaylisr(uid, pick.id)
+              ? IPC.netease("playlistDelete", [uid, pick.id])
+              : IPC.netease("playlistSubscribe", [uid, pick.id, "unsubscribe"]))
+          )
+            PlaylistProvider.refreshUser(element);
+        })
     ),
 
     commands.registerCommand(
       "cloudmusic.editPlaylist",
-      ({ item: { id, name, description }, uid }: PlaylistItemTreeItem) => {
-        if (!AccountManager.isUserPlaylisr(uid, id)) return;
-
+      (element: UserTreeItem) => {
         type State = { name: string; desc: string };
-        const state: State = { name, desc: description || "" };
+        const title = i18n.word.editPlaylist;
+        const totalSteps = 3;
+        const state: State = { name: "", desc: "" };
+        const { uid } = element;
 
         void MultiStepInput.run(async (input) => {
+          const items = (AccountManager.userPlaylist.get(uid) ?? []).map(
+            ({ name, id, description }) => ({
+              label: `$(list-unordered) ${name}`,
+              id,
+              description: description || "",
+            })
+          );
+          const pick = await input.showQuickPick({ title, step: 1, items });
+          if (!pick || !pick.id) return;
+          return (input) => inputName(input, pick.id);
+        });
+
+        async function inputName(input: MultiStepInput, id: number) {
           state.name = await input.showInputBox({
-            title: i18n.word.editPlaylist,
-            step: 1,
-            totalSteps: 2,
+            title,
+            step: 2,
+            totalSteps,
             value: state.name,
             prompt: i18n.sentence.hint.name,
           });
-          return (input) => inputDesc(input);
-        });
+          return (input: MultiStepInput) => inputDesc(input, id);
+        }
 
-        async function inputDesc(input: MultiStepInput) {
+        async function inputDesc(input: MultiStepInput, id: number) {
           state.desc = await input.showInputBox({
-            title: i18n.word.editPlaylist,
-            step: 2,
-            totalSteps: 2,
+            title,
+            step: 3,
+            totalSteps,
             value: state.desc,
             prompt: i18n.sentence.hint.desc,
           });
           if (await IPC.netease("playlistUpdate", [id, state.name, state.desc]))
-            PlaylistProvider.refreshUser(UserTreeItem.get(uid) as UserTreeItem);
+            PlaylistProvider.refreshUser(element);
         }
       }
     ),
@@ -196,29 +220,36 @@ export function initPlaylist(context: ExtensionContext): void {
     ),
 
     commands.registerCommand(
-      "cloudmusic.playSongWithPlaylist",
-      async ({ data: { id, pid, uid } }: QueueItemTreeItem) => {
-        const element = PlaylistItemTreeItem.get(pid, uid ?? 0);
-        if (!element) return;
-        const items = await PlaylistProvider.refreshPlaylist(element);
-        IPC.new(items, id);
-      }
-    ),
-
-    commands.registerCommand(
       "cloudmusic.deleteFromPlaylist",
-      async ({ data: { id, pid, uid } }: QueueItemTreeItem) => {
-        const p = PlaylistItemTreeItem.get(pid, uid ?? 0);
-        if (!p || !AccountManager.isUserPlaylisr(p.uid, pid)) return;
-        const confirm = await window.showWarningMessage(
-          i18n.sentence.hint.confirmation,
-          { modal: true },
-          i18n.word.confirmation
-        );
-        if (!confirm) return;
-        if (await IPC.netease("playlistTracks", [p.uid, "del", pid, [id]]))
-          PlaylistProvider.refreshPlaylistHard(p);
-      }
+      (element: PlaylistItemTreeItem) =>
+        void MultiStepInput.run(async (input) => {
+          const {
+            uid,
+            item: { id },
+          } = element;
+          if (!uid) return;
+
+          const songs = await IPC.netease("playlistDetail", [uid, id]);
+          const pick = await input.showQuickPick({
+            title: i18n.word.playlist,
+            step: 1,
+            items: songs.map(({ name, al, ar, id }) => ({
+              id,
+              label: name,
+              description: ar.map(({ name }) => name).join("/"),
+              detail: al.name,
+            })),
+          });
+          if (!pick) return;
+          const confirm = await window.showWarningMessage(
+            i18n.sentence.hint.confirmation,
+            { modal: true },
+            i18n.word.confirmation
+          );
+          if (!confirm) return;
+          if (await IPC.netease("playlistTracks", [uid, "del", id, [pick.id]]))
+            PlaylistProvider.refreshPlaylistHard(element);
+        })
     ),
 
     commands.registerCommand(

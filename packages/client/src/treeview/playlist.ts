@@ -84,9 +84,7 @@ export class PlaylistProvider
       item: { id: pid },
     } = element;
     const songs = await IPC.netease("playlistDetail", [uid, pid]);
-    const ret = songs.map((song) =>
-      QueueItemTreeItem.new({ ...song, pid, uid })
-    );
+    const ret = songs.map((song) => QueueItemTreeItem.new({ ...song, pid }));
     const action = PlaylistProvider._actions.get(element);
     if (action) {
       PlaylistProvider._actions.delete(element);
@@ -97,7 +95,7 @@ export class PlaylistProvider
 }
 
 export class PlaylistItemTreeItem extends TreeItem {
-  private static readonly _set = new Map<string, PlaylistItemTreeItem>();
+  private static readonly _set = new Map<number, PlaylistItemTreeItem>();
 
   override readonly label!: string;
 
@@ -112,10 +110,7 @@ ${i18n.word.subscribedCount}: ${this.item.subscribedCount}`;
 
   override readonly contextValue = "PlaylistItemTreeItem";
 
-  constructor(
-    readonly item: NeteaseTypings.PlaylistItem,
-    readonly uid: number
-  ) {
+  constructor(readonly item: NeteaseTypings.PlaylistItem, public uid: number) {
     super(item.name, TreeItemCollapsibleState.Collapsed);
   }
 
@@ -123,19 +118,14 @@ ${i18n.word.subscribedCount}: ${this.item.subscribedCount}`;
     return this.item.id;
   }
 
-  static new(
-    item: NeteaseTypings.PlaylistItem,
-    uid: number
-  ): PlaylistItemTreeItem {
-    const key = `${item.id}-${uid}`;
-    let element = this._set.get(key);
-    if (element) return element;
+  static new(item: NeteaseTypings.PlaylistItem, uid = 0): PlaylistItemTreeItem {
+    let element = this._set.get(item.id);
+    if (element) {
+      element.uid = uid;
+      return element;
+    }
     element = new this(item, uid);
-    this._set.set(key, element);
+    this._set.set(item.id, element);
     return element;
-  }
-
-  static get(id: number, uid: number): PlaylistItemTreeItem | void {
-    return this._set.get(`${id}-${uid}`);
   }
 }

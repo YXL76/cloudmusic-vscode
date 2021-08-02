@@ -1,12 +1,11 @@
 import { ButtonAction, IPC, Webview } from ".";
 import type { InputStep, MultiStepInput } from ".";
-import {
+import type {
   PlaylistItemTreeItem,
-  PlaylistProvider,
-  ProgramTreeItem,
-  QueueItemTreeItem,
+  QueueContent,
+  RadioTreeItem,
 } from "../treeview";
-import type { QueueContent, RadioTreeItem } from "../treeview";
+import { ProgramTreeItem, QueueItemTreeItem } from "../treeview";
 import { commands, window } from "vscode";
 import { AccountManager } from "../manager";
 import { NeteaseEnum } from "@cloudmusic/shared";
@@ -76,7 +75,7 @@ export const pickSongItems = (
 ): readonly ST[] =>
   songs.map((item) => ({
     label: `$(zap) ${item.name}`,
-    description: item.ar.map((i) => i.name).join("/"),
+    description: item.ar.map(({ name }) => name).join("/"),
     detail: item.alia.join("/"),
     id: item.id,
     item,
@@ -882,9 +881,23 @@ export async function pickPlaylist(
       Webview.comment(NeteaseEnum.CommentType.playlist, id, name);
       break;
     case PickType.save:
-      await IPC.netease("playlistSubscribe", [id, "subscribe"]);
+      return (input) => _pickPlaylistSubscribe(input, step + 1);
   }
   return input.stay();
+
+  async function _pickPlaylistSubscribe(input: MultiStepInput, step: number) {
+    const pick = await input.showQuickPick({
+      title: i18n.word.saveToPlaylist,
+      step,
+      items: [...AccountManager.accounts].map(([uid, { nickname }]) => ({
+        label: `$(account) ${nickname}`,
+        uid,
+      })),
+    });
+    if (!pick) return;
+    await IPC.netease("playlistSubscribe", [pick.uid, id, "subscribe"]);
+    return input.stay();
+  }
 }
 
 async function pickSimiPlaylists(
@@ -955,10 +968,9 @@ export async function pickAddToPlaylist(
         id,
       })),
     });
-    if (await IPC.netease("playlistTracks", [uid, "add", pick.id, [id]])) {
-      const element = PlaylistItemTreeItem.get(pick.id, uid);
-      if (element) PlaylistProvider.refreshPlaylistHard(element);
-    } else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
+    if (await IPC.netease("playlistTracks", [uid, "add", pick.id, [id]]))
+      void window.showInformationMessage(i18n.sentence.success.addToPlaylist);
+    else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
     return input.stay();
   }
 }

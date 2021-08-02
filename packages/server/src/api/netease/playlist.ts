@@ -49,11 +49,14 @@ export async function playlistCreate(
   ));
 }
 
-export async function playlistDelete(id: number): Promise<boolean> {
+export async function playlistDelete(
+  uid: number,
+  id: number
+): Promise<boolean> {
   return !!(await weapiRequest(
     `music.163.com/weapi/playlist/remove`,
     { ids: `[${id}]` },
-    { ...AccountState.defaultCookie, os: "pc" }
+    { ...AccountState.cookies.get(uid), os: "pc" }
   ));
 }
 
@@ -108,10 +111,15 @@ export async function highqualityTags(): Promise<
 }
 
 export async function playlistSubscribe(
+  uid: number,
   id: number,
   t: "subscribe" | "unsubscribe"
 ): Promise<boolean> {
-  return !!(await weapiRequest(`music.163.com/weapi/playlist/${t}`, { id }));
+  return !!(await weapiRequest(
+    `music.163.com/weapi/playlist/${t}`,
+    { id },
+    AccountState.cookies.get(uid)
+  ));
 }
 
 export async function playlistSubscribers(

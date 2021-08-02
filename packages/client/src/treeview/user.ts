@@ -18,8 +18,4 @@ export class UserTreeItem extends TreeItem {
     this._set.set(uid, element);
     return element;
   }
-
-  static get(uid: number): UserTreeItem | void {
-    return this._set.get(uid);
-  }
 }

@@ -23,9 +23,9 @@ export type QueueContent =
 export type TreeItemId = "q" | "p" | "l";
 
 export type PlayTreeItemData =
-  | (LocalFileTreeItemData & { itemType: "l" })
-  | (ProgramTreeItemData & { itemType: "p" })
-  | (QueueItemTreeItemData & { itemType: "q" });
+  | LocalFileTreeItemData
+  | ProgramTreeItemData
+  | QueueItemTreeItemData;
 
 export interface PlayTreeItem extends TreeItem {
   readonly iconPath: ThemeIcon;

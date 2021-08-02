@@ -246,7 +246,7 @@ export async function inputKeyword(
       totalSteps,
       items: songs.map((item) => ({
         label: `$(zap) ${item.name}`,
-        description: item.ar.map((i) => i.name).join("/"),
+        description: item.ar.map(({ name }) => name).join("/"),
         detail: item.lyrics.slice(1).join(", "),
         item,
       })),

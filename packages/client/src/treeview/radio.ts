@@ -75,7 +75,7 @@ export class RadioProvider
     if (element instanceof UserTreeItem) {
       const { uid } = element;
       return (await AccountManager.djradio(uid)).map((radio) =>
-        RadioTreeItem.new(radio, uid)
+        RadioTreeItem.new(radio)
       );
     }
     const {
@@ -96,7 +96,7 @@ export class RadioProvider
 }
 
 export class RadioTreeItem extends TreeItem {
-  private static readonly _set = new Map<string, RadioTreeItem>();
+  private static readonly _set = new Map<number, RadioTreeItem>();
 
   override readonly label!: string;
 
@@ -109,7 +109,7 @@ ${i18n.word.subscribedCount}: ${this.item.subCount}`;
 
   override readonly contextValue = "RadioTreeItem";
 
-  constructor(readonly item: NeteaseTypings.RadioDetail, readonly uid: number) {
+  constructor(readonly item: NeteaseTypings.RadioDetail, public uid: number) {
     super(item.name, TreeItemCollapsibleState.Collapsed);
   }
 
@@ -117,28 +117,25 @@ ${i18n.word.subscribedCount}: ${this.item.subCount}`;
     return this.item.id;
   }
 
-  static new(item: NeteaseTypings.RadioDetail, uid: number): RadioTreeItem {
-    const key = `${item.id}-${uid}`;
-    let element = this._set.get(key);
-    if (element) return element;
+  static new(item: NeteaseTypings.RadioDetail, uid = 0): RadioTreeItem {
+    let element = this._set.get(item.id);
+    if (element) {
+      element.uid = uid;
+      return element;
+    }
     element = new this(item, uid);
-    this._set.set(key, element);
+    this._set.set(item.id, element);
     return element;
-  }
-
-  static get(id: number, uid: number): RadioTreeItem | void {
-    return this._set.get(`${id}-${uid}`);
   }
 }
 
 export type ProgramTreeItemData = NeteaseTypings.ProgramDetail & {
-  uid?: number;
   pid: number;
   itemType: "p";
 };
 
 export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
-  private static readonly _set = new Map<string, ProgramTreeItem>();
+  private static readonly _set = new Map<number, ProgramTreeItem>();
 
   override readonly label!: string;
 
@@ -173,11 +170,13 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
   }
 
   static new(data: Omit<ProgramTreeItemData, "itemType">): ProgramTreeItem {
-    const key = `${data.id}-${data.pid}-${data.uid ?? 0}`;
-    let element = this._set.get(key);
-    if (element) return element;
+    let element = this._set.get(data.id);
+    if (element) {
+      if (data.pid) element.data.pid = data.pid;
+      return element;
+    }
     element = new this({ ...data, itemType: "p" });
-    this._set.set(key, element);
+    this._set.set(data.id, element);
     return element;
   }
 }

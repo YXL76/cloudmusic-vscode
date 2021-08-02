@@ -39,6 +39,7 @@ export default {
       showInEditor: "在编辑器中显示",
     },
     success: {
+      addToPlaylist: "添加到歌单",
       dailyCheck: "签到成功",
       signIn: "登录成功",
     },

@@ -190,13 +190,12 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
 }
 
 export type QueueItemTreeItemData = NeteaseTypings.SongsItem & {
-  uid?: number;
   pid: number;
   itemType: "q";
 };
 
 export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
-  private static readonly _set = new Map<string, QueueItemTreeItem>();
+  private static readonly _set = new Map<number, QueueItemTreeItem>();
 
   override readonly label!: string;
 
@@ -227,11 +226,13 @@ export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
   }
 
   static new(data: Omit<QueueItemTreeItemData, "itemType">): QueueItemTreeItem {
-    const key = `${data.id}-${data.pid}-${data.uid ?? 0}`;
-    let element = this._set.get(key);
-    if (element) return element;
+    let element = this._set.get(data.id);
+    if (element) {
+      if (data.pid) element.data.pid = data.pid;
+      return element;
+    }
     element = new this({ ...data, itemType: "q" });
-    this._set.set(key, element);
+    this._set.set(data.id, element);
     return element;
   }
 }
