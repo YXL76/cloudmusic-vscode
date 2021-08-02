@@ -216,6 +216,13 @@ export class AccountViewProvider implements WebviewViewProvider {
       AccountViewProvider.master();
       AccountViewProvider.account([...AccountManager.accounts.values()]);
       AccountViewProvider.metadata();
+      const files = ["flac", "m4a", "ogg", "opus"].map((ext) =>
+        webview.webview
+          .asWebviewUri(Uri.joinPath(extUri, "media", "audio", `silent.${ext}`))
+          .toString()
+      );
+      const msg: ProviderSMsg = { command: "test", files };
+      void webview.webview.postMessage(msg);
     }, 1024);
   }
 }

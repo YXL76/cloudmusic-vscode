@@ -69,6 +69,40 @@ const pHandler = () => {
   vscode.postMessage({ command: "position", pos });
 };
 
+// https://github.com/w3c/mediasession/issues/213
+let audioEle: HTMLAudioElement | null = null;
+const playable: string[] = [];
+
+const testAudioSrc = async (files: string[]) => {
+  const a = new Audio();
+  for (const file of files) {
+    a.src = file;
+    try {
+      await a.play();
+      playable.push(file);
+      a.pause();
+    } catch {}
+  }
+  a.pause();
+};
+
+const startSilent = () => {
+  audioEle?.pause();
+  const file = playable?.[0];
+  if (!file) return;
+  audioEle = new Audio(file);
+  audioEle.loop = true;
+  audioEle
+    .play()
+    .then(() => audioEle?.pause())
+    .catch(console.error);
+};
+
+const stopSilent = () => {
+  audioEle?.pause();
+  audioEle = null;
+};
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const Provider = (): JSX.Element => {
   const [profiles, setProfiles] = useState<NeteaseTypings.Profile[]>([]);
@@ -82,14 +116,19 @@ const Provider = (): JSX.Element => {
           player = new Player();
           setMSAHandler();
           timerId = setInterval(pHandler, 800);
+          startSilent();
         } else {
           dropPlayer();
           deleteMSAHandler();
+          stopSilent();
         }
         return;
       }
       if (!navigator.mediaSession) return;
       switch (data.command) {
+        case "test":
+          testAudioSrc(data.files).then(startSilent).catch(console.error);
+          break;
         case "state":
           navigator.mediaSession.playbackState = data.state;
           break;

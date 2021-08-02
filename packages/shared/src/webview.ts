@@ -33,6 +33,7 @@ export type MsicRankingCMsg =
 
 export type ProviderSMsg =
   | { command: "master"; is: boolean }
+  | { command: "test"; files: string[] }
   | { command: "state"; state: "none" | "paused" | "playing" }
   // | { command: "position"; position: number }
   | {
