@@ -49,7 +49,7 @@ const ipcBHandler = (data: IPCBroadcastMsg) => {
   }
 };
 
-/* const getDate = /-(\d+)$/;
+const getDate = /-(\d+)$/;
 const rejectTimout = () => {
   const now = Date.now();
   for (const [k, { reject }] of IPC.requestPool) {
@@ -59,7 +59,9 @@ const rejectTimout = () => {
       reject();
     } else break;
   }
-}; */
+};
+
+setInterval(rejectTimout, 60000);
 
 export async function initIPC(context: ExtensionContext): Promise<void> {
   const ipcHandler = (data: IPCServerMsg | NeteaseAPISMsg<NeteaseAPIKey>) => {
