@@ -94,6 +94,7 @@ export class Player {
   private static _native?: NativeModule;
 
   static init(wasm: boolean, name = "", volume?: number): void {
+    if (this._wasm || this._native) return;
     if (!wasm) {
       const path = resolve(__dirname, "..", "build", name);
       // eslint-disable-next-line @typescript-eslint/no-var-requires
