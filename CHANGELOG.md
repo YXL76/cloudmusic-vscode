@@ -6,6 +6,29 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.1.0] - 2021-08-02
+
+### Added
+
+- Configuration: `cloudmusic.queue.initialization` ([#507](https://github.com/YXL76/cloudmusic-vscode/issues/507))
+
+### Changed
+
+- Treeview
+  - Account card style
+  - Move `deletePlaylist`, `deleteFromPlaylist`, `editPlaylist` to parent node (reduce memory usage)
+
+### Fixed
+
+- API: Reject timeout requests
+- Player
+  - Initialize the player only once
+  - `mediaSession` ([w3c/mediasession#213](https://github.com/w3c/mediasession/issues/213))
+
+### Removed
+
+- Commands: `cloudmusic.playSongWithPlaylist` and `cloudmusic.playProgram`
+
 ## [9.0.1] - 2021-07-31
 
 ### Fixed

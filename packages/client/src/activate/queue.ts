@@ -1,4 +1,4 @@
-import { IPC, MultiStepInput, State } from "../utils";
+import { IPC, MultiStepInput } from "../utils";
 import { QueueProvider, QueueSortOrder, QueueSortType } from "../treeview";
 import { commands, window } from "vscode";
 import type { ExtensionContext } from "vscode";
