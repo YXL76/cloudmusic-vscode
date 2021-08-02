@@ -4,14 +4,20 @@ import { LyricCache, MusicCache, apiCache } from "./cache";
 import type { NeteaseAPICMsg, NeteaseAPISMsg } from ".";
 import { PersonalFm, State } from "./state";
 import { Player, posHandler } from "./player";
+import {
+  RETAIN_FILE,
+  TMP_DIR,
+  ipcBroadcastServerPath,
+  ipcServerPath,
+} from "./constant";
 import type { Server, Socket } from "net";
-import { TMP_DIR, ipcBroadcastServerPath, ipcServerPath } from "./constant";
 import { downloadMusic, logError } from "./utils";
-import { rmdirSync, unlinkSync } from "fs";
+import { rmdirSync, unlinkSync, writeFileSync } from "fs";
 import { basename } from "path";
 import { broadcastProfiles } from "./api/netease/helper";
 import { createServer } from "net";
 import { ipcDelimiter } from "@cloudmusic/shared";
+import { readFile } from "fs/promises";
 
 export class IPCServer {
   private static _retain: unknown[] = [];
@@ -64,6 +70,9 @@ export class IPCServer {
               try {
                 rmdirSync(TMP_DIR, { recursive: true });
               } catch {}
+              try {
+                writeFileSync(RETAIN_FILE, JSON.stringify(this._retain));
+              } catch {}
               process.exit();
             }, 20000);
           }
@@ -75,10 +84,7 @@ export class IPCServer {
       if (this._sockets.size === 1) {
         Player.play();
 
-        this.send(socket, {
-          t: "control.retain",
-          items: IPCServer._retain,
-        });
+        this.send(socket, { t: "control.retain", items: this._retain });
         this._retain = [];
 
         Player.wasmOpen();
@@ -90,6 +96,10 @@ export class IPCServer {
     })
       .on("error", logError)
       .listen(ipcServerPath);
+
+    readFile(RETAIN_FILE)
+      .then((data) => (this._retain = JSON.parse(data.toString()) as unknown[]))
+      .catch(logError);
   }
 
   static stop(): void {
@@ -164,7 +174,8 @@ export class IPCServer {
         MusicCache.clear();
         break;
       case "control.retain":
-        this._retain = data.items as unknown[];
+        if (data.items) this._retain = data.items as unknown[];
+        else this.send(socket, { t: "control.retain", items: this._retain });
         break;
       case "player.load":
         void Player.load(data);

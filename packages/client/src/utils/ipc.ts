@@ -176,11 +176,8 @@ export class IPC {
     ipc.send({ t: "control.netease" });
   }
 
-  static retain(): void {
-    ipc.send({
-      t: "control.retain",
-      items: QueueProvider.songs,
-    });
+  static retain(items?: readonly PlayTreeItemData[]): void {
+    ipc.send({ t: "control.retain", items });
   }
 
   static lyricDelay(delay: number): void {

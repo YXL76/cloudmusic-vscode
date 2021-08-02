@@ -75,6 +75,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         }
         break;
       case "control.netease":
+        State.first = false;
         AccountManager.accounts.clear();
         data.profiles.forEach((i) => AccountManager.accounts.set(i.userId, i));
         if (!data.cookies.length && State.master) IPC.clear();
@@ -92,7 +93,6 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         break;
       case "control.retain":
         QueueProvider.new(data.items as PlayTreeItemData[]);
-        State.loading = false;
         break;
       case "player.end":
         if (!data.fail && State.repeat) IPC.load();
@@ -167,6 +167,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
     const firstTry = await IPC.connect(ipcHandler, ipcBHandler, 0);
     if (firstTry.includes(false)) throw Error;
   } catch {
+    State.first = true;
     const version = (context.extension.packageJSON as { version: string })
       .version;
     const log = `err-${version}.log`;

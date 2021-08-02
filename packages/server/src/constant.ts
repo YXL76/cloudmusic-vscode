@@ -25,3 +25,5 @@ export const TMP_DIR = resolve(SETTING_DIR, "tmp");
 export const CACHE_DIR = resolve(SETTING_DIR, "cache");
 export const MUSIC_CACHE_DIR = resolve(CACHE_DIR, "music");
 export const LYRIC_CACHE_DIR = resolve(CACHE_DIR, "lyric");
+
+export const RETAIN_FILE = resolve(SETTING_DIR, "retain");

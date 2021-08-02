@@ -1,6 +1,12 @@
+import { AccountManager, ButtonManager } from "../manager";
 import { AccountViewProvider, IPC } from ".";
-import { FM_KEY, LYRIC_KEY, REPEAT_KEY, SHOW_LYRIC_KEY } from "../constant";
-import { ButtonManager } from "../manager";
+import {
+  FM_KEY,
+  LYRIC_KEY,
+  QUEUE_INIT,
+  REPEAT_KEY,
+  SHOW_LYRIC_KEY,
+} from "../constant";
 import type { ExtensionContext } from "vscode";
 import type { NeteaseTypings } from "api";
 import type { QueueContent } from "../treeview";
@@ -15,6 +21,27 @@ type Lyric = {
 
 export class State {
   static context: ExtensionContext;
+
+  private static _first = false;
+
+  static set first(value: boolean) {
+    if (this._first !== value) {
+      this._first = value;
+      if (value || QUEUE_INIT === "none") return;
+      if (QUEUE_INIT === "restore") {
+        IPC.retain();
+      } else if (AccountManager.accounts.size) {
+        const [[uid]] = AccountManager.accounts;
+        void IPC.netease("recommendSongs", [uid]).then((songs) =>
+          IPC.new(
+            songs.map(
+              (song) => QueueItemTreeItem.new({ ...song, pid: song.al.id }).data
+            )
+          )
+        );
+      }
+    }
+  }
 
   private static _master = false;
 
@@ -69,15 +96,8 @@ export class State {
     }
   }
 
-  private static _loading = false;
-
-  static get loading(): boolean {
-    return this._loading;
-  }
-
   static set loading(value: boolean) {
     // if (value === this._loading) return;
-    this._loading = value;
     if (value)
       ButtonManager.buttonSong(
         `$(loading~spin) ${i18n.word.song}: ${i18n.word.loading}`

@@ -369,6 +369,16 @@
             ],
             "scope": "window",
             "type": "string"
+          },
+          "cloudmusic.queue.initialization": {
+            "default": "none",
+            "enum": [
+              "none",
+              "recommend",
+              "restore"
+            ],
+            "scope": "window",
+            "type": "string"
           }
         },
         "title": "Cloudmusic"

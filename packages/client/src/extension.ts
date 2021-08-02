@@ -14,6 +14,7 @@ import {
   initViewProvide,
 } from "./activate";
 import type { ExtensionContext } from "vscode";
+import { QueueProvider } from "./treeview";
 import { SETTING_DIR } from "./constant";
 import { mkdirSync } from "fs";
 
@@ -40,6 +41,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
 }
 
 export function deactivate(): void {
-  if (State.master) IPC.retain();
+  if (State.master) IPC.retain(QueueProvider.songs);
   // IPC.disconnect();
 }

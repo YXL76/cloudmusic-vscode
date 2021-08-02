@@ -42,7 +42,7 @@ export type IPCClientMsg =
   | IPCMsg<IPCEvent.Control$lyric>
   | IPCMsg<IPCEvent.Control$music>
   | IPCMsg<IPCEvent.Control$netease>
-  | IPCMsg<IPCEvent.Control$retain, { items: readonly unknown[] }>
+  | IPCMsg<IPCEvent.Control$retain, { items?: readonly unknown[] }>
   | IPCMsg<IPCEvent.Play$load, { url: string; local: true }>
   | IPCMsg<
       IPCEvent.Play$load,

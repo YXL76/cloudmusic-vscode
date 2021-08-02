@@ -12,7 +12,11 @@ export const MUSIC_CACHE_SIZE = (): number =>
 export const STRICT_SSL = conf.get("network.strictSSL", true);
 export const HTTPS_API = (): boolean => conf.get("network.httpsAPI", true);
 export const FOREIGN = (): boolean => conf.get("network.foreignUser", false);
-export const playerMode = conf.get<"native" | "wasm">("player.mode", "native");
+export const PLAYER_MODE = conf.get<"native" | "wasm">("player.mode", "native");
+export const QUEUE_INIT = conf.get<"none" | "recommend" | "restore">(
+  "queue.initialization",
+  "none"
+);
 
 export const ACCOUNT_KEY = "account-v2";
 export const CACHE_KEY = "cache-v2";

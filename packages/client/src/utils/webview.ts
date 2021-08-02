@@ -49,7 +49,7 @@ export class AccountViewProvider implements WebviewViewProvider {
       void this._view.webview.postMessage(msg);
       setTimeout(
         () => this.wasmVolume(this.context.globalState.get(VOLUME_KEY, 85)),
-        1024
+        512
       );
     }
   }
@@ -213,17 +213,17 @@ export class AccountViewProvider implements WebviewViewProvider {
 </html>`;
 
     setTimeout(() => {
-      AccountViewProvider.master();
-      AccountViewProvider.account([...AccountManager.accounts.values()]);
-      AccountViewProvider.metadata();
       const files = ["flac", "m4a", "ogg", "opus"].map((ext) =>
         webview.webview
           .asWebviewUri(Uri.joinPath(extUri, "media", "audio", `silent.${ext}`))
           .toString()
       );
       const msg: ProviderSMsg = { command: "test", files };
+      AccountViewProvider.master();
+      AccountViewProvider.account([...AccountManager.accounts.values()]);
+      AccountViewProvider.metadata();
       void webview.webview.postMessage(msg);
-    }, 1024);
+    }, 512);
   }
 }
 

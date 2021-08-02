@@ -134,9 +134,9 @@ export const qrloginRequest = async (
     const cookie = cookieToJson(
       (res.headers as { "set-cookie": readonly string[] })["set-cookie"]
     );
-    void loginStatus(JSON.stringify(cookie)).then(() =>
-      setTimeout(() => broadcastProfiles(), 1024)
-    );
+    loginStatus(JSON.stringify(cookie))
+      .then(() => broadcastProfiles())
+      .catch(logError);
   }
   return status;
 };

@@ -1,4 +1,4 @@
-import { VOLUME_KEY, playerMode } from "../constant";
+import { PLAYER_MODE, VOLUME_KEY } from "../constant";
 import { arch, platform } from "os";
 import type { ExtensionContext } from "vscode";
 import { IPC } from "../utils";
@@ -12,7 +12,7 @@ const available = [
 
 export function initPlayer(context: ExtensionContext): void {
   const name = `${platform()}-${arch() === "x64" ? "x86" : arch()}.node`;
-  const wasm = playerMode === "wasm" || !available.includes(name);
-  console.log("Cloudmusic:", playerMode, "mode.");
+  const wasm = PLAYER_MODE === "wasm" || !available.includes(name);
+  console.log("Cloudmusic:", PLAYER_MODE, "mode.");
   IPC.init(context.globalState.get(VOLUME_KEY, 85), { wasm, name });
 }
