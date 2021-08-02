@@ -528,7 +528,7 @@ export async function pickRadio(
         pickPrograms(
           input,
           step + 1,
-          await IPC.netease("djProgram", [id, programCount])
+          await IPC.netease("djProgram", [0, id, programCount])
         );
   }
 
@@ -844,7 +844,11 @@ export async function pickPlaylist(
       break;
     case PickType.songs:
       return async (input) =>
-        pickSongs(input, step + 1, await IPC.netease("playlistDetail", [id]));
+        pickSongs(
+          input,
+          step + 1,
+          await IPC.netease("playlistDetail", [0, id])
+        );
     case PickType.subscribed:
       return (input) =>
         pickUsers(
@@ -859,7 +863,7 @@ export async function pickPlaylist(
       return (input) => pickUser(input, step + 1, (pick as T).id);
     case PickType.add:
       {
-        const songs = await IPC.netease("playlistDetail", [id]);
+        const songs = await IPC.netease("playlistDetail", [0, id]);
         IPC.add(
           songs.map((song) => QueueItemTreeItem.new({ ...song, pid: id }).data)
         );
@@ -867,7 +871,7 @@ export async function pickPlaylist(
       break;
     case PickType.next:
       {
-        const songs = await IPC.netease("playlistDetail", [id]);
+        const songs = await IPC.netease("playlistDetail", [0, id]);
         IPC.add(
           songs.map((song) => QueueItemTreeItem.new({ ...song, pid: id }).data),
           1
@@ -952,7 +956,7 @@ export async function pickAddToPlaylist(
       })),
     });
     if (await IPC.netease("playlistTracks", [uid, "add", pick.id, [id]])) {
-      const element = PlaylistItemTreeItem.get(pick.id);
+      const element = PlaylistItemTreeItem.get(pick.id, uid);
       if (element) PlaylistProvider.refreshPlaylistHard(element);
     } else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
     return input.stay();

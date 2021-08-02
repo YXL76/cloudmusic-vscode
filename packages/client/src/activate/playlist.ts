@@ -197,8 +197,8 @@ export function initPlaylist(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.playSongWithPlaylist",
-      async ({ data: { id, pid } }: QueueItemTreeItem) => {
-        const element = PlaylistItemTreeItem.get(pid);
+      async ({ data: { id, pid, uid } }: QueueItemTreeItem) => {
+        const element = PlaylistItemTreeItem.get(pid, uid ?? 0);
         if (!element) return;
         const items = await PlaylistProvider.refreshPlaylist(element);
         IPC.new(items, id);
@@ -207,8 +207,8 @@ export function initPlaylist(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.deleteFromPlaylist",
-      async ({ data: { id, pid } }: QueueItemTreeItem) => {
-        const p = PlaylistItemTreeItem.get(pid);
+      async ({ data: { id, pid, uid } }: QueueItemTreeItem) => {
+        const p = PlaylistItemTreeItem.get(pid, uid ?? 0);
         if (!p || !AccountManager.isUserPlaylisr(p.uid, pid)) return;
         const confirm = await window.showWarningMessage(
           i18n.sentence.hint.confirmation,

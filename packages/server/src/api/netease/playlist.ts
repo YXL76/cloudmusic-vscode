@@ -58,6 +58,7 @@ export async function playlistDelete(id: number): Promise<boolean> {
 }
 
 export async function playlistDetail(
+  uid: number,
   id: number
 ): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `playlist_detail${id}`;
@@ -70,7 +71,11 @@ export async function playlistDetail(
       trackIds: readonly NeteaseTypings.TrackIdsItem[];
     };
     privileges: readonly { st: number }[];
-  }>("music.163.com/api/v6/playlist/detail", { id, n: 100000, s: 8 });
+  }>(
+    "music.163.com/api/v6/playlist/detail",
+    { id, n: 100000, s: 8 },
+    AccountState.cookies.get(uid)
+  );
   if (!res) return [];
   const {
     playlist: { tracks, trackIds },
@@ -79,7 +84,7 @@ export async function playlistDetail(
   const ids = trackIds.map(({ id }) => id);
   if (tracks.length === trackIds.length)
     ret = tracks.filter((_, i) => privileges[i].st >= 0).map(resolveSongItem);
-  else ret = await songDetail(ids);
+  else ret = await songDetail(uid, ids);
   apiCache.set(key, ret);
   return ret;
 }

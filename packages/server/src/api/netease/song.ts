@@ -112,6 +112,7 @@ export async function simiSong(
 }
 
 export async function songDetail(
+  uid: number,
   trackIds: readonly number[]
 ): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `song_detail${trackIds[0]}`;
@@ -129,9 +130,11 @@ export async function songDetail(
         const res = await weapiRequest<{
           songs: readonly NeteaseTypings.SongsItem[];
           privileges: readonly { st: number }[];
-        }>("music.163.com/weapi/v3/song/detail", {
-          c: `[${ids.map((id) => `{"id":${id}}`).join(",")}]`,
-        });
+        }>(
+          "music.163.com/weapi/v3/song/detail",
+          { c: `[${ids.map((id) => `{"id":${id}}`).join(",")}]` },
+          AccountState.cookies.get(uid)
+        );
         if (!res) throw Error("");
         const { songs, privileges } = res;
         return songs

@@ -323,7 +323,7 @@ export class Webview {
               pickSong(
                 input,
                 1,
-                (await IPC.netease("songDetail", [[msg.id]]))[0]
+                (await IPC.netease("songDetail", [uid, [msg.id]]))[0]
               )
             );
             break;

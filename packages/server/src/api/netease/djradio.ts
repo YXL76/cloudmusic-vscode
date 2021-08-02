@@ -73,6 +73,7 @@ export async function djHot(
 }
 
 export async function djProgram(
+  uid: number,
   radioId: number,
   limit: number
 ): Promise<readonly NeteaseTypings.ProgramDetail[]> {
@@ -81,12 +82,11 @@ export async function djProgram(
   if (value) return value;
   const res = await weapiRequest<{
     programs: readonly NeteaseTypings.RawProgramDetail[];
-  }>("music.163.com/weapi/dj/program/byradio", {
-    radioId,
-    limit,
-    offset: 0,
-    asc: false,
-  });
+  }>(
+    "music.163.com/weapi/dj/program/byradio",
+    { radioId, limit, offset: 0, asc: false },
+    AccountState.cookies.get(uid)
+  );
   if (!res) return [];
   const ret = res.programs.map(resolveProgramDetail);
   apiCache.set(key, ret);

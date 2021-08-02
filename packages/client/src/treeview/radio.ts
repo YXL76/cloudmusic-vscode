@@ -78,8 +78,11 @@ export class RadioProvider
         RadioTreeItem.new(radio, uid)
       );
     }
-    const { id: pid, programCount } = element.item;
-    const programs = await IPC.netease("djProgram", [pid, programCount]);
+    const {
+      uid,
+      item: { id: pid, programCount },
+    } = element;
+    const programs = await IPC.netease("djProgram", [uid, pid, programCount]);
     const ret = programs.map((program) =>
       ProgramTreeItem.new({ ...program, pid })
     );
@@ -93,7 +96,7 @@ export class RadioProvider
 }
 
 export class RadioTreeItem extends TreeItem {
-  private static readonly _set = new Map<number, RadioTreeItem>();
+  private static readonly _set = new Map<string, RadioTreeItem>();
 
   override readonly label!: string;
 
@@ -115,25 +118,27 @@ ${i18n.word.subscribedCount}: ${this.item.subCount}`;
   }
 
   static new(item: NeteaseTypings.RadioDetail, uid: number): RadioTreeItem {
-    let element = this._set.get(item.id);
+    const key = `${item.id}-${uid}`;
+    let element = this._set.get(key);
     if (element) return element;
     element = new this(item, uid);
-    this._set.set(item.id, element);
+    this._set.set(key, element);
     return element;
   }
 
-  static get(id: number): RadioTreeItem | void {
-    return this._set.get(id);
+  static get(id: number, uid: number): RadioTreeItem | void {
+    return this._set.get(`${id}-${uid}`);
   }
 }
 
 export type ProgramTreeItemData = NeteaseTypings.ProgramDetail & {
+  uid?: number;
   pid: number;
   itemType: "p";
 };
 
 export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
-  private static readonly _set = new Map<number, ProgramTreeItem>();
+  private static readonly _set = new Map<string, ProgramTreeItem>();
 
   override readonly label!: string;
 
@@ -168,13 +173,11 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
   }
 
   static new(data: Omit<ProgramTreeItemData, "itemType">): ProgramTreeItem {
-    let element = this._set.get(data.id);
-    if (element) {
-      if (element.data.pid === 0) element.data.pid = data.pid;
-      return element;
-    }
+    const key = `${data.id}-${data.pid}-${data.uid ?? 0}`;
+    let element = this._set.get(key);
+    if (element) return element;
     element = new this({ ...data, itemType: "p" });
-    this._set.set(data.id, element);
+    this._set.set(key, element);
     return element;
   }
 }

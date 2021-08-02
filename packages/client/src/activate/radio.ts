@@ -50,8 +50,8 @@ export function initRadio(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.playProgram",
-      async ({ data: { id, pid } }: ProgramTreeItem) => {
-        const element = RadioTreeItem.get(pid);
+      async ({ data: { id, pid, uid } }: ProgramTreeItem) => {
+        const element = RadioTreeItem.get(pid, uid ?? 0);
         if (!element) return;
         const items = await RadioProvider.refreshRadio(element);
         IPC.new(items, id);
