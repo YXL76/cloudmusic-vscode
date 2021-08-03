@@ -153,7 +153,7 @@ impl Player {
 
     #[inline]
     fn empty(&self) -> bool {
-        if let Ok(_) = self.control_tx.send(ControlEvent::Empty) {
+        if self.control_tx.send(ControlEvent::Empty).is_ok() {
             if let Ok(res) = self.info_rx.recv_timeout(Duration::from_millis(128)) {
                 return res;
             }
