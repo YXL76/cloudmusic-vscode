@@ -24,7 +24,7 @@ export async function likeMusic(
   for (const [uid, { nickname }] of AccountManager.accounts)
     items.push(
       { label: `$(star-empty) ${nickname}`, uid, like: false },
-      { label: `$(star-full) ${nickname}`, uid, like: false }
+      { label: `$(star-full) ${nickname}`, uid, like: true }
     );
   const { uid, like } = await input.showQuickPick({ title, step, items });
   if (await IPC.netease("like", [uid, id, like]))
