@@ -46,14 +46,18 @@ export async function inputKeyword(
     (that: QuickPick<QuickPickItem>, value) => {
       that.enabled = false;
       that.busy = true;
-      void IPC.netease("searchSuggest", [uid, value]).then((suggestions) => {
-        that.items = [
-          that.items[0],
-          ...suggestions.map((label) => ({ label })),
-        ];
-        that.enabled = true;
-        that.busy = false;
-      });
+      IPC.netease("searchSuggest", [uid, value])
+        .then((suggestions) => {
+          that.items = [
+            that.items[0],
+            ...suggestions.map((label) => ({ label })),
+          ];
+        })
+        .catch(console.error)
+        .finally(() => {
+          that.enabled = true;
+          that.busy = false;
+        });
     },
     256
   );

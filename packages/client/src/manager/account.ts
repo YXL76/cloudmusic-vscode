@@ -33,7 +33,7 @@ export class AccountManager {
 
   static readonly accounts = new Map<number, NeteaseTypings.Profile>();
 
-  static readonly userPlaylist = new Map<
+  private static readonly _userPlaylist = new Map<
     number,
     readonly NeteaseTypings.PlaylistItem[]
   >();
@@ -74,15 +74,24 @@ export class AccountManager {
 
   static isUserPlaylisr(uid: number, id: number): boolean {
     return (
-      this.userPlaylist.get(uid)?.findIndex(({ id: vid }) => vid === id) !== -1
+      this._userPlaylist.get(uid)?.findIndex(({ id: vid }) => vid === id) !== -1
     );
+  }
+
+  static async userPlaylist(
+    uid: number
+  ): Promise<readonly NeteaseTypings.PlaylistItem[]> {
+    if (!this._userPlaylist.has(uid)) {
+      await this.playlist(uid);
+    }
+    return this._userPlaylist.get(uid) ?? [];
   }
 
   static async playlist(
     uid: number
   ): Promise<readonly NeteaseTypings.PlaylistItem[]> {
     const lists = await IPC.netease("userPlaylist", [uid]);
-    this.userPlaylist.set(
+    this._userPlaylist.set(
       uid,
       lists.filter(({ creator: { userId } }) => userId === uid)
     );

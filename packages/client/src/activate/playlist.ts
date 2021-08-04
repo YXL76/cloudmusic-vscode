@@ -102,7 +102,7 @@ export function initPlaylist(context: ExtensionContext): void {
       (element: UserTreeItem) =>
         void MultiStepInput.run(async (input) => {
           const { uid } = element;
-          const items = (AccountManager.userPlaylist.get(uid) ?? []).map(
+          const items = (await AccountManager.userPlaylist(uid)).map(
             ({ name, id }) => ({ label: `$(list-unordered) ${name}`, id })
           );
           const title = i18n.word.saveToPlaylist;
@@ -133,7 +133,7 @@ export function initPlaylist(context: ExtensionContext): void {
         const { uid } = element;
 
         void MultiStepInput.run(async (input) => {
-          const items = (AccountManager.userPlaylist.get(uid) ?? []).map(
+          const items = (await AccountManager.userPlaylist(uid)).map(
             ({ name, id, description }) => ({
               label: `$(list-unordered) ${name}`,
               id,
