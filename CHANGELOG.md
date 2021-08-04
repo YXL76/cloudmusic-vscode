@@ -6,6 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.1.2] - 2021-08-04
+
+### Changed
+
+- Commands: run `playNext` in every view
+
+### Fixed
+
+- Account: empty user playlist
+- Commands: `like` ([#521](https://github.com/YXL76/cloudmusic-vscode/issues/521))
+
 ## [9.1.1] - 2021-08-02
 
 ### Fixed
