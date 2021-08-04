@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.1.3] - 2021-08-04
+
+### Changed
+
+- Log: better output
+
 ## [9.1.2] - 2021-08-04
 
 ### Changed
