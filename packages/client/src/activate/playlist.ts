@@ -115,7 +115,7 @@ export function initPlaylist(context: ExtensionContext): void {
           );
           if (!confirm) return;
           if (
-            await (AccountManager.isUserPlaylisr(uid, pick.id)
+            await ((await AccountManager.isUserPlaylisr(uid, pick.id))
               ? IPC.netease("playlistDelete", [uid, pick.id])
               : IPC.netease("playlistSubscribe", [uid, pick.id, "unsubscribe"]))
           )

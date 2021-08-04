@@ -72,9 +72,10 @@ export class AccountManager {
     return !!res.find((v) => v.status === "fulfilled" && v.value);
   }
 
-  static isUserPlaylisr(uid: number, id: number): boolean {
+  static async isUserPlaylisr(uid: number, id: number): Promise<boolean> {
     return (
-      this._userPlaylist.get(uid)?.findIndex(({ id: vid }) => vid === id) !== -1
+      (await this.userPlaylist(uid)).findIndex(({ id: vid }) => vid === id) !==
+      -1
     );
   }
 

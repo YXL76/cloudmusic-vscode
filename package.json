@@ -654,7 +654,7 @@
         {
           "command": "cloudmusic.playNext",
           "group": "inline",
-          "when": "view == queue && viewItem == QueueItemTreeItem || view == queue && viewItem == LocalFileTreeItem || view == queue && viewItem == ProgramTreeItem"
+          "when": "viewItem == QueueItemTreeItem || viewItem == LocalFileTreeItem || viewItem == ProgramTreeItem"
         },
         {
           "command": "cloudmusic.saveToPlaylist",
