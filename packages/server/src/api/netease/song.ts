@@ -65,8 +65,8 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
   if (lyricCache) return lyricCache;
 
   const res = await apiRequest<{
-    lrc: { lyric: string };
-    tlyric: { lyric: string };
+    lrc?: { lyric?: string };
+    tlyric?: { lyric?: string };
     lyricUser?: NeteaseTypings.LyricUser;
     transUser?: NeteaseTypings.LyricUser;
   }>("music.163.com/api/song/lyric", { id, lv: -1, kv: -1, tv: -1 });
@@ -77,18 +77,16 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
       t: { time: [0], text: ["~"] },
     };
 
-  const { lrc, tlyric, lyricUser, transUser } = res;
-
-  const o = resolveLyric(lrc.lyric);
-  const t = resolveLyric(tlyric.lyric);
+  const o = resolveLyric(res?.lrc?.lyric ?? "");
+  const t = resolveLyric(res?.tlyric?.lyric ?? "");
   const lyric: NeteaseTypings.LyricData & { ctime: number } = {
     ctime: Date.now(),
     o,
     t: t.text.length < 3 ? o : t,
   };
 
-  lyric.o.user = resolveLyricUser(lyricUser);
-  lyric.t.user = resolveLyricUser(transUser);
+  lyric.o.user = resolveLyricUser(res.lyricUser);
+  lyric.t.user = resolveLyricUser(res.transUser);
 
   LyricCache.put(`${id}`, lyric);
   return lyric;
@@ -135,7 +133,7 @@ export async function songDetail(
           { c: `[${ids.map((id) => `{"id":${id}}`).join(",")}]` },
           AccountState.cookies.get(uid)
         );
-        if (!res) throw Error("");
+        if (!res) throw new Error("");
         const { songs, privileges } = res;
         return songs
           .filter((_, i) => privileges[i].st >= 0)

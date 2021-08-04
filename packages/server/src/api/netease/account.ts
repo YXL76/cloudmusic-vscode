@@ -260,13 +260,13 @@ export async function recommendSongs(
   const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
   const res = await weapiRequest<{
-    data: { dailySongs: readonly NeteaseTypings.SongsItemSt[] };
+    data: { dailySongs?: readonly NeteaseTypings.SongsItemSt[] };
   }>(
     "music.163.com/api/v3/discovery/recommend/songs",
     {},
     AccountState.cookies.get(uid)
   );
-  if (!res) return [];
+  if (!res || !res.data.dailySongs) return [];
   const ret = res.data.dailySongs.map(resolveSongItemSt);
   apiCache.set(key, ret);
   return ret;

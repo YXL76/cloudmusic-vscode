@@ -7,7 +7,17 @@ import axios from "axios";
 import { createWriteStream } from "fs";
 import { resolve } from "path";
 
-export const logError = (err: unknown): void => console.error(Date.now(), err);
+export const logError = (err: Error | string | Record<string, unknown>): void =>
+  console.error(
+    Date.now(),
+    typeof err === "object"
+      ? err?.stack
+        ? err.stack
+        : err?.message
+        ? err.message
+        : err
+      : err
+  );
 
 export async function getMusicPath(
   id: number,

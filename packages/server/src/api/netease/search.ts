@@ -179,13 +179,13 @@ export async function searchSuggest(
   const value = apiCache.get<readonly string[]>(key);
   if (value) return value;
   const res = await weapiRequest<{
-    result: { allMatch: readonly { keyword: string }[] };
+    result: { allMatch?: readonly { keyword: string }[] };
   }>(
     "music.163.com/weapi/search/suggest/keyword",
     { s: keywords },
     AccountState.cookies.get(uid)
   );
-  if (!res) return [];
+  if (!res || !res.result.allMatch) return [];
   const ret = res.result.allMatch.map(({ keyword }) => keyword);
   apiCache.set(key, ret);
   return ret;
