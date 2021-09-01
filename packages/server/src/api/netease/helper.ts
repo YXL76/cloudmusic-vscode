@@ -12,9 +12,7 @@ export class AccountState {
     if (this.cookies.size) {
       const [[, cookie]] = this.cookies;
       return cookie;
-    } else {
-      return {};
-    }
+    } else return {};
   }
 }
 

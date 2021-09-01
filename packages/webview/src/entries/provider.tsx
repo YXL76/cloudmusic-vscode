@@ -31,6 +31,10 @@ function deleteMSAHandler() {
   navigator.mediaSession.setActionHandler("seekto", null);
   navigator.mediaSession.setActionHandler("previoustrack", null);
   navigator.mediaSession.setActionHandler("nexttrack", null);
+  /* navigator.mediaSession.setActionHandler("skipad", null);
+  navigator.mediaSession.setActionHandler("togglemicrophone", null);
+  navigator.mediaSession.setActionHandler("togglecamera", null);
+  navigator.mediaSession.setActionHandler("hangup", null); */
 }
 
 deleteMSAHandler();
