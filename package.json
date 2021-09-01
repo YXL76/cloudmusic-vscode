@@ -95,6 +95,11 @@
         "title": "%commands.addAccount.title%"
       },
       {
+        "category": "Cloudmusic",
+        "command": "cloudmusic.account",
+        "title": "%commands.account.title%"
+      },
+      {
         "command": "cloudmusic.newLocalLibrary",
         "icon": "$(add)",
         "title": "%commands.newLocalLibrary.title%"

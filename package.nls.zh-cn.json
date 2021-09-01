@@ -1,4 +1,5 @@
 {
+  "commands.account.title": "帐号",
   "commands.addAccount.title": "添加",
   "commands.addLocalFile.title": "添加",
   "commands.addLocalLibrary.title": "添加",

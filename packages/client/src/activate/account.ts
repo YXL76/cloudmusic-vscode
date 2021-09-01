@@ -1,12 +1,29 @@
 import { commands, window } from "vscode";
 import { AccountManager } from "../manager";
 import type { ExtensionContext } from "vscode";
+import { MultiStepInput } from "../utils";
 import i18n from "../i18n";
 
 export async function initAccount(context: ExtensionContext): Promise<void> {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.addAccount", () =>
       AccountManager.loginQuickPick()
+    ),
+
+    commands.registerCommand(
+      "cloudmusic.account",
+      () =>
+        void MultiStepInput.run(async (input) => {
+          const pick = await input.showQuickPick({
+            title: i18n.word.account,
+            step: 1,
+            items: [...AccountManager.accounts].map(([uid, { nickname }]) => ({
+              label: `$(account) ${nickname}`,
+              uid,
+            })),
+          });
+          AccountManager.accountQuickPick(pick.uid);
+        })
     ),
 
     commands.registerCommand(
