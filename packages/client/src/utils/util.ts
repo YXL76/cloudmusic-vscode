@@ -20,18 +20,27 @@ export async function likeMusic(
   id: number
 ): Promise<InputStep> {
   const title = i18n.word.like;
-  const items = [];
-  for (const [uid, { nickname }] of AccountManager.accounts)
-    items.push(
-      { label: `$(star-empty) ${nickname}`, uid, like: false },
-      { label: `$(star-full) ${nickname}`, uid, like: true }
-    );
+  const accounts = [...AccountManager.accounts].map(
+    ([uid, { nickname: name }]) => ({ uid, name })
+  );
+
+  const items = (
+    await Promise.allSettled(
+      accounts.map(({ uid }) => IPC.netease("likelist", [uid]))
+    )
+  ).map((res, i) => {
+    const { uid, name } = accounts[i];
+    return res.status === "fulfilled" && res.value.includes(id)
+      ? { label: `$(star-empty) ${name}`, uid, like: false }
+      : { label: `$(star-full) ${name}`, uid, like: true };
+  });
   const { uid, like } = await input.showQuickPick({ title, step, items });
-  if (await IPC.netease("like", [uid, id, like]))
+  if (await IPC.netease("like", [uid, id, like])) {
+    IPC.deleteCache(`likelist${uid}`);
     void window.showInformationMessage(
       like ? i18n.word.like : i18n.word.dislike
     );
-  else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
+  } else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
   return input.stay();
 }
 

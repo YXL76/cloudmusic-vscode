@@ -102,12 +102,16 @@ export async function like(
 }
 
 export async function likelist(uid: number): Promise<readonly number[]> {
+  const key = `likelist${uid}`;
+  const value = apiCache.get<readonly number[]>(key);
+  if (value) return value;
   const res = await weapiRequest<{ ids: readonly number[] }>(
     "music.163.com/weapi/song/like/get",
     { uid },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
+  apiCache.set(key, res.ids);
   return res.ids;
 }
 
