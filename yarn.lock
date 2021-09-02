@@ -60,7 +60,7 @@ __metadata:
     "@types/lodash": 4.14.172
     "@types/node": 14.14.43
     "@types/qrcode": "workspace:*"
-    "@types/vscode": 1.59.0
+    "@types/vscode": 1.60.0
     array-unsort: 1.1.6
     file-type: 16.5.3
     lodash: 4.17.21
@@ -394,10 +394,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/vscode@npm:1.59.0":
-  version: 1.59.0
-  resolution: "@types/vscode@npm:1.59.0"
-  checksum: da849f793cce43dd5521b420d1b6becb8e2101a82681f051cf97fb5625ec5b7e5db283f8428a030c63c1a233da18d86c1a7c2f2a703f2fec362eedaa00e91e04
+"@types/vscode@npm:1.60.0":
+  version: 1.60.0
+  resolution: "@types/vscode@npm:1.60.0"
+  checksum: 6736e1db00b0c660cb48c9fb8ea76b18b03e4ccc4846b2f0d0fa37eecc3e28bb29612aac6098fa7d5024c36a599f84d8b7bc6cd0a78068e81d83355599a7bb3e
   languageName: node
   linkType: hard
 
