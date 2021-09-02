@@ -105,7 +105,7 @@ export class State {
   static set like(newValue: boolean) {
     if (newValue !== this._like) {
       this._like = newValue;
-      ButtonManager.buttonLike(newValue);
+      ButtonManager.buttonLike();
     }
   }
 
