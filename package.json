@@ -303,6 +303,10 @@
       {
         "command": "cloudmusic.downloadSong",
         "title": "%commands.downloadSong.title%"
+      },
+      {
+        "command": "cloudmusic.statusBarStyle",
+        "title": "Status Bar Style"
       }
     ],
     "configuration": [
@@ -567,7 +571,12 @@
           "when": "false"
         },
         {
-          "command": "cloudmusic.downloadSong"
+          "command": "cloudmusic.downloadSong",
+          "when": "false"
+        },
+        {
+          "command": "cloudmusic.statusBarStyle",
+          "when": "false"
         }
       ],
       "view/item/context": [
@@ -806,7 +815,32 @@
           "title": "%viewsContainers.activitybar.title%"
         }
       ]
-    }
+    },
+    "walkthroughs": [
+      {
+        "id": "cloudmusic",
+        "title": "Cloudmusic",
+        "description": "Netease Music for VS Code",
+        "steps": [
+          {
+            "id": "statusBar",
+            "title": "Status Bar",
+            "description": "This step will help you set up status bar.",
+            "media": {
+              "markdown": "media/walkthroughs/statusBar.md"
+            }
+          },
+          {
+            "id": "queue",
+            "title": "Queue",
+            "description": "This step will help you know how to use queue.",
+            "media": {
+              "markdown": "media/walkthroughs/queue.md"
+            }
+          }
+        ]
+      }
+    ]
   },
   "resolutions": {
     "@types/node": "14.14.43",

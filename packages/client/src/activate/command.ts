@@ -1,8 +1,8 @@
+import { CONF, VOLUME_KEY } from "../constant";
 import { IPC, MultiStepInput, State, likeMusic } from "../utils";
 import { QueueItemTreeItem, QueueProvider } from "../treeview";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
-import { VOLUME_KEY } from "../constant";
 import { commands } from "vscode";
 import i18n from "../i18n";
 
@@ -52,6 +52,10 @@ export function initCommand(context: ExtensionContext): void {
 
     commands.registerCommand("cloudmusic.toggleButton", () =>
       ButtonManager.toggle()
+    ),
+
+    commands.registerCommand("cloudmusic.statusBarStyle", (compact?: boolean) =>
+      CONF().update("statusBar.compact", !!compact, true)
     )
   );
 }
