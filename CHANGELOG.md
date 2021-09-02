@@ -6,6 +6,21 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.2.0] - 2021-09-02
+
+### Added
+
+- API: support login with captcha
+- Commands: `cloudmusic.account`
+- Status bar
+  - support rich hover ([#525](https://github.com/YXL76/cloudmusic-vscode/issues/525))
+  - check likelist ([#528](https://github.com/YXL76/cloudmusic-vscode/issues/528))
+- Workbench: support walkthroughs
+
+### Fixed
+
+- Configuration: detect changes
+
 ## [9.1.3] - 2021-08-04
 
 ### Changed
