@@ -60,6 +60,7 @@ export namespace NeteaseTypings {
     phone: string;
     username: string;
     password: string;
+    captcha: string;
     countrycode: string;
   };
 

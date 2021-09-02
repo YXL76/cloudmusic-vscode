@@ -11,6 +11,7 @@ export default {
     hint: {
       account: "Please enter your account",
       button: "Set whether the button is displayed or not",
+      captcha: "Please enter your captcha",
       confirmation: "Are you sure you want to do this? ",
       countrycode: "Please enter your countrycode",
       desc: "Please enter description",
@@ -26,6 +27,7 @@ export default {
       volume: "Please enter volume",
     },
     label: {
+      captcha: "Use captcha to sign in",
       cellphone: "Use cellphone to sign in",
       dailyRecommendedPlaylists: "Daily recommended playlists",
       dailyRecommendedSongs: "Daily recommended songs",
@@ -56,6 +58,7 @@ export default {
     artistList: "Artist list",
     ascending: "Ascending",
     band: "Band",
+    captcha: "Captcha",
     categorie: "Categorie",
     cellphone: "Cellphone",
     cleanCache: "Clean cache",

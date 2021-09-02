@@ -107,17 +107,20 @@ export class AccountManager {
 
   static async loginQuickPick(): Promise<void> {
     const title = i18n.word.signIn;
+    let captcha = false;
     let totalSteps = 3;
     const state: NeteaseTypings.Account = {
       phone: "",
       username: "",
       password: "",
+      captcha: "",
       countrycode: "86",
     };
 
     const enum Type {
       emial,
       phone,
+      captcha,
       qrcode,
     }
 
@@ -138,6 +141,11 @@ export class AccountManager {
             type: Type.phone,
           },
           {
+            label: `$(code) ${i18n.word.captcha}`,
+            description: i18n.sentence.label.captcha,
+            type: Type.captcha,
+          },
+          {
             label: `$(diff) ${i18n.word.qrcode}`,
             description: i18n.sentence.label.qrcode,
             type: Type.qrcode,
@@ -145,13 +153,21 @@ export class AccountManager {
         ],
         placeholder: i18n.sentence.hint.signIn,
       });
+
+      state.captcha = "";
+
       switch (pick.type) {
         case Type.phone:
+          captcha = false;
           totalSteps = 4;
           return (input) => inputCountrycode(input);
         case Type.emial:
           totalSteps = 3;
           return (input) => inputUsername(input);
+        case Type.captcha:
+          captcha = true;
+          totalSteps = 4;
+          return (input) => inputCountrycode(input);
         case Type.qrcode:
           void Webview.login();
       }
@@ -178,7 +194,9 @@ export class AccountManager {
         prompt: i18n.sentence.hint.account,
       });
       state.username = "";
-      return (input) => inputPassword(input);
+      return captcha
+        ? (input) => inputCaptcha(input)
+        : (input) => inputPassword(input);
     }
 
     async function inputUsername(input: MultiStepInput): Promise<InputStep> {
@@ -205,12 +223,24 @@ export class AccountManager {
       await login();
     }
 
+    async function inputCaptcha(input: MultiStepInput) {
+      await IPC.netease("captchaSent", [state.countrycode, state.phone]);
+      state.captcha = await input.showInputBox({
+        title,
+        step: totalSteps,
+        totalSteps,
+        prompt: i18n.sentence.hint.captcha,
+      });
+      await login();
+    }
+
     async function login() {
       const res = await (state.phone.length
         ? IPC.netease("loginCellphone", [
             state.phone,
             state.countrycode,
             state.password,
+            state.captcha,
           ])
         : IPC.netease("login", [state.username, state.password]));
       if (!res) void window.showErrorMessage(i18n.sentence.fail.signIn);

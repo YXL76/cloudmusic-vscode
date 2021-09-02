@@ -11,6 +11,7 @@ export default {
     hint: {
       account: "请输入账号",
       button: "设置是否显示按钮",
+      captcha: "请输入验证码",
       confirmation: "确定要执行此操作吗？",
       countrycode: "请输入国家码",
       desc: "请输入描述",
@@ -26,6 +27,7 @@ export default {
       volume: "请输入音量",
     },
     label: {
+      captcha: "使用验证码登录",
       cellphone: "使用手机登录",
       dailyRecommendedPlaylists: "每日推荐歌单",
       dailyRecommendedSongs: "每日推荐歌曲",
@@ -56,6 +58,7 @@ export default {
     artistList: "歌手榜",
     ascending: "升序",
     band: "乐队",
+    captcha: "验证码",
     categorie: "类别",
     cellphone: "手机",
     cleanCache: "清除缓存",

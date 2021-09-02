@@ -18,6 +18,16 @@ import type { NeteaseTypings } from "api";
 import { apiCache } from "../../cache";
 import { logError } from "../../utils";
 
+export async function captchaSent(
+  ctcode: string,
+  cellphone: string
+): Promise<void> {
+  return await weapiRequest("music.163.com/api/sms/captcha/sent", {
+    cellphone,
+    ctcode,
+  });
+}
+
 export async function dailyCheck(uid: number): Promise<boolean> {
   try {
     const actions = [];
@@ -115,13 +125,14 @@ export async function login(
 export async function loginCellphone(
   phone: string,
   countrycode: string,
-  password: string
+  password: string,
+  captcha: string
 ): Promise<NeteaseTypings.Profile | void> {
   return await loginRequest("music.163.com/weapi/login/cellphone", {
     phone,
     countrycode,
-    password,
     rememberLogin: "true",
+    ...(captcha ? { captcha } : { password }),
   });
 }
 

@@ -11,6 +11,7 @@ export default {
     hint: {
       account: "請輸入帳號",
       button: "設定是否顯示按鈕",
+      captcha: "請輸入驗證碼",
       confirmation: "確定要執行此操作嗎？",
       countrycode: "請輸入國家碼",
       desc: "請輸入描述",
@@ -26,7 +27,8 @@ export default {
       volume: "請輸入音量",
     },
     label: {
-      cellphone: "使用手機登入",
+      captcha: "使用驗證碼登錄",
+      cellphone: "使用手機登錄",
       dailyRecommendedPlaylists: "每日推薦歌單",
       dailyRecommendedSongs: "每日推薦歌曲",
       email: "使用郵箱登錄",
@@ -56,6 +58,7 @@ export default {
     artistList: "歌手榜",
     ascending: "昇冪",
     band: "樂團",
+    captcha: "驗證碼",
     categorie: "類別",
     cellphone: "手機",
     cleanCache: "清除緩存",
