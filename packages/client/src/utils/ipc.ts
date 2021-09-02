@@ -1,10 +1,5 @@
-import type {
-  CSConnPool,
-  IPCBroadcastMsg,
-  IPCClientMsg,
-  IPCServerMsg,
-} from "@cloudmusic/shared";
 import {
+  CONF,
   FOREIGN,
   HTTPS_API,
   MUSIC_CACHE_SIZE,
@@ -12,6 +7,12 @@ import {
   ipcBroadcastServerPath,
   ipcServerPath,
 } from "../constant";
+import type {
+  CSConnPool,
+  IPCBroadcastMsg,
+  IPCClientMsg,
+  IPCServerMsg,
+} from "@cloudmusic/shared";
 import { LocalFileTreeItem, QueueProvider } from "../treeview";
 import type {
   NeteaseAPICMsg,
@@ -153,14 +154,15 @@ export class IPC {
     volume?: number,
     player?: { wasm: boolean; name?: string }
   ): void {
+    const conf = CONF();
     ipc.send({
       t: "control.init",
       volume,
       player,
-      mq: MUSIC_QUALITY(),
-      cs: MUSIC_CACHE_SIZE(),
-      https: HTTPS_API(),
-      foreign: FOREIGN(),
+      mq: MUSIC_QUALITY(conf),
+      cs: MUSIC_CACHE_SIZE(conf),
+      https: HTTPS_API(conf),
+      foreign: FOREIGN(conf),
     });
   }
 

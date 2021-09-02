@@ -1,4 +1,4 @@
-import { BUTTON_KEY, COMPACT } from "../constant";
+import { BUTTON_KEY, COMPACT, CONF } from "../constant";
 import { MarkdownString, StatusBarAlignment, window } from "vscode";
 import { MultiStepInput, State } from "../utils";
 import type { ExtensionContext } from "vscode";
@@ -35,13 +35,11 @@ export class ButtonManager {
 
   private static _buttonShow = Array(8).fill(true) as boolean[];
 
-  private static readonly _mdTooltip = new MarkdownString(
-    this._mdTooltipV(),
-    true
-  );
+  private static readonly _mdTooltip = new MarkdownString("", true);
 
   static init(): void {
-    this._mdTooltip.isTrusted = true;
+    this._compact = COMPACT(CONF());
+    this._setCompact();
 
     [
       // "$(account)",
@@ -84,15 +82,15 @@ export class ButtonManager {
       this._buttonShow
     );
 
-    this._setCompact(COMPACT());
+    this._mdTooltip.isTrusted = true;
+    this._setMdTooltipValue();
   }
 
   static setCompact(): void {
-    const compact = COMPACT();
-    console.log("tttttt", compact);
+    const compact = COMPACT(CONF());
     if (compact !== this._compact) {
       this._compact = compact;
-      this._setCompact(compact);
+      this._setCompact();
     }
   }
 
@@ -131,7 +129,7 @@ export class ButtonManager {
       this._buttons[Label.previous].tooltip = i18n.word.previousTrack;
       this._buttons[Label.previous].command = "cloudmusic.previous";
     }
-    this._mdTooltip.value = this._mdTooltipV();
+    this._setMdTooltipValue();
   }
 
   static buttonPlay(playing: boolean): void {
@@ -139,18 +137,18 @@ export class ButtonManager {
     this._buttons[Label.play].tooltip = playing
       ? i18n.word.pause
       : i18n.word.play;
-    this._mdTooltip.value = this._mdTooltipV();
+    this._setMdTooltipValue();
   }
 
   static buttonRepeat(r: boolean): void {
     this._buttons[Label.repeat].text = r ? "$(sync)" : "$(sync-ignored)";
-    this._mdTooltip.value = this._mdTooltipV();
+    this._setMdTooltipValue();
   }
 
   static buttonLike(): void {
     this._buttons[Label.like].text = State.like ? "$(heart)" : "$(stop)";
     this._buttons[Label.like].tooltip = State.like ? i18n.word.like : "";
-    this._mdTooltip.value = this._mdTooltipV();
+    this._setMdTooltipValue();
   }
 
   static buttonVolume(level: number): void {
@@ -173,13 +171,13 @@ export class ButtonManager {
       : i18n.word.disabled;
   }
 
-  private static _setCompact(compact: boolean): void {
-    console.log("asdasd", compact);
-    if (compact) {
+  private static _setCompact(): void {
+    if (this._compact) {
       this._buttons[Label.song].tooltip = this._mdTooltip;
       for (let i = 0; i < 6; i++) this._buttons[i].hide();
+      for (let i = 6; i < 8; i++)
+        this._buttonShow[i] ? this._buttons[i].show() : this._buttons[i].hide();
     } else {
-      console.log(this._buttonShow);
       this._buttons[Label.song].tooltip = i18n.word.song;
       this._buttons.forEach((v, i) =>
         this._buttonShow[i] ? v.show() : v.hide()
@@ -187,31 +185,37 @@ export class ButtonManager {
     }
   }
 
-  private static _mdTooltipV() {
+  private static _setMdTooltipValue() {
     const fm = this._buttons[Label.previous].text === "$(trash)";
     const playing = this._buttons[Label.play].text === "$(debug-pause)";
     const repeat = this._buttons[Label.repeat].text === "$(sync)";
-    const islike = State.like;
 
-    return `${
+    this._mdTooltip.value = `${
       fm
         ? `[$(trash) ${i18n.word.trash}](command:cloudmusic.fmTrash)`
         : `[$(chevron-left) ${i18n.word.previousTrack}](command:cloudmusic.previous)`
     }
+
 [${
       playing
         ? `$(debug-pause) ${i18n.word.pause}`
         : `$(play) ${i18n.word.play}`
     }](command:cloudmusic.toggle)
+
 [$(chevron-right) ${i18n.word.nextTrack}](command:cloudmusic.next)
+
 [${repeat ? "sync" : "$(sync-ignored)"} ${
       i18n.word.repeat
     }](command:cloudmusic.repeat)
+
 ${
-  islike
-    ? `$(stop) ${i18n.word.like}`
-    : `[$(heart) ${i18n.word.like}](command:cloudmusic.like)`
+  State.like
+    ? `[$(heart) ${i18n.word.like}](command:cloudmusic.like)`
+    : `$(stop) ${i18n.word.like}`
 }
+
 [$(unmute) ${i18n.word.volume}](command:cloudmusic.volume)`;
+
+    if (this._compact) this._buttons[Label.song].tooltip = this._mdTooltip;
   }
 }
