@@ -1,5 +1,5 @@
 {
   "extends": ["config:base"],
-  "ignoreDeps": ["@types/node"],
+  "ignoreDeps": ["@types/node", "@types/vscode"],
   "postUpdateOptions": ["yarnDedupeHighest"]
 }
