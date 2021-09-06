@@ -76,7 +76,7 @@ __metadata:
     "@types/api": "workspace:*"
     "@types/node": 14.14.43
     "@types/yallist": 4.0.1
-    axios: 0.21.3
+    axios: 0.21.4
     global-agent: "https://github.com/YXL76/global-agent.git#self-use"
     md5-file: 5.0.0
     node-cache: 5.1.2
@@ -919,12 +919,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:0.21.3":
-  version: 0.21.3
-  resolution: "axios@npm:0.21.3"
+"axios@npm:0.21.4":
+  version: 0.21.4
+  resolution: "axios@npm:0.21.4"
   dependencies:
     follow-redirects: ^1.14.0
-  checksum: fdcac33adb0330e127ab0e58f8d9fb7470b49dbfb0aba251ff54f146f2fc7d9362e3300581b6c98d2ea3b8db958ed099c831c3c7832ae79b14f517d5947a029a
+  checksum: 44245f24ac971e7458f3120c92f9d66d1fc695e8b97019139de5b0cc65d9b8104647db01e5f46917728edfc0cfd88eb30fc4c55e6053eef4ace76768ce95ff3c
   languageName: node
   linkType: hard
 
