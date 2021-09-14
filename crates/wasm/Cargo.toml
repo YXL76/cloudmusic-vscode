@@ -7,14 +7,15 @@ edition = "2018"
 [lib]
 crate-type = ['cdylib']
 
+[features]
+debug = ["console_error_panic_hook"]
+
 [dependencies]
 wasm-bindgen = "0.2"
+console_error_panic_hook = { version = "0.1", optional = true }
 
 [dependencies.rodio]
 git = "https://github.com/RustAudio/rodio"
 branch = "master"
 default-features = false
 features = ["flac", "symphonia-mp3", "wasm-bindgen"]
-
-[target."cfg(debug_assertions)".dependencies]
-console_error_panic_hook = "0.1"

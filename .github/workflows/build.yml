@@ -13,7 +13,7 @@ on:
 jobs:
   build-macos:
     name: Build for macos
-    runs-on: macos-latest
+    runs-on: macos-11
 
     steps:
       - name: Checkout
@@ -28,29 +28,26 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      # - name: Setup Xcode
-      #   run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer/
-
-      # - name: Install rust target
-      #   run: rustup target add aarch64-apple-darwin
+      - name: Install rust target
+        run: |
+          rustup target add x86_64-apple-darwin
+          rustup target add aarch64-apple-darwin
 
       - name: Build x86-64
-        run: cargo build --release
+        run: cargo build --release --target=x86_64-apple-darwin
 
       - uses: actions/upload-artifact@v2
         with:
           name: ${{ runner.os }}-x86_64
           path: crates/native/index.node
 
-      #- name: Build aarch64
-      #  run: SDKROOT=$(xcrun -sdk macosx11.0 --show-sdk-path) \
-      #    MACOSX_DEPLOYMENT_TARGET=$(xcrun -sdk macosx11.0 --show-sdk-platform-version) \
-      #    cargo build --release --target=aarch64-apple-darwin
-      #
-      #- uses: actions/upload-artifact@v2
-      #  with:
-      #    name: ${{ runner.os }}-aarch64
-      #    path: crates/native/index.node
+      - name: Build aarch64
+        run: cargo build --release --target=aarch64-apple-darwin
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ runner.os }}-aarch64
+          path: crates/native/index.node
 
   build-linux:
     name: Build for linux
@@ -75,11 +72,13 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      # - name: Install rust target
-      #   run: rustup target add aarch64-unknown-linux-gnu
+      - name: Install rust target
+        run: |
+          rustup target add x86_64-unknown-linux-gnu
+          # rustup target add aarch64-unknown-linux-gnu
 
       - name: Build x86-64
-        run: cargo build --release
+        run: cargo build --release --target x86_64-unknown-linux-gnu
 
       - uses: actions/upload-artifact@v2
         with:
@@ -118,10 +117,12 @@ jobs:
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Install rust target
-        run: rustup target add aarch64-pc-windows-msvc
+        run: |
+          rustup target add x86_64-pc-windows-msvc
+          rustup target add aarch64-pc-windows-msvc
 
       - name: Build x86-64
-        run: cargo build --release
+        run: cargo build --release --target x86_64-pc-windows-msvc
         env:
           LIBCLANG_PATH: ${{ runner.temp }}/llvm/bin
 
