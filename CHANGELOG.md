@@ -6,11 +6,25 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.2.3] - 2021-09-15
+
+### Added
+
+- Player: support native mode on `armv7-linux` machine
+
+### Fixed
+
+- Player: add new items to the list of supported native modules
+
 ## [9.2.2] - 2021-09-15
+
+### Added
 
 - Player: support native mode on `aarch64-linux` machine
 
 ## [9.2.1] - 2021-09-14
+
+### Added
 
 - Player: support native mode on `m1` machine
 
