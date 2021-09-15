@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.2.4] - 2021-09-15
+
+### Fixed
+
+- Handle uncaughtException and unhandledRejection ([#536](https://github.com/YXL76/cloudmusic-vscode/issues/536))
+
 ## [9.2.3] - 2021-09-15
 
 ### Added
