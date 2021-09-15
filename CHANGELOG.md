@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.2.2] - 2021-09-15
+
+- Player: support native mode on `aarch64-linux` machine
+
 ## [9.2.1] - 2021-09-14
 
 - Player: support native mode on `m1` machine
