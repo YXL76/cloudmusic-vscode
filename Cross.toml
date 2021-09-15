@@ -1,0 +1,6 @@
+
+[target.aarch64-unknown-linux-gnu]
+image = "cross/aarch64:v1"
+
+[target.aarch64-unknown-linux-gnu.env]
+passthrough = ["RUSTFLAGS"]

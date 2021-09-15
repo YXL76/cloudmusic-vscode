@@ -56,7 +56,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libasound2-dev
-          sudo apt-get install -y libx11-dev
+          # sudo apt-get install -y libx11-dev
 
       - uses: actions/cache@v2.1.6
         id: cargo-cache
@@ -70,7 +70,7 @@ jobs:
       - name: Install rust target
         run: |
           rustup target add x86_64-unknown-linux-gnu
-          # rustup target add aarch64-unknown-linux-gnu
+          rustup target add aarch64-unknown-linux-gnu
 
       - name: Build x86-64
         run: cargo build --release --target x86_64-unknown-linux-gnu
@@ -80,13 +80,20 @@ jobs:
           name: ${{ runner.os }}-x86_64
           path: crates/native/index.node
 
-      # - name: Build aarch64
-      #   run: cargo build --release --target=aarch64-unknown-linux-gnu
-      #
-      # - uses: actions/upload-artifact@v2
-      #   with:
-      #     name: ${{ runner.os }}-aarch64
-      #     path: crates/native/index.node
+      - name: Build image
+        run: docker build -t cross/aarch64:v1 -f docker/Dockerfile.aarch64-unknown-linux-gnu .
+
+      - name: Build aarch64
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          use-cross: true
+          args: --release --target aarch64-unknown-linux-gnu
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: ${{ runner.os }}-aarch64
+          path: crates/native/index.node
 
   build-windows:
     name: Build for windows
@@ -153,6 +160,7 @@ jobs:
         run: |
           mkdir -p build
           cp .artifact/macOS-aarch64/index.node   build/darwin-arm64.node
+          cp .artifact/Linux-aarch64/index.node   build/linux-arm64.node
           cp .artifact/Windows-aarch64/index.node build/win32-arm64.node
           cp .artifact/macOS-x86_64/index.node    build/darwin-x86.node
           cp .artifact/Linux-x86_64/index.node    build/linux-x86.node
