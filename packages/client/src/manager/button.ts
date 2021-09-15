@@ -188,7 +188,6 @@ export class ButtonManager {
   private static _setMdTooltipValue() {
     const fm = this._buttons[Label.previous].text === "$(trash)";
     const playing = this._buttons[Label.play].text === "$(debug-pause)";
-    const repeat = this._buttons[Label.repeat].text === "$(sync)";
 
     this._mdTooltip.value = `${
       fm
@@ -204,7 +203,7 @@ export class ButtonManager {
 
 [$(chevron-right) ${i18n.word.nextTrack}](command:cloudmusic.next)
 
-[${repeat ? "sync" : "$(sync-ignored)"} ${
+[${this._buttons[Label.repeat].text} ${
       i18n.word.repeat
     }](command:cloudmusic.repeat)
 
