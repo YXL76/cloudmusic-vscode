@@ -83,6 +83,7 @@ class IPCClient<T, U = T> {
           else resolve(undefined);
         };
         socket
+          .on("error", ({ message }) => console.error(message))
           .once("connect", () => {
             setTimeout(() => resolve(socket), 512);
             socket.off("close", listener);
