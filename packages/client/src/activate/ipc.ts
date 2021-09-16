@@ -181,6 +181,10 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       env: {
         ...process.env,
         // eslint-disable-next-line @typescript-eslint/naming-convention
+        HTTP_PROXY: undefined,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        HTTPS_PROXY: undefined,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         ...(STRICT_SSL ? {} : { NODE_TLS_REJECT_UNAUTHORIZED: "0" }),
         // eslint-disable-next-line @typescript-eslint/naming-convention
         ...(httpProxy ? { GLOBAL_AGENT_HTTP_PROXY: httpProxy } : {}),
