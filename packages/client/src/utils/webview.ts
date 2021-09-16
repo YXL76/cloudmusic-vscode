@@ -4,6 +4,7 @@ import type {
   CommentCSMsg,
   LyricSMsg,
   MsicRankingCMsg,
+  ProviderCMsg,
 } from "@cloudmusic/shared";
 import { ColorThemeKind, Uri, ViewColumn, commands, window } from "vscode";
 import {
@@ -147,18 +148,7 @@ export class AccountViewProvider implements WebviewViewProvider {
       localResourceRoots: [this._extUri, Uri.file(SETTING_DIR)],
     };
 
-    type Msg =
-      | { command: "pageLoaded" }
-      | { command: "toggle" }
-      | { command: "previous" }
-      | { command: "nexttrack" }
-      | { command: "account"; userId: number }
-      | { command: "end" }
-      | { command: "load" }
-      | { command: "position"; pos: number }
-      | { command: "playing"; playing: boolean };
-
-    webview.webview.onDidReceiveMessage((msg: Msg) => {
+    webview.webview.onDidReceiveMessage((msg: ProviderCMsg) => {
       switch (msg.command) {
         case "pageLoaded":
           {

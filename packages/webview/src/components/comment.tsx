@@ -1,6 +1,6 @@
+import type { CommentCMsg, CommentCSMsg } from "@cloudmusic/shared";
 import React, { useState } from "react";
 import { request, vscode } from "../utils";
-import type { CommentCSMsg } from "@cloudmusic/shared";
 import { FiThumbsUp } from "react-icons/fi";
 import type { NeteaseTypings } from "api";
 import dayjs from "dayjs";
@@ -29,14 +29,23 @@ export const Comment = ({
         className="cursor-pointer rounded-full h-16 w-16"
         src={user.avatarUrl}
         alt={user.nickname}
-        onClick={() => vscode.postMessage({ command: "user", id: user.userId })}
+        onClick={() =>
+          vscode.postMessage({
+            msg: { command: "user", id: user.userId },
+          } as CommentCMsg)
+        }
       />
       <div className="flex-1 ml-4 text-base">
         <div>
           <div
             className="cursor-pointer inline-block text-blue-600 text-lg"
             onClick={() =>
-              vscode.postMessage({ command: "user", id: user.userId })
+              vscode.postMessage({
+                msg: {
+                  command: "user",
+                  id: user.userId,
+                },
+              } as CommentCMsg)
             }
           >
             {user.nickname}
@@ -52,9 +61,11 @@ export const Comment = ({
               className="cursor-pointer inline-block text-blue-600"
               onClick={() =>
                 vscode.postMessage({
-                  command: "user",
-                  id: beReplied.user.userId,
-                })
+                  msg: {
+                    command: "user",
+                    id: beReplied.user.userId,
+                  },
+                } as CommentCMsg)
               }
             >
               @{beReplied.user.nickname}
@@ -84,14 +95,14 @@ export const Comment = ({
           </div>
           <div
             className="cursor-pointer inline-block ml-6"
-            // onClick={() => vscode.postMessage({ command: "reply", id: commentId })}
+            // onClick={() => vscode.postMessage({msg:{ command: "reply", id: commentId }})}
           >
             {i18n.word.reply}
           </div>
           {replyCount > 0 && (
             <div
               className="cursor-pointer inline-block text-blue-600 ml-6"
-              // onClick={() => vscode.postMessage({ command: "floor", id: commentId })}
+              // onClick={() => vscode.postMessage({msg:{ command: "floor", id: commentId }})}
             >
               {replyCount} {i18n.word.reply}
               {" >"}

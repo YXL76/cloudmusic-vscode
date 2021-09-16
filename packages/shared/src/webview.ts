@@ -31,6 +31,17 @@ export type MsicRankingCMsg =
   | CSMessage<{ command: "album"; id: number }, undefined>
   | CSMessage<{ command: "artist"; id: number }, undefined>;
 
+export type ProviderCMsg =
+  | { command: "pageLoaded" }
+  | { command: "toggle" }
+  | { command: "previous" }
+  | { command: "next" }
+  | { command: "account"; userId: number }
+  | { command: "end" }
+  | { command: "load" }
+  | { command: "position"; pos: number }
+  | { command: "playing"; playing: boolean };
+
 export type ProviderSMsg =
   | { command: "master"; is: boolean }
   | { command: "test"; files: string[] }

@@ -1,15 +1,16 @@
+import type { ProviderCMsg, ProviderSMsg } from "@cloudmusic/shared";
 import React, { useEffect, useState } from "react";
 import type { NeteaseTypings } from "api";
 import { Player } from "cloudmusic-wasm";
-import type { ProviderSMsg } from "@cloudmusic/shared";
 import { render } from "react-dom";
 import { vscode } from "../utils";
 
 const root = document.getElementById("root");
 
-const toggle = () => vscode.postMessage({ command: "toggle" });
-const previous = () => vscode.postMessage({ command: "previous" });
-const next = () => vscode.postMessage({ command: "next" });
+const toggle = () => vscode.postMessage({ command: "toggle" } as ProviderCMsg);
+const previous = () =>
+  vscode.postMessage({ command: "previous" } as ProviderCMsg);
+const next = () => vscode.postMessage({ command: "next" } as ProviderCMsg);
 
 function setMSAHandler() {
   if (!navigator.mediaSession) return;
@@ -57,11 +58,11 @@ const pHandler = () => {
   if (player === null || !playing) return;
   if (player.empty()) {
     playing = false;
-    vscode.postMessage({ command: "end" });
+    vscode.postMessage({ command: "end" } as ProviderCMsg);
     return;
   }
   const pos = (Date.now() - i + d) / 1000;
-  vscode.postMessage({ command: "position", pos });
+  vscode.postMessage({ command: "position", pos } as ProviderCMsg);
 };
 
 // https://github.com/w3c/mediasession/issues/213
@@ -147,7 +148,8 @@ const Provider = (): JSX.Element => {
             .then((a) => {
               playing = !!player.load(new Uint8Array(a));
               i = Date.now();
-              if (playing) vscode.postMessage({ command: "load" });
+              if (playing)
+                vscode.postMessage({ command: "load" } as ProviderCMsg);
             })
             .catch((err) => {
               console.error(err);
@@ -157,7 +159,7 @@ const Provider = (): JSX.Element => {
         case "play":
           if (!playing) i = Date.now();
           playing = !!player.play();
-          vscode.postMessage({ command: "playing", playing });
+          vscode.postMessage({ command: "playing", playing } as ProviderCMsg);
           break;
         case "pause":
           if (playing) d = Date.now() - i;
@@ -187,7 +189,9 @@ const Provider = (): JSX.Element => {
           key={key}
           className="rounded-lg cursor-pointer mx-1 my-2 bg-center bg-cover"
           style={{ backgroundImage: `url("${backgroundUrl}")` }}
-          onClick={() => vscode.postMessage({ command: "account", userId })}
+          onClick={() =>
+            vscode.postMessage({ command: "account", userId } as ProviderCMsg)
+          }
         >
           <div className="h-16 flex flex-row items-center overflow-hidden p-2 bg-black bg-opacity-30">
             <img
@@ -208,5 +212,5 @@ let loaded = false;
 render(<Provider />, root, () => {
   if (loaded) return;
   loaded = true;
-  vscode.postMessage({ command: "pageLoaded" });
+  vscode.postMessage({ command: "pageLoaded" } as ProviderCMsg);
 });
