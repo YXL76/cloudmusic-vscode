@@ -69,7 +69,7 @@ const responseHandler = async <T>(
     .post<{ code?: number } & T>(url, stringify(data), {
       withCredentials: true,
       headers,
-      ...APISetting.agent,
+      ...APISetting.proxy,
       ...(eapi ? { encoding: null } : {}),
     })
     .catch(logError);
@@ -93,7 +93,7 @@ export const loginRequest = async (
     }>(url.replace(/\w*api/, "weapi"), stringify(weapi(data)), {
       withCredentials: true,
       headers,
-      ...APISetting.agent,
+      ...APISetting.proxy,
     })
     .catch(logError);
   if (!res) return;
@@ -124,7 +124,7 @@ export const qrloginRequest = async (
     }>(url.replace(/\w*api/, "weapi"), stringify(weapi(data)), {
       withCredentials: true,
       headers,
-      ...APISetting.agent,
+      ...APISetting.proxy,
     })
     .catch(logError);
   if (!res) return;

@@ -57,7 +57,7 @@ __metadata:
     "@cloudmusic/server": "workspace:*"
     "@cloudmusic/shared": "workspace:*"
     "@types/api": "workspace:*"
-    "@types/lodash": 4.14.172
+    "@types/lodash": 4.14.173
     "@types/node": 14.14.43
     "@types/qrcode": "workspace:*"
     "@types/vscode": 1.59.0
@@ -77,7 +77,7 @@ __metadata:
     "@types/node": 14.14.43
     "@types/yallist": 4.0.1
     axios: 0.21.4
-    global-agent: "https://github.com/YXL76/global-agent.git#self-use"
+    global-agent: "https://github.com/YXL76/global-agent.git#self-use-2"
     md5-file: 5.0.0
     node-cache: 5.1.2
     yallist: 4.0.0
@@ -200,9 +200,9 @@ __metadata:
   linkType: hard
 
 "@sindresorhus/is@npm:^4.0.0":
-  version: 4.1.0
-  resolution: "@sindresorhus/is@npm:4.1.0"
-  checksum: 946bc31b672954b6ef182807cda5b745f681a7b3d1bef5d725f23f6f8ddf5251c6b22fde2f2aa9864ac24fb53f7e821f08ca9528f151a23602c352ddf8373158
+  version: 4.2.0
+  resolution: "@sindresorhus/is@npm:4.2.0"
+  checksum: 59040dfb75c2eb6ab76e8c7ac10b7f7f6ba740f0b5ac618a89a8bcdbaf923836a8e998078d59d81f6f13f4b6bbe15bfe1bca962c877edcbe9160d1c100c56fd7
   languageName: node
   linkType: hard
 
@@ -294,10 +294,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:4.14.172":
-  version: 4.14.172
-  resolution: "@types/lodash@npm:4.14.172"
-  checksum: 5fc51ea40d7e455bd1c760bcc60c9e81f82d85988666d4d4969bd8311367c63bbf1fe2be48755ba87836710e45fff94014ec164ebe6ccaa72815014981152434
+"@types/lodash@npm:4.14.173":
+  version: 4.14.173
+  resolution: "@types/lodash@npm:4.14.173"
+  checksum: 9e97ef5816299e5470db1cb32a93e981af60f74f18a35d045ed4caf224a065df96bfae6e444ec96aa392fc01258592b965d840ae042eef77ef719a578c7daef8
   languageName: node
   linkType: hard
 
@@ -752,14 +752,14 @@ __metadata:
   linkType: hard
 
 "ajv@npm:^8.0.1":
-  version: 8.6.2
-  resolution: "ajv@npm:8.6.2"
+  version: 8.6.3
+  resolution: "ajv@npm:8.6.3"
   dependencies:
     fast-deep-equal: ^3.1.1
     json-schema-traverse: ^1.0.0
     require-from-string: ^2.0.2
     uri-js: ^4.2.2
-  checksum: b86d6cb86c69abbd8ce71ab7d4ff272660bf6d34fa9fbe770f73e54da59d531b2546692e36e2b35bbcfb11d20db774b4c09189671335185b8c799d65194e5169
+  checksum: 690ffb9408415fdab43686b3f92037ba0c8362f5d0709a123ba3fb546e6ad81414455f80a2b5cc432ce924afe9864671198f022bc331a19c072d4ede152ec3ca
   languageName: node
   linkType: hard
 
@@ -792,9 +792,9 @@ __metadata:
   linkType: hard
 
 "ansi-regex@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "ansi-regex@npm:5.0.0"
-  checksum: b1bb4e992a5d96327bb4f72eaba9f8047f1d808d273ad19d399e266bfcc7fb19a4d1a127a32f7bc61fe46f1a94a4d04ec4c424e3fbe184929aa866323d8ed4ce
+  version: 5.0.1
+  resolution: "ansi-regex@npm:5.0.1"
+  checksum: 2aa4bb54caf2d622f1afdad09441695af2a83aa3fe8b8afa581d205e57ed4261c183c4d3877cee25794443fde5876417d859c108078ab788d6af7e4fe52eb66b
   languageName: node
   linkType: hard
 
@@ -1395,9 +1395,9 @@ __metadata:
   linkType: hard
 
 "csstype@npm:^3.0.2":
-  version: 3.0.8
-  resolution: "csstype@npm:3.0.8"
-  checksum: 5939a003858a31a32cbc52a8f45496aa0c2bcb4629b21c5bc14a7ddcac1a3d4adfd655f56843dc14940f60563378e9444af2c9c373b3f212601b9eeb6740b8db
+  version: 3.0.9
+  resolution: "csstype@npm:3.0.9"
+  checksum: 199f9af7e673f9f188525c3102a329d637ff46c52f6385a4427ff5cb17adcb736189150170a7af7c5701d18d7704bdad130273f4aa7e44c6c4f9967e6115dc93
   languageName: node
   linkType: hard
 
@@ -1940,11 +1940,11 @@ __metadata:
   linkType: hard
 
 "fastq@npm:^1.6.0":
-  version: 1.12.0
-  resolution: "fastq@npm:1.12.0"
+  version: 1.13.0
+  resolution: "fastq@npm:1.13.0"
   dependencies:
     reusify: ^1.0.4
-  checksum: 486db511686b5ab28b1d87170f05c3fa6c8d769cde6861ed34cf3756cdf356950ba9c7dde0bc976ad4308b85aa9ef6214c685887f9f724be72c054a7becb642a
+  checksum: 32cf15c29afe622af187d12fc9cd93e160a0cb7c31a3bb6ace86b7dea3b28e7b72acde89c882663f307b2184e14782c6c664fa315973c03626c7d4bff070bb0b
   languageName: node
   linkType: hard
 
@@ -2004,12 +2004,12 @@ __metadata:
   linkType: hard
 
 "follow-redirects@npm:^1.14.0":
-  version: 1.14.3
-  resolution: "follow-redirects@npm:1.14.3"
+  version: 1.14.4
+  resolution: "follow-redirects@npm:1.14.4"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: b4d89339afd119b5e6fd92f0e81ae7d3621a5421af7d4a7d94539765c1d5546cf61d2f3219d40596e53c7c253307fbaf5dc772254aa9170fdfe1f9d7731732a9
+  checksum: d4ce74cf5c6f363168b97e706b914eb9ffb6bf4d4c6d8f8330b93088d9b90e566611ddbcf0e42c8ed5fd17598dfeda1d19230d3e9d6d6c6b4d1c10ec3a0b99be
   languageName: node
   linkType: hard
 
@@ -2157,12 +2157,10 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"global-agent@https://github.com/YXL76/global-agent.git#self-use":
+"global-agent@https://github.com/YXL76/global-agent.git#self-use-2":
   version: 0.0.0-development
-  resolution: "global-agent@https://github.com/YXL76/global-agent.git#commit=a19ae7e9d55dafba4b96c8089f0f3805629bdbf2"
-  dependencies:
-    matcher: 4.0.0
-  checksum: 85bbf7e40148b03cc97035d7cd0c660451cb19e9f07e844b54ad1d7bf291ae147e7feb96e41ef24da7649bcbc26314efb4006d955d90ea784e225f9312450a21
+  resolution: "global-agent@https://github.com/YXL76/global-agent.git#commit=8eb3e55533c44facbbf4a6e7560fc8d02ccf7f09"
+  checksum: be4d84d89015004dc3fc0900335f63464d1ee618e9a958d46df75bc8d48d8106972664fd4a1110deab69b049a3d21798e9bd3c7950c48901b160463f4d79bbea
   languageName: node
   linkType: hard
 
@@ -2895,15 +2893,6 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"matcher@npm:4.0.0":
-  version: 4.0.0
-  resolution: "matcher@npm:4.0.0"
-  dependencies:
-    escape-string-regexp: ^4.0.0
-  checksum: d338aff31d8dfd3626873e43777f46b123579734d53bb8d18d64b08a822ba5e8d39f5fe2e23403258e6143aa0cbe20a15662720d825cd0d3af961d5a44230328
-  languageName: node
-  linkType: hard
-
 "md5-file@npm:5.0.0":
   version: 5.0.0
   resolution: "md5-file@npm:5.0.0"
@@ -3012,11 +3001,11 @@ fsevents@~2.3.2:
   linkType: hard
 
 "minipass@npm:^3.0.0, minipass@npm:^3.1.0, minipass@npm:^3.1.1, minipass@npm:^3.1.3":
-  version: 3.1.3
-  resolution: "minipass@npm:3.1.3"
+  version: 3.1.5
+  resolution: "minipass@npm:3.1.5"
   dependencies:
     yallist: ^4.0.0
-  checksum: 74b623c1f996caafa66772301b66a1b634b20270f0d1a731ef86195d5a1a5f9984a773a1e88a6cecfd264d6c471c4c0fc8574cd96488f01c8f74c0b600021e55
+  checksum: 8b410b9a5bd99ceb9d63c895891d1c30511791fdc7b717da4cf9403ca2419bc57af63b8485ffdaa421ef6cff56f63ae0b2f5135f8df502d21296e8c91460ebf9
   languageName: node
   linkType: hard
 
@@ -4019,9 +4008,9 @@ resolve@^2.0.0-next.3:
   linkType: hard
 
 "signal-exit@npm:^3.0.0":
-  version: 3.0.3
-  resolution: "signal-exit@npm:3.0.3"
-  checksum: f0169d3f1263d06df32ca072b0bf33b34c6f8f0341a7a1621558a2444dfbe8f5fec76b35537fcc6f0bc4944bdb5336fe0bdcf41a5422c4e45a1dba3f45475e6c
+  version: 3.0.4
+  resolution: "signal-exit@npm:3.0.4"
+  checksum: e72633b05df8d65035a0b31718b1a587f55b25953a8e7b959f6c3a963cc0abcb70a0d78a7e0792bc104c874525efdc619e823095d382a775641e3867b1b68c54
   languageName: node
   linkType: hard
 
@@ -4449,9 +4438,9 @@ resolve@^2.0.0-next.3:
   linkType: hard
 
 "typanion@npm:^3.3.1":
-  version: 3.3.2
-  resolution: "typanion@npm:3.3.2"
-  checksum: e7621409eb56cac3145ba3955702682627d4018a8f31b1c8355d354a93b86f7cea339583b211a4dbf7576847dd04aacad4af6912f3c42542e573b9c325e6093c
+  version: 3.4.1
+  resolution: "typanion@npm:3.4.1"
+  checksum: e498f03311d2c6766844b027c84f4fedb3991c60bd1ffd50eafa0d68c78c329bb9c96e335ae9c1b913ca97783ae4fcaf037a7f3d7dbf62bd7f0e9798d6597c3c
   languageName: node
   linkType: hard
 
