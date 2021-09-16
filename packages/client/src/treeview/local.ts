@@ -17,12 +17,12 @@ export class LocalProvider
 
   private static _instance: LocalProvider;
 
-  private static readonly _files = new Map<
+  private static readonly _files = new WeakMap<
     LocalLibraryTreeItem,
     LocalFileTreeItem[]
   >();
 
-  private static _actions = new Map<
+  private static _actions = new WeakMap<
     LocalLibraryTreeItem,
     { resolve: (value: PlayTreeItemData[]) => void; reject: () => void }
   >();

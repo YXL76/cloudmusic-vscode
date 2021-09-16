@@ -17,7 +17,7 @@ export class RadioProvider
 {
   private static _instance: RadioProvider;
 
-  private static readonly _actions = new Map<
+  private static readonly _actions = new WeakMap<
     RadioTreeItem,
     { resolve: (value: PlayTreeItemData[]) => void; reject: () => void }
   >();

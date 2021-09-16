@@ -27,7 +27,7 @@ export class IPCServer {
 
   private static readonly _sockets = new Set<Socket>();
 
-  private static readonly _buffer = new Map<Socket, string>();
+  private static readonly _buffer = new WeakMap<Socket, string>();
 
   private static _server: Server;
 

@@ -33,11 +33,6 @@ export class AccountManager {
 
   static readonly accounts = new Map<number, NeteaseTypings.Profile>();
 
-  private static readonly _userPlaylist = new Map<
-    number,
-    readonly NeteaseTypings.PlaylistItem[]
-  >();
-
   static async init(): Promise<void> {
     if (State.master) {
       let cookies: CookieState = [];
@@ -82,20 +77,15 @@ export class AccountManager {
   static async userPlaylist(
     uid: number
   ): Promise<readonly NeteaseTypings.PlaylistItem[]> {
-    if (!this._userPlaylist.has(uid)) {
-      await this.playlist(uid);
-    }
-    return this._userPlaylist.get(uid) ?? [];
+    return (await this.playlist(uid)).filter(
+      ({ creator: { userId } }) => userId === uid
+    );
   }
 
   static async playlist(
     uid: number
   ): Promise<readonly NeteaseTypings.PlaylistItem[]> {
     const lists = await IPC.netease("userPlaylist", [uid]);
-    this._userPlaylist.set(
-      uid,
-      lists.filter(({ creator: { userId } }) => userId === uid)
-    );
     return lists;
   }
 

@@ -18,7 +18,7 @@ export class PlaylistProvider
 {
   private static _instance: PlaylistProvider;
 
-  private static readonly _actions = new Map<
+  private static readonly _actions = new WeakMap<
     PlaylistItemTreeItem,
     { resolve: (value: PlayTreeItemData[]) => void; reject: () => void }
   >();
