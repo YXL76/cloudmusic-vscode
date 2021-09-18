@@ -73,7 +73,7 @@ export default {
     description: "Description",
     detail: "Detail",
     disable: "Disable",
-    disabled: "Disabled",
+    // disabled: "Disabled",
     dislike: "Dislike",
     download: "Download",
     editPlaylist: "Edit",

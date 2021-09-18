@@ -1,7 +1,7 @@
-import { BUTTON_KEY, COMPACT, CONF } from "../constant";
+import type { ExtensionContext, StatusBarItem } from "vscode";
 import { MarkdownString, StatusBarAlignment, window } from "vscode";
 import { MultiStepInput, State } from "../utils";
-import type { ExtensionContext } from "vscode";
+import { BUTTON_KEY } from "../constant";
 import i18n from "../i18n";
 
 const enum Label {
@@ -16,82 +16,98 @@ const enum Label {
   lyric,
 }
 
+interface MyStatusBarItem extends StatusBarItem {
+  command: string;
+}
+
+const LEFT = StatusBarAlignment.Left;
+
 export class ButtonManager {
   static context: ExtensionContext;
 
+  private static _mdSong = "";
+
   private static _compact = false;
 
+  private static readonly _defaultText = [
+    // "$(account)",
+    "$(chevron-left)",
+    "$(play)",
+    "$(chevron-right)",
+    "$(sync-ignored)",
+    "$(stop)",
+    "$(unmute)",
+    "$(flame)",
+    "$(text-size)",
+  ] as const;
+
+  private static readonly _defaultTooltip = [
+    // i18n.word.account,
+    i18n.word.previousTrack,
+    i18n.word.play,
+    i18n.word.nextTrack,
+    i18n.word.repeat,
+    i18n.word.like,
+    i18n.word.volume,
+    i18n.word.song,
+    i18n.word.lyric,
+  ] as const;
+
+  private static readonly _defaultCommand = [
+    // "cloudmusic.account",
+    "cloudmusic.previous",
+    "cloudmusic.toggle",
+    "cloudmusic.next",
+    "cloudmusic.repeat",
+    "cloudmusic.like",
+    "cloudmusic.volume",
+    "cloudmusic.songDetail",
+    "cloudmusic.lyric",
+  ] as const;
+
   private static readonly _buttons = [
-    // window.createStatusBarItem(StatusBarAlignment.Left, -128),
-    window.createStatusBarItem(StatusBarAlignment.Left, -129),
-    window.createStatusBarItem(StatusBarAlignment.Left, -130),
-    window.createStatusBarItem(StatusBarAlignment.Left, -131),
-    window.createStatusBarItem(StatusBarAlignment.Left, -132),
-    window.createStatusBarItem(StatusBarAlignment.Left, -133),
-    window.createStatusBarItem(StatusBarAlignment.Left, -134),
-    window.createStatusBarItem(StatusBarAlignment.Left, -135),
-    window.createStatusBarItem(StatusBarAlignment.Left, -136),
-  ];
+    // window.createStatusBarItem(LEFT, -128) MyStatusBarItem,
+    window.createStatusBarItem(LEFT, -129) as MyStatusBarItem,
+    window.createStatusBarItem(LEFT, -130) as MyStatusBarItem,
+    window.createStatusBarItem(LEFT, -131) as MyStatusBarItem,
+    window.createStatusBarItem(LEFT, -132) as MyStatusBarItem,
+    window.createStatusBarItem(LEFT, -133) as MyStatusBarItem,
+    window.createStatusBarItem(LEFT, -134) as MyStatusBarItem,
+    window.createStatusBarItem(LEFT, -135) as MyStatusBarItem,
+    window.createStatusBarItem(LEFT, -136) as MyStatusBarItem,
+  ] as const;
 
   private static _buttonShow = Array(8).fill(true) as boolean[];
 
   private static readonly _mdTooltip = new MarkdownString("", true);
 
   static init(): void {
-    this._compact = COMPACT(CONF());
-    this._setCompact();
+    this._defaultText.forEach(
+      (value, index) => (this._buttons[index].text = value)
+    );
 
-    [
-      // "$(account)",
-      "$(chevron-left)",
-      "$(play)",
-      "$(chevron-right)",
-      "$(sync-ignored)",
-      "$(stop)",
-      "$(unmute)",
-      "$(flame)",
-      State.showLyric ? "$(text-size)" : i18n.word.disabled,
-    ].forEach((value, index) => (this._buttons[index].text = value));
+    this._defaultTooltip.forEach(
+      (value, index) => (this._buttons[index].tooltip = value)
+    );
 
-    [
-      // i18n.word.account,
-      i18n.word.previousTrack,
-      i18n.word.play,
-      i18n.word.nextTrack,
-      i18n.word.repeat,
-      i18n.word.like,
-      i18n.word.volume,
-      i18n.word.song,
-      i18n.word.lyric,
-    ].forEach((value, index) => (this._buttons[index].tooltip = value));
+    this._defaultCommand.forEach(
+      (value, index) => (this._buttons[index].command = value)
+    );
 
-    [
-      // "cloudmusic.account",
-      "cloudmusic.previous",
-      "cloudmusic.toggle",
-      "cloudmusic.next",
-      "cloudmusic.repeat",
-      "cloudmusic.like",
-      "cloudmusic.volume",
-      "cloudmusic.songDetail",
-      "cloudmusic.lyric",
-    ].forEach((value, index) => (this._buttons[index].command = value));
+    this._mdTooltip.isTrusted = true;
+    this._setMdTooltip();
 
     this._buttonShow = this.context.globalState.get(
       BUTTON_KEY,
       this._buttonShow
     );
 
-    this._mdTooltip.isTrusted = true;
-    this._setMdTooltipValue();
-  }
-
-  static setCompact(): void {
-    const compact = COMPACT(CONF());
-    if (compact !== this._compact) {
-      this._compact = compact;
-      this._setCompact();
-    }
+    this._buttonShow.forEach((v, i) => {
+      if (i === Label.song) {
+        this._compact = !v;
+        this._buttons[i].show();
+      } else v ? this._buttons[i].show() : this._buttons[i].hide();
+    });
   }
 
   static toggle(): void {
@@ -100,16 +116,20 @@ export class ButtonManager {
         title: "",
         step: 1,
         totalSteps: 1,
-        items: this._buttons.map(({ text, tooltip }, i) => ({
-          label: `${text} ${tooltip as string}`,
+        items: this._defaultText.map((text, i) => ({
+          label: `${text} ${this._defaultTooltip[i]}`,
           description: this._buttonShow[i] ? i18n.word.show : i18n.word.hide,
           i,
         })),
         placeholder: i18n.sentence.hint.button,
       });
-      this._buttonShow[i] = !this._buttonShow[i];
-      if (!this._compact)
-        this._buttonShow[i] ? this._buttons[i].show() : this._buttons[i].hide();
+
+      const show = (this._buttonShow[i] = !this._buttonShow[i]);
+      if (i === Label.song) {
+        this._compact = show;
+        if (show) this._buttons[Label.song].text = "$(flame)";
+      } else show ? this._buttons[i].show() : this._buttons[i].hide();
+
       await this.context.globalState.update(BUTTON_KEY, this._buttonShow);
       return input.stay();
     });
@@ -129,7 +149,7 @@ export class ButtonManager {
       this._buttons[Label.previous].tooltip = i18n.word.previousTrack;
       this._buttons[Label.previous].command = "cloudmusic.previous";
     }
-    this._setMdTooltipValue();
+    this._setMdTooltip();
   }
 
   static buttonPlay(playing: boolean): void {
@@ -137,84 +157,47 @@ export class ButtonManager {
     this._buttons[Label.play].tooltip = playing
       ? i18n.word.pause
       : i18n.word.play;
-    this._setMdTooltipValue();
+    this._setMdTooltip();
   }
 
   static buttonRepeat(r: boolean): void {
     this._buttons[Label.repeat].text = r ? "$(sync)" : "$(sync-ignored)";
-    this._setMdTooltipValue();
+    this._setMdTooltip();
   }
 
   static buttonLike(): void {
     this._buttons[Label.like].text = State.like ? "$(heart)" : "$(stop)";
     this._buttons[Label.like].tooltip = State.like ? i18n.word.like : "";
-    this._setMdTooltipValue();
+    this._setMdTooltip();
   }
 
   static buttonVolume(level: number): void {
     this._buttons[Label.volume].tooltip = `${i18n.word.volume}: ${level}`;
   }
 
-  static buttonSong(name?: string, ar?: string): void {
-    this._buttons[Label.song].text = name ? name : "$(flame)";
+  static buttonSong(name?: string, ar?: string, picUrl?: string): void {
     if (!this._compact)
-      this._buttons[Label.song].tooltip = name
-        ? ar
-          ? `${name} - ${ar}`
-          : name
-        : i18n.word.song;
+      this._buttons[Label.song].text = name ? name : "$(flame)";
+    this._mdSong = `| ${name ?? ""} |
+| :--: |
+| ${picUrl ? `![${name ?? ""}](${picUrl})` : ""} |
+| ${ar ?? ""} |`;
+    this._setMdTooltip();
   }
 
   static buttonLyric(text?: string): void {
-    this._buttons[Label.lyric].text = State.showLyric
-      ? text ?? "$(text-size)"
-      : i18n.word.disabled;
+    this._buttons[Label.lyric].text =
+      State.showLyric && text ? text : "$(text-size)";
   }
 
-  private static _setCompact(): void {
-    if (this._compact) {
-      this._buttons[Label.song].tooltip = this._mdTooltip;
-      for (let i = 0; i < 6; i++) this._buttons[i].hide();
-      for (let i = 6; i < 8; i++)
-        this._buttonShow[i] ? this._buttons[i].show() : this._buttons[i].hide();
-    } else {
-      this._buttons[Label.song].tooltip = i18n.word.song;
-      this._buttons.forEach((v, i) =>
-        this._buttonShow[i] ? v.show() : v.hide()
-      );
-    }
-  }
+  private static _setMdTooltip() {
+    this._mdTooltip.value = `${this._mdSong}
 
-  private static _setMdTooltipValue() {
-    const fm = this._buttons[Label.previous].text === "$(trash)";
-    const playing = this._buttons[Label.play].text === "$(debug-pause)";
+${this._buttons
+  .slice(0, 6)
+  .map(({ text, command }) => `[${text ?? ""}](command:${command})`)
+  .join(" · ")}`;
 
-    this._mdTooltip.value = `${
-      fm
-        ? `[$(trash) ${i18n.word.trash}](command:cloudmusic.fmTrash)`
-        : `[$(chevron-left) ${i18n.word.previousTrack}](command:cloudmusic.previous)`
-    }
-
-[${
-      playing
-        ? `$(debug-pause) ${i18n.word.pause}`
-        : `$(play) ${i18n.word.play}`
-    }](command:cloudmusic.toggle)
-
-[$(chevron-right) ${i18n.word.nextTrack}](command:cloudmusic.next)
-
-[${this._buttons[Label.repeat].text} ${
-      i18n.word.repeat
-    }](command:cloudmusic.repeat)
-
-${
-  State.like
-    ? `[$(heart) ${i18n.word.like}](command:cloudmusic.like)`
-    : `$(stop) ${i18n.word.like}`
-}
-
-[$(unmute) ${i18n.word.volume}](command:cloudmusic.volume)`;
-
-    if (this._compact) this._buttons[Label.song].tooltip = this._mdTooltip;
+    this._buttons[Label.song].tooltip = this._mdTooltip;
   }
 }

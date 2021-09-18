@@ -73,7 +73,7 @@ export default {
     description: "描述",
     detail: "詳情",
     disable: "禁用",
-    disabled: "已禁用",
+    // disabled: "已禁用",
     dislike: "取消喜歡",
     download: "下載",
     editPlaylist: "編輯",

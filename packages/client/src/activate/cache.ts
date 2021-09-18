@@ -1,5 +1,4 @@
 import { CACHE_KEY, LYRIC_CACHE_KEY, MUSIC_CACHE_DIR_NAME } from "../constant";
-import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import { IPC } from "../utils";
 import { workspace } from "vscode";
@@ -21,8 +20,6 @@ export function initCache(context: ExtensionContext): void {
       if (affectsConfiguration("cloudmusic")) {
         updateMQ();
         IPC.init();
-        if (affectsConfiguration("cloudmusic.statusBar.compact"))
-          ButtonManager.setCompact();
       }
     })
   );

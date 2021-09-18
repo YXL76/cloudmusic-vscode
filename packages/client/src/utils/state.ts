@@ -118,7 +118,8 @@ export class State {
     else if (this._playItem)
       ButtonManager.buttonSong(
         this._playItem.item.name,
-        this._playItem.tooltip
+        this._playItem.tooltip,
+        this._playItem.item.al.picUrl
       );
   }
 

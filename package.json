@@ -378,11 +378,6 @@
             ],
             "scope": "window",
             "type": "string"
-          },
-          "cloudmusic.statusBar.compact": {
-            "default": false,
-            "scope": "window",
-            "type": "boolean"
           }
         },
         "title": "Cloudmusic"

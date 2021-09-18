@@ -26,14 +26,12 @@ export const QUEUE_INIT = kConf.get<"none" | "recommend" | "restore">(
   "queue.initialization",
   "none"
 );
-export const COMPACT = (conf: WorkspaceConfiguration): boolean =>
-  conf.get("statusBar.compact", false);
 
 export const ACCOUNT_KEY = "account-v2";
 export const CACHE_KEY = "cache-v2";
 export const LYRIC_CACHE_KEY = "lyric-cache-v4";
 export const COOKIE_KEY = "cookie-v2";
-export const BUTTON_KEY = "button-v1";
+export const BUTTON_KEY = "button-v2";
 export const VOLUME_KEY = "volume";
 export const LYRIC_KEY = "lyric-v2";
 export const LOCAL_FOLDER_KEY = "local-folder-v2";
