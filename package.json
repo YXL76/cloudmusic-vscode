@@ -868,7 +868,7 @@
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "4.0.0",
-    "eslint-plugin-react": "7.26.0",
+    "eslint-plugin-react": "7.26.1",
     "postcss": "8.3.7",
     "prettier": "2.4.1",
     "supports-color": "9.0.2",
