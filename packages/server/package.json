@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@cloudmusic/shared": "workspace:*",
-    "axios": "0.21.4",
+    "axios": "0.22.0",
     "global-agent": "https://github.com/YXL76/global-agent.git#self-use-2",
     "md5-file": "5.0.0",
     "node-cache": "5.1.2",
