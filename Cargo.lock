@@ -361,9 +361,9 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 
 [[package]]
 name = "libc"
-version = "0.2.102"
+version = "0.2.103"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a2a5ac8f984bfcf3a823267e5fde638acc3325f6496633a5da6bb6eb2171e103"
+checksum = "dd8f7255a17a627354f321ef0055d63b898c6fb27eff628af4d1b66b7331edf6"
 
 [[package]]
 name = "libloading"
@@ -511,7 +511,7 @@ checksum = "c44922cb3dbb1c70b5e5f443d63b64363a898564d739ba5198e3a9138442868d"
 [[package]]
 name = "neon"
 version = "0.9.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#a38ac308b70da264f49bce2591f95e565856a3f8"
+source = "git+https://github.com/neon-bindings/neon?branch=main#7c93fd8d4e68a277026707d734b42eca02c20e3d"
 dependencies = [
  "neon-build",
  "neon-macros",
@@ -523,12 +523,12 @@ dependencies = [
 [[package]]
 name = "neon-build"
 version = "0.9.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#a38ac308b70da264f49bce2591f95e565856a3f8"
+source = "git+https://github.com/neon-bindings/neon?branch=main#7c93fd8d4e68a277026707d734b42eca02c20e3d"
 
 [[package]]
 name = "neon-macros"
 version = "0.9.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#a38ac308b70da264f49bce2591f95e565856a3f8"
+source = "git+https://github.com/neon-bindings/neon?branch=main#7c93fd8d4e68a277026707d734b42eca02c20e3d"
 dependencies = [
  "quote",
  "syn",
@@ -537,7 +537,7 @@ dependencies = [
 [[package]]
 name = "neon-runtime"
 version = "0.9.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#a38ac308b70da264f49bce2591f95e565856a3f8"
+source = "git+https://github.com/neon-bindings/neon?branch=main#7c93fd8d4e68a277026707d734b42eca02c20e3d"
 dependencies = [
  "cfg-if 1.0.0",
  "libloading 0.6.7",
@@ -664,9 +664,9 @@ checksum = "19b17cddbe7ec3f8bc800887bab5e717348c95ea2ca0b1bf0837fb964dc67099"
 
 [[package]]
 name = "pkg-config"
-version = "0.3.19"
+version = "0.3.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3831453b3449ceb48b6d9c7ad7c96d5ea673e9b470a1dc578c2ce6521230884c"
+checksum = "7c9b1041b4387893b91ee6746cddfc28516aff326a3519fb2adf820932c5e6cb"
 
 [[package]]
 name = "proc-macro-crate"
@@ -732,7 +732,7 @@ checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
 [[package]]
 name = "rodio"
 version = "0.14.0"
-source = "git+https://github.com/RustAudio/rodio?branch=master#d40551db783420fa95e2ac5c2a76ca74647ab858"
+source = "git+https://github.com/RustAudio/rodio?branch=master#68b0333642efe7c6732866ece09d1c024dcdd0a6"
 dependencies = [
  "claxon",
  "cpal",
@@ -801,9 +801,9 @@ dependencies = [
 
 [[package]]
 name = "smallvec"
-version = "1.6.1"
+version = "1.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "fe0f37c9e8f3c5a4a66ad655a93c74daac4ad00c441533bf5c6e7990bb42604e"
+checksum = "1ecab6c735a6bb4139c0caafd0cc3635748bbb3acf4550e8138122099251f309"
 
 [[package]]
 name = "stdweb"

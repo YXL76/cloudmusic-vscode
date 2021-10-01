@@ -6,6 +6,7 @@ import {
 } from "./helper";
 import { eapi, weapi } from "./crypto";
 import { APISetting } from "..";
+import type { AxiosResponse } from "axios";
 import type { NeteaseTypings } from "api";
 import type { ParsedUrlQueryInput } from "querystring";
 import { State } from "../../state";
@@ -66,12 +67,16 @@ const responseHandler = async <T>(
   eapi?: boolean
 ): Promise<T | void> => {
   const res = await axios
-    .post<{ code?: number } & T>(url, stringify(data), {
-      withCredentials: true,
-      headers,
-      ...APISetting.proxy,
-      ...(eapi ? { encoding: null } : {}),
-    })
+    .post<string, AxiosResponse<{ readonly code?: number } & T>>(
+      url,
+      stringify(data),
+      {
+        withCredentials: true,
+        headers,
+        ...APISetting.proxy,
+        ...(eapi ? { encoding: null } : {}),
+      }
+    )
     .catch(logError);
   if (!res) return;
   const status = res.data.code || res.status;
@@ -87,10 +92,13 @@ export const loginRequest = async (
   const headers = generateHeader(url);
   headers["Cookie"] = jsonToCookie({ os: "pc" });
   const res = await axios
-    .post<{
-      readonly code?: number;
-      profile?: NeteaseTypings.Profile;
-    }>(url.replace(/\w*api/, "weapi"), stringify(weapi(data)), {
+    .post<
+      string,
+      AxiosResponse<{
+        readonly code?: number;
+        profile?: NeteaseTypings.Profile;
+      }>
+    >(url.replace(/\w*api/, "weapi"), stringify(weapi(data)), {
       withCredentials: true,
       headers,
       ...APISetting.proxy,
@@ -103,7 +111,7 @@ export const loginRequest = async (
   if (!profile || !("userId" in profile) || !("nickname" in profile)) return;
   if ("set-cookie" in res.headers) {
     const cookie = cookieToJson(
-      (res.headers as { "set-cookie": readonly string[] })["set-cookie"]
+      res.headers["set-cookie"] as unknown as string[]
     );
     AccountState.cookies.set(profile.userId, cookie);
     AccountState.profile.set(profile.userId, profile);
@@ -119,20 +127,18 @@ export const qrloginRequest = async (
   url = `${APISetting.apiProtocol}://${url}`;
   const headers = generateHeader(url);
   const res = await axios
-    .post<{
-      readonly code?: number;
-    }>(url.replace(/\w*api/, "weapi"), stringify(weapi(data)), {
-      withCredentials: true,
-      headers,
-      ...APISetting.proxy,
-    })
+    .post<string, AxiosResponse<{ readonly code?: number }>>(
+      url.replace(/\w*api/, "weapi"),
+      stringify(weapi(data)),
+      { withCredentials: true, headers, ...APISetting.proxy }
+    )
     .catch(logError);
   if (!res) return;
   const status = res.data.code || res.status;
   if (!spStatus.has(status)) return;
   if ("set-cookie" in res.headers) {
     const cookie = cookieToJson(
-      (res.headers as { "set-cookie": readonly string[] })["set-cookie"]
+      res.headers["set-cookie"] as unknown as string[]
     );
     loginStatus(JSON.stringify(cookie))
       .then(() => broadcastProfiles())

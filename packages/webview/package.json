@@ -7,7 +7,7 @@
   },
   "devDependencies": {
     "@types/api": "workspace:*",
-    "@types/react": "17.0.24",
+    "@types/react": "17.0.26",
     "@types/react-dom": "17.0.9",
     "@types/vscode-webview": "1.57.0",
     "@types/wicg-mediasession": "1.1.3"
