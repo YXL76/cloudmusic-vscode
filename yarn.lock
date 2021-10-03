@@ -106,7 +106,7 @@ __metadata:
     dayjs: 1.10.7
     react: 17.0.2
     react-dom: 17.0.2
-    react-icons: 4.2.0
+    react-icons: 4.3.0
   languageName: unknown
   linkType: soft
 
@@ -3873,12 +3873,12 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"react-icons@npm:4.2.0":
-  version: 4.2.0
-  resolution: "react-icons@npm:4.2.0"
+"react-icons@npm:4.3.0":
+  version: 4.3.0
+  resolution: "react-icons@npm:4.3.0"
   peerDependencies:
     react: "*"
-  checksum: 2b42d9b0ac85a57f8de28819b5f452b2c851f4caec09a855596d47557b775a434802fce1f3dc3811eebf46cf4d7c79fa4650330d5772345d6839f86c83afc01d
+  checksum: 0751b8febb633d426e381e789a95abcc25dbc529ac0255fd41c635a3713c8b3876251e84a75c604c3840ff29633e1b5dfce3ae223173c8ccec7b07069f104442
   languageName: node
   linkType: hard
 
