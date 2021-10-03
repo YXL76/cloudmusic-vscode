@@ -1,32 +1,39 @@
-// Place your settings in this file to overwrite default and user settings.
 {
+  "[javascript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
+  "eslint.nodePath": ".yarn/sdks",
   "files.exclude": {
-    "out": false // set this to true to hide the "out" folder with the compiled JS files
+    "out": false
   },
-  "search.exclude": {
-    "out": true, // set this to false to include "out" folder in search results
-    "dist": true,
-    "build": true,
-    ".yarn": true,
-    ".cache": true,
-    "**/.yarn": true,
-    "**/.pnp.*": true,
-    "**/*.lock": true
-  },
-  // Turn off tsc task auto detection since we have the necessary tasks as npm scripts
-  "typescript.tsc.autoDetect": "off",
   "files.watcherExclude": {
+    "**/.cache/**": true,
     "**/.git/objects/**": true,
     "**/.git/subtree-cache/**": true,
-    "**/node_modules/**": true,
     "**/.hg/store/**": true,
     "**/.yarn/**": true,
-    "**/.cache/**": true,
     "**/dist/**": true,
+    "**/node_modules/**": true,
     "**/target/**": true
   },
-  "typescript.tsdk": ".yarn/sdks/typescript/lib",
-  "eslint.nodePath": ".yarn/sdks",
   "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
-  "typescript.enablePromptUseWorkspaceTsdk": true
+  "search.exclude": {
+    ".cache": true,
+    ".yarn": true,
+    "**/.pnp.*": true,
+    "**/.yarn": true,
+    "**/*.lock": true,
+    "build": true,
+    "dist": true,
+    "out": true
+  },
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.tsc.autoDetect": "off",
+  "typescript.tsdk": ".yarn/sdks/typescript/lib"
 }
