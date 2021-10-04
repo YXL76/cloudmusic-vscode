@@ -1234,7 +1234,7 @@ __metadata:
     eslint-config-prettier: 8.3.0
     eslint-plugin-prettier: 4.0.0
     eslint-plugin-react: 7.26.1
-    postcss: 8.3.8
+    postcss: 8.3.9
     prettier: 2.4.1
     supports-color: 9.0.2
     tailwindcss: 2.2.16
@@ -3235,14 +3235,7 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"nanocolors@npm:^0.2.2":
-  version: 0.2.12
-  resolution: "nanocolors@npm:0.2.12"
-  checksum: a34a63dcca29eede3db41afd1421f130423fc99e73f6c89166f57815bbf0441f02a6112651b068acfd309707215f48eec15dd38e790a8225d6762503a7c175c6
-  languageName: node
-  linkType: hard
-
-"nanoid@npm:^3.1.25":
+"nanoid@npm:^3.1.28":
   version: 3.1.28
   resolution: "nanoid@npm:3.1.28"
   bin:
@@ -3596,6 +3589,13 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
+"picocolors@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "picocolors@npm:0.2.1"
+  checksum: 3b0f441f0062def0c0f39e87b898ae7461c3a16ffc9f974f320b44c799418cabff17780ee647fda42b856a1dc45897e2c62047e1b546d94d6d5c6962f45427b2
+  languageName: node
+  linkType: hard
+
 "picomatch@npm:^2.0.4, picomatch@npm:^2.2.1, picomatch@npm:^2.2.3":
   version: 2.3.0
   resolution: "picomatch@npm:2.3.0"
@@ -3678,14 +3678,14 @@ fsevents@~2.3.2:
   languageName: node
   linkType: hard
 
-"postcss@npm:8.3.8, postcss@npm:^8.1.6, postcss@npm:^8.2.1":
-  version: 8.3.8
-  resolution: "postcss@npm:8.3.8"
+"postcss@npm:8.3.9, postcss@npm:^8.1.6, postcss@npm:^8.2.1":
+  version: 8.3.9
+  resolution: "postcss@npm:8.3.9"
   dependencies:
-    nanocolors: ^0.2.2
-    nanoid: ^3.1.25
+    nanoid: ^3.1.28
+    picocolors: ^0.2.1
     source-map-js: ^0.6.2
-  checksum: 20073f3f70487e9fa8d40e930d02595c4d96b7db8b2142ee4efe8e0c9a54c844c720370e178aef57c12d2d5bf65592cfdd1d020a74bf2840bc58650590713a35
+  checksum: b64d0e59bc027b2f09e5a84ca32b4f0620553812110e42295a79fd0e6ea664779e575c2d5e8d35a1b0804f0933ec878404c6e161e008b5bc51cba44eaef216ef
   languageName: node
   linkType: hard
 
