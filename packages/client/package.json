@@ -8,9 +8,9 @@
   "devDependencies": {
     "@types/api": "workspace:*",
     "@types/lodash": "4.14.175",
-    "@types/node": "16.10.2",
+    "@types/node": "16.10.3",
     "@types/qrcode": "workspace:*",
-    "@types/vscode": "1.59.0"
+    "@types/vscode": "1.61.0"
   },
   "dependencies": {
     "@cloudmusic/server": "workspace:*",

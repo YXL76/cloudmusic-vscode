@@ -8,7 +8,7 @@
   },
   "devDependencies": {
     "@types/api": "workspace:*",
-    "@types/node": "16.10.2",
+    "@types/node": "16.10.3",
     "@types/yallist": "4.0.1"
   },
   "dependencies": {
