@@ -19,9 +19,9 @@ import { QueueProvider } from "./treeview";
 import { mkdirSync } from "fs";
 
 export async function activate(context: ExtensionContext): Promise<void> {
-  process.setUncaughtExceptionCaptureCallback(({ message }) =>
+  /* process.setUncaughtExceptionCaptureCallback(({ message }) =>
     console.error(message)
-  );
+  ); */
   process.on("unhandledRejection", console.error);
   context.globalState.setKeysForSync([BUTTON_KEY]);
   try {
