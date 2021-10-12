@@ -71,9 +71,9 @@ const responseHandler = async <T>(
       url,
       stringify(data),
       {
+        proxy: false,
         withCredentials: true,
         headers,
-        ...APISetting.proxy,
         ...(eapi ? { encoding: null } : {}),
       }
     )
@@ -99,9 +99,9 @@ export const loginRequest = async (
         profile?: NeteaseTypings.Profile;
       }>
     >(url.replace(/\w*api/, "weapi"), stringify(weapi(data)), {
+      proxy: false,
       withCredentials: true,
       headers,
-      ...APISetting.proxy,
     })
     .catch(logError);
   if (!res) return;
@@ -130,7 +130,7 @@ export const qrloginRequest = async (
     .post<string, AxiosResponse<{ readonly code?: number }>>(
       url.replace(/\w*api/, "weapi"),
       stringify(weapi(data)),
-      { withCredentials: true, headers, ...APISetting.proxy }
+      { proxy: false, withCredentials: true, headers }
     )
     .catch(logError);
   if (!res) return;
