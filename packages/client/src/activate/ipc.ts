@@ -174,7 +174,10 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       .version;
     const log = `err-${version}.log`;
     const logPath = resolve(SETTING_DIR, log);
-    const httpProxy = workspace.getConfiguration("http").get<string>("proxy");
+    const httpProxy =
+      workspace.getConfiguration("http").get<string>("proxy") ||
+      process.env.HTTPS_PROXY ||
+      process.env.HTTP_PROXY;
     fork(resolve(__dirname, "server.js"), {
       detached: true,
       stdio: ["ignore", "ignore", openSync(logPath, "a"), "ipc"],

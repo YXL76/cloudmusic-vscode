@@ -12,7 +12,6 @@ import https from "https";
 import { logError } from "./utils";
 import { mkdirSync } from "fs";
 
-process.setUncaughtExceptionCaptureCallback(logError);
 process.on("unhandledRejection", logError);
 
 if (process.env.GLOBAL_AGENT_HTTP_PROXY) bootstrap();

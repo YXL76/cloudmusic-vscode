@@ -8,13 +8,14 @@
   },
   "devDependencies": {
     "@types/api": "workspace:*",
+    "@types/global-agent": "2.1.1",
     "@types/node": "16.10.3",
     "@types/yallist": "4.0.1"
   },
   "dependencies": {
     "@cloudmusic/shared": "workspace:*",
     "axios": "0.22.0",
-    "global-agent": "https://github.com/YXL76/global-agent.git#self-use-2",
+    "global-agent": "3.0.0",
     "md5-file": "5.0.0",
     "node-cache": "5.1.2",
     "yallist": "4.0.0"
