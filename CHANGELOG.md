@@ -6,6 +6,23 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.3.0] - 2021-10-12
+
+### Added
+
+- State: sync `globalState`
+- Status bar: new style ([#549](https://github.com/YXL76/cloudmusic-vscode/issues/549), WIP)
+
+### Changed
+
+- Host: reduce memory usage
+
+### Fixed
+
+- IPC: close socket immediately when deactivate
+- Network: unable to work with proxy ([#527](https://github.com/YXL76/cloudmusic-vscode/issues/527))
+- Webview: message format
+
 ## [9.2.4] - 2021-09-15
 
 ### Fixed
