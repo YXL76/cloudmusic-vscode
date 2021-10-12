@@ -77,7 +77,7 @@ __metadata:
     "@types/global-agent": 2.1.1
     "@types/node": 16.10.3
     "@types/yallist": 4.0.1
-    axios: 0.22.0
+    axios: 0.23.0
     global-agent: 3.0.0
     md5-file: 5.0.0
     node-cache: 5.1.2
@@ -927,12 +927,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:0.22.0":
-  version: 0.22.0
-  resolution: "axios@npm:0.22.0"
+"axios@npm:0.23.0":
+  version: 0.23.0
+  resolution: "axios@npm:0.23.0"
   dependencies:
     follow-redirects: ^1.14.4
-  checksum: 83dc4d02e180f69aa9f0d1d0d50b84ec3603517230d58b4c3720ebd440c7e64ea86c5e892dc6e19061608e8e1103504a709d8baa4051c4b7652101b523d04b63
+  checksum: 879f61022bd825da2a7ebb72410bc528683ba54c140436baa0b924b7cab02ec0919fe64a04a546f482a75f5fd570b77884f9826764a95f2fd88265e61dcb70db
   languageName: node
   linkType: hard
 
