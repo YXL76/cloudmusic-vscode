@@ -838,7 +838,7 @@
     ]
   },
   "resolutions": {
-    "@types/node": "16.10.3",
+    "@types/node": "16.11.0",
     "buffer": "latest",
     "buffer-from": "latest",
     "debug": "latest",
@@ -860,20 +860,21 @@
     "@types/tailwindcss": "2.2.1",
     "@typescript-eslint/eslint-plugin": "4.33.0",
     "@typescript-eslint/parser": "4.33.0",
-    "@yarnpkg/esbuild-plugin-pnp": "2.0.0-rc.1",
-    "@yarnpkg/sdks": "2.4.2-rc.8",
+    "@yarnpkg/esbuild-plugin-pnp": "2.0.0-rc.2",
+    "@yarnpkg/sdks": "2.4.2-rc.9",
     "debug": "4.3.2",
-    "esbuild": "0.13.5",
+    "esbuild": "0.13.6",
     "esbuild-plugin-wasm": "1.0.0",
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-react": "7.26.1",
+    "eslint-plugin-react-hooks": "4.2.0",
     "postcss": "8.3.9",
     "prettier": "2.4.1",
     "supports-color": "9.0.2",
-    "tailwindcss": "2.2.16",
+    "tailwindcss": "2.2.17",
     "typescript": "4.4.4"
   },
-  "packageManager": "yarn@3.1.0-rc.8"
+  "packageManager": "yarn@3.1.0-rc.9"
 }

@@ -2,6 +2,6 @@
   "name": "@types/qrcode",
   "version": "1.4.0",
   "dependencies": {
-    "@types/node": "16.10.2"
+    "@types/node": "*"
   }
 }

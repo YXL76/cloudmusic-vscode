@@ -47,6 +47,7 @@ const browserTsConfig = (files, project) => ({
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:prettier/recommended",
     "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
   ],
   files,
   parserOptions: {

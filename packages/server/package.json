@@ -9,7 +9,7 @@
   "devDependencies": {
     "@types/api": "workspace:*",
     "@types/global-agent": "2.1.1",
-    "@types/node": "16.10.3",
+    "@types/node": "*",
     "@types/yallist": "4.0.1"
   },
   "dependencies": {
