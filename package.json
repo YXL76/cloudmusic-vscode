@@ -858,8 +858,8 @@
   "devDependencies": {
     "@types/eslint": "7.28.1",
     "@types/tailwindcss": "2.2.1",
-    "@typescript-eslint/eslint-plugin": "4.33.0",
-    "@typescript-eslint/parser": "4.33.0",
+    "@typescript-eslint/eslint-plugin": "5.1.0",
+    "@typescript-eslint/parser": "5.1.0",
     "@yarnpkg/esbuild-plugin-pnp": "2.0.0-rc.2",
     "@yarnpkg/sdks": "2.4.2-rc.9",
     "debug": "4.3.2",
