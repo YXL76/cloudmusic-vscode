@@ -40,8 +40,8 @@ export const CommentList = ({
             setState({ ...state, ...list, index });
           }}
         />
-        {state.comments.map((comment, key) => (
-          <Comment key={key} {...comment} />
+        {state.comments.map((comment) => (
+          <Comment key={comment.commentId} {...comment} />
         ))}
       </div>
       <div className="flex justify-center mb-6">

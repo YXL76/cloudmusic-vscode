@@ -22,7 +22,7 @@ export const Tabs = ({
     )}
     {titles.map((title, index) => (
       <button
-        key={index}
+        key={title}
         className={`inline-block bg-transparent tabs-button py-2 px-4 text-black dark:text-white hover:text-blue-600 font-medium text-lg focus:outline-none border-blue-600 border-solid border-0 cursor-pointer ${
           index === selectd ? "text-blue-600 border-b-2" : ""
         }`}

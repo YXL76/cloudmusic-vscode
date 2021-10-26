@@ -23,8 +23,8 @@ export const MusicRanking = ({
           selectd={index}
           switchTab={(i) => setIndex(i)}
         />
-        {record[index].map((item, key1) => (
-          <MusicCard key={key1} {...item} max={max[index]} />
+        {record[index].map((item) => (
+          <MusicCard key={item.id} {...item} max={max[index]} />
         ))}
       </div>
     </>

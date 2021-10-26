@@ -184,9 +184,9 @@ const Provider = (): JSX.Element => {
   return (
     <div className="flex flex-col max-w-2xl">
       <audio id="audio"></audio>
-      {profiles.map(({ userId, nickname, avatarUrl, backgroundUrl }, key) => (
+      {profiles.map(({ userId, nickname, avatarUrl, backgroundUrl }) => (
         <div
-          key={key}
+          key={userId}
           className="rounded-lg cursor-pointer mx-1 my-2 bg-center bg-cover"
           style={{ backgroundImage: `url("${backgroundUrl}")` }}
           onClick={() =>

@@ -43,9 +43,9 @@ export const MusicCard = ({
         }
       >{`${name}${alia[0] ? ` (${alia.join("/")})` : ""}`}</div>
       <div>
-        {ar.map(({ name, id }, key3) => (
+        {ar.map(({ name, id }, idx) => (
           <div
-            key={key3}
+            key={id}
             className="text-base inline-block"
             onClick={() =>
               vscode.postMessage({
@@ -54,7 +54,7 @@ export const MusicCard = ({
             }
           >
             {name}
-            {key3 < ar.length - 1 ? "/" : ""}
+            {idx < ar.length - 1 ? "/" : ""}
           </div>
         ))}
       </div>
