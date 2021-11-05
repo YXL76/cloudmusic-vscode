@@ -395,10 +395,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/tailwindcss@npm:2.2.2":
-  version: 2.2.2
-  resolution: "@types/tailwindcss@npm:2.2.2"
-  checksum: 9f1b8c31a7660492384ec2be89d5558160771663460a67d8adaf50dae04e67a40c4d617191aaadf2bd63f36cef2a0806862c475d85ff5fbfe336e296039fdc64
+"@types/tailwindcss@npm:2.2.4":
+  version: 2.2.4
+  resolution: "@types/tailwindcss@npm:2.2.4"
+  checksum: 024fb3cfc63164390db9a1d10f4bd65c06a280f115394106dc5085db5fef9a0679c3cc45ec1196c79aaa3b45cedab101ac49767b409eb49b0ee9e16dd6aed3e7
   languageName: node
   linkType: hard
 
@@ -1243,7 +1243,7 @@ __metadata:
   resolution: "cloudmusic@workspace:."
   dependencies:
     "@types/eslint": 7.28.2
-    "@types/tailwindcss": 2.2.2
+    "@types/tailwindcss": 2.2.4
     "@typescript-eslint/eslint-plugin": 5.1.0
     "@typescript-eslint/parser": 5.1.0
     "@yarnpkg/esbuild-plugin-pnp": 2.0.0
@@ -1259,7 +1259,7 @@ __metadata:
     postcss: 8.3.11
     prettier: 2.4.1
     supports-color: 9.0.2
-    tailwindcss: 2.2.17
+    tailwindcss: 2.2.19
     typescript: 4.4.4
   languageName: unknown
   linkType: soft
@@ -4638,9 +4638,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:2.2.17":
-  version: 2.2.17
-  resolution: "tailwindcss@npm:2.2.17"
+"tailwindcss@npm:2.2.19":
+  version: 2.2.19
+  resolution: "tailwindcss@npm:2.2.19"
   dependencies:
     arg: ^5.0.1
     bytes: ^3.0.0
@@ -4680,7 +4680,7 @@ __metadata:
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: a0bff1a014f5283676faca321a60c6e97c5512d42f3fe89aae04dffde2b1425c47b7cc3562ee16a9d748fb5cb3a2b8782845c6d8c815de293c4ed6c035b024b0
+  checksum: 660e8086fa2758f273b7ec87067c041185454374c5c916c236f9691b1c60c48166b2556b6327b3d912f018f48712105fa979b7f717b2db3111ea0850059a2b62
   languageName: node
   linkType: hard
 
