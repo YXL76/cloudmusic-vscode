@@ -6,6 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.4.0] - 2021-11-06
+
+### Added
+
+- Status bar: rich tooltip ([#525](https://github.com/YXL76/cloudmusic-vscode/issues/525))
+
+### Fixed
+
+- Player: mediaSession ([#559](https://github.com/YXL76/cloudmusic-vscode/issues/559))
+- Webview: list key
+
 ## [9.3.0] - 2021-10-12
 
 ### Added
