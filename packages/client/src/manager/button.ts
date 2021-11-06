@@ -27,8 +27,6 @@ export class ButtonManager {
 
   private static _mdSong = "";
 
-  private static _compact = false;
-
   private static readonly _defaultText = [
     // "$(account)",
     "$(chevron-left)",
@@ -95,6 +93,7 @@ export class ButtonManager {
     );
 
     this._mdTooltip.isTrusted = true;
+    this._mdTooltip.supportHtml = true;
     this._setMdTooltip();
 
     this._buttonShow = this.context.globalState.get(
@@ -104,7 +103,6 @@ export class ButtonManager {
 
     this._buttonShow.forEach((v, i) => {
       if (i === Label.song) {
-        this._compact = !v;
         this._buttons[i].show();
       } else v ? this._buttons[i].show() : this._buttons[i].hide();
     });
@@ -126,7 +124,6 @@ export class ButtonManager {
 
       const show = (this._buttonShow[i] = !this._buttonShow[i]);
       if (i === Label.song) {
-        this._compact = show;
         if (show) this._buttons[Label.song].text = "$(flame)";
       } else show ? this._buttons[i].show() : this._buttons[i].hide();
 
@@ -175,13 +172,12 @@ export class ButtonManager {
     this._buttons[Label.volume].tooltip = `${i18n.word.volume}: ${level}`;
   }
 
-  static buttonSong(name?: string, ar?: string, picUrl?: string): void {
-    if (!this._compact)
-      this._buttons[Label.song].text = name ? name : "$(flame)";
-    this._mdSong = `| ${name ?? ""} |
-| :--: |
-| ${picUrl ? `![${name ?? ""}](${picUrl})` : ""} |
-| ${ar ?? ""} |`;
+  static buttonSong(name = "", ar = "", picUrl = "", al = ""): void {
+    if (this._buttonShow[Label.song])
+      this._buttons[Label.song].text = name || "$(flame)";
+
+    this._mdSong = `<table><tr><th align="center">${name}</th></tr><tr><td align="center">${ar}</td></tr><tr><td align="center"><img src="${picUrl}" alt="${al}" width="384"/></td></tr><tr><td align="center">`;
+
     this._setMdTooltip();
   }
 
@@ -191,12 +187,12 @@ export class ButtonManager {
   }
 
   private static _setMdTooltip() {
-    this._mdTooltip.value = `${this._mdSong}
-
-${this._buttons
-  .slice(0, 6)
-  .map(({ text, command }) => `[${text ?? ""}](command:${command})`)
-  .join(" · ")}`;
+    this._mdTooltip.value = `${this._mdSong}${this._buttons
+      .slice(0, 6)
+      .map(
+        ({ text, command }) => `<a data-href="command:${command}">${text}</a>`
+      )
+      .join(" ")}</td></tr></table>`;
 
     this._buttons[Label.song].tooltip = this._mdTooltip;
   }

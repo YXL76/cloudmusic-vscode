@@ -118,7 +118,7 @@ const globalSharedConfig = {
   });
 }
 
-//webview
+// webview
 {
   const srcPath = resolve(pkgsPath, "webview", "src");
   const entriesPath = resolve(srcPath, "entries");

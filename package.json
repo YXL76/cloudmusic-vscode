@@ -852,6 +852,7 @@
     "generate-css": "yarn tailwindcss --no-autoprefixer -o dist/style.css",
     "list": "node scripts/list.js",
     "test": "yarn workspaces foreach -p run test",
+    "tooltip": "yarn node scripts/tooltip.js",
     "postinstall": "yarn sdks vscode vim",
     "vscode:prepublish": "yarn build"
   },

@@ -119,7 +119,8 @@ export class State {
       ButtonManager.buttonSong(
         this._playItem.item.name,
         this._playItem.tooltip,
-        this._playItem.item.al.picUrl
+        this._playItem.item.al.picUrl,
+        this._playItem.item.al.name
       );
   }
 
