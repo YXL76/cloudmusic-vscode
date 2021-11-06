@@ -89,7 +89,7 @@ const startSilent = () => {
   audioEle.loop = true;
   audioEle
     .play()
-    .then(() => audioEle?.pause())
+    // .then(() => audioEle?.pause())
     .catch(console.error);
 };
 
