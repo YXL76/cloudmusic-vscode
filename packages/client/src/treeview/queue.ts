@@ -25,10 +25,6 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
 
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
-  static getInstance(): QueueProvider {
-    return this._instance || (this._instance = new QueueProvider());
-  }
-
   static get len(): number {
     return this._songs.length;
   }
@@ -43,6 +39,10 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
 
   static get songs(): readonly PlayTreeItemData[] {
     return this._songs;
+  }
+
+  static getInstance(): QueueProvider {
+    return this._instance || (this._instance = new QueueProvider());
   }
 
   static random(): readonly PlayTreeItemData[] {

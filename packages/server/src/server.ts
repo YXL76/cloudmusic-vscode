@@ -31,6 +31,11 @@ export class IPCServer {
 
   private static _server: Server;
 
+  private static get _master(): Socket | undefined {
+    const [socket] = this._sockets;
+    return socket;
+  }
+
   static init(): void {
     try {
       unlinkSync(ipcServerPath);
@@ -61,7 +66,11 @@ export class IPCServer {
 
           const msgs = buffer.split(ipcDelimiter);
           this._buffer.set(socket, msgs.pop() ?? "");
-          for (const msg of msgs) this._handler(JSON.parse(msg), socket);
+          for (const msg of msgs)
+            this._handler(
+              JSON.parse(msg) as IPCClientMsg | NeteaseAPICMsg<"album">,
+              socket
+            );
         })
         .on("close", (/* err */) => {
           socket?.destroy();
@@ -132,11 +141,6 @@ export class IPCServer {
   static broadcast(data: IPCServerMsg): void {
     const str = `${JSON.stringify(data)}${ipcDelimiter}`;
     for (const socket of this._sockets) socket.write(str);
-  }
-
-  private static get _master(): Socket | undefined {
-    const [socket] = this._sockets;
-    return socket;
   }
 
   private static _setMaster() {
