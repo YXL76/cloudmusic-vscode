@@ -4,6 +4,7 @@
 const config = {
   // @ts-ignore
   corePlugins: { preflight: false },
+  mode: "jit",
   darkMode: "class",
   purge: {
     content: ["./packages/webview/src/**/*.tsx"],

@@ -192,7 +192,9 @@ export class ButtonManager {
       .map(
         ({ text, command }) => `<a data-href="command:${command}">${text}</a>`
       )
-      .join(" ")}</td></tr></table>`;
+      .join(
+        "<span>&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;</span>"
+      )}</td></tr></table>`;
 
     this._buttons[Label.song].tooltip = this._mdTooltip;
   }
