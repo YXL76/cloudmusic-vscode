@@ -864,7 +864,7 @@
     "@yarnpkg/esbuild-plugin-pnp": "2.0.0",
     "@yarnpkg/sdks": "2.5.0",
     "debug": "4.3.2",
-    "esbuild": "0.13.12",
+    "esbuild": "0.13.13",
     "esbuild-plugin-wasm": "1.0.0",
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
