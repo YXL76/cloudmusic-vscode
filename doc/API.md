@@ -45,7 +45,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |     simi_song     |      相似歌曲      |   ✔️   |
 |    song_detail    |      歌曲详情      |   ✔️   |
 |     song_url      |      歌曲链接      |   ✔️   |
-| song_download_url |   客户端歌曲下载   |        |
+| song_download_url |   客户端歌曲下载   |   ✔️   |
 |       like        | 红心与取消红心歌曲 |   ✔️   |
 
 ## 评论类
