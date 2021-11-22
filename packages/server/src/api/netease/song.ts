@@ -152,31 +152,40 @@ export async function songDetail(
 }
 
 export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
+  type SongUrlItem = NeteaseTypings.SongDetail & {
+    freeTrialInfo?: { start: number; end: number };
+  };
   type SongUrlResponse = {
-    data: readonly (NeteaseTypings.SongDetail & {
-      freeTrialInfo?: { start: number; end: number };
-    })[];
+    readonly data: ReadonlyArray<SongUrlItem>;
+  };
+  type DownloadUrlResponse = {
+    readonly data: SongUrlItem;
   };
 
   for (const [, cookie] of AccountState.cookies) {
-    const res = await Promise.allSettled([
+    const [i, j] = (await Promise.allSettled([
       eapiRequest<SongUrlResponse>(
         "interface3.music.163.com/eapi/song/enhance/player/url",
         { ids: `[${id}]`, br: State.musicQuality },
         "/api/song/enhance/player/url",
         { ...cookie, os: "pc" }
       ),
-      eapiRequest<SongUrlResponse>(
+      eapiRequest<DownloadUrlResponse>(
         "interface.music.163.com/eapi/song/enhance/download/url",
         { id, br: State.musicQuality },
         "/api/song/enhance/download/url",
         cookie
       ),
-    ]);
-    for (const i of res) {
-      if (i.status === "rejected") break;
-      if (!i.value) continue;
+    ])) as [
+      PromiseSettledResult<SongUrlResponse>,
+      PromiseSettledResult<DownloadUrlResponse>
+    ];
+    if (i.status === "fulfilled") {
       const [{ url, md5, type, freeTrialInfo }] = i.value.data;
+      if (!freeTrialInfo) return { url, md5, type };
+    }
+    if (j.status === "fulfilled") {
+      const { url, md5, type, freeTrialInfo } = j.value.data;
       if (!freeTrialInfo) return { url, md5, type };
     }
   }
