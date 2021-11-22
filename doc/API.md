@@ -38,14 +38,15 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 
 ## 歌曲类
 
-|   module    |      function      | status |
-| :---------: | :----------------: | :----: |
-| check_music |     歌曲可用性     |   ❌   |
-|    lyric    |        歌词        |   ✔️   |
-|  simi_song  |      相似歌曲      |   ✔️   |
-| song_detail |      歌曲详情      |   ✔️   |
-|  song_url   |      歌曲链接      |   ✔️   |
-|    like     | 红心与取消红心歌曲 |   ✔️   |
+|      module       |      function      | status |
+| :---------------: | :----------------: | :----: |
+|    check_music    |     歌曲可用性     |   ❌   |
+|       lyric       |        歌词        |   ✔️   |
+|     simi_song     |      相似歌曲      |   ✔️   |
+|    song_detail    |      歌曲详情      |   ✔️   |
+|     song_url      |      歌曲链接      |   ✔️   |
+| song_download_url |   客户端歌曲下载   |        |
+|       like        | 红心与取消红心歌曲 |   ✔️   |
 
 ## 评论类
 
@@ -110,6 +111,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |        playlist_hot        |         热门歌单分类          |   ❌   |
 |    playlist_name_update    |          更新歌单名           |   ❌   |
 |   playlist_order_update    |         编辑歌单顺序          |   ❌   |
+|      playlist_privacy      |         公开隐私歌单          |   ❌   |
 |     playlist_subscribe     |      收藏与取消收藏歌单       |   ✔️   |
 |    playlist_subscribers    |          歌单收藏者           |   ✔️   |
 |    playlist_tags_update    |         更新歌单标签          |   ❌   |
@@ -145,6 +147,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |    playlist_track_add    |   收藏视频到视频歌单   |   ❌   |
 |  playlist_track_delete   |  删除视频歌单里的视频  |   ❌   |
 |  playlist_video_recent   |     最近播放的视频     |   ❌   |
+|     mlog_music_rcmd      |      歌曲相关视频      |   ❌   |
 |      mlog_to_video       | 将 mlog id 转为视频 id |   ❌   |
 |         mlog_url         |   获取 mlog 播放地址   |   ❌   |
 |   video_category_list    |      视频分类列表      |   ❌   |
@@ -207,11 +210,13 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |        register_cellphone        |        注册账号        |   ❌   |
 |          resource_like           |   点赞与取消点赞资源   |        |
 |             scrobble             |        听歌打卡        |   ✔️   |
+|         send_event_text          |      发送文本动态      |        |
 |          send_playlist           |        私信歌单        |        |
 |            send_song             |        私信音乐        |        |
 |            send_text             |          私信          |        |
 |             setting              |          设置          |   ❌   |
 |          share_resource          |     分享歌曲到动态     |        |
+|         sign_happy_info          |        乐签信息        |   ❌   |
 |            simi_user             |        相似用户        |   ❌   |
 |          song_purchased          |        已购单曲        |        |
 |          topic_sub_list          |       收藏的专栏       |        |
@@ -269,6 +274,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |      musician_tasks       |   音乐人任务   |   ❌   |
 |    musician_cloudbean     |   账号云豆数   |   ❌   |
 | musician_cloudbean_obtain |    领取云豆    |   ❌   |
+|       musician_sign       |   音乐人签到   |   ❌   |
 
 ## 杂项
 
