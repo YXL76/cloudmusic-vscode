@@ -6,6 +6,22 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.5.0] - 2021-11-22
+
+### Added
+
+- API: support `song_download_url`
+
+### Changed
+
+- Doc: add new API items
+- Status bar: add space between buttons in the tooltip
+
+### Fixed
+
+- API: params of `comment_new`
+- State: `fm` is locked ([#598](https://github.com/YXL76/cloudmusic-vscode/issues/598))
+
 ## [9.4.0] - 2021-11-06
 
 ### Added
