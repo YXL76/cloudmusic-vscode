@@ -30,7 +30,6 @@ export async function activate(context: ExtensionContext): Promise<void> {
   AccountManager.context = context;
   ButtonManager.context = context;
   State.context = context;
-  State.init();
   initViewProvide(context);
   initQueue(context);
   initCommand(context);
@@ -42,6 +41,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   initPlaylist(context);
   initRadio(context);
   await initAccount(context);
+  State.init();
 }
 
 export function deactivate(): void {

@@ -44,12 +44,12 @@ export class PersonalFm {
 
   private static _songs: NeteaseTypings.SongsItem[] = [];
 
-  static async head(): Promise<NeteaseTypings.SongsItem> {
+  static async head(): Promise<NeteaseTypings.SongsItem | undefined> {
     if (!this._songs.length) await this._getSongs();
-    return this._songs.splice(0, 1)[0];
+    return this._songs.shift();
   }
 
-  static async next(): Promise<NeteaseTypings.SongsItem> {
+  static async next(): Promise<NeteaseTypings.SongsItem | undefined> {
     if (this._songs.length <= 1) await this._getSongs();
     return this._songs[1];
   }

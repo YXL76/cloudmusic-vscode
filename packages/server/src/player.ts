@@ -24,7 +24,7 @@ interface NativeModule {
 let prefetchLock = false;
 
 async function prefetch() {
-  const id = State.fm ? (await PersonalFm.next()).id : Player.next;
+  const id = State.fm ? (await PersonalFm.next())?.id || 0 : Player.next;
   const idS = `${id}`;
   if (idS === "0" || MusicCache.get(idS)) return;
 

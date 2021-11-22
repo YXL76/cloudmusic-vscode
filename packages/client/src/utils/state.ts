@@ -152,12 +152,10 @@ export class State {
 
   // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
   static set fm(value: boolean) {
-    if (State._fm !== value) {
-      this._fm = value;
-      ButtonManager.buttonPrevious(value);
-      if (value && this._master) IPC.fmNext();
-      void this.context.globalState.update(FM_KEY, value);
-    }
+    this._fm = value;
+    ButtonManager.buttonPrevious(value);
+    if (value && this._master) IPC.fmNext();
+    void this.context.globalState.update(FM_KEY, value);
   }
 
   // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
@@ -174,6 +172,7 @@ export class State {
 
   static init(): void {
     this.repeat = this.context.globalState.get(REPEAT_KEY, false);
+    // 需要在 IPC 连接后及登录帐号后修改
     this.fm = this.context.globalState.get(FM_KEY, false);
     this._showLyric = this.context.globalState.get(SHOW_LYRIC_KEY, false);
     this._lyric = this.context.globalState.get(LYRIC_KEY, {

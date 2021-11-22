@@ -220,7 +220,9 @@ export class IPCServer {
         break;
       case "queue.fmNext":
         PersonalFm.head()
-          .then((item) => this.broadcast({ t: "queue.fmNext", item }))
+          .then((item) => {
+            if (item) this.broadcast({ t: "queue.fmNext", item });
+          })
           .catch(logError);
         break;
     }
