@@ -6,6 +6,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.5.1] - 2021-11-22
+
+### Fixed
+
+- API
+  - `songUrl` response type
+  - `scrobble` need integer time ([#585](https://github.com/YXL76/cloudmusic-vscode/issues/585))
+
 ## [9.5.0] - 2021-11-22
 
 ### Added
