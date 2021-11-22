@@ -43,7 +43,7 @@ export const enum SearchType {
 }
 
 export const enum SortType {
-  recommendation = 1,
+  recommendation = 99,
   hottest = 2,
   latest = 3,
 }

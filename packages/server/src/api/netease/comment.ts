@@ -87,8 +87,16 @@ export async function commentNew(
   pageNo: number,
   pageSize: number,
   sortType: NeteaseEnum.SortType,
-  cursor: number
+  cursor: number | string
 ): Promise<NeteaseTypings.CommentRet> {
+  switch (sortType) {
+    case NeteaseEnum.SortType.recommendation:
+      cursor = (pageNo - 1) * pageSize;
+      break;
+    case NeteaseEnum.SortType.hottest:
+      cursor = `normalHot#${(pageNo - 1) * pageSize}`;
+      break;
+  }
   const res = await eapiRequest<{
     data: {
       totalCount: number;
@@ -102,10 +110,7 @@ export async function commentNew(
       pageNo,
       showInner: true,
       pageSize,
-      cursor:
-        sortType === NeteaseEnum.SortType.latest
-          ? cursor
-          : (pageNo - 1) * pageSize,
+      cursor,
       sortType,
     },
     "/api/v2/resource/comments",
