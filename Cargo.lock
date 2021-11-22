@@ -81,9 +81,9 @@ checksum = "c4872d67bab6358e59559027aa3b9157c53d9358c51423c17554809a8858e0f8"
 
 [[package]]
 name = "cc"
-version = "1.0.71"
+version = "1.0.72"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "79c2681d6594606957bbb8631c4b90a7fcaaa72cdb714743a437b156d6a7eedd"
+checksum = "22a9137b95ea06864e018375b72adfb7db6e6f68cfc8df5a04d00288050485ee"
 dependencies = [
  "jobserver",
 ]
@@ -117,7 +117,7 @@ checksum = "fa66045b9cb23c2e9c1520732030608b02ee07e5cfaa5a521ec15ded7fa24c90"
 dependencies = [
  "glob",
  "libc",
- "libloading 0.7.1",
+ "libloading 0.7.2",
 ]
 
 [[package]]
@@ -199,7 +199,7 @@ dependencies = [
 [[package]]
 name = "cpal"
 version = "0.13.4"
-source = "git+https://github.com/RustAudio/cpal?branch=master#0f279894f2a14d8ae3955cd14baacff121c38fd6"
+source = "git+https://github.com/RustAudio/cpal?branch=master#59ee8ee0572acd287f1df9e14e1f0ec321924cb8"
 dependencies = [
  "alsa",
  "core-foundation-sys",
@@ -209,8 +209,8 @@ dependencies = [
  "lazy_static",
  "libc",
  "mach",
- "ndk 0.3.0",
- "ndk-glue 0.3.0",
+ "ndk",
+ "ndk-glue",
  "nix",
  "oboe",
  "parking_lot",
@@ -355,9 +355,9 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 
 [[package]]
 name = "libc"
-version = "0.2.106"
+version = "0.2.108"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a60553f9a9e039a333b4e9b20573b9e9b9c0bb3a11e201ccc48ef4283456d673"
+checksum = "8521a1b57e76b1ec69af7599e75e38e7b7fad6610f037db8c79b127201b5d119"
 
 [[package]]
 name = "libloading"
@@ -371,9 +371,9 @@ dependencies = [
 
 [[package]]
 name = "libloading"
-version = "0.7.1"
+version = "0.7.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c0cf036d15402bea3c5d4de17b3fce76b3e4a56ebc1f577be0e7a72f7c607cf0"
+checksum = "afe203d669ec979b7128619bae5a63b7b42e9203c1b29146079ee05e2f604b52"
 dependencies = [
  "cfg-if",
  "winapi",
@@ -441,18 +441,6 @@ dependencies = [
 
 [[package]]
 name = "ndk"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8794322172319b972f528bf90c6b467be0079f1fa82780ffb431088e741a73ab"
-dependencies = [
- "jni-sys",
- "ndk-sys",
- "num_enum",
- "thiserror",
-]
-
-[[package]]
-name = "ndk"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d64d6af06fde0e527b1ba5c7b79a6cc89cfc46325b0b2887dffe8f70197e0c3c"
@@ -466,20 +454,6 @@ dependencies = [
 
 [[package]]
 name = "ndk-glue"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c5caf0c24d51ac1c905c27d4eda4fa0635bbe0de596b8f79235e0b17a4d29385"
-dependencies = [
- "lazy_static",
- "libc",
- "log",
- "ndk 0.3.0",
- "ndk-macro",
- "ndk-sys",
-]
-
-[[package]]
-name = "ndk-glue"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d3e9e94628f24e7a3cb5b96a2dc5683acd9230bf11991c2a1677b87695138420"
@@ -487,7 +461,7 @@ dependencies = [
  "lazy_static",
  "libc",
  "log",
- "ndk 0.4.0",
+ "ndk",
  "ndk-macro",
  "ndk-sys",
 ]
@@ -514,7 +488,7 @@ checksum = "c44922cb3dbb1c70b5e5f443d63b64363a898564d739ba5198e3a9138442868d"
 [[package]]
 name = "neon"
 version = "0.9.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#483b059c35fd2b545475f59d894ee4352e646a49"
+source = "git+https://github.com/neon-bindings/neon?branch=main#e50964a4ef816e8d3ee21bf7bf2311875442f8a1"
 dependencies = [
  "neon-build",
  "neon-macros",
@@ -526,12 +500,12 @@ dependencies = [
 [[package]]
 name = "neon-build"
 version = "0.9.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#483b059c35fd2b545475f59d894ee4352e646a49"
+source = "git+https://github.com/neon-bindings/neon?branch=main#e50964a4ef816e8d3ee21bf7bf2311875442f8a1"
 
 [[package]]
 name = "neon-macros"
 version = "0.9.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#483b059c35fd2b545475f59d894ee4352e646a49"
+source = "git+https://github.com/neon-bindings/neon?branch=main#e50964a4ef816e8d3ee21bf7bf2311875442f8a1"
 dependencies = [
  "quote",
  "syn",
@@ -541,7 +515,7 @@ dependencies = [
 [[package]]
 name = "neon-runtime"
 version = "0.9.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#483b059c35fd2b545475f59d894ee4352e646a49"
+source = "git+https://github.com/neon-bindings/neon?branch=main#e50964a4ef816e8d3ee21bf7bf2311875442f8a1"
 dependencies = [
  "cfg-if",
  "libloading 0.6.7",
@@ -620,8 +594,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e15e22bc67e047fe342a32ecba55f555e3be6166b04dd157cd0f803dfa9f48e1"
 dependencies = [
  "jni",
- "ndk 0.4.0",
- "ndk-glue 0.4.0",
+ "ndk",
+ "ndk-glue",
  "num-derive",
  "num-traits",
  "oboe-sys",

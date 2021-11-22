@@ -179,12 +179,12 @@ export class Player {
     const pTime = this._time;
     this._time = Date.now();
 
-    // TODO
     if (this._id) {
       const diff = this._time - pTime;
-      const time = Math.floor(Math.min(diff, this._dt)) / 1000;
-      if (diff > 60000 && this._dt > 60000)
+      if (diff > 60000 && this._dt > 60000) {
+        const time = Math.floor(Math.min(diff, this._dt) / 1000);
         void NeteaseAPI.scrobble(this._id, this._pid, time);
+      }
     }
 
     this._dt = "dt" in data ? data.dt : 0;
