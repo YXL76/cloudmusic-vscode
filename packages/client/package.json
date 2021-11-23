@@ -18,6 +18,6 @@
     "array-unsort": "1.1.6",
     "file-type": "16.5.3",
     "lodash": "4.17.21",
-    "qrcode": "1.4.4"
+    "qrcode": "1.5.0"
   }
 }
