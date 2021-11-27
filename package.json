@@ -841,7 +841,7 @@
     "@types/node": "16.11.7",
     "buffer": "latest",
     "buffer-from": "latest",
-    "debug": "latest",
+    "debug": "4.3.3",
     "isarray": "latest",
     "loose-envify": "latest",
     "object-assign": "latest"
@@ -863,7 +863,7 @@
     "@typescript-eslint/parser": "5.4.0",
     "@yarnpkg/esbuild-plugin-pnp": "2.0.0",
     "@yarnpkg/sdks": "2.5.1-rc.3",
-    "debug": "4.3.2",
+    "debug": "4.3.3",
     "esbuild": "0.13.15",
     "esbuild-plugin-wasm": "1.0.0",
     "eslint": "8.3.0",
