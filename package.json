@@ -871,7 +871,7 @@
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-react": "7.27.1",
     "eslint-plugin-react-hooks": "4.3.0",
-    "postcss": "8.4.1",
+    "postcss": "8.4.5",
     "prettier": "2.4.1",
     "supports-color": "9.1.0",
     "tailwindcss": "2.2.19",
