@@ -23,7 +23,6 @@ import { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import { SETTING_DIR } from "../constant";
 import i18n from "../i18n";
-import { resolve } from "path";
 import { toDataURL } from "qrcode";
 
 const getNonce = (): string => {
@@ -209,6 +208,29 @@ export class AccountViewProvider implements WebviewViewProvider {
   </head>
   <body>
     <div id="root"></div>
+  <video controls width="250"  id="video">
+    <source src="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_2mb.mp4">
+  </video>
+ <script>
+    document.getElementById("video").addEventListener("playing", () => {
+      console.log("playing");
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: 'Unforgettable',
+          artist: 'Nat King Cole',
+          album: 'The Ultimate Collection (Remastered)',
+        });
+
+        navigator.mediaSession.setActionHandler('play', function () { /* Code excerpted. */ });
+        navigator.mediaSession.setActionHandler('pause', function () { /* Code excerpted. */ });
+        navigator.mediaSession.setActionHandler('stop', function () { /* Code excerpted. */ });
+       
+      }
+
+    });
+
+  </script>
+
   </body>
   <script type="module" src=${js} nonce=${getNonce()}></script>
 </html>`;
@@ -216,11 +238,11 @@ export class AccountViewProvider implements WebviewViewProvider {
 }
 
 export class Webview {
-  private static readonly _cssUri = Uri.file(resolve(__dirname, "style.css"));
+  private static _extUri: Uri;
 
-  private static readonly _iconUri = Uri.file(
-    resolve(__dirname, "..", "media", "icon.ico")
-  );
+  static init(extUri: Uri): void {
+    this._extUri = extUri;
+  }
 
   static async login(): Promise<void> {
     const key = await IPC.netease("loginQrKey", []);
@@ -432,10 +454,12 @@ export class Webview {
       ViewColumn.One,
       { enableScripts: true, retainContextWhenHidden: true }
     );
-    panel.iconPath = this._iconUri;
-    const css = panel.webview.asWebviewUri(this._cssUri).toString();
+    panel.iconPath = Uri.joinPath(this._extUri, "media", "icon.ico");
+    const css = panel.webview
+      .asWebviewUri(Uri.joinPath(this._extUri, "dist", "style.css"))
+      .toString();
     const js = panel.webview
-      .asWebviewUri(Uri.file(resolve(__dirname, `${type}.js`)))
+      .asWebviewUri(Uri.joinPath(this._extUri, "dist", `${type}.js`))
       .toString();
     return {
       panel,

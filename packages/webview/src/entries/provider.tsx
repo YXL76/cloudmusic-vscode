@@ -12,33 +12,33 @@ const previous = () =>
   vscode.postMessage({ command: "previous" } as ProviderCMsg);
 const next = () => vscode.postMessage({ command: "next" } as ProviderCMsg);
 
-function setMSAHandler() {
-  if (!navigator.mediaSession) return;
-  navigator.mediaSession.setActionHandler("play", toggle);
-  navigator.mediaSession.setActionHandler("pause", toggle);
-  navigator.mediaSession.setActionHandler("stop", toggle);
-
-  navigator.mediaSession.setActionHandler("previoustrack", previous);
-  navigator.mediaSession.setActionHandler("nexttrack", next);
-}
-
-function deleteMSAHandler() {
-  if (!navigator.mediaSession) return;
-  navigator.mediaSession.setActionHandler("play", null);
-  navigator.mediaSession.setActionHandler("pause", null);
-  navigator.mediaSession.setActionHandler("stop", null);
-  navigator.mediaSession.setActionHandler("seekbackward", null);
-  navigator.mediaSession.setActionHandler("seekforward", null);
-  navigator.mediaSession.setActionHandler("seekto", null);
-  navigator.mediaSession.setActionHandler("previoustrack", null);
-  navigator.mediaSession.setActionHandler("nexttrack", null);
-  /* navigator.mediaSession.setActionHandler("skipad", null);
-  navigator.mediaSession.setActionHandler("togglemicrophone", null);
-  navigator.mediaSession.setActionHandler("togglecamera", null);
-  navigator.mediaSession.setActionHandler("hangup", null); */
-}
-
-deleteMSAHandler();
+// function setMSAHandler() {
+//   if (!navigator.mediaSession) return;
+//   navigator.mediaSession.setActionHandler("play", toggle);
+//   navigator.mediaSession.setActionHandler("pause", toggle);
+//   navigator.mediaSession.setActionHandler("stop", toggle);
+//
+//   navigator.mediaSession.setActionHandler("previoustrack", previous);
+//   navigator.mediaSession.setActionHandler("nexttrack", next);
+// }
+//
+// function deleteMSAHandler() {
+//   if (!navigator.mediaSession) return;
+//   navigator.mediaSession.setActionHandler("play", null);
+//   navigator.mediaSession.setActionHandler("pause", null);
+//   navigator.mediaSession.setActionHandler("stop", null);
+//   navigator.mediaSession.setActionHandler("seekbackward", null);
+//   navigator.mediaSession.setActionHandler("seekforward", null);
+//   navigator.mediaSession.setActionHandler("seekto", null);
+//   navigator.mediaSession.setActionHandler("previoustrack", null);
+//   navigator.mediaSession.setActionHandler("nexttrack", null);
+//   /* navigator.mediaSession.setActionHandler("skipad", null);
+//   navigator.mediaSession.setActionHandler("togglemicrophone", null);
+//   navigator.mediaSession.setActionHandler("togglecamera", null);
+//   navigator.mediaSession.setActionHandler("hangup", null); */
+// }
+//
+// deleteMSAHandler();
 
 let master = false;
 const player: Player = new Player();
@@ -54,7 +54,7 @@ const dropTimer = () => {
   }
 };
 
-const pHandler = () => {
+/*const pHandler = () => {
   if (player === null || !playing) return;
   if (player.empty()) {
     playing = false;
@@ -63,13 +63,13 @@ const pHandler = () => {
   }
   const pos = (Date.now() - i + d) / 1000;
   vscode.postMessage({ command: "position", pos } as ProviderCMsg);
-};
+};*/
 
 // https://github.com/w3c/mediasession/issues/213
-let audioEle: HTMLAudioElement | null = null;
-let playable = "";
+//let audioEle: HTMLAudioElement | null = null;
+//let playable = "";
 
-const testAudioSrc = async (files: string[]) => {
+/*const testAudioSrc = async (files: string[]) => {
   const a = new Audio();
   for (const file of files) {
     a.src = file;
@@ -81,8 +81,8 @@ const testAudioSrc = async (files: string[]) => {
   }
   a.pause();
 };
-
-const startSilent = () => {
+*/
+/*const startSilent = () => {
   audioEle?.pause();
   if (!playable) return;
   audioEle = new Audio(playable);
@@ -91,12 +91,12 @@ const startSilent = () => {
     .play()
     // .then(() => audioEle?.pause())
     .catch(console.error);
-};
+};*/
 
-const stopSilent = () => {
+/*const stopSilent = () => {
   audioEle?.pause();
   audioEle = null;
-};
+};*/
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const Provider = (): JSX.Element => {
@@ -107,7 +107,7 @@ const Provider = (): JSX.Element => {
       if (data.command === "master") {
         dropTimer();
         master = data.is;
-        if (master) {
+        /*if (master) {
           setMSAHandler();
           timerId = setInterval(pHandler, 800);
           startSilent();
@@ -115,15 +115,15 @@ const Provider = (): JSX.Element => {
           player.stop();
           deleteMSAHandler();
           stopSilent();
-        }
+        }*/
         return;
       }
       if (!navigator.mediaSession) return;
       switch (data.command) {
         case "test":
-          testAudioSrc(data.files)
+          /*testAudioSrc(data.files)
             .then(() => master && startSilent())
-            .catch(console.error);
+            .catch(console.error);*/
           break;
         case "state":
           navigator.mediaSession.playbackState = data.state;

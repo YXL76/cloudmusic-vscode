@@ -166,7 +166,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: download build
+      - name: Download build
         uses: actions/download-artifact@v2
         with:
           path: .artifact
