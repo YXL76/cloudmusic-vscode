@@ -18,7 +18,7 @@ import {
   ProgramTreeItem,
   QueueItemTreeItem,
 } from "../treeview";
-import { commands, env, window } from "vscode";
+import { Uri, commands, env, window } from "vscode";
 import { AccountManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import { NeteaseEnum } from "@cloudmusic/shared";
@@ -288,11 +288,16 @@ export function initPlaylist(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.downloadSong",
-      async ({ valueOf }: QueueItemTreeItem | ProgramTreeItem) => {
+      async ({ valueOf, item }: QueueItemTreeItem | ProgramTreeItem) => {
         const { url, type } = await IPC.netease("songUrl", [`${valueOf}`]);
         if (!url) return;
 
         const uri = await window.showSaveDialog({
+          defaultUri: Uri.file(
+            `${item.name} - ${item.ar.map(({ name }) => name).join(",")}.${
+              type ?? "mp3"
+            }`
+          ),
           // eslint-disable-next-line @typescript-eslint/naming-convention
           filters: { Music: [type || "mp3"] },
         });
