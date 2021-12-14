@@ -208,29 +208,6 @@ export class AccountViewProvider implements WebviewViewProvider {
   </head>
   <body>
     <div id="root"></div>
-  <video controls width="250"  id="video">
-    <source src="https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_2mb.mp4">
-  </video>
- <script>
-    document.getElementById("video").addEventListener("playing", () => {
-      console.log("playing");
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: 'Unforgettable',
-          artist: 'Nat King Cole',
-          album: 'The Ultimate Collection (Remastered)',
-        });
-
-        navigator.mediaSession.setActionHandler('play', function () { /* Code excerpted. */ });
-        navigator.mediaSession.setActionHandler('pause', function () { /* Code excerpted. */ });
-        navigator.mediaSession.setActionHandler('stop', function () { /* Code excerpted. */ });
-       
-      }
-
-    });
-
-  </script>
-
   </body>
   <script type="module" src=${js} nonce=${getNonce()}></script>
 </html>`;
