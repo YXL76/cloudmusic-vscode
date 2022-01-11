@@ -52,6 +52,7 @@ const globalSharedConfig = {
   platform: "node",
   loader: { ".ts": "ts", ".js": "js", ".tsx": "tsx", ".jsx": "jsx" },
   resolveExtensions: [".ts", ".js", ".tsx", ".jsx"],
+  banner: { js: "'use strict';" },
   // incremental: true,
   plugins: [wasmLoader({ mode: "embedded" }), pnpPlugin({ onResolve })],
 };
