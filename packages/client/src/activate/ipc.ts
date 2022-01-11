@@ -13,9 +13,9 @@ import { readdir, unlink } from "fs/promises";
 import type { ExtensionContext } from "vscode";
 import type { PlayTreeItemData } from "../treeview";
 import { QueueProvider } from "../treeview";
-import { fork } from "child_process";
 import { openSync } from "fs";
 import { resolve } from "path";
+import { spawn } from "child_process";
 
 const ipcBHandler = (data: IPCBroadcastMsg) => {
   switch (data.t) {
@@ -178,9 +178,11 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       workspace.getConfiguration("http").get<string>("proxy") ||
       process.env.HTTPS_PROXY ||
       process.env.HTTP_PROXY;
-    fork(resolve(__dirname, "server.js"), {
+    const ipcServerPath = resolve(context.extensionPath, "dist", "server.js");
+    spawn(process.execPath, [...process.execArgv, ipcServerPath], {
       detached: true,
-      stdio: ["ignore", "ignore", openSync(logPath, "a"), "ipc"],
+      shell: false,
+      stdio: ["ignore", "ignore", openSync(logPath, "a")],
       env: {
         ...process.env,
         // eslint-disable-next-line @typescript-eslint/naming-convention
