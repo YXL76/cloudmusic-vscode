@@ -18,21 +18,36 @@ impl MediaSession {
         let hwnd = {
             #[cfg(target_os = "windows")]
             {
-                match winit::window::WindowBuilder::new()
-                    .with_title(TITLE)
-                    .with_visible(false)
-                    .with_transparent(true)
-                    .with_decorations(false)
-                    .build(&winit::event_loop::EventLoop::new())
-                    .unwrap()
-                    .raw_window_handle()
+                #[cfg(any(target_arch = "x86_64", target_arch = "x86"))]
                 {
-                    raw_window_handle::RawWindowHandle::Win32(han) => Some(han.hwnd),
-                    _ => panic!("Unknown window handle!"),
+                    use {
+                        raw_window_handle::{HasRawWindowHandle, RawWindowHandle},
+                        winit::{event_loop::EventLoop, window::WindowBuilder},
+                    };
+
+                    match WindowBuilder::new()
+                        .with_title(TITLE)
+                        .with_visible(false)
+                        .with_transparent(true)
+                        .with_decorations(false)
+                        .build(&EventLoop::new())
+                        .unwrap()
+                        .raw_window_handle()
+                    {
+                        RawWindowHandle::Win32(han) => Some(han.hwnd),
+                        _ => None,
+                    }
+                }
+                #[cfg(not(any(target_arch = "x86_64", target_arch = "x86")))]
+                {
+                    // FIXME: is it workable?
+                    Some(raw_window_handle::Win32Handle::empty().hwnd)
                 }
             }
             #[cfg(not(target_os = "windows"))]
-            None
+            {
+                None
+            }
         };
 
         let config = PlatformConfig {

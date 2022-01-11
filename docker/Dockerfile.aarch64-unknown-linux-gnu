@@ -5,4 +5,4 @@ ENV PKG_CONFIG_PATH /usr/lib/aarch64-linux-gnu/pkgconfig/
 
 RUN dpkg --add-architecture arm64 && \
   apt-get update && \
-  apt-get install libasound2-dev:arm64 -y \
+  apt-get install -y libasound2-dev:arm64 libdbus-1-dev:arm64 \
