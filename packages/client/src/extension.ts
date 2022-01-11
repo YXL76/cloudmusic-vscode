@@ -35,7 +35,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   initCommand(context);
   initStatusBar(context);
   await initIPC(context);
-  initPlayer(context);
+  await initPlayer(context);
   initLocal(context);
   initCache(context);
   initPlaylist(context);

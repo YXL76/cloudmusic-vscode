@@ -6,7 +6,14 @@ import type {
   MsicRankingCMsg,
   ProviderCMsg,
 } from "@cloudmusic/shared";
-import { ColorThemeKind, Uri, ViewColumn, commands, window } from "vscode";
+import {
+  ColorThemeKind,
+  Uri,
+  ViewColumn,
+  commands,
+  window,
+  workspace,
+} from "vscode";
 import {
   IPC,
   MultiStepInput,
@@ -35,6 +42,8 @@ const getNonce = (): string => {
 };
 
 export class AccountViewProvider implements WebviewViewProvider {
+  static enablePlayer = false;
+
   private static _view?: WebviewView;
 
   constructor(
@@ -106,10 +115,6 @@ export class AccountViewProvider implements WebviewViewProvider {
     }
   }
 
-  /* static position(position: number): void {
-    const msg: ProviderSMsg = { command: "position", position });
-  } */
-
   static account(profiles: NeteaseTypings.Profile[]): void {
     if (this._view) {
       const msg: ProviderSMsg = { command: "account", profiles };
@@ -123,7 +128,7 @@ export class AccountViewProvider implements WebviewViewProvider {
       const msg: ProviderSMsg = item
         ? {
             command: "metadata",
-            // duration: item.item.dt / 1000,
+            duration: item.item.dt / 1000,
             title: item.label,
             artist: item.description,
             album: item.tooltip,
@@ -150,21 +155,26 @@ export class AccountViewProvider implements WebviewViewProvider {
     webview.webview.onDidReceiveMessage((msg: ProviderCMsg) => {
       switch (msg.command) {
         case "pageLoaded":
-          {
-            const files = ["flac", "m4a", "ogg", "opus"].map((ext) =>
-              webview.webview
-                .asWebviewUri(
-                  Uri.joinPath(this._extUri, "media", "audio", `silent.${ext}`)
-                )
-                .toString()
-            );
-            const msg: ProviderSMsg = { command: "test", files };
-            AccountViewProvider.master();
-            AccountViewProvider.account([...AccountManager.accounts.values()]);
-            AccountViewProvider.metadata();
-            void webview.webview.postMessage(msg);
-            AccountViewProvider.wasmVolume(this._volume);
+          AccountViewProvider.master();
+          AccountViewProvider.account([...AccountManager.accounts.values()]);
+          AccountViewProvider.metadata();
+          AccountViewProvider.wasmVolume(this._volume);
+
+          if (AccountViewProvider.enablePlayer) {
+            const audioUri = Uri.joinPath(this._extUri, "media", "audio");
+            workspace.fs.readDirectory(audioUri).then((items) => {
+              const files = items
+                .filter(([name]) => name.startsWith("silent"))
+                .map(([name]) =>
+                  webview.webview
+                    .asWebviewUri(Uri.joinPath(audioUri, name))
+                    .toString()
+                );
+              const msg: ProviderSMsg = { command: "test", files };
+              void webview.webview.postMessage(msg);
+            }, console.error);
           }
+
           break;
         case "account":
           AccountManager.accountQuickPick(msg.userId);
@@ -209,6 +219,9 @@ export class AccountViewProvider implements WebviewViewProvider {
   <body>
     <div id="root"></div>
   </body>
+  <script>window.enablePlayer=${
+    AccountViewProvider.enablePlayer ? "true" : "false"
+  }</script>
   <script type="module" src=${js} nonce=${getNonce()}></script>
 </html>`;
   }

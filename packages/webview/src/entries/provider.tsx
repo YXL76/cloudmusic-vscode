@@ -12,7 +12,7 @@ const previous = () =>
   vscode.postMessage({ command: "previous" } as ProviderCMsg);
 const next = () => vscode.postMessage({ command: "next" } as ProviderCMsg);
 
-function setMSAHandler() {
+function setMediaSessionActionHandler() {
   if (!navigator.mediaSession) return;
   navigator.mediaSession.setActionHandler("play", toggle);
   navigator.mediaSession.setActionHandler("pause", toggle);
@@ -22,7 +22,7 @@ function setMSAHandler() {
   navigator.mediaSession.setActionHandler("nexttrack", next);
 }
 
-function deleteMSAHandler() {
+function deleteMediaSessionActionHandler() {
   if (!navigator.mediaSession) return;
   navigator.mediaSession.setActionHandler("play", null);
   navigator.mediaSession.setActionHandler("pause", null);
@@ -38,65 +38,137 @@ function deleteMSAHandler() {
   // navigator.mediaSession.setActionHandler("hangup", null);
 }
 
-deleteMSAHandler();
+deleteMediaSessionActionHandler();
 
-let master = false;
-const player: Player = new Player();
-let timerId: number | null = null;
-let playing = false;
-let d = 0;
-let i = 0;
+class Controller {
+  private static readonly _player = (
+    window as unknown as { enablePlayer: boolean }
+  ).enablePlayer
+    ? new Player()
+    : undefined;
 
-const dropTimer = () => {
-  if (timerId !== null) {
-    clearInterval(timerId);
-    timerId = null;
+  private static _playing = false;
+
+  private static _d = 0;
+
+  private static _i = 0;
+
+  private static _master = false;
+
+  // https://github.com/w3c/mediasession/issues/213
+  private static _audioEle?: HTMLAudioElement;
+
+  private static _timerId?: number;
+
+  private static _playableFile?: string;
+
+  static async load(url: string) {
+    if (!this._player) return;
+
+    const rep = await fetch(url);
+    const buf = await rep.arrayBuffer();
+    this._playing = !!this._player.load(new Uint8Array(buf));
+    this._i = Date.now();
+    if (this._playing) vscode.postMessage({ command: "load" } as ProviderCMsg);
   }
-};
 
-const pHandler = () => {
-  if (player === null || !playing) return;
-  if (player.empty()) {
-    playing = false;
-    vscode.postMessage({ command: "end" } as ProviderCMsg);
-    return;
+  static play() {
+    if (!this._player) return;
+
+    if (!this._playing) this._i = Date.now();
+    this._playing = !!this._player.play();
+    vscode.postMessage({
+      command: "playing",
+      playing: this._playing,
+    } as ProviderCMsg);
   }
-  const pos = (Date.now() - i + d) / 1000;
-  vscode.postMessage({ command: "position", pos } as ProviderCMsg);
-};
 
-// https://github.com/w3c/mediasession/issues/213
-let audioEle: HTMLAudioElement | null = null;
-const playable = "";
+  static pause() {
+    if (!this._player) return;
 
-/*const testAudioSrc = async (files: string[]) => {
-  const a = new Audio();
-  for (const file of files) {
-    a.src = file;
-    try {
-      await a.play();
-      playable = file;
-      break;
-    } catch {}
+    this._player.pause();
+    if (this._playing) {
+      this._d = Date.now() - this._i;
+      this._playing = false;
+    }
   }
-  a.pause();
-}; */
 
-const startSilent = () => {
-  audioEle?.pause();
-  if (!playable) return;
-  audioEle = new Audio(playable);
-  audioEle.loop = true;
-  audioEle
-    .play()
-    // .then(() => audioEle?.pause())
-    .catch(console.error);
-};
+  static stop() {
+    if (!this._player) return;
 
-const stopSilent = () => {
-  audioEle?.pause();
-  audioEle = null;
-};
+    this._d = 0;
+    this._player.stop();
+    this._playing = false;
+  }
+
+  static volume(level: number) {
+    this._player?.set_volume(level);
+  }
+
+  static setMaster(value: boolean) {
+    this._dropTimer();
+    this._master = value;
+    if (this._master) {
+      // Only when player is enabled
+      if (this._player) {
+        setMediaSessionActionHandler();
+        this._timerId = setInterval(this._posHandler.bind(this), 800);
+        this._startSilent();
+      }
+    } else {
+      this._player?.stop();
+      deleteMediaSessionActionHandler();
+      this._stopSilent();
+    }
+  }
+
+  static async testAudioFiles(files: string[]) {
+    const a = new Audio();
+    for (const file of files) {
+      a.src = file;
+      try {
+        await a.play();
+        this._playableFile = file;
+        if (this._master && this._player) this._startSilent(a);
+        break;
+      } catch {}
+    }
+  }
+
+  private static _startSilent(ele?: HTMLAudioElement) {
+    this._audioEle?.pause();
+    if (!this._playableFile) return;
+    this._audioEle = ele ?? new Audio(this._playableFile);
+    this._audioEle.loop = true;
+    this._audioEle.play().catch(console.error);
+  }
+
+  private static _stopSilent() {
+    this._audioEle?.pause();
+    this._audioEle = undefined;
+  }
+
+  private static _dropTimer() {
+    if (this._timerId) {
+      clearInterval(this._timerId);
+      this._timerId = undefined;
+    }
+  }
+
+  private static _posHandler() {
+    if (!this._player || !this._playing) return;
+    if (this._player.empty()) {
+      this._playing = false;
+      vscode.postMessage({ command: "end" } as ProviderCMsg);
+      return;
+    }
+    const pos = (Date.now() - this._i + this._d) / 1000;
+    vscode.postMessage({ command: "position", pos } as ProviderCMsg);
+    if (navigator.mediaSession) {
+      navigator.mediaSession.setPositionState?.({ position: pos });
+    }
+  }
+}
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const Provider = (): JSX.Element => {
@@ -104,75 +176,40 @@ const Provider = (): JSX.Element => {
 
   useEffect(() => {
     const handler = ({ data }: { data: ProviderSMsg }) => {
-      if (data.command === "master") {
-        dropTimer();
-        master = data.is;
-        if (master) {
-          setMSAHandler();
-          timerId = setInterval(pHandler, 800);
-          startSilent();
-        } else {
-          player.stop();
-          deleteMSAHandler();
-          stopSilent();
-        }
-        return;
-      }
       if (!navigator.mediaSession) return;
       switch (data.command) {
+        case "master":
+          Controller.setMaster(data.is);
+          break;
         case "test":
-          /*testAudioSrc(data.files)
-            .then(() => master && startSilent())
-            .catch(console.error);*/
+          Controller.testAudioFiles(data.files).catch(console.error);
           break;
         case "state":
           navigator.mediaSession.playbackState = data.state;
           break;
-        /* case "position":
-          navigator.mediaSession.setPositionState?.({
-            position: data.position,
-          });
-          break; */
         case "metadata":
           navigator.mediaSession.metadata = new MediaMetadata(data);
-          /* navigator.mediaSession.setPositionState?.({
+          navigator.mediaSession.setPositionState?.({
             duration: data.duration,
-          }); */
+          });
           break;
         case "account":
           setProfiles(data.profiles);
           break;
         case "load":
-          fetch(data.url)
-            .then((r) => r.arrayBuffer())
-            .then((a) => {
-              playing = !!player.load(new Uint8Array(a));
-              i = Date.now();
-              if (playing)
-                vscode.postMessage({ command: "load" } as ProviderCMsg);
-            })
-            .catch((err) => {
-              console.error(err);
-              playing = false;
-            });
+          Controller.load(data.url).catch(console.error);
           break;
         case "play":
-          if (!playing) i = Date.now();
-          playing = !!player.play();
-          vscode.postMessage({ command: "playing", playing } as ProviderCMsg);
+          Controller.play();
           break;
         case "pause":
-          if (playing) d = Date.now() - i;
-          player.pause();
-          playing = false;
+          Controller.pause();
           break;
         case "stop":
-          d = 0;
-          player.stop();
-          playing = false;
+          Controller.stop();
           break;
         case "volume":
-          player.set_volume(data.level);
+          Controller.volume(data.level);
           break;
       }
     };

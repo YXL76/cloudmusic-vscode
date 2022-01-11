@@ -1,23 +1,25 @@
+import { AccountViewProvider, IPC } from "../utils";
 import { PLAYER_MODE, VOLUME_KEY } from "../constant";
+import { Uri, workspace } from "vscode";
 import { arch, platform } from "os";
 import type { ExtensionContext } from "vscode";
-import { IPC } from "../utils";
 
 type NativeModule = `${NodeJS.Platform}-${string}.node`;
 
-const available: NativeModule[] = [
-  "linux-arm.node",
-  "darwin-arm64.node",
-  "linux-arm64.node",
-  "win32-arm64.node",
-  "darwin-x64.node",
-  "linux-x64.node",
-  "win32-x64.node",
-];
-
-export function initPlayer(context: ExtensionContext): void {
+export async function initPlayer(context: ExtensionContext): Promise<void> {
   const name: NativeModule = `${platform()}-${arch()}.node`;
-  const wasm = PLAYER_MODE === "wasm" || !available.includes(name);
+  const wasm =
+    PLAYER_MODE === "wasm" ||
+    (await (async () => {
+      try {
+        const files = await workspace.fs.readDirectory(
+          Uri.joinPath(context.extensionUri, "build")
+        );
+        return files.findIndex(([file]) => file === name) === -1;
+      } catch {}
+      return false;
+    })());
   console.log("Cloudmusic:", PLAYER_MODE, "mode.");
+  AccountViewProvider.enablePlayer = wasm;
   IPC.init(context.globalState.get(VOLUME_KEY, 85), { wasm, name });
 }
