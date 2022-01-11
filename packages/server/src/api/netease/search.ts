@@ -6,7 +6,7 @@ import {
   resolveSongItemSt,
 } from "./helper";
 import { eapiRequest, weapiRequest } from "./request";
-import { NeteaseEnum } from "@cloudmusic/shared";
+import { NeteaseSearchType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import { apiCache } from "../../cache";
 
@@ -34,14 +34,14 @@ export async function searchSingle(
   limit: number,
   offset: number
 ): Promise<readonly NeteaseTypings.SongsItem[]> {
-  const key = `cloudsearch${NeteaseEnum.SearchType.single}-${s}-${limit}-${offset}`;
+  const key = `cloudsearch${NeteaseSearchType.single}-${s}-${limit}-${offset}`;
   const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
   const res = await weapiRequest<{
     result: { songs: readonly NeteaseTypings.SongsItemSt[] };
   }>(
     "music.163.com/api/cloudsearch/pc",
-    { s, type: NeteaseEnum.SearchType.single, limit, offset, total: true },
+    { s, type: NeteaseSearchType.single, limit, offset, total: true },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -56,14 +56,14 @@ export async function searchAlbum(
   limit: number,
   offset: number
 ): Promise<readonly NeteaseTypings.AlbumsItem[]> {
-  const key = `cloudsearch${NeteaseEnum.SearchType.album}-${s}-${limit}-${offset}`;
+  const key = `cloudsearch${NeteaseSearchType.album}-${s}-${limit}-${offset}`;
   const value = apiCache.get<readonly NeteaseTypings.AlbumsItem[]>(key);
   if (value) return value;
   const res = await weapiRequest<{
     result: { albums: readonly NeteaseTypings.AlbumsItem[] };
   }>(
     "music.163.com/api/cloudsearch/pc",
-    { s, type: NeteaseEnum.SearchType.album, limit, offset, total: true },
+    { s, type: NeteaseSearchType.album, limit, offset, total: true },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -78,14 +78,14 @@ export async function searchArtist(
   limit: number,
   offset: number
 ): Promise<readonly NeteaseTypings.Artist[]> {
-  const key = `cloudsearch${NeteaseEnum.SearchType.artist}-${s}-${limit}-${offset}`;
+  const key = `cloudsearch${NeteaseSearchType.artist}-${s}-${limit}-${offset}`;
   const value = apiCache.get<readonly NeteaseTypings.Artist[]>(key);
   if (value) return value;
   const res = await weapiRequest<{
     result: { artists: readonly NeteaseTypings.Artist[] };
   }>(
     "music.163.com/api/cloudsearch/pc",
-    { s, type: NeteaseEnum.SearchType.artist, limit, offset, total: true },
+    { s, type: NeteaseSearchType.artist, limit, offset, total: true },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -102,14 +102,14 @@ export async function searchPlaylist(
   limit: number,
   offset: number
 ): Promise<readonly NeteaseTypings.PlaylistItem[]> {
-  const key = `cloudsearch${NeteaseEnum.SearchType.playlist}-${s}-${limit}-${offset}`;
+  const key = `cloudsearch${NeteaseSearchType.playlist}-${s}-${limit}-${offset}`;
   const value = apiCache.get<readonly NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
   const res = await weapiRequest<{
     result: { playlists: readonly NeteaseTypings.RawPlaylistItem[] };
   }>(
     "music.163.com/api/cloudsearch/pc",
-    { s, type: NeteaseEnum.SearchType.playlist, limit, offset, total: true },
+    { s, type: NeteaseSearchType.playlist, limit, offset, total: true },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -128,7 +128,7 @@ export async function searchLyric(
   limit: number,
   offset: number
 ): Promise<readonly SearchLyricResult[]> {
-  const key = `cloudsearch${NeteaseEnum.SearchType.lyric}-${s}-${limit}-${offset}`;
+  const key = `cloudsearch${NeteaseSearchType.lyric}-${s}-${limit}-${offset}`;
   const value = apiCache.get<readonly SearchLyricResult[]>(key);
   if (value) return value;
   const res = await weapiRequest<{
@@ -139,7 +139,7 @@ export async function searchLyric(
     };
   }>(
     "music.163.com/api/cloudsearch/pc",
-    { s, type: NeteaseEnum.SearchType.lyric, limit, offset, total: true },
+    { s, type: NeteaseSearchType.lyric, limit, offset, total: true },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];

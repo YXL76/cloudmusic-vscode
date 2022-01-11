@@ -1,4 +1,4 @@
-export const enum ArtistArea {
+export const enum NeteaseArtistArea {
   all = "-1",
   zh = "7",
   ea = "96",
@@ -7,13 +7,13 @@ export const enum ArtistArea {
   other = "0",
 }
 
-export const enum ArtistType {
+export const enum NeteaseArtistType {
   male = "1",
   female = "2",
   band = "3",
 }
 
-export const enum CommentType {
+export const enum NeteaseCommentType {
   song = 0,
   mv = 1,
   playlist = 2,
@@ -23,13 +23,13 @@ export const enum CommentType {
   event = 6,
 }
 
-export const enum CommentAction {
+export const enum NeteaseCommentAction {
   add = 1,
   delete = 0,
   reply = 2,
 }
 
-export const enum SearchType {
+export const enum NeteaseSearchType {
   single = 1,
   album = 10,
   artist = 100,
@@ -42,13 +42,13 @@ export const enum SearchType {
   complex = 1018,
 }
 
-export const enum SortType {
+export const enum NeteaseSortType {
   recommendation = 99,
   hottest = 2,
   latest = 3,
 }
 
-export const enum TopSongType {
+export const enum NeteaseTopSongType {
   all = 0,
   zh = 7,
   ea = 96,

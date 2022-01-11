@@ -5,7 +5,7 @@ import {
   resolveSongItem,
   resolveSongItemSt,
 } from "./helper";
-import type { NeteaseEnum } from "@cloudmusic/shared";
+import type { NeteaseArtistArea, NeteaseArtistType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import { apiCache } from "../../cache";
 import { weapiRequest } from "./request";
@@ -76,8 +76,8 @@ export async function artistDesc(id: number): Promise<ArtistDesc> {
 }
 
 export async function artistList(
-  type: NeteaseEnum.ArtistType,
-  area: NeteaseEnum.ArtistArea,
+  type: NeteaseArtistType,
+  area: NeteaseArtistArea,
   initial: NeteaseTypings.ArtistInitial,
   limit: number,
   offset: number

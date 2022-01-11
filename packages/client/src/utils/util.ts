@@ -8,7 +8,7 @@ import type {
 import { ProgramTreeItem, QueueItemTreeItem } from "../treeview";
 import { commands, window } from "vscode";
 import { AccountManager } from "../manager";
-import { NeteaseEnum } from "@cloudmusic/shared";
+import { NeteaseCommentType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import type { QuickPickItem } from "vscode";
 
@@ -250,7 +250,7 @@ export async function pickSong(
       }
       return (input) => pickSimiPlaylists(input, step + 1, id, 0);
     case PickType.comment:
-      Webview.comment(NeteaseEnum.CommentType.song, id, name);
+      Webview.comment(NeteaseCommentType.song, id, name);
       break;
     case PickType.like:
       return (input) => likeMusic(input, step + 1, id);
@@ -409,7 +409,7 @@ export async function pickProgram(
       return (input) =>
         pickRadio(input, step + 1, radio as NeteaseTypings.RadioDetail);
     case PickType.comment:
-      Webview.comment(NeteaseEnum.CommentType.dj, id, name);
+      Webview.comment(NeteaseCommentType.dj, id, name);
       break;
     case PickType.add:
       void commands.executeCommand(
@@ -748,7 +748,7 @@ export async function pickAlbum(
         await IPC.netease("albumSub", [id, "unsub"]);
       break;
     case PickType.comment:
-      Webview.comment(NeteaseEnum.CommentType.album, id, name);
+      Webview.comment(NeteaseCommentType.album, id, name);
       break;
     case PickType.save:
       await IPC.netease("albumSub", [id, "sub"]);
@@ -887,7 +887,7 @@ export async function pickPlaylist(
       }
       break;
     case PickType.comment:
-      Webview.comment(NeteaseEnum.CommentType.playlist, id, name);
+      Webview.comment(NeteaseCommentType.playlist, id, name);
       break;
     case PickType.save:
       return (input) => _pickPlaylistSubscribe(input, step + 1);

@@ -1,4 +1,4 @@
-import type { IPCEvent } from ".";
+import type { IPCControl, IPCPlayer, IPCQueue, IPCWasm } from ".";
 import type { NeteaseTypings } from "api";
 
 export type CSMessage<T = undefined, U = number | string> = {
@@ -15,21 +15,21 @@ export type CSConnPool = Map<
 export type IPCMsg<T = string, U = Record<never, never>> = { t: T } & U;
 
 export type IPCBroadcastMsg =
-  | IPCMsg<IPCEvent.Play$load>
-  | IPCMsg<IPCEvent.Play$loaded>
-  | IPCMsg<IPCEvent.Play$repeat, { r: boolean }>
-  | IPCMsg<IPCEvent.Queue$add, { items: readonly unknown[]; index?: number }>
-  | IPCMsg<IPCEvent.Queue$clear>
-  | IPCMsg<IPCEvent.Queue$delete, { id: string | number }>
-  | IPCMsg<IPCEvent.Queue$new, { items: readonly unknown[]; id?: number }>
-  | IPCMsg<IPCEvent.Queue$play, { id: string | number }>
-  | IPCMsg<IPCEvent.Queue$shift, { index: number }>;
+  | IPCMsg<IPCPlayer.load>
+  | IPCMsg<IPCPlayer.loaded>
+  | IPCMsg<IPCPlayer.repeat, { r: boolean }>
+  | IPCMsg<IPCQueue.add, { items: readonly unknown[]; index?: number }>
+  | IPCMsg<IPCQueue.clear>
+  | IPCMsg<IPCQueue.delete, { id: string | number }>
+  | IPCMsg<IPCQueue.new, { items: readonly unknown[]; id?: number }>
+  | IPCMsg<IPCQueue.play, { id: string | number }>
+  | IPCMsg<IPCQueue.shift, { index: number }>;
 
 export type IPCClientMsg =
-  | IPCMsg<IPCEvent.Control$deleteCache, { key: string }>
-  | IPCMsg<IPCEvent.Control$download, { url: string; path: string }>
+  | IPCMsg<IPCControl.deleteCache, { key: string }>
+  | IPCMsg<IPCControl.download, { url: string; path: string }>
   | IPCMsg<
-      IPCEvent.Control$init,
+      IPCControl.init,
       {
         volume?: number;
         player?: { wasm: boolean; name?: string };
@@ -39,47 +39,47 @@ export type IPCClientMsg =
         foreign: boolean;
       }
     >
-  | IPCMsg<IPCEvent.Control$lyric>
-  | IPCMsg<IPCEvent.Control$music>
-  | IPCMsg<IPCEvent.Control$netease>
-  | IPCMsg<IPCEvent.Control$retain, { items?: readonly unknown[] }>
-  | IPCMsg<IPCEvent.Play$load, { url: string; local: true }>
+  | IPCMsg<IPCControl.lyric>
+  | IPCMsg<IPCControl.music>
+  | IPCMsg<IPCControl.netease>
+  | IPCMsg<IPCControl.retain, { items?: readonly unknown[] }>
+  | IPCMsg<IPCPlayer.load, { url: string; local: true }>
   | IPCMsg<
-      IPCEvent.Play$load,
+      IPCPlayer.load,
       { dt: number; id: number; pid: number; next: number | undefined }
     >
-  | IPCMsg<IPCEvent.Play$lyricDelay, { delay: number }>
-  | IPCMsg<IPCEvent.Play$playing, { playing: boolean }>
-  | IPCMsg<IPCEvent.Play$position, { pos: number }>
-  | IPCMsg<IPCEvent.Play$stop>
-  | IPCMsg<IPCEvent.Play$toggle>
-  | IPCMsg<IPCEvent.Play$volume, { level: number }>
-  | IPCMsg<IPCEvent.Queue$fm, { uid: number; is: boolean }>
-  | IPCMsg<IPCEvent.Queue$fmNext>;
+  | IPCMsg<IPCPlayer.lyricDelay, { delay: number }>
+  | IPCMsg<IPCPlayer.playing, { playing: boolean }>
+  | IPCMsg<IPCPlayer.position, { pos: number }>
+  | IPCMsg<IPCPlayer.stop>
+  | IPCMsg<IPCPlayer.toggle>
+  | IPCMsg<IPCPlayer.volume, { level: number }>
+  | IPCMsg<IPCQueue.fm, { uid: number; is: boolean }>
+  | IPCMsg<IPCQueue.fmNext>;
 
 export type IPCServerMsg =
-  | IPCMsg<IPCEvent.Control$master, { is?: true }>
+  | IPCMsg<IPCControl.master, { is?: true }>
   | IPCMsg<
-      IPCEvent.Control$netease,
+      IPCControl.netease,
       {
         cookies: { uid: number; cookie: string }[];
         profiles: NeteaseTypings.Profile[];
       }
     >
-  | IPCMsg<IPCEvent.Control$new>
-  | IPCMsg<IPCEvent.Control$retain, { items: readonly unknown[] }>
-  | IPCMsg<IPCEvent.Play$end, { fail?: true }>
-  | IPCMsg<IPCEvent.Play$loaded>
-  | IPCMsg<IPCEvent.Play$lyric, { lyric: NeteaseTypings.LyricData }>
-  | IPCMsg<IPCEvent.Play$lyricIndex, { oi: number; ti: number }>
-  | IPCMsg<IPCEvent.Play$pause>
-  | IPCMsg<IPCEvent.Play$play>
-  | IPCMsg<IPCEvent.Play$stop>
-  | IPCMsg<IPCEvent.Play$volume, { level: number }>
-  | IPCMsg<IPCEvent.Queue$fm, { is: boolean }>
-  | IPCMsg<IPCEvent.Queue$fmNext, { item: NeteaseTypings.SongsItem }>
-  | IPCMsg<IPCEvent.Wasm$load, { path: string }>
-  | IPCMsg<IPCEvent.Wasm$pause>
-  | IPCMsg<IPCEvent.Wasm$play>
-  | IPCMsg<IPCEvent.Wasm$stop>
-  | IPCMsg<IPCEvent.Wasm$volume, { level: number }>;
+  | IPCMsg<IPCControl.new>
+  | IPCMsg<IPCControl.retain, { items: readonly unknown[] }>
+  | IPCMsg<IPCPlayer.end, { fail?: true }>
+  | IPCMsg<IPCPlayer.loaded>
+  | IPCMsg<IPCPlayer.lyric, { lyric: NeteaseTypings.LyricData }>
+  | IPCMsg<IPCPlayer.lyricIndex, { oi: number; ti: number }>
+  | IPCMsg<IPCPlayer.pause>
+  | IPCMsg<IPCPlayer.play>
+  | IPCMsg<IPCPlayer.stop>
+  | IPCMsg<IPCPlayer.volume, { level: number }>
+  | IPCMsg<IPCQueue.fm, { is: boolean }>
+  | IPCMsg<IPCQueue.fmNext, { item: NeteaseTypings.SongsItem }>
+  | IPCMsg<IPCWasm.load, { path: string }>
+  | IPCMsg<IPCWasm.pause>
+  | IPCMsg<IPCWasm.play>
+  | IPCMsg<IPCWasm.stop>
+  | IPCMsg<IPCWasm.volume, { level: number }>;

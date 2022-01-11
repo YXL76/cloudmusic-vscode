@@ -1,3 +1,4 @@
+import { IPCPlayer } from "@cloudmusic/shared";
 import { IPCServer } from "./server";
 import { NeteaseAPI } from "./api";
 import type { NeteaseTypings } from "api";
@@ -34,7 +35,7 @@ export class State {
   static set playing(value: boolean) {
     State._playing = value;
     IPCServer.broadcast({
-      t: value ? "player.play" : "player.pause",
+      t: value ? IPCPlayer.play : IPCPlayer.pause,
     });
   }
 }

@@ -19,9 +19,13 @@ import {
   pickUser,
 } from "../utils";
 import type { ExtensionContext, QuickPickItem } from "vscode";
+import {
+  NeteaseArtistArea,
+  NeteaseArtistType,
+  NeteaseTopSongType,
+} from "@cloudmusic/shared";
 import { commands, window } from "vscode";
 import type { InputStep } from "../utils";
-import { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import { createHash } from "crypto";
 import i18n from "../i18n";
@@ -239,8 +243,8 @@ export class AccountManager {
 
   static accountQuickPick(uid: number): void {
     let cat = "";
-    let type: NeteaseEnum.ArtistType;
-    let area: NeteaseEnum.ArtistArea;
+    let type: NeteaseArtistType;
+    let area: NeteaseArtistArea;
     let initial: NeteaseTypings.ArtistInitial;
     void MultiStepInput.run((input) => pickType(input));
 
@@ -602,19 +606,19 @@ export class AccountManager {
         items: [
           {
             label: i18n.word.zh,
-            type: NeteaseEnum.TopSongType.zh,
+            type: NeteaseTopSongType.zh,
           },
           {
             label: i18n.word.en,
-            type: NeteaseEnum.TopSongType.ea,
+            type: NeteaseTopSongType.ea,
           },
           {
             label: i18n.word.ja,
-            type: NeteaseEnum.TopSongType.ja,
+            type: NeteaseTopSongType.ja,
           },
           {
             label: i18n.word.kr,
-            type: NeteaseEnum.TopSongType.kr,
+            type: NeteaseTopSongType.kr,
           },
         ],
       });
@@ -719,15 +723,15 @@ export class AccountManager {
         items: [
           {
             label: i18n.word.male,
-            type: NeteaseEnum.ArtistType.male,
+            type: NeteaseArtistType.male,
           },
           {
             label: i18n.word.female,
-            type: NeteaseEnum.ArtistType.female,
+            type: NeteaseArtistType.female,
           },
           {
             label: i18n.word.band,
-            type: NeteaseEnum.ArtistType.band,
+            type: NeteaseArtistType.band,
           },
         ],
       });
@@ -743,27 +747,27 @@ export class AccountManager {
         items: [
           {
             label: i18n.word.all,
-            type: NeteaseEnum.ArtistArea.all,
+            type: NeteaseArtistArea.all,
           },
           {
             label: i18n.word.zh,
-            type: NeteaseEnum.ArtistArea.zh,
+            type: NeteaseArtistArea.zh,
           },
           {
             label: i18n.word.en,
-            type: NeteaseEnum.ArtistArea.ea,
+            type: NeteaseArtistArea.ea,
           },
           {
             label: i18n.word.ja,
-            type: NeteaseEnum.ArtistArea.ja,
+            type: NeteaseArtistArea.ja,
           },
           {
             label: i18n.word.kr,
-            type: NeteaseEnum.ArtistArea.kr,
+            type: NeteaseArtistArea.kr,
           },
           {
             label: i18n.word.other,
-            type: NeteaseEnum.ArtistArea.other,
+            type: NeteaseArtistArea.other,
           },
         ],
       });

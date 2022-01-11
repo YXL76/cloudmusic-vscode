@@ -21,7 +21,7 @@ import {
 import { Uri, commands, env, window } from "vscode";
 import { AccountManager } from "../manager";
 import type { ExtensionContext } from "vscode";
-import { NeteaseEnum } from "@cloudmusic/shared";
+import { NeteaseCommentType } from "@cloudmusic/shared";
 import i18n from "../i18n";
 
 export function initPlaylist(context: ExtensionContext): void {
@@ -187,7 +187,7 @@ export function initPlaylist(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.playlistComment",
       ({ item: { id, name } }: PlaylistItemTreeItem) =>
-        Webview.comment(NeteaseEnum.CommentType.playlist, id, name)
+        Webview.comment(NeteaseCommentType.playlist, id, name)
     ),
 
     commands.registerCommand(
@@ -277,7 +277,7 @@ export function initPlaylist(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.songComment",
       ({ item: { id, name } }: QueueItemTreeItem) =>
-        Webview.comment(NeteaseEnum.CommentType.song, id, name)
+        Webview.comment(NeteaseCommentType.song, id, name)
     ),
 
     commands.registerCommand(

@@ -1,3 +1,4 @@
+import { IPCControl } from "@cloudmusic/shared";
 import { IPCServer } from "../../server";
 import type { IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
@@ -18,7 +19,7 @@ export class AccountState {
 
 export function broadcastProfiles(socket?: Socket): void {
   const msg: IPCServerMsg = {
-    t: "control.netease",
+    t: IPCControl.netease,
     cookies: [...AccountState.cookies].map(([uid, c]) => ({
       uid,
       cookie: JSON.stringify(c),

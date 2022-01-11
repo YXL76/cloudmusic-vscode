@@ -1,3 +1,4 @@
+import { IPCPlayer, IPCWasm } from "@cloudmusic/shared";
 import { downloadMusic, getMusicPath, logError } from "./utils";
 import { readdir, stat, unlink } from "fs/promises";
 import { IPCServer } from "./server";
@@ -46,7 +47,7 @@ export function posHandler(pos: number): void {
   while (State.lyric.o.time[State.lyric.oi] <= lpos) ++State.lyric.oi;
   while (State.lyric.t.time[State.lyric.ti] <= lpos) ++State.lyric.ti;
   IPCServer.broadcast({
-    t: "player.lyricIndex",
+    t: IPCPlayer.lyricIndex,
     oi: State.lyric.oi - 1,
     ti: State.lyric.ti - 1,
   });
@@ -54,23 +55,23 @@ export function posHandler(pos: number): void {
 
 class WasmPlayer {
   load(path: string) {
-    IPCServer.sendToMaster({ t: "wasm.load", path });
+    IPCServer.sendToMaster({ t: IPCWasm.load, path });
   }
 
   pause() {
-    IPCServer.sendToMaster({ t: "wasm.pause" });
+    IPCServer.sendToMaster({ t: IPCWasm.pause });
   }
 
   play() {
-    IPCServer.sendToMaster({ t: "wasm.play" });
+    IPCServer.sendToMaster({ t: IPCWasm.play });
   }
 
   stop() {
-    IPCServer.sendToMaster({ t: "wasm.stop" });
+    IPCServer.sendToMaster({ t: IPCWasm.stop });
   }
 
   volume(level: number) {
-    IPCServer.sendToMaster({ t: "wasm.volume", level });
+    IPCServer.sendToMaster({ t: IPCWasm.volume, level });
   }
 }
 
@@ -106,7 +107,7 @@ export class Player {
         if (!State.playing) return;
         if (Player.empty()) {
           State.playing = false;
-          IPCServer.sendToMaster({ t: "player.end" });
+          IPCServer.sendToMaster({ t: IPCPlayer.end });
           return;
         }
         posHandler(Player.position());
@@ -160,7 +161,7 @@ export class Player {
         this._failedEnd();
         return;
       }
-      IPCServer.broadcast({ t: "player.loaded" });
+      IPCServer.broadcast({ t: IPCPlayer.loaded });
     } else if (this._wasm) {
       this._wasm.load(path);
     }
@@ -172,7 +173,10 @@ export class Player {
     if ("id" in data) {
       void NeteaseAPI.lyric(data.id).then((l) => {
         Object.assign(State.lyric, l, { oi: 0, ti: 0 });
-        IPCServer.broadcast({ t: "player.lyric", lyric: { o: l.o, t: l.t } });
+        IPCServer.broadcast({
+          t: IPCPlayer.lyric,
+          lyric: { o: l.o, t: l.t },
+        });
       });
     }
 
@@ -223,6 +227,6 @@ export class Player {
   }
 
   private static _failedEnd(): void {
-    IPCServer.sendToMaster({ t: "player.end", fail: true });
+    IPCServer.sendToMaster({ t: IPCPlayer.end, fail: true });
   }
 }

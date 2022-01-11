@@ -1,6 +1,7 @@
 import { AccountState, resolveComment } from "./helper";
 import { eapiRequest, weapiRequest } from "./request";
-import { NeteaseEnum } from "@cloudmusic/shared";
+import type { NeteaseCommentType } from "@cloudmusic/shared";
+import { NeteaseSortType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 
 const resourceTypeMap = [
@@ -14,7 +15,7 @@ const resourceTypeMap = [
 ];
 
 export async function commentAdd(
-  type: NeteaseEnum.CommentType,
+  type: NeteaseCommentType,
   id: number,
   content: string
 ): Promise<boolean> {
@@ -26,7 +27,7 @@ export async function commentAdd(
 }
 
 export async function commentReply(
-  type: NeteaseEnum.CommentType,
+  type: NeteaseCommentType,
   id: number,
   content: string,
   commentId: number
@@ -39,7 +40,7 @@ export async function commentReply(
 }
 
 export async function commentFloor(
-  type: NeteaseEnum.CommentType,
+  type: NeteaseCommentType,
   id: number,
   parentCommentId: number,
   limit: number,
@@ -69,7 +70,7 @@ export async function commentFloor(
 }
 
 export async function commentLike(
-  type: NeteaseEnum.CommentType,
+  type: NeteaseCommentType,
   t: "like" | "unlike",
   id: number,
   commentId: number
@@ -82,18 +83,18 @@ export async function commentLike(
 }
 
 export async function commentNew(
-  type: NeteaseEnum.CommentType,
+  type: NeteaseCommentType,
   id: number,
   pageNo: number,
   pageSize: number,
-  sortType: NeteaseEnum.SortType,
+  sortType: NeteaseSortType,
   cursor: number | string
 ): Promise<NeteaseTypings.CommentRet> {
   switch (sortType) {
-    case NeteaseEnum.SortType.recommendation:
+    case NeteaseSortType.recommendation:
       cursor = (pageNo - 1) * pageSize;
       break;
-    case NeteaseEnum.SortType.hottest:
+    case NeteaseSortType.hottest:
       cursor = `normalHot#${(pageNo - 1) * pageSize}`;
       break;
   }

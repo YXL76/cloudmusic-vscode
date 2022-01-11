@@ -5,7 +5,7 @@ import {
 } from "./helper";
 import { LyricCache, apiCache } from "../../cache";
 import { apiRequest, eapiRequest, weapiRequest } from "./request";
-import type { NeteaseEnum } from "@cloudmusic/shared";
+import type { NeteaseTopSongType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import { State } from "../../state";
 import { logError } from "../../utils";
@@ -193,7 +193,7 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
 }
 
 export async function topSong(
-  areaId: NeteaseEnum.TopSongType
+  areaId: NeteaseTopSongType
 ): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `top_song${areaId}`;
   const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);

@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "isolatedModules": true,
     "lib": ["es2020"],
     "module": "commonjs",
     "noEmit": true,
@@ -13,7 +12,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
-    "strictNullChecks": true,
     "target": "es2020"
   },
   "include": ["src"]

@@ -1,4 +1,11 @@
 import { APISetting, NeteaseAPI } from "./api";
+import {
+  IPCApi,
+  IPCControl,
+  IPCPlayer,
+  IPCQueue,
+  ipcDelimiter,
+} from "@cloudmusic/shared";
 import type { IPCClientMsg, IPCServerMsg } from "@cloudmusic/shared";
 import { LyricCache, MusicCache, apiCache } from "./cache";
 import type { NeteaseAPICMsg, NeteaseAPISMsg } from ".";
@@ -16,7 +23,6 @@ import { readFileSync, rmdirSync, unlinkSync, writeFileSync } from "fs";
 import { basename } from "path";
 import { broadcastProfiles } from "./api/netease/helper";
 import { createServer } from "net";
-import { ipcDelimiter } from "@cloudmusic/shared";
 
 export class IPCServer {
   private static _first = true;
@@ -105,13 +111,16 @@ export class IPCServer {
         if (!this._first) {
           Player.play();
 
-          this.send(socket, { t: "control.retain", items: this._retain });
+          this.send(socket, {
+            t: IPCControl.retain,
+            items: this._retain,
+          });
           this._retain = [];
 
           Player.wasmOpen();
         } else this._first = false;
       } else {
-        this.sendToMaster({ t: "control.new" });
+        this.sendToMaster({ t: IPCControl.new });
         const tmp = State.playing;
         State.playing = tmp;
       }
@@ -145,8 +154,8 @@ export class IPCServer {
 
   private static _setMaster() {
     const [master, ...slaves] = this._sockets;
-    this.send(master, { t: "control.master", is: true });
-    for (const slave of slaves) this.send(slave, { t: "control.master" });
+    this.send(master, { t: IPCControl.master, is: true });
+    for (const slave of slaves) this.send(slave, { t: IPCControl.master });
   }
 
   private static _handler(
@@ -154,7 +163,7 @@ export class IPCServer {
     socket: Socket
   ): void {
     switch (data.t) {
-      case "api.netease":
+      case IPCApi.netease:
         NeteaseAPI[data.msg.i]
           .apply(undefined, data.msg.p)
           .then((msg) =>
@@ -162,13 +171,13 @@ export class IPCServer {
           )
           .catch(logError);
         break;
-      case "control.deleteCache":
+      case IPCControl.deleteCache:
         apiCache.del(data.key);
         break;
-      case "control.download":
+      case IPCControl.download:
         void downloadMusic(data.url, basename(data.path), data.path, false);
         break;
-      case "control.init":
+      case IPCControl.init:
         State.minSize = data.mq === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
         State.musicQuality = data.mq;
         State.cacheSize = data.cs;
@@ -177,51 +186,55 @@ export class IPCServer {
         if (data.player)
           Player.init(data.player.wasm, data.player.name, data.volume);
         break;
-      case "control.lyric":
+      case IPCControl.lyric:
         LyricCache.clear();
         break;
-      case "control.netease":
+      case IPCControl.netease:
         broadcastProfiles(socket);
         break;
-      case "control.music":
+      case IPCControl.music:
         MusicCache.clear();
         break;
-      case "control.retain":
+      case IPCControl.retain:
         if (data.items) this._retain = data.items as unknown[];
-        else this.send(socket, { t: "control.retain", items: this._retain });
+        else
+          this.send(socket, {
+            t: IPCControl.retain,
+            items: this._retain,
+          });
         break;
-      case "player.load":
+      case IPCPlayer.load:
         void Player.load(data);
         break;
-      case "player.lyricDelay":
+      case IPCPlayer.lyricDelay:
         State.lyric.delay = data.delay;
         break;
-      case "player.playing":
+      case IPCPlayer.playing:
         State.playing = data.playing;
         break;
-      case "player.position":
+      case IPCPlayer.position:
         posHandler(data.pos);
         break;
-      case "player.toggle":
+      case IPCPlayer.toggle:
         State.playing ? Player.pause() : Player.play();
         break;
-      case "player.stop":
+      case IPCPlayer.stop:
         Player.stop();
         this.broadcast(data);
         break;
-      case "player.volume":
+      case IPCPlayer.volume:
         Player.volume(data.level);
         this.broadcast(data);
         break;
-      case "queue.fm":
+      case IPCQueue.fm:
         State.fm = data.is;
         PersonalFm.uid = data.uid;
         this.broadcast(data);
         break;
-      case "queue.fmNext":
+      case IPCQueue.fmNext:
         PersonalFm.head()
           .then((item) => {
-            if (item) this.broadcast({ t: "queue.fmNext", item });
+            if (item) this.broadcast({ t: IPCQueue.fmNext, item });
           })
           .catch(logError);
         break;

@@ -1,6 +1,13 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { AccountViewProvider, IPC, State } from "../utils";
 import { COOKIE_KEY, SETTING_DIR, STRICT_SSL } from "../constant";
+import {
+  IPCApi,
+  IPCControl,
+  IPCPlayer,
+  IPCQueue,
+  IPCWasm,
+} from "@cloudmusic/shared";
 import type { IPCBroadcastMsg, IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseAPIKey, NeteaseAPISMsg } from "@cloudmusic/server";
 import {
@@ -19,31 +26,31 @@ import { spawn } from "child_process";
 
 const ipcBHandler = (data: IPCBroadcastMsg) => {
   switch (data.t) {
-    case "player.load":
+    case IPCPlayer.load:
       State.loading = true;
       break;
-    case "player.loaded":
+    case IPCPlayer.loaded:
       State.loading = false;
       break;
-    case "player.repeat":
+    case IPCPlayer.repeat:
       State.repeat = data.r;
       break;
-    case "queue.add":
+    case IPCQueue.add:
       QueueProvider.add(data.items as readonly PlayTreeItemData[], data.index);
       break;
-    case "queue.clear":
+    case IPCQueue.clear:
       QueueProvider.clear();
       break;
-    case "queue.delete":
+    case IPCQueue.delete:
       QueueProvider.delete(data.id);
       break;
-    case "queue.new":
+    case IPCQueue.new:
       QueueProvider.new(data.items as readonly PlayTreeItemData[], data.id);
       break;
-    case "queue.play":
+    case IPCQueue.play:
       QueueProvider.top(data.id);
       break;
-    case "queue.shift":
+    case IPCQueue.shift:
       QueueProvider.shift(data.index);
       break;
   }
@@ -66,7 +73,7 @@ setInterval(rejectTimout, 60000);
 export async function initIPC(context: ExtensionContext): Promise<void> {
   const ipcHandler = (data: IPCServerMsg | NeteaseAPISMsg<NeteaseAPIKey>) => {
     switch (data.t) {
-      case "api.netease":
+      case IPCApi.netease:
         {
           const req = IPC.requestPool.get(data.channel);
           IPC.requestPool.delete(data.channel);
@@ -74,7 +81,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
           // rejectTimout();
         }
         break;
-      case "control.netease":
+      case IPCControl.netease:
         AccountManager.accounts.clear();
         data.profiles.forEach((i) => AccountManager.accounts.set(i.userId, i));
         PlaylistProvider.refresh();
@@ -86,30 +93,30 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
           void context.secrets.store(COOKIE_KEY, JSON.stringify(data.cookies));
         }
         break;
-      case "control.master":
+      case IPCControl.master:
         State.master = !!data.is;
         break;
-      case "control.new":
+      case IPCControl.new:
         IPC.new(QueueProvider.songs);
         break;
-      case "control.retain":
+      case IPCControl.retain:
         QueueProvider.new(data.items as PlayTreeItemData[]);
         State.loading = false;
         break;
-      case "player.end":
+      case IPCPlayer.end:
         if (!data.fail && State.repeat) IPC.load();
         else void commands.executeCommand("cloudmusic.next");
         break;
-      case "player.loaded":
+      case IPCPlayer.loaded:
         State.loading = false;
         break;
-      case "player.lyric":
+      case IPCPlayer.lyric:
         State.lyric = {
           ...State.lyric,
           ...data.lyric,
         };
         break;
-      case "player.lyricIndex":
+      case IPCPlayer.lyricIndex:
         ButtonManager.buttonLyric(
           State.lyric[State.lyric.type].text?.[
             State.lyric.type === "o" ? data.oi : data.ti
@@ -117,15 +124,15 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         );
         State.lyric.updatePanel?.(data.oi, data.ti);
         break;
-      case "player.pause":
+      case IPCPlayer.pause:
         ButtonManager.buttonPlay(false);
         AccountViewProvider.pause();
         break;
-      case "player.play":
+      case IPCPlayer.play:
         ButtonManager.buttonPlay(true);
         AccountViewProvider.play();
         break;
-      case "player.stop":
+      case IPCPlayer.stop:
         ButtonManager.buttonSong();
         ButtonManager.buttonLyric();
         State.lyric = {
@@ -135,31 +142,31 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         };
         AccountViewProvider.stop();
         break;
-      case "player.volume":
+      case IPCPlayer.volume:
         ButtonManager.buttonVolume(data.level);
         break;
-      case "queue.fm":
+      case IPCQueue.fm:
         State.fm = data.is;
         break;
-      case "queue.fmNext":
+      case IPCQueue.fmNext:
         State.playItem = QueueItemTreeItem.new({
           ...data.item,
           pid: data.item.al.id,
         });
         break;
-      case "wasm.load":
+      case IPCWasm.load:
         AccountViewProvider.wasmLoad(data.path);
         break;
-      case "wasm.pause":
+      case IPCWasm.pause:
         AccountViewProvider.wasmPause();
         break;
-      case "wasm.play":
+      case IPCWasm.play:
         AccountViewProvider.wasmPlay();
         break;
-      case "wasm.stop":
+      case IPCWasm.stop:
         AccountViewProvider.wasmStop();
         break;
-      case "wasm.volume":
+      case IPCWasm.volume:
         AccountViewProvider.wasmVolume(data.level);
         break;
     }

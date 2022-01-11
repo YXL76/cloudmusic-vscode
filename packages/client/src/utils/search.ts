@@ -13,7 +13,7 @@ import {
 } from ".";
 import type { InputStep, MultiStepInput } from ".";
 import type { QuickPick, QuickPickItem } from "vscode";
-import { NeteaseEnum } from "@cloudmusic/shared";
+import { NeteaseSearchType } from "@cloudmusic/shared";
 import i18n from "../i18n";
 import { throttle } from "lodash";
 
@@ -89,37 +89,37 @@ export async function inputKeyword(
       items: [
         {
           label: `$(zap) ${i18n.word.single}`,
-          type: NeteaseEnum.SearchType.single,
+          type: NeteaseSearchType.single,
         },
         {
           label: `$(circuit-board) ${i18n.word.album}`,
-          type: NeteaseEnum.SearchType.album,
+          type: NeteaseSearchType.album,
         },
         {
           label: `$(account) ${i18n.word.artist}`,
-          type: NeteaseEnum.SearchType.artist,
+          type: NeteaseSearchType.artist,
         },
         {
           label: `$(list-unordered) ${i18n.word.playlist}`,
-          type: NeteaseEnum.SearchType.playlist,
+          type: NeteaseSearchType.playlist,
         },
         {
           label: `$(text-size) ${i18n.word.lyric}`,
-          type: NeteaseEnum.SearchType.lyric,
+          type: NeteaseSearchType.lyric,
         },
       ],
       placeholder: i18n.sentence.hint.search,
     });
     switch (pick.type) {
-      case NeteaseEnum.SearchType.single:
+      case NeteaseSearchType.single:
         return (input) => pickSearchSingle(input, 0);
-      case NeteaseEnum.SearchType.album:
+      case NeteaseSearchType.album:
         return (input) => pickSearchAlbum(input, 0);
-      case NeteaseEnum.SearchType.artist:
+      case NeteaseSearchType.artist:
         return (input) => pickSearchArtist(input, 0);
-      case NeteaseEnum.SearchType.playlist:
+      case NeteaseSearchType.playlist:
         return (input) => pickSearchPlaylist(input, 0);
-      case NeteaseEnum.SearchType.lyric:
+      case NeteaseSearchType.lyric:
         return (input) => pickSearchLyric(input, 0);
     }
     return (input) => pickSearchSingle(input, 0);

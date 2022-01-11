@@ -1,1 +1,1 @@
-export * as NeteaseEnum from "./netease";
+export * from "./netease";

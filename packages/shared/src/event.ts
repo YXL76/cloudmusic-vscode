@@ -1,41 +1,56 @@
-export type Api$netease = "api.netease";
+// 0xx
+export const enum IPCApi {
+  netease = "000",
+}
 
-export type Control$deleteCache = "control.deleteCache";
-export type Control$download = "control.download";
-export type Control$init = "control.init";
-export type Control$lyric = "control.lyric";
-export type Control$master = "control.master";
-export type Control$music = "control.music";
-export type Control$netease = "control.netease";
-export type Control$new = "control.new";
-export type Control$retain = "control.retain";
+// 1xx
+export const enum IPCControl {
+  deleteCache = "100",
+  download = "101",
+  init = "102",
+  lyric = "103",
+  master = "104",
+  music = "105",
+  netease = "106",
+  new = "107",
+  retain = "108",
+}
 
-export type Play$end = "player.end";
-export type Play$load = "player.load";
-export type Play$loaded = "player.loaded";
-export type Play$lyric = "player.lyric";
-export type Play$lyricDelay = "player.lyricDelay";
-export type Play$lyricIndex = "player.lyricIndex";
-export type Play$pause = "player.pause";
-export type Play$play = "player.play";
-export type Play$playing = "player.playing";
-export type Play$position = "player.position";
-export type Play$repeat = "player.repeat";
-export type Play$stop = "player.stop";
-export type Play$toggle = "player.toggle";
-export type Play$volume = "player.volume";
+// 2xx
+export const enum IPCPlayer {
+  end = "200",
+  load = "201",
+  loaded = "202",
+  lyric = "203",
+  lyricDelay = "204",
+  lyricIndex = "205",
+  pause = "206",
+  play = "207",
+  playing = "208",
+  position = "209",
+  repeat = "210",
+  stop = "211",
+  toggle = "212",
+  volume = "213",
+}
 
-export type Queue$add = "queue.add";
-export type Queue$clear = "queue.clear";
-export type Queue$delete = "queue.delete";
-export type Queue$fm = "queue.fm";
-export type Queue$fmNext = "queue.fmNext";
-export type Queue$play = "queue.play";
-export type Queue$new = "queue.new";
-export type Queue$shift = "queue.shift";
+// 3xx
+export const enum IPCQueue {
+  add = "300",
+  clear = "301",
+  delete = "302",
+  fm = "303",
+  fmNext = "304",
+  play = "305",
+  new = "306",
+  shift = "307",
+}
 
-export type Wasm$load = "wasm.load";
-export type Wasm$pause = "wasm.pause";
-export type Wasm$play = "wasm.play";
-export type Wasm$stop = "wasm.stop";
-export type Wasm$volume = "wasm.volume";
+// 4xx
+export const enum IPCWasm {
+  load = "400",
+  pause = "401",
+  play = "402",
+  stop = "403",
+  volume = "404",
+}

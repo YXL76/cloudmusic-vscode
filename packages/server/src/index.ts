@@ -1,4 +1,4 @@
-import type { CSMessage, IPCEvent, IPCMsg } from "@cloudmusic/shared";
+import type { CSMessage, IPCApi, IPCMsg } from "@cloudmusic/shared";
 import type { NeteaseAPI } from "./api";
 
 export type NeteaseAPIKey = keyof typeof NeteaseAPI;
@@ -14,11 +14,11 @@ export type NeteaseAPIReturn<T extends NeteaseAPIKey> = ReturnType<
   : ReturnType<typeof NeteaseAPI[T]>;
 
 export type NeteaseAPICMsg<T extends NeteaseAPIKey> = IPCMsg<
-  IPCEvent.Api$netease,
+  IPCApi.netease,
   CSMessage<{ i: T; p: NeteaseAPIParameters<T> }>
 >;
 
 export type NeteaseAPISMsg<T extends NeteaseAPIKey> = IPCMsg<
-  IPCEvent.Api$netease,
+  IPCApi.netease,
   CSMessage<NeteaseAPIReturn<T>>
 >;

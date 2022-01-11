@@ -16,10 +16,10 @@ import {
   pickSong,
   pickUser,
 } from ".";
+import { NeteaseCommentType, NeteaseSortType } from "@cloudmusic/shared";
 import type { ProviderSMsg, WebviewType } from "@cloudmusic/shared";
 import type { WebviewView, WebviewViewProvider } from "vscode";
 import { AccountManager } from "../manager";
-import { NeteaseEnum } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import { SETTING_DIR } from "../constant";
 import i18n from "../i18n";
@@ -326,28 +326,22 @@ export class Webview {
     setHtml();
   }
 
-  static comment(
-    type: NeteaseEnum.CommentType,
-    gid: number,
-    title: string
-  ): void {
+  static comment(type: NeteaseCommentType, gid: number, title: string): void {
     let time = 0;
     let index = 0;
     let pageNo = 1;
     const pageSize = 30;
 
     const sortTypes = [
-      NeteaseEnum.SortType.hottest,
-      ...(type === NeteaseEnum.CommentType.dj
+      NeteaseSortType.hottest,
+      ...(type === NeteaseCommentType.dj
         ? []
-        : [NeteaseEnum.SortType.recommendation]),
-      NeteaseEnum.SortType.latest,
+        : [NeteaseSortType.recommendation]),
+      NeteaseSortType.latest,
     ];
     const titles = [
       i18n.word.hottest,
-      ...(type === NeteaseEnum.CommentType.dj
-        ? []
-        : [i18n.word.recommendation]),
+      ...(type === NeteaseCommentType.dj ? [] : [i18n.word.recommendation]),
       i18n.word.latest,
     ];
 

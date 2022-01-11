@@ -13,6 +13,13 @@ import type {
   IPCClientMsg,
   IPCServerMsg,
 } from "@cloudmusic/shared";
+import {
+  IPCApi,
+  IPCControl,
+  IPCPlayer,
+  IPCQueue,
+  ipcDelimiter,
+} from "@cloudmusic/shared";
 import { LocalFileTreeItem, QueueProvider } from "../treeview";
 import type {
   NeteaseAPICMsg,
@@ -24,7 +31,6 @@ import type { PlayTreeItemData } from "../treeview";
 import type { Socket } from "net";
 import { State } from ".";
 import { connect } from "net";
-import { ipcDelimiter } from "@cloudmusic/shared";
 
 class IPCClient<T, U = T> {
   private _buffer = "";
@@ -121,11 +127,11 @@ export class IPC {
   static load(): void {
     const { playItem } = State;
     if (!playItem) return;
-    ipcB.send({ t: "player.load" });
+    ipcB.send({ t: IPCPlayer.load });
 
     if (playItem instanceof LocalFileTreeItem) {
       ipc.send({
-        t: "player.load",
+        t: IPCPlayer.load,
         url: playItem.tooltip,
         local: true,
       });
@@ -135,20 +141,20 @@ export class IPC {
         item: { dt, id },
       } = playItem;
       const next = State.fm ? undefined : QueueProvider.next?.item.id;
-      ipc.send({ t: "player.load", dt, id, pid, next });
+      ipc.send({ t: IPCPlayer.load, dt, id, pid, next });
     }
   }
 
   static loaded(): void {
-    ipcB.send({ t: "player.loaded" });
+    ipcB.send({ t: IPCPlayer.loaded });
   }
 
   static deleteCache(key: string): void {
-    ipc.send({ t: "control.deleteCache", key });
+    ipc.send({ t: IPCControl.deleteCache, key });
   }
 
   static download(url: string, path: string): void {
-    ipc.send({ t: "control.download", url, path });
+    ipc.send({ t: IPCControl.download, url, path });
   }
 
   static init(
@@ -157,7 +163,7 @@ export class IPC {
   ): void {
     const conf = CONF();
     ipc.send({
-      t: "control.init",
+      t: IPCControl.init,
       volume,
       player,
       mq: MUSIC_QUALITY(conf),
@@ -168,86 +174,86 @@ export class IPC {
   }
 
   static lyric(): void {
-    ipc.send({ t: "control.lyric" });
+    ipc.send({ t: IPCControl.lyric });
   }
 
   static music(): void {
-    ipc.send({ t: "control.music" });
+    ipc.send({ t: IPCControl.music });
   }
 
   static neteaseAc(): void {
-    ipc.send({ t: "control.netease" });
+    ipc.send({ t: IPCControl.netease });
   }
 
   static retain(items?: readonly PlayTreeItemData[]): void {
-    ipc.send({ t: "control.retain", items });
+    ipc.send({ t: IPCControl.retain, items });
   }
 
   static lyricDelay(delay: number): void {
-    ipc.send({ t: "player.lyricDelay", delay });
+    ipc.send({ t: IPCPlayer.lyricDelay, delay });
   }
 
   static playing(playing: boolean): void {
-    ipc.send({ t: "player.playing", playing });
+    ipc.send({ t: IPCPlayer.playing, playing });
   }
 
   static position(pos: number): void {
-    ipc.send({ t: "player.position", pos });
+    ipc.send({ t: IPCPlayer.position, pos });
   }
 
   static repeat(r: boolean): void {
-    ipcB.send({ t: "player.repeat", r });
+    ipcB.send({ t: IPCPlayer.repeat, r });
   }
 
   static stop(): void {
-    ipc.send({ t: "player.stop" });
+    ipc.send({ t: IPCPlayer.stop });
   }
 
   static toggle(): void {
-    ipc.send({ t: "player.toggle" });
+    ipc.send({ t: IPCPlayer.toggle });
   }
 
   static volume(level: number): void {
-    ipc.send({ t: "player.volume", level });
+    ipc.send({ t: IPCPlayer.volume, level });
   }
 
   static add(items: readonly PlayTreeItemData[], index?: number): void {
-    ipcB.send({ t: "queue.add", items, index });
+    ipcB.send({ t: IPCQueue.add, items, index });
   }
 
   static clear(): void {
-    ipcB.send({ t: "queue.clear" });
+    ipcB.send({ t: IPCQueue.clear });
   }
 
   static delete(id: number | string): void {
-    ipcB.send({ t: "queue.delete", id });
+    ipcB.send({ t: IPCQueue.delete, id });
   }
 
   static fm(uid: number, is = true): void {
-    ipc.send({ t: "queue.fm", uid, is });
+    ipc.send({ t: IPCQueue.fm, uid, is });
   }
 
   static fmNext(): void {
-    ipc.send({ t: "queue.fmNext" });
+    ipc.send({ t: IPCQueue.fmNext });
   }
 
   static new(items: readonly PlayTreeItemData[], id?: number): void {
-    ipcB.send({ t: "queue.new", items, id });
+    ipcB.send({ t: IPCQueue.new, items, id });
   }
 
   static playSong(id: number | string): void {
-    ipcB.send({ t: "queue.play", id });
+    ipcB.send({ t: IPCQueue.play, id });
   }
 
   static random(): void {
     ipcB.send({
-      t: "queue.new",
+      t: IPCQueue.new,
       items: QueueProvider.random(),
     });
   }
 
   static shift(index: number): void {
-    ipcB.send({ t: "queue.shift", index });
+    ipcB.send({ t: IPCQueue.shift, index });
   }
 
   static netease<I extends NeteaseAPIKey>(
@@ -260,7 +266,7 @@ export class IPC {
       prev?.reject();
       this.requestPool.set(channel, { resolve, reject });
       ipc.request<NeteaseAPICMsg<I>>({
-        t: "api.netease",
+        t: IPCApi.netease,
         channel,
         msg: { i, p },
       });
