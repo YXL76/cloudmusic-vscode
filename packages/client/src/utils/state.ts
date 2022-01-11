@@ -71,33 +71,44 @@ export class State {
   }
 
   static set first(value: boolean) {
+    // After account is initialized, the first time to load the queue
     if (!value) {
       const { head } = QueueProvider;
+      // From `set playItem`
       this._playItem = head;
       this.like = !!(head && head instanceof QueueItemTreeItem);
       AccountViewProvider.metadata();
+
       this.loading = false;
       this.context.subscriptions.push(
+        // Prevent first loading [#507](https://github.com/YXL76/cloudmusic-vscode/issues/507)
         QueueProvider.getInstance().onDidChangeTreeData(() => {
           this.fm = false;
           this.playItem = QueueProvider.head;
         })
       );
     }
+
     if (this._first !== value) {
       this._first = value;
-      if (value || QUEUE_INIT === "none") return;
-      if (QUEUE_INIT === "restore") {
-        IPC.retain();
-      } else if (AccountManager.accounts.size) {
-        const [[uid]] = AccountManager.accounts;
-        void IPC.netease("recommendSongs", [uid]).then((songs) =>
-          IPC.new(
-            songs.map(
-              (song) => QueueItemTreeItem.new({ ...song, pid: song.al.id }).data
-            )
-          )
-        );
+      if (value) return;
+      switch (QUEUE_INIT) {
+        case "none":
+          break;
+        case "restore":
+          IPC.retain();
+          break;
+        case "recommend":
+          if (AccountManager.accounts.size) {
+            const [[uid]] = AccountManager.accounts;
+            void IPC.netease("recommendSongs", [uid]).then((songs) => {
+              const items = songs.map(
+                (song) =>
+                  QueueItemTreeItem.new({ ...song, pid: song.al.id }).data
+              );
+              IPC.new(items);
+            });
+          }
       }
     }
   }

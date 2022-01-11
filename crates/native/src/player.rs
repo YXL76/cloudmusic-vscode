@@ -1,12 +1,14 @@
-use neon::prelude::*;
-use rodio::Source;
-use std::{
-    cell::RefCell,
-    fs::File,
-    io::BufReader,
-    sync::mpsc,
-    thread,
-    time::{Duration, Instant},
+use {
+    neon::prelude::*,
+    rodio::Source,
+    std::{
+        cell::RefCell,
+        fs::File,
+        io::BufReader,
+        sync::mpsc,
+        thread,
+        time::{Duration, Instant},
+    },
 };
 
 enum Status {

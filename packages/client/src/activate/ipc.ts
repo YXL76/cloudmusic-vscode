@@ -145,6 +145,12 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       case IPCPlayer.volume:
         ButtonManager.buttonVolume(data.level);
         break;
+      case IPCPlayer.next:
+        void commands.executeCommand("cloudmusic.next");
+        break;
+      case IPCPlayer.previous:
+        void commands.executeCommand("cloudmusic.previous");
+        break;
       case IPCQueue.fm:
         State.fm = data.is;
         break;

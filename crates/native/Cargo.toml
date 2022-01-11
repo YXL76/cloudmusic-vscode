@@ -13,17 +13,25 @@ crate-type = ["cdylib"]
 git = "https://github.com/neon-bindings/neon"
 branch = "main"
 
+[dependencies]
+souvlaki = "0.5"
+
 [dependencies.neon]
 git = "https://github.com/neon-bindings/neon"
 branch = "main"
 default-features = false
-features = ["napi-6"]
+features = ["channel-api", "napi-6"]
 
 [dependencies.rodio]
 git = "https://github.com/RustAudio/rodio"
 branch = "master"
 default-features = false
 features = ["flac", "mp3"]
+
+[target.'cfg(target_os = "windows")'.dependencies]
+raw-window-handle = "0.4"
+winit = "0.26"
+
 
 # [dependencies.curl]
 # version = "0.4"

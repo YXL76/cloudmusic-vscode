@@ -1,15 +1,17 @@
 import { IPCPlayer, IPCWasm } from "@cloudmusic/shared";
+import { basename, resolve } from "path";
 import { downloadMusic, getMusicPath, logError } from "./utils";
 import { readdir, stat, unlink } from "fs/promises";
 import { IPCServer } from "./server";
 import { MusicCache } from "./cache";
 import { NeteaseAPI } from "./api";
+import type { NeteaseTypings } from "api";
 import { PersonalFm } from "./state";
 import { State } from "./state";
 import { TMP_DIR } from "./constant";
-import { resolve } from "path";
 
 type NativePlayer = unknown;
+type NativeMediaSession = unknown;
 
 interface NativeModule {
   playerEmpty(player: NativePlayer): boolean;
@@ -20,6 +22,21 @@ interface NativeModule {
   playerPosition(player: NativePlayer): number;
   playerSetVolume(player: NativePlayer, level: number): void;
   playerStop(player: NativePlayer): void;
+
+  mediaSessionNew(
+    toggle_handler: () => void,
+    next_handler: () => void,
+    previous_handler: () => void,
+    stop_handler: () => void
+  ): NativeMediaSession;
+  mediaSessionSetMetadata(
+    mediaSession: NativeMediaSession,
+    title: string,
+    album: string,
+    artist: string,
+    cover_url: string,
+    duration: number
+  ): void;
 }
 
 let prefetchLock = false;
@@ -88,11 +105,13 @@ export class Player {
 
   private static _loadtime = 0;
 
-  private static _player: NativePlayer;
-
   private static _wasm?: WasmPlayer;
 
   private static _native?: NativeModule;
+
+  private static _player: NativePlayer;
+
+  private static _mediaSession: NativePlayer;
 
   static init(wasm: boolean, name = "", volume?: number): void {
     if (this._wasm || this._native) return;
@@ -102,6 +121,13 @@ export class Player {
       this._native = require(path) as NativeModule;
       this._player = this._native.playerNew();
       if (volume) this._native.playerSetVolume(this._player, volume);
+
+      this._mediaSession = this._native.mediaSessionNew(
+        this.toggle.bind(this),
+        () => IPCServer.sendToMaster({ t: IPCPlayer.next }),
+        () => IPCServer.sendToMaster({ t: IPCPlayer.previous }),
+        this.stop.bind(this)
+      );
 
       setInterval(() => {
         if (!State.playing) return;
@@ -138,7 +164,11 @@ export class Player {
   static async load(
     data:
       | { url: string; local: true }
-      | { dt: number; id: number; pid: number; next: number | undefined }
+      | {
+          item: NeteaseTypings.SongsItem;
+          pid: number;
+          next: number | undefined;
+        }
   ): Promise<void> {
     const loadtime = Date.now();
     if (loadtime < this._loadtime) {
@@ -148,9 +178,14 @@ export class Player {
     this._loadtime = loadtime;
 
     let path: string | void = undefined;
-    if ("local" in data && data.local) path = data.url;
-    else if ("id" in data && data.id)
-      path = await getMusicPath(data.id, !!this._wasm);
+    const local = "local" in data && data.local;
+    const network = "item" in data && data.item;
+    if (local) {
+      path = data.url;
+    } else if (network) {
+      path = await getMusicPath(data.item.id, !!this._wasm);
+    }
+
     if (!path) {
       this._failedEnd();
       return;
@@ -162,6 +197,19 @@ export class Player {
         return;
       }
       IPCServer.broadcast({ t: IPCPlayer.loaded });
+
+      if (local) {
+        this._native.mediaSessionSetMetadata(this._mediaSession, basename(path), "", "", "", 0);  // eslint-disable-line
+      } else if (network) {
+        this._native.mediaSessionSetMetadata(
+          this._mediaSession,
+          data.item.name,
+          data.item.al.name,
+          data.item.ar.map((ar) => ar.name).join("/"),
+          data.item.al.picUrl,
+          data.item.dt / 1000
+        );
+      }
     } else if (this._wasm) {
       this._wasm.load(path);
     }
@@ -170,8 +218,8 @@ export class Player {
     State.playing = true;
     prefetchLock = false;
 
-    if ("id" in data) {
-      void NeteaseAPI.lyric(data.id).then((l) => {
+    if (network) {
+      void NeteaseAPI.lyric(data.item.id).then((l) => {
         Object.assign(State.lyric, l, { oi: 0, ti: 0 });
         IPCServer.broadcast({
           t: IPCPlayer.lyric,
@@ -191,9 +239,19 @@ export class Player {
       }
     }
 
-    this._dt = "dt" in data ? data.dt : 0;
-    this._id = "id" in data ? data.id : 0;
-    this._pid = "pid" in data ? data.pid : 0;
+    if (network) {
+      this._dt = data.item.dt;
+      this._id = data.item.id;
+      this._pid = data.pid;
+    } else {
+      this._dt = 0;
+      this._id = 0;
+      this._pid = 0;
+    }
+  }
+
+  static toggle(): void {
+    State.playing ? Player.pause() : Player.play();
   }
 
   static pause(): void {

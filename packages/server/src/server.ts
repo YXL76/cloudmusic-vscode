@@ -216,7 +216,7 @@ export class IPCServer {
         posHandler(data.pos);
         break;
       case IPCPlayer.toggle:
-        State.playing ? Player.pause() : Player.play();
+        Player.toggle();
         break;
       case IPCPlayer.stop:
         Player.stop();

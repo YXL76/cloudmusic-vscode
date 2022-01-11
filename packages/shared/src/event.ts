@@ -32,6 +32,8 @@ export const enum IPCPlayer {
   stop = "211",
   toggle = "212",
   volume = "213",
+  next = "214",
+  previous = "215",
 }
 
 // 3xx

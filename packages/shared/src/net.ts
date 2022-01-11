@@ -46,7 +46,7 @@ export type IPCClientMsg =
   | IPCMsg<IPCPlayer.load, { url: string; local: true }>
   | IPCMsg<
       IPCPlayer.load,
-      { dt: number; id: number; pid: number; next: number | undefined }
+      { item: NeteaseTypings.SongsItem; pid: number; next: number | undefined }
     >
   | IPCMsg<IPCPlayer.lyricDelay, { delay: number }>
   | IPCMsg<IPCPlayer.playing, { playing: boolean }>
@@ -76,6 +76,8 @@ export type IPCServerMsg =
   | IPCMsg<IPCPlayer.play>
   | IPCMsg<IPCPlayer.stop>
   | IPCMsg<IPCPlayer.volume, { level: number }>
+  | IPCMsg<IPCPlayer.next>
+  | IPCMsg<IPCPlayer.previous>
   | IPCMsg<IPCQueue.fm, { is: boolean }>
   | IPCMsg<IPCQueue.fmNext, { item: NeteaseTypings.SongsItem }>
   | IPCMsg<IPCWasm.load, { path: string }>

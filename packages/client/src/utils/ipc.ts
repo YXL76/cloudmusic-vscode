@@ -138,10 +138,10 @@ export class IPC {
     } else {
       const {
         data: { pid },
-        item: { dt, id },
+        item,
       } = playItem;
       const next = State.fm ? undefined : QueueProvider.next?.item.id;
-      ipc.send({ t: IPCPlayer.load, dt, id, pid, next });
+      ipc.send({ t: IPCPlayer.load, item, pid, next });
     }
   }
 
