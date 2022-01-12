@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { AccountViewProvider, IPC, State } from "../utils";
+import { AccountViewProvider, IPC, State, defaultLyric } from "../utils";
 import { COOKIE_KEY, SETTING_DIR, STRICT_SSL } from "../constant";
 import {
   IPCApi,
@@ -118,11 +118,9 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         break;
       case IPCPlayer.lyricIndex:
         ButtonManager.buttonLyric(
-          State.lyric[State.lyric.type].text?.[
-            State.lyric.type === "o" ? data.oi : data.ti
-          ]
+          State.lyric.text[data.idx].at(State.lyric.type)
         );
-        State.lyric.updatePanel?.(data.oi, data.ti);
+        State.lyric.updatePanel?.(data.idx);
         break;
       case IPCPlayer.pause:
         ButtonManager.buttonPlay(false);
@@ -137,8 +135,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         ButtonManager.buttonLyric();
         State.lyric = {
           ...State.lyric,
-          o: { time: [0], text: ["$(text-size)"] },
-          t: { time: [0], text: ["$(text-size)"] },
+          ...defaultLyric,
         };
         AccountViewProvider.stop();
         break;

@@ -1,4 +1,11 @@
-import { IPC, MultiStepInput, State, Webview, pickUser } from "../utils";
+import {
+  IPC,
+  LyricType,
+  MultiStepInput,
+  State,
+  Webview,
+  pickUser,
+} from "../utils";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import type { InputStep } from "../utils";
@@ -26,7 +33,7 @@ export function initStatusBar(context: ExtensionContext): void {
       }
 
       await MultiStepInput.run(async (input) => {
-        const { time, text, user } = State.lyric[State.lyric.type];
+        const user = State.lyric.user.at(State.lyric.type);
         const { type } = await input.showQuickPick({
           title,
           step: 1,
@@ -39,7 +46,7 @@ export function initStatusBar(context: ExtensionContext): void {
             },
             {
               label: `$(symbol-type-parameter) ${
-                State.lyric.type === "o"
+                State.lyric.type === LyricType.ori
                   ? i18n.word.translation
                   : i18n.word.original
               }`,
@@ -63,10 +70,6 @@ export function initStatusBar(context: ExtensionContext): void {
               ? [{ label: `$(account) ${i18n.word.user}`, type: Type.user }]
               : []),
             {
-              label: `$(text-size) ${i18n.word.fontSize}`,
-              type: Type.font,
-            },
-            {
               label: `$(book) ${i18n.sentence.label.showInEditor}`,
               type: Type.panel,
             },
@@ -76,11 +79,12 @@ export function initStatusBar(context: ExtensionContext): void {
           case Type.delay:
             return (input) => inputDelay(input);
           case Type.full:
-            return (input) => pickLyric(input, time, text);
-          case Type.font:
-            return (input) => inputFontSize(input);
+            return (input) => pickLyric(input);
           case Type.type:
-            State.lyric.type = State.lyric.type === "o" ? "t" : "o";
+            State.lyric.type =
+              State.lyric.type === LyricType.ori
+                ? LyricType.tra
+                : LyricType.ori;
             break;
           case Type.cache:
             IPC.lyric();
@@ -109,29 +113,14 @@ export function initStatusBar(context: ExtensionContext): void {
         return input.stay();
       }
 
-      async function inputFontSize(input: MultiStepInput) {
-        const size = await input.showInputBox({
-          title,
-          step: 2,
-          totalSteps,
-          prompt: i18n.sentence.hint.lyricFontSize,
-        });
-        if (/^\d+$/.test(size)) State.lyric.updateFontSize?.(parseInt(size));
-        return input.stay();
-      }
-
-      async function pickLyric(
-        input: MultiStepInput,
-        time: readonly number[],
-        text: readonly string[]
-      ): Promise<InputStep> {
+      async function pickLyric(input: MultiStepInput): Promise<InputStep> {
         const pick = await input.showQuickPick({
           title,
           step: 2,
           totalSteps: totalSteps + 1,
-          items: time.map((v, i) => ({
-            label: text[i],
-            description: `${v}`,
+          items: State.lyric.time.map((time, i) => ({
+            label: State.lyric.text[i].at(State.lyric.type) as string,
+            description: `${time}`,
           })),
         });
         select = pick.label;

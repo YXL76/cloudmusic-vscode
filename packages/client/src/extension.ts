@@ -19,6 +19,21 @@ import { QueueProvider } from "./treeview";
 import { mkdirSync } from "fs";
 
 export async function activate(context: ExtensionContext): Promise<void> {
+  // From https://github.com/tc39/proposal-relative-indexing-method#polyfill
+  {
+    type AtFn<T> = (this: Array<T>, n: number) => T;
+    const value: AtFn<unknown> = function (n: number) {
+      if (n < 0) n += this.length;
+      return this[n];
+    };
+    Object.defineProperty(Array.prototype, "at", {
+      value,
+      writable: true,
+      enumerable: false,
+      configurable: true,
+    });
+  }
+
   /* process.setUncaughtExceptionCaptureCallback(({ message }) =>
     console.error(message)
   ); */

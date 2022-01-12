@@ -73,7 +73,7 @@ export type IPCServerMsg =
   | IPCMsg<IPCPlayer.end, { fail?: true }>
   | IPCMsg<IPCPlayer.loaded>
   | IPCMsg<IPCPlayer.lyric, { lyric: NeteaseTypings.LyricData }>
-  | IPCMsg<IPCPlayer.lyricIndex, { oi: number; ti: number }>
+  | IPCMsg<IPCPlayer.lyricIndex, { idx: number }>
   | IPCMsg<IPCPlayer.pause>
   | IPCMsg<IPCPlayer.play>
   | IPCMsg<IPCPlayer.stop>

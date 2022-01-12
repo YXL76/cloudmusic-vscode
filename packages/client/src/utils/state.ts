@@ -13,11 +13,22 @@ import type { NeteaseTypings } from "api";
 import type { QueueContent } from "../treeview";
 import i18n from "../i18n";
 
+export const enum LyricType {
+  ori = 0, // original
+  tra = -1, // translation
+}
+
 type Lyric = {
-  type: "o" | "t";
-  updatePanel?: (oi: number, ti: number) => void;
-  updateFontSize?: (size: number) => void;
+  type: LyricType;
+  updatePanel?: (idx: number) => void;
 } & NeteaseTypings.LyricData;
+
+export const defaultLyric: Lyric = {
+  type: LyricType.ori,
+  time: [0],
+  text: [["~"]],
+  user: [],
+};
 
 export class State {
   static context: ExtensionContext;
@@ -36,11 +47,7 @@ export class State {
 
   private static _showLyric = false;
 
-  private static _lyric: Lyric = {
-    type: "o",
-    o: { time: [0], text: ["~"] },
-    t: { time: [0], text: ["~"] },
-  };
+  private static _lyric: Lyric = defaultLyric;
 
   static get master(): boolean {
     return State._master;
@@ -180,6 +187,7 @@ export class State {
   static set lyric(value: Lyric) {
     State._lyric = value;
     void this.context.globalState.update(LYRIC_KEY, value);
+    // TODO
   }
 
   static init(): void {
@@ -187,10 +195,6 @@ export class State {
     // 需要在 IPC 连接后及登录帐号后修改
     this.fm = this.context.globalState.get(FM_KEY, false);
     this._showLyric = this.context.globalState.get(SHOW_LYRIC_KEY, false);
-    this._lyric = this.context.globalState.get(LYRIC_KEY, {
-      type: "o",
-      o: { time: [0], text: ["~"] },
-      t: { time: [0], text: ["~"] },
-    });
+    this._lyric = this.context.globalState.get(LYRIC_KEY, defaultLyric);
   }
 }

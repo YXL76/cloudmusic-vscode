@@ -84,7 +84,7 @@ export default {
     female: "Female artist",
     followeds: "Followeds",
     follows: "Follows",
-    fontSize: "Font size",
+    // fontSize: "Font size",
     forward: "Forword",
     fullLyric: "All lyrics",
     hide: "Hide",

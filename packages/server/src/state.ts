@@ -16,15 +16,8 @@ export class State {
 
   static lyric: NeteaseTypings.LyricData & {
     delay: number;
-    oi: number;
-    ti: number;
-  } = {
-    delay: -1.0,
-    oi: 0,
-    ti: 0,
-    o: { time: [0], text: ["~"] },
-    t: { time: [0], text: ["~"] },
-  };
+    idx: number;
+  } = { delay: -1.0, idx: 0, time: [0], text: [["~"]], user: [] };
 
   private static _playing = false;
 

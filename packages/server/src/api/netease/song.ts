@@ -10,9 +10,7 @@ import type { NeteaseTypings } from "api";
 import { State } from "../../state";
 import { logError } from "../../utils";
 
-const resolveLyric = (
-  raw: string
-): { time: readonly number[]; text: readonly string[] } => {
+const resolveLyric = (raw: string): readonly (readonly [number, string])[] => {
   const unsorted: Array<[number, string]> = [];
   const lines = raw.split("\n");
   for (const line of lines) {
@@ -33,26 +31,13 @@ const resolveLyric = (
 
   unsorted.sort(([a], [b]) => a - b);
 
-  const ti = [0];
-  const te = ["~"];
+  const ret = [];
   const len = unsorted.length;
   for (let i = 0; i < len; ++i) {
     const [time, text] = unsorted[i];
-    if (text) {
-      ti.push(time);
-      te.push(text);
-      continue;
-    }
-    let j = i + 1;
-    if (j >= len) break;
-    while (j < len && !unsorted[j][1]) ++j;
-    if (j >= len || unsorted[j][0] - time > 4) {
-      ti.push(time);
-      te.push("~");
-    }
-    i = j - 1;
+    if (text) ret.push([time, text] as const);
   }
-  return { time: ti, text: te };
+  return ret;
 };
 
 const resolveLyricUser = (
@@ -71,22 +56,37 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
     transUser?: NeteaseTypings.LyricUser;
   }>("music.163.com/api/song/lyric", { id, lv: -1, kv: -1, tv: -1 });
 
-  if (!res)
-    return {
-      o: { time: [0], text: ["~"] },
-      t: { time: [0], text: ["~"] },
-    };
+  if (!res) return { time: [0], text: [["~"]], user: [] };
 
   const o = resolveLyric(res?.lrc?.lyric ?? "");
   const t = resolveLyric(res?.tlyric?.lyric ?? "");
-  const lyric: NeteaseTypings.LyricData & { ctime: number } = {
-    ctime: Date.now(),
-    o,
-    t: t.text.length < 3 ? o : t,
-  };
+  const user = [
+    resolveLyricUser(res.lyricUser),
+    resolveLyricUser(res.transUser),
+  ] as [NeteaseTypings.LyricUser?, NeteaseTypings.LyricUser?];
 
-  lyric.o.user = resolveLyricUser(res.lyricUser);
-  lyric.t.user = resolveLyricUser(res.transUser);
+  // Combine origin and translation
+  let oidx = 0;
+  let tidx = 0;
+  const time = [];
+  const text = [];
+  while (oidx < o.length && tidx < t.length) {
+    const [otime, otext] = o[oidx];
+    const [ttime, ttext] = t[tidx];
+    if (otime === ttime) {
+      time.push(otime);
+      text.push([otext, ttext] as [string, string]);
+      ++oidx;
+      ++tidx;
+    } else if (otime < ttime) {
+      time.push(otime);
+      text.push([otext] as [string]);
+      ++oidx;
+    } else ++tidx; // Just drop the text
+  }
+
+  type Lyric = NeteaseTypings.LyricData & { ctime: number };
+  const lyric: Lyric = { ctime: Date.now(), time, text, user };
 
   LyricCache.put(`${id}`, lyric);
   return lyric;

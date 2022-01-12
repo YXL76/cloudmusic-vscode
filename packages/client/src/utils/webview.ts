@@ -16,6 +16,7 @@ import {
 } from "vscode";
 import {
   IPC,
+  LyricType,
   MultiStepInput,
   State,
   pickAlbum,
@@ -273,21 +274,15 @@ export class Webview {
 
     panel.onDidDispose(() => {
       State.lyric.updatePanel = undefined;
-      State.lyric.updateFontSize = undefined;
     });
 
-    State.lyric.updatePanel = (oi: number, ti: number) =>
+    State.lyric.updatePanel = (idx: number) =>
       panel.webview.postMessage({
         command: "lyric",
         data: {
-          otext: State.lyric.o.text?.[oi],
-          ttext: State.lyric.t.text?.[ti],
+          otext: State.lyric.text[idx].at(LyricType.ori),
+          ttext: State.lyric.text[idx].at(LyricType.tra),
         },
-      } as LyricSMsg);
-    State.lyric.updateFontSize = (size: number) =>
-      panel.webview.postMessage({
-        command: "size",
-        data: size,
       } as LyricSMsg);
 
     setHtml();

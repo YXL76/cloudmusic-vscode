@@ -64,13 +64,8 @@ export function posHandler(pos: number): void {
   }
 
   const lpos = pos - State.lyric.delay;
-  while (State.lyric.o.time[State.lyric.oi] <= lpos) ++State.lyric.oi;
-  while (State.lyric.t.time[State.lyric.ti] <= lpos) ++State.lyric.ti;
-  IPCServer.broadcast({
-    t: IPCPlayer.lyricIndex,
-    oi: State.lyric.oi - 1,
-    ti: State.lyric.ti - 1,
-  });
+  while (State.lyric.time[State.lyric.idx] <= lpos) ++State.lyric.idx;
+  IPCServer.broadcast({ t: IPCPlayer.lyricIndex, idx: State.lyric.idx - 1 });
 }
 
 class WasmPlayer {
@@ -239,15 +234,11 @@ export class Player {
     State.playing = true;
     prefetchLock = false;
 
-    if (network) {
-      void NeteaseAPI.lyric(data.item.id).then((l) => {
-        Object.assign(State.lyric, l, { oi: 0, ti: 0 });
-        IPCServer.broadcast({
-          t: IPCPlayer.lyric,
-          lyric: { o: l.o, t: l.t },
-        });
+    if (network)
+      void NeteaseAPI.lyric(data.item.id).then((lyric) => {
+        Object.assign(State.lyric, lyric, { idx: 0 });
+        IPCServer.broadcast({ t: IPCPlayer.lyric, lyric });
       });
-    }
 
     const pTime = this._time;
     this._time = Date.now();

@@ -29,11 +29,11 @@ export const QUEUE_INIT = kConf.get<"none" | "recommend" | "restore">(
 
 export const ACCOUNT_KEY = "account-v2";
 export const CACHE_KEY = "cache-v2";
-export const LYRIC_CACHE_KEY = "lyric-cache-v4";
+export const LYRIC_CACHE_KEY = "lyric-cache-v5";
 export const COOKIE_KEY = "cookie-v2";
 export const BUTTON_KEY = "button-v2";
 export const VOLUME_KEY = "volume";
-export const LYRIC_KEY = "lyric-v2";
+export const LYRIC_KEY = "lyric-v3";
 export const LOCAL_FOLDER_KEY = "local-folder-v2";
 export const REPEAT_KEY = "repeat-v1";
 export const FM_KEY = "fm-v1";

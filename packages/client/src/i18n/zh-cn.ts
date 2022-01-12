@@ -84,7 +84,7 @@ export default {
     female: "女歌手",
     followeds: "粉丝",
     follows: "关注",
-    fontSize: "字体大小",
+    // fontSize: "字体大小",
     forward: "前进",
     fullLyric: "全部歌词",
     hide: "隐藏",

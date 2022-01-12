@@ -162,15 +162,10 @@ export namespace NeteaseTypings {
     userid: number;
   };
 
-  type LyricSpecifyData = {
-    time: readonly number[];
-    text: readonly string[];
-    user?: LyricUser;
-  };
-
   export type LyricData = {
-    o: LyricSpecifyData;
-    t: LyricSpecifyData;
+    time: readonly number[];
+    text: readonly ([string, string] | [string])[];
+    user: [LyricUser?, LyricUser?];
   };
 
   export type CommentRet = {
