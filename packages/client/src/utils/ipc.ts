@@ -158,12 +158,14 @@ export class IPC {
   }
 
   static init(
+    pid?: string,
     volume?: number,
     player?: { wasm: boolean; name?: string }
   ): void {
     const conf = CONF();
     ipc.send({
       t: IPCControl.init,
+      pid,
       volume,
       player,
       mq: MUSIC_QUALITY(conf),
@@ -187,6 +189,10 @@ export class IPC {
 
   static retain(items?: readonly PlayTreeItemData[]): void {
     ipc.send({ t: IPCControl.retain, items });
+  }
+
+  static pid(): void {
+    ipc.send({ t: IPCControl.pid, pid: process.env["VSCODE_PID"] });
   }
 
   static lyricDelay(delay: number): void {

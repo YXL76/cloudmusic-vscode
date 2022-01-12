@@ -31,6 +31,7 @@ export type IPCClientMsg =
   | IPCMsg<
       IPCControl.init,
       {
+        pid?: string;
         volume?: number;
         player?: { wasm: boolean; name?: string };
         mq: number;
@@ -43,6 +44,7 @@ export type IPCClientMsg =
   | IPCMsg<IPCControl.music>
   | IPCMsg<IPCControl.netease>
   | IPCMsg<IPCControl.retain, { items?: readonly unknown[] }>
+  | IPCMsg<IPCControl.pid, { pid?: string }>
   | IPCMsg<IPCPlayer.load, { url: string; local: true }>
   | IPCMsg<
       IPCPlayer.load,

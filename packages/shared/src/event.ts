@@ -14,6 +14,7 @@ export const enum IPCControl {
   netease = "106",
   new = "107",
   retain = "108",
+  pid = "109",
 }
 
 // 2xx

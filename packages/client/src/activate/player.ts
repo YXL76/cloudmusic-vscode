@@ -21,5 +21,8 @@ export async function initPlayer(context: ExtensionContext): Promise<void> {
     })());
   console.log("Cloudmusic:", PLAYER_MODE, "mode.");
   AccountViewProvider.enablePlayer = wasm;
-  IPC.init(context.globalState.get(VOLUME_KEY, 85), { wasm, name });
+  IPC.init(process.env["VSCODE_PID"], context.globalState.get(VOLUME_KEY, 85), {
+    wasm,
+    name,
+  });
 }

@@ -9,6 +9,7 @@ import type { NeteaseTypings } from "api";
 import { PersonalFm } from "./state";
 import { State } from "./state";
 import { TMP_DIR } from "./constant";
+import { platform } from "os";
 
 type NativePlayer = unknown;
 type NativeMediaSession = unknown;
@@ -23,7 +24,9 @@ interface NativeModule {
   playerSetVolume(player: NativePlayer, level: number): void;
   playerStop(player: NativePlayer): void;
 
+  mediaSessionHwnd(pid: string): string;
   mediaSessionNew(
+    hwnd: string,
     toggle_handler: () => void,
     next_handler: () => void,
     previous_handler: () => void,
@@ -111,9 +114,9 @@ export class Player {
 
   private static _player: NativePlayer;
 
-  private static _mediaSession: NativePlayer;
+  private static _mediaSession: NativeMediaSession;
 
-  static init(wasm: boolean, name = "", volume?: number): void {
+  static init(wasm: boolean, name = "", pid?: string, volume?: number): void {
     if (this._wasm || this._native) return;
     if (!wasm) {
       const path = resolve(__dirname, "..", "build", name);
@@ -122,12 +125,7 @@ export class Player {
       this._player = this._native.playerNew();
       if (volume) this._native.playerSetVolume(this._player, volume);
 
-      this._mediaSession = this._native.mediaSessionNew(
-        this.toggle.bind(this),
-        () => IPCServer.sendToMaster({ t: IPCPlayer.next }),
-        () => IPCServer.sendToMaster({ t: IPCPlayer.previous }),
-        this.stop.bind(this)
-      );
+      this.mediaSession(pid, true);
 
       setInterval(() => {
         if (!State.playing) return;
@@ -155,6 +153,22 @@ export class Player {
       // 1000 * 60 * 8 = 480000
       480000
     );
+  }
+
+  static mediaSession(pid?: string, init?: true) {
+    if (!this._native) return;
+    let hwnd = "";
+    if (platform() === "win32" && pid)
+      hwnd = this._native.mediaSessionHwnd(pid);
+    if (init || hwnd) {
+      this._mediaSession = this._native.mediaSessionNew(
+        hwnd,
+        this.toggle.bind(this),
+        () => IPCServer.sendToMaster({ t: IPCPlayer.next }),
+        () => IPCServer.sendToMaster({ t: IPCPlayer.previous }),
+        this.stop.bind(this)
+      );
+    }
   }
 
   static empty(): boolean {
@@ -199,7 +213,14 @@ export class Player {
       IPCServer.broadcast({ t: IPCPlayer.loaded });
 
       if (local) {
-        this._native.mediaSessionSetMetadata(this._mediaSession, basename(path), "", "", "", 0);  // eslint-disable-line
+        this._native.mediaSessionSetMetadata(
+          this._mediaSession,
+          basename(path),
+          "",
+          "",
+          "",
+          0
+        ); // eslint-disable-line
       } else if (network) {
         this._native.mediaSessionSetMetadata(
           this._mediaSession,

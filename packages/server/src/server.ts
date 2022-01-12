@@ -184,7 +184,12 @@ export class IPCServer {
         State.foreign = data.foreign;
         APISetting.apiProtocol = data.https ? "https" : "http";
         if (data.player)
-          Player.init(data.player.wasm, data.player.name, data.volume);
+          Player.init(
+            data.player.wasm,
+            data.player.name,
+            data.pid,
+            data.volume
+          );
         break;
       case IPCControl.lyric:
         LyricCache.clear();
@@ -202,6 +207,9 @@ export class IPCServer {
             t: IPCControl.retain,
             items: this._retain,
           });
+        break;
+      case IPCControl.pid:
+        Player.mediaSession(data.pid);
         break;
       case IPCPlayer.load:
         void Player.load(data);
