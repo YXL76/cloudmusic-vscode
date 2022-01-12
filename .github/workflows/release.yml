@@ -175,13 +175,13 @@ jobs:
       - name: Copy file
         run: |
           mkdir -p build
-          cp .artifact/Linux-armv7/index.node     build/linux-arm.node
-          cp .artifact/macOS-aarch64/index.node   build/darwin-arm64.node
-          cp .artifact/Linux-aarch64/index.node   build/linux-arm64.node
-          cp .artifact/Windows-aarch64/index.node build/win32-arm64.node
-          cp .artifact/macOS-x86_64/index.node    build/darwin-x64.node
-          cp .artifact/Linux-x86_64/index.node    build/linux-x64.node
-          cp .artifact/Windows-x86_64/index.node  build/win32-x64.node
+          cp .artifact/Linux-armv7/index.node     .artifact/build/linux-arm.node
+          cp .artifact/macOS-aarch64/index.node   .artifact/build/darwin-arm64.node
+          cp .artifact/Linux-aarch64/index.node   .artifact/build/linux-arm64.node
+          cp .artifact/Windows-aarch64/index.node .artifact/build/win32-arm64.node
+          cp .artifact/macOS-x86_64/index.node    .artifact/build/darwin-x64.node
+          cp .artifact/Linux-x86_64/index.node    .artifact/build/linux-x64.node
+          cp .artifact/Windows-x86_64/index.node  .artifact/build/win32-x64.node
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
@@ -212,18 +212,12 @@ jobs:
       - name: Build wasm
         run: wasm-pack build crates/wasm/ --out-dir ../../packages/wasm --out-name index
 
-      - name: Package
+      - name: Publish
         run: |
           yarn
-          yarn dlx vsce package --no-dependencies
+          VSCE_TOKEN=${{ secrets.VSCE_TOKEN }} OVSX_TOKEN=${{ secrets.OVSX_TOKEN }} yarn publish
           echo "VSIX_PATH=$(find . -maxdepth 1 -type f -iname "*.vsix" | head -1)" >> $GITHUB_ENV
           echo "VSIX_NAME=$(basename $(find . -maxdepth 1 -type f -iname "*.vsix" | head -1))" >> $GITHUB_ENV
-
-      - name: Publish to Visual Studio Marketplace
-        run: yarn dlx vsce publish --no-dependencies --packagePath ${{ env.VSIX_PATH }} -p ${{ secrets.VSCE_TOKEN }}
-
-      - name: Publish to Open VSX Registry
-        run: yarn dlx ovsx publish ${{ env.VSIX_PATH }} -p ${{ secrets.OVSX_TOKEN }}
 
       - uses: actions/create-release@v1
         id: create_release

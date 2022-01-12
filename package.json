@@ -850,10 +850,10 @@
     "build": "yarn node scripts/build.js --prod",
     "build-dev": "yarn node scripts/build.js",
     "generate-css": "NODE_ENV=production yarn tailwindcss --no-autoprefixer --minify -o dist/style.css",
+    "publish": "yarn node scripts/publish.js",
     "test": "yarn workspaces foreach -p run test",
     "tooltip": "yarn node scripts/tooltip.js",
-    "postinstall": "yarn sdks vscode vim",
-    "vscode:prepublish": "yarn build"
+    "postinstall": "yarn sdks vscode vim"
   },
   "devDependencies": {
     "@types/eslint": "8.2.2",
