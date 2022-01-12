@@ -20,11 +20,8 @@ export type CommentCMsg = CSMessage<{ command: "user"; id: number }, undefined>;
   | CSMessage<{ command: "floor"; id: number }, undefined> */
 
 export type LyricSMsg =
-  | {
-      command: "lyric";
-      data: { otext: string; ttext: string };
-    }
-  | { command: "size"; data: number };
+  | { command: "lyric"; text: NeteaseTypings.LyricData["text"] }
+  | { command: "index"; idx: number };
 
 export type MsicRankingCMsg =
   | CSMessage<{ command: "song"; id: number }, undefined>

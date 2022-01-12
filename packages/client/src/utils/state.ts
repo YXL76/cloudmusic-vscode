@@ -20,7 +20,8 @@ export const enum LyricType {
 
 type Lyric = {
   type: LyricType;
-  updatePanel?: (idx: number) => void;
+  updatePanel?: (text: NeteaseTypings.LyricData["text"]) => void;
+  updateIndex?: (idx: number) => void;
 } & NeteaseTypings.LyricData;
 
 export const defaultLyric: Lyric = {
@@ -50,15 +51,15 @@ export class State {
   private static _lyric: Lyric = defaultLyric;
 
   static get master(): boolean {
-    return State._master;
+    return this._master;
   }
 
   static get repeat(): boolean {
-    return State._repeat;
+    return this._repeat;
   }
 
   static get playItem(): QueueContent | undefined {
-    return State._playItem;
+    return this._playItem;
   }
 
   static get like(): boolean {
@@ -66,15 +67,15 @@ export class State {
   }
 
   static get fm(): boolean {
-    return State._fm;
+    return this._fm;
   }
 
   static get showLyric(): boolean {
-    return State._showLyric;
+    return this._showLyric;
   }
 
   static get lyric(): Lyric {
-    return State._lyric;
+    return this._lyric;
   }
 
   static set first(value: boolean) {
@@ -131,7 +132,7 @@ export class State {
 
   // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
   static set repeat(value: boolean) {
-    State._repeat = value;
+    this._repeat = value;
     ButtonManager.buttonRepeat(value);
     void this.context.globalState.update(REPEAT_KEY, value);
   }
@@ -179,15 +180,15 @@ export class State {
 
   // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
   static set showLyric(value: boolean) {
-    State._showLyric = value;
+    this._showLyric = value;
     void this.context.globalState.update(SHOW_LYRIC_KEY, value);
   }
 
   // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
   static set lyric(value: Lyric) {
-    State._lyric = value;
+    this._lyric = value;
     void this.context.globalState.update(LYRIC_KEY, value);
-    // TODO
+    value.updatePanel?.(value.text);
   }
 
   static init(): void {

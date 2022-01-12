@@ -16,7 +16,6 @@ import {
 } from "vscode";
 import {
   IPC,
-  LyricType,
   MultiStepInput,
   State,
   pickAlbum,
@@ -274,18 +273,18 @@ export class Webview {
 
     panel.onDidDispose(() => {
       State.lyric.updatePanel = undefined;
+      State.lyric.updateIndex = undefined;
     });
 
-    State.lyric.updatePanel = (idx: number) =>
-      panel.webview.postMessage({
-        command: "lyric",
-        data: {
-          otext: State.lyric.text[idx].at(LyricType.ori),
-          ttext: State.lyric.text[idx].at(LyricType.tra),
-        },
-      } as LyricSMsg);
+    State.lyric.updatePanel = (text) =>
+      panel.webview.postMessage({ command: "lyric", text } as LyricSMsg);
+    State.lyric.updateIndex = (idx) =>
+      panel.webview.postMessage({ command: "index", idx } as LyricSMsg);
 
     setHtml();
+
+    // Dirty
+    setTimeout(() => State.lyric.updatePanel?.(State.lyric.text), 1024);
   }
 
   static async description(id: number, name: string): Promise<void> {

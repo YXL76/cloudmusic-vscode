@@ -120,7 +120,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         ButtonManager.buttonLyric(
           State.lyric.text[data.idx].at(State.lyric.type)
         );
-        State.lyric.updatePanel?.(data.idx);
+        State.lyric.updateIndex?.(data.idx);
         break;
       case IPCPlayer.pause:
         ButtonManager.buttonPlay(false);
