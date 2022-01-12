@@ -22,7 +22,18 @@ impl Finalize for MediaSession {}
 
 impl MediaSession {
     #[inline]
-    fn new(hwnd: String) -> Self {
+    fn new(
+        #[cfg(all(
+            target_os = "windows",
+            any(target_arch = "x86_64", target_arch = "x86")
+        ))]
+        hwnd: String,
+        #[cfg(not(all(
+            target_os = "windows",
+            any(target_arch = "x86_64", target_arch = "x86")
+        )))]
+        _hwnd: String,
+    ) -> Self {
         const TITLE: &str = "Cloudmusic VSCode";
 
         #[cfg(all(
@@ -220,21 +231,18 @@ pub fn media_session_new(mut cx: FunctionContext) -> JsResult<JsValue> {
         .borrow_mut()
         .controls
         .attach(move |event: MediaControlEvent| {
-            let toggle_handler = toggle_handler.clone();
-            let next_handler = next_handler.clone();
-            let previous_handler = previous_handler.clone();
-            let stop_handler = stop_handler.clone();
+            let callback = match event {
+                MediaControlEvent::Play | MediaControlEvent::Pause | MediaControlEvent::Toggle => {
+                    toggle_handler.clone()
+                }
+                MediaControlEvent::Next => next_handler.clone(),
+                MediaControlEvent::Previous => previous_handler.clone(),
+                MediaControlEvent::Stop => stop_handler.clone(),
+                _ => return,
+            };
 
             channel.send(move |mut cx| {
-                let callback = match event {
-                    MediaControlEvent::Play
-                    | MediaControlEvent::Pause
-                    | MediaControlEvent::Toggle => toggle_handler.to_inner(&mut cx),
-                    MediaControlEvent::Next => next_handler.to_inner(&mut cx),
-                    MediaControlEvent::Previous => previous_handler.to_inner(&mut cx),
-                    MediaControlEvent::Stop => stop_handler.to_inner(&mut cx),
-                    _ => return Ok(()),
-                };
+                let callback = callback.to_inner(&mut cx);
                 let this = cx.undefined();
                 let args: [Handle<JsUndefined>; 0] = [];
                 callback.call(&mut cx, this, args)?;
