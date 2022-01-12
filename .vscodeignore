@@ -23,6 +23,7 @@ yarn.lock
 **/postcss.config.js
 **/tailwind.config.js
 Cargo.*
+docker/
 
 ## editors
 .vim
