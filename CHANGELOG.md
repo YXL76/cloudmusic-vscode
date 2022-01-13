@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.6.2] - 2022-01-13
+
+### Fixed
+
+- IPC: do not close socket on windows
+- Native: workflow for media session ([#591](https://github.com/YXL76/cloudmusic-vscode/issues/591))
+
 ## [9.6.1] - 2022-01-13
 
 - The binaries for version `9.6.0` are all wrong!!!
@@ -15,7 +22,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 ### Added
 
 - Commands: set the default file name for `cloudmusic.downloadSong` ([#612](https://github.com/YXL76/cloudmusic-vscode/issues/612))
-- Configuration: add cloudmusic.cache.path ([#620](https://github.com/YXL76/cloudmusic-vscode/issues/620))
+- Configuration: add `cloudmusic.cache.path` ([#620](https://github.com/YXL76/cloudmusic-vscode/issues/620))
 - Player: support native media control ([#591](https://github.com/YXL76/cloudmusic-vscode/issues/591))
 - Webview: new lyric panel ([#625](https://github.com/YXL76/cloudmusic-vscode/issues/625))
 - Package: support platform-specific extensions
