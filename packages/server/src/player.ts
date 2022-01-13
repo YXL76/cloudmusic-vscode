@@ -9,7 +9,6 @@ import type { NeteaseTypings } from "api";
 import { PersonalFm } from "./state";
 import { State } from "./state";
 import { TMP_DIR } from "./constant";
-import { platform } from "os";
 
 type NativePlayer = unknown;
 type NativeMediaSession = unknown;
@@ -179,7 +178,7 @@ export class Player {
   static mediaSession(pid?: string, init?: true) {
     if (!this._native) return;
     let hwnd = "";
-    if (platform() === "win32" && pid)
+    if (process.platform === "win32" && pid)
       hwnd = this._native.mediaSessionHwnd(pid);
     if (init || hwnd) {
       this._mediaSession = this._native.mediaSessionNew(

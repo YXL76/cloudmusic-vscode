@@ -1,13 +1,12 @@
 import { AccountViewProvider, IPC } from "../utils";
 import { PLAYER_MODE, VOLUME_KEY } from "../constant";
 import { Uri, workspace } from "vscode";
-import { arch, platform } from "os";
 import type { ExtensionContext } from "vscode";
 
 type NativeModule = `${NodeJS.Platform}-${string}.node`;
 
 export async function initPlayer(context: ExtensionContext): Promise<void> {
-  const name: NativeModule = `${platform()}-${arch()}.node`;
+  const name: NativeModule = `${process.platform}-${process.arch}.node`;
   const wasm =
     PLAYER_MODE === "wasm" ||
     (await (async () => {

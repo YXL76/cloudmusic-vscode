@@ -99,7 +99,7 @@ impl MediaSession {
             }
         }
 
-        let mut controls = match MediaControls::new(config(hwnd)) {
+        let controls = match MediaControls::new(config(hwnd)) {
             Ok(controls) => controls,
             // Access to other windows requires admin rights,
             // so it almost always fails on Windows, we still
