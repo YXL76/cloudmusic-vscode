@@ -175,6 +175,7 @@ jobs:
       - name: Copy file
         run: |
           mkdir -p build
+          mkdir -p .artifact/build
           cp .artifact/Linux-armv7/index.node     .artifact/build/linux-arm.node
           cp .artifact/macOS-aarch64/index.node   .artifact/build/darwin-arm64.node
           cp .artifact/Linux-aarch64/index.node   .artifact/build/linux-arm64.node

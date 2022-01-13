@@ -104,7 +104,7 @@ export const Lyric = (): JSX.Element => {
         );
       }, [focus])}
 
-      {/* <style>{"body::-webkit-scrollbar{display: none;}"}</style> */}
+      <style>{"body::-webkit-scrollbar{display: none;}"}</style>
       <div style={{ fontSize }} className="my-80">
         {lyric.map(([otext, ttext], idx) => (
           <div

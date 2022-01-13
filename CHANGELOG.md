@@ -6,6 +6,26 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.6.0] - 2022-01-13
+
+### Added
+
+- Commands: set the default file name for `cloudmusic.downloadSong` ([#612](https://github.com/YXL76/cloudmusic-vscode/issues/612))
+- Configuration: add cloudmusic.cache.path ([#620](https://github.com/YXL76/cloudmusic-vscode/issues/620))
+- Player: support native media control ([#591](https://github.com/YXL76/cloudmusic-vscode/issues/591))
+- Webview: new lyric panel ([#625](https://github.com/YXL76/cloudmusic-vscode/issues/625))
+- Package: support platform-specific extensions
+
+### Changed
+
+- Add `'use strict';` banner
+- Use `spawn` instead of `fork` to start the server
+- Use `export const enum`
+
+### Fixed
+
+- Webview: symbolic link file ([#618](https://github.com/YXL76/cloudmusic-vscode/issues/))
+
 ## [9.5.1] - 2021-11-22
 
 ### Fixed
