@@ -33,6 +33,9 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
+      - name: Setup nightly rust
+        run: rustup default nightly
+
       - name: Install rust target
         run: rustup target add wasm32-unknown-unknown
 
