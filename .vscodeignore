@@ -24,6 +24,7 @@ yarn.lock
 **/tailwind.config.js
 Cargo.*
 docker/
+Cross.toml
 
 ## editors
 .vim

@@ -43,20 +43,26 @@ const spawnConf = { cwd: rootPath, shell: false, windowsHide: true };
 // [vscode:prepublish] replacement
 spawnSync("yarn", ["build"], spawnConf);
 
-// Install vsce
-spawnSync("yarn", ["add", "vsce"], spawnConf);
+// Publish
+// Publish to Visual Studio Marketplace
+const publishArgs = [
+  "dlx",
+  "vsce",
+  "package",
+  "--no-dependencies",
+  "-p",
+  process.env["VSCE_TOKEN"],
+  "--target",
+];
 
-// Package
-const pkgArgs = ["vsce", "package", "--no-dependencies", "--target"];
-
-// Package native
+// Publish native
 for (const { name, base } of artifacts) {
   nodeTargets.delete(base);
   mkdirSync(buildPath, { recursive: true });
   copyFileSync(resolve(artifactPath, name), resolve(buildPath, name));
 
   for (const target of targetMap[base]) {
-    let res = spawnSync("yarn", [...pkgArgs, target], spawnConf);
+    let res = spawnSync("yarn", [...publishArgs, target], spawnConf);
     if (res.error) {
       throw res.error;
     }
@@ -65,36 +71,19 @@ for (const { name, base } of artifacts) {
   rmdirSync(buildPath, { recursive: true });
 }
 
-// Package wasm
+// Publish wasm
 for (const nodeTarget of nodeTargets) {
   for (const target of targetMap[nodeTarget]) {
-    let res = spawnSync("yarn", [...pkgArgs, target], spawnConf);
+    let res = spawnSync("yarn", [...publishArgs, target], spawnConf);
     if (res.error) {
       throw res.error;
     }
   }
 }
 
-// Publish
-// Publish to Visual Studio Marketplace
+// Clean up
 for (const target of vscodeTargets) {
   const file = resolve(rootPath, `cloudmusic-${target}-${version}.vsix`);
-  let res = spawnSync(
-    "yarn",
-    [
-      "vsce",
-      "publish",
-      "--no-dependencies",
-      "--packagePath",
-      file,
-      "-p",
-      process.env["VSCE_TOKEN"],
-    ],
-    spawnConf
-  );
-  if (res.error) {
-    throw res.error;
-  }
   rm(file, { force: true, recursive: true });
 }
 
@@ -103,20 +92,12 @@ mkdirSync(buildPath, { recursive: true });
 for (const { name } of artifacts) {
   copyFileSync(resolve(artifactPath, name), resolve(buildPath, name));
 }
-pkgArgs.pop();
-spawnSync("yarn", pkgArgs, spawnConf);
-// skip the error
-console.error(
-  spawnSync(
-    "yarn",
-    [
-      "dlx",
-      "ovsx",
-      "publish",
-      `cloudmusic-${version}.vsix`,
-      "-p",
-      process.env["OVSX_TOKEN"],
-    ],
-    spawnConf
-  ).error
+spawnSync("yarn", ["dlx", "vsce", "package", "--no-dependencies"], spawnConf);
+const vsix = `cloudmusic-${version}.vsix`;
+let { error } = spawnSync(
+  "yarn",
+  ["dlx", "ovsx", "publish", vsix, "-p", process.env["OVSX_TOKEN"]],
+  spawnConf
 );
+// skip the error
+console.error(error);
