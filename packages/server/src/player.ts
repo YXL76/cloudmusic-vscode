@@ -27,6 +27,8 @@ interface NativeModule {
   mediaSessionHwnd(pid: string): string;
   mediaSessionNew(
     hwnd: string,
+    play_handler: () => void,
+    pause_handler: () => void,
     toggle_handler: () => void,
     next_handler: () => void,
     previous_handler: () => void,
@@ -158,6 +160,8 @@ export class Player {
     if (init || hwnd) {
       this._mediaSession = this._native.mediaSessionNew(
         hwnd,
+        this.play.bind(this),
+        this.pause.bind(this),
         this.toggle.bind(this),
         () => IPCServer.sendToMaster({ t: IPCPlayer.next }),
         () => IPCServer.sendToMaster({ t: IPCPlayer.previous }),

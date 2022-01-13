@@ -219,10 +219,12 @@ pub fn media_session_hwnd(mut cx: FunctionContext) -> JsResult<JsString> {
 
 pub fn media_session_new(mut cx: FunctionContext) -> JsResult<JsValue> {
     let hwnd = cx.argument::<JsString>(0)?.value(&mut cx);
-    let toggle_handler = Arc::new(cx.argument::<JsFunction>(1)?.root(&mut cx));
-    let next_handler = Arc::new(cx.argument::<JsFunction>(2)?.root(&mut cx));
-    let previous_handler = Arc::new(cx.argument::<JsFunction>(3)?.root(&mut cx));
-    let stop_handler = Arc::new(cx.argument::<JsFunction>(4)?.root(&mut cx));
+    let play_handler = Arc::new(cx.argument::<JsFunction>(1)?.root(&mut cx));
+    let pause_handler = Arc::new(cx.argument::<JsFunction>(2)?.root(&mut cx));
+    let toggle_handler = Arc::new(cx.argument::<JsFunction>(3)?.root(&mut cx));
+    let next_handler = Arc::new(cx.argument::<JsFunction>(4)?.root(&mut cx));
+    let previous_handler = Arc::new(cx.argument::<JsFunction>(5)?.root(&mut cx));
+    let stop_handler = Arc::new(cx.argument::<JsFunction>(6)?.root(&mut cx));
 
     let media_session = cx.boxed(RefCell::new(MediaSession::new(hwnd)));
     let channel = cx.channel();
@@ -232,9 +234,9 @@ pub fn media_session_new(mut cx: FunctionContext) -> JsResult<JsValue> {
         .controls
         .attach(move |event: MediaControlEvent| {
             let callback = match event {
-                MediaControlEvent::Play | MediaControlEvent::Pause | MediaControlEvent::Toggle => {
-                    toggle_handler.clone()
-                }
+                MediaControlEvent::Play => play_handler.clone(),
+                MediaControlEvent::Pause => pause_handler.clone(),
+                MediaControlEvent::Toggle => toggle_handler.clone(),
                 MediaControlEvent::Next => next_handler.clone(),
                 MediaControlEvent::Previous => previous_handler.clone(),
                 MediaControlEvent::Stop => stop_handler.clone(),

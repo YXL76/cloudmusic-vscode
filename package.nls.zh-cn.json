@@ -27,7 +27,7 @@
   "commands.newLocalLibrary.title": "添加",
   "commands.next.title": "下一首",
   "commands.openLocalLibrary.title": "打开",
-  "commands.play.title": "播放",
+  "commands.playSong.title": "播放",
   "commands.playlistComment.title": "评论",
   "commands.playlistDetail.title": "详情",
   "commands.playLocalFile.title": "播放",

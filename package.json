@@ -205,9 +205,9 @@
         "title": "%commands.addSong.title%"
       },
       {
-        "command": "cloudmusic.play",
+        "command": "cloudmusic.playSong",
         "icon": "$(play)",
-        "title": "%commands.play.title%"
+        "title": "%commands.playSong.title%"
       },
       {
         "command": "cloudmusic.deleteSong",
@@ -478,7 +478,7 @@
           "when": "false"
         },
         {
-          "command": "cloudmusic.play",
+          "command": "cloudmusic.playSong",
           "when": "false"
         },
         {
@@ -656,7 +656,7 @@
           "when": "view == playlist && viewItem == QueueItemTreeItem"
         },
         {
-          "command": "cloudmusic.play",
+          "command": "cloudmusic.playSong",
           "group": "inline",
           "when": "view == queue && viewItem == QueueItemTreeItem || view == queue && viewItem == LocalFileTreeItem || view == queue && viewItem == ProgramTreeItem"
         },
