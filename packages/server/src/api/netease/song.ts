@@ -85,6 +85,17 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
     } else ++tidx; // Just drop the text
   }
 
+  while (oidx < o.length) {
+    const [otime, otext] = o[oidx++];
+    time.push(otime);
+    text.push([otext] as [string]);
+  }
+  while (tidx < t.length) {
+    const [ttime, ttext] = t[tidx];
+    time.push(ttime);
+    text.push([ttext] as [string]);
+  }
+
   const len = time.length;
   if (len === 0) {
     time.push(0);
