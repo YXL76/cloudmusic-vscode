@@ -1,3 +1,5 @@
+#![feature(bool_to_option)]
+
 pub mod media;
 pub mod player;
 
@@ -24,6 +26,7 @@ fn main(mut cx: ModuleContext) -> NeonResult<()> {
     cx.export_function("mediaSessionHwnd", media_session_hwnd)?;
     cx.export_function("mediaSessionNew", media_session_new)?;
     cx.export_function("mediaSessionSetMetadata", media_session_set_metadata)?;
+    cx.export_function("mediaSessionSetPlayback", media_session_set_playback)?;
 
     Ok(())
 }

@@ -42,6 +42,11 @@ interface NativeModule {
     cover_url: string,
     duration: number
   ): void;
+  mediaSessionSetPlayback(
+    mediaSession: NativeMediaSession,
+    playing: boolean,
+    position: number
+  ): void;
 }
 
 let prefetchLock = false;
@@ -115,6 +120,23 @@ export class Player {
 
   private static _mediaSession: NativeMediaSession;
 
+  private static _playing = false;
+
+  static get playing() {
+    return this._playing;
+  }
+
+  static set playing(value: boolean) {
+    if (this._playing !== value) {
+      this._playing = value;
+      if (this._native) {
+        const pos = this._native.playerPosition(this._player);
+        this._native.mediaSessionSetPlayback(this._mediaSession, value, pos);
+      }
+      IPCServer.broadcast({ t: value ? IPCPlayer.play : IPCPlayer.pause });
+    }
+  }
+
   static init(wasm: boolean, name = "", pid?: string, volume?: number): void {
     if (this._wasm || this._native) return;
     if (!wasm) {
@@ -127,9 +149,9 @@ export class Player {
       this.mediaSession(pid, true);
 
       setInterval(() => {
-        if (!State.playing) return;
+        if (!this._playing) return;
         if (Player.empty()) {
-          State.playing = false;
+          this.playing = false;
           IPCServer.sendToMaster({ t: IPCPlayer.end });
           return;
         }
@@ -237,7 +259,7 @@ export class Player {
     }
 
     this.next = "next" in data ? data["next"] ?? 0 : 0;
-    State.playing = true;
+    this.playing = true;
     prefetchLock = false;
 
     if (network)
@@ -269,28 +291,28 @@ export class Player {
   }
 
   static toggle(): void {
-    State.playing ? Player.pause() : Player.play();
+    this._playing ? this.pause() : this.play();
   }
 
   static pause(): void {
     this._native?.playerPause(this._player);
     this._wasm?.pause();
-    State.playing = false;
+    this.playing = false;
   }
 
   static play(): void {
-    if (this._native?.playerPlay(this._player)) State.playing = true;
+    if (this._native?.playerPlay(this._player)) this.playing = true;
     this._wasm?.play();
   }
 
   static position(): number {
-    return this._native ? this._native.playerPosition(this._player) : 0;
+    return this._native?.playerPosition(this._player) || 0;
   }
 
   static stop(): void {
     this._native?.playerStop(this._player);
     this._wasm?.stop();
-    State.playing = false;
+    this.playing = false;
   }
 
   static volume(level: number): void {

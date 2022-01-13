@@ -1,5 +1,3 @@
-import { IPCPlayer } from "@cloudmusic/shared";
-import { IPCServer } from "./server";
 import { NeteaseAPI } from "./api";
 import type { NeteaseTypings } from "api";
 
@@ -18,19 +16,6 @@ export class State {
     delay: number;
     idx: number;
   } = { delay: -1.0, idx: 0, time: [0], text: [["~"]], user: [] };
-
-  private static _playing = false;
-
-  static get playing(): boolean {
-    return State._playing;
-  }
-
-  static set playing(value: boolean) {
-    State._playing = value;
-    IPCServer.broadcast({
-      t: value ? IPCPlayer.play : IPCPlayer.pause,
-    });
-  }
 }
 
 export class PersonalFm {

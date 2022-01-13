@@ -111,18 +111,16 @@ export class IPCServer {
         if (!this._first) {
           Player.play();
 
-          this.send(socket, {
-            t: IPCControl.retain,
-            items: this._retain,
-          });
+          this.send(socket, { t: IPCControl.retain, items: this._retain });
           this._retain = [];
 
           Player.wasmOpen();
         } else this._first = false;
       } else {
         this.sendToMaster({ t: IPCControl.new });
-        const tmp = State.playing;
-        State.playing = tmp;
+        this.send(socket, {
+          t: Player.playing ? IPCPlayer.play : IPCPlayer.pause,
+        });
       }
     })
       .on("error", logError)
@@ -202,11 +200,7 @@ export class IPCServer {
         break;
       case IPCControl.retain:
         if (data.items) this._retain = data.items as unknown[];
-        else
-          this.send(socket, {
-            t: IPCControl.retain,
-            items: this._retain,
-          });
+        else this.send(socket, { t: IPCControl.retain, items: this._retain });
         break;
       case IPCControl.pid:
         Player.mediaSession(data.pid);
@@ -218,7 +212,7 @@ export class IPCServer {
         State.lyric.delay = data.delay;
         break;
       case IPCPlayer.playing:
-        State.playing = data.playing;
+        Player.playing = data.playing;
         break;
       case IPCPlayer.position:
         posHandler(data.pos);

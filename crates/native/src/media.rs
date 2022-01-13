@@ -1,6 +1,9 @@
 use {
     neon::prelude::*,
-    souvlaki::{MediaControlEvent, MediaControls, MediaMetadata, PlatformConfig},
+    souvlaki::{
+        MediaControlEvent, MediaControls, MediaMetadata, MediaPlayback, MediaPosition,
+        PlatformConfig,
+    },
     std::{
         cell::RefCell,
         ffi::c_void,
@@ -96,7 +99,7 @@ impl MediaSession {
             }
         }
 
-        let controls = match MediaControls::new(config(hwnd)) {
+        let mut controls = match MediaControls::new(config(hwnd)) {
             Ok(controls) => controls,
             // Access to other windows requires admin rights,
             // so it almost always fails on Windows, we still
@@ -119,30 +122,24 @@ impl MediaSession {
         cover_url: String,
         duration: f64,
     ) {
-        let album = match album.is_empty() {
-            true => Some(album.as_str()),
-            false => None,
-        };
-        let artist = match artist.is_empty() {
-            true => Some(artist.as_str()),
-            false => None,
-        };
-        let cover_url = match cover_url.starts_with("http") {
-            true => Some(cover_url.as_str()),
-            false => None,
-        };
-        let duration = match duration == 0. {
-            true => Some(Duration::from_secs_f64(duration)),
-            false => None,
-        };
-
         self.controls
             .set_metadata(MediaMetadata {
                 title: Some(title.as_str()),
-                album,
-                artist,
-                cover_url,
-                duration,
+                album: album.is_empty().then_some(album.as_str()),
+                artist: artist.is_empty().then_some(artist.as_str()),
+                cover_url: cover_url.starts_with("http").then_some(cover_url.as_str()),
+                duration: (duration == 0.).then_some(Duration::from_secs_f64(duration)),
+            })
+            .unwrap();
+    }
+
+    #[inline]
+    fn set_playback(&mut self, playing: bool, position: f64) {
+        let progress = Some(MediaPosition(Duration::from_secs_f64(position)));
+        self.controls
+            .set_playback(match playing {
+                true => MediaPlayback::Playing { progress },
+                false => MediaPlayback::Paused { progress },
             })
             .unwrap();
     }
@@ -252,6 +249,11 @@ pub fn media_session_new(mut cx: FunctionContext) -> JsResult<JsValue> {
             });
         });
 
+    let _ = media_session
+        .borrow_mut()
+        .controls
+        .set_playback(MediaPlayback::Stopped);
+
     Ok(media_session.upcast())
 }
 
@@ -266,6 +268,16 @@ pub fn media_session_set_metadata(mut cx: FunctionContext) -> JsResult<JsUndefin
     media_session
         .borrow_mut()
         .set_metadata(title, album, artist, cover_url, duration);
+
+    Ok(cx.undefined())
+}
+
+pub fn media_session_set_playback(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+    let media_session = cx.argument::<JsBox<RefCell<MediaSession>>>(0)?;
+    let playing = cx.argument::<JsBoolean>(1)?.value(&mut cx);
+    let position = cx.argument::<JsNumber>(2)?.value(&mut cx);
+
+    media_session.borrow_mut().set_playback(playing, position);
 
     Ok(cx.undefined())
 }
