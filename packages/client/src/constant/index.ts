@@ -1,12 +1,17 @@
 export * from "./shared";
 
 import type { WorkspaceConfiguration } from "vscode";
+import { homedir } from "os";
+import { resolve } from "path";
 import { workspace } from "vscode";
 
 export const CONF = (): WorkspaceConfiguration =>
   workspace.getConfiguration("cloudmusic");
 
 const kConf = CONF();
+
+export const SETTING_DIR =
+  kConf.get<string | null>("cache.path") || resolve(homedir(), ".cloudmusic");
 
 export const AUTO_CHECK = kConf.get("account.autoCheck", false);
 export const MUSIC_QUALITY = (conf: WorkspaceConfiguration): number =>

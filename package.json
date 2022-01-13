@@ -318,6 +318,16 @@
             "scope": "window",
             "type": "boolean"
           },
+          "cloudmusic.cache.path": {
+            "default": null,
+            "markdownDescription": "%configuration.cache.path.markdownDescription%",
+            "format": "uri",
+            "scope": "window",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "cloudmusic.cache.size": {
             "default": 4096,
             "markdownDescription": "%configuration.cache.size.markdownDescription%",

@@ -55,6 +55,7 @@
   "commands.unsubRadio.title": "Unsubscribe",
   "commands.volume.title": "Volume",
   "configuration.account.autoCheck.markdownDescription": "Auto check when extension is active",
+  "configuration.cache.path.markdownDescription": "Default value is `~/.cloudmusic`",
   "configuration.cache.size.markdownDescription": "Set maximum cache size (`128 ~ 10240 MB`)",
   "configuration.music.quality.enumDescriptions.high": "High Quality",
   "configuration.music.quality.enumDescriptions.lossless": "Lossless Quality",

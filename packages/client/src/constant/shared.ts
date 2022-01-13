@@ -1,10 +1,9 @@
-import { homedir, platform } from "os";
 import {
   ipcAppspace,
   ipcBroadcastServerId,
   ipcServerId,
 } from "@cloudmusic/shared";
-import { resolve } from "path";
+import { platform } from "os";
 
 export const ipcServerPath =
   platform() === "win32"
@@ -19,5 +18,3 @@ export const ipcBroadcastServerPath =
         .replace(/^\//, "")
         .replace(/\//g, "-")}`
     : `/tmp/${ipcAppspace}${ipcBroadcastServerId}`;
-
-export const SETTING_DIR = resolve(homedir(), ".cloudmusic");

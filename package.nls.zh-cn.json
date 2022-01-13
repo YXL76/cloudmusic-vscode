@@ -55,6 +55,7 @@
   "commands.unsubRadio.title": "取消收藏",
   "commands.volume.title": "音量",
   "configuration.account.autoCheck.markdownDescription": "自动签到",
+  "configuration.cache.path.markdownDescription": "默认值为 `~/.cloudmusic`",
   "configuration.cache.size.markdownDescription": "设置缓存限制 (`128 ~ 10240 MB`)",
   "configuration.music.quality.enumDescriptions.high": "极高",
   "configuration.music.quality.enumDescriptions.lossless": "无损",
