@@ -10,7 +10,7 @@ const {
 } = require("fs");
 const { resolve, basename, extname } = require("path");
 const { spawnSync } = require("child_process");
-const { rm } = require("fs/promises");
+// const { rm } = require("fs/promises");
 
 const rootPath = resolve(__dirname, "..");
 const buildPath = resolve(rootPath, "build");
@@ -19,6 +19,7 @@ const artifactPath = resolve(rootPath, ".artifact", "build");
 const { version } = JSON.parse(
   readFileSync(resolve(rootPath, "package.json"), "utf8")
 );
+console.log(`Building extension version ${version}`);
 
 const targetMap = {
   // [Node target]: [VS Code target]
@@ -32,7 +33,7 @@ const targetMap = {
   "darwin-arm64": ["darwin-arm64"],
 };
 const nodeTargets = new Set(Object.keys(targetMap));
-const vscodeTargets = new Set(Object.values(targetMap).flat());
+// const vscodeTargets = new Set(Object.values(targetMap).flat());
 
 const artifacts = readdirSync(artifactPath).map((name) => {
   const ext = extname(name);
@@ -42,13 +43,15 @@ const spawnConf = { cwd: rootPath, shell: false, windowsHide: true };
 
 // [vscode:prepublish] replacement
 spawnSync("yarn", ["build"], spawnConf);
+console.log("Build complete");
 
 // Publish
 // Publish to Visual Studio Marketplace
 const publishArgs = [
   "dlx",
+  "-q",
   "vsce",
-  "package",
+  "publish",
   "--no-dependencies",
   "-p",
   process.env["VSCE_TOKEN"],
@@ -62,42 +65,53 @@ for (const { name, base } of artifacts) {
   copyFileSync(resolve(artifactPath, name), resolve(buildPath, name));
 
   for (const target of targetMap[base]) {
-    let res = spawnSync("yarn", [...publishArgs, target], spawnConf);
-    if (res.error) {
-      throw res.error;
-    }
+    let { stdout, stderr } = spawnSync(
+      "yarn",
+      [...publishArgs, target],
+      spawnConf
+    );
+    console.log(stdout.toString(), stderr.toString());
   }
 
   rmdirSync(buildPath, { recursive: true });
 }
+console.log("Native extension published");
 
 // Publish wasm
 for (const nodeTarget of nodeTargets) {
   for (const target of targetMap[nodeTarget]) {
-    let res = spawnSync("yarn", [...publishArgs, target], spawnConf);
-    if (res.error) {
-      throw res.error;
-    }
+    let { stdout, stderr } = spawnSync(
+      "yarn",
+      [...publishArgs, target],
+      spawnConf
+    );
+    console.log(stdout.toString(), stderr.toString());
   }
 }
+console.log("WASM extension published");
 
 // Clean up
-for (const target of vscodeTargets) {
+/* for (const target of vscodeTargets) {
   const file = resolve(rootPath, `cloudmusic-${target}-${version}.vsix`);
   rm(file, { force: true, recursive: true });
 }
+console.log("Cleaned up"); */
 
 // Publish to Open VSX Registry
 mkdirSync(buildPath, { recursive: true });
 for (const { name } of artifacts) {
   copyFileSync(resolve(artifactPath, name), resolve(buildPath, name));
 }
-spawnSync("yarn", ["dlx", "vsce", "package", "--no-dependencies"], spawnConf);
-const vsix = `cloudmusic-${version}.vsix`;
-let { error } = spawnSync(
+spawnSync(
   "yarn",
-  ["dlx", "ovsx", "publish", vsix, "-p", process.env["OVSX_TOKEN"]],
+  ["dlx", "-q", "vsce", "package", "--no-dependencies"],
+  spawnConf
+);
+const vsix = `cloudmusic-${version}.vsix`;
+let { stdout, stderr } = spawnSync(
+  "yarn",
+  ["dlx", "-q", "ovsx", "publish", vsix, "-p", process.env["OVSX_TOKEN"]],
   spawnConf
 );
 // skip the error
-console.error(error);
+console.log(stdout.toString(), stderr.toString());

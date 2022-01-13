@@ -210,9 +210,9 @@ dependencies = [
 
 [[package]]
 name = "combine"
-version = "4.6.2"
+version = "4.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b2b2f5d0ee456f3928812dfc8c6d9a1d592b98678f6d56db9b0cd2b7bc6c8db5"
+checksum = "50b727aacc797f9fc28e355d21f34709ac4fc9adecfe470ad07b8f4464f53062"
 dependencies = [
  "bytes",
  "memchr",
@@ -332,7 +332,7 @@ dependencies = [
 [[package]]
 name = "cpal"
 version = "0.13.4"
-source = "git+https://github.com/RustAudio/cpal?branch=master#7ff54f17a733b18b6c457e240f01e43f2c910632"
+source = "git+https://github.com/RustAudio/cpal?branch=master#ee6a9aab8a9065a2e6c16110e275a3252418119e"
 dependencies = [
  "alsa",
  "core-foundation-sys 0.8.3",
@@ -1136,7 +1136,7 @@ checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
 [[package]]
 name = "rodio"
 version = "0.14.0"
-source = "git+https://github.com/RustAudio/rodio?branch=master#2c171d668393817fd00845477898d39efecd1390"
+source = "git+https://github.com/RustAudio/rodio?branch=master#806ecaa60ad0b138b0fa9ee619310de0847f1875"
 dependencies = [
  "claxon",
  "cpal",

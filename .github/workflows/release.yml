@@ -213,9 +213,11 @@ jobs:
       - name: Build wasm
         run: wasm-pack build crates/wasm/ --out-dir ../../packages/wasm --out-name index
 
+      - name: Install dependencies
+        run: yarn
+
       - name: Publish
         run: |
-          yarn
           VSCE_TOKEN=${{ secrets.VSCE_TOKEN }} OVSX_TOKEN=${{ secrets.OVSX_TOKEN }} yarn publish
           echo "VSIX_PATH=$(find . -maxdepth 1 -type f -iname "*.vsix" | head -1)" >> $GITHUB_ENV
           echo "VSIX_NAME=$(basename $(find . -maxdepth 1 -type f -iname "*.vsix" | head -1))" >> $GITHUB_ENV
