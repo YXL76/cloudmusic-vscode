@@ -6,6 +6,10 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.6.1] - 2022-01-13
+
+- The binaries for version `9.6.0` are all wrong!!!
+
 ## [9.6.0] - 2022-01-13
 
 ### Added
