@@ -66,8 +66,10 @@ export function posHandler(pos: number): void {
   }
 
   const lpos = pos - State.lyric.delay;
+  const prev = State.lyric.idx;
   while (State.lyric.time[State.lyric.idx] <= lpos) ++State.lyric.idx;
-  IPCServer.broadcast({ t: IPCPlayer.lyricIndex, idx: State.lyric.idx - 1 });
+  if (prev !== State.lyric.idx)
+    IPCServer.broadcast({ t: IPCPlayer.lyricIndex, idx: State.lyric.idx - 1 });
 }
 
 class WasmPlayer {

@@ -85,6 +85,23 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
     } else ++tidx; // Just drop the text
   }
 
+  const len = time.length;
+  if (len === 0) {
+    time.push(0);
+    text.push(["~"] as [string]);
+  } else {
+    // Interval greater than 8s
+    // FIXME: is it necessary? And we can't modify array while iterating it
+    /* for (let j = 1; j < len; ++j) {
+      const i = j - 1;
+      const interval = time[j] - time[i];
+      if (interval > 8) {
+        time.splice(j, 0, time[i] + interval / 4);
+        text.splice(j, 0, ["~"] as [string]);
+      }
+    } */
+  }
+
   type Lyric = NeteaseTypings.LyricData & { ctime: number };
   const lyric: Lyric = { ctime: Date.now(), time, text, user };
 

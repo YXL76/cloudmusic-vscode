@@ -187,6 +187,7 @@ export class State {
   // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
   static set lyric(value: Lyric) {
     this._lyric = value;
+    ButtonManager.buttonLyric();
     void this.context.globalState.update(LYRIC_KEY, value);
     value.updatePanel?.(value.text);
   }
