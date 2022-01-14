@@ -1,7 +1,7 @@
 import { IPCPlayer, IPCWasm } from "@cloudmusic/shared";
 import { basename, resolve } from "path";
 import { downloadMusic, getMusicPath, logError } from "./utils";
-import { readdir, stat, unlink } from "fs/promises";
+import { readdir, rm, stat } from "fs/promises";
 import { IPCServer } from "./server";
 import { MusicCache } from "./cache";
 import { NeteaseAPI } from "./api";
@@ -179,7 +179,7 @@ export class Player {
               const path = resolve(TMP_DIR, file);
               void stat(path).then(({ mtime }) => {
                 if (Date.now() - mtime.getTime() > 480000)
-                  unlink(path).catch(logError);
+                  rm(path).catch(logError);
               });
             }
           })

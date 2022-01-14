@@ -4,9 +4,9 @@ import {
   mkdir,
   readFile,
   readdir,
+  rm,
   rmdir,
   stat,
-  unlink,
   writeFile,
 } from "fs/promises";
 import type { NeteaseTypings } from "api";
@@ -48,7 +48,7 @@ export class LyricCache {
       ) as LyricCacheItem;
       // 7 * 24 * 60 * 60 * 1000
       if (Date.now() - data.ctime < 604800000) return data;
-      void unlink(path);
+      void rm(path, { recursive: true, force: true });
     } catch {}
     return;
   }
@@ -104,7 +104,7 @@ export class MusicCache {
 
     for (const name of names) {
       const path = resolve(MUSIC_CACHE_DIR, name);
-      unlink(path).catch(logError);
+      rm(path, { recursive: true, force: true }).catch(logError);
     }
   }
 
@@ -183,9 +183,7 @@ export class MusicCache {
       this._list.removeNode(node);
       this._cache.delete(key);
       this._size -= node.value.size;
-      try {
-        void unlink(resolve(MUSIC_CACHE_DIR, key));
-      } catch {}
+      void rm(resolve(MUSIC_CACHE_DIR, key), { recursive: true, force: true });
     }
   }
 }

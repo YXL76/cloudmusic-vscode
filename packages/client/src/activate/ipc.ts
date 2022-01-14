@@ -28,7 +28,7 @@ import {
   RadioProvider,
 } from "../treeview";
 import { commands, workspace } from "vscode";
-import { readdir, unlink } from "fs/promises";
+import { readdir, rm } from "fs/promises";
 import type { ExtensionContext } from "vscode";
 import type { PlayTreeItemData } from "../treeview";
 import { QueueProvider } from "../treeview";
@@ -247,7 +247,10 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
             dirent.name.startsWith("err") &&
             dirent.name !== log
           )
-            unlink(resolve(SETTING_DIR, dirent.name)).catch(console.error);
+            rm(resolve(SETTING_DIR, dirent.name), {
+              recursive: true,
+              force: true,
+            }).catch(console.error);
         }
       })
       .catch(console.error);

@@ -19,7 +19,7 @@ import {
 } from "./constant";
 import type { Server, Socket } from "net";
 import { downloadMusic, logError } from "./utils";
-import { readFile, rmdir, unlink, writeFile } from "fs/promises";
+import { readFile, rm, rmdir, writeFile } from "fs/promises";
 import { broadcastProfiles } from "./api/netease/helper";
 import { createServer } from "net";
 
@@ -44,7 +44,7 @@ export class IPCServer {
   static async init(): Promise<void> {
     const [buf] = await Promise.allSettled([
       () => readFile(RETAIN_FILE),
-      () => unlink(ipcServerPath),
+      () => rm(ipcServerPath, { recursive: true, force: true }),
     ]);
     if (buf.status === "fulfilled")
       try {
@@ -238,9 +238,7 @@ export class IPCBroadcastServer {
   private static _server: Server;
 
   static async init(): Promise<void> {
-    await unlink(ipcBroadcastServerPath).catch(() => {
-      //
-    });
+    await rm(ipcBroadcastServerPath, { recursive: true, force: true });
 
     this._server = createServer((socket) => {
       this._sockets.add(socket);
