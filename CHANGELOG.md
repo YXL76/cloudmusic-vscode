@@ -6,6 +6,19 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.7.0] - 2022-01-14
+
+### Added
+
+- Cache: save music by name
+- Configuration: `cloudmusic.host.autoStart`
+- Player: support adjusting playback speed
+- Treeview: automatically add cache directory
+
+### Fixed
+
+- Personal FM logic
+
 ## [9.6.2] - 2022-01-13
 
 ### Fixed
