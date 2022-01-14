@@ -6,7 +6,7 @@ import { workspace } from "vscode";
 export function initCache(context: ExtensionContext): void {
   const updateMQ = () => {
     if (context.globalState.get<string>(CACHE_KEY) !== MUSIC_CACHE_DIR_NAME())
-      IPC.music();
+      IPC.cache();
     void context.globalState.update(CACHE_KEY, MUSIC_CACHE_DIR_NAME());
   };
 

@@ -39,8 +39,12 @@ export function initLocal(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.deleteLocalLibrary",
       ({ label }: LocalLibraryTreeItem) => {
-        LocalProvider.folders.splice(LocalProvider.folders.indexOf(label), 1);
-        LocalProvider.refresh();
+        const idx = LocalProvider.folders.indexOf(label);
+        // Do not delete the cache folder
+        if (idx > 0) {
+          LocalProvider.folders.splice(idx - 1, 1);
+          LocalProvider.refresh();
+        }
       }
     ),
 

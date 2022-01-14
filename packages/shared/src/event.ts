@@ -10,7 +10,7 @@ export const enum IPCControl {
   setting = "102",
   lyric = "103",
   master = "104",
-  music = "105",
+  cache = "105",
   netease = "106",
   new = "107",
   retain = "108",

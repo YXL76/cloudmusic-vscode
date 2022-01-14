@@ -33,14 +33,18 @@ export type IPCClientMsg =
       { mq: number; cs: number; https: boolean; foreign: boolean }
     >
   | IPCMsg<IPCControl.lyric>
-  | IPCMsg<IPCControl.music>
+  | IPCMsg<IPCControl.cache>
   | IPCMsg<IPCControl.netease>
   | IPCMsg<IPCControl.retain, { items?: readonly unknown[] }>
   | IPCMsg<IPCControl.pid, { pid?: string }>
   | IPCMsg<IPCPlayer.load, { url: string; local: true }>
   | IPCMsg<
       IPCPlayer.load,
-      { item: NeteaseTypings.SongsItem; pid: number; next: number | undefined }
+      {
+        item: NeteaseTypings.SongsItem;
+        pid: number;
+        next?: { id: number; name: string };
+      }
     >
   | IPCMsg<IPCPlayer.lyricDelay, { delay: number }>
   | IPCMsg<IPCPlayer.playing, { playing: boolean }>

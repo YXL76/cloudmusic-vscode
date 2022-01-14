@@ -130,18 +130,12 @@ export class IPC {
     ipcB.send({ t: IPCPlayer.load });
 
     if (playItem instanceof LocalFileTreeItem) {
-      ipc.send({
-        t: IPCPlayer.load,
-        url: playItem.tooltip,
-        local: true,
-      });
+      ipc.send({ t: IPCPlayer.load, url: playItem.tooltip, local: true });
     } else {
-      const {
-        data: { pid },
-        item,
-      } = playItem;
-      const next = State.fm ? undefined : QueueProvider.next?.item.id;
-      ipc.send({ t: IPCPlayer.load, item, pid, next });
+      const { data, item } = playItem;
+      let next;
+      if (!State.fm) next = QueueProvider.next?.item;
+      ipc.send({ t: IPCPlayer.load, item, pid: data.pid, next });
     }
   }
 
@@ -172,8 +166,8 @@ export class IPC {
     ipc.send({ t: IPCControl.lyric });
   }
 
-  static music(): void {
-    ipc.send({ t: IPCControl.music });
+  static cache(): void {
+    ipc.send({ t: IPCControl.cache });
   }
 
   static neteaseAc(): void {

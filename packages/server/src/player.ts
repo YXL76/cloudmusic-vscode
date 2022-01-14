@@ -52,15 +52,18 @@ interface NativeModule {
 let prefetchLock = false;
 
 async function prefetch() {
-  const id = State.fm ? (await PersonalFm.next())?.id || 0 : Player.next;
+  const { id, name } = (State.fm ? await PersonalFm.next() : Player.next) || {};
+  if (!id || !name) return;
   const idS = `${id}`;
-  if (idS === "0" || MusicCache.get(idS)) return;
+  if (MusicCache.get(idS)) return;
 
   const { url, md5 } = await NeteaseAPI.songUrl(idS);
   if (!url) return;
-
   const path = resolve(TMP_DIR, idS);
-  void downloadMusic(url, idS, path, !State.fm, md5);
+
+  let cache;
+  if (!State.fm) cache = { id: idS, name, path, md5 };
+  void downloadMusic(url, name, cache);
   void NeteaseAPI.lyric(id);
 }
 
@@ -104,7 +107,7 @@ class WasmPlayer {
 }
 
 export class Player {
-  static next = 0;
+  static next?: { id: number; name: string };
 
   private static _dt = 0;
 
@@ -168,7 +171,7 @@ export class Player {
     } else this._wasm = new WasmPlayer();
 
     setInterval(
-      () => {
+      () =>
         void readdir(TMP_DIR)
           .then((files) => {
             for (const file of files) {
@@ -180,8 +183,7 @@ export class Player {
               });
             }
           })
-          .catch();
-      },
+          .catch(logError),
       // 1000 * 60 * 8 = 480000
       480000
     );
@@ -215,7 +217,7 @@ export class Player {
       | {
           item: NeteaseTypings.SongsItem;
           pid: number;
-          next: number | undefined;
+          next?: { id: number; name: string };
         }
   ): Promise<void> {
     const loadtime = Date.now();
@@ -228,11 +230,9 @@ export class Player {
     let path: string | void = undefined;
     const local = "local" in data && data.local;
     const network = "item" in data && data.item;
-    if (local) {
-      path = data.url;
-    } else if (network) {
-      path = await getMusicPath(data.item.id, !!this._wasm);
-    }
+    if (local) path = data.url;
+    else if (network)
+      path = await getMusicPath(data.item.id, data.item.name, !!this._wasm);
 
     if (!path) {
       this._failedEnd();
@@ -247,14 +247,7 @@ export class Player {
       IPCServer.broadcast({ t: IPCPlayer.loaded });
 
       if (local) {
-        this._native.mediaSessionSetMetadata(
-          this._mediaSession,
-          basename(path),
-          "",
-          "",
-          "",
-          0
-        ); // eslint-disable-line
+        this._native.mediaSessionSetMetadata(this._mediaSession, basename(path), "", "", "", 0); // eslint-disable-line
       } else if (network) {
         this._native.mediaSessionSetMetadata(
           this._mediaSession,
@@ -269,7 +262,7 @@ export class Player {
       this._wasm.load(path);
     }
 
-    this.next = "next" in data ? data["next"] ?? 0 : 0;
+    this.next = network ? data["next"] : undefined;
     this.playing = true;
     prefetchLock = false;
 

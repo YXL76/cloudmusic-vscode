@@ -5,6 +5,7 @@ import {
   TreeItemCollapsibleState,
 } from "vscode";
 import type { PlayTreeItem, PlayTreeItemData } from ".";
+import { MUSIC_CACHE_DIR } from "../constant";
 import type { TreeDataProvider } from "vscode";
 import { fromFile } from "file-type";
 import { readdir } from "fs/promises";
@@ -62,7 +63,7 @@ export class LocalProvider
     element?: LocalLibraryTreeItem
   ): Promise<(LocalFileTreeItem | LocalLibraryTreeItem)[]> {
     if (!element)
-      return LocalProvider.folders.map(
+      return [MUSIC_CACHE_DIR, ...LocalProvider.folders].map(
         (folder) => new LocalLibraryTreeItem(folder)
       );
 

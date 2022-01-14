@@ -16,7 +16,6 @@ import Yallist from "yallist";
 import { logError } from "./utils";
 import md5File from "md5-file";
 import { resolve } from "path";
-import { writeFileSync } from "fs";
 
 export const apiCache = new NodeCache({
   stdTTL: 300,
@@ -65,6 +64,7 @@ export class LyricCache {
 }
 
 type MusicCacheNode = {
+  name: string;
   key: string;
   size: number;
 };
@@ -82,38 +82,29 @@ export class MusicCache {
   private static readonly _listPath = resolve(CACHE_DIR, "music-list");
 
   static async init(): Promise<void> {
-    const set = new Set(
+    const names = new Set(
       (await readdir(MUSIC_CACHE_DIR, { withFileTypes: true }))
         .filter((i) => i.isFile())
         .map(({ name }) => name)
     );
+
     try {
       const list = JSON.parse(
         (await readFile(this._listPath)).toString()
       ) as readonly MusicCacheNode[];
       list
-        .filter(({ key }) => set.has(key))
+        .filter(({ name }) => names.has(name))
         .reverse()
         .forEach((value) => {
-          set.delete(value.key);
+          names.delete(value.key);
           this._addNode(value);
         });
-    } catch (err) {
-      logError(err);
-    }
+    } catch {}
+    void this.store();
 
-    try {
-      const names = [...set];
-      (
-        await Promise.all(
-          names.map((name) => stat(resolve(MUSIC_CACHE_DIR, name)))
-        )
-      ).forEach(({ size }, index) =>
-        this._addNode({ key: names[index], size })
-      );
-      this.store();
-    } catch (err) {
-      logError(err);
+    for (const name of names) {
+      const path = resolve(MUSIC_CACHE_DIR, name);
+      unlink(path).catch(logError);
     }
   }
 
@@ -129,15 +120,12 @@ export class MusicCache {
     this._cache.clear();
     this._size = 0;
     while (this._list.length) this._list.pop();
-    this.store();
+    void this.store();
   }
 
-  static store(): void {
-    try {
-      writeFileSync(this._listPath, JSON.stringify(this._list.toArray()));
-    } catch (err) {
-      logError(err);
-    }
+  static async store(): Promise<void> {
+    const json = JSON.stringify(this._list.toArray());
+    await writeFile(this._listPath, json).catch(logError);
   }
 
   static get(key: string): string | void {
@@ -162,13 +150,19 @@ export class MusicCache {
     return; */
   }
 
-  static async put(key: string, path: string, md5?: string): Promise<void> {
-    const target = resolve(MUSIC_CACHE_DIR, key);
+  static async put(
+    key: string,
+    name: string,
+    path: string,
+    md5?: string
+  ): Promise<void> {
+    const target = resolve(MUSIC_CACHE_DIR, name);
     try {
       await copyFile(path, target);
       const { size } = await stat(target);
       this._deleteNode(key);
-      if (!md5 || (await md5File(target)) === md5) this._addNode({ key, size });
+      if (!md5 || (await md5File(target)) === md5)
+        this._addNode({ key, name, size });
     } catch {}
   }
 

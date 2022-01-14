@@ -28,8 +28,8 @@ const tryMkdir = (path: string) => {
 };
 
 Player.init();
-IPCServer.init();
-IPCBroadcastServer.init();
+void IPCServer.init();
+void IPCBroadcastServer.init();
 
 tryMkdir(TMP_DIR);
 tryMkdir(CACHE_DIR);

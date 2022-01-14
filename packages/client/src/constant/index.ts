@@ -12,6 +12,7 @@ const kConf = CONF();
 
 export const SETTING_DIR =
   kConf.get<string | null>("cache.path") || resolve(homedir(), ".cloudmusic");
+export const MUSIC_CACHE_DIR = resolve(SETTING_DIR, "cache", "music");
 
 export const AUTO_START = kConf.get("host.autoStart", false);
 export const AUTO_CHECK = kConf.get("account.autoCheck", false);
@@ -34,7 +35,7 @@ export const QUEUE_INIT = kConf.get<"none" | "recommend" | "restore">(
 );
 
 export const ACCOUNT_KEY = "account-v2";
-export const CACHE_KEY = "cache-v2";
+export const CACHE_KEY = "cache-v3";
 export const LYRIC_CACHE_KEY = "lyric-cache-v5";
 export const COOKIE_KEY = "cookie-v2";
 export const BUTTON_KEY = "button-v2";

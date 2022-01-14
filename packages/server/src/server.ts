@@ -19,8 +19,7 @@ import {
 } from "./constant";
 import type { Server, Socket } from "net";
 import { downloadMusic, logError } from "./utils";
-import { readFileSync, rmdirSync, unlinkSync, writeFileSync } from "fs";
-import { basename } from "path";
+import { readFile, rmdir, unlink, writeFile } from "fs/promises";
 import { broadcastProfiles } from "./api/netease/helper";
 import { createServer } from "net";
 
@@ -42,20 +41,15 @@ export class IPCServer {
     return socket;
   }
 
-  static init(): void {
-    try {
-      unlinkSync(ipcServerPath);
-    } catch {}
-
-    try {
-      this._retain = JSON.parse(
-        readFileSync(RETAIN_FILE).toString()
-      ) as unknown[];
-    } catch {}
-
-    /* readFile(RETAIN_FILE)
-      .then((data) => (this._retain = JSON.parse(data.toString()) as unknown[]))
-      .catch(logError); */
+  static async init(): Promise<void> {
+    const [buf] = await Promise.allSettled([
+      () => readFile(RETAIN_FILE),
+      () => unlink(ipcServerPath),
+    ]);
+    if (buf.status === "fulfilled")
+      try {
+        this._retain = JSON.parse(buf.value.toString()) as unknown[];
+      } catch {}
 
     this._server = createServer((socket) => {
       if (this._timer) {
@@ -92,14 +86,11 @@ export class IPCServer {
               if (this._sockets.size) return;
               this.stop();
               IPCBroadcastServer.stop();
-              MusicCache.store();
-              try {
-                rmdirSync(TMP_DIR, { recursive: true });
-              } catch {}
-              try {
-                writeFileSync(RETAIN_FILE, JSON.stringify(this._retain));
-              } catch {}
-              process.exit();
+              Promise.allSettled([
+                () => MusicCache.store(),
+                () => rmdir(TMP_DIR, { recursive: true }),
+                () => writeFile(RETAIN_FILE, JSON.stringify(this._retain)),
+              ]).finally(() => process.exit());
             }, 20000);
           }
         })
@@ -173,7 +164,7 @@ export class IPCServer {
         apiCache.del(data.key);
         break;
       case IPCControl.download:
-        void downloadMusic(data.url, basename(data.path), data.path, false);
+        void downloadMusic(data.url, data.path);
         break;
       case IPCControl.setting:
         State.minSize = data.mq === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
@@ -188,7 +179,7 @@ export class IPCServer {
       case IPCControl.netease:
         broadcastProfiles(socket);
         break;
-      case IPCControl.music:
+      case IPCControl.cache:
         MusicCache.clear();
         break;
       case IPCControl.retain:
@@ -246,10 +237,10 @@ export class IPCBroadcastServer {
 
   private static _server: Server;
 
-  static init(): void {
-    try {
-      unlinkSync(ipcBroadcastServerPath);
-    } catch {}
+  static async init(): Promise<void> {
+    await unlink(ipcBroadcastServerPath).catch(() => {
+      //
+    });
 
     this._server = createServer((socket) => {
       this._sockets.add(socket);
