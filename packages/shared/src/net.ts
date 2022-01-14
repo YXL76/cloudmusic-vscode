@@ -29,16 +29,8 @@ export type IPCClientMsg =
   | IPCMsg<IPCControl.deleteCache, { key: string }>
   | IPCMsg<IPCControl.download, { url: string; path: string }>
   | IPCMsg<
-      IPCControl.init,
-      {
-        pid?: string;
-        volume?: number;
-        player?: { wasm: boolean; name?: string };
-        mq: number;
-        cs: number;
-        https: boolean;
-        foreign: boolean;
-      }
+      IPCControl.setting,
+      { mq: number; cs: number; https: boolean; foreign: boolean }
     >
   | IPCMsg<IPCControl.lyric>
   | IPCMsg<IPCControl.music>

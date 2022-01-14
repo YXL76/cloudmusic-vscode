@@ -7,7 +7,7 @@ export const enum IPCApi {
 export const enum IPCControl {
   deleteCache = "100",
   download = "101",
-  init = "102",
+  setting = "102",
   lyric = "103",
   master = "104",
   music = "105",

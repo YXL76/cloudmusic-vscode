@@ -73,7 +73,7 @@ export class ButtonManager {
     window.createStatusBarItem(LEFT, -134) as MyStatusBarItem,
     window.createStatusBarItem(LEFT, -135) as MyStatusBarItem,
     window.createStatusBarItem(LEFT, -136) as MyStatusBarItem,
-  ] as const;
+  ];
 
   private static _buttonShow = Array(8).fill(true) as boolean[];
 
@@ -102,9 +102,8 @@ export class ButtonManager {
     );
 
     this._buttonShow.forEach((v, i) => {
-      if (i === Label.song) {
-        this._buttons[i].show();
-      } else v ? this._buttons[i].show() : this._buttons[i].hide();
+      if (i === Label.song) this._buttons[i].show();
+      else v ? this._buttons[i].show() : this._buttons[i].hide();
     });
   }
 

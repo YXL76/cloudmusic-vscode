@@ -40,7 +40,7 @@
     "Netease"
   ],
   "activationEvents": [
-    "onView:account"
+    "*"
   ],
   "icon": "media/icon-300.png",
   "main": "./dist/extension.js",
@@ -335,6 +335,12 @@
             "minimum": 128,
             "scope": "window",
             "type": "number"
+          },
+          "cloudmusic.host.autoStart": {
+            "default": false,
+            "markdownDescription": "%configuration.host.autoStart.markdownDescription%",
+            "scope": "window",
+            "type": "boolean"
           },
           "cloudmusic.music.quality": {
             "default": 192000,

@@ -13,6 +13,7 @@ const kConf = CONF();
 export const SETTING_DIR =
   kConf.get<string | null>("cache.path") || resolve(homedir(), ".cloudmusic");
 
+export const AUTO_START = kConf.get("host.autoStart", false);
 export const AUTO_CHECK = kConf.get("account.autoCheck", false);
 export const MUSIC_QUALITY = (conf: WorkspaceConfiguration): number =>
   conf.get<128000 | 192000 | 320000 | 999000>("music.quality", 192000);

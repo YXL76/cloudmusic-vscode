@@ -175,19 +175,12 @@ export class IPCServer {
       case IPCControl.download:
         void downloadMusic(data.url, basename(data.path), data.path, false);
         break;
-      case IPCControl.init:
+      case IPCControl.setting:
         State.minSize = data.mq === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
         State.musicQuality = data.mq;
         State.cacheSize = data.cs;
         State.foreign = data.foreign;
         APISetting.apiProtocol = data.https ? "https" : "http";
-        if (data.player)
-          Player.init(
-            data.player.wasm,
-            data.player.name,
-            data.pid,
-            data.volume
-          );
         break;
       case IPCControl.lyric:
         LyricCache.clear();

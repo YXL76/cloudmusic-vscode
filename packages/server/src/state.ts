@@ -4,13 +4,13 @@ import type { NeteaseTypings } from "api";
 export class State {
   static fm = false;
 
-  static foreign = false;
+  static foreign = process.env["CM_FOREIGN"] === "1";
 
   static minSize = 256 * 1024;
 
-  static cacheSize = 4096 * 1024 * 1024;
+  static cacheSize = parseInt(process.env["CM_MUSIC_CACHE_SIZE"] as string);
 
-  static musicQuality = 192000;
+  static musicQuality = parseInt(process.env["CM_MUSIC_QUALITY"] as string);
 
   static lyric: NeteaseTypings.LyricData & {
     delay: number;

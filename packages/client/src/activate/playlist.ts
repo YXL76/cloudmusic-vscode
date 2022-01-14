@@ -25,11 +25,7 @@ import { NeteaseCommentType } from "@cloudmusic/shared";
 import i18n from "../i18n";
 
 export function initPlaylist(context: ExtensionContext): void {
-  const playlistProvider = PlaylistProvider.getInstance();
-
   context.subscriptions.push(
-    window.registerTreeDataProvider("playlist", playlistProvider),
-
     commands.registerCommand(
       "cloudmusic.refreshPlaylist",
       (element: UserTreeItem) => PlaylistProvider.refreshUser(element)

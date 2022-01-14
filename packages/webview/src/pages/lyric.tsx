@@ -32,6 +32,7 @@ export const Lyric = (): JSX.Element => {
         case "lyric":
           cnt += 1;
           setLyric(data.text);
+          window.scrollTo({ top: 0, behavior: "smooth" });
           break;
         case "index":
           {

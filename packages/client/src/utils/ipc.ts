@@ -157,17 +157,10 @@ export class IPC {
     ipc.send({ t: IPCControl.download, url, path });
   }
 
-  static init(
-    pid?: string,
-    volume?: number,
-    player?: { wasm: boolean; name?: string }
-  ): void {
+  static setting(): void {
     const conf = CONF();
     ipc.send({
-      t: IPCControl.init,
-      pid,
-      volume,
-      player,
+      t: IPCControl.setting,
       mq: MUSIC_QUALITY(conf),
       cs: MUSIC_CACHE_SIZE(conf),
       https: HTTPS_API(conf),

@@ -1,16 +1,12 @@
 import { IPC, MultiStepInput, Webview, pickRadio } from "../utils";
 import type { ProgramTreeItem, RadioTreeItem, UserTreeItem } from "../treeview";
-import { commands, env, window } from "vscode";
+import { commands, env } from "vscode";
 import type { ExtensionContext } from "vscode";
 import { NeteaseCommentType } from "@cloudmusic/shared";
 import { RadioProvider } from "../treeview";
 
 export function initRadio(context: ExtensionContext): void {
-  const djRadioProvider = RadioProvider.getInstance();
-
   context.subscriptions.push(
-    window.registerTreeDataProvider("radio", djRadioProvider),
-
     commands.registerCommand(
       "cloudmusic.refreshRadio",
       (element: UserTreeItem) => RadioProvider.refreshUser(element)

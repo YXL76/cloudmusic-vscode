@@ -136,16 +136,18 @@ export class Player {
     }
   }
 
-  static init(wasm: boolean, name = "", pid?: string, volume?: number): void {
+  static init(): void {
     if (this._wasm || this._native) return;
-    if (!wasm) {
+    if (process.env["CM_WASM"] === "0") {
+      const name = process.env["CM_NATIVE_MODULE"] as string;
       const path = resolve(__dirname, "..", "build", name);
       // eslint-disable-next-line @typescript-eslint/no-var-requires
       this._native = require(path) as NativeModule;
       this._player = this._native.playerNew();
-      if (volume) this._native.playerSetVolume(this._player, volume);
+      const volume = parseInt(process.env["CM_VOLUME"] || "85", 10);
+      this._native.playerSetVolume(this._player, volume);
 
-      this.mediaSession(pid, true);
+      this.mediaSession(process.env["VSCODE_PID"], true);
 
       setInterval(() => {
         if (!this._playing) return;
@@ -159,17 +161,20 @@ export class Player {
     } else this._wasm = new WasmPlayer();
 
     setInterval(
-      () =>
-        void readdir(TMP_DIR).then((files) => {
-          for (const file of files)
-            if (file !== `${this._id}`) {
+      () => {
+        void readdir(TMP_DIR)
+          .then((files) => {
+            for (const file of files) {
+              if (file === `${this._id}`) continue;
               const path = resolve(TMP_DIR, file);
               void stat(path).then(({ mtime }) => {
                 if (Date.now() - mtime.getTime() > 480000)
                   unlink(path).catch(logError);
               });
             }
-        }),
+          })
+          .catch();
+      },
       // 1000 * 60 * 8 = 480000
       480000
     );

@@ -6,6 +6,7 @@ import {
 } from "./constant";
 import { IPCBroadcastServer, IPCServer } from "./server";
 import { MusicCache } from "./cache";
+import { Player } from "./player";
 import { bootstrap } from "global-agent";
 import http from "http";
 import https from "https";
@@ -26,6 +27,7 @@ const tryMkdir = (path: string) => {
   } catch {}
 };
 
+Player.init();
 IPCServer.init();
 IPCBroadcastServer.init();
 

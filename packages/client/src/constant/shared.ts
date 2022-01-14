@@ -17,3 +17,5 @@ export const ipcBroadcastServerPath =
         .replace(/^\//, "")
         .replace(/\//g, "-")}`
     : `/tmp/${ipcAppspace}${ipcBroadcastServerId}`;
+
+export const NATIVE_MODULE = `${process.platform}-${process.arch}.node`;

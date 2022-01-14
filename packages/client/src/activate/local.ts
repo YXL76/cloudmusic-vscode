@@ -10,11 +10,7 @@ export function initLocal(context: ExtensionContext): void {
     .get<readonly string[]>(LOCAL_FOLDER_KEY)
     ?.forEach((folder) => LocalProvider.folders.push(folder));
 
-  const localProvider = LocalProvider.getInstance();
-
   context.subscriptions.push(
-    window.registerTreeDataProvider("local", localProvider),
-
     commands.registerCommand("cloudmusic.newLocalLibrary", async () => {
       const path = (
         await window.showOpenDialog({

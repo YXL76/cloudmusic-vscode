@@ -19,7 +19,7 @@ export function initCache(context: ExtensionContext): void {
     workspace.onDidChangeConfiguration(({ affectsConfiguration }) => {
       if (affectsConfiguration("cloudmusic")) {
         updateMQ();
-        IPC.init();
+        IPC.setting();
       }
     })
   );

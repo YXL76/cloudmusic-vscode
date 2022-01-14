@@ -1,16 +1,12 @@
 import { IPC, MultiStepInput } from "../utils";
 import { QueueProvider, QueueSortOrder, QueueSortType } from "../treeview";
-import { commands, window } from "vscode";
 import type { ExtensionContext } from "vscode";
 import type { QueueContent } from "../treeview";
+import { commands } from "vscode";
 import i18n from "../i18n";
 
 export function initQueue(context: ExtensionContext): void {
-  const queueProvider = QueueProvider.getInstance();
-
   context.subscriptions.push(
-    window.registerTreeDataProvider("queue", queueProvider),
-
     commands.registerCommand("cloudmusic.sortQueue", () => {
       void MultiStepInput.run(async (input) => {
         const pick = await input.showQuickPick({

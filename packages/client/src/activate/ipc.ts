@@ -1,6 +1,17 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { AccountViewProvider, IPC, State, defaultLyric } from "../utils";
-import { COOKIE_KEY, SETTING_DIR, STRICT_SSL } from "../constant";
+import {
+  CONF,
+  COOKIE_KEY,
+  FOREIGN,
+  HTTPS_API,
+  MUSIC_CACHE_SIZE,
+  MUSIC_QUALITY,
+  NATIVE_MODULE,
+  SETTING_DIR,
+  STRICT_SSL,
+  VOLUME_KEY,
+} from "../constant";
 import {
   IPCApi,
   IPCControl,
@@ -189,6 +200,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       process.env.HTTPS_PROXY ||
       process.env.HTTP_PROXY;
     const ipcServerPath = resolve(context.extensionPath, "dist", "server.js");
+    const conf = CONF();
     spawn(process.execPath, [...process.execArgv, ipcServerPath], {
       detached: true,
       shell: false,
@@ -200,7 +212,21 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         ...(httpProxy ? { GLOBAL_AGENT_HTTP_PROXY: httpProxy } : {}),
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        SETTING_DIR,
+        CM_SETTING_DIR: SETTING_DIR,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        CM_NATIVE_MODULE: NATIVE_MODULE,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        CM_VOLUME: context.globalState.get(VOLUME_KEY, 85).toString(),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        CM_WASM: State.wasm ? "1" : "0",
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        CM_MUSIC_QUALITY: MUSIC_QUALITY(conf).toString(),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        CM_MUSIC_CACHE_SIZE: MUSIC_CACHE_SIZE(conf).toString(),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        CM_HTTPS_API: HTTPS_API(conf) ? "1" : "0",
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        CM_FOREIGN: FOREIGN(conf) ? "1" : "0",
       },
     }).unref();
     await IPC.connect(ipcHandler, ipcBHandler);

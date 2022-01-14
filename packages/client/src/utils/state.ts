@@ -3,6 +3,7 @@ import { AccountViewProvider, IPC } from ".";
 import {
   FM_KEY,
   LYRIC_KEY,
+  PLAYER_MODE,
   QUEUE_INIT,
   REPEAT_KEY,
   SHOW_LYRIC_KEY,
@@ -33,6 +34,8 @@ export const defaultLyric: Lyric = {
 
 export class State {
   static context: ExtensionContext;
+
+  static wasm = PLAYER_MODE === "wasm";
 
   private static _first = false;
 

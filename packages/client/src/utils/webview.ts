@@ -14,6 +14,11 @@ import {
   window,
   workspace,
 } from "vscode";
+import type {
+  ExtensionContext,
+  WebviewView,
+  WebviewViewProvider,
+} from "vscode";
 import {
   IPC,
   MultiStepInput,
@@ -25,10 +30,9 @@ import {
 } from ".";
 import { NeteaseCommentType, NeteaseSortType } from "@cloudmusic/shared";
 import type { ProviderSMsg, WebviewType } from "@cloudmusic/shared";
-import type { WebviewView, WebviewViewProvider } from "vscode";
+import { SETTING_DIR, VOLUME_KEY } from "../constant";
 import { AccountManager } from "../manager";
 import type { NeteaseTypings } from "api";
-import { SETTING_DIR } from "../constant";
 import i18n from "../i18n";
 import { toDataURL } from "qrcode";
 
@@ -42,14 +46,9 @@ const getNonce = (): string => {
 };
 
 export class AccountViewProvider implements WebviewViewProvider {
-  static enablePlayer = false;
+  static context: ExtensionContext;
 
   private static _view?: WebviewView;
-
-  constructor(
-    private readonly _extUri: Uri,
-    private readonly _volume: number
-  ) {}
 
   static master(): void {
     if (this._view) {
@@ -144,12 +143,13 @@ export class AccountViewProvider implements WebviewViewProvider {
     // context: WebviewViewResolveContext
     // token: CancellationToken
   ): void {
+    const extUri = AccountViewProvider.context.extensionUri;
     AccountViewProvider._view = webview;
 
     webview.title = i18n.word.account;
     webview.webview.options = {
       enableScripts: true,
-      localResourceRoots: [this._extUri, Uri.file(SETTING_DIR)],
+      localResourceRoots: [extUri, Uri.file(SETTING_DIR)],
     };
 
     webview.webview.onDidReceiveMessage((msg: ProviderCMsg) => {
@@ -158,10 +158,12 @@ export class AccountViewProvider implements WebviewViewProvider {
           AccountViewProvider.master();
           AccountViewProvider.account([...AccountManager.accounts.values()]);
           AccountViewProvider.metadata();
-          AccountViewProvider.wasmVolume(this._volume);
+          AccountViewProvider.wasmVolume(
+            AccountViewProvider.context.globalState.get(VOLUME_KEY, 85)
+          );
 
-          if (AccountViewProvider.enablePlayer) {
-            const audioUri = Uri.joinPath(this._extUri, "media", "audio");
+          if (State.wasm) {
+            const audioUri = Uri.joinPath(extUri, "media", "audio");
             workspace.fs.readDirectory(audioUri).then((items) => {
               const files = items
                 .filter(([name]) => name.startsWith("silent"))
@@ -199,10 +201,10 @@ export class AccountViewProvider implements WebviewViewProvider {
     });
 
     const js = webview.webview
-      .asWebviewUri(Uri.joinPath(this._extUri, "dist", "provider.js"))
+      .asWebviewUri(Uri.joinPath(extUri, "dist", "provider.js"))
       .toString();
     const css = webview.webview
-      .asWebviewUri(Uri.joinPath(this._extUri, "dist", "style.css"))
+      .asWebviewUri(Uri.joinPath(extUri, "dist", "style.css"))
       .toString();
 
     webview.webview.html = `
@@ -219,20 +221,14 @@ export class AccountViewProvider implements WebviewViewProvider {
   <body>
     <div id="root"></div>
   </body>
-  <script>window.enablePlayer=${
-    AccountViewProvider.enablePlayer ? "true" : "false"
-  }</script>
+  <script>window.enablePlayer=${State.wasm ? "true" : "false"}</script>
   <script type="module" src=${js} nonce=${getNonce()}></script>
 </html>`;
   }
 }
 
 export class Webview {
-  private static _extUri: Uri;
-
-  static init(extUri: Uri): void {
-    this._extUri = extUri;
-  }
+  static extUri: Uri;
 
   static async login(): Promise<void> {
     const key = await IPC.netease("loginQrKey", []);
@@ -432,12 +428,12 @@ export class Webview {
       ViewColumn.One,
       { enableScripts: true, retainContextWhenHidden: true }
     );
-    panel.iconPath = Uri.joinPath(this._extUri, "media", "icon.ico");
+    panel.iconPath = Uri.joinPath(this.extUri, "media", "icon.ico");
     const css = panel.webview
-      .asWebviewUri(Uri.joinPath(this._extUri, "dist", "style.css"))
+      .asWebviewUri(Uri.joinPath(this.extUri, "dist", "style.css"))
       .toString();
     const js = panel.webview
-      .asWebviewUri(Uri.joinPath(this._extUri, "dist", `${type}.js`))
+      .asWebviewUri(Uri.joinPath(this.extUri, "dist", `${type}.js`))
       .toString();
     return {
       panel,
