@@ -119,7 +119,7 @@ export function initStatusBar(context: ExtensionContext): void {
           step: 2,
           totalSteps: totalSteps + 1,
           items: State.lyric.time.map((time, i) => ({
-            label: State.lyric.text[i].at(State.lyric.type) as string,
+            label: State.lyric.text[i]?.at(State.lyric.type) as string,
             description: `${time}`,
           })),
         });

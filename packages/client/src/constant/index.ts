@@ -47,6 +47,4 @@ export const REPEAT_KEY = "repeat-v1";
 export const FM_KEY = "fm-v1";
 export const SHOW_LYRIC_KEY = "show-lyric-v1";
 
-export const MUSIC_CACHE_DIR_NAME = (): string => `${MUSIC_QUALITY(CONF())}`;
-
 // export const AUTH_PROVIDER_ID = "cloudmusic-auth-provider";

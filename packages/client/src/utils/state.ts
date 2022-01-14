@@ -159,7 +159,7 @@ export class State {
   static set lyric(value: Lyric) {
     this._lyric = value;
     ButtonManager.buttonLyric();
-    void this.context.globalState.update(LYRIC_KEY, value);
+    if (this._master) void this.context.globalState.update(LYRIC_KEY, value);
     value.updatePanel?.(value.text);
   }
 

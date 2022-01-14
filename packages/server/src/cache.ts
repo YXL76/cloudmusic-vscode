@@ -92,11 +92,12 @@ export class MusicCache {
       const list = JSON.parse(
         (await readFile(this._listPath)).toString()
       ) as readonly MusicCacheNode[];
+
       list
         .filter(({ name }) => names.has(name))
         .reverse()
         .forEach((value) => {
-          names.delete(value.key);
+          names.delete(value.name);
           this._addNode(value);
         });
     } catch {}
@@ -132,22 +133,8 @@ export class MusicCache {
     const node = this._cache.get(key);
     if (node) {
       this._list.unshiftNode(node);
-      return resolve(MUSIC_CACHE_DIR, key);
+      return resolve(MUSIC_CACHE_DIR, node.value.name);
     }
-    /* try {
-      const { type, size } = await workspace.fs.stat(path);
-      if (type !== FileType.File) throw Error();
-      const node = this.cache.get(key);
-      if (node) {
-        this.list.unshiftNode(node);
-      } else {
-        this.addNode({ key, size });
-      }
-      return path.fsPath;
-    } catch {
-      this.deleteNode(key);
-    } 
-    return; */
   }
 
   static async put(
@@ -156,13 +143,14 @@ export class MusicCache {
     path: string,
     md5?: string
   ): Promise<void> {
-    const target = resolve(MUSIC_CACHE_DIR, name);
     try {
-      await copyFile(path, target);
-      const { size } = await stat(target);
-      this._deleteNode(key);
-      if (!md5 || (await md5File(target)) === md5)
+      if (!md5 || (await md5File(path)) === md5) {
+        const target = resolve(MUSIC_CACHE_DIR, name);
+        await copyFile(path, target);
+        const { size } = await stat(target);
+        this._deleteNode({ key, name });
         this._addNode({ key, name, size });
+      }
     } catch {}
   }
 
@@ -172,18 +160,18 @@ export class MusicCache {
     this._size += value.size;
     while (this._size > State.cacheSize) {
       const { tail } = this._list;
-      if (tail) this._deleteNode(tail.value.key);
+      if (tail) this._deleteNode(tail.value);
       else void this.clear();
     }
   }
 
-  private static _deleteNode(key: string) {
+  private static _deleteNode({ key, name }: { key: string; name: string }) {
     const node = this._cache.get(key);
     if (node) {
       this._list.removeNode(node);
       this._cache.delete(key);
       this._size -= node.value.size;
-      void rm(resolve(MUSIC_CACHE_DIR, key), { recursive: true, force: true });
+      void rm(resolve(MUSIC_CACHE_DIR, name), { recursive: true, force: true });
     }
   }
 }
