@@ -30,7 +30,7 @@ import {
 } from ".";
 import { NeteaseCommentType, NeteaseSortType } from "@cloudmusic/shared";
 import type { ProviderSMsg, WebviewType } from "@cloudmusic/shared";
-import { SETTING_DIR, VOLUME_KEY } from "../constant";
+import { SETTING_DIR, SPEED_KEY, VOLUME_KEY } from "../constant";
 import { AccountManager } from "../manager";
 import type { NeteaseTypings } from "api";
 import i18n from "../i18n";
@@ -107,6 +107,13 @@ export class AccountViewProvider implements WebviewViewProvider {
     }
   }
 
+  static wasmSpeed(speed: number): void {
+    if (this._view) {
+      const msg: ProviderSMsg = { command: "speed", speed };
+      void this._view.webview.postMessage(msg);
+    }
+  }
+
   static wasmVolume(level: number): void {
     if (this._view) {
       const msg: ProviderSMsg = { command: "volume", level };
@@ -160,6 +167,9 @@ export class AccountViewProvider implements WebviewViewProvider {
           AccountViewProvider.metadata();
           AccountViewProvider.wasmVolume(
             AccountViewProvider.context.globalState.get(VOLUME_KEY, 85)
+          );
+          AccountViewProvider.wasmSpeed(
+            AccountViewProvider.context.globalState.get(SPEED_KEY, 1)
           );
 
           if (State.wasm) {

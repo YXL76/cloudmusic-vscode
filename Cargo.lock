@@ -1136,7 +1136,7 @@ checksum = "f497285884f3fcff424ffc933e56d7cbca511def0c9831a7f9b5f6153e3cc89b"
 [[package]]
 name = "rodio"
 version = "0.14.0"
-source = "git+https://github.com/RustAudio/rodio?branch=master#806ecaa60ad0b138b0fa9ee619310de0847f1875"
+source = "git+https://github.com/RustAudio/rodio?branch=master#5dbf93b94fc82664ecd0f14a883a5d5283092bb8"
 dependencies = [
  "claxon",
  "cpal",
@@ -1211,9 +1211,9 @@ dependencies = [
 
 [[package]]
 name = "smallvec"
-version = "1.7.0"
+version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1ecab6c735a6bb4139c0caafd0cc3635748bbb3acf4550e8138122099251f309"
+checksum = "f2dd574626839106c320a323308629dcb1acfc96e32a8cba364ddc61ac23ee83"
 
 [[package]]
 name = "smithay-client-toolkit"

@@ -1,5 +1,4 @@
-use std::io::Cursor;
-use wasm_bindgen::prelude::*;
+use {rodio::Source, std::io::Cursor, wasm_bindgen::prelude::*};
 
 #[wasm_bindgen(start)]
 pub fn main_js() -> Result<(), JsValue> {
@@ -13,6 +12,7 @@ pub fn main_js() -> Result<(), JsValue> {
 
 #[wasm_bindgen]
 pub struct Player {
+    speed: f32,
     volume: f32,
     sink: Option<rodio::Sink>,
     #[allow(dead_code)]
@@ -24,7 +24,8 @@ impl Player {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
         Self {
-            volume: 0.0,
+            speed: 0.,
+            volume: 0.,
             sink: None,
             stream: None,
         }
@@ -38,7 +39,7 @@ impl Player {
             if let Ok(sink) = rodio::Sink::try_new(&handle) {
                 sink.set_volume(self.volume);
                 let cur = Cursor::new(data.to_owned());
-                let decoder = rodio::Decoder::new(cur).unwrap();
+                let decoder = rodio::Decoder::new(cur).unwrap().speed(self.speed);
                 sink.append(decoder);
                 self.sink = Some(sink);
                 self.stream = Some(stream);
@@ -74,6 +75,11 @@ impl Player {
             self.sink = None;
             self.stream = None;
         }
+    }
+
+    #[wasm_bindgen]
+    pub fn set_speed(&mut self, speed: f32) {
+        self.speed = speed;
     }
 
     #[wasm_bindgen]

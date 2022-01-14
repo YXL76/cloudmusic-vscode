@@ -221,6 +221,10 @@ export class IPCServer {
         Player.volume(data.level);
         this.broadcast(data);
         break;
+      case IPCPlayer.speed:
+        Player.speed(data.speed);
+        this.broadcast(data);
+        break;
       case IPCQueue.fm:
         State.fm = data.is;
         PersonalFm.uid = data.uid;

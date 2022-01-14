@@ -21,6 +21,7 @@ interface NativeModule {
   playerPlay(player: NativePlayer): boolean;
   playerPosition(player: NativePlayer): number;
   playerSetVolume(player: NativePlayer, level: number): void;
+  playerSetSpeed(player: NativePlayer, speed: number): void;
   playerStop(player: NativePlayer): void;
 
   mediaSessionHwnd(pid: string): string;
@@ -93,6 +94,10 @@ class WasmPlayer {
     IPCServer.sendToMaster({ t: IPCWasm.stop });
   }
 
+  speed(speed: number) {
+    IPCServer.sendToMaster({ t: IPCWasm.speed, speed });
+  }
+
   volume(level: number) {
     IPCServer.sendToMaster({ t: IPCWasm.volume, level });
   }
@@ -145,7 +150,9 @@ export class Player {
       this._native = require(path) as NativeModule;
       this._player = this._native.playerNew();
       const volume = parseInt(process.env["CM_VOLUME"] || "85", 10);
+      const speed = parseFloat(process.env["CM_SPEED"] || "1");
       this._native.playerSetVolume(this._player, volume);
+      this._native.playerSetSpeed(this._player, speed);
 
       this.mediaSession(process.env["VSCODE_PID"], true);
 
@@ -317,6 +324,11 @@ export class Player {
     this._native?.playerStop(this._player);
     this._wasm?.stop();
     this.playing = false;
+  }
+
+  static speed(speed: number): void {
+    this._native?.playerSetSpeed(this._player, speed);
+    this._wasm?.speed(speed);
   }
 
   static volume(level: number): void {

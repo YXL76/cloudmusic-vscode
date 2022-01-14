@@ -86,6 +86,11 @@
       },
       {
         "category": "Cloudmusic",
+        "command": "cloudmusic.speed",
+        "title": "%commands.speed.title%"
+      },
+      {
+        "category": "Cloudmusic",
         "command": "cloudmusic.toggleButton",
         "title": "%commands.toggleButton.title%"
       },

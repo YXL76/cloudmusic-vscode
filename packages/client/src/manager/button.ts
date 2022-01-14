@@ -5,12 +5,12 @@ import { BUTTON_KEY } from "../constant";
 import i18n from "../i18n";
 
 const enum Label {
-  // account,
   previous,
   play,
   next,
   repeat,
   like,
+  speed,
   volume,
   song,
   lyric,
@@ -28,43 +28,43 @@ export class ButtonManager {
   private static _mdSong = "";
 
   private static readonly _defaultText = [
-    // "$(account)",
     "$(chevron-left)",
     "$(play)",
     "$(chevron-right)",
     "$(sync-ignored)",
     "$(stop)",
+    "$(dashboard)",
     "$(unmute)",
     "$(flame)",
     "$(text-size)",
   ] as const;
 
   private static readonly _defaultTooltip = [
-    // i18n.word.account,
     i18n.word.previousTrack,
     i18n.word.play,
     i18n.word.nextTrack,
     i18n.word.repeat,
     i18n.word.like,
+    i18n.word.speed,
     i18n.word.volume,
     i18n.word.song,
     i18n.word.lyric,
   ] as const;
 
   private static readonly _defaultCommand = [
-    // "cloudmusic.account",
     "cloudmusic.previous",
     "cloudmusic.toggle",
     "cloudmusic.next",
     "cloudmusic.repeat",
     "cloudmusic.like",
+    "cloudmusic.speed",
     "cloudmusic.volume",
     "cloudmusic.songDetail",
     "cloudmusic.lyric",
   ] as const;
 
   private static readonly _buttons = [
-    // window.createStatusBarItem(LEFT, -128) MyStatusBarItem,
+    window.createStatusBarItem(LEFT, -128) as MyStatusBarItem,
     window.createStatusBarItem(LEFT, -129) as MyStatusBarItem,
     window.createStatusBarItem(LEFT, -130) as MyStatusBarItem,
     window.createStatusBarItem(LEFT, -131) as MyStatusBarItem,
@@ -75,7 +75,7 @@ export class ButtonManager {
     window.createStatusBarItem(LEFT, -136) as MyStatusBarItem,
   ];
 
-  private static _buttonShow = Array(8).fill(true) as boolean[];
+  private static _buttonShow = Array(9).fill(true) as boolean[];
 
   private static readonly _mdTooltip = new MarkdownString("", true);
 
@@ -131,10 +131,6 @@ export class ButtonManager {
     });
   }
 
-  /* static buttonAccount(tooltip: string): void {
-    this.buttons[Label.account].tooltip = tooltip;
-  } */
-
   static buttonPrevious(personalFm: boolean): void {
     if (personalFm) {
       this._buttons[Label.previous].text = "$(trash)";
@@ -169,6 +165,10 @@ export class ButtonManager {
 
   static buttonVolume(level: number): void {
     this._buttons[Label.volume].tooltip = `${i18n.word.volume}: ${level}`;
+  }
+
+  static buttonSpeed(speed: number): void {
+    this._buttons[Label.speed].tooltip = `${i18n.word.speed}: ${speed}`;
   }
 
   static buttonSong(name = "", ar = "", picUrl = "", al = ""): void {

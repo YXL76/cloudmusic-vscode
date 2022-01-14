@@ -23,8 +23,9 @@ export default {
       password: "Please enter your password",
       search: "Please choose search type",
       signIn: "Select the method to sign in",
+      speed: "Please enter the speed",
       trySignIn: "Found that you have not logged in",
-      volume: "Please enter volume",
+      volume: "Please enter the volume",
     },
     label: {
       captcha: "Use captcha to sign in",
@@ -139,6 +140,7 @@ export default {
     single: "Single",
     song: "Song",
     songList: "Song list",
+    speed: "Speed",
     submit: "Submit",
     subscribedCount: "Subscribed count",
     today: "24 Hours",

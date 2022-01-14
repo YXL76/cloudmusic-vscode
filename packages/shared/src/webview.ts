@@ -56,4 +56,5 @@ export type ProviderSMsg =
   | { command: "play" }
   | { command: "pause" }
   | { command: "stop" }
+  | { command: "speed"; speed: number }
   | { command: "volume"; level: number };

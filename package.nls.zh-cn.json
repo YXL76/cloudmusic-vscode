@@ -50,6 +50,7 @@
   "commands.songComment.title": "评论",
   "commands.songDetail.title": "详情",
   "commands.sortQueue.title": "排序",
+  "commands.speed.title": "播放速度",
   "commands.toggle.title": "播放",
   "commands.toggleButton.title": "按钮切换",
   "commands.unsubRadio.title": "取消收藏",

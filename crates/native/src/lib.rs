@@ -19,6 +19,7 @@ fn main(mut cx: ModuleContext) -> NeonResult<()> {
     cx.export_function("playerPause", player_pause)?;
     cx.export_function("playerPlay", player_play)?;
     cx.export_function("playerPosition", player_position)?;
+    cx.export_function("playerSetSpeed", player_set_speed)?;
     cx.export_function("playerSetVolume", player_set_volume)?;
     cx.export_function("playerStop", player_stop)?;
 

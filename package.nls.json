@@ -50,6 +50,7 @@
   "commands.songComment.title": "Comment",
   "commands.songDetail.title": "Detail",
   "commands.sortQueue.title": "Sort",
+  "commands.speed.title": "Speed",
   "commands.toggle.title": "Play",
   "commands.toggleButton.title": "Toggle button",
   "commands.unsubRadio.title": "Unsubscribe",

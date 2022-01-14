@@ -9,6 +9,7 @@ import {
   MUSIC_QUALITY,
   NATIVE_MODULE,
   SETTING_DIR,
+  SPEED_KEY,
   STRICT_SSL,
   VOLUME_KEY,
 } from "../constant";
@@ -159,6 +160,9 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       case IPCPlayer.previous:
         void commands.executeCommand("cloudmusic.previous");
         break;
+      case IPCPlayer.speed:
+        ButtonManager.buttonSpeed(data.speed);
+        break;
       case IPCQueue.fm:
         State.fm = data.is;
         break;
@@ -182,6 +186,9 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         break;
       case IPCWasm.volume:
         AccountViewProvider.wasmVolume(data.level);
+        break;
+      case IPCWasm.speed:
+        AccountViewProvider.wasmSpeed(data.speed);
         break;
     }
   };
@@ -217,6 +224,8 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         CM_NATIVE_MODULE: NATIVE_MODULE,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         CM_VOLUME: context.globalState.get(VOLUME_KEY, 85).toString(),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        CM_SPEED: context.globalState.get(SPEED_KEY, 1).toString(),
         // eslint-disable-next-line @typescript-eslint/naming-convention
         CM_WASM: State.wasm ? "1" : "0",
         // eslint-disable-next-line @typescript-eslint/naming-convention

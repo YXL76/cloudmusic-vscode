@@ -101,6 +101,10 @@ class Controller {
     this._playing = false;
   }
 
+  static speed(speed: number) {
+    this._player?.set_speed(speed);
+  }
+
   static volume(level: number) {
     this._player?.set_volume(level);
   }
@@ -207,6 +211,9 @@ const Provider = (): JSX.Element => {
           break;
         case "stop":
           Controller.stop();
+          break;
+        case "speed":
+          Controller.speed(data.speed);
           break;
         case "volume":
           Controller.volume(data.level);

@@ -35,6 +35,7 @@ export const enum IPCPlayer {
   volume = "213",
   next = "214",
   previous = "215",
+  speed = "216",
 }
 
 // 3xx
@@ -56,4 +57,5 @@ export const enum IPCWasm {
   play = "402",
   stop = "403",
   volume = "404",
+  speed = "405",
 }

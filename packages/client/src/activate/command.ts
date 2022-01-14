@@ -1,8 +1,8 @@
 import { IPC, MultiStepInput, State, likeMusic } from "../utils";
 import { QueueItemTreeItem, QueueProvider } from "../treeview";
+import { SPEED_KEY, VOLUME_KEY } from "../constant";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
-import { VOLUME_KEY } from "../constant";
 import { commands } from "vscode";
 import i18n from "../i18n";
 
@@ -45,6 +45,26 @@ export function initCommand(context: ExtensionContext): void {
             const level = parseInt(levelS);
             IPC.volume(level);
             await context.globalState.update(VOLUME_KEY, level);
+          }
+          return input.stay();
+        })
+    ),
+
+    commands.registerCommand(
+      "cloudmusic.speed",
+      () =>
+        void MultiStepInput.run(async (input) => {
+          const speedS = await input.showInputBox({
+            title: i18n.word.speed,
+            step: 1,
+            totalSteps: 1,
+            value: `${context.globalState.get(SPEED_KEY, 1)}`,
+            prompt: i18n.sentence.hint.speed,
+          });
+          const speed = parseFloat(speedS);
+          if (!isNaN(speed)) {
+            IPC.speed(speed);
+            await context.globalState.update(SPEED_KEY, speed);
           }
           return input.stay();
         })

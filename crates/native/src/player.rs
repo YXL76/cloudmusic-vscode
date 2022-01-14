@@ -60,6 +60,7 @@ enum ControlEvent {
 }
 
 pub struct Player {
+    speed: f32,
     volume: f32,
     status: Status,
     control_tx: mpsc::Sender<ControlEvent>,
@@ -74,7 +75,8 @@ impl Player {
         let (control_tx, _) = mpsc::channel();
         let (_, info_rx) = mpsc::channel();
         Self {
-            volume: 0.0,
+            speed: 1.,
+            volume: 0.,
             status: Status::new(),
             control_tx,
             info_rx,
@@ -89,7 +91,7 @@ impl Player {
         };
 
         let source = match rodio::Decoder::new(BufReader::new(file)) {
-            Ok(s) => s,
+            Ok(s) => s.fade_in(Duration::from_secs(2)).speed(self.speed),
             _ => return false,
         };
 
@@ -103,7 +105,7 @@ impl Player {
             if let Ok((_stream, handle)) = rodio::OutputStream::try_default() {
                 let sink = rodio::Sink::try_new(&handle).unwrap();
                 sink.set_volume(volume);
-                sink.append(source.fade_in(Duration::from_secs(2)));
+                sink.append(source);
 
                 let _ = info_tx.send(true);
 
@@ -145,6 +147,11 @@ impl Player {
     fn stop(&mut self) {
         let _ = self.control_tx.send(ControlEvent::Stop);
         self.status.reset()
+    }
+
+    #[inline]
+    fn set_speed(&mut self, speed: f32) {
+        self.speed = speed;
     }
 
     #[inline]
@@ -211,6 +218,14 @@ pub fn player_stop(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 
     Ok(cx.undefined())
 }
+pub fn player_set_speed(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+    let player = cx.argument::<JsBox<RefCell<Player>>>(0)?;
+    let speed = cx.argument::<JsNumber>(1)?.value(&mut cx) as f32;
+    player.borrow_mut().set_speed(speed);
+
+    Ok(cx.undefined())
+}
+
 pub fn player_set_volume(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     let player = cx.argument::<JsBox<RefCell<Player>>>(0)?;
     let level = cx.argument::<JsNumber>(1)?.value(&mut cx) / 100.0;

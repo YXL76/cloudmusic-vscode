@@ -216,6 +216,10 @@ export class IPC {
     ipc.send({ t: IPCPlayer.volume, level });
   }
 
+  static speed(speed: number): void {
+    ipc.send({ t: IPCPlayer.speed, speed });
+  }
+
   static add(items: readonly PlayTreeItemData[], index?: number): void {
     ipcB.send({ t: IPCQueue.add, items, index });
   }
