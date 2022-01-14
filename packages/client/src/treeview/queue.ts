@@ -17,6 +17,8 @@ export const enum QueueSortOrder {
 }
 
 export class QueueProvider implements TreeDataProvider<QueueContent> {
+  static id = -1;
+
   private static _songs: PlayTreeItemData[] = [];
 
   private static _instance: QueueProvider;
@@ -50,11 +52,14 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     return head ? [head, ...unsortInplace(rest)] : [];
   }
 
-  static new(elements: readonly PlayTreeItemData[], id?: number): void {
+  // -2 is for `retain`
+  static new(elements: readonly PlayTreeItemData[], id = -2): void {
+    if (this.id === id) return;
+    this.id = id;
     this._clear();
     this._add(elements);
 
-    id ? this.top(id) : this._instance._onDidChangeTreeData.fire();
+    this._instance._onDidChangeTreeData.fire();
   }
 
   static clear(): void {

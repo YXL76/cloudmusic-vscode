@@ -329,7 +329,7 @@ export class AccountManager {
         case Type.save:
           return (input) => pickSave(input);
         case Type.fm:
-          IPC.fm(uid);
+          IPC.fm(true, uid);
           break;
         case Type.musicRanking:
           await Webview.musicRanking(uid);

@@ -215,9 +215,11 @@ export class IPCServer {
         this.broadcast(data);
         break;
       case IPCQueue.fm:
-        State.fm = data.is;
-        PersonalFm.uid = data.uid;
-        this.broadcast(data);
+        if (data.is) {
+          State.fm = true;
+          PersonalFm.uid = data.uid;
+          this.broadcast({ t: IPCQueue.fm });
+        } else State.fm = false;
         break;
       case IPCQueue.fmNext:
         PersonalFm.head()

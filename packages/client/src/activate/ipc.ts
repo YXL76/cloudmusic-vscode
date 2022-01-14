@@ -58,6 +58,7 @@ const ipcBHandler = (data: IPCBroadcastMsg) => {
       break;
     case IPCQueue.new:
       QueueProvider.new(data.items as readonly PlayTreeItemData[], data.id);
+      State.downInit();
       break;
     case IPCQueue.play:
       QueueProvider.top(data.id);
@@ -99,7 +100,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         PlaylistProvider.refresh();
         RadioProvider.refresh();
         AccountViewProvider.account(data.profiles);
-        State.first = false;
+        State.downInit();
         if (State.master) {
           if (!data.cookies.length) IPC.clear();
           void context.secrets.store(COOKIE_KEY, JSON.stringify(data.cookies));
@@ -109,7 +110,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         State.master = !!data.is;
         break;
       case IPCControl.new:
-        IPC.new(QueueProvider.songs);
+        IPC.new();
         break;
       case IPCControl.retain:
         QueueProvider.new(data.items as PlayTreeItemData[]);
@@ -164,7 +165,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         ButtonManager.buttonSpeed(data.speed);
         break;
       case IPCQueue.fm:
-        State.fm = data.is;
+        State.fm = true;
         break;
       case IPCQueue.fmNext:
         State.playItem = QueueItemTreeItem.new({
@@ -198,6 +199,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
     if (firstTry.includes(false)) throw Error;
   } catch {
     State.first = true;
+    State.downInit();
     const version = (context.extension.packageJSON as { version: string })
       .version;
     const log = `err-${version}.log`;

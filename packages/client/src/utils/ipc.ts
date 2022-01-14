@@ -226,7 +226,7 @@ export class IPC {
     ipcB.send({ t: IPCQueue.delete, id });
   }
 
-  static fm(uid: number, is = true): void {
+  static fm(is: boolean, uid = 0): void {
     ipc.send({ t: IPCQueue.fm, uid, is });
   }
 
@@ -234,8 +234,15 @@ export class IPC {
     ipc.send({ t: IPCQueue.fmNext });
   }
 
-  static new(items: readonly PlayTreeItemData[], id?: number): void {
-    ipcB.send({ t: IPCQueue.new, items, id });
+  static new(items?: readonly PlayTreeItemData[]): void {
+    if (items) {
+      const id = QueueProvider.id + 1;
+      ipcB.send({ t: IPCQueue.new, id, items });
+    } else {
+      const id = QueueProvider.id;
+      const items = QueueProvider.songs;
+      ipcB.send({ t: IPCQueue.new, id, items });
+    }
   }
 
   static playSong(id: number | string): void {
@@ -243,10 +250,8 @@ export class IPC {
   }
 
   static random(): void {
-    ipcB.send({
-      t: IPCQueue.new,
-      items: QueueProvider.random(),
-    });
+    const id = QueueProvider.id + 1;
+    ipcB.send({ t: IPCQueue.new, id, items: QueueProvider.random() });
   }
 
   static shift(index: number): void {

@@ -37,7 +37,12 @@ export class State {
 
   static wasm = PLAYER_MODE === "wasm";
 
-  private static _first = false;
+  static first = false;
+
+  // To finish initialization needs 2 steps
+  // 1. Started the IPC server / Received the queue
+  // 2. Received `IPCControl.netease`
+  private static _initializing = 2;
 
   private static _master = false;
 
@@ -79,49 +84,6 @@ export class State {
 
   static get lyric(): Lyric {
     return this._lyric;
-  }
-
-  static set first(value: boolean) {
-    // After account is initialized, the first time to load the queue
-    if (!value) {
-      const { head } = QueueProvider;
-      // From `set playItem`
-      this._playItem = head;
-      this.like = !!(head && head instanceof QueueItemTreeItem);
-      AccountViewProvider.metadata();
-
-      this.loading = false;
-      this.context.subscriptions.push(
-        // Prevent first loading [#507](https://github.com/YXL76/cloudmusic-vscode/issues/507)
-        QueueProvider.getInstance().onDidChangeTreeData(() => {
-          this.fm = false;
-          this.playItem = QueueProvider.head;
-        })
-      );
-    }
-
-    if (this._first !== value) {
-      this._first = value;
-      if (value) return;
-      switch (QUEUE_INIT) {
-        case "none":
-          break;
-        case "restore":
-          IPC.retain();
-          break;
-        case "recommend":
-          if (AccountManager.accounts.size) {
-            const [[uid]] = AccountManager.accounts;
-            void IPC.netease("recommendSongs", [uid]).then((songs) => {
-              const items = songs.map(
-                (song) =>
-                  QueueItemTreeItem.new({ ...song, pid: song.al.id }).data
-              );
-              IPC.new(items);
-            });
-          }
-      }
-    }
   }
 
   // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
@@ -171,14 +133,20 @@ export class State {
         this._playItem.item.al.picUrl,
         this._playItem.item.al.name
       );
+    else ButtonManager.buttonSong();
   }
 
   // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
   static set fm(value: boolean) {
-    this._fm = value;
-    ButtonManager.buttonPrevious(value);
-    if (value && this._master) IPC.fmNext();
-    void this.context.globalState.update(FM_KEY, value);
+    if (this._fm !== value) {
+      this._fm = value;
+      ButtonManager.buttonPrevious(value);
+      if (this._master) {
+        if (value) IPC.fmNext();
+        else IPC.fm(false); // Only need to tell the server. Do not reply.
+        void this.context.globalState.update(FM_KEY, value);
+      }
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
@@ -195,11 +163,64 @@ export class State {
     value.updatePanel?.(value.text);
   }
 
-  static init(): void {
-    this.repeat = this.context.globalState.get(REPEAT_KEY, false);
-    // 需要在 IPC 连接后及登录帐号后修改
-    this.fm = this.context.globalState.get(FM_KEY, false);
+  static downInit() {
+    if (this._initializing <= 0) return;
+    --this._initializing;
+    if (this._initializing !== 0) return;
+
+    /** From {@link repeat}*/
+    {
+      const value = this.context.globalState.get(REPEAT_KEY, false);
+      this._repeat = value;
+      ButtonManager.buttonRepeat(value);
+    }
+
+    /** From {@link fm}*/
+    {
+      const value = this.context.globalState.get(FM_KEY, false);
+      this._fm = value;
+      ButtonManager.buttonPrevious(value);
+      if (value && this.first) IPC.fmNext();
+    }
+
     this._showLyric = this.context.globalState.get(SHOW_LYRIC_KEY, false);
+
     this._lyric = this.context.globalState.get(LYRIC_KEY, defaultLyric);
+
+    /** From {@link playItem}*/
+    if (!this._fm) {
+      const { head } = QueueProvider;
+      this._playItem = head;
+      this.like = !!(head && head instanceof QueueItemTreeItem);
+      AccountViewProvider.metadata();
+    }
+
+    this.loading = false;
+
+    const listenQueue = () =>
+      this.context.subscriptions.push(
+        // Prevent first loading [#507](https://github.com/YXL76/cloudmusic-vscode/issues/507)
+        QueueProvider.getInstance().onDidChangeTreeData(() => {
+          this.fm = false;
+          this.playItem = QueueProvider.head;
+        })
+      );
+
+    if (this.first && AccountManager.accounts.size) {
+      const [[uid]] = AccountManager.accounts;
+      switch (QUEUE_INIT) {
+        case "restore":
+          IPC.retain();
+          break;
+        case "recommend":
+          void IPC.netease("recommendSongs", [uid]).then((songs) => {
+            const items = songs.map(
+              (song) => QueueItemTreeItem.new({ ...song, pid: song.al.id }).data
+            );
+            IPC.new(items);
+            setTimeout(listenQueue, 1024); // The queue maybe ready
+          });
+      }
+    } else listenQueue();
   }
 }

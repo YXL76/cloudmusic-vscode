@@ -1,4 +1,4 @@
-import { AccountViewProvider, State } from "../utils";
+import { AccountViewProvider } from "../utils";
 import type { ExtensionContext } from "vscode";
 import { initAccount } from "./account";
 import { initCache } from "./cache";
@@ -24,5 +24,4 @@ export async function realActivate(context: ExtensionContext) {
   initPlaylist(context);
   initRadio(context);
   await initAccount(context);
-  State.init();
 }
