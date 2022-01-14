@@ -43,13 +43,11 @@ export class IPCServer {
 
   static async init(): Promise<void> {
     const [buf] = await Promise.allSettled([
-      () => readFile(RETAIN_FILE),
-      () => rm(ipcServerPath, { recursive: true, force: true }),
+      readFile(RETAIN_FILE),
+      rm(ipcServerPath, { recursive: true, force: true }),
     ]);
     if (buf.status === "fulfilled")
-      try {
-        this._retain = JSON.parse(buf.value.toString()) as unknown[];
-      } catch {}
+      this._retain = JSON.parse(buf.value.toString()) as unknown[];
 
     this._server = createServer((socket) => {
       if (this._timer) {
@@ -87,9 +85,9 @@ export class IPCServer {
               this.stop();
               IPCBroadcastServer.stop();
               Promise.allSettled([
-                () => MusicCache.store(),
-                () => rmdir(TMP_DIR, { recursive: true }),
-                () => writeFile(RETAIN_FILE, JSON.stringify(this._retain)),
+                MusicCache.store(),
+                rmdir(TMP_DIR, { recursive: true }),
+                writeFile(RETAIN_FILE, JSON.stringify(this._retain)),
               ]).finally(() => process.exit());
             }, 20000);
           }
@@ -224,7 +222,10 @@ export class IPCServer {
       case IPCQueue.fmNext:
         PersonalFm.head()
           .then((item) => {
-            if (item) this.broadcast({ t: IPCQueue.fmNext, item });
+            if (item) {
+              State.fm = true;
+              this.broadcast({ t: IPCQueue.fmNext, item });
+            }
           })
           .catch(logError);
         break;
@@ -238,7 +239,11 @@ export class IPCBroadcastServer {
   private static _server: Server;
 
   static async init(): Promise<void> {
-    await rm(ipcBroadcastServerPath, { recursive: true, force: true });
+    await rm(ipcBroadcastServerPath, { recursive: true, force: true }).catch(
+      () => {
+        //
+      }
+    );
 
     this._server = createServer((socket) => {
       this._sockets.add(socket);

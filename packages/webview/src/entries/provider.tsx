@@ -168,9 +168,9 @@ class Controller {
     }
     const pos = (Date.now() - this._i + this._d) / 1000;
     vscode.postMessage({ command: "position", pos } as ProviderCMsg);
-    if (navigator.mediaSession) {
+    /* if (navigator.mediaSession) {
       navigator.mediaSession.setPositionState?.({ position: pos });
-    }
+    } */
   }
 }
 
@@ -193,9 +193,9 @@ const Provider = (): JSX.Element => {
           break;
         case "metadata":
           navigator.mediaSession.metadata = new MediaMetadata(data);
-          navigator.mediaSession.setPositionState?.({
+          /* navigator.mediaSession.setPositionState?.({
             duration: data.duration,
-          });
+          }); */
           break;
         case "account":
           setProfiles(data.profiles);

@@ -32,8 +32,8 @@ export async function dailyCheck(uid: number): Promise<boolean> {
   try {
     const actions = [];
     const [yunbei, sign] = await Promise.allSettled([
-      (() => yunbeiToday(uid))(),
-      (() => yunbeiInfo(uid))(),
+      yunbeiToday(uid),
+      yunbeiInfo(uid),
     ]);
     if (yunbei.status === "fulfilled" && !yunbei.value)
       actions.push(yunbeiSign(uid));
