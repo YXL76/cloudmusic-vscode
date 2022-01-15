@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.7.2] - 2022-01-15
+
+### Fixed
+
+- Cache: prefetch path
+
 ## [9.7.1] - 2022-01-15
 
 ### Fixed
