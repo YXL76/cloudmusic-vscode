@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.7.1] - 2022-01-15
+
+### Fixed
+
+- Player: sync issue in wasm mode
+
 ## [9.7.0] - 2022-01-14
 
 ### Added
