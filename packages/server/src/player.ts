@@ -62,7 +62,7 @@ async function prefetch() {
 
   let cache;
   if (!State.fm) cache = { id: idS, name, path, md5 };
-  void downloadMusic(url, name, cache);
+  void downloadMusic(url, path, cache);
   void NeteaseAPI.lyric(id);
 }
 
