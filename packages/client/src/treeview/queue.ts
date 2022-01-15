@@ -52,8 +52,7 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     return head ? [head, ...unsortInplace(rest)] : [];
   }
 
-  // -2 is for `retain`
-  static new(elements: readonly PlayTreeItemData[], id = -2): void {
+  static new(elements: readonly PlayTreeItemData[], id = this.id + 1): void {
     if (this.id === id) return;
     this.id = id;
     this._clear();

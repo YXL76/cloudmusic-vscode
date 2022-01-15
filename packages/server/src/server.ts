@@ -71,12 +71,22 @@ export class IPCServer {
             );
         })
         .on("close", (/* err */) => {
+          let isMaster = false;
+          {
+            const [master] = this._sockets;
+            isMaster = master === socket;
+          }
           socket?.destroy();
           this._sockets.delete(socket);
           this._buffer.delete(socket);
 
           if (this._sockets.size) {
             this._setMaster();
+            if (isMaster) {
+              // Master was gone, the wasm player was destroyed
+              // So we need to recreate it on new master
+              Player.wasmOpen();
+            }
           } else {
             Player.pause();
             this._timer = setTimeout(() => {

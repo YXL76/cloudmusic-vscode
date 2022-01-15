@@ -310,9 +310,9 @@ export class Player {
     this._wasm?.volume(level);
   }
 
-  /* static wasmOpen(): void {
+  static wasmOpen(): void {
     if (this._wasm) setTimeout(() => this._failedEnd(), 1024);
-  } */
+  }
 
   private static _failedEnd(): void {
     IPCServer.sendToMaster({ t: IPCPlayer.end, fail: true });
