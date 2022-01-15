@@ -12,9 +12,11 @@ import { initStatusBar } from "./statusBar";
 import { window } from "vscode";
 
 export async function realActivate(context: ExtensionContext) {
-  window.registerWebviewViewProvider("account", new AccountViewProvider(), {
-    webviewOptions: { retainContextWhenHidden: true },
-  });
+  context.subscriptions.push(
+    window.registerWebviewViewProvider("account", new AccountViewProvider(), {
+      webviewOptions: { retainContextWhenHidden: true },
+    })
+  );
   initQueue(context);
   initCommand(context);
   initStatusBar(context);

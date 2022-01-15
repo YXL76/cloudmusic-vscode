@@ -1,7 +1,6 @@
 import { IPCPlayer, IPCWasm } from "@cloudmusic/shared";
 import { basename, resolve } from "path";
-import { downloadMusic, getMusicPath, logError } from "./utils";
-import { readdir, rm, stat } from "fs/promises";
+import { downloadMusic, getMusicPath } from "./utils";
 import { IPCServer } from "./server";
 import { MusicCache } from "./cache";
 import { NeteaseAPI } from "./api";
@@ -109,9 +108,9 @@ class WasmPlayer {
 export class Player {
   static next?: { id: number; name: string };
 
-  private static _dt = 0;
+  static id = 0;
 
-  private static _id = 0;
+  private static _dt = 0;
 
   private static _pid = 0;
 
@@ -169,24 +168,6 @@ export class Player {
         posHandler(Player.position());
       }, 800);
     } else this._wasm = new WasmPlayer();
-
-    setInterval(
-      () =>
-        void readdir(TMP_DIR)
-          .then((files) => {
-            for (const file of files) {
-              if (file === `${this._id}`) continue;
-              const path = resolve(TMP_DIR, file);
-              void stat(path).then(({ mtime }) => {
-                if (Date.now() - mtime.getTime() > 480000)
-                  rm(path).catch(logError);
-              });
-            }
-          })
-          .catch(logError),
-      // 1000 * 60 * 8 = 480000
-      480000
-    );
   }
 
   static mediaSession(pid?: string, init?: true) {
@@ -275,21 +256,21 @@ export class Player {
     const pTime = this._time;
     this._time = Date.now();
 
-    if (this._id) {
+    if (this.id) {
       const diff = this._time - pTime;
       if (diff > 60000 && this._dt > 60000) {
         const time = Math.floor(Math.min(diff, this._dt) / 1000);
-        void NeteaseAPI.scrobble(this._id, this._pid, time);
+        void NeteaseAPI.scrobble(this.id, this._pid, time);
       }
     }
 
     if (network) {
+      this.id = data.item.id;
       this._dt = data.item.dt;
-      this._id = data.item.id;
       this._pid = data.pid;
     } else {
+      this.id = 0;
       this._dt = 0;
-      this._id = 0;
       this._pid = 0;
     }
   }
