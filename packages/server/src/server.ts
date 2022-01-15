@@ -77,7 +77,6 @@ export class IPCServer {
 
           if (this._sockets.size) {
             this._setMaster();
-            Player.wasmOpen();
           } else {
             Player.pause();
             this._timer = setTimeout(() => {
@@ -97,13 +96,12 @@ export class IPCServer {
       this._setMaster();
 
       if (this._sockets.size === 1) {
+        // retain
         if (!this._first) {
           Player.play();
 
           this.send(socket, { t: IPCControl.retain, items: this._retain });
           this._retain = [];
-
-          Player.wasmOpen();
         } else this._first = false;
       } else {
         this.sendToMaster({ t: IPCControl.new });

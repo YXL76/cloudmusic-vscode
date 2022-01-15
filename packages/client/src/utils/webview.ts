@@ -185,8 +185,8 @@ export class AccountViewProvider implements WebviewViewProvider {
               const msg: ProviderSMsg = { command: "test", files };
               void webview.webview.postMessage(msg);
             }, console.error);
+            State.downInit(); // 3
           }
-
           break;
         case "account":
           AccountManager.accountQuickPick(msg.userId);

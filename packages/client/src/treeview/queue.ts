@@ -180,7 +180,8 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   }
 
   private static _shift(index: number): void {
-    if (index === 0) return;
+    // Allow replay current playing song
+    // if (index === 0) return;
     while (index < 0) index += this.len;
     this._songs.push(...this._songs.splice(0, index));
   }

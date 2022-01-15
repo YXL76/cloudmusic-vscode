@@ -36,6 +36,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
     const buildUri = Uri.joinPath(context.extensionUri, "build");
     const files = await workspace.fs.readDirectory(buildUri);
     State.wasm = files.findIndex(([file]) => file === NATIVE_MODULE) === -1;
+    if (!State.wasm) State.downInit(); // 3
   }
   console.log("Cloudmusic:", State.wasm ? "wasm" : "native", "mode.");
 

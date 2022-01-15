@@ -139,7 +139,7 @@ checksum = "fa66045b9cb23c2e9c1520732030608b02ee07e5cfaa5a521ec15ded7fa24c90"
 dependencies = [
  "glob",
  "libc",
- "libloading 0.7.2",
+ "libloading 0.7.3",
 ]
 
 [[package]]
@@ -332,7 +332,7 @@ dependencies = [
 [[package]]
 name = "cpal"
 version = "0.13.4"
-source = "git+https://github.com/RustAudio/cpal?branch=master#ee6a9aab8a9065a2e6c16110e275a3252418119e"
+source = "git+https://github.com/RustAudio/cpal?branch=master#33094e89f533c233d76c73649867e080544a8fef"
 dependencies = [
  "alsa",
  "core-foundation-sys 0.8.3",
@@ -342,8 +342,8 @@ dependencies = [
  "lazy_static",
  "libc",
  "mach",
- "ndk 0.4.0",
- "ndk-glue 0.4.0",
+ "ndk 0.6.0",
+ "ndk-glue 0.6.0",
  "nix 0.23.1",
  "oboe",
  "parking_lot",
@@ -362,36 +362,12 @@ checksum = "b365fabc795046672053e29c954733ec3b05e4be654ab130fe8f1f94d7051f35"
 
 [[package]]
 name = "darling"
-version = "0.10.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0d706e75d87e35569db781a9b5e2416cff1236a47ed380831f959382ccd5f858"
-dependencies = [
- "darling_core 0.10.2",
- "darling_macro 0.10.2",
-]
-
-[[package]]
-name = "darling"
 version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d0d720b8683f8dd83c65155f0530560cba68cd2bf395f6513a483caee57ff7f4"
 dependencies = [
- "darling_core 0.13.1",
- "darling_macro 0.13.1",
-]
-
-[[package]]
-name = "darling_core"
-version = "0.10.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0c960ae2da4de88a91b2d920c2a7233b400bc33cb28453a2987822d8392519b"
-dependencies = [
- "fnv",
- "ident_case",
- "proc-macro2",
- "quote",
- "strsim 0.9.3",
- "syn",
+ "darling_core",
+ "darling_macro",
 ]
 
 [[package]]
@@ -404,18 +380,7 @@ dependencies = [
  "ident_case",
  "proc-macro2",
  "quote",
- "strsim 0.10.0",
- "syn",
-]
-
-[[package]]
-name = "darling_macro"
-version = "0.10.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d9b5a2f4ac4969822c62224815d069952656cadc7084fdca9751e6d959189b72"
-dependencies = [
- "darling_core 0.10.2",
- "quote",
+ "strsim",
  "syn",
 ]
 
@@ -425,7 +390,7 @@ version = "0.13.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "72c41b3b7352feb3211a0d743dc5700a4e3b60f51bd2b368892d1e0f9a95f44b"
 dependencies = [
- "darling_core 0.13.1",
+ "darling_core",
  "quote",
  "syn",
 ]
@@ -462,7 +427,7 @@ version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ac1b7517328c04c2aa68422fc60a41b92208182142ed04a25879c26c8f878794"
 dependencies = [
- "libloading 0.7.2",
+ "libloading 0.7.3",
 ]
 
 [[package]]
@@ -602,9 +567,9 @@ dependencies = [
 
 [[package]]
 name = "libloading"
-version = "0.7.2"
+version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "afe203d669ec979b7128619bae5a63b7b42e9203c1b29146079ee05e2f604b52"
+checksum = "efbc0f03f9a775e9f6aed295c6a1ba2253c5757a9e03d55c6caa46a681abcddd"
 dependencies = [
  "cfg-if 1.0.0",
  "winapi",
@@ -718,19 +683,6 @@ dependencies = [
 
 [[package]]
 name = "ndk"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d64d6af06fde0e527b1ba5c7b79a6cc89cfc46325b0b2887dffe8f70197e0c3c"
-dependencies = [
- "bitflags",
- "jni-sys",
- "ndk-sys 0.2.2",
- "num_enum",
- "thiserror",
-]
-
-[[package]]
-name = "ndk"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "96d868f654c72e75f8687572699cdabe755f03effbb62542768e995d5b8d699d"
@@ -757,20 +709,6 @@ dependencies = [
 
 [[package]]
 name = "ndk-glue"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d3e9e94628f24e7a3cb5b96a2dc5683acd9230bf11991c2a1677b87695138420"
-dependencies = [
- "lazy_static",
- "libc",
- "log",
- "ndk 0.4.0",
- "ndk-macro 0.2.0",
- "ndk-sys 0.2.2",
-]
-
-[[package]]
-name = "ndk-glue"
 version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fc291b8de2095cba8dab7cf381bf582ff4c17a09acf854c32e46545b08085d28"
@@ -779,7 +717,7 @@ dependencies = [
  "libc",
  "log",
  "ndk 0.5.0",
- "ndk-macro 0.3.0",
+ "ndk-macro",
  "ndk-sys 0.2.2",
 ]
 
@@ -793,21 +731,8 @@ dependencies = [
  "libc",
  "log",
  "ndk 0.6.0",
- "ndk-macro 0.3.0",
+ "ndk-macro",
  "ndk-sys 0.3.0",
-]
-
-[[package]]
-name = "ndk-macro"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "05d1c6307dc424d0f65b9b06e94f88248e6305726b14729fd67a5e47b2dc481d"
-dependencies = [
- "darling 0.10.2",
- "proc-macro-crate 0.1.5",
- "proc-macro2",
- "quote",
- "syn",
 ]
 
 [[package]]
@@ -816,8 +741,8 @@ version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0df7ac00c4672f9d5aece54ee3347520b7e20f158656c7db2e6de01902eb7a6c"
 dependencies = [
- "darling 0.13.1",
- "proc-macro-crate 1.1.0",
+ "darling",
+ "proc-macro-crate",
  "proc-macro2",
  "quote",
  "syn",
@@ -966,7 +891,7 @@ version = "0.5.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0d992b768490d7fe0d8586d9b5745f6c49f557da6d81dc982b1d167ad4edbb21"
 dependencies = [
- "proc-macro-crate 1.1.0",
+ "proc-macro-crate",
  "proc-macro2",
  "quote",
  "syn",
@@ -1052,15 +977,6 @@ name = "pkg-config"
 version = "0.3.24"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "58893f751c9b0412871a09abd62ecd2a00298c6c83befa223ef98c52aef40cbe"
-
-[[package]]
-name = "proc-macro-crate"
-version = "0.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1d6ea3c4595b96363c13943497db34af4460fb474a95c43f4446ad341b8c9785"
-dependencies = [
- "toml",
-]
 
 [[package]]
 name = "proc-macro-crate"
@@ -1256,12 +1172,6 @@ name = "stdweb"
 version = "0.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ef5430c8e36b713e13b48a9f709cc21e046723fe44ce34587b73a830203b533e"
-
-[[package]]
-name = "strsim"
-version = "0.9.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6446ced80d6c486436db5c078dde11a9f73d42b57fb273121e160b84f63d894c"
 
 [[package]]
 name = "strsim"

@@ -42,7 +42,8 @@ export class State {
   // To finish initialization needs 2 steps
   // 1. Started the IPC server / Received the queue
   // 2. Received `IPCControl.netease`
-  private static _initializing = 2;
+  // 3. In native mode / `AccountViewProvider` is ready
+  private static _initializing = 3;
 
   private static _master = false;
 
@@ -99,7 +100,7 @@ export class State {
   static set repeat(value: boolean) {
     this._repeat = value;
     ButtonManager.buttonRepeat(value);
-    void this.context.globalState.update(REPEAT_KEY, value);
+    if (this._master) void this.context.globalState.update(REPEAT_KEY, value);
   }
 
   // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
@@ -133,7 +134,6 @@ export class State {
         this._playItem.item.al.picUrl,
         this._playItem.item.al.name
       );
-    else ButtonManager.buttonSong();
   }
 
   // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
@@ -168,12 +168,7 @@ export class State {
     --this._initializing;
     if (this._initializing !== 0) return;
 
-    /** From {@link repeat}*/
-    {
-      const value = this.context.globalState.get(REPEAT_KEY, false);
-      this._repeat = value;
-      ButtonManager.buttonRepeat(value);
-    }
+    this.repeat = this.context.globalState.get(REPEAT_KEY, false);
 
     /** From {@link fm}*/
     {
@@ -194,8 +189,6 @@ export class State {
       this.like = !!(head && head instanceof QueueItemTreeItem);
       AccountViewProvider.metadata();
     }
-
-    this.loading = false;
 
     const listenQueue = () =>
       this.context.subscriptions.push(
@@ -221,6 +214,19 @@ export class State {
             setTimeout(listenQueue, 1024); // The queue maybe ready
           });
       }
-    } else listenQueue();
+    } else {
+      /** {@link loading} */
+      {
+        const { head } = QueueProvider;
+        if (head)
+          ButtonManager.buttonSong(
+            head.item.name,
+            head.tooltip,
+            head.item.al.picUrl,
+            head.item.al.name
+          );
+      }
+      listenQueue();
+    }
   }
 }
