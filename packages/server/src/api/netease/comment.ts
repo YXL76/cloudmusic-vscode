@@ -22,7 +22,7 @@ export async function commentAdd(
   return !!(await weapiRequest(
     `music.163.com/weapi/resource/comments/add`,
     { threadId: `${resourceTypeMap[type]}${id}`, content },
-    { ...AccountState.defaultCookie, os: "pc" }
+    { ...AccountState.defaultCookie, os: "android" }
   ));
 }
 
@@ -35,7 +35,7 @@ export async function commentReply(
   return !!(await weapiRequest(
     `music.163.com/weapi/resource/comments/reply`,
     { threadId: `${resourceTypeMap[type]}${id}`, content, commentId },
-    { ...AccountState.defaultCookie, os: "pc" }
+    { ...AccountState.defaultCookie, os: "android" }
   ));
 }
 
