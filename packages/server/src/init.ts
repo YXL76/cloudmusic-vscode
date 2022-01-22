@@ -54,6 +54,7 @@ setInterval(
           return;
         }
         // If no files were deleted, the cache can be considered stable
+        // In practice, this is mostly invoked every 4 minutes (two ticks)
         void MusicCache.store();
       })
       .catch(logError);

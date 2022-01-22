@@ -67,7 +67,7 @@ const config = {
   ignorePatterns: [
     "./packages/wasi/**/*.*",
     "./packages/wasm/**/*.*",
-    "*.jsom",
+    "*.json",
   ],
   parser: "@typescript-eslint/parser",
   plugins: ["prettier"],

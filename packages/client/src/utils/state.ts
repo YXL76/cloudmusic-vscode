@@ -39,7 +39,7 @@ export class State {
 
   static first = false;
 
-  // To finish initialization needs 2 steps
+  // To finish initialization needs 3 steps
   // 1. Started the IPC server / Received the queue
   // 2. Received `IPCControl.netease`
   // 3. In native mode / `AccountViewProvider` is ready
