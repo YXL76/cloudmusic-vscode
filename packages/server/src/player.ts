@@ -61,7 +61,7 @@ async function prefetch() {
   const path = resolve(TMP_DIR, idS);
 
   let cache;
-  if (!State.fm) cache = { id: idS, name, path, md5 };
+  if (!State.fm) cache = { id: idS, name: `${name}-${idS}`, path, md5 };
   void downloadMusic(url, path, cache);
   void NeteaseAPI.lyric(id);
 }

@@ -33,7 +33,7 @@ export async function getMusicPath(
   const tmpUri = resolve(TMP_DIR, idS);
 
   let cache;
-  if (!State.fm) cache = { id: idS, name, path: tmpUri, md5 };
+  if (!State.fm) cache = { id: idS, name: `${name}-${idS}`, path: tmpUri, md5 };
   const download = await getMusic(url, cache);
   if (!download) return;
 
