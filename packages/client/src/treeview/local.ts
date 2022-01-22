@@ -6,10 +6,17 @@ import {
 } from "vscode";
 import type { PlayTreeItem, PlayTreeItemData } from ".";
 import { MUSIC_CACHE_DIR } from "../constant";
+import type { MimeType } from "file-type";
 import type { TreeDataProvider } from "vscode";
 import { fromFile } from "file-type";
 import { readdir } from "fs/promises";
 import { resolve } from "path";
+
+const supportedType: MimeType[] = [
+  "audio/vnd.wave",
+  "audio/x-flac",
+  "audio/mpeg",
+];
 
 export class LocalProvider
   implements TreeDataProvider<LocalFileTreeItem | LocalLibraryTreeItem>
@@ -99,10 +106,7 @@ export class LocalProvider
             })
           )
         )
-          .filter(
-            ({ mime }) =>
-              mime && (mime === "audio/x-flac" || mime === "audio/mpeg")
-          )
+          .filter(({ mime }) => mime && supportedType.includes(mime))
           .map((item) => LocalFileTreeItem.new(item));
         items.push(...treeitems);
       }
