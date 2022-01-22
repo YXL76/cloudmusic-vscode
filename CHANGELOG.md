@@ -6,6 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.8.0] - 2022-01-22
+
+### Added
+
+- Player: support `wav` format ([#632](https://github.com/YXL76/cloudmusic-vscode/issues/632))
+
+### Fixed
+
+- Cache: file name conflict ([#633](https://github.com/YXL76/cloudmusic-vscode/issues/633))
+- Command: `deleteLocalLibrary` index error
+
 ## [9.7.2] - 2022-01-15
 
 ### Fixed
