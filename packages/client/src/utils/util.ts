@@ -11,8 +11,14 @@ import { AccountManager } from "../manager";
 import { NeteaseCommentType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import type { QuickPickItem } from "vscode";
-
 import i18n from "../i18n";
+
+// From https://github.com/tc39/proposal-relative-indexing-method#polyfill
+export function at<T>(a: Array<T> | undefined, n: number) {
+  if (!a) return;
+  if (n < 0) n += a.length;
+  return a[n];
+}
 
 export async function likeMusic(
   input: MultiStepInput,

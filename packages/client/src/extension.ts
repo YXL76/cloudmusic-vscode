@@ -84,18 +84,3 @@ export function deactivate(): void {
   // On windows, the data will be lost when the PIPE is closed.
   if (process.platform !== "win32") IPC.disconnect();
 }
-
-// From https://github.com/tc39/proposal-relative-indexing-method#polyfill
-{
-  type AtFn<T> = (this: Array<T>, n: number) => T;
-  const value: AtFn<unknown> = function (n: number) {
-    if (n < 0) n += this.length;
-    return this[n];
-  };
-  Object.defineProperty(Array.prototype, "at", {
-    value,
-    writable: true,
-    enumerable: false,
-    configurable: true,
-  });
-}
