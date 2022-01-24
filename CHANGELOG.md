@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.8.1] - 2022-01-24
+
+### Fixed
+
+- Api: add/reply comments
+- TreeView: missing listener ([#631](https://github.com/YXL76/cloudmusic-vscode/issues/631))
+
 ## [9.8.0] - 2022-01-22
 
 ### Added
