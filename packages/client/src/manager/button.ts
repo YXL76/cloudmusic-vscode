@@ -2,6 +2,7 @@ import type { ExtensionContext, StatusBarItem } from "vscode";
 import { MarkdownString, StatusBarAlignment, window } from "vscode";
 import { MultiStepInput, State } from "../utils";
 import { BUTTON_KEY } from "../constant";
+import type { QueueContent } from "../treeview";
 import i18n from "../i18n";
 
 const enum Label {
@@ -171,11 +172,15 @@ export class ButtonManager {
     this._buttons[Label.speed].tooltip = `${i18n.word.speed}: ${speed}`;
   }
 
-  static buttonSong(name = "", ar = "", picUrl = "", al = ""): void {
-    if (this._buttonShow[Label.song])
-      this._buttons[Label.song].text = name || "$(flame)";
-
-    this._mdSong = `<table><tr><th align="center">${name}</th></tr><tr><td align="center">${ar}</td></tr><tr><td align="center"><img src="${picUrl}" alt="${al}" width="384"/></td></tr><tr><td align="center">`;
+  static buttonSong(ele?: QueueContent | string): void {
+    if (!ele || typeof ele === "string") {
+      this._buttons[Label.song].text = ele || "$(flame)";
+      this._mdSong = "";
+    } else {
+      const { item, tooltip } = ele;
+      this._buttons[Label.song].text = item.name;
+      this._mdSong = `<table><tr><th align="center">${item.name}</th></tr><tr><td align="center">${tooltip}</td></tr><tr><td align="center"><img src="${item.al.picUrl}" alt="${item.al.name}" width="384"/></td></tr><tr><td align="center">`;
+    }
 
     this._setMdTooltip();
   }
