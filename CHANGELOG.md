@@ -6,6 +6,20 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.8.2] - 2022-01-26
+
+### Changed
+
+- Activation: change event from `*` to `onStartupFinished` ([#634](https://github.com/YXL76/cloudmusic-vscode/issues/634))
+- Player
+  - Change codec to `symphonia`
+  - Support to change the speed while playing ([#576](https://github.com/YXL76/cloudmusic-vscode/issues/576))
+- Webview: dynamic import wasm pkg
+
+### Fixed
+
+- Player: position is correctly affected by speed
+
 ## [9.8.1] - 2022-01-24
 
 ### Fixed
