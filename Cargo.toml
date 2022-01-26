@@ -8,4 +8,5 @@ symphonia = { git = "https://github.com/pdeljanov/Symphonia", branch = "master" 
 cpal = { git = "https://github.com/RustAudio/cpal", branch = "master" }
 
 [profile.release]
+codegen-units = 1
 lto = true
