@@ -1,7 +1,7 @@
 import type { ProviderCMsg, ProviderSMsg } from "@cloudmusic/shared";
 import React, { useEffect, useState } from "react";
 import type { NeteaseTypings } from "api";
-import { Player } from "cloudmusic-wasm";
+import type { Player } from "cloudmusic-wasm";
 import { render } from "react-dom";
 import { vscode } from "../utils";
 
@@ -41,11 +41,7 @@ function deleteMediaSessionActionHandler() {
 deleteMediaSessionActionHandler();
 
 class Controller {
-  private static readonly _player = (
-    window as unknown as { enablePlayer: boolean }
-  ).enablePlayer
-    ? new Player()
-    : undefined;
+  private static _player?: Player;
 
   private static _speed = 1;
 
@@ -64,6 +60,13 @@ class Controller {
 
   private static _playableFile?: string;
 
+  static async init() {
+    if ((window as unknown as { enablePlayer: boolean }).enablePlayer)
+      this._player = new (await import("cloudmusic-wasm")).Player();
+
+    vscode.postMessage({ command: "pageLoaded" } as ProviderCMsg);
+  }
+
   static async load(url: string) {
     if (!this._player) return;
 
@@ -72,6 +75,7 @@ class Controller {
     this._playing = !!this._player.load(new Uint8Array(buf));
     if (this._playing) {
       this._instant = Date.now();
+      this._duration = 0;
       vscode.postMessage({ command: "load" } as ProviderCMsg);
     }
   }
@@ -107,8 +111,7 @@ class Controller {
 
   static speed(speed: number) {
     this._player?.set_speed(speed);
-    this._duration =
-      (Date.now() - this._instant) * this._speed + this._duration;
+    this._duration += (Date.now() - this._instant) * this._speed;
     this._instant = Date.now();
     this._speed = speed;
   }
@@ -265,5 +268,5 @@ let loaded = false;
 render(<Provider />, root, () => {
   if (loaded) return;
   loaded = true;
-  vscode.postMessage({ command: "pageLoaded" } as ProviderCMsg);
+  void Controller.init();
 });
