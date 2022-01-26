@@ -40,7 +40,7 @@
     "Netease"
   ],
   "activationEvents": [
-    "*"
+    "onStartupFinished"
   ],
   "icon": "media/icon-300.png",
   "main": "./dist/extension.js",

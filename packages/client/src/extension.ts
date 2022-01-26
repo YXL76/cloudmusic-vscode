@@ -51,13 +51,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
   const radio = createTreeView("radio", RadioProvider.getInstance());
   context.subscriptions.push(queue, local, playlist, radio);
 
-  if (
-    AUTO_START ||
-    queue.visible ||
-    local.visible ||
-    playlist.visible ||
-    radio.visible
-  ) {
+  // Only checking the visibility of the queue treeview is enough.
+  if (AUTO_START || queue.visible) {
     await realActivate(context);
   } else {
     let done = false;
@@ -69,13 +64,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
       let disposable: Disposable | undefined;
       while ((disposable = disposables.pop())) disposable.dispose();
     };
-    disposables.push(
-      queue.onDidChangeVisibility(callback)
-      // Only checking the visibility of the queue treeview is enough.
-      // local.onDidChangeVisibility(callback),
-      // playlist.onDidChangeVisibility(callback),
-      // radio.onDidChangeVisibility(callback)
-    );
+    disposables.push(queue.onDidChangeVisibility(callback));
   }
 }
 
