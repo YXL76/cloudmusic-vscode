@@ -17,7 +17,7 @@ console_error_panic_hook = { version = "0.1", optional = true }
 git = "https://github.com/RustAudio/rodio"
 branch = "master"
 default-features = false
-features = ["flac", "symphonia-mp3", "wasm-bindgen", "wav"]
+features = ["symphonia-flac", "symphonia-mp3", "symphonia-wav", "wasm-bindgen"]
 
 [dependencies.wasm-bindgen]
 version = "0.2"

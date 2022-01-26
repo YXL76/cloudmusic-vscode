@@ -26,7 +26,7 @@ features = ["channel-api", "napi-6"]
 git = "https://github.com/RustAudio/rodio"
 branch = "master"
 default-features = false
-features = ["flac", "mp3", "wav"]
+features = ["symphonia-flac", "symphonia-mp3", "symphonia-wav"]
 
 [target.'cfg(target_os = "windows")'.dependencies]
 winapi = "0.3"

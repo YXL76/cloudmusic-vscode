@@ -3,7 +3,8 @@ members = ["crates/native", "crates/wasi", "crates/wasm"]
 default-members = ["crates/native"]
 
 [patch.crates-io]
-minimp3 = { git = "https://github.com/YXL76/minimp3-rs", branch = "dev" }
+symphonia = { git = "https://github.com/pdeljanov/Symphonia", branch = "master" }
+# minimp3 = { git = "https://github.com/YXL76/minimp3-rs", branch = "dev" }
 cpal = { git = "https://github.com/RustAudio/cpal", branch = "master" }
 
 [profile.release]
