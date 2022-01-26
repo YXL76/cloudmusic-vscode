@@ -23,17 +23,19 @@ impl Status {
     }
 
     #[inline]
-    fn elapsed(&self) -> Duration {
+    fn elapsed(&self, speed: f64) -> f64 {
         match *self {
-            Status::Stopped(d) => d,
-            Status::Playing(start, extra) => start.elapsed() + extra,
+            Status::Stopped(d) => d.as_secs_f64(),
+            Status::Playing(start, extra) => {
+                start.elapsed().as_secs_f64() * speed + extra.as_secs_f64()
+            }
         }
     }
 
     #[inline]
-    fn stop(&mut self) {
+    fn stop(&mut self, speed: f64) {
         if let Status::Playing(start, extra) = *self {
-            *self = Status::Stopped(start.elapsed() + extra)
+            *self = Status::Stopped(start.elapsed().mul_f64(speed) + extra)
         }
     }
 
@@ -48,6 +50,13 @@ impl Status {
     fn reset(&mut self) {
         *self = Status::Stopped(Duration::from_nanos(0));
     }
+
+    #[inline]
+    fn store(&mut self, speed: f64) {
+        if let Status::Playing(start, extra) = *self {
+            *self = Status::Playing(Instant::now(), start.elapsed().mul_f64(speed) + extra)
+        }
+    }
 }
 
 #[derive(Clone)]
@@ -55,12 +64,13 @@ enum ControlEvent {
     Play,
     Pause,
     Stop,
+    Speed(f32),
     Volume(f32),
     Empty,
 }
 
 pub struct Player {
-    speed: f32,
+    speed: f64,
     volume: f32,
     status: Status,
     control_tx: mpsc::Sender<ControlEvent>,
@@ -91,11 +101,12 @@ impl Player {
         };
 
         let source = match rodio::Decoder::new(BufReader::new(file)) {
-            Ok(s) => s.fade_in(Duration::from_secs(2)).speed(self.speed),
+            Ok(s) => s.fade_in(Duration::from_secs(2)),
             _ => return false,
         };
 
         self.stop();
+        let speed = self.speed as f32;
         let volume = self.volume;
 
         let (control_tx, control_rx) = mpsc::channel();
@@ -104,6 +115,7 @@ impl Player {
         thread::spawn(move || {
             if let Ok((_stream, handle)) = rodio::OutputStream::try_default() {
                 let sink = rodio::Sink::try_new(&handle).unwrap();
+                sink.set_speed(speed);
                 sink.set_volume(volume);
                 sink.append(source);
 
@@ -113,6 +125,7 @@ impl Player {
                     match ce {
                         ControlEvent::Play => sink.play(),
                         ControlEvent::Pause => sink.pause(),
+                        ControlEvent::Speed(speed) => sink.set_speed(speed),
                         ControlEvent::Volume(level) => sink.set_volume(level),
                         ControlEvent::Empty => info_tx.send(sink.empty()).unwrap_or(()),
                         _ => break,
@@ -140,7 +153,7 @@ impl Player {
     #[inline]
     fn pause(&mut self) {
         let _ = self.control_tx.send(ControlEvent::Pause);
-        self.status.stop()
+        self.status.stop(self.speed)
     }
 
     #[inline]
@@ -150,7 +163,9 @@ impl Player {
     }
 
     #[inline]
-    fn set_speed(&mut self, speed: f32) {
+    fn set_speed(&mut self, speed: f64) {
+        let _ = self.control_tx.send(ControlEvent::Speed(speed as f32));
+        self.status.store(self.speed);
         self.speed = speed;
     }
 
@@ -172,7 +187,7 @@ impl Player {
 
     #[inline]
     fn position(&self) -> f64 {
-        self.status.elapsed().as_secs_f64()
+        self.status.elapsed(self.speed)
     }
 }
 
@@ -220,7 +235,7 @@ pub fn player_stop(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 }
 pub fn player_set_speed(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     let player = cx.argument::<JsBox<RefCell<Player>>>(0)?;
-    let speed = cx.argument::<JsNumber>(1)?.value(&mut cx) as f32;
+    let speed = cx.argument::<JsNumber>(1)?.value(&mut cx);
     player.borrow_mut().set_speed(speed);
 
     Ok(cx.undefined())

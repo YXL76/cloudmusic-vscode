@@ -47,11 +47,13 @@ class Controller {
     ? new Player()
     : undefined;
 
+  private static _speed = 1;
+
   private static _playing = false;
 
-  private static _d = 0;
+  private static _duration = 0;
 
-  private static _i = 0;
+  private static _instant = 0;
 
   private static _master = false;
 
@@ -68,14 +70,16 @@ class Controller {
     const rep = await fetch(url);
     const buf = await rep.arrayBuffer();
     this._playing = !!this._player.load(new Uint8Array(buf));
-    this._i = Date.now();
-    if (this._playing) vscode.postMessage({ command: "load" } as ProviderCMsg);
+    if (this._playing) {
+      this._instant = Date.now();
+      vscode.postMessage({ command: "load" } as ProviderCMsg);
+    }
   }
 
   static play() {
     if (!this._player) return;
 
-    if (!this._playing) this._i = Date.now();
+    if (!this._playing) this._instant = Date.now();
     this._playing = !!this._player.play();
     vscode.postMessage({
       command: "playing",
@@ -88,7 +92,7 @@ class Controller {
 
     this._player.pause();
     if (this._playing) {
-      this._d = Date.now() - this._i;
+      this._duration = (Date.now() - this._instant) * this._speed;
       this._playing = false;
     }
   }
@@ -96,13 +100,17 @@ class Controller {
   static stop() {
     if (!this._player) return;
 
-    this._d = 0;
+    this._duration = 0;
     this._player.stop();
     this._playing = false;
   }
 
   static speed(speed: number) {
     this._player?.set_speed(speed);
+    this._duration =
+      (Date.now() - this._instant) * this._speed + this._duration;
+    this._instant = Date.now();
+    this._speed = speed;
   }
 
   static volume(level: number) {
@@ -166,7 +174,8 @@ class Controller {
       vscode.postMessage({ command: "end" } as ProviderCMsg);
       return;
     }
-    const pos = (Date.now() - this._i + this._d) / 1000;
+    const pos =
+      ((Date.now() - this._instant) * this._speed + this._duration) / 1000;
     vscode.postMessage({ command: "position", pos } as ProviderCMsg);
     /* if (navigator.mediaSession) {
       navigator.mediaSession.setPositionState?.({ position: pos });
