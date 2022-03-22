@@ -19,22 +19,23 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 
 ## 歌手类
 
-|     module      |      function      | status |
-| :-------------: | :----------------: | :----: |
-|  artist_album   |    歌手专辑列表    |   ✔️   |
-|   artist_desc   |      歌手介绍      |   ✔️   |
-|  artist_detail  |      歌手详情      |        |
-|   artist_fans   |      歌手粉丝      |        |
-|   artist_list   |      歌手分类      |   ✔️   |
-|    artist_mv    |    歌手相关 MV     |   ❌   |
-|  artist_new_mv  |    歌手最新 MV     |   ❌   |
-| artist_new_song |    歌手最新歌曲    |        |
-|  artist_songs   |    歌手所有歌曲    |   ✔️   |
-|   artist_sub    | 收藏与取消收藏歌手 |   ✔️   |
-| artist_sublist  |    关注歌手列表    |   ✔️   |
-| artist_top_song | 歌手热门 50 首歌曲 |   ❌   |
-|     artists     |      歌手单曲      |   ✔️   |
-|   simi_artist   |      相似歌手      |   ✔️   |
+|       module        |      function      | status |
+| :-----------------: | :----------------: | :----: |
+|    artist_album     |    歌手专辑列表    |   ✔️   |
+|     artist_desc     |      歌手介绍      |   ✔️   |
+|    artist_detail    |      歌手详情      |        |
+|     artist_fans     |      歌手粉丝      |        |
+| artist_follow_count |    歌手粉丝数量    |        |
+|     artist_list     |      歌手分类      |   ✔️   |
+|      artist_mv      |    歌手相关 MV     |   ❌   |
+|    artist_new_mv    |    歌手最新 MV     |   ❌   |
+|   artist_new_song   |    歌手最新歌曲    |        |
+|    artist_songs     |    歌手所有歌曲    |   ✔️   |
+|     artist_sub      | 收藏与取消收藏歌手 |   ✔️   |
+|   artist_sublist    |    关注歌手列表    |   ✔️   |
+|   artist_top_song   | 歌手热门 50 首歌曲 |   ❌   |
+|       artists       |      歌手单曲      |   ✔️   |
+|     simi_artist     |      相似歌手      |   ✔️   |
 
 ## 歌曲类
 
@@ -197,6 +198,8 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |           msg_private            |          私信          |        |
 |       msg_private_history        |        私信内容        |        |
 |        msg_recentcontact         |       最近联系人       |        |
+|        musician_tasks_new        |     获取音乐人任务     |   ❌   |
+|          nickname_check          |      重复昵称检测      |   ❌   |
 |           personal_fm            |        私人 FM         |   ✔️   |
 |           personalized           |        推荐歌单        |   ✔️   |
 |      personalized_djprogram      |        推荐电台        |   ✔️   |
@@ -217,6 +220,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |             setting              |          设置          |   ❌   |
 |          share_resource          |     分享歌曲到动态     |        |
 |         sign_happy_info          |        乐签信息        |   ❌   |
+|         signin_progress          |        签到进度        |        |
 |            simi_user             |        相似用户        |   ❌   |
 |          song_purchased          |        已购单曲        |        |
 |          topic_sub_list          |       收藏的专栏       |        |
