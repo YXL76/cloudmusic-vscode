@@ -40,6 +40,7 @@ export const enum NeteaseSearchType {
   dj = 1009,
   video = 1014,
   complex = 1018,
+  sound = 2000,
 }
 
 export const enum NeteaseSortType {

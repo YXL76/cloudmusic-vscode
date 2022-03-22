@@ -185,7 +185,7 @@ export const eapiRequest = async <T = ParsedUrlQueryInput>(
   };
   const now = Date.now();
   const header = {
-    appver: "8.1.20",
+    appver: "8.7.01",
     versioncode: "140",
     buildver: now.toString().substr(0, 10),
     resolution: "1920x1080",

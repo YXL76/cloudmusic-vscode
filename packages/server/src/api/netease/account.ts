@@ -97,7 +97,7 @@ export async function like(
   return !!(await weapiRequest(
     "music.163.com/api/radio/like",
     { alg: "itembased", trackId, like, time: "3" },
-    { ...AccountState.cookies.get(uid), os: "pc", appver: "2.7.1.198277" }
+    { ...AccountState.cookies.get(uid), os: "pc", appver: "2.9.7" }
   ));
 }
 
@@ -304,6 +304,7 @@ export async function scrobble(
           time,
           type: "song",
           wifi: 0,
+          source: "list",
         },
       },
     ]),
