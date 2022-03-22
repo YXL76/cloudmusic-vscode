@@ -25,18 +25,7 @@ impl Finalize for MediaSession {}
 
 impl MediaSession {
     #[inline]
-    fn new(
-        #[cfg(all(
-            target_os = "windows",
-            any(target_arch = "x86_64", target_arch = "x86")
-        ))]
-        hwnd: String,
-        #[cfg(not(all(
-            target_os = "windows",
-            any(target_arch = "x86_64", target_arch = "x86")
-        )))]
-        _hwnd: String,
-    ) -> Self {
+    fn new() -> Self {
         const TITLE: &str = "Cloudmusic VSCode";
 
         #[cfg(all(
@@ -74,10 +63,7 @@ impl MediaSession {
             {
                 #[cfg(any(target_arch = "x86_64", target_arch = "x86"))]
                 {
-                    match hwnd.is_empty() {
-                        true => fallback(),
-                        false => Some(hwnd.parse::<u64>().unwrap() as _),
-                    }
+                    fallback()
                 }
                 #[cfg(not(any(target_arch = "x86_64", target_arch = "x86")))]
                 {
@@ -218,7 +204,7 @@ pub fn media_session_new(mut cx: FunctionContext) -> JsResult<JsValue> {
     // let hwnd = cx.argument::<JsString>(0)?.value(&mut cx);
     let handler = Arc::new(cx.argument::<JsFunction>(0)?.root(&mut cx));
 
-    let media_session = cx.boxed(RefCell::new(MediaSession::new(hwnd)));
+    let media_session = cx.boxed(RefCell::new(MediaSession::new()));
     let channel = cx.channel();
 
     let _ = media_session

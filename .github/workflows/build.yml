@@ -17,9 +17,9 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - uses: actions/cache@v2.1.7
+      - uses: actions/cache@v3
         id: cargo-cache
         with:
           path: |
@@ -58,7 +58,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Installing needed Ubuntu dependencies
         run: |
@@ -67,7 +67,7 @@ jobs:
             libdbus-1-dev \
           # sudo apt-get install -y libx11-dev
 
-      - uses: actions/cache@v2.1.7
+      - uses: actions/cache@v3
         id: cargo-cache
         with:
           path: |
@@ -128,15 +128,15 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install LLVM and Clang
-        uses: KyleMayes/install-llvm-action@v1.5.0
+        uses: KyleMayes/install-llvm-action@v1.5.1
         with:
           version: "13"
           directory: ${{ runner.temp }}/llvm
 
-      - uses: actions/cache@v2.1.7
+      - uses: actions/cache@v3
         id: cargo-cache
         with:
           path: |
