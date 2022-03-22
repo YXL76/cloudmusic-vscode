@@ -145,7 +145,7 @@ impl MediaSession {
     }
 }
 
-#[cfg(target_os = "windows")]
+/* #[cfg(target_os = "windows")]
 pub fn media_session_hwnd(mut cx: FunctionContext) -> JsResult<JsString> {
     if !ACCESSABLE.load(Ordering::Relaxed) {
         return Ok(cx.string("".to_string()));
@@ -212,16 +212,11 @@ pub fn media_session_hwnd(mut cx: FunctionContext) -> JsResult<JsString> {
         FALSE => PSTR.load(Ordering::Relaxed).to_string(),
         _ => "".to_string(),
     }))
-}
+} */
 
 pub fn media_session_new(mut cx: FunctionContext) -> JsResult<JsValue> {
-    let hwnd = cx.argument::<JsString>(0)?.value(&mut cx);
-    let play_handler = Arc::new(cx.argument::<JsFunction>(1)?.root(&mut cx));
-    let pause_handler = Arc::new(cx.argument::<JsFunction>(2)?.root(&mut cx));
-    let toggle_handler = Arc::new(cx.argument::<JsFunction>(3)?.root(&mut cx));
-    let next_handler = Arc::new(cx.argument::<JsFunction>(4)?.root(&mut cx));
-    let previous_handler = Arc::new(cx.argument::<JsFunction>(5)?.root(&mut cx));
-    let stop_handler = Arc::new(cx.argument::<JsFunction>(6)?.root(&mut cx));
+    // let hwnd = cx.argument::<JsString>(0)?.value(&mut cx);
+    let handler = Arc::new(cx.argument::<JsFunction>(0)?.root(&mut cx));
 
     let media_session = cx.boxed(RefCell::new(MediaSession::new(hwnd)));
     let channel = cx.channel();
@@ -230,21 +225,21 @@ pub fn media_session_new(mut cx: FunctionContext) -> JsResult<JsValue> {
         .borrow_mut()
         .controls
         .attach(move |event: MediaControlEvent| {
-            let callback = match event {
-                MediaControlEvent::Play => play_handler.clone(),
-                MediaControlEvent::Pause => pause_handler.clone(),
-                MediaControlEvent::Toggle => toggle_handler.clone(),
-                MediaControlEvent::Next => next_handler.clone(),
-                MediaControlEvent::Previous => previous_handler.clone(),
-                MediaControlEvent::Stop => stop_handler.clone(),
+            let type_ = match event {
+                MediaControlEvent::Play => 0.,
+                MediaControlEvent::Pause => 1.,
+                MediaControlEvent::Toggle => 2.,
+                MediaControlEvent::Next => 3.,
+                MediaControlEvent::Previous => 4.,
+                MediaControlEvent::Stop => 5.,
                 _ => return,
             };
+            let handler = handler.clone();
 
             channel.send(move |mut cx| {
-                let callback = callback.to_inner(&mut cx);
                 let this = cx.undefined();
-                let args: [Handle<JsUndefined>; 0] = [];
-                callback.call(&mut cx, this, args)?;
+                let args = [cx.number(type_).upcast()];
+                handler.to_inner(&mut cx).call(&mut cx, this, args)?;
                 Ok(())
             });
         });

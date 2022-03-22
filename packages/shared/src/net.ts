@@ -36,7 +36,7 @@ export type IPCClientMsg =
   | IPCMsg<IPCControl.cache>
   | IPCMsg<IPCControl.netease>
   | IPCMsg<IPCControl.retain, { items?: readonly unknown[] }>
-  | IPCMsg<IPCControl.pid, { pid?: string }>
+  // | IPCMsg<IPCControl.pid, { pid?: string }>
   | IPCMsg<IPCPlayer.load, { url: string; local: true }>
   | IPCMsg<
       IPCPlayer.load,

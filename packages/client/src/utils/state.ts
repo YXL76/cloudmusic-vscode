@@ -92,7 +92,7 @@ export class State {
     if (this._master !== value) {
       this._master = value;
       AccountViewProvider.master();
-      if (this._master) IPC.pid();
+      // if (this._master) IPC.pid();
     }
   }
 

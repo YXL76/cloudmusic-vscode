@@ -192,9 +192,9 @@ export class IPCServer {
         if (data.items) this._retain = data.items as unknown[];
         else this.send(socket, { t: IPCControl.retain, items: this._retain });
         break;
-      case IPCControl.pid:
+      /* case IPCControl.pid:
         Player.mediaSession(data.pid);
-        break;
+        break; */
       case IPCPlayer.load:
         void Player.load(data);
         break;

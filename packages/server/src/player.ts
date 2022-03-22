@@ -23,15 +23,10 @@ interface NativeModule {
   playerSetSpeed(player: NativePlayer, speed: number): void;
   playerStop(player: NativePlayer): void;
 
-  mediaSessionHwnd(pid: string): string;
+  // mediaSessionHwnd(pid: string): string;
   mediaSessionNew(
-    hwnd: string,
-    play_handler: () => void,
-    pause_handler: () => void,
-    toggle_handler: () => void,
-    next_handler: () => void,
-    previous_handler: () => void,
-    stop_handler: () => void
+    // hwnd: string,
+    handler: (type: number) => void
   ): NativeMediaSession;
   mediaSessionSetMetadata(
     mediaSession: NativeMediaSession,
@@ -156,7 +151,7 @@ export class Player {
       this._native.playerSetVolume(this._player, volume);
       this._native.playerSetSpeed(this._player, speed);
 
-      this.mediaSession(process.env["VSCODE_PID"], true);
+      this.mediaSession(/* process.env["VSCODE_PID"], true */);
 
       setInterval(() => {
         if (!this._playing) return;
@@ -170,22 +165,42 @@ export class Player {
     } else this._wasm = new WasmPlayer();
   }
 
-  static mediaSession(pid?: string, init?: true) {
+  static mediaSession(/* pid?: string, init?: true*/) {
     if (!this._native) return;
-    let hwnd = "";
+    /* let hwnd = "";
     if (process.platform === "win32" && pid)
       hwnd = this._native.mediaSessionHwnd(pid);
     if (init || hwnd) {
-      this._mediaSession = this._native.mediaSessionNew(
-        hwnd,
-        this.play.bind(this),
-        this.pause.bind(this),
-        this.toggle.bind(this),
-        () => IPCServer.sendToMaster({ t: IPCPlayer.next }),
-        () => IPCServer.sendToMaster({ t: IPCPlayer.previous }),
-        this.stop.bind(this)
-      );
-    }
+    } */
+    this._mediaSession = this._native.mediaSessionNew((type) => {
+      const enum Type {
+        play,
+        pause,
+        toggle,
+        next,
+        previous,
+        stop,
+      }
+      switch (type) {
+        case Type.play:
+          this.play();
+          break;
+        case Type.pause:
+          this.pause();
+          break;
+        case Type.toggle:
+          this.toggle();
+          break;
+        case Type.next:
+          IPCServer.sendToMaster({ t: IPCPlayer.next });
+          break;
+        case Type.previous:
+          IPCServer.sendToMaster({ t: IPCPlayer.previous });
+          break;
+        case Type.stop:
+          this.stop();
+      }
+    });
   }
 
   static empty(): boolean {

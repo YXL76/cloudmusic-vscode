@@ -178,9 +178,9 @@ export class IPC {
     ipc.send({ t: IPCControl.retain, items });
   }
 
-  static pid(): void {
+  /* static pid(): void {
     ipc.send({ t: IPCControl.pid, pid: process.env["VSCODE_PID"] });
-  }
+  } */
 
   static lyricDelay(delay: number): void {
     ipc.send({ t: IPCPlayer.lyricDelay, delay });
