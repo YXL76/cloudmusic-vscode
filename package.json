@@ -886,7 +886,7 @@
     "debug": "4.3.4",
     "esbuild": "0.14.27",
     "esbuild-plugin-wasm": "1.0.0",
-    "eslint": "8.11.0",
+    "eslint": "8.12.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-react": "7.29.4",
