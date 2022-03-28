@@ -1184,7 +1184,7 @@ __metadata:
     eslint-plugin-react-hooks: 4.3.0
     postcss: 8.4.12
     prettier: 2.6.1
-    supports-color: 9.2.1
+    supports-color: 9.2.2
     tailwindcss: 3.0.23
     typescript: 4.6.3
   languageName: unknown
@@ -4125,10 +4125,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"supports-color@npm:9.2.1":
-  version: 9.2.1
-  resolution: "supports-color@npm:9.2.1"
-  checksum: 8a2bfeb64c1512d21a1a998c1f64acdaa85cf1f6a101627286548f19785524b329d7b28d567a28fc2d708fc7aba32f4c82a9b224f76b30a337a39d3e53418ff7
+"supports-color@npm:9.2.2":
+  version: 9.2.2
+  resolution: "supports-color@npm:9.2.2"
+  checksum: 976d84877402fc38c1d43b1fde20b0a8dc0283273f21cfebe4ff7507d27543cdfbeec7db108a96b82d694465f06d64e8577562b05d0520b41710088e0a33cc50
   languageName: node
   linkType: hard
 
