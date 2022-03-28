@@ -20,7 +20,7 @@ souvlaki = "0.5"
 git = "https://github.com/neon-bindings/neon"
 branch = "main"
 default-features = false
-features = ["channel-api", "napi-6"]
+features = ["napi-6"]
 
 [dependencies.rodio]
 git = "https://github.com/RustAudio/rodio"

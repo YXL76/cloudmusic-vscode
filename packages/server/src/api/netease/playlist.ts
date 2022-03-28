@@ -42,7 +42,7 @@ export async function playlistCreate(
     "music.163.com/api/playlist/create",
     {
       name,
-      privacy, //0 为普通歌单，10 为隐私歌单
+      privacy: `${privacy}`, //0 为普通歌单，10 为隐私歌单
       type: "NORMAL", // NORMAL|VIDEO
     },
     { ...AccountState.defaultCookie, os: "pc" }
@@ -76,7 +76,7 @@ export async function playlistDetail(
     privileges: readonly { st: number }[];
   }>(
     "music.163.com/api/v6/playlist/detail",
-    { id, n: 100000, s: 8 },
+    { id: `${id}`, n: "100000", s: "8" },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -117,7 +117,7 @@ export async function playlistSubscribe(
 ): Promise<boolean> {
   return !!(await weapiRequest(
     `music.163.com/weapi/playlist/${t}`,
-    { id },
+    { id: `${id}` },
     AccountState.cookies.get(uid)
   ));
 }
@@ -132,7 +132,11 @@ export async function playlistSubscribers(
   if (value) return value;
   const res = await weapiRequest<{
     subscribers: readonly NeteaseTypings.UserDetail[];
-  }>("music.163.com/weapi/playlist/subscribers", { id, limit, offset });
+  }>("music.163.com/weapi/playlist/subscribers", {
+    id: `${id}`,
+    limit: `${limit}`,
+    offset: `${offset}`,
+  });
   if (!res) return [];
   const ret = res.subscribers.map(resolveUserDetail);
   apiCache.set(key, ret);
@@ -147,7 +151,7 @@ export async function playlistTracks(
 ): Promise<boolean> {
   return !!(await weapiRequest(
     "music.163.com/api/playlist/manipulate/tracks",
-    { op, pid, trackIds: JSON.stringify(tracks), imme: "true" },
+    { op, pid: `${pid}`, trackIds: JSON.stringify(tracks), imme: "true" },
     { ...AccountState.cookies.get(uid), os: "pc" }
   ));
 }
@@ -160,7 +164,9 @@ export async function playlistUpdate(
   return !!(await weapiRequest(
     "music.163.com/weapi/batch",
     {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       "/api/playlist/desc/update": `{"id":${id},"desc":"${desc}"}`,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       "/api/playlist/update/name": `{"id":${id},"name":"${name}"}`,
     },
     { ...AccountState.defaultCookie, os: "pc" }
@@ -174,11 +180,11 @@ export async function playmodeIntelligenceList(
   const res = await weapiRequest<{
     data: readonly { songInfo: NeteaseTypings.SongsItemSt }[];
   }>("music.163.com/weapi/playmode/intelligence/list", {
-    songId,
+    songId: `${songId}`,
     type: "fromPlayOne",
-    playlistId,
-    startMusicId: songId,
-    count: 1,
+    playlistId: `${playlistId}`,
+    startMusicId: `${songId}`,
+    count: "1",
   });
   if (!res) return [];
   return res.data.map(({ songInfo }) => resolveSongItemSt(songInfo));
@@ -195,9 +201,9 @@ export async function simiPlaylist(
   const res = await weapiRequest<{
     playlists: readonly NeteaseTypings.RawPlaylistItem[];
   }>("music.163.com/weapi/discovery/simiPlaylist", {
-    songid,
-    limit,
-    offset,
+    songid: `${songid}`,
+    limit: `${limit}`,
+    offset: `${offset}`,
   });
   if (!res) return [];
   const ret = res.playlists.map(resolvePlaylistItem);
@@ -218,9 +224,9 @@ export async function topPlaylist(
   }>("music.163.com/weapi/playlist/list", {
     cat, // 全部,华语,欧美,日语,韩语,粤语,小语种,流行,摇滚,民谣,电子,舞曲,说唱,轻音乐,爵士,乡村,R&B/Soul,古典,民族,英伦,金属,朋克,蓝调,雷鬼,世界音乐,拉丁,另类/独立,New Age,古风,后摇,Bossa Nova,清晨,夜晚,学习,工作,午休,下午茶,地铁,驾车,运动,旅行,散步,酒吧,怀旧,清新,浪漫,性感,伤感,治愈,放松,孤独,感动,兴奋,快乐,安静,思念,影视原声,ACG,儿童,校园,游戏,70后,80后,90后,网络歌曲,KTV,经典,翻唱,吉他,钢琴,器乐,榜单,00后
     order: "hot", // hot,new
-    limit,
-    offset,
-    total: true,
+    limit: `${limit}`,
+    offset: `${offset}`,
+    total: "true",
   });
   if (!res) return [];
   const ret = res.playlists.map(resolvePlaylistItem);
@@ -239,9 +245,9 @@ export async function topPlaylistHighquality(
     playlists: readonly NeteaseTypings.PlaylistItem[];
   }>("music.163.com/api/playlist/highquality/list", {
     cat: cat, // 全部,华语,欧美,韩语,日语,粤语,小语种,运动,ACG,影视原声,流行,摇滚,后摇,古风,民谣,轻音乐,电子,器乐,说唱,古典,爵士
-    limit,
-    lasttime: 0, // 歌单updateTime
-    total: true,
+    limit: `${limit}`,
+    lasttime: "0", // 歌单updateTime
+    total: "true",
   });
   if (!res) return [];
   const ret = res.playlists.map(resolvePlaylistItem);

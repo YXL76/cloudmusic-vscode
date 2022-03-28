@@ -326,7 +326,7 @@ dependencies = [
 [[package]]
 name = "cpal"
 version = "0.13.5"
-source = "git+https://github.com/RustAudio/cpal?branch=master#190e48d7ff00145b6d654184e8a9d3731ab358a9"
+source = "git+https://github.com/RustAudio/cpal?branch=master#a420316e3055209fd9a1636b2341af36044f9a76"
 dependencies = [
  "alsa",
  "core-foundation-sys 0.8.3",
@@ -581,9 +581,9 @@ dependencies = [
 
 [[package]]
 name = "log"
-version = "0.4.14"
+version = "0.4.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "51b9bbe6c47d51fc3e1a9b945965946b4c44142ab8792c50835a980d362c2710"
+checksum = "6389c490849ff5bc16be905ae24bc913a9c8892e19b2341dbc175e14c341c2b8"
 dependencies = [
  "cfg-if 1.0.0",
 ]
@@ -752,7 +752,7 @@ dependencies = [
 [[package]]
 name = "neon"
 version = "0.10.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#779f733d2a98d343a125510208a96b98efa630ee"
+source = "git+https://github.com/neon-bindings/neon?branch=main#e79eb25ed0de6c25f6229da0f5a1d1e44390eab0"
 dependencies = [
  "neon-build",
  "neon-macros",
@@ -764,12 +764,12 @@ dependencies = [
 [[package]]
 name = "neon-build"
 version = "0.10.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#779f733d2a98d343a125510208a96b98efa630ee"
+source = "git+https://github.com/neon-bindings/neon?branch=main#e79eb25ed0de6c25f6229da0f5a1d1e44390eab0"
 
 [[package]]
 name = "neon-macros"
 version = "0.10.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#779f733d2a98d343a125510208a96b98efa630ee"
+source = "git+https://github.com/neon-bindings/neon?branch=main#e79eb25ed0de6c25f6229da0f5a1d1e44390eab0"
 dependencies = [
  "quote",
  "syn",
@@ -779,7 +779,7 @@ dependencies = [
 [[package]]
 name = "neon-runtime"
 version = "0.10.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#779f733d2a98d343a125510208a96b98efa630ee"
+source = "git+https://github.com/neon-bindings/neon?branch=main#e79eb25ed0de6c25f6229da0f5a1d1e44390eab0"
 dependencies = [
  "cfg-if 1.0.0",
  "libloading 0.6.7",
@@ -1007,9 +1007,9 @@ dependencies = [
 
 [[package]]
 name = "quote"
-version = "1.0.16"
+version = "1.0.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b4af2ec4714533fcdf07e886f17025ace8b997b9ce51204ee69b6da831c3da57"
+checksum = "632d02bff7f874a36f33ea8bb416cd484b90cc66c1194b1a1110d067a7013f58"
 dependencies = [
  "proc-macro2",
 ]
@@ -1035,9 +1035,9 @@ dependencies = [
 
 [[package]]
 name = "redox_syscall"
-version = "0.2.11"
+version = "0.2.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8380fe0152551244f0747b1bf41737e0f8a74f97a14ccefd1148187271634f3c"
+checksum = "8ae183fc1b06c149f0c1793e1eb447c8b04bfe46d48e9e48bfb8d2d7ed64ecf0"
 dependencies = [
  "bitflags",
 ]

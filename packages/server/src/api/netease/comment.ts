@@ -34,7 +34,11 @@ export async function commentReply(
 ): Promise<boolean> {
   return !!(await weapiRequest(
     `music.163.com/weapi/resource/comments/reply`,
-    { threadId: `${resourceTypeMap[type]}${id}`, content, commentId },
+    {
+      threadId: `${resourceTypeMap[type]}${id}`,
+      content,
+      commentId: `${commentId}`,
+    },
     { ...AccountState.defaultCookie, os: "android" }
   ));
 }
@@ -53,10 +57,10 @@ export async function commentFloor(
       comments: readonly NeteaseTypings.RawCommentDetail[];
     };
   }>("music.163.com/api/resource/comment/floor/get", {
-    parentCommentId,
+    parentCommentId: `${parentCommentId}`,
     threadId: `${resourceTypeMap[type]}${id}`,
-    time,
-    limit,
+    time: `${time}`,
+    limit: `${limit}`,
   });
   if (!res) return { totalCount: 0, hasMore: false, comments: [] };
   const {
@@ -77,7 +81,7 @@ export async function commentLike(
 ): Promise<boolean> {
   return !!(await weapiRequest(
     `music.163.com/weapi/v1/comment/${t}`,
-    { threadId: `${resourceTypeMap[type]}${id}`, commentId },
+    { threadId: `${resourceTypeMap[type]}${id}`, commentId: `${commentId}` },
     { ...AccountState.defaultCookie, os: "pc" }
   ));
 }
@@ -108,11 +112,11 @@ export async function commentNew(
     "music.163.com/api/v2/resource/comments",
     {
       threadId: `${resourceTypeMap[type]}${id}`,
-      pageNo,
-      showInner: true,
-      pageSize,
-      cursor,
-      sortType,
+      pageNo: `${pageNo}`,
+      showInner: "true",
+      pageSize: `${pageSize}`,
+      cursor: `${cursor}`,
+      sortType: `${sortType}`,
     },
     "/api/v2/resource/comments",
     { ...AccountState.defaultCookie, os: "pc" }

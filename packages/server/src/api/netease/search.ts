@@ -41,7 +41,13 @@ export async function searchSingle(
     result: { songs: readonly NeteaseTypings.SongsItemSt[] };
   }>(
     "music.163.com/api/cloudsearch/pc",
-    { s, type: NeteaseSearchType.single, limit, offset, total: true },
+    {
+      s,
+      type: `${NeteaseSearchType.single}`,
+      limit: `${limit}`,
+      offset: `${offset}`,
+      total: "true",
+    },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -63,7 +69,13 @@ export async function searchAlbum(
     result: { albums: readonly NeteaseTypings.AlbumsItem[] };
   }>(
     "music.163.com/api/cloudsearch/pc",
-    { s, type: NeteaseSearchType.album, limit, offset, total: true },
+    {
+      s,
+      type: `${NeteaseSearchType.album}`,
+      limit: `${limit}`,
+      offset: `${offset}`,
+      total: "true",
+    },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -85,7 +97,13 @@ export async function searchArtist(
     result: { artists: readonly NeteaseTypings.Artist[] };
   }>(
     "music.163.com/api/cloudsearch/pc",
-    { s, type: NeteaseSearchType.artist, limit, offset, total: true },
+    {
+      s,
+      type: `${NeteaseSearchType.artist}`,
+      limit: `${limit}`,
+      offset: `${offset}`,
+      total: "true",
+    },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -109,7 +127,13 @@ export async function searchPlaylist(
     result: { playlists: readonly NeteaseTypings.RawPlaylistItem[] };
   }>(
     "music.163.com/api/cloudsearch/pc",
-    { s, type: NeteaseSearchType.playlist, limit, offset, total: true },
+    {
+      s,
+      type: `${NeteaseSearchType.playlist}`,
+      limit: `${limit}`,
+      offset: `${offset}`,
+      total: "true",
+    },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -139,7 +163,13 @@ export async function searchLyric(
     };
   }>(
     "music.163.com/api/cloudsearch/pc",
-    { s, type: NeteaseSearchType.lyric, limit, offset, total: true },
+    {
+      s,
+      type: `${NeteaseSearchType.lyric}`,
+      limit: `${limit}`,
+      offset: `${offset}`,
+      total: "true",
+    },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];

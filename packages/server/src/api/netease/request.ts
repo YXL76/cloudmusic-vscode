@@ -8,26 +8,27 @@ import { eapi, weapi } from "./crypto";
 import { APISetting } from "..";
 import type { AxiosResponse } from "axios";
 import type { NeteaseTypings } from "api";
-import type { ParsedUrlQueryInput } from "querystring";
 import { State } from "../../state";
+import { URLSearchParams } from "url";
 import axios from "axios";
 import { logError } from "../../utils";
 import { loginStatus } from ".";
 import { randomBytes } from "crypto";
-import { stringify } from "querystring";
 
 const userAgent = (() => {
   switch (process.platform) {
     case "win32":
-      return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36	";
+      return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36";
     case "darwin":
-      return "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15";
+      return "Mozilla/5.0 (Macintosh; Intel Mac OS X 12_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15";
     default:
-      return "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36";
+      return "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36";
   }
 })();
 
 const csrfTokenReg = RegExp(/_csrf=([^(;|$)]+)/);
+
+type QueryInput = Record<string, string>;
 
 type Headers = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -62,13 +63,13 @@ const spStatus = new Set([200, 800, 803]);
 const responseHandler = async <T>(
   url: string,
   headers: Headers,
-  data: ParsedUrlQueryInput,
+  data: QueryInput,
   eapi?: boolean
 ): Promise<T | void> => {
   const res = await axios
     .post<string, AxiosResponse<{ readonly code?: number } & T>>(
       url,
-      stringify(data),
+      new URLSearchParams(data).toString(),
       {
         proxy: false,
         withCredentials: true,
@@ -85,11 +86,11 @@ const responseHandler = async <T>(
 
 export const loginRequest = async (
   url: string,
-  data: ParsedUrlQueryInput
+  data: QueryInput
 ): Promise<NeteaseTypings.Profile | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
   const headers = generateHeader(url);
-  headers["Cookie"] = jsonToCookie({ os: "pc" });
+  headers["Cookie"] = jsonToCookie({ os: "pc", appver: "2.9.7" });
   const res = await axios
     .post<
       string,
@@ -97,15 +98,16 @@ export const loginRequest = async (
         readonly code?: number;
         profile?: NeteaseTypings.Profile;
       }>
-    >(url.replace(/\w*api/, "weapi"), stringify(weapi(data)), {
+    >(url, new URLSearchParams(weapi(data)).toString(), {
       proxy: false,
       withCredentials: true,
       headers,
     })
     .catch(logError);
+
   if (!res) return;
   const status = res.data.code || res.status;
-  if (!spStatus.has(status)) return;
+  if (!spStatus.has(status)) return logError(res.data);
   const profile = res.data.profile;
   if (!profile || !("userId" in profile) || !("nickname" in profile)) return;
   if ("set-cookie" in res.headers) {
@@ -121,14 +123,14 @@ export const loginRequest = async (
 
 export const qrloginRequest = async (
   url: string,
-  data: ParsedUrlQueryInput
+  data: QueryInput
 ): Promise<number | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
   const headers = generateHeader(url);
   const res = await axios
     .post<string, AxiosResponse<{ readonly code?: number }>>(
       url.replace(/\w*api/, "weapi"),
-      stringify(weapi(data)),
+      new URLSearchParams(weapi(data)).toString(),
       { proxy: false, withCredentials: true, headers }
     )
     .catch(logError);
@@ -146,9 +148,9 @@ export const qrloginRequest = async (
   return status;
 };
 
-export const weapiRequest = async <T = ParsedUrlQueryInput>(
+export const weapiRequest = async <T = QueryInput>(
   url: string,
-  data: ParsedUrlQueryInput = {},
+  data: QueryInput = {},
   cookie = AccountState.defaultCookie
 ): Promise<T | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
@@ -163,9 +165,9 @@ export const weapiRequest = async <T = ParsedUrlQueryInput>(
   );
 };
 
-export const eapiRequest = async <T = ParsedUrlQueryInput>(
+export const eapiRequest = async <T = QueryInput>(
   url: string,
-  data: ParsedUrlQueryInput,
+  data: QueryInput,
   encryptUrl: string,
   rawCookie = AccountState.defaultCookie
 ): Promise<T | void> => {
@@ -207,9 +209,9 @@ export const eapiRequest = async <T = ParsedUrlQueryInput>(
   );
 };
 
-export const apiRequest = async <T = ParsedUrlQueryInput>(
+export const apiRequest = async <T = QueryInput>(
   url: string,
-  data: ParsedUrlQueryInput = {},
+  data: QueryInput = {},
   cookie = AccountState.defaultCookie
 ): Promise<T | void> => {
   url = `${APISetting.apiProtocol}://${url}`;

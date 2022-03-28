@@ -54,7 +54,12 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
     tlyric?: { lyric?: string };
     lyricUser?: NeteaseTypings.LyricUser;
     transUser?: NeteaseTypings.LyricUser;
-  }>("music.163.com/api/song/lyric", { id, lv: -1, kv: -1, tv: -1 });
+  }>("music.163.com/api/song/lyric", {
+    id: `${id}`,
+    lv: "-1",
+    kv: "-1",
+    tv: "-1",
+  });
 
   if (!res) return { time: [0], text: [["~"]], user: [] };
 
@@ -130,7 +135,11 @@ export async function simiSong(
   if (value) return value;
   const res = await weapiRequest<{
     songs: readonly NeteaseTypings.AnotherSongItem[];
-  }>("music.163.com/weapi/v1/discovery/simiSong", { songid, limit, offset });
+  }>("music.163.com/weapi/v1/discovery/simiSong", {
+    songid: `${songid}`,
+    limit: `${limit}`,
+    offset: `${offset}`,
+  });
   if (!res) return [];
   const ret = res.songs.map(resolveAnotherSongItem);
   apiCache.set(key, ret);
@@ -194,13 +203,13 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
     const [i, j] = (await Promise.allSettled([
       eapiRequest<SongUrlResponse>(
         "interface3.music.163.com/eapi/song/enhance/player/url",
-        { ids: `[${id}]`, br: State.musicQuality },
+        { ids: `[${id}]`, br: `${State.musicQuality}` },
         "/api/song/enhance/player/url",
         { ...cookie, os: "pc" }
       ),
       eapiRequest<DownloadUrlResponse>(
         "interface.music.163.com/eapi/song/enhance/download/url",
-        { id, br: State.musicQuality },
+        { id, br: `${State.musicQuality}` },
         "/api/song/enhance/download/url",
         cookie
       ),
@@ -229,10 +238,10 @@ export async function topSong(
   const res = await weapiRequest<{
     data: readonly NeteaseTypings.AnotherSongItem[];
   }>("music.163.com/weapi/v1/discovery/new/songs", {
-    areaId, // 全部:0 华语:7 欧美:96 日本:8 韩国:16
+    areaId: `${areaId}`, // 全部:0 华语:7 欧美:96 日本:8 韩国:16
     // limit: query.limit || 100,
     // offset: query.offset || 0,
-    total: true,
+    total: "true",
   });
   if (!res) return [];
   const ret = res.data.map(resolveAnotherSongItem);

@@ -48,7 +48,7 @@ export async function djDetail(
   if (value) return value;
   const res = await weapiRequest<{ data: NeteaseTypings.RadioDetail }>(
     "music.163.com/api/djradio/v2/get",
-    { id }
+    { id: `${id}` }
   );
   if (!res) return;
   const ret = resolveRadioDetail(res.data);
@@ -65,7 +65,10 @@ export async function djHot(
   if (value) return value;
   const res = await weapiRequest<{
     djRadios: readonly NeteaseTypings.RadioDetail[];
-  }>("music.163.com/weapi/djradio/hot/v1", { limit, offset });
+  }>("music.163.com/weapi/djradio/hot/v1", {
+    limit: `${limit}`,
+    offset: `${offset}`,
+  });
   if (!res) return [];
   const ret = res.djRadios.map(resolveRadioDetail);
   apiCache.set(key, ret);
@@ -84,7 +87,7 @@ export async function djProgram(
     programs: readonly NeteaseTypings.RawProgramDetail[];
   }>(
     "music.163.com/weapi/dj/program/byradio",
-    { radioId, limit, offset: 0, asc: false },
+    { radioId: `${radioId}`, limit: `${limit}`, offset: "0", asc: "false" },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -102,7 +105,7 @@ export async function djProgramDetail(
 
   const res = await weapiRequest<{
     program: NeteaseTypings.RawProgramDetail;
-  }>("music.163.com/api/dj/program/detail", { id });
+  }>("music.163.com/api/dj/program/detail", { id: `${id}` });
   if (!res) return;
   const ret = resolveProgramDetail(res.program);
   apiCache.set(key, ret);
@@ -118,7 +121,10 @@ export async function djProgramToplist(
   if (value) return value;
   const res = await weapiRequest<{
     toplist: readonly { program: NeteaseTypings.RawProgramDetail }[];
-  }>("music.163.com/api/program/toplist/v1", { limit, offset });
+  }>("music.163.com/api/program/toplist/v1", {
+    limit: `${limit}`,
+    offset: `${offset}`,
+  });
   if (!res) return [];
   const ret = res.toplist.map(({ program }) => resolveProgramDetail(program));
   apiCache.set(key, ret);
@@ -134,7 +140,7 @@ export async function djProgramToplistHours(): Promise<
 
   const res = await weapiRequest<{
     data: { list: readonly { program: NeteaseTypings.RawProgramDetail }[] };
-  }>("music.163.com/api/djprogram/toplist/hours", { limit: 100 });
+  }>("music.163.com/api/djprogram/toplist/hours", { limit: "100" });
   if (!res) return [];
   const ret = res.data.list.map(({ program }) => resolveProgramDetail(program));
   apiCache.set(key, ret);
@@ -151,7 +157,11 @@ export async function djRadioHot(
   if (value) return value;
   const res = await weapiRequest<{
     djRadios: readonly NeteaseTypings.RadioDetail[];
-  }>("music.163.com/api/djradio/hot", { cateId, limit, offset });
+  }>("music.163.com/api/djradio/hot", {
+    cateId: `${cateId}`,
+    limit: `${limit}`,
+    offset: `${offset}`,
+  });
   if (!res) return [];
   const ret = res.djRadios.map(resolveRadioDetail);
   apiCache.set(key, ret);
@@ -188,7 +198,7 @@ export async function djRecommendType(
     djRadios: readonly NeteaseTypings.RadioDetail[];
   }>(
     "music.163.com/weapi/djradio/recommend",
-    { cateId },
+    { cateId: `${cateId}` },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -206,7 +216,10 @@ export async function programRecommend(
   if (value) return value;
   const res = await weapiRequest<{
     programs: readonly NeteaseTypings.RawProgramDetail[];
-  }>("music.163.com/weapi/program/recommend/v1", { limit, offset });
+  }>("music.163.com/weapi/program/recommend/v1", {
+    limit: `${limit}`,
+    offset: `${offset}`,
+  });
   if (!res) return [];
   const ret = res.programs.map(resolveProgramDetail);
   apiCache.set(key, ret);
@@ -216,7 +229,7 @@ export async function programRecommend(
 export async function djSub(id: number, t: "sub" | "unsub"): Promise<boolean> {
   return !!(await weapiRequest<{
     djRadios: readonly NeteaseTypings.RadioDetail[];
-  }>(`music.163.com/weapi/djradio/${t}`, { id }));
+  }>(`music.163.com/weapi/djradio/${t}`, { id: `${id}` }));
 }
 
 export async function djSublist(
@@ -229,7 +242,7 @@ export async function djSublist(
     djRadios: readonly NeteaseTypings.RadioDetail[];
   }>(
     "music.163.com/weapi/djradio/get/subed",
-    { limit: 30, offset: 0, total: true },
+    { limit: "30", offset: "0", total: "true" },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -279,9 +292,9 @@ export async function djSubscriber(
   const res = await weapiRequest<{
     subscribers: readonly NeteaseTypings.UserDetail[];
   }>("music.163.com/api/djradio/subscriber", {
-    time: -1,
-    id,
-    limit,
+    time: "-1",
+    id: `${limit}`,
+    limit: `${limit}`,
     total: "true",
   });
   if (!res) return [];
@@ -301,7 +314,11 @@ export async function djToplist(
   if (value) return value;
   const res = await weapiRequest<{
     toplist: readonly NeteaseTypings.RadioDetail[];
-  }>("music.163.com/api/djradio/toplist", { type, limit, offset });
+  }>("music.163.com/api/djradio/toplist", {
+    type: `${type}`,
+    limit: `${limit}`,
+    offset: `${offset}`,
+  });
   if (!res) return [];
   const ret = res.toplist.map(resolveRadioDetail);
   apiCache.set(key, ret);
