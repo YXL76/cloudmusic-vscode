@@ -118,6 +118,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |    playlist_tags_update    |         更新歌单标签          |   ❌   |
 |      playlist_tracks       | 收藏单曲到歌单/从歌单删除歌曲 |   ✔️   |
 |      playlist_update       |           编辑歌单            |   ✔️   |
+| playlist_update_playcount  |          更新播放量           |   ❌   |
 | playmode_intelligence_list |           智能播放            |   ✔️   |
 |      related_playlist      |           相关歌单            |   ✔️   |
 |       simi_playlist        |           相似歌单            |   ✔️   |

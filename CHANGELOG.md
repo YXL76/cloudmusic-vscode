@@ -6,6 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.8.3] - 2022-03-28
+
+### Changed
+
+- Media session always use fake window on Windows
+
+### Fixed
+
+- API: keep up with the upstream
+
 ## [9.8.2] - 2022-01-26
 
 ### Changed
