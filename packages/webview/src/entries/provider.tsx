@@ -2,10 +2,11 @@ import type { ProviderCMsg, ProviderSMsg } from "@cloudmusic/shared";
 import React, { useEffect, useState } from "react";
 import type { NeteaseTypings } from "api";
 import type { Player } from "cloudmusic-wasm";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 import { vscode } from "../utils";
 
-const root = document.getElementById("root");
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(document.getElementById("root")!);
 
 const toggle = () => vscode.postMessage({ command: "toggle" } as ProviderCMsg);
 const previous = () =>
@@ -186,8 +187,15 @@ class Controller {
   }
 }
 
+let loaded = false;
+
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const Provider = (): JSX.Element => {
+  if (!loaded) {
+    loaded = true;
+    setTimeout(Controller.init.bind(Controller), 8);
+  }
+
   const [profiles, setProfiles] = useState<NeteaseTypings.Profile[]>([]);
 
   useEffect(() => {
@@ -263,10 +271,4 @@ const Provider = (): JSX.Element => {
   );
 };
 
-let loaded = false;
-
-render(<Provider />, root, () => {
-  if (loaded) return;
-  loaded = true;
-  void Controller.init();
-});
+root.render(<Provider />);

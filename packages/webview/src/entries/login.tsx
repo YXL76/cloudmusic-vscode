@@ -2,12 +2,13 @@ import { request, startEventListener } from "../utils";
 import { Login } from "../pages";
 import type { LoginProps } from "../pages";
 import React from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 
-const root = document.getElementById("root");
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(document.getElementById("root")!);
 
 startEventListener();
 
 request<LoginProps>(undefined)
-  .then((props) => render(<Login {...props} />, root))
+  .then((props) => root.render(<Login {...props} />))
   .catch(console.error);

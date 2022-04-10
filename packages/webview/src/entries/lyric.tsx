@@ -1,7 +1,8 @@
 import { Lyric } from "../pages";
 import React from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 
-const root = document.getElementById("root");
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(document.getElementById("root")!);
 
-render(<Lyric />, root);
+root.render(<Lyric />);

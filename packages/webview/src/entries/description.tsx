@@ -2,12 +2,13 @@ import { request, startEventListener } from "../utils";
 import { Description } from "../pages";
 import type { DescriptionProps } from "../pages";
 import React from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 
-const root = document.getElementById("root");
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const root = createRoot(document.getElementById("root")!);
 
 startEventListener();
 
 request<DescriptionProps>(undefined)
-  .then((props) => render(<Description {...props} />, root))
+  .then((props) => root.render(<Description {...props} />))
   .catch(console.error);

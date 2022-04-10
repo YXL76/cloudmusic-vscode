@@ -8,7 +8,7 @@ import type { PlayTreeItem, PlayTreeItemData } from ".";
 import { MUSIC_CACHE_DIR } from "../constant";
 import type { MimeType } from "file-type";
 import type { TreeDataProvider } from "vscode";
-import { fromFile } from "file-type";
+import { fileTypeFromFile } from "file-type";
 import { readdir } from "fs/promises";
 import { resolve } from "path";
 
@@ -101,7 +101,7 @@ export class LocalProvider
           await Promise.all(
             paths.map(async (filename) => {
               const id = resolve(folder, filename);
-              const mime = await fromFile(id);
+              const mime = await fileTypeFromFile(id);
               return { filename, id, ...mime };
             })
           )
