@@ -9,8 +9,8 @@ const { wasmLoader } = require("esbuild-plugin-wasm");
 
 const prod = process.argv.includes("--prod");
 
-const nodeTarget = "node14.16";
-const browserTarget = "chrome91";
+const nodeTarget = "node16.13";
+const browserTarget = "chrome98";
 
 const rootPath = resolve(__dirname, "..");
 const distPath = resolve(rootPath, "dist");

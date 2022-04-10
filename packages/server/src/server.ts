@@ -19,7 +19,7 @@ import {
 } from "./constant";
 import type { Server, Socket } from "net";
 import { downloadMusic, logError } from "./utils";
-import { readFile, rm, rmdir, writeFile } from "fs/promises";
+import { readFile, rm, writeFile } from "fs/promises";
 import { broadcastProfiles } from "./api/netease/helper";
 import { createServer } from "net";
 
@@ -95,7 +95,7 @@ export class IPCServer {
               IPCBroadcastServer.stop();
               Promise.allSettled([
                 MusicCache.store(),
-                rmdir(TMP_DIR, { recursive: true }),
+                rm(TMP_DIR, { recursive: true }),
                 writeFile(RETAIN_FILE, JSON.stringify(this._retain)),
               ]).finally(() => process.exit());
             }, 20000);

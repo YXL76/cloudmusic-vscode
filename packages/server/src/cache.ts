@@ -5,7 +5,6 @@ import {
   readFile,
   readdir,
   rm,
-  rmdir,
   stat,
   writeFile,
 } from "fs/promises";
@@ -30,7 +29,7 @@ type LyricCacheItem = NeteaseTypings.LyricData & { ctime: number };
 
 export class LyricCache {
   static clear(): void {
-    rmdir(LYRIC_CACHE_DIR, { recursive: true })
+    rm(LYRIC_CACHE_DIR, { recursive: true })
       .catch(() => {
         //
       })
@@ -110,7 +109,7 @@ export class MusicCache {
   }
 
   static clear(): void {
-    rmdir(MUSIC_CACHE_DIR, { recursive: true })
+    rm(MUSIC_CACHE_DIR, { recursive: true })
       .catch(() => {
         //
       })
