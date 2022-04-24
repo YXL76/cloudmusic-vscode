@@ -6,6 +6,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.8.4] - 2022-04-24
+
+### Changed
+
+- Remove `fs.rmdir`
+- Webview: Update to React 18
+- Update minimum supported Vs Code Version to 1.66.0
+
 ## [9.8.3] - 2022-03-28
 
 ### Changed
