@@ -72,7 +72,6 @@ const responseHandler = async <T>(
       new URLSearchParams(data).toString(),
       {
         proxy: false,
-        withCredentials: true,
         headers,
         ...(eapi ? { encoding: null } : {}),
       }
@@ -100,7 +99,6 @@ export const loginRequest = async (
       }>
     >(url, new URLSearchParams(weapi(data)).toString(), {
       proxy: false,
-      withCredentials: true,
       headers,
     })
     .catch(logError);
@@ -131,7 +129,7 @@ export const qrloginRequest = async (
     .post<string, AxiosResponse<{ readonly code?: number }>>(
       url.replace(/\w*api/, "weapi"),
       new URLSearchParams(weapi(data)).toString(),
-      { proxy: false, withCredentials: true, headers }
+      { proxy: false, headers }
     )
     .catch(logError);
   if (!res) return;
