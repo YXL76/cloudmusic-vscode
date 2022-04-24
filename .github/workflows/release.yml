@@ -90,20 +90,20 @@ jobs:
 
       - name: Build image
         run: |
-          docker build -t cross/aarch64:v1 -f docker/Dockerfile.aarch64-unknown-linux-gnu .
+          # docker build -t cross/aarch64:v1 -f docker/Dockerfile.aarch64-unknown-linux-gnu .
           docker build -t cross/armv7:v1 -f docker/Dockerfile.armv7-unknown-linux-gnueabihf .
 
-      - name: Build aarch64
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          use-cross: true
-          args: --release --target aarch64-unknown-linux-gnu
+      # - name: Build aarch64
+      #   uses: actions-rs/cargo@v1
+      #   with:
+      #     command: build
+      #     use-cross: true
+      #     args: --release --target aarch64-unknown-linux-gnu
 
-      - uses: actions/upload-artifact@v3
-        with:
-          name: ${{ runner.os }}-aarch64
-          path: crates/native/index.node
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ${{ runner.os }}-aarch64
+      #     path: crates/native/index.node
 
       - name: Build armv7
         uses: actions-rs/cargo@v1
@@ -126,7 +126,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install LLVM and Clang
-        uses: KyleMayes/install-llvm-action@v1.5
+        uses: KyleMayes/install-llvm-action@v1
         with:
           version: "14"
           directory: ${{ runner.temp }}/llvm
@@ -187,7 +187,7 @@ jobs:
           mkdir -p .artifact/build
           cp .artifact/Linux-armv7/index.node     .artifact/build/linux-arm.node
           cp .artifact/macOS-aarch64/index.node   .artifact/build/darwin-arm64.node
-          cp .artifact/Linux-aarch64/index.node   .artifact/build/linux-arm64.node
+          # cp .artifact/Linux-aarch64/index.node   .artifact/build/linux-arm64.node
           cp .artifact/Windows-aarch64/index.node .artifact/build/win32-arm64.node
           cp .artifact/macOS-x86_64/index.node    .artifact/build/darwin-x64.node
           cp .artifact/Linux-x86_64/index.node    .artifact/build/linux-x64.node
