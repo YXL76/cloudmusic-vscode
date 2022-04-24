@@ -247,6 +247,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |     vip_growthpoint_details      |   vip 成长值获取记录   |        |
 |       vip_growthpoint_get        |    领取 vip 成长值     |        |
 |            vip_tasks             |        vip 任务        |        |
+|         vip_timemachine          |       黑胶时光机       |   ❌   |
 |              yunbei              |      云贝签到信息      |   ❌   |
 |           yunbei_info            |      云贝账户信息      |   ✔️   |
 |         yunbei_rcmd_song         |        云贝推歌        |        |
