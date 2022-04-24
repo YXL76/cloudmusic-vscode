@@ -217,11 +217,11 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
       PromiseSettledResult<SongUrlResponse>,
       PromiseSettledResult<DownloadUrlResponse>
     ];
-    if (i.status === "fulfilled") {
+    if (i.status === "fulfilled" && i.value.data) {
       const [{ url, md5, type, freeTrialInfo }] = i.value.data;
       if (!freeTrialInfo) return { url, md5, type };
     }
-    if (j.status === "fulfilled") {
+    if (j.status === "fulfilled" && j.value.data) {
       const { url, md5, type, freeTrialInfo } = j.value.data;
       if (!freeTrialInfo) return { url, md5, type };
     }
