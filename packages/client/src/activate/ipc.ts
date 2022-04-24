@@ -32,7 +32,7 @@ import { readdir, rm } from "fs/promises";
 import type { ExtensionContext } from "vscode";
 import type { PlayTreeItemData } from "../treeview";
 import { QueueProvider } from "../treeview";
-import { openSync } from "fs";
+import { open } from "fs/promises";
 import { resolve } from "path";
 import { spawn } from "child_process";
 
@@ -213,7 +213,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
     spawn(process.execPath, [...process.execArgv, ipcServerPath], {
       detached: true,
       shell: false,
-      stdio: ["ignore", "ignore", openSync(logPath, "a")],
+      stdio: ["ignore", "ignore", (await open(logPath, "a")).fd],
       env: {
         ...process.env,
         // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -41,7 +41,7 @@ export class IPCServer {
     return socket;
   }
 
-  static async init(): Promise<void> {
+  static async init() {
     const [buf] = await Promise.allSettled([
       readFile(RETAIN_FILE),
       rm(ipcServerPath, { recursive: true, force: true }),
@@ -124,17 +124,14 @@ export class IPCServer {
       .listen(ipcServerPath);
   }
 
-  static stop(): void {
+  static stop() {
     this._server.close(() => {
       for (const socket of this._sockets) socket?.destroy();
       this._sockets.clear();
     });
   }
 
-  static send(
-    socket: Socket,
-    data: IPCServerMsg | NeteaseAPISMsg<"album">
-  ): void {
+  static send(socket: Socket, data: IPCServerMsg | NeteaseAPISMsg<"album">) {
     socket.write(`${JSON.stringify(data)}${ipcDelimiter}`);
   }
 

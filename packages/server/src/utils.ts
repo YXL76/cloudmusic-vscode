@@ -70,6 +70,8 @@ async function getMusic(
 ): Promise<Readable | void> {
   try {
     const { data } = await axios.get<Readable>(url, {
+      proxy: false,
+      withCredentials: true,
       responseType: "stream",
       timeout: 8000,
     });
