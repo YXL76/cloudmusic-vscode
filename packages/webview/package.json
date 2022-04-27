@@ -16,8 +16,8 @@
     "@cloudmusic/shared": "workspace:*",
     "cloudmusic-wasm": "workspace:*",
     "dayjs": "1.11.1",
-    "react": "18.0.0",
-    "react-dom": "18.0.0",
+    "react": "18.1.0",
+    "react-dom": "18.1.0",
     "react-icons": "4.3.1"
   }
 }
