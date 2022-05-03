@@ -219,13 +219,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/eslint@npm:8.4.1":
-  version: 8.4.1
-  resolution: "@types/eslint@npm:8.4.1"
+"@types/eslint@npm:8.4.2":
+  version: 8.4.2
+  resolution: "@types/eslint@npm:8.4.2"
   dependencies:
     "@types/estree": "*"
     "@types/json-schema": "*"
-  checksum: b5790997ee9d3820d16350192d41849b0e2448c9e93650acac672ddf502e35c0a5a25547172a9eec840a96687cd94ba1cee672cbd86640f8f4ff1b65960d2ab9
+  checksum: e81268cdeb8d64d84af649344df88f064ece0f05db62072657c976b6162ffe16f94b6480a5367d627c629272c2d86d0ee8c24f7095e98f8e743b16f98500673b
   languageName: node
   linkType: hard
 
@@ -1072,7 +1072,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cloudmusic@workspace:."
   dependencies:
-    "@types/eslint": 8.4.1
+    "@types/eslint": 8.4.2
     "@types/tailwindcss": 3.0.10
     "@typescript-eslint/eslint-plugin": 5.20.0
     "@typescript-eslint/parser": 5.20.0

@@ -877,7 +877,7 @@
     "postinstall": "yarn sdks vscode vim"
   },
   "devDependencies": {
-    "@types/eslint": "8.4.1",
+    "@types/eslint": "8.4.2",
     "@types/tailwindcss": "3.0.10",
     "@typescript-eslint/eslint-plugin": "5.20.0",
     "@typescript-eslint/parser": "5.20.0",
