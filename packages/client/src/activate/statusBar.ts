@@ -4,7 +4,6 @@ import {
   MultiStepInput,
   State,
   Webview,
-  at,
   pickUser,
 } from "../utils";
 import { ButtonManager } from "../manager";
@@ -34,7 +33,7 @@ export function initStatusBar(context: ExtensionContext): void {
       }
 
       await MultiStepInput.run(async (input) => {
-        const user = at(State.lyric.user, State.lyric.type);
+        const user = State.lyric.user.at(State.lyric.type);
         const { type } = await input.showQuickPick({
           title,
           step: 1,
@@ -120,7 +119,7 @@ export function initStatusBar(context: ExtensionContext): void {
           step: 2,
           totalSteps: totalSteps + 1,
           items: State.lyric.time.map((time, i) => ({
-            label: at(State.lyric.text[i], State.lyric.type) as string,
+            label: State.lyric.text[i].at(State.lyric.type) as string,
             description: `${time}`,
           })),
         });

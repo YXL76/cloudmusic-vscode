@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { AccountViewProvider, IPC, State, at, defaultLyric } from "../utils";
+import { AccountViewProvider, IPC, State, defaultLyric } from "../utils";
 import {
   CONF,
   COOKIE_KEY,
@@ -131,7 +131,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         break;
       case IPCPlayer.lyricIndex:
         ButtonManager.buttonLyric(
-          at(State.lyric.text[data.idx], State.lyric.type)
+          State.lyric.text[data.idx].at(State.lyric.type)
         );
         State.lyric.updateIndex?.(data.idx);
         break;

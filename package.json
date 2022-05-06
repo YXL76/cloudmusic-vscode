@@ -11,7 +11,7 @@
     "packages/@types/*"
   ],
   "engines": {
-    "vscode": "^1.62.0"
+    "vscode": "^1.66.0"
   },
   "license": "SEE LICENSE IN LICENSE",
   "categories": [

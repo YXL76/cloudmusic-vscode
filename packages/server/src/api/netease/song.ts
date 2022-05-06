@@ -10,7 +10,7 @@ import type { NeteaseTypings } from "api";
 import { State } from "../../state";
 import { logError } from "../../utils";
 
-const resolveLyric = (raw: string): readonly (readonly [number, string])[] => {
+const parseLyric = (raw: string): readonly (readonly [number, string])[] => {
   const unsorted: Array<[number, string]> = [];
   const lines = raw.split("\n");
   for (const line of lines) {
@@ -40,7 +40,7 @@ const resolveLyric = (raw: string): readonly (readonly [number, string])[] => {
   return ret;
 };
 
-const resolveLyricUser = (
+const parseLyricUser = (
   user?: NeteaseTypings.LyricUser
 ): NeteaseTypings.LyricUser | undefined =>
   user ? { nickname: user.nickname, userid: user.userid } : undefined;
@@ -52,22 +52,22 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
   const res = await apiRequest<{
     lrc?: { lyric?: string };
     tlyric?: { lyric?: string };
+    romalrc?: { lyric?: string };
     lyricUser?: NeteaseTypings.LyricUser;
     transUser?: NeteaseTypings.LyricUser;
-  }>("music.163.com/api/song/lyric", {
-    id: `${id}`,
-    lv: "-1",
-    kv: "-1",
-    tv: "-1",
-  });
+  }>(
+    "music.163.com/api/song/lyric?_nmclfl=1",
+    { id: `${id}`, tv: "-1", lv: "-1", rv: "-1", kv: "-1" },
+    { os: "ios" }
+  );
 
   if (!res) return { time: [0], text: [["~"]], user: [] };
 
-  const o = resolveLyric(res?.lrc?.lyric ?? "");
-  const t = resolveLyric(res?.tlyric?.lyric ?? "");
+  const o = parseLyric(res?.lrc?.lyric ?? "");
+  const t = parseLyric(res?.tlyric?.lyric ?? "");
   const user = [
-    resolveLyricUser(res.lyricUser),
-    resolveLyricUser(res.transUser),
+    parseLyricUser(res.lyricUser),
+    parseLyricUser(res.transUser),
   ] as [NeteaseTypings.LyricUser?, NeteaseTypings.LyricUser?];
 
   // Combine origin and translation
