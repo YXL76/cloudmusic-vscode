@@ -877,12 +877,12 @@
     "postinstall": "yarn sdks vscode vim"
   },
   "devDependencies": {
-    "@types/eslint": "8.4.1",
+    "@types/eslint": "8.4.2",
     "@types/tailwindcss": "3.0.10",
-    "@typescript-eslint/eslint-plugin": "5.20.0",
-    "@typescript-eslint/parser": "5.20.0",
-    "@yarnpkg/esbuild-plugin-pnp": "3.0.0-rc.2",
-    "@yarnpkg/sdks": "3.0.0-rc.2",
+    "@typescript-eslint/eslint-plugin": "5.22.0",
+    "@typescript-eslint/parser": "5.22.0",
+    "@yarnpkg/esbuild-plugin-pnp": "3.0.0-rc.4",
+    "@yarnpkg/sdks": "3.0.0-rc.4",
     "debug": "4.3.4",
     "esbuild": "0.14.38",
     "esbuild-plugin-wasm": "1.0.0",
@@ -890,12 +890,12 @@
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",
     "eslint-plugin-react": "7.29.4",
-    "eslint-plugin-react-hooks": "4.4.0",
-    "postcss": "8.4.12",
+    "eslint-plugin-react-hooks": "4.5.0",
+    "postcss": "8.4.13",
     "prettier": "2.6.2",
     "supports-color": "9.2.2",
     "tailwindcss": "3.0.24",
-    "typescript": "4.6.3"
+    "typescript": "4.6.4"
   },
-  "packageManager": "yarn@3.2.0"
+  "packageManager": "yarn@4.0.0-rc.4"
 }

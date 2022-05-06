@@ -106,7 +106,9 @@ const ipc = new IPCClient<IPCClientMsg, IPCServerMsg>(ipcServerPath);
 const ipcB = new IPCClient<IPCBroadcastMsg>(ipcBroadcastServerPath);
 
 export class IPC {
-  static requestPool = new Map() as CSConnPool;
+  static readonly requestPool = new Map() as CSConnPool;
+
+  private static _nextChann = 0;
 
   static async connect(
     ipcHandler: Parameters<typeof ipc.connect>[0],
@@ -262,10 +264,8 @@ export class IPC {
     i: I,
     p: NeteaseAPIParameters<I>
   ): Promise<NeteaseAPIReturn<I>> {
-    const channel = `netease-${i}-${Date.now()}`;
+    const channel = ++this._nextChann;
     return new Promise((resolve, reject) => {
-      const prev = this.requestPool.get(channel);
-      prev?.reject();
       this.requestPool.set(channel, { resolve, reject });
       ipc.request<NeteaseAPICMsg<I>>({
         t: IPCApi.netease,

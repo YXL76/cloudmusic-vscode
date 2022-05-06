@@ -69,29 +69,16 @@ const ipcBHandler = (data: IPCBroadcastMsg) => {
   }
 };
 
-const getDate = /-(\d+)$/;
-const rejectTimout = () => {
-  const now = Date.now();
-  for (const [k, { reject }] of IPC.requestPool) {
-    const [, date] = getDate.exec(k as string) as RegExpExecArray;
-    if (parseInt(date) - now > 40000) {
-      IPC.requestPool.delete(k);
-      reject();
-    } else break;
-  }
-};
-
-setInterval(rejectTimout, 60000);
-
 export async function initIPC(context: ExtensionContext): Promise<void> {
   const ipcHandler = (data: IPCServerMsg | NeteaseAPISMsg<NeteaseAPIKey>) => {
     switch (data.t) {
       case IPCApi.netease:
         {
           const req = IPC.requestPool.get(data.channel);
+          if (!req) break;
           IPC.requestPool.delete(data.channel);
-          if (req) req.resolve(data.msg);
-          // rejectTimout();
+          if ((data.msg as { err?: true })["err"]) req.reject();
+          else req.resolve(data.msg);
         }
         break;
       case IPCControl.netease:

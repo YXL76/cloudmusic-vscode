@@ -283,9 +283,9 @@ export class Webview {
     });
 
     State.lyric.updatePanel = (text) =>
-      panel.webview.postMessage({ command: "lyric", text } as LyricSMsg);
+      void panel.webview.postMessage({ command: "lyric", text } as LyricSMsg);
     State.lyric.updateIndex = (idx) =>
-      panel.webview.postMessage({ command: "index", idx } as LyricSMsg);
+      void panel.webview.postMessage({ command: "index", idx } as LyricSMsg);
 
     setHtml();
 
@@ -358,17 +358,22 @@ export class Webview {
       i18n.word.latest,
     ];
 
-    const getList = async () => {
-      const list = await IPC.netease("commentNew", [
-        type,
-        gid,
-        pageNo,
-        pageSize,
-        sortTypes[index],
-        time,
-      ]);
-      time = list.comments?.[list.comments.length - 1]?.time || 0;
-      return list;
+    const getList = async (channel: number) => {
+      try {
+        const list = await IPC.netease("commentNew", [
+          type,
+          gid,
+          pageNo,
+          pageSize,
+          sortTypes[index],
+          time,
+        ]);
+        time = list.comments?.[list.comments.length - 1]?.time || 0;
+
+        await panel.webview.postMessage({ msg: { titles, ...list }, channel });
+      } catch {
+        await panel.webview.postMessage({ msg: { err: true }, channel });
+      }
     };
 
     const { panel, setHtml } = this._getPanel(
@@ -377,7 +382,7 @@ export class Webview {
     );
 
     panel.webview.onDidReceiveMessage(
-      async ({ msg, channel }: CSMessage<CommentCSMsg> | CommentCMsg) => {
+      ({ msg, channel }: CSMessage<CommentCSMsg> | CommentCMsg) => {
         if (!channel) {
           switch (msg.command) {
             case "user":
@@ -393,17 +398,16 @@ export class Webview {
         }
 
         if (msg.command === "init") {
-          void panel.webview.postMessage({
-            msg: { titles, ...(await getList()) },
-            channel,
-          });
+          void getList(channel);
           return;
         }
         if (msg.command === "like") {
-          void panel.webview.postMessage({
-            msg: await IPC.netease("commentLike", [type, msg.t, gid, msg.id]),
-            channel,
-          });
+          IPC.netease("commentLike", [type, msg.t, gid, msg.id])
+            .then((msg) => panel.webview.postMessage({ msg, channel }))
+            .catch(() =>
+              panel.webview.postMessage({ msg: { err: true }, channel })
+            );
+
           return;
         }
         switch (msg.command) {
@@ -421,10 +425,7 @@ export class Webview {
             pageNo = 1;
             break;
         }
-        void panel.webview.postMessage({
-          msg: { ...(await getList()) },
-          channel,
-        });
+        void getList(channel);
       }
     );
 

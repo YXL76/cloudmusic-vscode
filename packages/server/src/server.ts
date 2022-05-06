@@ -161,7 +161,16 @@ export class IPCServer {
           .then((msg) =>
             this.send(socket, { t: data.t, channel: data.channel, msg })
           )
-          .catch(logError);
+          .catch((err) => {
+            this.send(socket, {
+              t: data.t,
+              channel: data.channel,
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              msg: { err: true },
+            });
+            logError(err);
+          });
         break;
       case IPCControl.deleteCache:
         apiCache.del(data.key);

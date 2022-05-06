@@ -77,16 +77,16 @@ export const Comment = ({
           <div className="inline-block">
             <div
               className="cursor-pointer inline-block"
-              onClick={async () => {
-                if (
-                  await request<boolean, CommentCSMsg>({
-                    command: "like",
-                    id: commentId,
-                    t: l ? "unlike" : "like",
+              onClick={() => {
+                request<boolean, CommentCSMsg>({
+                  command: "like",
+                  id: commentId,
+                  t: l ? "unlike" : "like",
+                })
+                  .then((res) => {
+                    if (res) setL(!l);
                   })
-                ) {
-                  setL(!l);
-                }
+                  .catch(console.error);
               }}
             >
               <FiThumbsUp size={13} color={l ? "#2563EB" : undefined} />

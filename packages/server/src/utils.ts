@@ -9,13 +9,11 @@ import { resolve } from "path";
 
 export const logError = (err: unknown): void =>
   console.error(
-    Date.now(),
+    new Date().toISOString(),
     typeof err === "object"
-      ? (err as Partial<Error>)?.stack
-        ? (err as Partial<Error>).stack
-        : (err as Partial<Error>)?.message
-        ? (err as Partial<Error>).message
-        : err
+      ? (err as Partial<Error>)?.stack ??
+          (err as Partial<Error>)?.message ??
+          err
       : err
   );
 

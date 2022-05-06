@@ -30,14 +30,13 @@ export const CommentList = ({
           title={`${i18n.word.comment} (${state.totalCount})`}
           titles={titles}
           selectd={state.index}
-          switchTab={async (index) => {
-            const list = await request<NeteaseTypings.CommentRet, CommentCSMsg>(
-              {
-                command: "tabs",
-                index,
-              }
-            );
-            setState({ ...state, ...list, index });
+          switchTab={(index) => {
+            request<NeteaseTypings.CommentRet, CommentCSMsg>({
+              command: "tabs",
+              index,
+            })
+              .then((list) => setState({ ...state, ...list, index }))
+              .catch(console.error);
           }}
         />
         {state.comments.map((comment) => (
@@ -48,14 +47,12 @@ export const CommentList = ({
         {
           <button
             className="cursor-pointer mr-4 p-2 rounded-md bg-transparent text-lg text-blue-600 border-solid border-2 border-blue-600 focus:outline-none"
-            onClick={async () => {
-              const list = await request<
-                NeteaseTypings.CommentRet,
-                CommentCSMsg
-              >({
+            onClick={() => {
+              request<NeteaseTypings.CommentRet, CommentCSMsg>({
                 command: "prev",
-              });
-              setState({ ...state, ...list });
+              })
+                .then((list) => setState({ ...state, ...list }))
+                .catch(console.error);
             }}
           >
             {i18n.word.previousPage}
@@ -64,14 +61,12 @@ export const CommentList = ({
         {hasMore && (
           <button
             className="cursor-pointer ml-4 p-2 rounded-md bg-transparent text-lg text-blue-600 border-solid border-2 border-blue-600 focus:outline-none"
-            onClick={async () => {
-              const list = await request<
-                NeteaseTypings.CommentRet,
-                CommentCSMsg
-              >({
+            onClick={() => {
+              request<NeteaseTypings.CommentRet, CommentCSMsg>({
                 command: "next",
-              });
-              setState({ ...state, ...list });
+              })
+                .then((list) => setState({ ...state, ...list }))
+                .catch(console.error);
             }}
           >
             {i18n.word.nextPage}

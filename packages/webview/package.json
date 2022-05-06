@@ -7,8 +7,8 @@
   },
   "devDependencies": {
     "@types/api": "workspace:*",
-    "@types/react": "18.0.6",
-    "@types/react-dom": "18.0.2",
+    "@types/react": "18.0.8",
+    "@types/react-dom": "18.0.3",
     "@types/vscode-webview": "1.57.0",
     "@types/wicg-mediasession": "1.1.3"
   },
@@ -16,8 +16,8 @@
     "@cloudmusic/shared": "workspace:*",
     "cloudmusic-wasm": "workspace:*",
     "dayjs": "1.11.1",
-    "react": "18.0.0",
-    "react-dom": "18.0.0",
+    "react": "18.1.0",
+    "react-dom": "18.1.0",
     "react-icons": "4.3.1"
   }
 }

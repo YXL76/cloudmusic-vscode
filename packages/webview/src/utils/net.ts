@@ -7,19 +7,20 @@ const requestPool = new Map() as CSConnPool;
 export function startEventListener(): void {
   window.addEventListener(
     "message",
-    ({ data: { msg, channel } }: MessageEvent<CSMessage>) => {
+    ({ data: { msg, channel } }: MessageEvent<CSMessage<unknown>>) => {
       const req = requestPool.get(channel);
+      if (!req) return;
       requestPool.delete(channel);
-      if (req) req.resolve(msg);
+      if ((msg as { err?: true })["err"]) req.reject();
+      else req.resolve(msg);
     }
   );
 }
 
+let nextChan = 0;
 export function request<T = undefined, U = undefined>(msg: U): Promise<T> {
-  const channel = Date.now();
+  const channel = ++nextChan;
   return new Promise((resolve, reject) => {
-    const prev = requestPool.get(channel);
-    prev?.reject();
     requestPool.set(channel, { resolve, reject });
     const x: CSMessage<U> = { msg, channel };
     vscode.postMessage(x);

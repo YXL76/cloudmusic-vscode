@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@cloudmusic/shared": "workspace:*",
-    "axios": "https://github.com/axios/axios",
+    "axios": "0.27.2",
     "global-agent": "3.0.0",
     "md5-file": "5.0.0",
     "node-cache": "5.1.2",
