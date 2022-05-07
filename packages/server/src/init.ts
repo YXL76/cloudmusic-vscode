@@ -9,18 +9,12 @@ import { readdir, rm } from "fs/promises";
 import { MusicCache } from "./cache";
 import { Player } from "./player";
 import { bootstrap } from "global-agent";
-import http from "http";
-import https from "https";
 import { logError } from "./utils";
 import { mkdir } from "fs/promises";
 import { resolve } from "path";
 
 process.on("unhandledRejection", logError);
 if (process.env.GLOBAL_AGENT_HTTP_PROXY) bootstrap();
-else {
-  http.globalAgent = new http.Agent({ keepAlive: true });
-  https.globalAgent = new https.Agent({ keepAlive: true });
-}
 
 (async () => {
   Player.init();
