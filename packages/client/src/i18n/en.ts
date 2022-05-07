@@ -127,6 +127,7 @@ export default {
     refreshing: "Refreshing",
     repeat: "Repeat",
     reply: "Reply",
+    romanization: "Romanization",
     save: "Save",
     saved: "Saved",
     saveToPlaylist: "Save to playlist",

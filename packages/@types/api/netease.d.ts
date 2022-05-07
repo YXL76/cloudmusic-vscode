@@ -164,7 +164,7 @@ export namespace NeteaseTypings {
 
   export type LyricData = {
     time: readonly number[];
-    text: readonly ([string, string] | [string])[];
+    text: readonly [string, string, string][];
     user: [LyricUser?, LyricUser?];
   };
 

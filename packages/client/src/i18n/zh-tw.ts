@@ -126,6 +126,7 @@ export default {
     refresh: "重繪",
     refreshing: "重繪中",
     repeat: "單曲循環",
+    romanization: "羅馬音",
     reply: "回復",
     save: "收藏",
     saved: "已收藏",

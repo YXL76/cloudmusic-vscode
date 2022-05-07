@@ -61,62 +61,52 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
     { os: "ios" }
   );
 
-  if (!res) return { time: [0], text: [["~"]], user: [] };
+  if (!res) return { time: [0], text: [["~", "~", "~"]], user: [] };
 
-  const o = parseLyric(res?.lrc?.lyric ?? "");
-  const t = parseLyric(res?.tlyric?.lyric ?? "");
   const user = [
     parseLyricUser(res.lyricUser),
     parseLyricUser(res.transUser),
   ] as [NeteaseTypings.LyricUser?, NeteaseTypings.LyricUser?];
 
-  // Combine origin and translation
-  let oidx = 0;
-  let tidx = 0;
-  const time = [];
-  const text = [];
-  while (oidx < o.length && tidx < t.length) {
-    const [otime, otext] = o[oidx];
-    const [ttime, ttext] = t[tidx];
-    if (otime === ttime) {
-      time.push(otime);
-      text.push([otext, ttext] as [string, string]);
-      ++oidx;
-      ++tidx;
-    } else if (otime < ttime) {
-      time.push(otime);
-      text.push([otext] as [string]);
-      ++oidx;
-    } else ++tidx; // Just drop the text
+  const o = parseLyric(res?.lrc?.lyric ?? "");
+  if (!o.length) return { time: [0], text: [["~", "~", "~"]], user: [] };
+
+  const t = parseLyric(res?.tlyric?.lyric ?? "");
+  const r = parseLyric(res?.romalrc?.lyric ?? "");
+
+  const time = o.map(([t]) => t);
+  const text = o.map(([, t]) => [t, "", ""] as [string, string, string]);
+
+  let i = 0;
+  outer: for (const [ttime, ttext] of t) {
+    if (time[i] > ttime) continue;
+    while (time[i] < ttime) {
+      if (++i >= time.length) break outer;
+    }
+    if (time[i] === ttime) text[i][1] = ttext;
+    if (++i >= time.length) break;
   }
 
-  while (oidx < o.length) {
-    const [otime, otext] = o[oidx++];
-    time.push(otime);
-    text.push([otext] as [string]);
-  }
-  while (tidx < t.length) {
-    const [ttime, ttext] = t[tidx];
-    time.push(ttime);
-    text.push([ttext] as [string]);
+  i = 0;
+  outer: for (const [rtime, rtext] of r) {
+    if (time[i] > rtime) continue;
+    while (time[i] < rtime) {
+      if (++i >= time.length) break outer;
+    }
+    if (time[i] === rtime) text[i][2] = rtext;
+    if (++i >= time.length) break;
   }
 
-  const len = time.length;
-  if (len === 0) {
-    time.push(0);
-    text.push(["~"] as [string]);
-  } else {
-    // Interval greater than 8s
-    // FIXME: is it necessary? And we can't modify array while iterating it
-    /* for (let j = 1; j < len; ++j) {
-      const i = j - 1;
-      const interval = time[j] - time[i];
-      if (interval > 8) {
-        time.splice(j, 0, time[i] + interval / 4);
-        text.splice(j, 0, ["~"] as [string]);
-      }
-    } */
-  }
+  // Interval greater than 8s
+  // FIXME: is it necessary? And we can't modify array while iterating it
+  /* for (let j = 1; j < time.length; ++j) {
+    const i = j - 1;
+    const interval = time[j] - time[i];
+    if (interval > 8) {
+      time.splice(j, 0, time[i] + interval / 4);
+      text.splice(j, 0, ["~"] as [string]);
+    }
+  } */
 
   type Lyric = NeteaseTypings.LyricData & { ctime: number };
   const lyric: Lyric = { ctime: Date.now(), time, text, user };

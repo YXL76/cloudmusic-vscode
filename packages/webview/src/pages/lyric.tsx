@@ -107,13 +107,14 @@ export const Lyric = (): JSX.Element => {
 
       <style>{"body::-webkit-scrollbar{display: none;}"}</style>
       <div style={{ fontSize }} className="my-80">
-        {lyric.map(([otext, ttext], idx) => (
+        {lyric.map(([otext, ttext, rtext], idx) => (
           <div
             id={`${cnt}-${idx}`}
             key={`${cnt}-${idx}`}
             className="text-center text-ellipsis whitespace-nowrap flex flex-col gap-y-1 opacity-80 mb-8"
           >
             <div>{otext}</div>
+            {rtext && <div>{rtext}</div>}
             {ttext && <div>{ttext}</div>}
           </div>
         ))}

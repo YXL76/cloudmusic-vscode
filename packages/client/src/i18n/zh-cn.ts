@@ -127,6 +127,7 @@ export default {
     refreshing: "刷新中",
     repeat: "单曲循环",
     reply: "回复",
+    romanization: "罗马音",
     save: "收藏",
     saved: "已收藏",
     saveToPlaylist: "收藏到歌单",

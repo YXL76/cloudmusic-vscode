@@ -36,7 +36,7 @@ export const QUEUE_INIT = kConf.get<"none" | "recommend" | "restore">(
 
 export const ACCOUNT_KEY = "account-v2";
 export const CACHE_KEY = "cache-v4";
-export const LYRIC_CACHE_KEY = "lyric-cache-v5";
+export const LYRIC_CACHE_KEY = "lyric-cache-v6";
 export const COOKIE_KEY = "cookie-v2";
 export const BUTTON_KEY = "button-v2";
 export const SPEED_KEY = "speed";

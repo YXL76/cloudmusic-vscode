@@ -16,7 +16,8 @@ import i18n from "../i18n";
 
 export const enum LyricType {
   ori = 0, // original
-  tra = -1, // translation
+  tra = 1, // translation
+  rom = 2, // romanization
 }
 
 type Lyric = {
@@ -28,7 +29,7 @@ type Lyric = {
 export const defaultLyric: Lyric = {
   type: LyricType.ori,
   time: [0],
-  text: [["~"]],
+  text: [["~", "~", "~"]],
   user: [],
 };
 

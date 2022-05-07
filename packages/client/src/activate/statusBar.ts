@@ -24,7 +24,7 @@ export function initStatusBar(context: ExtensionContext): void {
       const enum Type {
         delay,
         type,
-        full,
+        all,
         cache,
         disable,
         user,
@@ -33,7 +33,7 @@ export function initStatusBar(context: ExtensionContext): void {
       }
 
       await MultiStepInput.run(async (input) => {
-        const user = State.lyric.user.at(State.lyric.type);
+        const user = State.lyric.user[State.lyric.type as 0 | 1];
         const { type } = await input.showQuickPick({
           title,
           step: 1,
@@ -47,14 +47,16 @@ export function initStatusBar(context: ExtensionContext): void {
             {
               label: `$(symbol-type-parameter) ${
                 State.lyric.type === LyricType.ori
+                  ? i18n.word.original
+                  : State.lyric.type === LyricType.tra
                   ? i18n.word.translation
-                  : i18n.word.original
+                  : i18n.word.romanization
               }`,
               type: Type.type,
             },
             {
               label: `$(list-ordered) ${i18n.word.fullLyric}`,
-              type: Type.full,
+              type: Type.all,
             },
             {
               label: `$(trash) ${i18n.word.cleanCache}`,
@@ -78,13 +80,10 @@ export function initStatusBar(context: ExtensionContext): void {
         switch (type) {
           case Type.delay:
             return (input) => inputDelay(input);
-          case Type.full:
+          case Type.all:
             return (input) => pickLyric(input);
           case Type.type:
-            State.lyric.type =
-              State.lyric.type === LyricType.ori
-                ? LyricType.tra
-                : LyricType.ori;
+            State.lyric.type = (State.lyric.type + 1) % 3;
             break;
           case Type.cache:
             IPC.lyric();
@@ -118,10 +117,12 @@ export function initStatusBar(context: ExtensionContext): void {
           title,
           step: 2,
           totalSteps: totalSteps + 1,
-          items: State.lyric.time.map((time, i) => ({
-            label: State.lyric.text[i].at(State.lyric.type) as string,
-            description: `${time}`,
-          })),
+          items: State.lyric.time
+            .map((time, i) => ({
+              label: State.lyric.text[i][State.lyric.type],
+              description: `${time}`,
+            }))
+            .filter(({ label }) => label),
         });
         select = pick.label;
         return (input) => showLyric(input);
