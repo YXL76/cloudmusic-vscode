@@ -6,11 +6,9 @@ import {
 } from "./helper";
 import { eapi, weapi } from "./crypto";
 import { APISetting } from "..";
-import type { AxiosResponse } from "axios";
 import type { NeteaseTypings } from "api";
 import { State } from "../../state";
-import { URLSearchParams } from "url";
-import axios from "axios";
+import got from "got";
 import { logError } from "../../utils";
 import { loginStatus } from ".";
 import { randomBytes } from "crypto";
@@ -63,24 +61,20 @@ const spStatus = new Set([200, 800, 803]);
 const responseHandler = async <T>(
   url: string,
   headers: Headers,
-  data: QueryInput,
-  eapi?: boolean
+  data: QueryInput
 ): Promise<T | void> => {
-  const res = await axios
-    .post<string, AxiosResponse<{ readonly code?: number } & T>>(
-      url,
-      new URLSearchParams(data).toString(),
-      {
-        proxy: false,
-        headers,
-        ...(eapi ? { encoding: null } : {}),
-      }
-    )
-    .catch(logError);
+  const res = await got<{ readonly code?: number } & T>(url, {
+    form: data,
+    headers,
+    http2: true,
+    method: "POST",
+    responseType: "json",
+    timeout: { response: 8000 },
+  });
   if (!res) return;
-  const status = res.data.code || res.status;
+  const status = res.body.code || res.statusCode;
   if (!spStatus.has(status)) return;
-  return res.data;
+  return res.body;
 };
 
 export const loginRequest = async (
@@ -90,23 +84,22 @@ export const loginRequest = async (
   url = `${APISetting.apiProtocol}://${url}`;
   const headers = generateHeader(url);
   headers["Cookie"] = jsonToCookie({ os: "pc", appver: "2.9.7" });
-  const res = await axios
-    .post<
-      string,
-      AxiosResponse<{
-        readonly code?: number;
-        profile?: NeteaseTypings.Profile;
-      }>
-    >(url, new URLSearchParams(weapi(data)).toString(), {
-      proxy: false,
-      headers,
-    })
-    .catch(logError);
+  const res = await got<{
+    readonly code?: number;
+    profile?: NeteaseTypings.Profile;
+  }>(url, {
+    form: weapi(data),
+    headers,
+    http2: true,
+    method: "POST",
+    responseType: "json",
+    timeout: { response: 8000 },
+  });
 
   if (!res) return;
-  const status = res.data.code || res.status;
-  if (!spStatus.has(status)) return logError(res.data);
-  const profile = res.data.profile;
+  const status = res.body.code || res.statusCode;
+  if (!spStatus.has(status)) return logError(res.body);
+  const profile = res.body.profile;
   if (!profile || !("userId" in profile) || !("nickname" in profile)) return;
   if ("set-cookie" in res.headers) {
     const cookie = cookieToJson(
@@ -125,23 +118,26 @@ export const qrloginRequest = async (
 ): Promise<number | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
   const headers = generateHeader(url);
-  const res = await axios
-    .post<string, AxiosResponse<{ readonly code?: number }>>(
-      url.replace(/\w*api/, "weapi"),
-      new URLSearchParams(weapi(data)).toString(),
-      { proxy: false, headers }
-    )
-    .catch(logError);
+  const res = await got<{ readonly code?: number }>(
+    url.replace(/\w*api/, "weapi"),
+    {
+      form: weapi(data),
+      headers,
+      http2: true,
+      method: "POST",
+      responseType: "json",
+      timeout: { response: 8000 },
+    }
+  );
   if (!res) return;
-  const status = res.data.code || res.status;
+  const status = res.body.code || res.statusCode;
   if (!spStatus.has(status)) return;
   if ("set-cookie" in res.headers) {
     const cookie = cookieToJson(
       res.headers["set-cookie"] as unknown as string[]
     );
-    loginStatus(JSON.stringify(cookie))
-      .then(() => broadcastProfiles())
-      .catch(logError);
+    await loginStatus(JSON.stringify(cookie));
+    broadcastProfiles();
   }
   return status;
 };
@@ -202,8 +198,7 @@ export const eapiRequest = async <T = QueryInput>(
   return responseHandler<T>(
     url.replace(/\w*api/, "eapi"),
     headers,
-    eapi(encryptUrl, { ...data, header }),
-    true
+    eapi(encryptUrl, { ...data, header })
   );
 };
 

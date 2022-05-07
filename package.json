@@ -43,7 +43,7 @@
     "onStartupFinished"
   ],
   "icon": "media/icon-300.png",
-  "main": "./dist/extension.js",
+  "main": "./dist/extension.cjs",
   "targets": {
     "main": false
   },

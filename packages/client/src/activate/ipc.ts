@@ -193,7 +193,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       workspace.getConfiguration("http").get<string>("proxy") ||
       process.env.HTTPS_PROXY ||
       process.env.HTTP_PROXY;
-    const ipcServerPath = resolve(context.extensionPath, "dist", "server.js");
+    const ipcServerPath = resolve(context.extensionPath, "dist", "server.cjs");
     const conf = CONF();
     spawn(process.execPath, [...process.execArgv, ipcServerPath], {
       detached: true,

@@ -5,7 +5,7 @@ const { pnpPlugin } = require("@yarnpkg/esbuild-plugin-pnp");
 const { resolve } = require("path");
 const { fork } = require("child_process");
 
-const browserTarget = "chrome89";
+const browserTarget = "chrome98";
 const rootPath = resolve(__dirname, "..");
 const pkgsPath = resolve(rootPath, "packages");
 

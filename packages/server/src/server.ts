@@ -176,7 +176,7 @@ export class IPCServer {
         apiCache.del(data.key);
         break;
       case IPCControl.download:
-        void downloadMusic(data.url, data.path);
+        downloadMusic(data.url, data.path);
         break;
       case IPCControl.setting:
         State.minSize = data.mq === 999000 ? 2 * 1024 * 1024 : 256 * 1024;

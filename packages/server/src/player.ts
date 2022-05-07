@@ -1,6 +1,6 @@
 import { IPCPlayer, IPCWasm } from "@cloudmusic/shared";
 import { basename, resolve } from "path";
-import { downloadMusic, getMusicPath } from "./utils";
+import { downloadMusic, getMusicPath, logError } from "./utils";
 import { IPCServer } from "./server";
 import { MusicCache } from "./cache";
 import { NeteaseAPI } from "./api";
@@ -57,7 +57,7 @@ async function prefetch() {
 
   let cache;
   if (!State.fm) cache = { id: idS, name: `${name}-${idS}`, path, md5 };
-  void downloadMusic(url, path, cache);
+  downloadMusic(url, path, cache);
   void NeteaseAPI.lyric(id);
 }
 
@@ -223,14 +223,16 @@ export class Player {
     }
     this._loadtime = loadtime;
 
-    let path: string | void = undefined;
+    let path: string;
     const local = "local" in data && data.local;
     const network = "item" in data && data.item;
-    if (local) path = data.url;
-    else if (network)
-      path = await getMusicPath(data.item.id, data.item.name, !!this._wasm);
-
-    if (!path) {
+    try {
+      if (local) path = data.url;
+      else if (network) {
+        path = await getMusicPath(data.item.id, data.item.name, !!this._wasm);
+      } else throw Error;
+    } catch (err) {
+      logError(err);
       this._failedEnd();
       return;
     }

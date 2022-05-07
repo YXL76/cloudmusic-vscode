@@ -156,11 +156,11 @@ export async function songDetail(
           songs: readonly NeteaseTypings.SongsItem[];
           privileges: readonly { st: number }[];
         }>(
-          "music.163.com/weapi/v3/song/detail",
+          "music.163.com/api/v3/song/detail",
           { c: `[${ids.map((id) => `{"id":${id}}`).join(",")}]` },
           AccountState.cookies.get(uid)
         );
-        if (!res) throw new Error("");
+        if (!res) throw Error;
         const { songs, privileges } = res;
         return songs
           .filter((_, i) => privileges[i].st >= 0)

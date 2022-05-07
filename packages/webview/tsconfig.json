@@ -2,7 +2,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "jsx": "react",
-    "lib": ["es2020", "DOM", "DOM.Iterable"],
+    "lib": ["ES2021", "DOM", "DOM.Iterable"],
     "module": "commonjs",
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
@@ -13,7 +13,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
-    "target": "es2020",
+    "target": "ES2021",
     "types": [
       "api",
       "react",

@@ -3,8 +3,8 @@ import { NeteaseAPI } from "./api";
 import type { Readable } from "stream";
 import { State } from "./state";
 import { TMP_DIR } from "./constant";
-import axios from "axios";
 import { createWriteStream } from "fs";
+import got from "got";
 import { resolve } from "path";
 
 export const logError = (err: unknown): void =>
@@ -21,24 +21,24 @@ export async function getMusicPath(
   id: number,
   name: string,
   wasm?: boolean
-): Promise<string | void> {
+): Promise<string> {
   const idS = `${id}`;
   const cachaUrl = MusicCache.get(idS);
   if (cachaUrl) return cachaUrl;
 
   const { url, md5 } = await NeteaseAPI.songUrl(idS);
-  if (!url) return;
+  if (!url) return Promise.reject();
   const tmpUri = resolve(TMP_DIR, idS);
 
   let cache;
   if (!State.fm) cache = { id: idS, name: `${name}-${idS}`, path: tmpUri, md5 };
-  const download = await getMusic(url, cache);
-  if (!download) return;
+  const download = getMusic(url, cache);
+  if (!download) return Promise.reject();
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const timer = setTimeout(() => {
       download.destroy();
-      resolve();
+      reject();
     }, 30000);
 
     const ret = () => {
@@ -58,19 +58,18 @@ export async function getMusicPath(
     const file = createWriteStream(tmpUri);
     if (wasm) file.once("finish", () => ret());
     else download.on("data", onData);
-    download.once("error", resolve).pipe(file);
+    download.once("error", reject).pipe(file);
   });
 }
 
-async function getMusic(
+function getMusic(
   url: string,
   cache?: { id: string; name: string; path: string; md5?: string }
-): Promise<Readable | void> {
+): Readable | void {
   try {
-    const { data } = await axios.get<Readable>(url, {
-      proxy: false,
-      responseType: "stream",
-      timeout: 8000,
+    const data = got(url, {
+      isStream: true,
+      timeout: { response: 8000 },
     });
     if (cache) {
       const { id, name, path, md5 } = cache;
@@ -83,13 +82,13 @@ async function getMusic(
   return;
 }
 
-export async function downloadMusic(
+export function downloadMusic(
   url: string,
   path: string,
   cache?: { id: string; name: string; path: string; md5?: string }
-): Promise<void> {
+) {
   if (cache) cache.path = path;
-  const download = await getMusic(url, cache);
+  const download = getMusic(url, cache);
   if (!download) return;
   const file = createWriteStream(path);
   download.pipe(file);
