@@ -97,7 +97,7 @@ const globalSharedConfig = {
     ...globalSharedConfig,
     sourcemap: !prod,
 
-    outfile: resolve(distPath, "extension.cjs"),
+    outfile: resolve(distPath, "extension.js"),
     external: ["vscode"],
     tsconfig,
     entryPoints: [resolve(srcPath, "extension.ts")],
@@ -112,7 +112,7 @@ const globalSharedConfig = {
   build({
     ...globalSharedConfig,
 
-    outfile: resolve(distPath, "server.cjs"),
+    outfile: resolve(distPath, "server.js"),
     tsconfig,
     entryPoints: [resolve(srcPath, "init.ts")],
   });
