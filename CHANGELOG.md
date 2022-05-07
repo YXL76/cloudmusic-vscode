@@ -6,6 +6,21 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.9.0] - 2022-05-07
+
+### Added
+
+- Lyric: Support romanization ([#322](https://github.com/YXL76/cloudmusic-vscode/issues/322))
+
+### Changed
+
+- API: Use `got` to replace `axios`
+- Webview: improve performace
+
+### Fixed
+
+- API: increase maximum number of sockets
+
 ## [9.8.4] - 2022-04-24
 
 ### Changed
