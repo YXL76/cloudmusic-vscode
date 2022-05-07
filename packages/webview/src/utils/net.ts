@@ -11,7 +11,7 @@ export function startEventListener(): void {
       const req = requestPool.get(channel);
       if (!req) return;
       requestPool.delete(channel);
-      if ((msg as { err?: true })["err"]) req.reject();
+      if ((msg as { err?: true })["err"] === true) req.reject();
       else req.resolve(msg);
     }
   );

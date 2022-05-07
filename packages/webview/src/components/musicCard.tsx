@@ -27,20 +27,22 @@ export const MusicCard = ({
       className="cursor-pointer rounded-full h-20 w-20"
       src={al.picUrl}
       alt={al.name}
-      onClick={() =>
-        vscode.postMessage({
+      onClick={() => {
+        const data: Omit<MsicRankingCMsg, "channel"> = {
           msg: { command: "album", id: al.id },
-        } as MsicRankingCMsg)
-      }
+        };
+        vscode.postMessage(data);
+      }}
     />
     <div className="cursor-pointer flex-1 ml-4">
       <div
         className="font-medium text-xl"
-        onClick={() =>
-          vscode.postMessage({
+        onClick={() => {
+          const data: Omit<MsicRankingCMsg, "channel"> = {
             msg: { command: "song", id },
-          } as MsicRankingCMsg)
-        }
+          };
+          vscode.postMessage(data);
+        }}
       >{`${name}${alia[0] ? ` (${alia.join("/")})` : ""}`}</div>
       <div>
         {ar.map(({ name, id }, idx) => (

@@ -370,7 +370,7 @@ export class Webview {
         ]);
         time = list.comments?.[list.comments.length - 1]?.time || 0;
 
-        await panel.webview.postMessage({ msg: { titles, ...list }, channel });
+        await panel.webview.postMessage({ msg: { titles, list }, channel });
       } catch {
         await panel.webview.postMessage({ msg: { err: true }, channel });
       }
@@ -412,7 +412,10 @@ export class Webview {
         }
         switch (msg.command) {
           case "prev":
-            if (pageNo <= 1) return;
+            if (pageNo <= 1) {
+              void panel.webview.postMessage({ msg: { err: true }, channel });
+              return;
+            }
             --pageNo;
             if (index === sortTypes.length - 1) time = 0;
             break;
