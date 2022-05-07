@@ -76,7 +76,7 @@ export async function playlistDetail(
     privileges: readonly { st: number }[];
   }>(
     "music.163.com/api/v6/playlist/detail",
-    { id: `${id}`, n: "100000", s: "8" },
+    { id, n: 100000, s: 8 },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -132,11 +132,7 @@ export async function playlistSubscribers(
   if (value) return value;
   const res = await weapiRequest<{
     subscribers: readonly NeteaseTypings.UserDetail[];
-  }>("music.163.com/weapi/playlist/subscribers", {
-    id: `${id}`,
-    limit: `${limit}`,
-    offset: `${offset}`,
-  });
+  }>("music.163.com/weapi/playlist/subscribers", { id, limit, offset });
   if (!res) return [];
   const ret = res.subscribers.map(resolveUserDetail);
   apiCache.set(key, ret);
@@ -180,11 +176,11 @@ export async function playmodeIntelligenceList(
   const res = await weapiRequest<{
     data: readonly { songInfo: NeteaseTypings.SongsItemSt }[];
   }>("music.163.com/weapi/playmode/intelligence/list", {
-    songId: `${songId}`,
+    songId,
     type: "fromPlayOne",
-    playlistId: `${playlistId}`,
+    playlistId,
     startMusicId: `${songId}`,
-    count: "1",
+    count: 1,
   });
   if (!res) return [];
   return res.data.map(({ songInfo }) => resolveSongItemSt(songInfo));
@@ -200,11 +196,7 @@ export async function simiPlaylist(
   if (value) return value;
   const res = await weapiRequest<{
     playlists: readonly NeteaseTypings.RawPlaylistItem[];
-  }>("music.163.com/weapi/discovery/simiPlaylist", {
-    songid: `${songid}`,
-    limit: `${limit}`,
-    offset: `${offset}`,
-  });
+  }>("music.163.com/weapi/discovery/simiPlaylist", { songid, limit, offset });
   if (!res) return [];
   const ret = res.playlists.map(resolvePlaylistItem);
   apiCache.set(key, ret);
@@ -224,9 +216,9 @@ export async function topPlaylist(
   }>("music.163.com/weapi/playlist/list", {
     cat, // 全部,华语,欧美,日语,韩语,粤语,小语种,流行,摇滚,民谣,电子,舞曲,说唱,轻音乐,爵士,乡村,R&B/Soul,古典,民族,英伦,金属,朋克,蓝调,雷鬼,世界音乐,拉丁,另类/独立,New Age,古风,后摇,Bossa Nova,清晨,夜晚,学习,工作,午休,下午茶,地铁,驾车,运动,旅行,散步,酒吧,怀旧,清新,浪漫,性感,伤感,治愈,放松,孤独,感动,兴奋,快乐,安静,思念,影视原声,ACG,儿童,校园,游戏,70后,80后,90后,网络歌曲,KTV,经典,翻唱,吉他,钢琴,器乐,榜单,00后
     order: "hot", // hot,new
-    limit: `${limit}`,
-    offset: `${offset}`,
-    total: "true",
+    limit,
+    offset,
+    total: true,
   });
   if (!res) return [];
   const ret = res.playlists.map(resolvePlaylistItem);
@@ -244,10 +236,10 @@ export async function topPlaylistHighquality(
   const res = await weapiRequest<{
     playlists: readonly NeteaseTypings.PlaylistItem[];
   }>("music.163.com/api/playlist/highquality/list", {
-    cat: cat, // 全部,华语,欧美,韩语,日语,粤语,小语种,运动,ACG,影视原声,流行,摇滚,后摇,古风,民谣,轻音乐,电子,器乐,说唱,古典,爵士
-    limit: `${limit}`,
-    lasttime: "0", // 歌单updateTime
-    total: "true",
+    cat, // 全部,华语,欧美,韩语,日语,粤语,小语种,运动,ACG,影视原声,流行,摇滚,后摇,古风,民谣,轻音乐,电子,器乐,说唱,古典,爵士
+    limit,
+    lasttime: 0, // 歌单updateTime
+    total: true,
   });
   if (!res) return [];
   const ret = res.playlists.map(resolvePlaylistItem);

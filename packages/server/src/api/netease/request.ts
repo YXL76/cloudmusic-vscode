@@ -28,7 +28,7 @@ const userAgent = (() => {
 
 const csrfTokenReg = RegExp(/_csrf=([^(;|$)]+)/);
 
-type QueryInput = Record<string, string>;
+type QueryInput = Record<string, string | number | boolean>;
 
 type Headers = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -195,7 +195,7 @@ export const eapiRequest = async <T = QueryInput>(
   const header = {
     appver: "8.7.01",
     versioncode: "140",
-    buildver: now.toString().substr(0, 10),
+    buildver: now.toString().slice(0, 10),
     resolution: "1920x1080",
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __csrf: "",

@@ -73,7 +73,7 @@ export async function djPersonalizeRecommend(
     data: readonly NeteaseTypings.RadioDetail[];
   }>(
     "music.163.com/api/djradio/personalize/rcmd",
-    { limit: "10" },
+    { limit: 10 },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -112,7 +112,7 @@ export async function likelist(uid: number): Promise<readonly number[]> {
   if (value) return value;
   const res = await weapiRequest<{ ids: readonly number[] }>(
     "music.163.com/weapi/song/like/get",
-    { uid: `${uid}` },
+    { uid },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -127,7 +127,7 @@ export async function login(
   return await loginRequest("music.163.com/api/login", {
     username,
     password,
-    rememberLogin: "true",
+    rememberLogin: true,
   });
 }
 
@@ -140,7 +140,7 @@ export async function loginCellphone(
   return await loginRequest("music.163.com/api/login/cellphone", {
     phone,
     countrycode,
-    rememberLogin: "true",
+    rememberLogin: true,
     ...(captcha ? { captcha } : { password }),
   });
 }
@@ -148,14 +148,14 @@ export async function loginCellphone(
 export async function loginQrCheck(key: string): Promise<number | void> {
   return await qrloginRequest("music.163.com/weapi/login/qrcode/client/login", {
     key,
-    type: "1",
+    type: 1,
   });
 }
 
 export async function loginQrKey(): Promise<string | void> {
   const res = await weapiRequest<{ unikey: string }>(
     "music.163.com/weapi/login/qrcode/unikey",
-    { type: "1" }
+    { type: 1 }
   );
   if (!res) return;
   return res.unikey;
@@ -207,7 +207,7 @@ export async function personalized(
     result: readonly NeteaseTypings.RawPlaylistItem[];
   }>(
     "music.163.com/weapi/personalized/playlist",
-    { limit: "30", total: "true", n: "1000" },
+    { limit: 30, total: true, n: 1000 },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -245,7 +245,7 @@ export async function personalizedNewsong(
     result: readonly { song: NeteaseTypings.AnotherSongItem }[];
   }>(
     "music.163.com/weapi/personalized/newsong",
-    { type: "recommend", limit: "10", areaId: "0" },
+    { type: "recommend", limit: 10, areaId: 0 },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -346,13 +346,7 @@ export async function userFolloweds(
     followeds: readonly NeteaseTypings.UserDetail[];
   }>(
     `music.163.com/eapi/user/getfolloweds/${userId}`,
-    {
-      userId: `${userId}`,
-      time: "0",
-      limit: `${limit}`,
-      offset: `${offset}`,
-      getcounts: "true",
-    },
+    { userId, time: 0, limit, offset, getcounts: true },
     "/api/user/getfolloweds",
     AccountState.cookies.get(userId)
   );
@@ -373,7 +367,7 @@ export async function userFollows(
     follow: NeteaseTypings.UserDetail[];
   }>(
     `music.163.com/weapi/user/getfollows/${uid}`,
-    { offset: `${offset}`, limit: `${limit}`, order: "true" },
+    { offset, limit, order: true },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -411,7 +405,7 @@ export async function userPlaylist(
     playlist: readonly NeteaseTypings.RawPlaylistItem[];
   }>(
     "music.163.com/api/user/playlist",
-    { uid: `${uid}`, limit: "30", offset: "0", includeVideo: "true" },
+    { uid, limit: 30, offset: 0, includeVideo: true },
     AccountState.cookies.get(uid)
   );
   if (!res) return [];
@@ -439,7 +433,7 @@ export async function userRecord(
         }[];
       }>(
         "music.163.com/weapi/v1/play/record",
-        { type: "1", uid: `${uid}` },
+        { type: 1, uid },
         AccountState.cookies.get(uid)
       );
       if (!res) throw Error("");
@@ -456,7 +450,7 @@ export async function userRecord(
         }[];
       }>(
         "music.163.com/weapi/v1/play/record",
-        { type: "0", uid: `${uid}` },
+        { type: 0, uid },
         AccountState.cookies.get(uid)
       );
       if (!res) throw Error("");

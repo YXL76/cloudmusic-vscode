@@ -46,9 +46,9 @@ export async function artistAlbum(
       hotAlbums: readonly NeteaseTypings.AlbumsItem[];
       more: boolean;
     }>(`music.163.com/weapi/artist/albums/${id}`, {
-      limit: `${limit}`,
-      offset: `${offset}`,
-      total: "true",
+      limit,
+      offset,
+      total: true,
     });
     if (!res) return [];
     const { hotAlbums, more } = res;
@@ -68,7 +68,7 @@ export async function artistDesc(id: number): Promise<ArtistDesc> {
   if (value) return value;
   const res = await weapiRequest<{ introduction: ArtistDesc }>(
     "music.163.com/weapi/artist/introduction",
-    { id: `${id}` }
+    { id }
   );
   if (!res) return [];
   apiCache.set(key, res.introduction);
@@ -90,10 +90,10 @@ export async function artistList(
   const res = await weapiRequest<{ artists: readonly NeteaseTypings.Artist[] }>(
     "music.163.com/api/v1/artist/list",
     {
-      initial: `${initial.toUpperCase().charCodeAt(0)}`, // TODO: fix
-      offset: `${offset}`,
-      limit: `${limit}`,
-      total: "true",
+      initial: initial.toUpperCase().charCodeAt(0), // TODO: fix
+      offset,
+      limit,
+      total: true,
       type,
       area,
     }
@@ -117,14 +117,14 @@ export async function artistSongs(
   }>(
     "music.163.com/api/v1/artist/songs",
     {
-      id: `${id}`,
+      id,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      private_cloud: "true",
+      private_cloud: true,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      work_type: "1",
+      work_type: 1,
       order: "hot", //hot,time
-      offset: `${offset}`,
-      limit: `${limit}`,
+      offset,
+      limit,
     },
     { ...AccountState.defaultCookie, os: "pc" }
   );
@@ -153,7 +153,7 @@ export async function artistSublist(): Promise<
   for (let i = 0; i < 16; ++i) {
     const res = await weapiRequest<{ data: readonly NeteaseTypings.Artist[] }>(
       "music.163.com/weapi/artist/sublist",
-      { limit: `${limit}`, offset: `${offset}`, total: "true" }
+      { limit, offset, total: true }
     );
     if (!res) return [];
     ret.push(...res.data.map(resolveArtist));
@@ -171,7 +171,7 @@ export async function simiArtist(
   if (value) return value;
   const res = await weapiRequest<{
     artists: readonly NeteaseTypings.Artist[];
-  }>("music.163.com/weapi/discovery/simiArtist", { artistid: `${artistid}` });
+  }>("music.163.com/weapi/discovery/simiArtist", { artistid });
   if (!res) return [];
   const ret = res.artists.map(resolveArtist);
   apiCache.set(key, ret);
@@ -187,7 +187,7 @@ export async function topArtists(
   if (value) return value;
   const res = await weapiRequest<{ artists: readonly NeteaseTypings.Artist[] }>(
     "music.163.com/weapi/artist/top",
-    { limit: `${limit}`, offset: `${offset}`, total: "true" }
+    { limit, offset, total: true }
   );
   if (!res) return [];
   const ret = res.artists.map(resolveArtist);
@@ -204,10 +204,10 @@ export async function toplistArtist(): Promise<
   const res = await weapiRequest<{
     list: { artists: readonly NeteaseTypings.Artist[] };
   }>("music.163.com/weapi/toplist/artist", {
-    type: "1",
-    limit: "100",
-    offset: "0",
-    total: "true",
+    type: 1,
+    limit: 100,
+    offset: 0,
+    total: true,
   });
   if (!res) return [];
   const ret = res.list.artists.map(resolveArtist);

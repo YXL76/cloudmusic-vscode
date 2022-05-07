@@ -31,9 +31,7 @@ const rsaEncrypt = (buffer: Uint8Array) => {
 };
 
 export const weapi = (
-  object:
-    | Record<string, string | ReadonlyArray<string>>
-    | Iterable<[string, string]>
+  object: Record<string, number | string | boolean>
 ): { params: string; encSecKey: string } => {
   const text = JSON.stringify(object);
   const secretKey = randomBytes(16).map((n) =>

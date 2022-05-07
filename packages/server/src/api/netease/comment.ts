@@ -57,10 +57,10 @@ export async function commentFloor(
       comments: readonly NeteaseTypings.RawCommentDetail[];
     };
   }>("music.163.com/api/resource/comment/floor/get", {
-    parentCommentId: `${parentCommentId}`,
+    parentCommentId,
     threadId: `${resourceTypeMap[type]}${id}`,
-    time: `${time}`,
-    limit: `${limit}`,
+    time,
+    limit,
   });
   if (!res) return { totalCount: 0, hasMore: false, comments: [] };
   const {
@@ -112,11 +112,11 @@ export async function commentNew(
     "music.163.com/api/v2/resource/comments",
     {
       threadId: `${resourceTypeMap[type]}${id}`,
-      pageNo: `${pageNo}`,
-      showInner: "true",
-      pageSize: `${pageSize}`,
-      cursor: `${cursor}`,
-      sortType: `${sortType}`,
+      pageNo,
+      showInner: true,
+      pageSize,
+      cursor,
+      sortType,
     },
     "/api/v2/resource/comments",
     { ...AccountState.defaultCookie, os: "pc" }

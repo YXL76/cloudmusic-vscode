@@ -57,7 +57,7 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
     transUser?: NeteaseTypings.LyricUser;
   }>(
     "music.163.com/api/song/lyric?_nmclfl=1",
-    { id: `${id}`, tv: "-1", lv: "-1", rv: "-1", kv: "-1" },
+    { id, tv: -1, lv: -1, rv: -1, kv: -1 },
     { os: "ios" }
   );
 
@@ -125,11 +125,7 @@ export async function simiSong(
   if (value) return value;
   const res = await weapiRequest<{
     songs: readonly NeteaseTypings.AnotherSongItem[];
-  }>("music.163.com/weapi/v1/discovery/simiSong", {
-    songid: `${songid}`,
-    limit: `${limit}`,
-    offset: `${offset}`,
-  });
+  }>("music.163.com/weapi/v1/discovery/simiSong", { songid, limit, offset });
   if (!res) return [];
   const ret = res.songs.map(resolveAnotherSongItem);
   apiCache.set(key, ret);
@@ -193,13 +189,13 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
     const [i, j] = (await Promise.allSettled([
       eapiRequest<SongUrlResponse>(
         "interface3.music.163.com/eapi/song/enhance/player/url",
-        { ids: `[${id}]`, br: `${State.musicQuality}` },
+        { ids: `[${id}]`, br: State.musicQuality },
         "/api/song/enhance/player/url",
         { ...cookie, os: "pc" }
       ),
       eapiRequest<DownloadUrlResponse>(
         "interface.music.163.com/eapi/song/enhance/download/url",
-        { id, br: `${State.musicQuality}` },
+        { id, br: State.musicQuality },
         "/api/song/enhance/download/url",
         cookie
       ),
@@ -228,10 +224,10 @@ export async function topSong(
   const res = await weapiRequest<{
     data: readonly NeteaseTypings.AnotherSongItem[];
   }>("music.163.com/weapi/v1/discovery/new/songs", {
-    areaId: `${areaId}`, // 全部:0 华语:7 欧美:96 日本:8 韩国:16
+    areaId, // 全部:0 华语:7 欧美:96 日本:8 韩国:16
     // limit: query.limit || 100,
     // offset: query.offset || 0,
-    total: "true",
+    total: true,
   });
   if (!res) return [];
   const ret = res.data.map(resolveAnotherSongItem);
