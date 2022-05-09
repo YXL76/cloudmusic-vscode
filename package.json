@@ -882,7 +882,7 @@
     "@typescript-eslint/eslint-plugin": "5.22.0",
     "@typescript-eslint/parser": "5.22.0",
     "@yarnpkg/esbuild-plugin-pnp": "3.0.0-rc.4",
-    "@yarnpkg/sdks": "3.0.0-rc.4",
+    "@yarnpkg/sdks": "3.0.0-rc.5",
     "debug": "4.3.4",
     "esbuild": "0.14.38",
     "esbuild-plugin-wasm": "1.0.0",
