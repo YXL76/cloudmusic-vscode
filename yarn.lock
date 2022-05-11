@@ -546,14 +546,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yarnpkg/esbuild-plugin-pnp@npm:3.0.0-rc.4":
-  version: 3.0.0-rc.4
-  resolution: "@yarnpkg/esbuild-plugin-pnp@npm:3.0.0-rc.4"
+"@yarnpkg/esbuild-plugin-pnp@npm:3.0.0-rc.5":
+  version: 3.0.0-rc.5
+  resolution: "@yarnpkg/esbuild-plugin-pnp@npm:3.0.0-rc.5"
   dependencies:
     tslib: "npm:^1.13.0"
   peerDependencies:
     esbuild: ">=0.10.0"
-  checksum: c5f043cf824c5d5ab53000b721001396b83db02590626bd0b8556bb8eecfc35012136ad16efb3778b5658f196848c32a2aea8cb61199a5382a239fadac835816
+  checksum: 12e75a4c0b183a4218690d3ace6e33bb7086e493e05d29b6db17a4bdb9d3e9ae800244683c33a2c2e606fa3460e1eb7e4169ef43a4db5a828cf839f0468ca83c
   languageName: node
   linkType: hard
 
@@ -1075,7 +1075,7 @@ __metadata:
     "@types/tailwindcss": "npm:3.0.10"
     "@typescript-eslint/eslint-plugin": "npm:5.23.0"
     "@typescript-eslint/parser": "npm:5.23.0"
-    "@yarnpkg/esbuild-plugin-pnp": "npm:3.0.0-rc.4"
+    "@yarnpkg/esbuild-plugin-pnp": "npm:3.0.0-rc.5"
     "@yarnpkg/sdks": "npm:3.0.0-rc.5"
     debug: "npm:4.3.4"
     esbuild: "npm:0.14.38"
