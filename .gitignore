@@ -26,4 +26,3 @@ build
 out
 dist
 **/*.vsix
-packages/webview/src/tooltip.js

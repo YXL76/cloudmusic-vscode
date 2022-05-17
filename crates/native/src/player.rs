@@ -233,6 +233,7 @@ pub fn player_stop(mut cx: FunctionContext) -> JsResult<JsUndefined> {
 
     Ok(cx.undefined())
 }
+
 pub fn player_set_speed(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     let player = cx.argument::<JsBox<RefCell<Player>>>(0)?;
     let speed = cx.argument::<JsNumber>(1)?.value(&mut cx);
