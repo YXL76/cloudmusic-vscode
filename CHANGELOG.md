@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.9.2] - 2022-05-17
+
+### Fixed
+
+- Server: listening to `uncaughtException`
+
 ## [9.9.1] - 2022-05-07
 
 ### Fixed

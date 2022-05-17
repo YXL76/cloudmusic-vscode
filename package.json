@@ -2,7 +2,7 @@
   "name": "cloudmusic",
   "displayName": "Cloudmusic",
   "description": "Netease Music for VS Code",
-  "version": "9.9.1",
+  "version": "9.9.2",
   "publisher": "YXL",
   "private": true,
   "preview": false,
@@ -873,7 +873,6 @@
     "generate-css": "NODE_ENV=production yarn tailwindcss --no-autoprefixer --minify -o dist/style.css",
     "publish": "yarn node scripts/publish.js",
     "test": "yarn workspaces foreach -p run test",
-    "tooltip": "yarn node scripts/tooltip.js",
     "postinstall": "yarn sdks vscode vim"
   },
   "devDependencies": {
