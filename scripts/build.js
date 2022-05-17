@@ -114,7 +114,7 @@ const globalSharedConfig = {
 
     outfile: resolve(distPath, "server.js"),
     tsconfig,
-    entryPoints: [resolve(srcPath, "init.ts")],
+    entryPoints: [resolve(srcPath, "index.ts")],
   });
 }
 

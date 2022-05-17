@@ -6,8 +6,6 @@ import {
 } from "./helper";
 import { eapi, weapi } from "./crypto";
 import { APISetting } from "..";
-import { Agent as HttpAgent } from "http";
-import { Agent as HttpsAgent } from "https";
 import type { NeteaseTypings } from "api";
 import { State } from "../../state";
 import got from "got";
@@ -43,13 +41,6 @@ type Headers = {
   "X-Real-IP"?: string;
 };
 
-const agentOptions = {
-  keepAlive: true,
-  maxSockets: 32,
-};
-const httpAgent = new HttpAgent(agentOptions);
-const httpsAgent = new HttpsAgent(agentOptions);
-
 export const generateHeader = (url: string): Headers => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Cookie: "",
@@ -73,7 +64,6 @@ const responseHandler = async <T>(
   data: QueryInput
 ): Promise<T | void> => {
   const res = await got<{ readonly code?: number } & T>(url, {
-    agent: { http: httpAgent, https: httpsAgent },
     form: data,
     headers,
     http2: true,
@@ -98,7 +88,6 @@ export const loginRequest = async (
     readonly code?: number;
     profile?: NeteaseTypings.Profile;
   }>(url, {
-    agent: { http: httpAgent, https: httpsAgent },
     form: weapi(data),
     headers,
     http2: true,
@@ -132,7 +121,6 @@ export const qrloginRequest = async (
   const res = await got<{ readonly code?: number }>(
     url.replace(/\w*api/, "weapi"),
     {
-      agent: { http: httpAgent, https: httpsAgent },
       form: weapi(data),
       headers,
       http2: true,

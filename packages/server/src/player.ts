@@ -275,9 +275,9 @@ export class Player {
 
     if (this.id) {
       const diff = this._time - pTime;
-      if (diff > 60000 && this._dt > 60000) {
+      if (diff > 60000) {
         const time = Math.floor(Math.min(diff, this._dt) / 1000);
-        void NeteaseAPI.scrobble(this.id, this._pid, time);
+        NeteaseAPI.scrobble(this.id, this._pid, time).catch(logError);
       }
     }
 
