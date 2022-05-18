@@ -783,7 +783,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"array-includes@npm:^3.1.4":
+"array-includes@npm:^3.1.4, array-includes@npm:^3.1.5":
   version: 3.1.5
   resolution: "array-includes@npm:3.1.5"
   dependencies:
@@ -810,7 +810,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"array.prototype.flatmap@npm:^1.2.5":
+"array.prototype.flatmap@npm:^1.3.0":
   version: 1.3.0
   resolution: "array.prototype.flatmap@npm:1.3.0"
   dependencies:
@@ -1083,7 +1083,7 @@ __metadata:
     eslint: "npm:8.15.0"
     eslint-config-prettier: "npm:8.5.0"
     eslint-plugin-prettier: "npm:4.0.0"
-    eslint-plugin-react: "npm:7.29.4"
+    eslint-plugin-react: "npm:7.30.0"
     eslint-plugin-react-hooks: "npm:4.5.0"
     postcss: "npm:8.4.13"
     prettier: "npm:2.6.2"
@@ -1707,27 +1707,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:7.29.4":
-  version: 7.29.4
-  resolution: "eslint-plugin-react@npm:7.29.4"
+"eslint-plugin-react@npm:7.30.0":
+  version: 7.30.0
+  resolution: "eslint-plugin-react@npm:7.30.0"
   dependencies:
-    array-includes: "npm:^3.1.4"
-    array.prototype.flatmap: "npm:^1.2.5"
+    array-includes: "npm:^3.1.5"
+    array.prototype.flatmap: "npm:^1.3.0"
     doctrine: "npm:^2.1.0"
     estraverse: "npm:^5.3.0"
     jsx-ast-utils: "npm:^2.4.1 || ^3.0.0"
     minimatch: "npm:^3.1.2"
     object.entries: "npm:^1.1.5"
     object.fromentries: "npm:^2.0.5"
-    object.hasown: "npm:^1.1.0"
+    object.hasown: "npm:^1.1.1"
     object.values: "npm:^1.1.5"
     prop-types: "npm:^15.8.1"
     resolve: "npm:^2.0.0-next.3"
     semver: "npm:^6.3.0"
-    string.prototype.matchall: "npm:^4.0.6"
+    string.prototype.matchall: "npm:^4.0.7"
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
-  checksum: d7f0fcaa7ace3b5b7b11553f64a607fefe519a3b6419878ac1e581d38906c8d0f2f65ae127619e127e733d75ff03244a7efb76fe3c2d434bbc9ff908b8c6c6ee
+  checksum: b65554661aba886c1983d8751670dbf761dcd11bfd9e28af9d692564c786a27128f856cd6ee152eea0f2464980a212b1b2897e4d481ffff29de32698411a2112
   languageName: node
   linkType: hard
 
@@ -3135,7 +3135,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"object.hasown@npm:^1.1.0":
+"object.hasown@npm:^1.1.1":
   version: 1.1.1
   resolution: "object.hasown@npm:1.1.1"
   dependencies:
@@ -3863,7 +3863,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"string.prototype.matchall@npm:^4.0.6":
+"string.prototype.matchall@npm:^4.0.7":
   version: 4.0.7
   resolution: "string.prototype.matchall@npm:4.0.7"
   dependencies:
