@@ -1085,7 +1085,7 @@ __metadata:
     eslint-plugin-prettier: "npm:4.0.0"
     eslint-plugin-react: "npm:7.29.4"
     eslint-plugin-react-hooks: "npm:4.5.0"
-    postcss: "npm:8.4.13"
+    postcss: "npm:8.4.14"
     prettier: "npm:2.6.2"
     supports-color: "npm:9.2.2"
     tailwindcss: "npm:3.0.24"
@@ -2984,7 +2984,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nanoid@npm:^3.3.3":
+"nanoid@npm:^3.3.4":
   version: 3.3.4
   resolution: "nanoid@npm:3.3.4"
   bin:
@@ -3356,14 +3356,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:8.4.13, postcss@npm:^8.4.12":
-  version: 8.4.13
-  resolution: "postcss@npm:8.4.13"
+"postcss@npm:8.4.14, postcss@npm:^8.4.12":
+  version: 8.4.14
+  resolution: "postcss@npm:8.4.14"
   dependencies:
-    nanoid: "npm:^3.3.3"
+    nanoid: "npm:^3.3.4"
     picocolors: "npm:^1.0.0"
     source-map-js: "npm:^1.0.2"
-  checksum: e925c84f7f78a8b31a2751405ee0c43be99e6db0e06dc9122879caa5483526fc1e0145e646ad856837d9deccc7250b1e47271fd02cc50fd945bdecbf0e785d76
+  checksum: 1e1e4a4cc235674bea79da18dd3e02ea8ffcd51546c7ddf1fc7ba4de5e89154a83988bb8c1b30bd9566df56fc0077dce6e620d8f9ce6ababf60f659ffc53f72c
   languageName: node
   linkType: hard
 
