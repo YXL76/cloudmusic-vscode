@@ -88,7 +88,7 @@ export async function artistList(
   const value = apiCache.get<readonly NeteaseTypings.Artist[]>(key);
   if (value) return value;
   const res = await weapiRequest<{ artists: readonly NeteaseTypings.Artist[] }>(
-    "music.163.com/api/v1/artist/list",
+    "music.163.com/weapi/v1/artist/list",
     {
       initial: initial.toUpperCase().charCodeAt(0), // TODO: fix
       offset,
@@ -115,7 +115,7 @@ export async function artistSongs(
   const res = await weapiRequest<{
     songs: readonly NeteaseTypings.SongsItemSt[];
   }>(
-    "music.163.com/api/v1/artist/songs",
+    "music.163.com/weapi/v1/artist/songs",
     {
       id,
       // eslint-disable-next-line @typescript-eslint/naming-convention

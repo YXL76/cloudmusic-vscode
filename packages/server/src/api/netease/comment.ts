@@ -56,7 +56,7 @@ export async function commentFloor(
       hasMore: boolean;
       comments: readonly NeteaseTypings.RawCommentDetail[];
     };
-  }>("music.163.com/api/resource/comment/floor/get", {
+  }>("music.163.com/weapi/resource/comment/floor/get", {
     parentCommentId,
     threadId: `${resourceTypeMap[type]}${id}`,
     time,
@@ -109,7 +109,7 @@ export async function commentNew(
       comments: readonly NeteaseTypings.RawCommentDetail[];
     };
   }>(
-    "music.163.com/api/v2/resource/comments",
+    "music.163.com/eapi/v2/resource/comments",
     {
       threadId: `${resourceTypeMap[type]}${id}`,
       pageNo,

@@ -152,7 +152,7 @@ export async function songDetail(
           songs: readonly NeteaseTypings.SongsItem[];
           privileges: readonly { st: number }[];
         }>(
-          "music.163.com/api/v3/song/detail",
+          "music.163.com/weapi/v3/song/detail",
           { c: `[${ids.map((id) => `{"id":${id}}`).join(",")}]` },
           AccountState.cookies.get(uid)
         );

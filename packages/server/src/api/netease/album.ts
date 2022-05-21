@@ -33,7 +33,7 @@ export async function albumNewest(): Promise<
   if (value) return value;
   const res = await weapiRequest<{
     albums: readonly NeteaseTypings.AlbumsItem[];
-  }>("music.163.com/api/discovery/newAlbum");
+  }>("music.163.com/weapi/discovery/newAlbum");
   if (!res) return [];
   const ret = res.albums.map(resolveAlbumsItem);
   apiCache.set(key, ret);
@@ -44,9 +44,7 @@ export async function albumSub(
   id: number,
   t: "sub" | "unsub"
 ): Promise<boolean> {
-  return !!(await weapiRequest(`music.163.com/api/album/${t}`, {
-    id: `${id}`,
-  }));
+  return !!(await weapiRequest(`music.163.com/weapi/album/${t}`, { id }));
 }
 
 export async function albumSublist(): Promise<
@@ -76,7 +74,7 @@ export async function topAlbum(): Promise<
   const date = new Date();
   const res = await weapiRequest<{
     monthData: readonly NeteaseTypings.AlbumsItem[];
-  }>("music.163.com/api/discovery/new/albums/area", {
+  }>("music.163.com/weapi/discovery/new/albums/area", {
     area: "ALL", // //ALL:全部,ZH:华语,EA:欧美,KR:韩国,JP:日本
     limit: 50,
     offset: 0,

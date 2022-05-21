@@ -118,17 +118,14 @@ export const qrloginRequest = async (
 ): Promise<number | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
   const headers = generateHeader(url);
-  const res = await got<{ readonly code?: number }>(
-    url.replace(/\w*api/, "weapi"),
-    {
-      form: weapi(data),
-      headers,
-      http2: true,
-      method: "POST",
-      responseType: "json",
-      timeout: { response: 8000 },
-    }
-  );
+  const res = await got<{ readonly code?: number }>(url, {
+    form: weapi(data),
+    headers,
+    http2: true,
+    method: "POST",
+    responseType: "json",
+    timeout: { response: 8000 },
+  });
   if (!res) return;
   const status = res.body.code || res.statusCode;
   if (!spStatus.has(status)) return;
@@ -152,11 +149,7 @@ export const weapiRequest = <T = QueryInput>(
   headers["Cookie"] = jsonToCookie(cookie);
   const csrfToken = csrfTokenReg.exec(headers["Cookie"]);
   data.csrf_token = csrfToken ? csrfToken[1] : "";
-  return responseHandler<T>(
-    url.replace(/\w*api/, "weapi"),
-    headers,
-    weapi(data)
-  );
+  return responseHandler<T>(url, headers, weapi(data));
 };
 
 export const eapiRequest = async <T = QueryInput>(
@@ -196,7 +189,7 @@ export const eapiRequest = async <T = QueryInput>(
   const headers = generateHeader(url);
   headers["Cookie"] = jsonToCookie(header);
   return responseHandler<T>(
-    url.replace(/\w*api/, "eapi"),
+    url,
     headers,
     eapi(encryptUrl, { ...data, header })
   );

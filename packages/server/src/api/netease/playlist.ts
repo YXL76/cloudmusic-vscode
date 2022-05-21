@@ -39,7 +39,7 @@ export async function playlistCreate(
   privacy: 0 | 10
 ): Promise<boolean> {
   return !!(await weapiRequest(
-    "music.163.com/api/playlist/create",
+    "music.163.com/weapi/playlist/create",
     {
       name,
       privacy: `${privacy}`, //0 为普通歌单，10 为隐私歌单
@@ -103,7 +103,7 @@ export async function highqualityTags(): Promise<
       name: string;
       hot: boolean;
     }[];
-  }>("music.163.com/api/playlist/highquality/tags");
+  }>("music.163.com/weapi/playlist/highquality/tags");
   if (!res) return [];
   const ret = res.tags.map(({ name, hot }) => ({ name, hot }));
   apiCache.set(key, ret);
@@ -146,7 +146,7 @@ export async function playlistTracks(
   tracks: readonly number[]
 ): Promise<boolean> {
   return !!(await weapiRequest(
-    "music.163.com/api/playlist/manipulate/tracks",
+    "music.163.com/weapi/playlist/manipulate/tracks",
     { op, pid: `${pid}`, trackIds: JSON.stringify(tracks), imme: "true" },
     { ...AccountState.cookies.get(uid), os: "pc" }
   ));
@@ -235,7 +235,7 @@ export async function topPlaylistHighquality(
   if (value) return value;
   const res = await weapiRequest<{
     playlists: readonly NeteaseTypings.PlaylistItem[];
-  }>("music.163.com/api/playlist/highquality/list", {
+  }>("music.163.com/weapi/playlist/highquality/list", {
     cat, // 全部,华语,欧美,韩语,日语,粤语,小语种,运动,ACG,影视原声,流行,摇滚,后摇,古风,民谣,轻音乐,电子,器乐,说唱,古典,爵士
     limit,
     lasttime: 0, // 歌单updateTime
