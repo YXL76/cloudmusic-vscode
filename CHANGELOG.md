@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.9.3] - 2022-05-21
+
+### Fixed
+
+- Queue: Blocking caused by network request failure
+- Status bar: The number of icons on tooltip
+
 ## [9.9.2] - 2022-05-17
 
 ### Fixed
