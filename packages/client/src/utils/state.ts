@@ -186,29 +186,30 @@ export class State {
     }
 
     (async () => {
-      if (this.first && AccountManager.accounts.size) {
-        const [[uid]] = AccountManager.accounts;
-        switch (QUEUE_INIT) {
-          case "none":
-            return; // No need to sleep
-          case "restore":
-            IPC.retain();
-            break;
-          case "recommend": {
-            const songs = await IPC.netease("recommendSongs", [uid]);
-            const items = songs.map(
-              (song) => QueueItemTreeItem.new({ ...song, pid: song.al.id }).data
-            );
-            IPC.new(items);
-          }
-        }
-        await new Promise((resolve) => setTimeout(resolve, 1024)); // The queue maybe ready
-      } else {
+      if (!this.first || !AccountManager.accounts.size) {
         /** {@link loading} */
-        ButtonManager.buttonSong(QueueProvider.head);
+        return ButtonManager.buttonSong(QueueProvider.head);
       }
+
+      const [[uid]] = AccountManager.accounts;
+      switch (QUEUE_INIT) {
+        case "none":
+          return; // No need to sleep
+        case "restore":
+          IPC.retain();
+          break;
+        case "recommend": {
+          const songs = await IPC.netease("recommendSongs", [uid]);
+          const items = songs.map(
+            (song) => QueueItemTreeItem.new({ ...song, pid: song.al.id }).data
+          );
+          IPC.new(items);
+        }
+      }
+      return new Promise((resolve) => setTimeout(resolve, 1024)); // The queue maybe ready
     })()
-      .then(() =>
+      .catch(console.error)
+      .finally(() =>
         this.context.subscriptions.push(
           // Prevent first loading [#507](https://github.com/YXL76/cloudmusic-vscode/issues/507)
           QueueProvider.getInstance().onDidChangeTreeData(() => {
@@ -216,7 +217,6 @@ export class State {
             this.playItem = QueueProvider.head;
           })
         )
-      )
-      .catch(console.error);
+      );
   }
 }
