@@ -105,7 +105,7 @@ export class MultiStepInput {
     _: QuickPickParameters<T> & Required<QuickPickOption>
   ): Promise<readonly T[] | ButtonAction>;
 
-  async showQuickPick<T extends QuickPickItem>({
+  showQuickPick<T extends QuickPickItem>({
     title,
     step,
     totalSteps,
@@ -120,78 +120,69 @@ export class MultiStepInput {
     readonly T[] | T | ButtonAction
   > {
     const disposables: Disposable[] = [];
-    try {
-      return await new Promise<readonly T[] | T | ButtonAction>(
-        (resolve, reject) => {
-          const input = window.createQuickPick<T>();
-          input.canSelectMany = !!canSelectMany;
-          input.matchOnDescription = true;
-          input.matchOnDetail = true;
-          input.ignoreFocusOut = true;
-          input.title = title;
-          input.step = step;
-          input.totalSteps = Math.max(
-            totalSteps || 1,
-            this._step,
-            this._steps.length
-          );
-          input.placeholder = placeholder;
-          input.items = items;
-          /* if (activeItems) {
+
+    return new Promise<readonly T[] | T | ButtonAction>((resolve, reject) => {
+      const input = window.createQuickPick<T>();
+      input.canSelectMany = !!canSelectMany;
+      input.matchOnDescription = true;
+      input.matchOnDetail = true;
+      input.ignoreFocusOut = true;
+      input.title = title;
+      input.step = step;
+      input.totalSteps = Math.max(
+        totalSteps || 1,
+        this._step,
+        this._steps.length
+      );
+      input.placeholder = placeholder;
+      input.items = items;
+      /* if (activeItems) {
             input.activeItems = activeItems;
           } */
-          const button: QuickInputButton[] = [];
-          if (previous) button.push(pickButtons.previous);
-          if (next) button.push(pickButtons.next);
-          input.buttons = [
-            ...(this._step > 1 ? [QuickInputButtons.Back] : []),
-            ...button,
-            ...(this._step < this._steps.length ? [pickButtons.forward] : []),
-            pickButtons.close,
-          ];
-          disposables.push(
-            input.onDidTriggerButton((item) => {
-              switch (item) {
-                case QuickInputButtons.Back:
-                  reject(InputFlowAction.back);
-                  break;
-                case pickButtons.forward:
-                  reject(InputFlowAction.forward);
-                  break;
-                case pickButtons.previous:
-                  resolve(ButtonAction.previous);
-                  break;
-                case pickButtons.next:
-                  resolve(ButtonAction.next);
-                  break;
-                default:
-                  input.hide();
-              }
-            }),
-            input.onDidAccept(() =>
-              resolve(
-                canSelectMany ? input.selectedItems : input.selectedItems[0]
-              )
-            ),
-            input.onDidHide(() => reject(InputFlowAction.cancel))
-          );
-          if (changeCallback)
-            disposables.push(
-              input.onDidChangeValue((value) => changeCallback(input, value))
-            );
-          if (this._current) this._current.dispose();
-          this._current = input;
-          this._current.show();
-        }
+      const button: QuickInputButton[] = [];
+      if (previous) button.push(pickButtons.previous);
+      if (next) button.push(pickButtons.next);
+      input.buttons = [
+        ...(this._step > 1 ? [QuickInputButtons.Back] : []),
+        ...button,
+        ...(this._step < this._steps.length ? [pickButtons.forward] : []),
+        pickButtons.close,
+      ];
+      disposables.push(
+        input.onDidTriggerButton((item) => {
+          switch (item) {
+            case QuickInputButtons.Back:
+              reject(InputFlowAction.back);
+              break;
+            case pickButtons.forward:
+              reject(InputFlowAction.forward);
+              break;
+            case pickButtons.previous:
+              resolve(ButtonAction.previous);
+              break;
+            case pickButtons.next:
+              resolve(ButtonAction.next);
+              break;
+            default:
+              input.hide();
+          }
+        }),
+        input.onDidAccept(() =>
+          resolve(canSelectMany ? input.selectedItems : input.selectedItems[0])
+        ),
+        input.onDidHide(() => reject(InputFlowAction.cancel))
       );
-    } finally {
-      disposables.forEach((d) => {
-        d.dispose();
-      });
-    }
+      if (changeCallback)
+        disposables.push(
+          input.onDidChangeValue((value) => changeCallback(input, value))
+        );
+      if (this._current) this._current.dispose();
+      this._current = input;
+      this._current.show();
+    }).finally(() => disposables.forEach((d) => void d.dispose()));
   }
 
-  async showInputBox({
+  showInputBox({
     title,
     step,
     totalSteps,
@@ -201,58 +192,53 @@ export class MultiStepInput {
     changeCallback,
   }: InputBoxParameters): Promise<string> {
     const disposables: Disposable[] = [];
-    try {
-      return await new Promise<string>((resolve, reject) => {
-        const input = window.createInputBox();
-        input.ignoreFocusOut = true;
-        input.title = title;
-        input.step = step;
-        input.totalSteps = Math.max(
-          totalSteps || 1,
-          this._step,
-          this._steps.length
-        );
-        input.value = value || "";
-        input.prompt = prompt;
-        input.buttons = [
-          ...(this._step > 1 ? [QuickInputButtons.Back] : []),
-          ...(this._step < this._steps.length ? [pickButtons.forward] : []),
-          pickButtons.close,
-        ];
-        input.password = password || false;
+
+    return new Promise<string>((resolve, reject) => {
+      const input = window.createInputBox();
+      input.ignoreFocusOut = true;
+      input.title = title;
+      input.step = step;
+      input.totalSteps = Math.max(
+        totalSteps || 1,
+        this._step,
+        this._steps.length
+      );
+      input.value = value || "";
+      input.prompt = prompt;
+      input.buttons = [
+        ...(this._step > 1 ? [QuickInputButtons.Back] : []),
+        ...(this._step < this._steps.length ? [pickButtons.forward] : []),
+        pickButtons.close,
+      ];
+      input.password = password || false;
+      disposables.push(
+        input.onDidTriggerButton((item) => {
+          switch (item) {
+            case QuickInputButtons.Back:
+              reject(InputFlowAction.back);
+              break;
+            case pickButtons.forward:
+              reject(InputFlowAction.forward);
+              break;
+            default:
+              input.hide();
+              break;
+          }
+        }),
+        input.onDidAccept(() => {
+          const value = input.value;
+          resolve(value);
+        }),
+        input.onDidHide(() => reject(InputFlowAction.cancel))
+      );
+      if (changeCallback)
         disposables.push(
-          input.onDidTriggerButton((item) => {
-            switch (item) {
-              case QuickInputButtons.Back:
-                reject(InputFlowAction.back);
-                break;
-              case pickButtons.forward:
-                reject(InputFlowAction.forward);
-                break;
-              default:
-                input.hide();
-                break;
-            }
-          }),
-          input.onDidAccept(() => {
-            const value = input.value;
-            resolve(value);
-          }),
-          input.onDidHide(() => reject(InputFlowAction.cancel))
+          input.onDidChangeValue((value) => changeCallback(input, value))
         );
-        if (changeCallback)
-          disposables.push(
-            input.onDidChangeValue((value) => changeCallback(input, value))
-          );
-        if (this._current) this._current.dispose();
-        this._current = input;
-        this._current.show();
-      });
-    } finally {
-      disposables.forEach((d) => {
-        d.dispose();
-      });
-    }
+      if (this._current) this._current.dispose();
+      this._current = input;
+      this._current.show();
+    }).finally(() => disposables.forEach((d) => void d.dispose()));
   }
 
   private async stepThrough(start: InputStep): Promise<void> {

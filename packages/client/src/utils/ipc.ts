@@ -110,12 +110,12 @@ export class IPC {
 
   private static _nextChann = 0;
 
-  static async connect(
+  static connect(
     ipcHandler: Parameters<typeof ipc.connect>[0],
     ipcBHandler: Parameters<typeof ipcB.connect>[0],
     retry = 4
   ): Promise<[boolean, boolean]> {
-    return await Promise.all([
+    return Promise.all([
       ipc.connect(ipcHandler, retry),
       ipcB.connect(ipcBHandler, retry),
     ]);

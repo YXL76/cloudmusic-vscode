@@ -93,10 +93,8 @@ export class AccountManager {
     return lists;
   }
 
-  static async djradio(
-    uid: number
-  ): Promise<readonly NeteaseTypings.RadioDetail[]> {
-    return await IPC.netease("djSublist", [uid]);
+  static djradio(uid: number): Promise<readonly NeteaseTypings.RadioDetail[]> {
+    return IPC.netease("djSublist", [uid]);
   }
 
   static async loginQuickPick(): Promise<void> {

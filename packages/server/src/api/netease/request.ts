@@ -142,7 +142,7 @@ export const qrloginRequest = async (
   return status;
 };
 
-export const weapiRequest = async <T = QueryInput>(
+export const weapiRequest = <T = QueryInput>(
   url: string,
   data: QueryInput = {},
   cookie = AccountState.defaultCookie
@@ -152,7 +152,7 @@ export const weapiRequest = async <T = QueryInput>(
   headers["Cookie"] = jsonToCookie(cookie);
   const csrfToken = csrfTokenReg.exec(headers["Cookie"]);
   data.csrf_token = csrfToken ? csrfToken[1] : "";
-  return await responseHandler<T>(
+  return responseHandler<T>(
     url.replace(/\w*api/, "weapi"),
     headers,
     weapi(data)

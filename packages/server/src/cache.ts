@@ -30,13 +30,9 @@ type LyricCacheItem = NeteaseTypings.LyricData & { ctime: number };
 export class LyricCache {
   static clear(): void {
     rm(LYRIC_CACHE_DIR, { recursive: true })
-      .catch(() => {
-        //
-      })
+      .catch(() => undefined)
       .then(() => mkdir(LYRIC_CACHE_DIR, { recursive: true }))
-      .catch(() => {
-        //
-      });
+      .catch(() => undefined);
   }
 
   static async get(key: string): Promise<LyricCacheItem | void> {
@@ -110,13 +106,9 @@ export class MusicCache {
 
   static clear(): void {
     rm(MUSIC_CACHE_DIR, { recursive: true })
-      .catch(() => {
-        //
-      })
+      .catch(() => undefined)
       .then(() => mkdir(MUSIC_CACHE_DIR, { recursive: true }))
-      .catch(() => {
-        //
-      });
+      .catch(() => undefined);
     this._cache.clear();
     this._size = 0;
     while (this._list.length) this._list.pop();

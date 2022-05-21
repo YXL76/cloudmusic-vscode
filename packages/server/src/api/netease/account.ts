@@ -18,11 +18,8 @@ import type { NeteaseTypings } from "api";
 import { apiCache } from "../../cache";
 import { logError } from "../../utils";
 
-export async function captchaSent(
-  ctcode: string,
-  cellphone: string
-): Promise<void> {
-  return await weapiRequest("music.163.com/api/sms/captcha/sent", {
+export function captchaSent(ctcode: string, cellphone: string): Promise<void> {
+  return weapiRequest("music.163.com/api/sms/captcha/sent", {
     cellphone,
     ctcode,
   });
@@ -120,24 +117,24 @@ export async function likelist(uid: number): Promise<readonly number[]> {
   return res.ids;
 }
 
-export async function login(
+export function login(
   username: string,
   password: string
 ): Promise<NeteaseTypings.Profile | void> {
-  return await loginRequest("music.163.com/api/login", {
+  return loginRequest("music.163.com/api/login", {
     username,
     password,
     rememberLogin: true,
   });
 }
 
-export async function loginCellphone(
+export function loginCellphone(
   phone: string,
   countrycode: string,
   password: string,
   captcha: string
 ): Promise<NeteaseTypings.Profile | void> {
-  return await loginRequest("music.163.com/api/login/cellphone", {
+  return loginRequest("music.163.com/api/login/cellphone", {
     phone,
     countrycode,
     rememberLogin: true,
@@ -145,8 +142,8 @@ export async function loginCellphone(
   });
 }
 
-export async function loginQrCheck(key: string): Promise<number | void> {
-  return await qrloginRequest("music.163.com/weapi/login/qrcode/client/login", {
+export function loginQrCheck(key: string): Promise<number | void> {
+  return qrloginRequest("music.163.com/weapi/login/qrcode/client/login", {
     key,
     type: 1,
   });

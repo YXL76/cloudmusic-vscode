@@ -256,9 +256,7 @@ export class IPCBroadcastServer {
 
   static async init(): Promise<void> {
     await rm(ipcBroadcastServerPath, { recursive: true, force: true }).catch(
-      () => {
-        //
-      }
+      () => undefined
     );
 
     this._server = createServer((socket) => {
