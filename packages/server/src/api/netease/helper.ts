@@ -56,7 +56,7 @@ export const jsonToCookie = (json: NeteaseTypings.Cookie): string => {
     .join("; ");
 };
 
-const http2Https = (url: string) => url.replace(/^http:/i, "https:");
+const http2Https = (url?: string) => url?.replace(/^http:/i, "https:") ?? "";
 
 export const resolveArtist = ({
   name,

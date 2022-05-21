@@ -193,7 +193,7 @@ export class ButtonManager {
 
   private static _setMdTooltip() {
     this._mdTooltip.value = `${this._mdSong}${this._buttons
-      .slice(0, 6)
+      .slice(0, 7)
       .map(
         ({ text, command }) => `<a data-href="command:${command}">${text}</a>`
       )
