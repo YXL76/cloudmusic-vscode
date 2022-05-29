@@ -143,6 +143,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "cloudmusic-macmedia"
+version = "0.1.0"
+dependencies = [
+ "souvlaki",
+ "winit",
+]
+
+[[package]]
 name = "cloudmusic-native"
 version = "0.1.0"
 dependencies = [

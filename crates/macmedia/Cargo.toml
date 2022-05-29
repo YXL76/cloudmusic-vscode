@@ -1,0 +1,10 @@
+[package]
+name = "cloudmusic-macmedia"
+version = "0.1.0"
+authors = ["YXL <chenxin.lan.76@gmail.com>"]
+build = "build.rs"
+edition = "2021"
+
+[dependencies]
+souvlaki = "0.5"
+winit = "0.26"

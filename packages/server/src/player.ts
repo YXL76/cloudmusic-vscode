@@ -26,7 +26,8 @@ interface NativeModule {
   // mediaSessionHwnd(pid: string): string;
   mediaSessionNew(
     // hwnd: string,
-    handler: (type: number) => void
+    handler: (type: number) => void,
+    path: string
   ): NativeMediaSession;
   mediaSessionSetMetadata(
     mediaSession: NativeMediaSession,
@@ -100,6 +101,13 @@ class WasmPlayer {
   }
 }
 
+const buildPath = resolve(
+  __dirname,
+  "..",
+  "build",
+  process.env["CM_NATIVE_MODULE"] as string
+);
+
 export class Player {
   static next?: { id: number; name: string };
 
@@ -141,10 +149,8 @@ export class Player {
   static init(): void {
     if (this._wasm || this._native) return;
     if (process.env["CM_WASM"] === "0") {
-      const name = process.env["CM_NATIVE_MODULE"] as string;
-      const path = resolve(__dirname, "..", "build", name);
       // eslint-disable-next-line @typescript-eslint/no-var-requires
-      this._native = require(path) as NativeModule;
+      this._native = require(buildPath) as NativeModule;
       this._player = this._native.playerNew();
       const volume = parseInt(process.env["CM_VOLUME"] || "85", 10);
       const speed = parseFloat(process.env["CM_SPEED"] || "1");
@@ -200,7 +206,7 @@ export class Player {
         case Type.stop:
           this.stop();
       }
-    });
+    }, buildPath.replace(".node", "-media"));
   }
 
   static empty(): boolean {

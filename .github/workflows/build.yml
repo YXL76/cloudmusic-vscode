@@ -37,20 +37,34 @@ jobs:
           rustup target add aarch64-apple-darwin
 
       - name: Build x86-64
-        run: cargo build --release --target=x86_64-apple-darwin
+        run: |
+          cargo build --release --target=x86_64-apple-darwin
+          cargo build --release --target=x86_64-apple-darwin --package cloudmusic-macmedia
 
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ runner.os }}-x86_64
           path: crates/native/index.node
 
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ runner.os }}-media-x86_64
+          path: crates/macmedia/media
+
       - name: Build aarch64
-        run: cargo build --release --target=aarch64-apple-darwin
+        run: |
+          cargo build --release --target=aarch64-apple-darwin
+          cargo build --release --target=aarch64-apple-darwin --package cloudmusic-macmedia
 
       - uses: actions/upload-artifact@v3
         with:
           name: ${{ runner.os }}-aarch64
           path: crates/native/index.node
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ runner.os }}-media-aarch64
+          path: crates/macmedia/media
 
   build-linux:
     name: Build for linux

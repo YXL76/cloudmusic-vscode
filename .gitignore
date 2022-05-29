@@ -18,6 +18,7 @@ yarn-error.log
 target
 index.node
 artifacts.json
+crates/macmedia/media
 
 # cache and build file
 .cache

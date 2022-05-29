@@ -1,69 +1,54 @@
 use {
     neon::prelude::*,
-    souvlaki::{
-        MediaControlEvent, MediaControls, MediaMetadata, MediaPlayback, MediaPosition,
-        PlatformConfig,
-    },
-    std::{
-        cell::RefCell,
-        ffi::c_void,
-        sync::{
-            atomic::{AtomicBool, Ordering},
-            Arc,
-        },
-        time::Duration,
-    },
+    std::{cell::RefCell, sync::Arc},
 };
 
-static ACCESSABLE: AtomicBool = AtomicBool::new(true);
+// static ACCESSABLE: AtomicBool = AtomicBool::new(true);
 
+#[cfg(not(target_os = "macos"))]
 pub struct MediaSession {
-    controls: MediaControls,
+    controls: souvlaki::MediaControls,
+}
+
+#[cfg(target_os = "macos")]
+pub struct MediaSession {
+    stdin: std::process::ChildStdin,
 }
 
 impl Finalize for MediaSession {}
 
+#[cfg(not(target_os = "macos"))]
 impl MediaSession {
     #[inline]
     fn new() -> Self {
-        const TITLE: &str = "Cloudmusic VSCode";
+        use {
+            souvlaki::{MediaControls, PlatformConfig},
+            std::ffi::c_void,
+        };
 
-        #[cfg(all(
-            target_os = "windows",
-            any(target_arch = "x86_64", target_arch = "x86")
-        ))]
-        fn fallback() -> Option<*mut c_void> {
-            use {
-                raw_window_handle::{HasRawWindowHandle, RawWindowHandle},
-                winit::{event_loop::EventLoop, window::WindowBuilder},
-            };
-            match WindowBuilder::new()
-                .with_title(TITLE)
-                .with_visible(false)
-                .with_transparent(true)
-                .with_decorations(false)
-                .build(&EventLoop::new())
-                .unwrap()
-                .raw_window_handle()
-            {
-                RawWindowHandle::Win32(han) => Some(han.hwnd),
-                _ => panic!("No hwnd was found! Try to use wasm mode."),
-            }
-        }
-        #[cfg(not(all(
-            target_os = "windows",
-            any(target_arch = "x86_64", target_arch = "x86")
-        )))]
-        fn fallback() -> Option<*mut c_void> {
-            None
-        }
+        const TITLE: &str = "Cloudmusic VSCode";
 
         let hwnd = {
             #[cfg(target_os = "windows")]
             {
                 #[cfg(any(target_arch = "x86_64", target_arch = "x86"))]
                 {
-                    fallback()
+                    use {
+                        raw_window_handle::{HasRawWindowHandle, RawWindowHandle},
+                        winit::{event_loop::EventLoop, window::WindowBuilder},
+                    };
+                    match WindowBuilder::new()
+                        .with_title(TITLE)
+                        .with_visible(false)
+                        .with_transparent(true)
+                        .with_decorations(false)
+                        .build(&EventLoop::new())
+                        .unwrap()
+                        .raw_window_handle()
+                    {
+                        RawWindowHandle::Win32(han) => Some(han.hwnd),
+                        _ => panic!("No hwnd was found! Try to use wasm mode."),
+                    }
                 }
                 #[cfg(not(any(target_arch = "x86_64", target_arch = "x86")))]
                 {
@@ -85,7 +70,8 @@ impl MediaSession {
             }
         }
 
-        let controls = match MediaControls::new(config(hwnd)) {
+        let controls = MediaControls::new(config(hwnd)).unwrap();
+        /* let controls = match MediaControls::new(config(hwnd)) {
             Ok(controls) => controls,
             // Access to other windows requires admin rights,
             // so it almost always fails on Windows, we still
@@ -94,7 +80,7 @@ impl MediaSession {
                 ACCESSABLE.store(false, Ordering::Relaxed);
                 MediaControls::new(config(fallback())).unwrap()
             }
-        };
+        }; */
 
         MediaSession { controls }
     }
@@ -108,25 +94,73 @@ impl MediaSession {
         cover_url: String,
         duration: f64,
     ) {
+        use {souvlaki::MediaMetadata, std::time::Duration};
         self.controls
             .set_metadata(MediaMetadata {
                 title: Some(title.as_str()),
-                album: album.is_empty().then_some(album.as_str()),
-                artist: artist.is_empty().then_some(artist.as_str()),
+                album: (!album.is_empty()).then_some(album.as_str()),
+                artist: (!artist.is_empty()).then_some(artist.as_str()),
                 cover_url: cover_url.starts_with("http").then_some(cover_url.as_str()),
-                duration: (duration == 0.).then_some(Duration::from_secs_f64(duration)),
+                duration: (duration != 0.).then_some(Duration::from_secs_f64(duration)),
             })
             .unwrap();
     }
 
     #[inline]
     fn set_playback(&mut self, playing: bool, position: f64) {
+        use {
+            souvlaki::{MediaPlayback, MediaPosition},
+            std::time::Duration,
+        };
+
         let progress = Some(MediaPosition(Duration::from_secs_f64(position)));
         self.controls
             .set_playback(match playing {
                 true => MediaPlayback::Playing { progress },
                 false => MediaPlayback::Paused { progress },
             })
+            .unwrap();
+    }
+}
+
+#[cfg(target_os = "macos")]
+impl MediaSession {
+    #[inline]
+    fn set_metadata(
+        &mut self,
+        title: String,
+        album: String,
+        artist: String,
+        cover_url: String,
+        duration: f64,
+    ) {
+        use std::io::Write;
+
+        let mut items = Vec::new();
+        items.push(format!("title:{title}"));
+        if !album.is_empty() {
+            items.push(format!("album:{album}"));
+        }
+        if !artist.is_empty() {
+            items.push(format!("artist:{artist}"));
+        }
+        if cover_url.starts_with("http") {
+            items.push(format!("cover_url:{cover_url}"));
+        }
+        if duration != 0. {
+            items.push(format!("duration:{duration}"));
+        }
+
+        let string = items.join("\t");
+        self.stdin.write_fmt(format_args!("{string}0\n")).unwrap();
+    }
+
+    #[inline]
+    fn set_playback(&mut self, playing: bool, position: f64) {
+        use std::io::Write;
+
+        self.stdin
+            .write_fmt(format_args!("{playing},{position}1\n"))
             .unwrap();
     }
 }
@@ -200,7 +234,10 @@ pub fn media_session_hwnd(mut cx: FunctionContext) -> JsResult<JsString> {
     }))
 } */
 
+#[cfg(not(target_os = "macos"))]
 pub fn media_session_new(mut cx: FunctionContext) -> JsResult<JsValue> {
+    use souvlaki::{MediaControlEvent, MediaPlayback};
+
     // let hwnd = cx.argument::<JsString>(0)?.value(&mut cx);
     let handler = Arc::new(cx.argument::<JsFunction>(0)?.root(&mut cx));
 
@@ -235,6 +272,46 @@ pub fn media_session_new(mut cx: FunctionContext) -> JsResult<JsValue> {
         .controls
         .set_playback(MediaPlayback::Stopped);
 
+    Ok(media_session.upcast())
+}
+
+#[cfg(target_os = "macos")]
+pub fn media_session_new(mut cx: FunctionContext) -> JsResult<JsValue> {
+    use std::{
+        io::{BufRead, BufReader},
+        path::Path,
+        process::{Command, Stdio},
+        thread,
+    };
+
+    let handler = Arc::new(cx.argument::<JsFunction>(0)?.root(&mut cx));
+    let path = cx.argument::<JsString>(1)?.value(&mut cx);
+
+    let mut child = Command::new(Path::new(&path))
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .spawn()
+        .unwrap();
+
+    let stdout = child.stdout.take().unwrap();
+    let channel = cx.channel();
+    thread::spawn(move || {
+        for line in BufReader::new(stdout).lines() {
+            if let Ok(type_) = line.unwrap().parse::<i32>() {
+                let handler = handler.clone();
+
+                channel.send(move |mut cx| {
+                    let this = cx.undefined();
+                    let args = [cx.number(type_).upcast()];
+                    handler.to_inner(&mut cx).call(&mut cx, this, args)?;
+                    Ok(())
+                });
+            }
+        }
+    });
+
+    let stdin = child.stdin.take().unwrap();
+    let media_session = cx.boxed(RefCell::new(MediaSession { stdin }));
     Ok(media_session.upcast())
 }
 

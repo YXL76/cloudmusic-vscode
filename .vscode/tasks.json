@@ -10,6 +10,16 @@
     },
     {
       "type": "shell",
+      "label": "cargo: build macmedia",
+      "command": "cargo build --release --package cloudmusic-macmedia"
+    },
+    {
+      "type": "shell",
+      "label": "cargo: build",
+      "command": "cargo build --release"
+    },
+    {
+      "type": "shell",
       "label": "yarn: update",
       "command": "rm yarn.lock && yarn && yarn dlx @yarnpkg/sdks vscode vim"
     },

@@ -15,6 +15,7 @@ const { spawnSync } = require("child_process");
 const rootPath = resolve(__dirname, "..");
 const buildPath = resolve(rootPath, "build");
 const artifactPath = resolve(rootPath, ".artifact", "build");
+const mediaArtifactPath = resolve(rootPath, ".artifact", "media");
 
 const { version } = JSON.parse(
   readFileSync(resolve(rootPath, "package.json"), "utf8")
@@ -37,7 +38,7 @@ const nodeTargets = new Set(Object.keys(targetMap));
 
 const artifacts = readdirSync(artifactPath).map((name) => {
   const ext = extname(name);
-  return { name, base: basename(name, ext), ext };
+  return { name, base: basename(name, ext) };
 });
 const spawnConf = { cwd: rootPath, shell: false, windowsHide: true };
 
@@ -63,6 +64,11 @@ for (const { name, base } of artifacts) {
   nodeTargets.delete(base);
   mkdirSync(buildPath, { recursive: true });
   copyFileSync(resolve(artifactPath, name), resolve(buildPath, name));
+
+  if (base.startsWith("darwin-")) {
+    const name = `${base}-media`;
+    copyFileSync(resolve(mediaArtifactPath, name), resolve(buildPath, name));
+  }
 
   for (const target of targetMap[base]) {
     let { stdout, stderr } = spawnSync(

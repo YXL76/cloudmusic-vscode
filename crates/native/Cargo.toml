@@ -3,14 +3,11 @@ name = "cloudmusic-native"
 version = "0.1.0"
 authors = ["YXL <chenxin.lan.76@gmail.com>"]
 build = "build.rs"
-edition = "2018"
+edition = "2021"
 
 [lib]
 name = "native"
 crate-type = ["cdylib"]
-
-[dependencies]
-souvlaki = "0.5"
 
 [dependencies.neon]
 git = "https://github.com/neon-bindings/neon"
@@ -26,6 +23,9 @@ features = ["symphonia-flac", "symphonia-mp3", "symphonia-wav"]
 
 [target.'cfg(target_os = "windows")'.dependencies]
 winapi = "0.3"
+
+[target.'cfg(not(target_os = "macos"))'.dependencies]
+souvlaki = "0.5"
 
 [target.'cfg(all(target_os = "windows", any(target_arch = "x86_64", target_arch = "x86")))'.dependencies]
 raw-window-handle = "0.4"
