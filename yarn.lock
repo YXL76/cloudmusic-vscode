@@ -501,7 +501,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"acorn-node@npm:^1.6.1":
+"acorn-node@npm:^1.8.2":
   version: 1.8.2
   resolution: "acorn-node@npm:1.8.2"
   dependencies:
@@ -1074,15 +1074,15 @@ __metadata:
   linkType: hard
 
 "detective@npm:^5.2.0":
-  version: 5.2.0
-  resolution: "detective@npm:5.2.0"
+  version: 5.2.1
+  resolution: "detective@npm:5.2.1"
   dependencies:
-    acorn-node: "npm:^1.6.1"
+    acorn-node: "npm:^1.8.2"
     defined: "npm:^1.0.0"
-    minimist: "npm:^1.1.1"
+    minimist: "npm:^1.2.6"
   bin:
     detective: bin/detective.js
-  checksum: 0ab92985196cd2f3722479ede14464cfc813ac92daf7612372c5c9884a1e9636ce63dc674b3c74620e4260c87c187aaef715b30a28ee21310560bf43ef970174
+  checksum: f4b2ee2f850f9f7ffc9dada9e09ea86827f1127e223528d20706ed7ac10876e18f590452db12070717dc5c1c7f4a310051150a6796259aa288be90ebceb5f419
   languageName: node
   linkType: hard
 
@@ -2429,12 +2429,12 @@ __metadata:
   linkType: hard
 
 "keyv@npm:^4.0.0":
-  version: 4.2.9
-  resolution: "keyv@npm:4.2.9"
+  version: 4.3.0
+  resolution: "keyv@npm:4.3.0"
   dependencies:
     compress-brotli: "npm:^1.3.8"
     json-buffer: "npm:3.0.1"
-  checksum: 7e885181e03b9faa4a8ae09319b74c7e6a99096635eebf0ce6bfb1c6b60888fadd3c8e4a75834c150f96febd14dcc5d1f5d72599b09c52f9afe65ab51695caf9
+  checksum: a7cb7fafcdf99b6dd1ddaf63c612e8a9976d2e5ed0c98fc0cdfe64a31d7f8c947ea913feccec56d2daf562e01761bd6ebc08cacd39021a1e14281fb11b9dcad8
   languageName: node
   linkType: hard
 
@@ -2520,8 +2520,8 @@ __metadata:
   linkType: hard
 
 "make-fetch-happen@npm:^10.0.3":
-  version: 10.1.5
-  resolution: "make-fetch-happen@npm:10.1.5"
+  version: 10.1.6
+  resolution: "make-fetch-happen@npm:10.1.6"
   dependencies:
     agentkeepalive: "npm:^4.2.1"
     cacache: "npm:^16.1.0"
@@ -2539,7 +2539,7 @@ __metadata:
     promise-retry: "npm:^2.0.1"
     socks-proxy-agent: "npm:^6.1.1"
     ssri: "npm:^9.0.0"
-  checksum: f85b8dcfb13afd26f3a4d0827d3b7ab5e67358887f7dce445be7f5435e53d1b75b3e789e97279ff30ef5a23675ca7889e159fba59a10f0075f8773327ec22b67
+  checksum: 9685e5b950b471871825c127e0e6171faa8d28b9b8ddcafb05fb93506b50ab15f7bf56880d1bf708e74a79bf1d314439937c838a3a896a493db31126d9b1647a
   languageName: node
   linkType: hard
 
@@ -2610,7 +2610,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimist@npm:^1.1.1":
+"minimist@npm:^1.2.6":
   version: 1.2.6
   resolution: "minimist@npm:1.2.6"
   checksum: b0286df020a110fa0173e71d8c9903748eb2cc939396d04a61bc224635393c564bc264d04a16e36d51e5489be513f98d7dbe5c2cf11598da11c91f6a18b9449e
@@ -2814,9 +2814,9 @@ __metadata:
   linkType: hard
 
 "object-inspect@npm:^1.12.0, object-inspect@npm:^1.9.0":
-  version: 1.12.0
-  resolution: "object-inspect@npm:1.12.0"
-  checksum: 841b5b480e36dc94d1c764dc85e1752bb01a0d7eccf366bacb4731877a29fa8196118c8b58b7a4e4961f0447f9dac97950e6f04eca259fb02a325fd90066173d
+  version: 1.12.2
+  resolution: "object-inspect@npm:1.12.2"
+  checksum: 46e3fc4cb6a51a37c21c68bdf682befc2e50a0d1643d1f7cbdce9a5fd13e9d44ae8cbbf1b05f0c8daf739c02eb9044d825544e25c3aef2a7d315980c8c7ccb71
   languageName: node
   linkType: hard
 

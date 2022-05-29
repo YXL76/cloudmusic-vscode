@@ -11,7 +11,12 @@
     {
       "type": "shell",
       "label": "yarn: update",
-      "command": "rm -rf yarn.lock && yarn && yarn dlx @yarnpkg/sdks vscode vim"
+      "command": "rm yarn.lock && yarn && yarn dlx @yarnpkg/sdks vscode vim"
+    },
+    {
+      "type": "shell",
+      "label": "yarn: test",
+      "command": "yarn test"
     }
   ]
 }

@@ -6,12 +6,12 @@ import {
 } from "./helper";
 import { eapi, weapi } from "./crypto";
 import { APISetting } from "..";
+import type { Headers } from "got";
 import type { NeteaseTypings } from "api";
 import { State } from "../../state";
 import got from "got";
 import { logError } from "../../utils";
 import { loginStatus } from ".";
-import { randomBytes } from "crypto";
 
 const userAgent = (() => {
   switch (process.platform) {
@@ -24,11 +24,14 @@ const userAgent = (() => {
   }
 })();
 
+const anonymousToken =
+  "8aae43f148f990410b9a2af38324af24e87ab9227c9265627ddd10145db744295fcd8701dc45b1ab8985e142f491516295dd965bae848761274a577a62b0fdc54a50284d1e434dcc04ca6d1a52333c9a";
+
 const csrfTokenReg = RegExp(/_csrf=([^(;|$)]+)/);
 
 type QueryInput = Record<string, string | number | boolean>;
 
-type Headers = {
+/* type Headers = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Cookie: string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -39,9 +42,9 @@ type Headers = {
   "User-Agent": string;
   // eslint-disable-next-line @typescript-eslint/naming-convention
   "X-Real-IP"?: string;
-};
+}; */
 
-export const generateHeader = (url: string): Headers => ({
+export const generateHeader = () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Cookie: "",
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -50,10 +53,12 @@ export const generateHeader = (url: string): Headers => ({
   "User-Agent": userAgent,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   ...(State.foreign ? { "X-Real-IP": "118.88.88.88" } : {}),
-  ...(url.startsWith("music.163.com/")
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  Referer: "music.163.com",
+  /* ...(url.includes("music.163.com/")
     ? // eslint-disable-next-line @typescript-eslint/naming-convention
       { Referer: "music.163.com" }
-    : {}),
+    : {}), */
 });
 
 const spStatus = new Set([200, 800, 803]);
@@ -82,7 +87,7 @@ export const loginRequest = async (
   data: QueryInput
 ): Promise<NeteaseTypings.Profile | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
-  const headers = generateHeader(url);
+  const headers = generateHeader();
   headers["Cookie"] = jsonToCookie({ os: "pc", appver: "2.9.7" });
   const res = await got<{
     readonly code?: number;
@@ -117,7 +122,7 @@ export const qrloginRequest = async (
   data: QueryInput
 ): Promise<number | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
-  const headers = generateHeader(url);
+  const headers = generateHeader();
   const res = await got<{ readonly code?: number }>(url, {
     form: weapi(data),
     headers,
@@ -145,7 +150,8 @@ export const weapiRequest = <T = QueryInput>(
   cookie = AccountState.defaultCookie
 ): Promise<T | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
-  const headers = generateHeader(url);
+  if (!cookie.MUSIC_U) cookie.MUSIC_A = anonymousToken;
+  const headers = generateHeader();
   headers["Cookie"] = jsonToCookie(cookie);
   const csrfToken = csrfTokenReg.exec(headers["Cookie"]);
   data.csrf_token = csrfToken ? csrfToken[1] : "";
@@ -154,45 +160,37 @@ export const weapiRequest = <T = QueryInput>(
 
 export const eapiRequest = async <T = QueryInput>(
   url: string,
-  data: QueryInput,
+  data: NodeJS.Dict<string | number | boolean | Headers>,
   encryptUrl: string,
-  rawCookie = AccountState.defaultCookie
+  cookie = AccountState.defaultCookie
 ): Promise<T | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
-  const cookie: NeteaseTypings.Cookie = {
-    ...rawCookie,
-    ...("MUSIC_U" in rawCookie
-      ? // eslint-disable-next-line @typescript-eslint/naming-convention
-        { MUSIC_U: rawCookie.MUSIC_U }
-      : {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          MUSIC_A:
-            "8aae43f148f990410b9a2af38324af24e87ab9227c9265627ddd10145db744295fcd8701dc45b1ab8985e142f491516295dd965bae848761274a577a62b0fdc54a50284d1e434dcc04ca6d1a52333c9a", // anonymousToken
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          _ntes_nuid: randomBytes(16).toString("hex"),
-        }),
-  };
   const now = Date.now();
-  const header = {
-    appver: "8.7.01",
-    versioncode: "140",
-    buildver: now.toString().slice(0, 10),
-    resolution: "1920x1080",
+  const header: Headers = {
+    osver: cookie.osver,
+    deviceId: cookie.deviceId,
+    appver: cookie.appver || "8.7.01",
+    versioncode: cookie.versioncode || "140",
+    mobilename: cookie.mobilename,
+    buildver: cookie.buildver || now.toString().slice(0, 10),
+    resolution: cookie.resolution || "1920x1080",
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    __csrf: "",
-    os: "android" as const,
+    __csrf: cookie.__csrf || "",
+    os: cookie.os || ("android" as const),
+    channel: cookie.channel,
     requestId: `${now}_${Math.floor(Math.random() * 1000)
       .toString()
       .padStart(4, "0")}`,
-    ...cookie,
   };
-  const headers = generateHeader(url);
+  if (cookie.MUSIC_U) header["MUSIC_U"] = cookie.MUSIC_U;
+  else {
+    cookie.MUSIC_A = anonymousToken;
+    header["MUSIC_A"] = anonymousToken;
+  }
+  const headers = generateHeader();
   headers["Cookie"] = jsonToCookie(header);
-  return responseHandler<T>(
-    url,
-    headers,
-    eapi(encryptUrl, { ...data, header })
-  );
+  data.header = header;
+  return responseHandler<T>(url, headers, eapi(encryptUrl, data));
 };
 
 export const apiRequest = async <T = QueryInput>(
@@ -201,7 +199,8 @@ export const apiRequest = async <T = QueryInput>(
   cookie = AccountState.defaultCookie
 ): Promise<T | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
-  const headers = generateHeader(url);
+  if (!cookie.MUSIC_U) cookie.MUSIC_A = anonymousToken;
+  const headers = generateHeader();
   headers["Cookie"] = jsonToCookie(cookie);
   return responseHandler<T>(url, headers, data);
 };
