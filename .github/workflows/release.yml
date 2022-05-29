@@ -49,7 +49,7 @@ jobs:
       - name: Build aarch64
         run: |
           cargo build --release --target=aarch64-apple-darwin
-          cargo build --release --target=aarch64-apple-darwin --target=x86_64-apple-darwin
+          cargo build --release --target=aarch64-apple-darwin --package cloudmusic-macmedia
 
       - uses: actions/upload-artifact@v3
         with:
@@ -199,6 +199,7 @@ jobs:
         run: |
           mkdir -p build
           mkdir -p .artifact/build
+          mkdir -p .artifact/media
           # cp .artifact/Linux-armv7/index.node     .artifact/build/linux-arm.node
           cp .artifact/macOS-aarch64/index.node   .artifact/build/darwin-arm64.node
           # cp .artifact/Linux-aarch64/index.node   .artifact/build/linux-arm64.node
@@ -207,7 +208,7 @@ jobs:
           cp .artifact/Linux-x86_64/index.node    .artifact/build/linux-x64.node
           cp .artifact/Windows-x86_64/index.node  .artifact/build/win32-x64.node
           cp .artifact/macOS-media-aarch64/media  .artifact/media/darwin-arm64-media
-          cp .artifact/macOS-media-x86_64/media   .artifact/media/darwin-x86_64-media
+          cp .artifact/macOS-media-x86_64/media   .artifact/media/darwin-x64-media
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path

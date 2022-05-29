@@ -6,6 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.10.0] - 2022-05-29
+
+### Added
+
+- Media session: support macOS
+
+### Fixed
+
+- API: fix cookie
+
 ## [9.9.3] - 2022-05-21
 
 ### Fixed
