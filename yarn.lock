@@ -17,7 +17,7 @@ __metadata:
     "@types/qrcode": "workspace:*"
     "@types/vscode": "npm:1.66.0"
     array-unsort: "npm:1.1.6"
-    file-type: "npm:17.1.1"
+    file-type: "npm:17.1.2"
     lodash: "npm:4.17.21"
     qrcode: "npm:1.5.0"
   languageName: unknown
@@ -1721,14 +1721,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-type@npm:17.1.1":
-  version: 17.1.1
-  resolution: "file-type@npm:17.1.1"
+"file-type@npm:17.1.2":
+  version: 17.1.2
+  resolution: "file-type@npm:17.1.2"
   dependencies:
     readable-web-to-node-stream: "npm:^3.0.2"
     strtok3: "npm:^7.0.0-alpha.7"
     token-types: "npm:^5.0.0-alpha.2"
-  checksum: aadcc4151167fd7c2af4001a22fdafd3dd42181cba30a73e7ffa02bd6a22317a893f7f11941103ac2ca8930ecc2f1cf106592eb88db263cea534609b0a5dfa41
+  checksum: 566245e0c84fa76bfd62b8e9d5ecec8f3c9ddcd51bdb2f1305e8711d13ad7aaf92d223c36b9d0370669484fad6310da4ce1e52b4dc10e381d1445f417bb4188f
   languageName: node
   linkType: hard
 
