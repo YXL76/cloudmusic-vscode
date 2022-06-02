@@ -62,7 +62,7 @@ __metadata:
     dayjs: "npm:1.11.2"
     react: "npm:18.1.0"
     react-dom: "npm:18.1.0"
-    react-icons: "npm:4.3.1"
+    react-icons: "npm:4.4.0"
   languageName: unknown
   linkType: soft
 
@@ -3196,12 +3196,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-icons@npm:4.3.1":
-  version: 4.3.1
-  resolution: "react-icons@npm:4.3.1"
+"react-icons@npm:4.4.0":
+  version: 4.4.0
+  resolution: "react-icons@npm:4.4.0"
   peerDependencies:
     react: "*"
-  checksum: 688916aa1b9300a342524016b06c0f297805cb82ca07fa6bda61050982ecf25f5b7e5062c7945b0d02827bf25ed7a83b0d8615dad6794cd84b6381cfd191ef97
+  checksum: bf7636ddd253fe199e2e71c030971ddc9a2f1d2c874409eecea88707ada655346a26153422cba6db30f7d6e4a7db8d545c76adba01b2197db0e57b4ea4d5b7ff
   languageName: node
   linkType: hard
 
