@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.10.1] - 2022-06-02
+
+### Fixed
+
+- Media session: Add execute rights ([#706](https://github.com/YXL76/cloudmusic-vscode/issues/706))
+
 ## [9.10.0] - 2022-05-29
 
 ### Added
