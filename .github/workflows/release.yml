@@ -35,7 +35,6 @@ jobs:
         run: |
           cargo build --release --target=x86_64-apple-darwin
           cargo build --release --target=x86_64-apple-darwin --package cloudmusic-macmedia
-          sudo chmod 755 crates/macmedia/media
 
       - uses: actions/upload-artifact@v3
         with:
@@ -51,7 +50,6 @@ jobs:
         run: |
           cargo build --release --target=aarch64-apple-darwin
           cargo build --release --target=aarch64-apple-darwin --package cloudmusic-macmedia
-          sudo chmod 755 crates/macmedia/media
 
       - uses: actions/upload-artifact@v3
         with:
@@ -211,6 +209,11 @@ jobs:
           cp .artifact/Windows-x86_64/index.node  .artifact/build/win32-x64.node
           cp .artifact/macOS-media-aarch64/media  .artifact/media/darwin-arm64-media
           cp .artifact/macOS-media-x86_64/media   .artifact/media/darwin-x64-media
+
+      - name: Modify Permission
+        run: |
+          sudo chmod +x .artifact/media/darwin-arm64-media
+          sudo chmod +x .artifact/media/darwin-x64-media
 
       - name: Get yarn cache directory path
         id: yarn-cache-dir-path
