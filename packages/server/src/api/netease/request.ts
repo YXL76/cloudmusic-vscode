@@ -8,7 +8,7 @@ import { eapi, weapi } from "./crypto";
 import { APISetting } from "..";
 import type { Headers } from "got";
 import type { NeteaseTypings } from "api";
-import { State } from "../../state";
+import { STATE } from "../../state";
 import got from "got";
 import { logError } from "../../utils";
 import { loginStatus } from ".";
@@ -51,8 +51,10 @@ export const generateHeader = () => ({
   "Content-Type": "application/x-www-form-urlencoded",
   // eslint-disable-next-line @typescript-eslint/naming-convention
   "User-Agent": userAgent,
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  ...(State.foreign ? { "X-Real-IP": "118.88.88.88" } : {}),
+  ...(STATE.foreign
+    ? // eslint-disable-next-line @typescript-eslint/naming-convention
+      { "X-Real-IP": "118.88.88.88", "X-Forwarded-For": "118.88.88.88" }
+    : {}),
   // eslint-disable-next-line @typescript-eslint/naming-convention
   Referer: "music.163.com",
   /* ...(url.includes("music.163.com/")

@@ -7,7 +7,7 @@ import { LyricCache, apiCache } from "../../cache";
 import { apiRequest, eapiRequest, weapiRequest } from "./request";
 import type { NeteaseTopSongType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
-import { State } from "../../state";
+import { STATE } from "../../state";
 import { logError } from "../../utils";
 
 const parseLyric = (raw: string): readonly (readonly [number, string])[] => {
@@ -189,13 +189,13 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
     const [i, j] = (await Promise.allSettled([
       eapiRequest<SongUrlResponse>(
         "interface3.music.163.com/eapi/song/enhance/player/url",
-        { ids: `[${id}]`, br: State.musicQuality },
+        { ids: `[${id}]`, br: STATE.musicQuality },
         "/api/song/enhance/player/url",
         { ...cookie, os: "pc" }
       ),
       eapiRequest<DownloadUrlResponse>(
         "interface.music.163.com/eapi/song/enhance/download/url",
-        { id, br: State.musicQuality },
+        { id, br: STATE.musicQuality },
         "/api/song/enhance/download/url",
         cookie
       ),

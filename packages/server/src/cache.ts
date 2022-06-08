@@ -10,7 +10,7 @@ import {
 } from "fs/promises";
 import type { NeteaseTypings } from "api";
 import NodeCache from "node-cache";
-import { State } from "./state";
+import { STATE } from "./state";
 import Yallist from "yallist";
 import { logError } from "./utils";
 import md5File from "md5-file";
@@ -149,7 +149,7 @@ export class MusicCache {
     this._list.unshift(value);
     this._cache.set(value.key, this._list.head as Yallist.Node<MusicCacheNode>);
     this._size += value.size;
-    while (this._size > State.cacheSize) {
+    while (this._size > STATE.cacheSize) {
       const { tail } = this._list;
       if (tail) this._deleteNode(tail.value);
       else void this.clear();

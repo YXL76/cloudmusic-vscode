@@ -6,7 +6,7 @@ import { MusicCache } from "./cache";
 import { NeteaseAPI } from "./api";
 import type { NeteaseTypings } from "api";
 import { PersonalFm } from "./state";
-import { State } from "./state";
+import { STATE } from "./state";
 import { TMP_DIR } from "./constant";
 
 type NativePlayer = unknown;
@@ -47,7 +47,7 @@ interface NativeModule {
 let prefetchLock = false;
 
 async function prefetch() {
-  const { id, name } = (State.fm ? await PersonalFm.next() : Player.next) || {};
+  const { id, name } = (STATE.fm ? await PersonalFm.next() : Player.next) || {};
   if (!id || !name) return;
   const idS = `${id}`;
   if (MusicCache.get(idS)) return;
@@ -57,7 +57,7 @@ async function prefetch() {
   const path = resolve(TMP_DIR, idS);
 
   let cache;
-  if (!State.fm) cache = { id: idS, name: `${name}-${idS}`, path, md5 };
+  if (!STATE.fm) cache = { id: idS, name: `${name}-${idS}`, path, md5 };
   downloadMusic(url, path, cache);
   void NeteaseAPI.lyric(id);
 }
@@ -68,11 +68,11 @@ export function posHandler(pos: number): void {
     void prefetch();
   }
 
-  const lpos = pos - State.lyric.delay;
-  const prev = State.lyric.idx;
-  while (State.lyric.time[State.lyric.idx] <= lpos) ++State.lyric.idx;
-  if (prev !== State.lyric.idx)
-    IPCServer.broadcast({ t: IPCPlayer.lyricIndex, idx: State.lyric.idx - 1 });
+  const lpos = pos - STATE.lyric.delay;
+  const prev = STATE.lyric.idx;
+  while (STATE.lyric.time[STATE.lyric.idx] <= lpos) ++STATE.lyric.idx;
+  if (prev !== STATE.lyric.idx)
+    IPCServer.broadcast({ t: IPCPlayer.lyricIndex, idx: STATE.lyric.idx - 1 });
 }
 
 class WasmPlayer {
@@ -272,7 +272,7 @@ export class Player {
 
     if (network)
       void NeteaseAPI.lyric(data.item.id).then((lyric) => {
-        Object.assign(State.lyric, lyric, { idx: 0 });
+        Object.assign(STATE.lyric, lyric, { idx: 0 });
         IPCServer.broadcast({ t: IPCPlayer.lyric, lyric });
       });
 

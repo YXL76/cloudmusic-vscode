@@ -1,7 +1,7 @@
 import { MusicCache } from "./cache";
 import { NeteaseAPI } from "./api";
 import type { Readable } from "stream";
-import { State } from "./state";
+import { STATE } from "./state";
 import { TMP_DIR } from "./constant";
 import { createWriteStream } from "fs";
 import got from "got";
@@ -31,7 +31,7 @@ export async function getMusicPath(
   const tmpUri = resolve(TMP_DIR, idS);
 
   let cache;
-  if (!State.fm) cache = { id: idS, name: `${name}-${idS}`, path: tmpUri, md5 };
+  if (!STATE.fm) cache = { id: idS, name: `${name}-${idS}`, path: tmpUri, md5 };
   const download = getMusic(url, cache);
   if (!download) return Promise.reject();
 
@@ -49,7 +49,7 @@ export async function getMusicPath(
     let len = 0;
     const onData = ({ length }: { length: number }) => {
       len += length;
-      if (len > State.minSize) {
+      if (len > STATE.minSize) {
         download.removeListener("data", onData);
         ret();
       }

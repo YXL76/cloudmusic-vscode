@@ -9,7 +9,7 @@ import {
 import type { IPCClientMsg, IPCServerMsg } from "@cloudmusic/shared";
 import { LyricCache, MusicCache, apiCache } from "./cache";
 import type { NeteaseAPICMsg, NeteaseAPISMsg } from ".";
-import { PersonalFm, State } from "./state";
+import { PersonalFm, STATE } from "./state";
 import { Player, posHandler } from "./player";
 import {
   RETAIN_FILE,
@@ -179,10 +179,10 @@ export class IPCServer {
         downloadMusic(data.url, data.path);
         break;
       case IPCControl.setting:
-        State.minSize = data.mq === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
-        State.musicQuality = data.mq;
-        State.cacheSize = data.cs;
-        State.foreign = data.foreign;
+        STATE.minSize = data.mq === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
+        STATE.musicQuality = data.mq;
+        STATE.cacheSize = data.cs;
+        STATE.foreign = data.foreign;
         APISetting.apiProtocol = data.https ? "https" : "http";
         break;
       case IPCControl.lyric:
@@ -205,7 +205,7 @@ export class IPCServer {
         void Player.load(data);
         break;
       case IPCPlayer.lyricDelay:
-        State.lyric.delay = data.delay;
+        STATE.lyric.delay = data.delay;
         break;
       case IPCPlayer.playing:
         Player.playing = data.playing;
@@ -230,16 +230,16 @@ export class IPCServer {
         break;
       case IPCQueue.fm:
         if (data.is) {
-          State.fm = true;
+          STATE.fm = true;
           PersonalFm.uid = data.uid;
           this.broadcast({ t: IPCQueue.fm });
-        } else State.fm = false;
+        } else STATE.fm = false;
         break;
       case IPCQueue.fmNext:
         PersonalFm.head()
           .then((item) => {
             if (item) {
-              State.fm = true;
+              STATE.fm = true;
               this.broadcast({ t: IPCQueue.fmNext, item });
             }
           })
