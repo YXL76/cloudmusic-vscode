@@ -905,7 +905,7 @@ __metadata:
     postcss: "npm:8.4.14"
     prettier: "npm:2.6.2"
     supports-color: "npm:9.2.2"
-    tailwindcss: "npm:3.0.24"
+    tailwindcss: "npm:3.1.2"
     typescript: "npm:4.7.3"
   languageName: unknown
   linkType: soft
@@ -1073,7 +1073,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detective@npm:^5.2.0":
+"detective@npm:^5.2.1":
   version: 5.2.1
   resolution: "detective@npm:5.2.1"
   dependencies:
@@ -3011,10 +3011,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pify@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "pify@npm:2.3.0"
+  checksum: 9a3b2aa18d26ed79db45dee98f52675750ad11ced96b45b4884f4d4368217046137e35481146bfc94698f5709fd838d86f1d2d80d958f5f88767e426d29cbc66
+  languageName: node
+  linkType: hard
+
 "pngjs@npm:^5.0.0":
   version: 5.0.0
   resolution: "pngjs@npm:5.0.0"
   checksum: e840548c8e38809b6f63553f07af5730159392ae322e00eb4c610d50e2a6b7d6dca99ee6a3dbec6f78c0e8ef50540e4ab164b25710d6e61c15748bd4eac432d3
+  languageName: node
+  linkType: hard
+
+"postcss-import@npm:^14.1.0":
+  version: 14.1.0
+  resolution: "postcss-import@npm:14.1.0"
+  dependencies:
+    postcss-value-parser: "npm:^4.0.0"
+    read-cache: "npm:^1.0.0"
+    resolve: "npm:^1.1.7"
+  peerDependencies:
+    postcss: ^8.0.0
+  checksum: 28f4fd918ad819b77c5585c3211439a50b4c1005b33640e2183790e7501fb5257b0aa3dcef54c546deba713dc1a05fd42651483e4d1defae4dd840f4e3e34b71
   languageName: node
   linkType: hard
 
@@ -3068,14 +3088,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-value-parser@npm:^4.2.0":
+"postcss-value-parser@npm:^4.0.0, postcss-value-parser@npm:^4.2.0":
   version: 4.2.0
   resolution: "postcss-value-parser@npm:4.2.0"
   checksum: edc490e9f11336a2efb136d8a52350b5c680ca9a91ee64285732e796177eb888f559a4eafc94cdbf7ce065a388e65b3cc21a32c92458a90efc445f30e8a679dc
   languageName: node
   linkType: hard
 
-"postcss@npm:8.4.14, postcss@npm:^8.4.12":
+"postcss@npm:8.4.14, postcss@npm:^8.4.14":
   version: 8.4.14
   resolution: "postcss@npm:8.4.14"
   dependencies:
@@ -3221,6 +3241,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"read-cache@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "read-cache@npm:1.0.0"
+  dependencies:
+    pify: "npm:^2.3.0"
+  checksum: ee62858265511c3796841f8c305caf66f1468f7ea0686b17bf862c67f9e42b1d4d67bc6facfbac1dc0a3582de4595fcae189366b9f15b88b8ad66a6ef2f6d572
+  languageName: node
+  linkType: hard
+
 "readable-stream@npm:^3.6.0":
   version: 3.6.0
   resolution: "readable-stream@npm:3.6.0"
@@ -3296,7 +3325,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.22.0":
+"resolve@npm:^1.1.7, resolve@npm:^1.22.0":
   version: 1.22.0
   resolution: "resolve@npm:1.22.0"
   dependencies:
@@ -3319,7 +3348,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@npm%3A^1.22.0#optional!builtin<compat/resolve>":
+"resolve@patch:resolve@npm%3A^1.1.7#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.0#optional!builtin<compat/resolve>":
   version: 1.22.0
   resolution: "resolve@patch:resolve@npm%3A1.22.0#optional!builtin<compat/resolve>::version=1.22.0&hash=07638b"
   dependencies:
@@ -3664,14 +3693,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:3.0.24":
-  version: 3.0.24
-  resolution: "tailwindcss@npm:3.0.24"
+"tailwindcss@npm:3.1.2":
+  version: 3.1.2
+  resolution: "tailwindcss@npm:3.1.2"
   dependencies:
     arg: "npm:^5.0.1"
     chokidar: "npm:^3.5.3"
     color-name: "npm:^1.1.4"
-    detective: "npm:^5.2.0"
+    detective: "npm:^5.2.1"
     didyoumean: "npm:^1.2.2"
     dlv: "npm:^1.1.3"
     fast-glob: "npm:^3.2.11"
@@ -3681,7 +3710,8 @@ __metadata:
     normalize-path: "npm:^3.0.0"
     object-hash: "npm:^3.0.0"
     picocolors: "npm:^1.0.0"
-    postcss: "npm:^8.4.12"
+    postcss: "npm:^8.4.14"
+    postcss-import: "npm:^14.1.0"
     postcss-js: "npm:^4.0.0"
     postcss-load-config: "npm:^3.1.4"
     postcss-nested: "npm:5.0.6"
@@ -3694,7 +3724,7 @@ __metadata:
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: bb623bd2d958a9dea98c36199e48ef26da6785d89970e52c959a2adc3eefd8c266f38aca3714e90ac486cb392b04a88ef1961a37a83de34d273592c34d034da1
+  checksum: f588182e3fe27eb2a1b43c9e85894d4b8d063296e5979952acd494e9a07c302da3d3080efccaf56dde53868ba6adef4a2b0db1a1fdaf8f6cdb67549787628d02
   languageName: node
   linkType: hard
 
