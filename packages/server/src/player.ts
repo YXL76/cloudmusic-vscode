@@ -102,7 +102,8 @@ class WasmPlayer {
 }
 
 const buildPath = resolve(
-  __dirname,
+  import.meta.url.slice(5), // "file:".length
+  "..",
   "..",
   "build",
   process.env["CM_NATIVE_MODULE"] as string

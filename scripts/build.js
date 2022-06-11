@@ -112,7 +112,11 @@ const globalSharedConfig = {
   build({
     ...globalSharedConfig,
 
-    outfile: resolve(distPath, "server.js"),
+    format: "esm",
+    outfile: resolve(distPath, "server.mjs"),
+    banner: {
+      js: `import{createRequire}from"module";const require=createRequire(import.meta.url);`,
+    },
     tsconfig,
     entryPoints: [resolve(srcPath, "index.ts")],
   });

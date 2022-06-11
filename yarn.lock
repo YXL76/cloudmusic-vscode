@@ -203,13 +203,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/eslint@npm:8.4.2":
-  version: 8.4.2
-  resolution: "@types/eslint@npm:8.4.2"
+"@types/eslint@npm:8.4.3":
+  version: 8.4.3
+  resolution: "@types/eslint@npm:8.4.3"
   dependencies:
     "@types/estree": "npm:*"
     "@types/json-schema": "npm:*"
-  checksum: 60a3a38bb5c7805e3f983ed14100df18e98fa99a492554d8a4674be13f041dffe9fca8ac76244d82f4a4b42c686a1d2baa78f9cc1ced1cb0d40a26ab1bf2c18a
+  checksum: 250ba7854a735d5e8ccc0e6c63fc753457b5ccf8e0dcc2cac913642f4974f6800618dda49e76d45c664b95055445a80f9f57351b0aba20fea131a81e72a399f9
   languageName: node
   linkType: hard
 
@@ -474,14 +474,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yarnpkg/esbuild-plugin-pnp@npm:3.0.0-rc.6":
-  version: 3.0.0-rc.6
-  resolution: "@yarnpkg/esbuild-plugin-pnp@npm:3.0.0-rc.6"
+"@yarnpkg/esbuild-plugin-pnp@npm:3.0.0-rc.9":
+  version: 3.0.0-rc.9
+  resolution: "@yarnpkg/esbuild-plugin-pnp@npm:3.0.0-rc.9"
   dependencies:
     tslib: "npm:^1.13.0"
   peerDependencies:
     esbuild: ">=0.10.0"
-  checksum: 80c97b92eb8a7d407d1147b2fd379b112bb91a4f1a0c2a4b495242088026c26fabb1b48fb6e6a1c871f83e456890dec7dc5f3b5c7024af27232ecd17d6eb7a4f
+  checksum: 3687e037c688bade58db4320ed01bc710f6c579e09b36c222a3c2acea9eb0f18ed771e8ebdc9a7a35a33fc43cef5010ff46ed2b88dd53f8fafed52acd7827c5c
   languageName: node
   linkType: hard
 
@@ -889,11 +889,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "cloudmusic@workspace:."
   dependencies:
-    "@types/eslint": "npm:8.4.2"
+    "@types/eslint": "npm:8.4.3"
     "@types/tailwindcss": "npm:3.0.10"
     "@typescript-eslint/eslint-plugin": "npm:5.27.1"
     "@typescript-eslint/parser": "npm:5.27.1"
-    "@yarnpkg/esbuild-plugin-pnp": "npm:3.0.0-rc.6"
+    "@yarnpkg/esbuild-plugin-pnp": "npm:3.0.0-rc.9"
     debug: "npm:4.3.4"
     esbuild: "npm:0.14.43"
     esbuild-plugin-wasm: "npm:1.0.0"
@@ -905,7 +905,7 @@ __metadata:
     postcss: "npm:8.4.14"
     prettier: "npm:2.6.2"
     supports-color: "npm:9.2.2"
-    tailwindcss: "npm:3.0.24"
+    tailwindcss: "npm:3.1.2"
     typescript: "npm:4.7.3"
   languageName: unknown
   linkType: soft
@@ -1073,7 +1073,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"detective@npm:^5.2.0":
+"detective@npm:^5.2.1":
   version: 5.2.1
   resolution: "detective@npm:5.2.1"
   dependencies:
@@ -1867,13 +1867,13 @@ __metadata:
   linkType: hard
 
 "get-intrinsic@npm:^1.0.2, get-intrinsic@npm:^1.1.0, get-intrinsic@npm:^1.1.1":
-  version: 1.1.1
-  resolution: "get-intrinsic@npm:1.1.1"
+  version: 1.1.2
+  resolution: "get-intrinsic@npm:1.1.2"
   dependencies:
     function-bind: "npm:^1.1.1"
     has: "npm:^1.0.3"
-    has-symbols: "npm:^1.0.1"
-  checksum: a48e9ce484bb1960deb4450d6252ceda885babbb502012783b97a0c3cd9caf114c7e7cc251d1b1958fb3ea749c1a4f710b25eee2f383b7b2e41af91e1efcff99
+    has-symbols: "npm:^1.0.3"
+  checksum: aad9801d8fc731719523431e68e40f9b65ca281822dbf403861a5fe08e66f7a58992734b7dea975b31655f78c22364e0ec8aa850abfca0cbd67572b34bd2af88
   languageName: node
   linkType: hard
 
@@ -2669,11 +2669,11 @@ __metadata:
   linkType: hard
 
 "minipass@npm:^3.0.0, minipass@npm:^3.1.1, minipass@npm:^3.1.6":
-  version: 3.1.6
-  resolution: "minipass@npm:3.1.6"
+  version: 3.2.1
+  resolution: "minipass@npm:3.2.1"
   dependencies:
     yallist: "npm:^4.0.0"
-  checksum: 352a2f87eca475d11c9a486233a2d2c19ce1425309370f42545ca934345bb95ec42a6f0b1e9ac4ee81b7f0046d6cc701feccf7243571d34e655b50c2534ffca6
+  checksum: 6e95247bcf1d5a311bca997732db357c2d4bd48bb990ff3a8f0970fc9e382c07af9c358d9a66b1074e70c66426daa32001e6b390ec5d0812d91b4bbf18acf972
   languageName: node
   linkType: hard
 
@@ -3011,10 +3011,30 @@ __metadata:
   languageName: node
   linkType: hard
 
+"pify@npm:^2.3.0":
+  version: 2.3.0
+  resolution: "pify@npm:2.3.0"
+  checksum: 9a3b2aa18d26ed79db45dee98f52675750ad11ced96b45b4884f4d4368217046137e35481146bfc94698f5709fd838d86f1d2d80d958f5f88767e426d29cbc66
+  languageName: node
+  linkType: hard
+
 "pngjs@npm:^5.0.0":
   version: 5.0.0
   resolution: "pngjs@npm:5.0.0"
   checksum: e840548c8e38809b6f63553f07af5730159392ae322e00eb4c610d50e2a6b7d6dca99ee6a3dbec6f78c0e8ef50540e4ab164b25710d6e61c15748bd4eac432d3
+  languageName: node
+  linkType: hard
+
+"postcss-import@npm:^14.1.0":
+  version: 14.1.0
+  resolution: "postcss-import@npm:14.1.0"
+  dependencies:
+    postcss-value-parser: "npm:^4.0.0"
+    read-cache: "npm:^1.0.0"
+    resolve: "npm:^1.1.7"
+  peerDependencies:
+    postcss: ^8.0.0
+  checksum: 28f4fd918ad819b77c5585c3211439a50b4c1005b33640e2183790e7501fb5257b0aa3dcef54c546deba713dc1a05fd42651483e4d1defae4dd840f4e3e34b71
   languageName: node
   linkType: hard
 
@@ -3068,14 +3088,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-value-parser@npm:^4.2.0":
+"postcss-value-parser@npm:^4.0.0, postcss-value-parser@npm:^4.2.0":
   version: 4.2.0
   resolution: "postcss-value-parser@npm:4.2.0"
   checksum: edc490e9f11336a2efb136d8a52350b5c680ca9a91ee64285732e796177eb888f559a4eafc94cdbf7ce065a388e65b3cc21a32c92458a90efc445f30e8a679dc
   languageName: node
   linkType: hard
 
-"postcss@npm:8.4.14, postcss@npm:^8.4.12":
+"postcss@npm:8.4.14, postcss@npm:^8.4.14":
   version: 8.4.14
   resolution: "postcss@npm:8.4.14"
   dependencies:
@@ -3221,6 +3241,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"read-cache@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "read-cache@npm:1.0.0"
+  dependencies:
+    pify: "npm:^2.3.0"
+  checksum: ee62858265511c3796841f8c305caf66f1468f7ea0686b17bf862c67f9e42b1d4d67bc6facfbac1dc0a3582de4595fcae189366b9f15b88b8ad66a6ef2f6d572
+  languageName: node
+  linkType: hard
+
 "readable-stream@npm:^3.6.0":
   version: 3.6.0
   resolution: "readable-stream@npm:3.6.0"
@@ -3296,7 +3325,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.22.0":
+"resolve@npm:^1.1.7, resolve@npm:^1.22.0":
   version: 1.22.0
   resolution: "resolve@npm:1.22.0"
   dependencies:
@@ -3319,7 +3348,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@npm%3A^1.22.0#optional!builtin<compat/resolve>":
+"resolve@patch:resolve@npm%3A^1.1.7#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.0#optional!builtin<compat/resolve>":
   version: 1.22.0
   resolution: "resolve@patch:resolve@npm%3A1.22.0#optional!builtin<compat/resolve>::version=1.22.0&hash=07638b"
   dependencies:
@@ -3664,14 +3693,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:3.0.24":
-  version: 3.0.24
-  resolution: "tailwindcss@npm:3.0.24"
+"tailwindcss@npm:3.1.2":
+  version: 3.1.2
+  resolution: "tailwindcss@npm:3.1.2"
   dependencies:
     arg: "npm:^5.0.1"
     chokidar: "npm:^3.5.3"
     color-name: "npm:^1.1.4"
-    detective: "npm:^5.2.0"
+    detective: "npm:^5.2.1"
     didyoumean: "npm:^1.2.2"
     dlv: "npm:^1.1.3"
     fast-glob: "npm:^3.2.11"
@@ -3681,7 +3710,8 @@ __metadata:
     normalize-path: "npm:^3.0.0"
     object-hash: "npm:^3.0.0"
     picocolors: "npm:^1.0.0"
-    postcss: "npm:^8.4.12"
+    postcss: "npm:^8.4.14"
+    postcss-import: "npm:^14.1.0"
     postcss-js: "npm:^4.0.0"
     postcss-load-config: "npm:^3.1.4"
     postcss-nested: "npm:5.0.6"
@@ -3694,7 +3724,7 @@ __metadata:
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: bb623bd2d958a9dea98c36199e48ef26da6785d89970e52c959a2adc3eefd8c266f38aca3714e90ac486cb392b04a88ef1961a37a83de34d273592c34d034da1
+  checksum: f588182e3fe27eb2a1b43c9e85894d4b8d063296e5979952acd494e9a07c302da3d3080efccaf56dde53868ba6adef4a2b0db1a1fdaf8f6cdb67549787628d02
   languageName: node
   linkType: hard
 
