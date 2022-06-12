@@ -1,7 +1,7 @@
 /* import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
 import { MUSIC_QUALITY } from "../constant";
 import axios from "axios";
-import { extname } from "path";
+import { extname } from "node:path";
 import filter from "./filter";
 
 let crypt: undefined | ((_: string) => Uint8Array);

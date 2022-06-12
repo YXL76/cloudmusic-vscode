@@ -3,8 +3,8 @@ import {
   ipcBroadcastServerId,
   ipcServerId,
 } from "@cloudmusic/shared";
-import { homedir } from "os";
-import { resolve } from "path";
+import { homedir } from "node:os";
+import { resolve } from "node:path";
 
 export const ipcServerPath =
   process.platform === "win32"

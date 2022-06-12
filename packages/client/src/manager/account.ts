@@ -27,7 +27,7 @@ import {
 import { commands, window } from "vscode";
 import type { InputStep } from "../utils";
 import type { NeteaseTypings } from "api";
-import { createHash } from "crypto";
+import { createHash } from "node:crypto";
 import i18n from "../i18n";
 
 type CookieState = { uid: number; cookie: string }[];

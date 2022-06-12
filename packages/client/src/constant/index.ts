@@ -1,8 +1,8 @@
 export * from "./shared";
 
 import type { WorkspaceConfiguration } from "vscode";
-import { homedir } from "os";
-import { resolve } from "path";
+import { homedir } from "node:os";
+import { resolve } from "node:path";
 import { workspace } from "vscode";
 
 export const CONF = (): WorkspaceConfiguration =>

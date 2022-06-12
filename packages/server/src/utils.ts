@@ -3,9 +3,9 @@ import { NeteaseAPI } from "./api";
 import type { Readable } from "stream";
 import { STATE } from "./state";
 import { TMP_DIR } from "./constant";
-import { createWriteStream } from "fs";
+import { createWriteStream } from "node:fs";
 import got from "got";
-import { resolve } from "path";
+import { resolve } from "node:path";
 
 export const logError = (err: unknown): void =>
   console.error(

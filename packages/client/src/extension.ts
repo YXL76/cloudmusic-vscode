@@ -14,7 +14,7 @@ import {
   RadioProvider,
 } from "./treeview";
 import { Uri, window, workspace } from "vscode";
-import { mkdir } from "fs/promises";
+import { mkdir } from "node:fs/promises";
 import { realActivate } from "./activate";
 
 export async function activate(context: ExtensionContext): Promise<void> {

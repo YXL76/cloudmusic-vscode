@@ -7,14 +7,14 @@ import {
   rm,
   stat,
   writeFile,
-} from "fs/promises";
+} from "node:fs/promises";
 import type { NeteaseTypings } from "api";
 import NodeCache from "node-cache";
 import { STATE } from "./state";
 import Yallist from "yallist";
 import { logError } from "./utils";
 import md5File from "md5-file";
-import { resolve } from "path";
+import { resolve } from "node:path";
 
 export const apiCache = new NodeCache({
   stdTTL: 300,

@@ -17,11 +17,11 @@ import {
   ipcBroadcastServerPath,
   ipcServerPath,
 } from "./constant";
-import type { Server, Socket } from "net";
+import type { Server, Socket } from "node:net";
 import { downloadMusic, logError } from "./utils";
-import { readFile, rm, writeFile } from "fs/promises";
+import { readFile, rm, writeFile } from "node:fs/promises";
 import { broadcastProfiles } from "./api/netease/helper";
-import { createServer } from "net";
+import { createServer } from "node:net";
 
 export class IPCServer {
   private static _first = true;

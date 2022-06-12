@@ -5,12 +5,12 @@ import {
   createHash,
   publicEncrypt,
   randomBytes,
-} from "crypto";
+} from "node:crypto";
 import { MUSIC_QUALITY } from "../constant";
 import axios from "axios";
-import { extname } from "path";
+import { extname } from "node:path";
 import filter from "./filter";
-import { stringify } from "querystring";
+import { stringify } from "node:querystring";
 
 interface SearchResult {
   musics: {

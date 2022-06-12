@@ -9,8 +9,8 @@ import { MUSIC_CACHE_DIR } from "../constant";
 import type { MimeType } from "file-type";
 import type { TreeDataProvider } from "vscode";
 import { fileTypeFromFile } from "file-type";
-import { readdir } from "fs/promises";
-import { resolve } from "path";
+import { readdir } from "node:fs/promises";
+import { resolve } from "node:path";
 
 const supportedType: MimeType[] = [
   "audio/vnd.wave",

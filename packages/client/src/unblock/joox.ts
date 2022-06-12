@@ -1,6 +1,6 @@
 /* import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
 import axios from "axios";
-import { extname } from "path";
+import { extname } from "node:path";
 
 interface SearchResult {
   tracks: {

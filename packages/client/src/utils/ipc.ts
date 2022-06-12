@@ -28,9 +28,9 @@ import type {
   NeteaseAPIReturn,
 } from "@cloudmusic/server";
 import type { PlayTreeItemData } from "../treeview";
-import type { Socket } from "net";
+import type { Socket } from "node:net";
 import { State } from ".";
-import { connect } from "net";
+import { connect } from "node:net";
 
 class IPCClient<T, U = T> {
   private _buffer = "";

@@ -6,16 +6,16 @@ import {
 } from "./constant";
 import type { CSMessage, IPCApi, IPCMsg } from "@cloudmusic/shared";
 import { IPCBroadcastServer, IPCServer } from "./server";
-import { readdir, rm } from "fs/promises";
+import { readdir, rm } from "node:fs/promises";
 import { MusicCache } from "./cache";
 import type { NeteaseAPI } from "./api";
 import { Player } from "./player";
 import { bootstrap } from "global-agent";
-import http from "http";
-import https from "https";
+import http from "node:http";
+import https from "node:https";
 import { logError } from "./utils";
-import { mkdir } from "fs/promises";
-import { resolve } from "path";
+import { mkdir } from "node:fs/promises";
+import { resolve } from "node:path";
 
 export type NeteaseAPIKey = keyof typeof NeteaseAPI;
 

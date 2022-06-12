@@ -28,13 +28,13 @@ import {
   RadioProvider,
 } from "../treeview";
 import { commands, workspace } from "vscode";
-import { readdir, rm } from "fs/promises";
+import { readdir, rm } from "node:fs/promises";
 import type { ExtensionContext } from "vscode";
 import type { PlayTreeItemData } from "../treeview";
 import { QueueProvider } from "../treeview";
-import { open } from "fs/promises";
-import { resolve } from "path";
-import { spawn } from "child_process";
+import { open } from "node:fs/promises";
+import { resolve } from "node:path";
+import { spawn } from "node:child_process";
 
 const ipcBHandler = (data: IPCBroadcastMsg) => {
   switch (data.t) {

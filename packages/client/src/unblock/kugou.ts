@@ -1,7 +1,7 @@
 /* import type { SongDetail, SongsItem, UnlockSongItem } from "../constant";
 import axios from "axios";
-import { createHash } from "crypto";
-import { extname } from "path";
+import { createHash } from "node:crypto";
+import { extname } from "node:path";
 import filter from "./filter";
 
 interface SearchResult {

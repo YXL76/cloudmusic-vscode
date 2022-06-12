@@ -2,7 +2,7 @@ import { IPCControl } from "@cloudmusic/shared";
 import { IPCServer } from "../../server";
 import type { IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
-import type { Socket } from "net";
+import type { Socket } from "node:net";
 
 export class AccountState {
   static cookies = new Map<number, NeteaseTypings.Cookie>();

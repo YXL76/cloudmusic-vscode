@@ -1,5 +1,5 @@
 import { IPCPlayer, IPCWasm } from "@cloudmusic/shared";
-import { basename, resolve } from "path";
+import { basename, resolve } from "node:path";
 import { downloadMusic, getMusicPath, logError } from "./utils";
 import { IPCServer } from "./server";
 import { MusicCache } from "./cache";
@@ -102,6 +102,8 @@ class WasmPlayer {
 }
 
 const buildPath = resolve(
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   import.meta.url.slice(5), // "file:".length
   "..",
   "..",
@@ -147,7 +149,7 @@ export class Player {
     }
   }
 
-  static init(): void {
+  static init() {
     if (this._wasm || this._native) return;
     if (process.env["CM_WASM"] === "0") {
       // eslint-disable-next-line @typescript-eslint/no-var-requires
