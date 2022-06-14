@@ -1,5 +1,3 @@
-#![feature(bool_to_option)]
-
 pub mod media;
 pub mod player;
 
