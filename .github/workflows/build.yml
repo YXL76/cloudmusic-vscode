@@ -13,7 +13,7 @@ on:
 jobs:
   build-macos:
     name: Build for macos
-    runs-on: macos-11
+    runs-on: macos-latest
 
     steps:
       - name: Checkout
@@ -68,7 +68,7 @@ jobs:
 
   build-linux:
     name: Build for linux
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
       - name: Checkout
@@ -107,34 +107,34 @@ jobs:
           name: ${{ runner.os }}-x86_64
           path: crates/native/index.node
 
-      # - name: Build image
-      #   run: |
-      #     docker build -t cross/aarch64:v1 -f docker/Dockerfile.aarch64-unknown-linux-gnu .
-      #     docker build -t cross/armv7:v1 -f docker/Dockerfile.armv7-unknown-linux-gnueabihf .
+      - name: Build image
+        run: |
+          docker build -t cross/aarch64:v1 -f docker/Dockerfile.aarch64-unknown-linux-gnu .
+          docker build -t cross/armv7:v1 -f docker/Dockerfile.armv7-unknown-linux-gnueabihf .
 
-      # - name: Build aarch64
-      #   uses: actions-rs/cargo@v1
-      #   with:
-      #     command: build
-      #     use-cross: true
-      #     args: --release --target aarch64-unknown-linux-gnu
+      - name: Build aarch64
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          use-cross: true
+          args: --release --target aarch64-unknown-linux-gnu
 
-      # - uses: actions/upload-artifact@v3
-      #   with:
-      #     name: ${{ runner.os }}-aarch64
-      #     path: crates/native/index.node
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ runner.os }}-aarch64
+          path: crates/native/index.node
 
-      # - name: Build armv7
-      #   uses: actions-rs/cargo@v1
-      #   with:
-      #     command: build
-      #     use-cross: true
-      #     args: --release --target armv7-unknown-linux-gnueabihf
+      - name: Build armv7
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          use-cross: true
+          args: --release --target armv7-unknown-linux-gnueabihf
 
-      # - uses: actions/upload-artifact@v3
-      #   with:
-      #     name: ${{ runner.os }}-armv7
-      #     path: crates/native/index.node
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ${{ runner.os }}-armv7
+          path: crates/native/index.node
 
   build-windows:
     name: Build for windows
