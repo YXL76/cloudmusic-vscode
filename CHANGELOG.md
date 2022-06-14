@@ -6,7 +6,20 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.10.3] - 2022-06-14
+
+### Changed
+
+- Server: convert to ES Module
+
+### Fixed
+
+- API: add `X-Forwarded-For` header for foreign user
+- Native: downgrade glibc version ([#717](https://github.com/YXL76/cloudmusic-vscode/issues/717))
+
 ## [9.10.2] - 2022-06-06
+
+### Fixed
 
 - [#706](https://github.com/YXL76/cloudmusic-vscode/issues/706)
 
