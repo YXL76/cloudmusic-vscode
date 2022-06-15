@@ -200,9 +200,9 @@ jobs:
           mkdir -p build
           mkdir -p .artifact/build
           mkdir -p .artifact/media
-          # cp .artifact/Linux-armv7/index.node     .artifact/build/linux-arm.node
+          cp .artifact/Linux-armv7/index.node     .artifact/build/linux-arm.node
           cp .artifact/macOS-aarch64/index.node   .artifact/build/darwin-arm64.node
-          # cp .artifact/Linux-aarch64/index.node   .artifact/build/linux-arm64.node
+          cp .artifact/Linux-aarch64/index.node   .artifact/build/linux-arm64.node
           cp .artifact/Windows-aarch64/index.node .artifact/build/win32-arm64.node
           cp .artifact/macOS-x86_64/index.node    .artifact/build/darwin-x64.node
           cp .artifact/Linux-x86_64/index.node    .artifact/build/linux-x64.node
