@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.10.4] - 2022-06-15
+
+### Fixed
+
+- Server: Correctly decode URL string ([#721](https://github.com/YXL76/cloudmusic-vscode/issues/721))
+
 ## [9.10.3] - 2022-06-14
 
 ### Changed
