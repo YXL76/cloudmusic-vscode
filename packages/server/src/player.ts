@@ -8,6 +8,7 @@ import type { NeteaseTypings } from "api";
 import { PersonalFm } from "./state";
 import { STATE } from "./state";
 import { TMP_DIR } from "./constant";
+import { fileURLToPath } from "node:url";
 
 type NativePlayer = unknown;
 type NativeMediaSession = unknown;
@@ -104,7 +105,7 @@ class WasmPlayer {
 const buildPath = resolve(
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  import.meta.url.slice(5), // "file:".length
+  fileURLToPath(import.meta.url),
   "..",
   "..",
   "build",
