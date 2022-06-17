@@ -23,7 +23,7 @@ export type LyricSMsg =
   | { command: "lyric"; text: NeteaseTypings.LyricData["text"] }
   | { command: "index"; idx: number };
 
-export type MsicRankingCMsg =
+export type MusicRankingCMsg =
   | CSMessage<{ command: "song"; id: number }, undefined>
   | CSMessage<{ command: "album"; id: number }, undefined>
   | CSMessage<{ command: "artist"; id: number }, undefined>;
