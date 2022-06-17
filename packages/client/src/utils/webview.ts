@@ -3,7 +3,7 @@ import type {
   CommentCMsg,
   CommentCSMsg,
   LyricSMsg,
-  MsicRankingCMsg,
+  MusicRankingCMsg,
   ProviderCMsg,
 } from "@cloudmusic/shared";
 import {
@@ -311,7 +311,7 @@ export class Webview {
     );
 
     panel.webview.onDidReceiveMessage(
-      ({ msg, channel }: CSMessage | MsicRankingCMsg) => {
+      ({ msg, channel }: CSMessage | MusicRankingCMsg) => {
         if (channel) {
           void panel.webview.postMessage({ msg: record, channel });
           return;

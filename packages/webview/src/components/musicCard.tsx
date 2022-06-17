@@ -1,5 +1,5 @@
 import { FiPlayCircle } from "react-icons/fi";
-import type { MsicRankingCMsg } from "@cloudmusic/shared";
+import type { MusicRankingCMsg } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import React from "react";
 import { vscode } from "../utils";
@@ -28,7 +28,7 @@ export const MusicCard = ({
       src={al.picUrl}
       alt={al.name}
       onClick={() => {
-        const data: Omit<MsicRankingCMsg, "channel"> = {
+        const data: Omit<MusicRankingCMsg, "channel"> = {
           msg: { command: "album", id: al.id },
         };
         vscode.postMessage(data);
@@ -38,7 +38,7 @@ export const MusicCard = ({
       <div
         className="font-medium text-xl"
         onClick={() => {
-          const data: Omit<MsicRankingCMsg, "channel"> = {
+          const data: Omit<MusicRankingCMsg, "channel"> = {
             msg: { command: "song", id },
           };
           vscode.postMessage(data);
@@ -52,7 +52,7 @@ export const MusicCard = ({
             onClick={() =>
               vscode.postMessage({
                 msg: { command: "artist", id },
-              } as MsicRankingCMsg)
+              } as MusicRankingCMsg)
             }
           >
             {name}
