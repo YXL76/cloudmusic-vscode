@@ -19,8 +19,9 @@ jobs:
         with:
           path: |
             ~/.cargo/registry
-            ~/.cargo/git
-            target
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Setup nightly rust
@@ -80,9 +81,10 @@ jobs:
         id: cargo-cache
         with:
           path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            target
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Setup nightly rust
@@ -150,8 +152,9 @@ jobs:
         with:
           path: |
             ~/.cargo/registry
-            ~/.cargo/git
-            target
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Setup nightly rust
@@ -231,8 +234,9 @@ jobs:
         with:
           path: |
             ~/.cargo/registry
-            ~/.cargo/git
-            target
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Setup nightly rust
