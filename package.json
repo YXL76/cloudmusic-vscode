@@ -881,7 +881,7 @@
     "@typescript-eslint/parser": "5.27.1",
     "@yarnpkg/esbuild-plugin-pnp": "3.0.0-rc.9",
     "debug": "4.3.4",
-    "esbuild": "0.14.43",
+    "esbuild": "0.14.46",
     "esbuild-plugin-wasm": "1.0.0",
     "eslint": "8.17.0",
     "eslint-config-prettier": "8.5.0",
