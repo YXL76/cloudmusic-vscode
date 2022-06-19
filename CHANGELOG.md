@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.10.5] - 2022-06-19
+
+### Fixed
+
+- API: [Binaryify/NeteaseCloudMusicApi#1551](https://github.com/Binaryify/NeteaseCloudMusicApi/issues/1551)
+- Typo ([#724](https://github.com/YXL76/cloudmusic-vscode/pull/724) [@chen310](https://github.com/chen310))
+
 ## [9.10.4] - 2022-06-15
 
 ### Fixed
@@ -362,7 +369,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ### Fixed
 
-- Parsing lyrics in uncommon format ([#486](https://github.com/YXL76/cloudmusic-vscode/pull/486)) ([@yume-chan](https://github.com/yume-chan))
+- Parsing lyrics in uncommon format ([#486](https://github.com/YXL76/cloudmusic-vscode/pull/486) [@yume-chan](https://github.com/yume-chan))
 
 ## [8.3.8] - 2021-06-25
 
