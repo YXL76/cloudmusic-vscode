@@ -71,6 +71,7 @@ export function initPlaylist(context: ExtensionContext): void {
 
           if (!name) return;
           const res = await IPC.netease("playlistCreate", [
+            element.uid,
             name,
             pick.type === Type.public ? 0 : 10,
           ]);
@@ -160,7 +161,14 @@ export function initPlaylist(context: ExtensionContext): void {
             value: state.desc,
             prompt: i18n.sentence.hint.desc,
           });
-          if (await IPC.netease("playlistUpdate", [id, state.name, state.desc]))
+          if (
+            await IPC.netease("playlistUpdate", [
+              element.uid,
+              id,
+              state.name,
+              state.desc,
+            ])
+          )
             PlaylistProvider.refreshUser(element);
         }
       }

@@ -139,7 +139,7 @@ export async function artistSub(
   t: "sub" | "unsub"
 ): Promise<boolean> {
   return !!(await weapiRequest(`music.163.com/weapi/artist/${t}`, {
-    artistId: `${id}`,
+    artistId: id,
     artistIds: `[${id}]`,
   }));
 }

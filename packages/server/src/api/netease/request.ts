@@ -63,7 +63,7 @@ export const generateHeader = () => ({
     : {}), */
 });
 
-const spStatus = new Set([200, 800, 803]);
+const spStatus = new Set([200, 512, 800, 803]);
 
 const responseHandler = async <T>(
   url: string,
@@ -80,7 +80,7 @@ const responseHandler = async <T>(
   });
   if (!res) return;
   const status = res.body.code || res.statusCode;
-  if (!spStatus.has(status)) return;
+  if (!spStatus.has(status)) return logError(res.body);
   return res.body;
 };
 
@@ -135,7 +135,7 @@ export const qrloginRequest = async (
   });
   if (!res) return;
   const status = res.body.code || res.statusCode;
-  if (!spStatus.has(status)) return;
+  if (!spStatus.has(status)) return logError(res.body);
   if ("set-cookie" in res.headers) {
     const cookie = cookieToJson(
       res.headers["set-cookie"] as unknown as string[]
@@ -156,7 +156,7 @@ export const weapiRequest = <T = QueryInput>(
   const headers = generateHeader();
   headers["Cookie"] = jsonToCookie(cookie);
   const csrfToken = csrfTokenReg.exec(headers["Cookie"]);
-  data.csrf_token = csrfToken ? csrfToken[1] : "";
+  data.csrf_token = csrfToken?.[1] ?? "";
   return responseHandler<T>(url, headers, weapi(data));
 };
 

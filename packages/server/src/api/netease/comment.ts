@@ -34,11 +34,7 @@ export async function commentReply(
 ): Promise<boolean> {
   return !!(await weapiRequest(
     `music.163.com/weapi/resource/comments/reply`,
-    {
-      threadId: `${resourceTypeMap[type]}${id}`,
-      content,
-      commentId: `${commentId}`,
-    },
+    { threadId: `${resourceTypeMap[type]}${id}`, content, commentId },
     { ...AccountState.defaultCookie, os: "android" }
   ));
 }
@@ -81,7 +77,7 @@ export async function commentLike(
 ): Promise<boolean> {
   return !!(await weapiRequest(
     `music.163.com/weapi/v1/comment/${t}`,
-    { threadId: `${resourceTypeMap[type]}${id}`, commentId: `${commentId}` },
+    { threadId: `${resourceTypeMap[type]}${id}`, commentId },
     { ...AccountState.defaultCookie, os: "pc" }
   ));
 }

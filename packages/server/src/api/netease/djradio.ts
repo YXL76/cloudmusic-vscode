@@ -280,7 +280,7 @@ export async function djSubscriber(
     subscribers: readonly NeteaseTypings.UserDetail[];
   }>("music.163.com/weapi/djradio/subscriber", {
     time: -1,
-    id: `${limit}`,
+    id,
     limit,
     total: true,
   });

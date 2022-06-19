@@ -35,6 +35,7 @@ export async function playlistCatlist(): Promise<PlaylistCatlist> {
 }
 
 export async function playlistCreate(
+  uid: number,
   name: string,
   privacy: 0 | 10
 ): Promise<boolean> {
@@ -42,10 +43,10 @@ export async function playlistCreate(
     "music.163.com/weapi/playlist/create",
     {
       name,
-      privacy: `${privacy}`, //0 为普通歌单，10 为隐私歌单
+      privacy, //0 为普通歌单，10 为隐私歌单
       type: "NORMAL", // NORMAL|VIDEO
     },
-    { ...AccountState.defaultCookie, os: "pc" }
+    { ...AccountState.cookies.get(uid), os: "pc" }
   ));
 }
 
@@ -117,7 +118,7 @@ export async function playlistSubscribe(
 ): Promise<boolean> {
   return !!(await weapiRequest(
     `music.163.com/weapi/playlist/${t}`,
-    { id: `${id}` },
+    { id },
     AccountState.cookies.get(uid)
   ));
 }
@@ -145,14 +146,24 @@ export async function playlistTracks(
   pid: number,
   tracks: readonly number[]
 ): Promise<boolean> {
-  return !!(await weapiRequest(
+  const res = await weapiRequest<{ code: number }>(
     "music.163.com/weapi/playlist/manipulate/tracks",
-    { op, pid: `${pid}`, trackIds: JSON.stringify(tracks), imme: "true" },
-    { ...AccountState.cookies.get(uid), os: "pc" }
+    { op, pid, trackIds: JSON.stringify(tracks), imme: "true" },
+    AccountState.cookies.get(uid)
+  );
+  if (!res) return false;
+  if (res.code === 200) return true;
+  if (res.code !== 512) return false;
+
+  return !!(await weapiRequest(
+    "music.163.com/api/playlist/manipulate/tracks",
+    { op, pid, trackIds: JSON.stringify([...tracks, ...tracks]), imme: "true" },
+    AccountState.cookies.get(uid)
   ));
 }
 
 export async function playlistUpdate(
+  uid: number,
   id: number,
   name: string,
   desc: string
@@ -165,7 +176,7 @@ export async function playlistUpdate(
       // eslint-disable-next-line @typescript-eslint/naming-convention
       "/api/playlist/update/name": `{"id":${id},"name":"${name}"}`,
     },
-    { ...AccountState.defaultCookie, os: "pc" }
+    { ...AccountState.cookies.get(uid), os: "pc" }
   ));
 }
 
@@ -175,13 +186,12 @@ export async function playmodeIntelligenceList(
 ): Promise<readonly NeteaseTypings.SongsItem[]> {
   const res = await weapiRequest<{
     data: readonly { songInfo: NeteaseTypings.SongsItemSt }[];
-  }>("music.163.com/weapi/playmode/intelligence/list", {
-    songId,
-    type: "fromPlayOne",
-    playlistId,
-    startMusicId: `${songId}`,
-    count: 1,
-  });
+  }>(
+    "music.163.com/weapi/playmode/intelligence/list",
+    { songId, type: "fromPlayOne", playlistId, startMusicId: songId, count: 1 }
+    // TODO
+    // AccountState.cookies.get(uid)
+  );
   if (!res) return [];
   return res.data.map(({ songInfo }) => resolveSongItemSt(songInfo));
 }

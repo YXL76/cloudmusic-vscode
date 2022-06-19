@@ -82,7 +82,7 @@ export async function djPersonalizeRecommend(
 export async function fmTrash(songId: number): Promise<boolean> {
   return !!(await weapiRequest(
     `music.163.com/weapi/radio/trash/add?alg=RT&songId=${songId}&time=25`,
-    { songId: `${songId}` }
+    { songId }
   ));
 }
 
@@ -93,12 +93,7 @@ export async function like(
 ): Promise<boolean> {
   return !!(await weapiRequest(
     "music.163.com/weapi/radio/like",
-    {
-      alg: "itembased",
-      trackId: `${trackId}`,
-      like: like ? "true" : "false",
-      time: "3",
-    },
+    { alg: "itembased", trackId, like, time: "3" },
     { ...AccountState.cookies.get(uid), os: "pc", appver: "2.9.7" }
   ));
 }
