@@ -159,15 +159,15 @@ fn bit_transform(arr: &[isize], n: usize, l: i64) -> i64 {
     l2
 }
 
-fn des64(longs: &[i64], l: i64) -> i64 {
+fn des64(longs: &[i64; 16], l: i64) -> i64 {
     let mut p_r: [usize; 8] = [0, 0, 0, 0, 0, 0, 0, 0];
     let mut out = bit_transform(&ARRAY_IP, 64, l);
     let mut p_source = [out & 0xffffffff, (out & -4294967296) >> 32];
 
-    for i in 0..16 {
-        let r = bit_transform(&ARRAY_E, 64, p_source[1]) ^ longs[i];
-        for j in 0..8 {
-            p_r[j] = ((r >> (j * 8)) & 255) as usize;
+    for long in longs {
+        let r = bit_transform(&ARRAY_E, 64, p_source[1]) ^ long;
+        for (j, p_r) in p_r.iter_mut().enumerate() {
+            *p_r = ((r >> (j * 8)) & 255) as usize;
         }
 
         let mut s_out = 0;

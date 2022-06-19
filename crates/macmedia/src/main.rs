@@ -3,11 +3,7 @@ use {
         MediaControlEvent, MediaControls, MediaMetadata, MediaPlayback, MediaPosition,
         PlatformConfig,
     },
-    std::{
-        io::{stdin, stdout, BufRead, Write},
-        thread,
-        time::Duration,
-    },
+    std::{io::stdin, thread, time::Duration},
     winit::{
         event::Event,
         event_loop::{ControlFlow, EventLoop},
@@ -53,7 +49,7 @@ fn main() {
     let event_loop_proxy = event_loop.create_proxy();
     thread::spawn(move || loop {
         let mut buffer = String::new();
-        if stdin().lock().read_line(&mut buffer).unwrap() != 0 {
+        if stdin().read_line(&mut buffer).unwrap() != 0 {
             buffer.remove(buffer.len() - 1);
             let type_ = buffer.remove(buffer.len() - 1);
             match type_ {
@@ -85,13 +81,13 @@ fn main() {
                         MediaControlEvent::Stop => 5,
                         _ => return,
                     };
-                    stdout().write_fmt(format_args!("{type_}\n")).unwrap();
+                    println!("{type_}");
                 }
 
                 CustomEvent::Metadata(event) => {
                     let mut metadata = MediaMetadata::default();
 
-                    for string in event.split("\t") {
+                    for string in event.split('\t') {
                         let (key, value) = string.split_once(':').unwrap();
                         match key {
                             "title" => metadata.title = Some(value),

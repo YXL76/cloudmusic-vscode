@@ -19,6 +19,12 @@ pub struct Player {
     stream: Option<rodio::OutputStream>,
 }
 
+impl Default for Player {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[wasm_bindgen]
 impl Player {
     #[wasm_bindgen(constructor)]
