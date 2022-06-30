@@ -77,8 +77,13 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
           const req = IPC.requestPool.get(data.channel);
           if (!req) break;
           IPC.requestPool.delete(data.channel);
-          if ((data.msg as { err?: true })["err"] === true) req.reject();
-          else req.resolve(data.msg);
+          if (
+            typeof data.msg === "object" &&
+            data.msg !== null &&
+            "err" in data.msg
+          ) {
+            req.reject();
+          } else req.resolve(data.msg);
         }
         break;
       case IPCControl.netease:
