@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.10.6] - 2022-06-30
+
+### Fixed
+
+- IPC: message parsing
+- Tooltip: button link
+
 ## [9.10.5] - 2022-06-19
 
 ### Fixed
