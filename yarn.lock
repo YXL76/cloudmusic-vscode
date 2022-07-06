@@ -54,7 +54,7 @@ __metadata:
   dependencies:
     "@cloudmusic/shared": "workspace:*"
     "@types/api": "workspace:*"
-    "@types/react": "npm:18.0.14"
+    "@types/react": "npm:18.0.15"
     "@types/react-dom": "npm:18.0.5"
     "@types/vscode-webview": "npm:1.57.0"
     "@types/wicg-mediasession": "npm:1.1.3"
@@ -295,14 +295,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:18.0.14":
-  version: 18.0.14
-  resolution: "@types/react@npm:18.0.14"
+"@types/react@npm:*, @types/react@npm:18.0.15":
+  version: 18.0.15
+  resolution: "@types/react@npm:18.0.15"
   dependencies:
     "@types/prop-types": "npm:*"
     "@types/scheduler": "npm:*"
     csstype: "npm:^3.0.2"
-  checksum: cdd28c5c509bb4040c4a0ffc9ee9428b5ca94964172bd3f7cfe9e08ffe72179d166c4457e7afc472cfad6c8f5e17729a518cdf76cb257f1728a03be4ba8186a2
+  checksum: 4c6dd07079c8403d8733450289a1fc1b5626af058261cf0128f8b6e0e600bcdd6b789d6304703eb9c1986236bee5f917ff4ca08559b45e06376c6871b7658f30
   languageName: node
   linkType: hard
 
