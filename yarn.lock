@@ -905,7 +905,7 @@ __metadata:
     postcss: "npm:8.4.14"
     prettier: "npm:2.7.1"
     supports-color: "npm:9.2.2"
-    tailwindcss: "npm:3.1.4"
+    tailwindcss: "npm:3.1.5"
     typescript: "npm:4.7.4"
   languageName: unknown
   linkType: soft
@@ -3049,12 +3049,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-load-config@npm:^3.1.4":
-  version: 3.1.4
-  resolution: "postcss-load-config@npm:3.1.4"
+"postcss-load-config@npm:^4.0.1":
+  version: 4.0.1
+  resolution: "postcss-load-config@npm:4.0.1"
   dependencies:
     lilconfig: "npm:^2.0.5"
-    yaml: "npm:^1.10.2"
+    yaml: "npm:^2.1.1"
   peerDependencies:
     postcss: ">=8.0.9"
     ts-node: ">=9.0.0"
@@ -3063,7 +3063,7 @@ __metadata:
       optional: true
     ts-node:
       optional: true
-  checksum: a552c5f838b4f2964898674bb565b03dcb285ea17d2977c791fff9b179b7b444bc97058f83ba644080001ae29fd2d35c535e6f4becd47afe76884f4aa9eed86f
+  checksum: 140d83311c39661ec16cc106bc2c8bcc34f0e67bf4f10206d7eeb43e04b70e1edfedab23163ab6cd7fb7ef8f1001b73e5c8098fbae279bbbf27b0d95bf2d7911
   languageName: node
   linkType: hard
 
@@ -3325,7 +3325,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.1.7, resolve@npm:^1.22.0":
+"resolve@npm:^1.1.7, resolve@npm:^1.22.1":
   version: 1.22.1
   resolution: "resolve@npm:1.22.1"
   dependencies:
@@ -3351,7 +3351,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@npm%3A^1.1.7#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.0#optional!builtin<compat/resolve>":
+"resolve@patch:resolve@npm%3A^1.1.7#optional!builtin<compat/resolve>, resolve@patch:resolve@npm%3A^1.22.1#optional!builtin<compat/resolve>":
   version: 1.22.1
   resolution: "resolve@patch:resolve@npm%3A1.22.1#optional!builtin<compat/resolve>::version=1.22.1&hash=07638b"
   dependencies:
@@ -3699,9 +3699,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:3.1.4":
-  version: 3.1.4
-  resolution: "tailwindcss@npm:3.1.4"
+"tailwindcss@npm:3.1.5":
+  version: 3.1.5
+  resolution: "tailwindcss@npm:3.1.5"
   dependencies:
     arg: "npm:^5.0.2"
     chokidar: "npm:^3.5.3"
@@ -3719,18 +3719,18 @@ __metadata:
     postcss: "npm:^8.4.14"
     postcss-import: "npm:^14.1.0"
     postcss-js: "npm:^4.0.0"
-    postcss-load-config: "npm:^3.1.4"
+    postcss-load-config: "npm:^4.0.1"
     postcss-nested: "npm:5.0.6"
     postcss-selector-parser: "npm:^6.0.10"
     postcss-value-parser: "npm:^4.2.0"
     quick-lru: "npm:^5.1.1"
-    resolve: "npm:^1.22.0"
+    resolve: "npm:^1.22.1"
   peerDependencies:
     postcss: ^8.0.9
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: 930f802809a71b2a479ae039da0cce76ddc66f218694a6ca9c313b1f891d93eb00885c6e40dd7c17922a7248fad558278b1bff1feb43c5edf7cb92ab7691da6d
+  checksum: 11a8e475d096992a5a16465631d1d30e6afa205e18fea0ae815fb5f61fa8164092dc3b01560b6838905a6902c633f82ba9262db5f8182aabab952067399c6167
   languageName: node
   linkType: hard
 
@@ -3974,10 +3974,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^1.10.2":
-  version: 1.10.2
-  resolution: "yaml@npm:1.10.2"
-  checksum: d6f04384bdf1105256581aef39991f825e358f3f48f081974b0e0f39ff5240c60ccafb5842cb79d1287517efa2b9ee172c702f2e4855ba6cc46948b40a43aa6e
+"yaml@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "yaml@npm:2.1.1"
+  checksum: 550ea265eeb88a057f230337f88ce1459563ce749ff574c282a9ca98178394be1d6f47b6edb721523512d8c45e3cd004ff9ea93a1ddeb20c7c658a63ee4ca9b5
   languageName: node
   linkType: hard
 
