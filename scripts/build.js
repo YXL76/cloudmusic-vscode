@@ -42,7 +42,7 @@ const globalSharedConfig = {
   sourcemap: false,
   legalComments: "none",
   // sourceRoot: rootPath,
-  format: "cjs",
+  format: "esm",
   target: nodeTarget,
   minify: prod,
   color: true,
@@ -52,7 +52,6 @@ const globalSharedConfig = {
   platform: "node",
   loader: { ".ts": "ts", ".js": "js", ".tsx": "tsx", ".jsx": "jsx" },
   resolveExtensions: [".ts", ".js", ".tsx", ".jsx"],
-  banner: { js: "'use strict';" },
   // incremental: true,
   plugins: [wasmLoader({ mode: "embedded" }), pnpPlugin({ onResolve })],
 };
@@ -76,9 +75,11 @@ const globalSharedConfig = {
     .then(() =>
       build({
         ...globalSharedConfig,
+        format: "cjs",
         target: browserTarget,
 
         outfile,
+        banner: { js: "'use strict';" },
         platform: "browser",
         allowOverwrite: true,
         loader: { ".css": "css" },
@@ -95,9 +96,11 @@ const globalSharedConfig = {
 
   build({
     ...globalSharedConfig,
+    format: "cjs",
     sourcemap: !prod,
 
     outfile: resolve(distPath, "extension.js"),
+    banner: { js: "'use strict';" },
     external: ["vscode"],
     tsconfig,
     entryPoints: [resolve(srcPath, "extension.ts")],
@@ -112,7 +115,6 @@ const globalSharedConfig = {
   build({
     ...globalSharedConfig,
 
-    format: "esm",
     outfile: resolve(distPath, "server.mjs"),
     banner: {
       js: `import{createRequire}from"module";const require=createRequire(import.meta.url);`,
@@ -133,7 +135,6 @@ const globalSharedConfig = {
       ...globalSharedConfig,
 
       splitting: true,
-      format: "esm",
       target: browserTarget,
       platform: "browser",
       tsconfig,
