@@ -907,7 +907,7 @@ __metadata:
     postcss: "npm:8.4.14"
     prettier: "npm:2.7.1"
     supports-color: "npm:9.2.2"
-    tailwindcss: "npm:3.1.5"
+    tailwindcss: "npm:3.1.6"
     typescript: "npm:4.7.4"
   languageName: unknown
   linkType: soft
@@ -3051,12 +3051,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss-load-config@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "postcss-load-config@npm:4.0.1"
+"postcss-load-config@npm:^3.1.4":
+  version: 3.1.4
+  resolution: "postcss-load-config@npm:3.1.4"
   dependencies:
     lilconfig: "npm:^2.0.5"
-    yaml: "npm:^2.1.1"
+    yaml: "npm:^1.10.2"
   peerDependencies:
     postcss: ">=8.0.9"
     ts-node: ">=9.0.0"
@@ -3065,7 +3065,7 @@ __metadata:
       optional: true
     ts-node:
       optional: true
-  checksum: 140d83311c39661ec16cc106bc2c8bcc34f0e67bf4f10206d7eeb43e04b70e1edfedab23163ab6cd7fb7ef8f1001b73e5c8098fbae279bbbf27b0d95bf2d7911
+  checksum: a552c5f838b4f2964898674bb565b03dcb285ea17d2977c791fff9b179b7b444bc97058f83ba644080001ae29fd2d35c535e6f4becd47afe76884f4aa9eed86f
   languageName: node
   linkType: hard
 
@@ -3701,9 +3701,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:*, tailwindcss@npm:3.1.5":
-  version: 3.1.5
-  resolution: "tailwindcss@npm:3.1.5"
+"tailwindcss@npm:*, tailwindcss@npm:3.1.6":
+  version: 3.1.6
+  resolution: "tailwindcss@npm:3.1.6"
   dependencies:
     arg: "npm:^5.0.2"
     chokidar: "npm:^3.5.3"
@@ -3721,7 +3721,7 @@ __metadata:
     postcss: "npm:^8.4.14"
     postcss-import: "npm:^14.1.0"
     postcss-js: "npm:^4.0.0"
-    postcss-load-config: "npm:^4.0.1"
+    postcss-load-config: "npm:^3.1.4"
     postcss-nested: "npm:5.0.6"
     postcss-selector-parser: "npm:^6.0.10"
     postcss-value-parser: "npm:^4.2.0"
@@ -3732,7 +3732,7 @@ __metadata:
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: 11a8e475d096992a5a16465631d1d30e6afa205e18fea0ae815fb5f61fa8164092dc3b01560b6838905a6902c633f82ba9262db5f8182aabab952067399c6167
+  checksum: b4b0c439d5c3d2040187684fe23c5f746405ac941763f3efe85d8dc573518859cd2f4578c07f99666269c5c4268042cd8a32a46bf06548a7faaed6578549506e
   languageName: node
   linkType: hard
 
@@ -3976,10 +3976,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:^2.1.1":
-  version: 2.1.1
-  resolution: "yaml@npm:2.1.1"
-  checksum: 550ea265eeb88a057f230337f88ce1459563ce749ff574c282a9ca98178394be1d6f47b6edb721523512d8c45e3cd004ff9ea93a1ddeb20c7c658a63ee4ca9b5
+"yaml@npm:^1.10.2":
+  version: 1.10.2
+  resolution: "yaml@npm:1.10.2"
+  checksum: d6f04384bdf1105256581aef39991f825e358f3f48f081974b0e0f39ff5240c60ccafb5842cb79d1287517efa2b9ee172c702f2e4855ba6cc46948b40a43aa6e
   languageName: node
   linkType: hard
 
