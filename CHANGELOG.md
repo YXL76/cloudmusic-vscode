@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.11.0] - 2022-07-12
+
+### Added
+
+- Configuration: add `cloudmusic.network.proxy` ([#747](https://github.com/YXL76/cloudmusic-vscode/issues/747))
+
 ## [9.10.6] - 2022-06-30
 
 ### Fixed
