@@ -387,9 +387,9 @@ dependencies = [
 
 [[package]]
 name = "dbus"
-version = "0.9.5"
+version = "0.9.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "de0a745c25b32caa56b82a3950f5fec7893a960f4c10ca3b02060b0c38d8c2ce"
+checksum = "6f8bcdd56d2e5c4ed26a529c5a9029f5db8290d433497506f958eae3be148eb6"
 dependencies = [
  "libc",
  "libdbus-sys",
@@ -398,9 +398,9 @@ dependencies = [
 
 [[package]]
 name = "dbus-crossroads"
-version = "0.5.0"
+version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a5d83c4b78f7c7d0dec4859d286665a06858a607ba406c91a36316ff36918141"
+checksum = "554114296d012b33fdaf362a733db6dc5f73c4c9348b8b620ddd42e61b406e30"
 dependencies = [
  "dbus",
 ]
@@ -711,8 +711,8 @@ dependencies = [
 
 [[package]]
 name = "neon"
-version = "0.10.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#f21146d99d00f187c9d2bb86360a26c1de68dce4"
+version = "1.0.0-alpha.1"
+source = "git+https://github.com/neon-bindings/neon?branch=main#ee475a3eedeb0b65ebc1aa02e174cf38a8c26503"
 dependencies = [
  "libloading",
  "neon-macros",
@@ -723,8 +723,8 @@ dependencies = [
 
 [[package]]
 name = "neon-macros"
-version = "0.10.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#f21146d99d00f187c9d2bb86360a26c1de68dce4"
+version = "1.0.0-alpha.1"
+source = "git+https://github.com/neon-bindings/neon?branch=main#ee475a3eedeb0b65ebc1aa02e174cf38a8c26503"
 dependencies = [
  "quote",
  "syn",
@@ -1027,9 +1027,9 @@ checksum = "a2333e6df6d6598f2b1974829f853c2b4c5f4a6e503c10af918081aa6f8564e1"
 
 [[package]]
 name = "serde"
-version = "1.0.138"
+version = "1.0.139"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1578c6245786b9d168c5447eeacfb96856573ca56c9d68fdcf394be134882a47"
+checksum = "0171ebb889e45aa68b44aee0859b3eede84c6f5f5c228e6f140c0b2a0a46cad6"
 
 [[package]]
 name = "shlex"
