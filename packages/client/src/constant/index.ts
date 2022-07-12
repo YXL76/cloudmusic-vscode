@@ -20,6 +20,7 @@ export const MUSIC_QUALITY = (conf: WorkspaceConfiguration): number =>
   conf.get<128000 | 192000 | 320000 | 999000>("music.quality", 192000);
 export const MUSIC_CACHE_SIZE = (conf: WorkspaceConfiguration): number =>
   conf.get("cache.size", 4096) * 1024 * 1024;
+export const PROXY = kConf.get("network.proxy", "");
 export const STRICT_SSL = kConf.get("network.strictSSL", true);
 export const HTTPS_API = (conf: WorkspaceConfiguration): boolean =>
   conf.get("network.httpsAPI", true);

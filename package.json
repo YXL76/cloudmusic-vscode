@@ -375,6 +375,15 @@
             "scope": "window",
             "type": "boolean"
           },
+          "cloudmusic.network.proxy": {
+            "default": null,
+            "format": "uri",
+            "scope": "window",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
           "cloudmusic.network.strictSSL": {
             "default": true,
             "markdownDescription": "%configuration.network.strictSSL.markdownDescription%",

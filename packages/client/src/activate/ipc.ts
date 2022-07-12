@@ -8,6 +8,7 @@ import {
   MUSIC_CACHE_SIZE,
   MUSIC_QUALITY,
   NATIVE_MODULE,
+  PROXY,
   SETTING_DIR,
   SPEED_KEY,
   STRICT_SSL,
@@ -195,6 +196,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
     const log = `err-${version}.log`;
     const logPath = resolve(SETTING_DIR, log);
     const httpProxy =
+      PROXY ||
       workspace.getConfiguration("http").get<string>("proxy") ||
       process.env.HTTPS_PROXY ||
       process.env.HTTP_PROXY;
