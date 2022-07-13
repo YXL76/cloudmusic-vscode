@@ -888,7 +888,7 @@
     "@types/tailwindcss": "3.1.0",
     "@typescript-eslint/eslint-plugin": "5.30.6",
     "@typescript-eslint/parser": "5.30.6",
-    "@yarnpkg/esbuild-plugin-pnp": "3.0.0-rc.11",
+    "@yarnpkg/esbuild-plugin-pnp": "3.0.0-rc.12",
     "debug": "4.3.4",
     "esbuild": "0.14.49",
     "esbuild-plugin-wasm": "1.0.0",
