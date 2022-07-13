@@ -19,7 +19,7 @@ __metadata:
     array-unsort: "npm:1.1.6"
     file-type: "npm:17.1.2"
     lodash: "npm:4.17.21"
-    qrcode: "npm:1.5.0"
+    qrcode: "npm:1.5.1"
   languageName: unknown
   linkType: soft
 
@@ -3178,9 +3178,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qrcode@npm:1.5.0":
-  version: 1.5.0
-  resolution: "qrcode@npm:1.5.0"
+"qrcode@npm:1.5.1":
+  version: 1.5.1
+  resolution: "qrcode@npm:1.5.1"
   dependencies:
     dijkstrajs: "npm:^1.0.1"
     encode-utf8: "npm:^1.0.3"
@@ -3188,7 +3188,7 @@ __metadata:
     yargs: "npm:^15.3.1"
   bin:
     qrcode: bin/qrcode
-  checksum: 58135e5fa143d616e659a799c331bf25fce263a70aee85805a34084ee108ac730b2d32a8a9494106e1796e5c645d89dd115539b7bad21966943a07344585dd27
+  checksum: 953ace790416b91fe2e9a5a74b5d65f26ed231d2b5d96bbd4e1b7b20cb97fd52cc5377b4f3eb39cdc75d80119d174d723365fd37249f767f4f87798cc4ad59e8
   languageName: node
   linkType: hard
 
