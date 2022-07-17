@@ -155,7 +155,7 @@ name = "cloudmusic-native"
 version = "0.1.0"
 dependencies = [
  "neon",
- "raw-window-handle 0.5.0",
+ "raw-window-handle 0.4.3",
  "rodio",
  "souvlaki 0.5.1 (git+https://github.com/YXL76/souvlaki?branch=deps)",
  "winapi",
@@ -960,15 +960,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "raw-window-handle"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ed7e3d950b66e19e0c372f3fa3fbbcf85b1746b571f74e0c2af6042a5c93420a"
-dependencies = [
- "cty",
-]
-
-[[package]]
 name = "redox_syscall"
 version = "0.2.13"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1091,7 +1082,7 @@ dependencies = [
 [[package]]
 name = "souvlaki"
 version = "0.5.1"
-source = "git+https://github.com/YXL76/souvlaki?branch=deps#1f45f5be4eb630b5fa39144245e16db221773e54"
+source = "git+https://github.com/YXL76/souvlaki?branch=deps#3420c48c097f813797d7fb3a9d527c2bd443b7b2"
 dependencies = [
  "block",
  "cocoa",
@@ -1118,7 +1109,7 @@ checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
 [[package]]
 name = "symphonia"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#0e1bd4ac020b875b0077b9a8e50de2ac5e7536b5"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
 dependencies = [
  "lazy_static",
  "symphonia-bundle-flac",
@@ -1135,7 +1126,7 @@ dependencies = [
 [[package]]
 name = "symphonia-bundle-flac"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#0e1bd4ac020b875b0077b9a8e50de2ac5e7536b5"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
 dependencies = [
  "log",
  "symphonia-core",
@@ -1146,7 +1137,7 @@ dependencies = [
 [[package]]
 name = "symphonia-bundle-mp3"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#0e1bd4ac020b875b0077b9a8e50de2ac5e7536b5"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
 dependencies = [
  "bitflags",
  "lazy_static",
@@ -1158,7 +1149,7 @@ dependencies = [
 [[package]]
 name = "symphonia-codec-pcm"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#0e1bd4ac020b875b0077b9a8e50de2ac5e7536b5"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
 dependencies = [
  "log",
  "symphonia-core",
@@ -1167,7 +1158,7 @@ dependencies = [
 [[package]]
 name = "symphonia-codec-vorbis"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#0e1bd4ac020b875b0077b9a8e50de2ac5e7536b5"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
 dependencies = [
  "log",
  "symphonia-core",
@@ -1177,7 +1168,7 @@ dependencies = [
 [[package]]
 name = "symphonia-core"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#0e1bd4ac020b875b0077b9a8e50de2ac5e7536b5"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
 dependencies = [
  "arrayvec",
  "bitflags",
@@ -1189,7 +1180,7 @@ dependencies = [
 [[package]]
 name = "symphonia-format-mkv"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#0e1bd4ac020b875b0077b9a8e50de2ac5e7536b5"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
 dependencies = [
  "lazy_static",
  "log",
@@ -1201,7 +1192,7 @@ dependencies = [
 [[package]]
 name = "symphonia-format-ogg"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#0e1bd4ac020b875b0077b9a8e50de2ac5e7536b5"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
 dependencies = [
  "log",
  "symphonia-core",
@@ -1212,7 +1203,7 @@ dependencies = [
 [[package]]
 name = "symphonia-format-wav"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#0e1bd4ac020b875b0077b9a8e50de2ac5e7536b5"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
 dependencies = [
  "log",
  "symphonia-core",
@@ -1222,7 +1213,7 @@ dependencies = [
 [[package]]
 name = "symphonia-metadata"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#0e1bd4ac020b875b0077b9a8e50de2ac5e7536b5"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
 dependencies = [
  "encoding_rs",
  "lazy_static",
@@ -1233,7 +1224,7 @@ dependencies = [
 [[package]]
 name = "symphonia-utils-xiph"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#0e1bd4ac020b875b0077b9a8e50de2ac5e7536b5"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
 dependencies = [
  "symphonia-core",
  "symphonia-metadata",
