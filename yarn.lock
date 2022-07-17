@@ -19,7 +19,7 @@ __metadata:
     array-unsort: "npm:1.1.6"
     file-type: "npm:17.1.2"
     lodash: "npm:4.17.21"
-    qrcode: "npm:1.5.0"
+    qrcode: "npm:1.5.1"
   languageName: unknown
   linkType: soft
 
@@ -214,9 +214,9 @@ __metadata:
   linkType: hard
 
 "@types/estree@npm:*":
-  version: 0.0.52
-  resolution: "@types/estree@npm:0.0.52"
-  checksum: 762597abb866073f82468eda8e6eedb3a30d914499e404a048254cda69968aebb2eaa414b0402b9c5d2a49e4b48dfdc3e34eb7da83d1fab77921465964059854
+  version: 1.0.0
+  resolution: "@types/estree@npm:1.0.0"
+  checksum: 474df434e3a469cb7a68d44c8b7ac3a21bca344fa3b49651c3451d0f3662ff0c3b2ba52149cbc5b9c9a9f3f1ac37958c163ef29b65a8b36fccb5ccb2acfc9b08
   languageName: node
   linkType: hard
 
@@ -476,14 +476,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@yarnpkg/esbuild-plugin-pnp@npm:3.0.0-rc.11":
-  version: 3.0.0-rc.11
-  resolution: "@yarnpkg/esbuild-plugin-pnp@npm:3.0.0-rc.11"
+"@yarnpkg/esbuild-plugin-pnp@npm:3.0.0-rc.12":
+  version: 3.0.0-rc.12
+  resolution: "@yarnpkg/esbuild-plugin-pnp@npm:3.0.0-rc.12"
   dependencies:
     tslib: "npm:^1.13.0"
   peerDependencies:
     esbuild: ">=0.10.0"
-  checksum: 62101670601897ed910cf4cd8b1ce9e729de8b23ae53d74166194c2d42067fc59661b38ce5a9ef69db782eb1a23af47a104f9fc106d093c892d038b4764bbcd2
+  checksum: ce1465c27a99ed64ad5afd354e33aefe5e48b6bb5cea80e7567110ab1a9a3dbb7de6cdca49e09cf28f6a6bcbaa84db63caafabe2d1084494e6565a8a6e1b5de3
   languageName: node
   linkType: hard
 
@@ -895,11 +895,11 @@ __metadata:
     "@types/tailwindcss": "npm:3.1.0"
     "@typescript-eslint/eslint-plugin": "npm:5.30.6"
     "@typescript-eslint/parser": "npm:5.30.6"
-    "@yarnpkg/esbuild-plugin-pnp": "npm:3.0.0-rc.11"
+    "@yarnpkg/esbuild-plugin-pnp": "npm:3.0.0-rc.12"
     debug: "npm:4.3.4"
     esbuild: "npm:0.14.49"
     esbuild-plugin-wasm: "npm:1.0.0"
-    eslint: "npm:8.19.0"
+    eslint: "npm:8.20.0"
     eslint-config-prettier: "npm:8.5.0"
     eslint-plugin-prettier: "npm:4.2.1"
     eslint-plugin-react: "npm:7.30.1"
@@ -1569,9 +1569,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:8.19.0":
-  version: 8.19.0
-  resolution: "eslint@npm:8.19.0"
+"eslint@npm:8.20.0":
+  version: 8.20.0
+  resolution: "eslint@npm:8.20.0"
   dependencies:
     "@eslint/eslintrc": "npm:^1.3.0"
     "@humanwhocodes/config-array": "npm:^0.9.2"
@@ -1610,7 +1610,7 @@ __metadata:
     v8-compile-cache: "npm:^2.0.3"
   bin:
     eslint: bin/eslint.js
-  checksum: f36c4c80a3b175b71c6dcc229a4d50085ecc4820ac832d503a0ce766eb950352ddc94385cab17cd411e21006512fe8a702f9852e0dc8c37d5a1fea7896a47918
+  checksum: 121dcf9388711bcdaf355f0ff12daab5afda28fdb3e99719896547836393a580118fcba9012e0b38bcc5d9c33f2a8fc57213ef5291140a7d66363f4a671f4c86
   languageName: node
   linkType: hard
 
@@ -2515,9 +2515,9 @@ __metadata:
   linkType: hard
 
 "lru-cache@npm:^7.7.1":
-  version: 7.12.0
-  resolution: "lru-cache@npm:7.12.0"
-  checksum: 041b5c3e57fced18b4a947d9aae461fc54c08819bbdcf551db15b9648d5ab2588a6193c1c0daf0dbe3e1156e34cc39c6e4067faf5322633105fa9ee417870f20
+  version: 7.13.1
+  resolution: "lru-cache@npm:7.13.1"
+  checksum: 2cb6ad6132244c53cee021e9957c362bce4e805102c3388f9689a47117bf0d4213b39ff80403e1d8546654dad6ed4053cba5888d73876813638986829d5a1a2e
   languageName: node
   linkType: hard
 
@@ -2745,8 +2745,8 @@ __metadata:
   linkType: hard
 
 "node-gyp@npm:latest":
-  version: 9.0.0
-  resolution: "node-gyp@npm:9.0.0"
+  version: 9.1.0
+  resolution: "node-gyp@npm:9.1.0"
   dependencies:
     env-paths: "npm:^2.2.0"
     glob: "npm:^7.1.4"
@@ -2760,7 +2760,7 @@ __metadata:
     which: "npm:^2.0.2"
   bin:
     node-gyp: bin/node-gyp.js
-  checksum: 74e3ae5ca2d1e5db13239ba9f364ba75ae22a25aaf8fc798adb5121a60773f10ad877663b676ce35016728b016cd9010506279883bac143e1519996e5fd6c38b
+  checksum: 7cfa4c7843c37a68ab2123ffbab5f269cc2d36e697c37154566b701b1fe3bfd861260e0e00530a720ae1a2a92589fa19b85565e36bdcb8a4683a4a4e207338b6
   languageName: node
   linkType: hard
 
@@ -3178,9 +3178,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qrcode@npm:1.5.0":
-  version: 1.5.0
-  resolution: "qrcode@npm:1.5.0"
+"qrcode@npm:1.5.1":
+  version: 1.5.1
+  resolution: "qrcode@npm:1.5.1"
   dependencies:
     dijkstrajs: "npm:^1.0.1"
     encode-utf8: "npm:^1.0.3"
@@ -3188,7 +3188,7 @@ __metadata:
     yargs: "npm:^15.3.1"
   bin:
     qrcode: bin/qrcode
-  checksum: 58135e5fa143d616e659a799c331bf25fce263a70aee85805a34084ee108ac730b2d32a8a9494106e1796e5c645d89dd115539b7bad21966943a07344585dd27
+  checksum: 953ace790416b91fe2e9a5a74b5d65f26ed231d2b5d96bbd4e1b7b20cb97fd52cc5377b4f3eb39cdc75d80119d174d723365fd37249f767f4f87798cc4ad59e8
   languageName: node
   linkType: hard
 
