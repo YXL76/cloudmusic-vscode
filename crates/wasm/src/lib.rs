@@ -1,4 +1,8 @@
-use {std::io::Cursor, wasm_bindgen::prelude::*};
+use {
+    rodio::{Decoder, OutputStream, OutputStreamHandle, Sink},
+    std::io::Cursor,
+    wasm_bindgen::prelude::*,
+};
 
 #[wasm_bindgen(start)]
 pub fn main_js() -> Result<(), JsValue> {
@@ -14,9 +18,10 @@ pub fn main_js() -> Result<(), JsValue> {
 pub struct Player {
     speed: f32,
     volume: f32,
-    sink: Option<rodio::Sink>,
+    sink: Option<Sink>,
     #[allow(dead_code)]
-    stream: Option<rodio::OutputStream>,
+    stream: OutputStream,
+    handle: OutputStreamHandle,
 }
 
 impl Default for Player {
@@ -29,30 +34,30 @@ impl Default for Player {
 impl Player {
     #[wasm_bindgen(constructor)]
     pub fn new() -> Self {
+        let (stream, handle) = OutputStream::try_default().unwrap();
         Self {
             speed: 1.,
             volume: 0.,
             sink: None,
-            stream: None,
+            stream,
+            handle,
         }
     }
 
     #[wasm_bindgen]
     pub fn load(&mut self, data: &[u8]) -> bool {
         self.sink = None;
-        self.stream = None;
-        if let Ok((stream, handle)) = rodio::OutputStream::try_default() {
-            if let Ok(sink) = rodio::Sink::try_new(&handle) {
-                sink.set_speed(self.speed);
-                sink.set_volume(self.volume);
-                let cur = Cursor::new(data.to_owned());
-                let decoder = rodio::Decoder::new(cur).unwrap();
-                sink.append(decoder);
-                self.sink = Some(sink);
-                self.stream = Some(stream);
-                return true;
-            }
+
+        if let Ok(sink) = Sink::try_new(&self.handle) {
+            sink.set_speed(self.speed);
+            sink.set_volume(self.volume);
+            let cur = Cursor::new(data.to_owned());
+            let decoder = Decoder::new(cur).unwrap();
+            sink.append(decoder);
+            self.sink = Some(sink);
+            return true;
         }
+
         false
     }
 
@@ -77,11 +82,7 @@ impl Player {
 
     #[wasm_bindgen]
     pub fn stop(&mut self) {
-        if let Some(ref sink) = self.sink {
-            sink.stop();
-            self.sink = None;
-            self.stream = None;
-        }
+        self.sink = None;
     }
 
     #[wasm_bindgen]

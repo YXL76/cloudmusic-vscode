@@ -1,12 +1,10 @@
 use {
     neon::prelude::*,
-    rodio::Source,
+    rodio::{Decoder, OutputStream, OutputStreamHandle, Sink, Source},
     std::{
         cell::RefCell,
         fs::File,
         io::BufReader,
-        sync::mpsc,
-        thread,
         time::{Duration, Instant},
     },
 };
@@ -59,37 +57,33 @@ impl Status {
     }
 }
 
-#[derive(Clone)]
-enum ControlEvent {
-    Play,
-    Pause,
-    Stop,
-    Speed(f32),
-    Volume(f32),
-    Empty,
-}
-
 pub struct Player {
     speed: f64,
     volume: f32,
     status: Status,
-    control_tx: mpsc::Sender<ControlEvent>,
-    info_rx: mpsc::Receiver<bool>,
+    sink: Option<Sink>,
+    #[allow(dead_code)]
+    stream: OutputStream,
+    handle: OutputStreamHandle,
 }
+
+// We can ensure the stream is `Sned`.
+// https://github.com/RustAudio/cpal/commit/33ddf749548d87bf54ce18eb342f954cec1465b2
+unsafe impl Send for Player {}
 
 impl Finalize for Player {}
 
 impl Player {
     #[inline]
     fn new() -> Self {
-        let (control_tx, _) = mpsc::channel();
-        let (_, info_rx) = mpsc::channel();
+        let (stream, handle) = OutputStream::try_default().unwrap();
         Self {
             speed: 1.,
             volume: 0.,
             status: Status::new(),
-            control_tx,
-            info_rx,
+            sink: None,
+            stream,
+            handle,
         }
     }
 
@@ -100,87 +94,67 @@ impl Player {
             _ => return false,
         };
 
-        let source = match rodio::Decoder::new(BufReader::new(file)) {
+        let source = match Decoder::new(BufReader::new(file)) {
             Ok(s) => s.fade_in(Duration::from_secs(2)),
             _ => return false,
         };
 
         self.stop();
-        let speed = self.speed as f32;
-        let volume = self.volume;
 
-        let (control_tx, control_rx) = mpsc::channel();
-        let (info_tx, info_rx) = mpsc::channel();
+        let sink = Sink::try_new(&self.handle).unwrap();
+        sink.set_speed(self.speed as f32);
+        sink.set_volume(self.volume);
+        sink.append(source);
 
-        thread::spawn(move || {
-            if let Ok((_stream, handle)) = rodio::OutputStream::try_default() {
-                let sink = rodio::Sink::try_new(&handle).unwrap();
-                sink.set_speed(speed);
-                sink.set_volume(volume);
-                sink.append(source);
-
-                let _ = info_tx.send(true);
-
-                while let Ok(ce) = control_rx.recv() {
-                    match ce {
-                        ControlEvent::Play => sink.play(),
-                        ControlEvent::Pause => sink.pause(),
-                        ControlEvent::Speed(speed) => sink.set_speed(speed),
-                        ControlEvent::Volume(level) => sink.set_volume(level),
-                        ControlEvent::Empty => info_tx.send(sink.empty()).unwrap_or(()),
-                        _ => break,
-                    }
-                }
-
-                drop(sink);
-            }
-        });
-
-        self.control_tx = control_tx;
-        self.info_rx = info_rx;
-        let _ = self.info_rx.recv();
         self.status.play();
+        self.sink = Some(sink);
 
         true
     }
 
     #[inline]
     fn play(&mut self) {
-        let _ = self.control_tx.send(ControlEvent::Play);
-        self.status.play()
+        if let Some(ref sink) = self.sink {
+            sink.play();
+            self.status.play()
+        }
     }
 
     #[inline]
     fn pause(&mut self) {
-        let _ = self.control_tx.send(ControlEvent::Pause);
-        self.status.stop(self.speed)
+        if let Some(ref sink) = self.sink {
+            sink.pause();
+            self.status.stop(self.speed);
+        }
     }
 
     #[inline]
     fn stop(&mut self) {
-        let _ = self.control_tx.send(ControlEvent::Stop);
+        self.sink = None;
         self.status.reset()
     }
 
     #[inline]
     fn set_speed(&mut self, speed: f64) {
-        let _ = self.control_tx.send(ControlEvent::Speed(speed as f32));
-        self.status.store(self.speed);
+        if let Some(ref sink) = self.sink {
+            sink.set_speed(speed as f32);
+            self.status.store(self.speed);
+        }
         self.speed = speed;
     }
 
     #[inline]
     fn set_volume(&mut self, level: f32) {
-        let _ = self.control_tx.send(ControlEvent::Volume(level));
+        if let Some(ref sink) = self.sink {
+            sink.set_volume(level);
+        }
         self.volume = level;
     }
 
     #[inline]
     fn empty(&self) -> bool {
-        if self.control_tx.send(ControlEvent::Empty).is_ok() {
-            if let Ok(res) = self.info_rx.recv_timeout(Duration::from_millis(128)) {
-                return res;
-            }
+        if let Some(ref sink) = self.sink {
+            return sink.empty();
         }
         true
     }

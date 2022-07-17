@@ -11,7 +11,7 @@
     {
       "type": "shell",
       "label": "cargo: build macmedia",
-      "command": "yarn set version canary",
+      "command": "cargo build --release --package cloudmusic-macmedia",
     },
     {
       "type": "shell",
