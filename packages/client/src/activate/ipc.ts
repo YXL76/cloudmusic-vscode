@@ -28,7 +28,7 @@ import {
   QueueItemTreeItem,
   RadioProvider,
 } from "../treeview";
-import { commands, workspace } from "vscode";
+import { Uri, commands, window, workspace } from "vscode";
 import { readdir, rm } from "node:fs/promises";
 import type { ExtensionContext } from "vscode";
 import type { PlayTreeItemData } from "../treeview";
@@ -195,6 +195,12 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       .version;
     const log = `err-${version}.log`;
     const logPath = resolve(SETTING_DIR, log);
+
+    commands.registerCommand(
+      "cloudmusic.openLogFile",
+      () => void window.showTextDocument(Uri.file(logPath))
+    );
+
     const httpProxy =
       PROXY ||
       workspace.getConfiguration("http").get<string>("proxy") ||

@@ -95,6 +95,11 @@
         "title": "%commands.toggleButton.title%"
       },
       {
+        "category": "Cloudmusic",
+        "command": "cloudmusic.openLogFile",
+        "title": "%commands.openLogFile.title%"
+      },
+      {
         "command": "cloudmusic.addAccount",
         "icon": "$(sign-in)",
         "title": "%commands.addAccount.title%"

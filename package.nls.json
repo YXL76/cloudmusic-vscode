@@ -27,6 +27,7 @@
   "commands.newLocalLibrary.title": "Add",
   "commands.next.title": "Next",
   "commands.openLocalLibrary.title": "Open",
+  "commands.openLogFile.title": "Open log File",
   "commands.playlistComment.title": "Comment",
   "commands.playlistDetail.title": "Detail",
   "commands.playLocalFile.title": "Play",
