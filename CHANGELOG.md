@@ -6,6 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.12.0] - 2022-07-17
+
+### Added
+
+- Commands: `cloudmusic.openLogFile`
+
+### Changed
+
+- Player: better performance
+
 ## [9.11.0] - 2022-07-12
 
 ### Added
