@@ -17,7 +17,7 @@ __metadata:
     "@types/qrcode": "workspace:*"
     "@types/vscode": "npm:1.66.0"
     array-unsort: "npm:1.1.6"
-    file-type: "npm:17.1.3"
+    file-type: "npm:17.1.4"
     lodash: "npm:4.17.21"
     qrcode: "npm:1.5.1"
   languageName: unknown
@@ -1723,14 +1723,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-type@npm:17.1.3":
-  version: 17.1.3
-  resolution: "file-type@npm:17.1.3"
+"file-type@npm:17.1.4":
+  version: 17.1.4
+  resolution: "file-type@npm:17.1.4"
   dependencies:
     readable-web-to-node-stream: "npm:^3.0.2"
-    strtok3: "npm:^7.0.0-alpha.7"
+    strtok3: "npm:^7.0.0-alpha.9"
     token-types: "npm:^5.0.0-alpha.2"
-  checksum: e3142cd96b1279a29b6663117e204de35958b3453006e12fb818dfdf9cc2645a92c560cc6562772c5deece4734d3614a8a7d6fee6a6618f3ee7c9576bcd7463e
+  checksum: f9935fda11a152459eec91a8258b34ac8ecf5a1036408655b4e6d29c19b0c89a48b1e5705218aafef075fa2d7208846385379a9107920619713239bc0e953003
   languageName: node
   linkType: hard
 
@@ -3668,13 +3668,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strtok3@npm:^7.0.0-alpha.7":
-  version: 7.0.0-alpha.8
-  resolution: "strtok3@npm:7.0.0-alpha.8"
+"strtok3@npm:^7.0.0-alpha.9":
+  version: 7.0.0-alpha.9
+  resolution: "strtok3@npm:7.0.0-alpha.9"
   dependencies:
     "@tokenizer/token": "npm:^0.3.0"
     peek-readable: "npm:^5.0.0-alpha.5"
-  checksum: a369bc0f06265fc038693b866d1df79bf90b4cac83592315e9b5935d3d14a66f38873e2f21c5697d554c285b3f694518640085808b31522318d602fb2283bae0
+  checksum: e3bcb82e2303ab778786c9409a5cc83a759d11170d68768eacf390c9869f711ed6c622f17a7b664a42a3325d3e286b9e0628e454d7afedd6c73cd009b67af08a
   languageName: node
   linkType: hard
 
