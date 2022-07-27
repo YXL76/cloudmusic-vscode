@@ -6,7 +6,7 @@ use {
     std::{io::stdin, thread, time::Duration},
     winit::{
         event::Event,
-        event_loop::{ControlFlow, EventLoop},
+        event_loop::{ControlFlow, EventLoopBuilder},
     },
 };
 
@@ -17,20 +17,23 @@ enum CustomEvent {
     Playing(String),
 }
 
+const TITLE: &str = "Cloudmusic VSCode";
+
 fn main() {
     #[cfg(not(target_os = "macos"))]
-    let event_loop = EventLoop::<CustomEvent>::with_user_event();
+    let mut event_loop = EventLoopBuilder::<CustomEvent>::with_user_event();
 
     #[cfg(target_os = "macos")]
-    let mut event_loop = EventLoop::<CustomEvent>::with_user_event();
+    let mut event_loop = EventLoopBuilder::<CustomEvent>::with_user_event();
     #[cfg(target_os = "macos")]
-    use winit::platform::macos::{ActivationPolicy, EventLoopExtMacOS};
+    use winit::platform::macos::{ActivationPolicy, EventLoopBuilderExtMacOS};
     #[cfg(target_os = "macos")]
-    event_loop.set_activation_policy(ActivationPolicy::Prohibited);
+    event_loop.with_activation_policy(ActivationPolicy::Prohibited);
 
+    let event_loop = event_loop.build();
     let mut controls = MediaControls::new(PlatformConfig {
         dbus_name: "cloudmusic-vscode",
-        display_name: "Cloudmusic VSCode",
+        display_name: TITLE,
         hwnd: None,
     })
     .unwrap();

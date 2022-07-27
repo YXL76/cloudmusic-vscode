@@ -1245,7 +1245,7 @@ dependencies = [
 [[package]]
 name = "souvlaki"
 version = "0.5.1"
-source = "git+https://github.com/YXL76/souvlaki?branch=deps#6d3a4cec6dd95eb9e34ba61ff55f884d1ae83021"
+source = "git+https://github.com/YXL76/souvlaki?branch=deps#f5397b27452dc85b8a2cb0f0dead25c58306599e"
 dependencies = [
  "block",
  "cocoa",
