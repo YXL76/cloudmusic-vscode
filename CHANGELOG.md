@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.12.1] - 2022-07-28
+
+### Changed
+
+- Update runtime
+
 ## [9.12.0] - 2022-07-17
 
 ### Added
