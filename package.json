@@ -890,7 +890,6 @@
   },
   "devDependencies": {
     "@types/eslint": "8.4.5",
-    "@types/tailwindcss": "3.1.0",
     "@typescript-eslint/eslint-plugin": "5.31.0",
     "@typescript-eslint/parser": "5.31.0",
     "@yarnpkg/esbuild-plugin-pnp": "3.0.0-rc.14",

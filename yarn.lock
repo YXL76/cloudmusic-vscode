@@ -33,7 +33,7 @@ __metadata:
     "@types/node": "npm:*"
     "@types/yallist": "npm:4.0.1"
     global-agent: "npm:3.0.0"
-    got: "npm:12.2.0"
+    got: "npm:12.3.0"
     md5-file: "npm:5.0.0"
     node-cache: "npm:5.1.2"
     yallist: "npm:4.0.0"
@@ -322,15 +322,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/tailwindcss@npm:3.1.0":
-  version: 3.1.0
-  resolution: "@types/tailwindcss@npm:3.1.0"
-  dependencies:
-    tailwindcss: "npm:*"
-  checksum: d6c6a075264c730a3504e0ecdb63c23eaea393f8937df329a9f4b968d4d4fd40e3a65ecd03dcb8321d75fcb542aec3729415aacd2b91242893883a2de4d49eb9
-  languageName: node
-  linkType: hard
-
 "@types/vscode-webview@npm:1.57.0":
   version: 1.57.0
   resolution: "@types/vscode-webview@npm:1.57.0"
@@ -615,12 +606,12 @@ __metadata:
   linkType: hard
 
 "are-we-there-yet@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "are-we-there-yet@npm:3.0.0"
+  version: 3.0.1
+  resolution: "are-we-there-yet@npm:3.0.1"
   dependencies:
     delegates: "npm:^1.0.0"
     readable-stream: "npm:^3.6.0"
-  checksum: 01eab104abc13225a6c59efcd4e307f5b7e7b6991c1741c50cc4f30da172b3b4374e3b8cf4641f3bd4152d2c66a14aaaf384aa953b0634bb625d81318f9de1c7
+  checksum: 7137e25713c611cf38054434ba377e2f7ad3a4bbdb7ac3565ed5caac786080d1c86ed0b280edd917b4c1001ee0d6ed7bdd53effd69b5af4251e5a4fd18d09fbe
   languageName: node
   linkType: hard
 
@@ -892,7 +883,6 @@ __metadata:
   resolution: "cloudmusic@workspace:."
   dependencies:
     "@types/eslint": "npm:8.4.5"
-    "@types/tailwindcss": "npm:3.1.0"
     "@typescript-eslint/eslint-plugin": "npm:5.31.0"
     "@typescript-eslint/parser": "npm:5.31.0"
     "@yarnpkg/esbuild-plugin-pnp": "npm:3.0.0-rc.14"
@@ -1996,9 +1986,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"got@npm:12.2.0":
-  version: 12.2.0
-  resolution: "got@npm:12.2.0"
+"got@npm:12.3.0":
+  version: 12.3.0
+  resolution: "got@npm:12.3.0"
   dependencies:
     "@sindresorhus/is": "npm:^5.2.0"
     "@szmarczak/http-timer": "npm:^5.0.1"
@@ -2013,7 +2003,7 @@ __metadata:
     lowercase-keys: "npm:^3.0.0"
     p-cancelable: "npm:^3.0.0"
     responselike: "npm:^2.0.0"
-  checksum: 694ef09fe023c26ec27579ad93188effc5d31cefb227cfb9f133c8e1e35d08d25705b6611880039b531b02a02e9414127fb9b5486a00bc481edefd293d3d5058
+  checksum: af3dc1efd3cdbbb897b5aec8a8606bd9dcf35ff3a80ac5376b37b8df88bd4f8667fbfb1058ad57002af10534b0c772e4a6c26571ccc996b40ec738db071461f5
   languageName: node
   linkType: hard
 
@@ -3701,7 +3691,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tailwindcss@npm:*, tailwindcss@npm:3.1.6":
+"tailwindcss@npm:3.1.6":
   version: 3.1.6
   resolution: "tailwindcss@npm:3.1.6"
   dependencies:

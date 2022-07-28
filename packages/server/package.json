@@ -15,7 +15,7 @@
   "dependencies": {
     "@cloudmusic/shared": "workspace:*",
     "global-agent": "3.0.0",
-    "got": "12.2.0",
+    "got": "12.3.0",
     "md5-file": "5.0.0",
     "node-cache": "5.1.2",
     "yallist": "4.0.0"
