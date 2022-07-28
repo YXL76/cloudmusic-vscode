@@ -11,7 +11,7 @@
     {
       "type": "shell",
       "label": "cargo: build macmedia",
-      "command": "cargo build --release --package cloudmusic-macmedia",
+      "command": "cargo build --release --package cloudmusic-macmedia"
     },
     {
       "type": "shell",
@@ -22,6 +22,11 @@
       "type": "shell",
       "label": "yarn: update",
       "command": "rm yarn.lock && yarn && yarn dlx @yarnpkg/sdks vscode vim"
+    },
+    {
+      "type": "shell",
+      "label": "yarn: self-update",
+      "command": "yarn set version canary"
     },
     {
       "type": "shell",
