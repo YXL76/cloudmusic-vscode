@@ -1,5 +1,5 @@
 import { Comment, Tabs } from "../components";
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import type { CommentCSMsg } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import i18n from "../i18n";

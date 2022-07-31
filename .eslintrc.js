@@ -56,7 +56,11 @@ const browserTsConfig = (files, project) => ({
     sourceType: "module",
   },
   plugins: ["@typescript-eslint", "prettier", "react"],
-  rules: baseNodeTsRules,
+  rules: {
+    ...baseNodeTsRules,
+    "react/jsx-uses-react": "off",
+    "react/react-in-jsx-scope": "off",
+  },
   settings: { react: { version: "17.0" } },
 });
 

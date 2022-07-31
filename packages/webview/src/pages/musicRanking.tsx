@@ -1,7 +1,7 @@
 import { MusicCard, Tabs } from "../components";
-import React, { useState } from "react";
 import type { NeteaseTypings } from "api";
 import i18n from "../i18n";
+import { useState } from "react";
 
 export interface MusicRankingProps {
   record: ReadonlyArray<readonly NeteaseTypings.RecordData[]>;

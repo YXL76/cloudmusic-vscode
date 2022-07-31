@@ -1,7 +1,6 @@
 import { FiPlayCircle } from "react-icons/fi";
 import type { MusicRankingCMsg } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
-import React from "react";
 import { vscode } from "../utils";
 
 export interface MusicCardProps extends NeteaseTypings.RecordData {

@@ -1,6 +1,6 @@
 import type { CommentCMsg, CommentCSMsg } from "@cloudmusic/shared";
-import React, { useCallback, useState } from "react";
 import { request, vscode } from "../utils";
+import { useCallback, useState } from "react";
 import { FiThumbsUp } from "react-icons/fi";
 import type { NeteaseTypings } from "api";
 import dayjs from "dayjs";

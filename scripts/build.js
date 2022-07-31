@@ -133,6 +133,7 @@ const globalSharedConfig = {
   readdir(entriesPath).then((files) =>
     build({
       ...globalSharedConfig,
+      jsx: "automatic",
 
       splitting: true,
       target: browserTarget,

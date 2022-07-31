@@ -1,5 +1,5 @@
 import type { ProviderCMsg, ProviderSMsg } from "@cloudmusic/shared";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { NeteaseTypings } from "api";
 import type { Player } from "cloudmusic-wasm";
 import { createRoot } from "react-dom/client";

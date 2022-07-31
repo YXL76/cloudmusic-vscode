@@ -5,7 +5,7 @@ import {
   FiMinus,
   FiPlus,
 } from "react-icons/fi";
-import React, { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { LyricSMsg } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 

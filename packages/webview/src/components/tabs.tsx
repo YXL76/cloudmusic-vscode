@@ -1,5 +1,3 @@
-import React from "react";
-
 export interface TabsProps {
   title?: string;
   titles: readonly string[];

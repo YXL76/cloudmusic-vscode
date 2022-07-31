@@ -1,5 +1,3 @@
-import React from "react";
-
 export interface DescriptionProps {
   name: string;
   desc: readonly { ti: string; txt: string }[];
