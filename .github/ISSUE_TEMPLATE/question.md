@@ -15,8 +15,8 @@ Paste or screenshot the content in `Help->Toggle Developer Tools->Console`.
 粘贴或截屏`帮助->切换开发者工具->控制台`中的内容。
 
 **Server logs**
-Execute `commands.openLogFile`.
-执行 `commands.openLogFile`。
+Execute `cloudmusic.openLogFile`.
+执行 `cloudmusic.openLogFile`。
 
 **Environment**
 Paste the content in `Help->About`.
