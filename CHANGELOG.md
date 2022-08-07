@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.13.0] - 2022-08-07
+
+### Added
+
+- API: remember password and refresh cookie automatically ([#777](https://github.com/YXL76/cloudmusic-vscode/issues/777), [#651](https://github.com/YXL76/cloudmusic-vscode/issues/651))
+- Player: increase process priority ([#754](https://github.com/YXL76/cloudmusic-vscode/issues/754))
+
 ## [9.12.1] - 2022-07-28
 
 ### Changed
