@@ -1,5 +1,7 @@
 import {
   AccountState,
+  cookieToJson,
+  jsonToCookie,
   resolveAnotherSongItem,
   resolvePlaylistItem,
   resolveProgramDetail,
@@ -160,8 +162,8 @@ export async function loginRefresh(cookieStr: string): Promise<string | void> {
     {},
     cookie
   );
-  if (!res) return;
-  return res.cookie;
+  if (!res || !res.cookie) return;
+  return jsonToCookie(cookieToJson([res.cookie]));
 }
 
 export async function loginStatus(cookieStr: string): Promise<true | void> {

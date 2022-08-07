@@ -53,7 +53,7 @@ export const jsonToCookie = (json: NeteaseTypings.Cookie): string => {
       ([key, value]) =>
         `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
     )
-    .join("; ");
+    .join(";");
 };
 
 const http2Https = (url?: string) => url?.replace(/^http:/i, "https:") ?? "";
