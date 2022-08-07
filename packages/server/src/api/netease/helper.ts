@@ -30,29 +30,37 @@ export function broadcastProfiles(socket?: Socket): void {
 }
 
 export const cookieToJson = (
-  cookie: readonly string[]
+  cookies: readonly string[]
 ): NeteaseTypings.Cookie => {
-  if (!cookie) return {} as NeteaseTypings.Cookie;
+  if (!cookies) return {} as NeteaseTypings.Cookie;
 
   const obj: Record<string, string> = {};
-  cookie
-    .map((x) => x.replace(/\s*Domain=[^(;|$)]+;*/, ""))
-    .join(";")
-    .split(";")
-    .forEach((i) => {
-      const [k, v] = i.split("=");
-      obj[k.trim()] = v.trim();
-    });
+  for (const cookie of cookies) {
+    cookie
+      .split(";")
+      .map((kv) => kv.trim())
+      .filter((kv) => {
+        kv = kv.toLowerCase();
+        return !(
+          kv.startsWith("max-age") ||
+          kv.startsWith("expires") ||
+          kv.startsWith("path") ||
+          kv.startsWith("domain") ||
+          kv.startsWith("secure") ||
+          kv.startsWith("httponly") ||
+          kv.startsWith("samesite")
+        );
+      })
+      .map((kv) => kv.split("=", 2))
+      .forEach(([k, v]) => (obj[k] = v));
+  }
 
   return obj as NeteaseTypings.Cookie;
 };
 
 export const jsonToCookie = (json: NeteaseTypings.Cookie): string => {
   return Object.entries(json)
-    .map(
-      ([key, value]) =>
-        `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-    )
+    .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
     .join("; ");
 };
 
