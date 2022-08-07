@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.13.1] - 2022-08-07
+
+### Fixed
+
+- API: parse `loginRefresh` response
+
 ## [9.13.0] - 2022-08-07
 
 ### Added
