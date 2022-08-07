@@ -41,7 +41,7 @@ export const cookieToJson = (
     .split(";")
     .forEach((i) => {
       const [k, v] = i.split("=");
-      obj[k] = v;
+      obj[k.trim()] = v.trim();
     });
 
   return obj as NeteaseTypings.Cookie;
@@ -53,7 +53,7 @@ export const jsonToCookie = (json: NeteaseTypings.Cookie): string => {
       ([key, value]) =>
         `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
     )
-    .join(";");
+    .join("; ");
 };
 
 const http2Https = (url?: string) => url?.replace(/^http:/i, "https:") ?? "";
