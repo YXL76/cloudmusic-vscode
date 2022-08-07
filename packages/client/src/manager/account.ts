@@ -1,4 +1,4 @@
-import { AUTO_CHECK, COOKIE_KEY } from "../constant";
+import { ACCOUNT_KEY, AUTO_CHECK, COOKIE_KEY } from "../constant";
 import {
   ButtonAction,
   IPC,
@@ -31,6 +31,27 @@ import { createHash } from "node:crypto";
 import i18n from "../i18n";
 
 type CookieState = { uid: number; cookie: string }[];
+type States = Record<number, NeteaseTypings.Account>;
+
+async function getCookies(context: ExtensionContext) {
+  try {
+    const cookieStr = (await context.secrets.get(COOKIE_KEY)) ?? "[]";
+    return JSON.parse(cookieStr) as CookieState;
+  } catch (err) {
+    console.error(err);
+  }
+  return [];
+}
+
+async function getStates(context: ExtensionContext) {
+  try {
+    const statesStr = (await context.secrets.get(ACCOUNT_KEY)) ?? "{}";
+    return JSON.parse(statesStr) as States;
+  } catch (err) {
+    console.error(err);
+  }
+  return {};
+}
 
 export class AccountManager {
   static context: ExtensionContext;
@@ -38,30 +59,45 @@ export class AccountManager {
   static readonly accounts = new Map<number, NeteaseTypings.Profile>();
 
   static async init(): Promise<void> {
-    if (State.master) {
-      let cookies: CookieState = [];
-      try {
-        const cookieStr = (await this.context.secrets.get(COOKIE_KEY)) ?? "[]";
-        cookies = JSON.parse(cookieStr) as CookieState;
-      } catch (err) {
-        console.error(err);
-      }
-      if (!cookies.length)
-        void window
-          .showInformationMessage(
-            i18n.sentence.hint.trySignIn,
-            i18n.word.signIn
-          )
-          .then((action) => {
-            if (action === i18n.word.signIn)
-              void commands.executeCommand("cloudmusic.addAccount");
-          });
-      else
-        for (const { uid, cookie } of cookies)
-          if ((await IPC.netease("loginStatus", [cookie])) && AUTO_CHECK)
-            void IPC.netease("dailyCheck", [uid]);
-    }
+    if (State.master) await this.masterInit();
     IPC.neteaseAc();
+  }
+
+  static async masterInit(): Promise<void> {
+    const cookies = await getCookies(this.context);
+
+    if (!cookies.length) {
+      void window
+        .showInformationMessage(i18n.sentence.hint.trySignIn, i18n.word.signIn)
+        .then((action) => {
+          if (action === i18n.word.signIn)
+            void commands.executeCommand("cloudmusic.addAccount");
+        });
+      return;
+    }
+
+    const states = await getStates(this.context);
+
+    for (const { uid, cookie } of cookies) {
+      const newCookie = // Use password
+        uid in states ? await IPC.netease("loginRefresh", [cookie]) : undefined;
+
+      if (await IPC.netease("loginStatus", [newCookie ?? cookie])) {
+        if (AUTO_CHECK) void IPC.netease("dailyCheck", [uid]);
+        continue;
+      }
+
+      if (!(uid in states)) continue;
+      // Use password to login again
+      const { phone, username, password, captcha, countrycode } = states[uid];
+      const res = await (phone.length
+        ? IPC.netease("loginCellphone", [phone, countrycode, password, captcha])
+        : IPC.netease("login", [username, password]));
+
+      if (!res) delete states[uid];
+    }
+
+    await this.context.secrets.store(ACCOUNT_KEY, JSON.stringify(states));
   }
 
   static async dailyCheck(): Promise<boolean> {
@@ -95,6 +131,37 @@ export class AccountManager {
 
   static djradio(uid: number): Promise<readonly NeteaseTypings.RadioDetail[]> {
     return IPC.netease("djSublist", [uid]);
+  }
+
+  static async login(state: NeteaseTypings.Account) {
+    const res = await (state.phone.length
+      ? IPC.netease("loginCellphone", [
+          state.phone,
+          state.countrycode,
+          state.password,
+          state.captcha,
+        ])
+      : IPC.netease("login", [state.username, state.password]));
+
+    if (!res) {
+      void window.showErrorMessage(i18n.sentence.fail.signIn);
+      return false;
+    } else {
+      const states = await getStates(this.context);
+      states[res.userId] = state;
+      await this.context.secrets.store(ACCOUNT_KEY, JSON.stringify(states));
+      return true;
+    }
+  }
+
+  static async logout(uid: number): Promise<boolean> {
+    const states = await getStates(this.context);
+    delete states[uid];
+    await this.context.secrets.store(ACCOUNT_KEY, JSON.stringify(states));
+
+    if (!(await IPC.netease("logout", [uid]))) return false;
+    IPC.neteaseAc();
+    return true;
   }
 
   static async loginQuickPick(): Promise<void> {
@@ -212,7 +279,7 @@ export class AccountManager {
         password: true,
       });
       state.password = createHash("md5").update(password).digest("hex");
-      await login();
+      await AccountManager.login(state);
     }
 
     async function inputCaptcha(input: MultiStepInput) {
@@ -223,19 +290,7 @@ export class AccountManager {
         totalSteps,
         prompt: i18n.sentence.hint.captcha,
       });
-      await login();
-    }
-
-    async function login() {
-      const res = await (state.phone.length
-        ? IPC.netease("loginCellphone", [
-            state.phone,
-            state.countrycode,
-            state.password,
-            state.captcha,
-          ])
-        : IPC.netease("login", [state.username, state.password]));
-      if (!res) void window.showErrorMessage(i18n.sentence.fail.signIn);
+      await AccountManager.login(state);
     }
   }
 
@@ -333,7 +388,7 @@ export class AccountManager {
           await Webview.musicRanking(uid);
           break;
         case Type.signOut:
-          if (await logout()) return;
+          if (await AccountManager.logout(uid)) return;
       }
       return input.stay();
     }
@@ -880,12 +935,6 @@ export class AccountManager {
           return async (input) =>
             pickArtists(input, 3, await IPC.netease("artistSublist", []));
       }
-    }
-
-    async function logout(): Promise<boolean> {
-      if (!(await IPC.netease("logout", [uid]))) return false;
-      IPC.neteaseAc();
-      return true;
     }
   }
 }

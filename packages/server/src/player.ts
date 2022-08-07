@@ -252,7 +252,6 @@ export class Player {
         this._failedEnd();
         return;
       }
-      IPCServer.broadcast({ t: IPCPlayer.loaded });
 
       if (local) {
         this._native.mediaSessionSetMetadata(this._mediaSession, basename(path), "", "", "", 0); // eslint-disable-line
@@ -299,6 +298,11 @@ export class Player {
       this.id = 0;
       this._dt = 0;
       this._pid = 0;
+    }
+
+    if (this._native) {
+      // WASM is sent from webview
+      IPCServer.broadcast({ t: IPCPlayer.loaded });
     }
   }
 

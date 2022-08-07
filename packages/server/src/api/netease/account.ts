@@ -153,6 +153,17 @@ export async function loginQrKey(): Promise<string | void> {
   return res.unikey;
 }
 
+export async function loginRefresh(cookieStr: string): Promise<string | void> {
+  const cookie = JSON.parse(cookieStr) as NeteaseTypings.Cookie;
+  const res = await weapiRequest<{ cookie: string }>(
+    "music.163.com/weapi/login/token/refresh",
+    {},
+    cookie
+  );
+  if (!res) return;
+  return res.cookie;
+}
+
 export async function loginStatus(cookieStr: string): Promise<true | void> {
   const cookie = JSON.parse(cookieStr) as NeteaseTypings.Cookie;
   const res = await weapiRequest<{ profile: NeteaseTypings.Profile }>(
