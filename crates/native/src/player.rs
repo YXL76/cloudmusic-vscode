@@ -76,6 +76,25 @@ impl Finalize for Player {}
 impl Player {
     #[inline]
     fn new() -> Self {
+        #[cfg(target_os = "windows")]
+        {
+            use {
+                std::ffi::CString,
+                windows::{core::PCSTR, Win32::System::Threading::AvSetMmThreadCharacteristicsA},
+            };
+
+            let taskname = CString::new("Pro Audio").unwrap();
+            let mut taskindex = 0u32;
+            if let Err(err) = unsafe {
+                AvSetMmThreadCharacteristicsA(
+                    PCSTR::from_raw(taskname.as_ptr() as _),
+                    &mut taskindex,
+                )
+            } {
+                eprintln!("Cannot increase thread priority! {}", err)
+            }
+        }
+
         let (stream, handle) = OutputStream::try_default().unwrap();
         Self {
             speed: 1.,
