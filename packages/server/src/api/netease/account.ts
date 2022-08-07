@@ -155,7 +155,7 @@ export async function loginQrKey(): Promise<string | void> {
 
 export async function loginRefresh(cookieStr: string): Promise<string | void> {
   const cookie = JSON.parse(cookieStr) as NeteaseTypings.Cookie;
-  const res = await weapiRequest<{ cookie: string }>(
+  const res = await weapiRequest<{ cookie?: string }>(
     "music.163.com/weapi/login/token/refresh",
     {},
     cookie
