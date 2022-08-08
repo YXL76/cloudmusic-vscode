@@ -1,7 +1,5 @@
 import {
   AccountState,
-  cookieToJson,
-  jsonToCookie,
   resolveAnotherSongItem,
   resolvePlaylistItem,
   resolveProgramDetail,
@@ -157,13 +155,13 @@ export async function loginQrKey(): Promise<string | void> {
 
 export async function loginRefresh(cookieStr: string): Promise<string | void> {
   const cookie = JSON.parse(cookieStr) as NeteaseTypings.Cookie;
-  const res = await weapiRequest<{ cookie?: string }>(
+  const res = await weapiRequest<{ cookie?: NeteaseTypings.Cookie }>(
     "music.163.com/weapi/login/token/refresh",
     {},
     cookie
   );
   if (!res || !res.cookie) return;
-  return jsonToCookie(cookieToJson([res.cookie]));
+  return JSON.stringify({ ...cookie, ...res.cookie });
 }
 
 export async function loginStatus(cookieStr: string): Promise<true | void> {

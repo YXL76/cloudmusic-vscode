@@ -81,6 +81,12 @@ const responseHandler = async <T>(
   if (!res) return;
   const status = res.body.code || res.statusCode;
   if (!spStatus.has(status)) return logError(res.body);
+
+  if (res.headers["set-cookie"]?.length) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    res.body.cookie = cookieToJson(res.headers["set-cookie"]);
+  }
   return res.body;
 };
 
@@ -108,14 +114,12 @@ export const loginRequest = async (
   if (!spStatus.has(status)) return logError(res.body);
   const profile = res.body.profile;
   if (!profile || !("userId" in profile) || !("nickname" in profile)) return;
-  if ("set-cookie" in res.headers) {
-    const cookie = cookieToJson(
-      res.headers["set-cookie"] as unknown as string[]
-    );
-    AccountState.cookies.set(profile.userId, cookie);
-    AccountState.profile.set(profile.userId, profile);
-    broadcastProfiles();
-  }
+
+  if (!res.headers["set-cookie"]?.length) return;
+  const cookie = cookieToJson(res.headers["set-cookie"]);
+  AccountState.cookies.set(profile.userId, cookie);
+  AccountState.profile.set(profile.userId, profile);
+  broadcastProfiles();
   return profile;
 };
 
@@ -136,13 +140,11 @@ export const qrloginRequest = async (
   if (!res) return;
   const status = res.body.code || res.statusCode;
   if (!spStatus.has(status)) return logError(res.body);
-  if ("set-cookie" in res.headers) {
-    const cookie = cookieToJson(
-      res.headers["set-cookie"] as unknown as string[]
-    );
-    await loginStatus(JSON.stringify(cookie));
-    broadcastProfiles();
-  }
+
+  if (!res.headers["set-cookie"]?.length) return;
+  const cookie = cookieToJson(res.headers["set-cookie"]);
+  await loginStatus(JSON.stringify(cookie));
+  broadcastProfiles();
   return status;
 };
 

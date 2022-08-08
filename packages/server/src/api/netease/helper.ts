@@ -37,8 +37,7 @@ export const cookieToJson = (
   const obj: Record<string, string> = {};
   for (const cookie of cookies) {
     cookie
-      .split(";")
-      .map((kv) => kv.trim())
+      .split("; ")
       .filter((kv) => {
         kv = kv.toLowerCase();
         return !(
@@ -48,7 +47,8 @@ export const cookieToJson = (
           kv.startsWith("domain") ||
           kv.startsWith("secure") ||
           kv.startsWith("httponly") ||
-          kv.startsWith("samesite")
+          kv.startsWith("samesite") ||
+          kv.endsWith("=")
         );
       })
       .map((kv) => kv.split("=", 2))
