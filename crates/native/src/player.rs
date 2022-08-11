@@ -1,6 +1,6 @@
 use {
     neon::prelude::*,
-    rodio::{Decoder, OutputStream, OutputStreamHandle, Sink, Source},
+    rodio::{Decoder, OutputStream, OutputStreamHandle, PlayError, Sink, Source},
     std::{
         cell::RefCell,
         fs::File,
@@ -120,7 +120,16 @@ impl Player {
 
         self.stop();
 
-        let sink = Sink::try_new(&self.handle).unwrap();
+        let sink = match Sink::try_new(&self.handle) {
+            Ok(sink) => sink,
+            Err(PlayError::NoDevice) => {
+                let (stream, handle) = OutputStream::try_default().unwrap();
+                self.stream = stream;
+                self.handle = handle;
+                Sink::try_new(&self.handle).unwrap()
+            }
+            Err(PlayError::DecoderError(_)) => return false,
+        };
         sink.set_speed(self.speed as f32);
         sink.set_volume(self.volume);
         sink.append(source);

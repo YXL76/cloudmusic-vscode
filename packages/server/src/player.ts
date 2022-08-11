@@ -258,10 +258,10 @@ export class Player {
       } else if (network) {
         this._native.mediaSessionSetMetadata(
           this._mediaSession,
-          data.item.name,
-          data.item.al.name,
-          data.item.ar.map((ar) => ar.name).join("/"),
-          data.item.al.picUrl,
+          data.item.name || "",
+          data.item.al?.name || "",
+          data.item.ar?.map((ar) => ar.name).join("/") || "",
+          data.item.al?.picUrl || "",
           data.item.dt / 1000
         );
       }
