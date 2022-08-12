@@ -59,7 +59,7 @@ __metadata:
     "@types/vscode-webview": "npm:1.57.0"
     "@types/wicg-mediasession": "npm:1.1.3"
     cloudmusic-wasm: "workspace:*"
-    dayjs: "npm:1.11.4"
+    dayjs: "npm:1.11.5"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
     react-icons: "npm:4.4.0"
@@ -992,10 +992,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dayjs@npm:1.11.4":
-  version: 1.11.4
-  resolution: "dayjs@npm:1.11.4"
-  checksum: 82519ee44137467d6a899e8cdadcdba762cb047712e78c8104e5a6a4f4fa72603b3eddfb818a1677c60331c39c99f4935e493ca19f68e4f7eac4f810667a9128
+"dayjs@npm:1.11.5":
+  version: 1.11.5
+  resolution: "dayjs@npm:1.11.5"
+  checksum: ea78d43de0ff67d65f54cd8c927908ee72421f4d73ce5aa19060e20f26b1940db2980b273427eb1813434fdb2df6731e2ac609d97e89e665d29e7b638f762894
   languageName: node
   linkType: hard
 
