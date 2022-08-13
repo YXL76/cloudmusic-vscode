@@ -29,8 +29,8 @@ git = "https://github.com/YXL76/souvlaki"
 branch = "deps"
 
 [target.'cfg(all(target_os = "windows", any(target_arch = "x86_64", target_arch = "x86")))'.dependencies]
-raw-window-handle = "0.5.0"
-winit = "0.27.1"
+raw-window-handle = "0.5"
+winit = "0.27"
 
 [target.'cfg(target_os = "windows")'.dependencies.windows]
 version = "0.39"
