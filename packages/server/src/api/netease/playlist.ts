@@ -8,7 +8,7 @@ import {
 import { apiRequest, weapiRequest } from "./request";
 import type { NeteaseTypings } from "api";
 import { apiCache } from "../../cache";
-import { songDetail } from ".";
+import { songDetail } from "./index";
 
 type PlaylistCatlistItem = { name: string; category?: number; hot: boolean };
 

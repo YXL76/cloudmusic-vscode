@@ -5,13 +5,13 @@ import {
   jsonToCookie,
 } from "./helper";
 import { eapi, weapi } from "./crypto";
-import { APISetting } from "..";
+import { APISetting } from "../index";
 import type { Headers } from "got";
 import type { NeteaseTypings } from "api";
 import { STATE } from "../../state";
 import got from "got";
 import { logError } from "../../utils";
-import { loginStatus } from ".";
+import { loginStatus } from "./index";
 
 const userAgent = (() => {
   switch (process.platform) {

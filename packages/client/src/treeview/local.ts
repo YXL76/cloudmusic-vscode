@@ -4,7 +4,7 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import type { PlayTreeItem, PlayTreeItemData } from ".";
+import type { PlayTreeItem, PlayTreeItemData } from "./index";
 import { MUSIC_CACHE_DIR } from "../constant";
 import type { MimeType } from "file-type";
 import type { TreeDataProvider } from "vscode";

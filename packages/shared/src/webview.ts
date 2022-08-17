@@ -1,4 +1,4 @@
-import type { CSMessage } from ".";
+import type { CSMessage } from "./index";
 import type { NeteaseTypings } from "api";
 
 export type WebviewType =

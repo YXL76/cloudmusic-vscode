@@ -2,7 +2,6 @@
 
 const { readdir, stat } = require("fs/promises");
 const { build } = require("esbuild");
-const { pnpPlugin } = require("@yarnpkg/esbuild-plugin-pnp");
 const { resolve } = require("path");
 const { spawn } = require("child_process");
 const { wasmLoader } = require("esbuild-plugin-wasm");
@@ -15,27 +14,6 @@ const browserTarget = "chrome98";
 const rootPath = resolve(__dirname, "..");
 const distPath = resolve(rootPath, "dist");
 const pkgsPath = resolve(rootPath, "packages");
-
-/**@type {import('@yarnpkg/esbuild-plugin-pnp').PluginOptions["onResolve"]}*/
-const onResolve = (args, { resolvedPath, error }) => {
-  if (resolvedPath !== null) {
-    return Promise.resolve({ /* namespace: `pnp`, */ path: resolvedPath });
-  }
-
-  const problems = error ? [{ text: error.message }] : [];
-  // Sometimes dynamic resolve calls might be wrapped in a try / catch,
-  // but ESBuild neither skips them nor does it provide a way for us to tell.
-  // Because of that, we downgrade all errors to warnings in these situations.
-  // Issue: https://github.com/evanw/esbuild/issues/1127
-  switch (args.kind) {
-    case `require-call`:
-    case `require-resolve`:
-    case `dynamic-import`:
-      return Promise.resolve({ external: true, warnings: problems });
-    default:
-      return Promise.resolve({ external: true, errors: problems });
-  }
-};
 
 /**@type {import('esbuild').BuildOptions}*/
 const globalSharedConfig = {
@@ -53,7 +31,7 @@ const globalSharedConfig = {
   loader: { ".ts": "ts", ".js": "js", ".tsx": "tsx", ".jsx": "jsx" },
   resolveExtensions: [".ts", ".js", ".tsx", ".jsx"],
   // incremental: true,
-  plugins: [wasmLoader({ mode: "embedded" }), pnpPlugin({ onResolve })],
+  plugins: [wasmLoader({ mode: "embedded" })],
 };
 
 // css

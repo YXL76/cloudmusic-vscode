@@ -11,7 +11,7 @@ import type {
   ProgramTreeItemData,
   QueueItemTreeItem,
   QueueItemTreeItemData,
-} from ".";
+} from "./index";
 import type { ThemeIcon, TreeItem } from "vscode";
 import type { NeteaseTypings } from "api";
 

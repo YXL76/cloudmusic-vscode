@@ -1,4 +1,4 @@
-import type { IPCControl, IPCPlayer, IPCQueue, IPCWasm } from ".";
+import type { IPCControl, IPCPlayer, IPCQueue, IPCWasm } from "./index";
 import type { NeteaseTypings } from "api";
 
 export type CSMessage<T = undefined, U = number> = {

@@ -4,12 +4,12 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import type { PlayTreeItem, PlayTreeItemData } from ".";
+import type { PlayTreeItem, PlayTreeItemData } from "./index";
 import { AccountManager } from "../manager";
 import { IPC } from "../utils";
 import type { NeteaseTypings } from "api";
 import type { TreeDataProvider } from "vscode";
-import { UserTreeItem } from ".";
+import { UserTreeItem } from "./index";
 import i18n from "../i18n";
 
 export class RadioProvider

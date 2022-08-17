@@ -4,11 +4,11 @@ import {
   TreeItem,
   TreeItemCollapsibleState,
 } from "vscode";
-import { QueueItemTreeItem, UserTreeItem } from ".";
+import { QueueItemTreeItem, UserTreeItem } from "./index";
 import { AccountManager } from "../manager";
 import { IPC } from "../utils";
 import type { NeteaseTypings } from "api";
-import type { PlayTreeItemData } from ".";
+import type { PlayTreeItemData } from "./index";
 import type { TreeDataProvider } from "vscode";
 import i18n from "../i18n";
 

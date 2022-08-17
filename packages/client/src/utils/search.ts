@@ -10,8 +10,8 @@ import {
   pickSong,
   pickSongItems,
   pickSongMany,
-} from ".";
-import type { InputStep, MultiStepInput } from ".";
+} from "./index";
+import type { InputStep, MultiStepInput } from "./index";
 import type { QuickPick, QuickPickItem } from "vscode";
 import { NeteaseSearchType } from "@cloudmusic/shared";
 import i18n from "../i18n";

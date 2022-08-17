@@ -1,5 +1,5 @@
-import { ButtonAction, IPC, Webview } from ".";
-import type { InputStep, MultiStepInput } from ".";
+import { ButtonAction, IPC, Webview } from "./index";
+import type { InputStep, MultiStepInput } from "./index";
 import type {
   PlaylistItemTreeItem,
   QueueContent,

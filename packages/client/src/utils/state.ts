@@ -1,5 +1,5 @@
 import { AccountManager, ButtonManager } from "../manager";
-import { AccountViewProvider, IPC } from ".";
+import { AccountViewProvider, IPC } from "./index";
 import {
   FM_KEY,
   LYRIC_KEY,

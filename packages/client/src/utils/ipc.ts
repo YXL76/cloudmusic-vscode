@@ -29,7 +29,7 @@ import type {
 } from "@cloudmusic/server";
 import type { PlayTreeItemData } from "../treeview";
 import type { Socket } from "node:net";
-import { State } from ".";
+import { State } from "./index";
 import { connect } from "node:net";
 
 class IPCClient<T, U = T> {

@@ -8,7 +8,7 @@ import {
 } from "@cloudmusic/shared";
 import type { IPCClientMsg, IPCServerMsg } from "@cloudmusic/shared";
 import { LyricCache, MusicCache, apiCache } from "./cache";
-import type { NeteaseAPICMsg, NeteaseAPISMsg } from ".";
+import type { NeteaseAPICMsg, NeteaseAPISMsg } from "./index";
 import { PersonalFm, STATE } from "./state";
 import { Player, posHandler } from "./player";
 import {

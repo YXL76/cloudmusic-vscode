@@ -27,7 +27,7 @@ import {
   pickArtist,
   pickSong,
   pickUser,
-} from ".";
+} from "./index";
 import { NeteaseCommentType, NeteaseSortType } from "@cloudmusic/shared";
 import type { ProviderSMsg, WebviewType } from "@cloudmusic/shared";
 import { SETTING_DIR, SPEED_KEY, VOLUME_KEY } from "../constant";

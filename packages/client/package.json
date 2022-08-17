@@ -7,7 +7,7 @@
   },
   "devDependencies": {
     "@types/api": "workspace:*",
-    "@types/lodash": "4.14.182",
+    "@types/lodash": "4.14.183",
     "@types/node": "*",
     "@types/qrcode": "workspace:*",
     "@types/vscode": "1.67.0"
