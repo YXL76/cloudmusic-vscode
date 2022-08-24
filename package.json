@@ -906,5 +906,5 @@
     "tailwindcss": "3.1.8",
     "typescript": "4.7.4"
   },
-  "packageManager": "yarn@4.0.0-rc.14"
+  "packageManager": "yarn@4.0.0-rc.15"
 }
