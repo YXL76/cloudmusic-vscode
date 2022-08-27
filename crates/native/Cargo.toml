@@ -13,16 +13,13 @@ crate-type = ["cdylib"]
 git = "https://github.com/neon-bindings/neon"
 branch = "main"
 default-features = false
-features = ["napi-6"]
+features = ["napi-7"]
 
 [dependencies.rodio]
 git = "https://github.com/RustAudio/rodio"
 branch = "master"
 default-features = false
 features = ["symphonia-flac", "symphonia-mp3", "symphonia-wav"]
-
-[target.'cfg(target_os = "windows")'.dependencies]
-winapi = "0.3"
 
 [target.'cfg(not(target_os = "macos"))'.dependencies.souvlaki]
 git = "https://github.com/YXL76/souvlaki"

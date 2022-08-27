@@ -889,16 +889,16 @@
     "test": "yarn workspaces foreach -p run test"
   },
   "devDependencies": {
-    "@types/eslint": "8.4.5",
-    "@typescript-eslint/eslint-plugin": "5.33.1",
-    "@typescript-eslint/parser": "5.33.1",
+    "@types/eslint": "8.4.6",
+    "@typescript-eslint/eslint-plugin": "5.35.1",
+    "@typescript-eslint/parser": "5.35.1",
     "debug": "4.3.4",
     "esbuild": "0.15.5",
     "esbuild-plugin-wasm": "1.0.0",
-    "eslint": "8.22.0",
+    "eslint": "8.23.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",
-    "eslint-plugin-react": "7.30.1",
+    "eslint-plugin-react": "7.31.1",
     "eslint-plugin-react-hooks": "4.6.0",
     "postcss": "8.4.16",
     "prettier": "2.7.1",
@@ -906,5 +906,5 @@
     "tailwindcss": "3.1.8",
     "typescript": "4.7.4"
   },
-  "packageManager": "yarn@4.0.0-rc.14"
+  "packageManager": "yarn@4.0.0-rc.15"
 }

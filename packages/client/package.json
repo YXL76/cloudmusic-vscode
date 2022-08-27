@@ -7,7 +7,7 @@
   },
   "devDependencies": {
     "@types/api": "workspace:*",
-    "@types/lodash": "4.14.183",
+    "@types/lodash": "4.14.184",
     "@types/node": "*",
     "@types/qrcode": "workspace:*",
     "@types/vscode": "1.67.0"
@@ -16,7 +16,7 @@
     "@cloudmusic/server": "workspace:*",
     "@cloudmusic/shared": "workspace:*",
     "array-unsort": "1.1.6",
-    "file-type": "17.1.6",
+    "file-type": "18.0.0",
     "lodash": "4.17.21",
     "qrcode": "1.5.1"
   }
