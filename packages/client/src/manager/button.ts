@@ -194,9 +194,7 @@ export class ButtonManager {
   private static _setMdTooltip() {
     this._mdTooltip.value = `${this._mdSong}${this._buttons
       .slice(0, this._buttons.length - 2)
-      .map(
-        ({ text, command }) => `<a href="command:${command}">${text}</a>`
-      )
+      .map(({ text, command }) => `<a href="command:${command}">${text}</a>`)
       .join(
         "<span>&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;</span>"
       )}</td></tr></table>`;
