@@ -20,6 +20,7 @@ import {
   IPCPlayer,
   IPCQueue,
   IPCWasm,
+  logFile,
 } from "@cloudmusic/shared";
 import type { IPCBroadcastMsg, IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseAPIKey, NeteaseAPISMsg } from "@cloudmusic/server";
@@ -185,21 +186,18 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
     }
   };
 
+  const logPath = resolve(SETTING_DIR, logFile);
+  commands.registerCommand(
+    "cloudmusic.openLogFile",
+    () => void window.showTextDocument(Uri.file(logPath))
+  );
+
   try {
     const firstTry = await IPC.connect(ipcHandler, ipcBHandler, 0);
     if (firstTry.includes(false)) throw Error;
   } catch {
     State.first = true;
     State.downInit(); // 1
-    const version = (context.extension.packageJSON as { version: string })
-      .version;
-    const log = `err-${version}.log`;
-    const logPath = resolve(SETTING_DIR, log);
-
-    commands.registerCommand(
-      "cloudmusic.openLogFile",
-      () => void window.showTextDocument(Uri.file(logPath))
-    );
 
     const httpProxy =
       PROXY ||
@@ -247,7 +245,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
             dirent.isFile() &&
             dirent.name.startsWith("err-") &&
             dirent.name.endsWith(".log") &&
-            dirent.name !== log
+            dirent.name !== logFile
           )
             rm(resolve(SETTING_DIR, dirent.name), {
               recursive: true,

@@ -220,7 +220,7 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
       const [{ url, md5, type, freeTrialInfo }] = value.data;
       if (!freeTrialInfo) return { url, md5, type };
     } catch (err) {
-      console.error(err);
+      logError(err);
     }
 
     try {
@@ -234,7 +234,7 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
       const { url, md5, type, freeTrialInfo } = value.data;
       if (!freeTrialInfo) return { url, md5, type };
     } catch (err) {
-      console.error(err);
+      logError(err);
     }
   }
   return {} as NeteaseTypings.SongDetail;
