@@ -1,11 +1,13 @@
 import {
   AccountState,
+  OS_PC_COOKIE,
   resolveAlbumsItem,
   resolveArtist,
   resolveSongItem,
   resolveSongItemSt,
 } from "./helper";
 import type { NeteaseArtistArea, NeteaseArtistType } from "@cloudmusic/shared";
+import { APISetting } from "../helper";
 import type { NeteaseTypings } from "api";
 import { apiCache } from "../../cache";
 import { weapiRequest } from "./request";
@@ -112,6 +114,10 @@ export async function artistSongs(
   const key = `artist_songs${id}-${limit}-${offset}`;
   const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
+
+  const tmpJar = AccountState.defaultCookie.cloneSync();
+  const url = `${APISetting.apiProtocol}://music.163.com/weapi/v1/artist/songs`;
+  tmpJar.setCookieSync(OS_PC_COOKIE, url);
   const res = await weapiRequest<{
     songs: readonly NeteaseTypings.SongsItemSt[];
   }>(
@@ -126,7 +132,7 @@ export async function artistSongs(
       offset,
       limit,
     },
-    { ...AccountState.defaultCookie, os: "pc" }
+    tmpJar
   );
   if (!res) return [];
   const ret = res.songs.map(resolveSongItemSt);

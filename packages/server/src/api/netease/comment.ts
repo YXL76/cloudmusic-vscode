@@ -1,5 +1,11 @@
-import { AccountState, resolveComment } from "./helper";
+import {
+  AccountState,
+  OS_ANDROID_COOKIE,
+  OS_PC_COOKIE,
+  resolveComment,
+} from "./helper";
 import { eapiRequest, weapiRequest } from "./request";
+import { APISetting } from "../helper";
 import type { NeteaseCommentType } from "@cloudmusic/shared";
 import { NeteaseSortType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
@@ -19,10 +25,13 @@ export async function commentAdd(
   id: number,
   content: string
 ): Promise<boolean> {
+  const tmpJar = AccountState.defaultCookie.cloneSync();
+  const url = `${APISetting.apiProtocol}://music.163.com/weapi/resource/comments/add`;
+  tmpJar.setCookieSync(OS_ANDROID_COOKIE, url);
   return !!(await weapiRequest(
     `music.163.com/weapi/resource/comments/add`,
     { threadId: `${resourceTypeMap[type]}${id}`, content },
-    { ...AccountState.defaultCookie, os: "android" }
+    tmpJar
   ));
 }
 
@@ -32,10 +41,13 @@ export async function commentReply(
   content: string,
   commentId: number
 ): Promise<boolean> {
+  const tmpJar = AccountState.defaultCookie.cloneSync();
+  const url = `${APISetting.apiProtocol}://music.163.com/weapi/resource/comments/reply`;
+  tmpJar.setCookieSync(OS_ANDROID_COOKIE, url);
   return !!(await weapiRequest(
     `music.163.com/weapi/resource/comments/reply`,
     { threadId: `${resourceTypeMap[type]}${id}`, content, commentId },
-    { ...AccountState.defaultCookie, os: "android" }
+    tmpJar
   ));
 }
 
@@ -75,10 +87,13 @@ export async function commentLike(
   id: number,
   commentId: number
 ): Promise<boolean> {
+  const tmpJar = AccountState.defaultCookie.cloneSync();
+  const url = `${APISetting.apiProtocol}://music.163.com/weapi/v1/comment/${t}`;
+  tmpJar.setCookieSync(OS_PC_COOKIE, url);
   return !!(await weapiRequest(
     `music.163.com/weapi/v1/comment/${t}`,
     { threadId: `${resourceTypeMap[type]}${id}`, commentId },
-    { ...AccountState.defaultCookie, os: "pc" }
+    tmpJar
   ));
 }
 
@@ -90,6 +105,10 @@ export async function commentNew(
   sortType: NeteaseSortType,
   cursor: number | string
 ): Promise<NeteaseTypings.CommentRet> {
+  const tmpJar = AccountState.defaultCookie.cloneSync();
+  const url = `${APISetting.apiProtocol}://music.163.com/eapi/v2/resource/comments`;
+  tmpJar.setCookieSync(OS_PC_COOKIE, url);
+
   switch (sortType) {
     case NeteaseSortType.recommendation:
       cursor = (pageNo - 1) * pageSize;
@@ -115,7 +134,7 @@ export async function commentNew(
       sortType,
     },
     "/api/v2/resource/comments",
-    { ...AccountState.defaultCookie, os: "pc" }
+    tmpJar
   );
   if (!res) return { totalCount: 0, hasMore: false, comments: [] };
   const {

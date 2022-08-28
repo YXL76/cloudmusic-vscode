@@ -1,5 +1,7 @@
 import {
+  APPVER_COOKIE,
   AccountState,
+  OS_PC_COOKIE,
   resolveAnotherSongItem,
   resolvePlaylistItem,
   resolveProgramDetail,
@@ -14,6 +16,8 @@ import {
   qrloginRequest,
   weapiRequest,
 } from "./request";
+import { APISetting } from "../helper";
+import { CookieJar } from "tough-cookie";
 import type { NeteaseTypings } from "api";
 import { apiCache } from "../../cache";
 import { logError } from "../../utils";
@@ -91,10 +95,14 @@ export async function like(
   trackId: number,
   like: boolean
 ): Promise<boolean> {
+  const url = `${APISetting.apiProtocol}://music.163.com/weapi/radio/like`;
+  const tmpJar = AccountState.cookies.get(uid)?.cloneSync() ?? new CookieJar();
+  tmpJar.setCookieSync(APPVER_COOKIE, url);
+  tmpJar.setCookieSync(OS_PC_COOKIE, url);
   return !!(await weapiRequest(
     "music.163.com/weapi/radio/like",
     { alg: "itembased", trackId, like, time: "3" },
-    { ...AccountState.cookies.get(uid), os: "pc", appver: "2.9.7" }
+    tmpJar
   ));
 }
 
@@ -154,24 +162,31 @@ export async function loginQrKey(): Promise<string | void> {
 }
 
 export async function loginRefresh(cookieStr: string): Promise<string | void> {
-  const cookie = JSON.parse(cookieStr) as NeteaseTypings.Cookie;
-  const res = await weapiRequest<{ cookie?: NeteaseTypings.Cookie }>(
+  const cookie = CookieJar.deserializeSync(cookieStr);
+  const res = await weapiRequest<{ readonly cookie?: string[] }>(
     "music.163.com/weapi/login/token/refresh",
     {},
     cookie
   );
   if (!res || !res.cookie) return;
-  return JSON.stringify({ ...cookie, ...res.cookie });
+  if (res.cookie) {
+    const url = `${APISetting.apiProtocol}://music.163.com/weapi/login/token/refresh`;
+    for (const c of res.cookie) cookie.setCookieSync(c, url);
+  }
+  return JSON.stringify(cookie.serializeSync());
 }
 
-export async function loginStatus(cookieStr: string): Promise<true | void> {
-  const cookie = JSON.parse(cookieStr) as NeteaseTypings.Cookie;
-  const res = await weapiRequest<{ profile: NeteaseTypings.Profile }>(
-    "music.163.com/weapi/w/nuser/account/get",
-    {},
-    cookie
-  );
-  if (!res) return;
+export async function loginStatus(cookieStr: string): Promise<boolean> {
+  const cookie = CookieJar.deserializeSync(cookieStr);
+  const res = await weapiRequest<{
+    readonly profile: NeteaseTypings.Profile;
+    readonly cookie?: string[];
+  }>("music.163.com/weapi/w/nuser/account/get", {}, cookie);
+  if (!res) return false;
+  if (res.cookie) {
+    const url = `${APISetting.apiProtocol}://music.163.com/weapi/w/nuser/account/get`;
+    for (const c of res.cookie) cookie.setCookieSync(c, url);
+  }
   const { profile } = res;
   AccountState.cookies.set(profile.userId, cookie);
   AccountState.profile.set(profile.userId, profile);

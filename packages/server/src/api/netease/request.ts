@@ -1,11 +1,7 @@
-import {
-  AccountState,
-  broadcastProfiles,
-  cookieToJson,
-  jsonToCookie,
-} from "./helper";
+import { AccountState, broadcastProfiles, jsonToCookie } from "./helper";
 import { eapi, weapi } from "./crypto";
 import { APISetting } from "../index";
+import { CookieJar } from "tough-cookie";
 import type { Headers } from "got";
 import type { NeteaseTypings } from "api";
 import { STATE } from "../../state";
@@ -16,17 +12,16 @@ import { loginStatus } from "./index";
 const userAgent = (() => {
   switch (process.platform) {
     case "win32":
-      return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36";
+      return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36";
     case "darwin":
-      return "Mozilla/5.0 (Macintosh; Intel Mac OS X 12_3) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.3 Safari/605.1.15";
+      return "Mozilla/5.0 (Macintosh; Intel Mac OS X 12_5_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.6 Safari/605.1.15";
     default:
-      return "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36";
+      return "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36";
   }
 })();
 
-const anonymousToken =
-  "8aae43f148f990410b9a2af38324af24e87ab9227c9265627ddd10145db744295fcd8701dc45b1ab8985e142f491516295dd965bae848761274a577a62b0fdc54a50284d1e434dcc04ca6d1a52333c9a";
-
+// const anonymousToken =
+//   "8aae43f148f990410b9a2af38324af24e87ab9227c9265627ddd10145db744295fcd8701dc45b1ab8985e142f491516295dd965bae848761274a577a62b0fdc54a50284d1e434dcc04ca6d1a52333c9a";
 const csrfTokenReg = RegExp(/_csrf=([^(;|$)]+)/);
 
 type QueryInput = Record<string, string | number | boolean>;
@@ -63,8 +58,6 @@ export const generateHeader = () => ({
     : {}), */
 });
 
-const spStatus = new Set([200, 512, 800, 803]);
-
 const responseHandler = async <T>(
   url: string,
   headers: Headers,
@@ -80,12 +73,12 @@ const responseHandler = async <T>(
   });
   if (!res) return;
   const status = res.body.code || res.statusCode;
-  if (!spStatus.has(status)) return logError(res.body);
+  if (status !== 200 && status !== 512) return logError(res.body);
 
   if (res.headers["set-cookie"]?.length) {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    res.body.cookie = cookieToJson(res.headers["set-cookie"]);
+    res.body.cookie = res.headers["set-cookie"];
   }
   return res.body;
 };
@@ -111,12 +104,14 @@ export const loginRequest = async (
 
   if (!res) return;
   const status = res.body.code || res.statusCode;
-  if (!spStatus.has(status)) return logError(res.body);
+  if (status !== 200) return logError(res.body);
+
   const profile = res.body.profile;
   if (!profile || !("userId" in profile) || !("nickname" in profile)) return;
 
   if (!res.headers["set-cookie"]?.length) return;
-  const cookie = cookieToJson(res.headers["set-cookie"]);
+  const cookie = new CookieJar();
+  for (const c of res.headers["set-cookie"]) cookie.setCookieSync(c, url);
   AccountState.cookies.set(profile.userId, cookie);
   AccountState.profile.set(profile.userId, profile);
   broadcastProfiles();
@@ -139,11 +134,13 @@ export const qrloginRequest = async (
   });
   if (!res) return;
   const status = res.body.code || res.statusCode;
-  if (!spStatus.has(status)) return logError(res.body);
+  if (status === 801 || status === 802) return;
+  if (status !== 803) throw Error(res.body as string);
 
   if (!res.headers["set-cookie"]?.length) return;
-  const cookie = cookieToJson(res.headers["set-cookie"]);
-  await loginStatus(JSON.stringify(cookie));
+  const cookie = new CookieJar();
+  for (const c of res.headers["set-cookie"]) cookie.setCookieSync(c, url);
+  await loginStatus(JSON.stringify(cookie.serializeSync()));
   broadcastProfiles();
   return status;
 };
@@ -154,9 +151,9 @@ export const weapiRequest = <T = QueryInput>(
   cookie = AccountState.defaultCookie
 ): Promise<T | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
-  if (!cookie.MUSIC_U) cookie.MUSIC_A = anonymousToken;
+  // if (!cookie.MUSIC_U) cookie.MUSIC_A = anonymousToken;
   const headers = generateHeader();
-  headers["Cookie"] = jsonToCookie(cookie);
+  headers["Cookie"] = cookie.getCookieStringSync(url);
   const csrfToken = csrfTokenReg.exec(headers["Cookie"]);
   data.csrf_token = csrfToken?.[1] ?? "";
   return responseHandler<T>(url, headers, weapi(data));
@@ -169,28 +166,36 @@ export const eapiRequest = async <T = QueryInput>(
   cookie = AccountState.defaultCookie
 ): Promise<T | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
+  const cookieJSON: Record<string, string | null | undefined> = {};
+  for (const c of cookie.getCookiesSync(url)) {
+    const { key, value } = c.toJSON() as { key: string; value?: string | null };
+    cookieJSON[key] = value;
+  }
+
   const now = Date.now();
   const header: Headers = {
-    osver: cookie.osver,
-    deviceId: cookie.deviceId,
-    appver: cookie.appver || "8.7.01",
-    versioncode: cookie.versioncode || "140",
-    mobilename: cookie.mobilename,
-    buildver: cookie.buildver || now.toString().slice(0, 10),
-    resolution: cookie.resolution || "1920x1080",
+    osver: cookieJSON["osver"] || "",
+    deviceId: cookieJSON["deviceId"] || "",
+    appver: cookieJSON["appver"] || "8.7.01",
+    versioncode: cookieJSON["versioncode"] || "140",
+    mobilename: cookieJSON["mobilename"] || "",
+    buildver: cookieJSON["buildver"] || now.toString().slice(0, 10),
+    resolution: cookieJSON["resolution"] || "1920x1080",
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    __csrf: cookie.__csrf || "",
-    os: cookie.os || ("android" as const),
-    channel: cookie.channel,
+    __csrf: cookieJSON["__csrf"] || "",
+    os: cookieJSON["os"] || ("android" as const),
+    channel: cookieJSON["channel"] || "",
     requestId: `${now}_${Math.floor(Math.random() * 1000)
       .toString()
       .padStart(4, "0")}`,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    MUSIC_U: cookieJSON["MUSIC_U"] || "",
   };
-  if (cookie.MUSIC_U) header["MUSIC_U"] = cookie.MUSIC_U;
-  else {
-    cookie.MUSIC_A = anonymousToken;
-    header["MUSIC_A"] = anonymousToken;
-  }
+  // if (cookie.MUSIC_U) header["MUSIC_U"] = cookie.MUSIC_U;
+  // else {
+  //   cookie.MUSIC_A = anonymousToken;
+  //   header["MUSIC_A"] = anonymousToken;
+  // }
   const headers = generateHeader();
   headers["Cookie"] = jsonToCookie(header);
   data.header = header;
@@ -203,8 +208,8 @@ export const apiRequest = async <T = QueryInput>(
   cookie = AccountState.defaultCookie
 ): Promise<T | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
-  if (!cookie.MUSIC_U) cookie.MUSIC_A = anonymousToken;
+  // if (!cookie.MUSIC_U) cookie.MUSIC_A = anonymousToken;
   const headers = generateHeader();
-  headers["Cookie"] = jsonToCookie(cookie);
+  headers["Cookie"] = cookie.getCookieStringSync(url);
   return responseHandler<T>(url, headers, data);
 };

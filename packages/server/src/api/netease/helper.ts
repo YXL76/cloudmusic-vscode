@@ -1,19 +1,36 @@
+import { Cookie, CookieJar } from "tough-cookie";
 import { IPCControl } from "@cloudmusic/shared";
 import { IPCServer } from "../../server";
 import type { IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import type { Socket } from "node:net";
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+export const OS_PC_COOKIE = Cookie.fromJSON({ key: "os", value: "pc" })!;
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+export const OS_IOS_COOKIE = Cookie.fromJSON({ key: "os", value: "ios" })!;
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+export const OS_ANDROID_COOKIE = Cookie.fromJSON({
+  key: "os",
+  value: "android",
+})!;
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+export const APPVER_COOKIE = Cookie.fromJSON({
+  key: "appver",
+  value: "2.9.7",
+})!;
+
 export class AccountState {
-  static cookies = new Map<number, NeteaseTypings.Cookie>();
+  static cookies = new Map<number, CookieJar>();
 
   static profile = new Map<number, NeteaseTypings.Profile>();
 
-  static get defaultCookie(): NeteaseTypings.Cookie {
+  static get defaultCookie(): CookieJar {
     if (this.cookies.size) {
       const [[, cookie]] = this.cookies;
       return cookie;
-    } else return {};
+    }
+    return new CookieJar();
   }
 }
 
@@ -22,41 +39,12 @@ export function broadcastProfiles(socket?: Socket): void {
     t: IPCControl.netease,
     cookies: [...AccountState.cookies].map(([uid, c]) => ({
       uid,
-      cookie: JSON.stringify(c),
+      cookie: JSON.stringify(c.serializeSync()),
     })),
     profiles: [...AccountState.profile.values()],
   };
   socket ? IPCServer.send(socket, msg) : IPCServer.broadcast(msg);
 }
-
-export const cookieToJson = (
-  cookies: readonly string[]
-): NeteaseTypings.Cookie => {
-  if (!cookies) return {} as NeteaseTypings.Cookie;
-
-  const obj: Record<string, string> = {};
-  for (const cookie of cookies) {
-    cookie
-      .split("; ")
-      .filter((kv) => {
-        kv = kv.toLowerCase();
-        return !(
-          kv.startsWith("max-age") ||
-          kv.startsWith("expires") ||
-          kv.startsWith("path") ||
-          kv.startsWith("domain") ||
-          kv.startsWith("secure") ||
-          kv.startsWith("httponly") ||
-          kv.startsWith("samesite") ||
-          kv.endsWith("=")
-        );
-      })
-      .map((kv) => kv.split("=", 2))
-      .forEach(([k, v]) => (obj[k] = v));
-  }
-
-  return obj as NeteaseTypings.Cookie;
-};
 
 export const jsonToCookie = (json: NeteaseTypings.Cookie): string => {
   return Object.entries(json)

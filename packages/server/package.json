@@ -10,6 +10,7 @@
     "@types/api": "workspace:*",
     "@types/global-agent": "2.1.1",
     "@types/node": "*",
+    "@types/tough-cookie": "4.0.2",
     "@types/yallist": "4.0.1"
   },
   "dependencies": {
@@ -18,6 +19,7 @@
     "got": "12.3.1",
     "md5-file": "5.0.0",
     "node-cache": "5.1.2",
+    "tough-cookie": "4.1.2",
     "yallist": "4.0.0"
   }
 }
