@@ -174,6 +174,13 @@ export async function songDetail(
   return [];
 }
 
+const br2level = new Map([
+  [128000, "standard"],
+  [192000, "standard"],
+  [320000, "exhigh"],
+  [999000, "lossless"],
+]);
+
 export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
   type SongUrlItem = NeteaseTypings.SongDetail & {
     freeTrialInfo?: { start: number; end: number };
@@ -188,9 +195,13 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
   for (const [, cookie] of AccountState.cookies) {
     const [i, j] = (await Promise.allSettled([
       eapiRequest<SongUrlResponse>(
-        "interface3.music.163.com/eapi/song/enhance/player/url",
-        { ids: `[${id}]`, br: STATE.musicQuality },
-        "/api/song/enhance/player/url",
+        "interface.music.163.com/eapi/song/enhance/player/url/v1",
+        {
+          ids: `[${id}]`,
+          level: br2level.get(STATE.musicQuality) ?? "standard",
+          encodeType: "flac",
+        },
+        "/api/song/enhance/player/url/v1",
         { ...cookie, os: "pc" }
       ),
       eapiRequest<DownloadUrlResponse>(
