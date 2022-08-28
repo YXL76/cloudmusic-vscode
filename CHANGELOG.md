@@ -6,6 +6,21 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.14.0] - 2022-08-28
+
+### Added
+
+- API:
+  - Use new `song_url_v1` interface
+  - Use `tough-cookie` to store cookies
+- Add warnning about login method
+
+### Fixed
+
+- Player: auto check output device
+- Server: set `master` immediately if the client is master
+- Treeview: expand item when refreshing
+
 ## [9.13.3] - 2022-08-08
 
 ### Fixed
