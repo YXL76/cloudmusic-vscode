@@ -5,22 +5,24 @@ import {
   TreeItemCollapsibleState,
 } from "vscode";
 import type { PlayTreeItem, PlayTreeItemData } from "./index";
+import type { TreeDataProvider, TreeView } from "vscode";
 import { AccountManager } from "../manager";
 import { IPC } from "../utils";
 import type { NeteaseTypings } from "api";
-import type { TreeDataProvider } from "vscode";
 import { UserTreeItem } from "./index";
 import i18n from "../i18n";
 
-export class RadioProvider
-  implements TreeDataProvider<UserTreeItem | RadioTreeItem | ProgramTreeItem>
-{
+type Content = UserTreeItem | RadioTreeItem | ProgramTreeItem;
+
+export class RadioProvider implements TreeDataProvider<Content> {
   private static _instance: RadioProvider;
 
   private static readonly _actions = new WeakMap<
     RadioTreeItem,
     { resolve: (value: PlayTreeItemData[]) => void; reject: () => void }
   >();
+
+  readonly view!: TreeView<Content>;
 
   _onDidChangeTreeData = new EventEmitter<
     UserTreeItem | RadioTreeItem | ProgramTreeItem | void
@@ -49,6 +51,7 @@ export class RadioProvider
     return new Promise((resolve, reject) => {
       this._actions.set(element, { resolve, reject });
       this._instance._onDidChangeTreeData.fire(element);
+      void this._instance.view.reveal(element, { expand: true });
     });
   }
 
@@ -57,9 +60,7 @@ export class RadioProvider
     this._instance._onDidChangeTreeData.fire(element);
   }
 
-  getTreeItem(
-    element: UserTreeItem | RadioTreeItem | ProgramTreeItem
-  ): UserTreeItem | RadioTreeItem | ProgramTreeItem {
+  getTreeItem(element: Content): Content {
     return element;
   }
 
@@ -75,7 +76,7 @@ export class RadioProvider
     if (element instanceof UserTreeItem) {
       const { uid } = element;
       return (await AccountManager.djradio(uid)).map((radio) =>
-        RadioTreeItem.new(radio)
+        RadioTreeItem.new(radio, uid)
       );
     }
     const {
@@ -92,6 +93,13 @@ export class RadioProvider
       action.resolve(ret.map(({ data }) => data));
     }
     return ret;
+  }
+
+  getParent(element: Content): undefined | UserTreeItem | RadioTreeItem {
+    if (element instanceof UserTreeItem) return;
+    if (element instanceof RadioTreeItem)
+      return UserTreeItem.unsafeGet(element.uid);
+    return RadioTreeItem.unsafeGet(element.data.pid);
   }
 }
 
@@ -126,6 +134,11 @@ ${i18n.word.subscribedCount}: ${this.item.subCount}`;
     element = new this(item, uid);
     this._set.set(item.id, element);
     return element;
+  }
+
+  static unsafeGet(pid: number): RadioTreeItem {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return this._set.get(pid)!;
   }
 }
 

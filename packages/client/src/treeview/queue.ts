@@ -1,8 +1,8 @@
 import { EventEmitter, ThemeIcon, TreeItem } from "vscode";
 import { LocalFileTreeItem, ProgramTreeItem } from "./index";
 import type { PlayTreeItem, PlayTreeItemData, QueueContent } from "./index";
+import type { TreeDataProvider, TreeView } from "vscode";
 import type { NeteaseTypings } from "api";
-import type { TreeDataProvider } from "vscode";
 import { unsortInplace } from "array-unsort";
 
 export const enum QueueSortType {
@@ -22,6 +22,8 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   private static _songs: PlayTreeItemData[] = [];
 
   private static _instance: QueueProvider;
+
+  readonly view!: TreeView<QueueContent>;
 
   _onDidChangeTreeData = new EventEmitter<QueueContent | void>();
 

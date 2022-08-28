@@ -18,4 +18,9 @@ export class UserTreeItem extends TreeItem {
     this._set.set(uid, element);
     return element;
   }
+
+  static unsafeGet(uid: number): UserTreeItem {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return this._set.get(uid)!;
+  }
 }

@@ -5,9 +5,9 @@ import {
   TreeItemCollapsibleState,
 } from "vscode";
 import type { PlayTreeItem, PlayTreeItemData } from "./index";
+import type { TreeDataProvider, TreeView } from "vscode";
 import { MUSIC_CACHE_DIR } from "../constant";
 import type { MimeType } from "file-type";
-import type { TreeDataProvider } from "vscode";
 import { fileTypeFromFile } from "file-type";
 import { readdir } from "node:fs/promises";
 import { resolve } from "node:path";
@@ -18,14 +18,14 @@ const supportedType: MimeType[] = [
   "audio/mpeg",
 ];
 
-export class LocalProvider
-  implements TreeDataProvider<LocalFileTreeItem | LocalLibraryTreeItem>
-{
+type Content = LocalFileTreeItem | LocalLibraryTreeItem;
+
+export class LocalProvider implements TreeDataProvider<Content> {
   static readonly folders: string[] = [];
 
   private static _instance: LocalProvider;
 
-  private static readonly _files = new WeakMap<
+  private static readonly _files = new Map<
     LocalLibraryTreeItem,
     LocalFileTreeItem[]
   >();
@@ -34,6 +34,8 @@ export class LocalProvider
     LocalLibraryTreeItem,
     { resolve: (value: PlayTreeItemData[]) => void; reject: () => void }
   >();
+
+  readonly view!: TreeView<Content>;
 
   _onDidChangeTreeData = new EventEmitter<LocalLibraryTreeItem | void>();
 
@@ -57,6 +59,7 @@ export class LocalProvider
     return new Promise((resolve, reject) => {
       this._actions.set(element, { resolve, reject });
       this._instance._onDidChangeTreeData.fire(element);
+      void this._instance.view.reveal(element, { expand: true });
     });
   }
 
@@ -69,10 +72,11 @@ export class LocalProvider
   async getChildren(
     element?: LocalLibraryTreeItem
   ): Promise<(LocalFileTreeItem | LocalLibraryTreeItem)[]> {
-    if (!element)
+    if (!element) {
       return [MUSIC_CACHE_DIR, ...LocalProvider.folders].map(
         (folder) => new LocalLibraryTreeItem(folder)
       );
+    }
 
     const action = LocalProvider._actions.get(element);
     LocalProvider._actions.delete(element);
@@ -97,7 +101,7 @@ export class LocalProvider
             folders.push(resolve(folder, dirent.name));
         }
 
-        const treeitems = (
+        (
           await Promise.all(
             paths.map(async (filename) => {
               const id = resolve(folder, filename);
@@ -107,14 +111,21 @@ export class LocalProvider
           )
         )
           .filter(({ mime }) => mime && supportedType.includes(mime))
-          .map((item) => LocalFileTreeItem.new(item));
-        items.push(...treeitems);
+          .forEach((item) => items.push(LocalFileTreeItem.new(item)));
       }
     } catch {}
     LocalProvider._files.set(element, items);
 
     action?.resolve(items.map(({ data }) => data));
     return items;
+  }
+
+  getParent(element: Content): undefined | LocalLibraryTreeItem {
+    if (element instanceof LocalLibraryTreeItem) return;
+    for (const [library, files] of LocalProvider._files) {
+      if (files.includes(element)) return library;
+    }
+    throw Error(`{element.data.filename} not found`);
   }
 }
 

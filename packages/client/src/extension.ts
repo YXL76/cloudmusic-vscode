@@ -5,6 +5,7 @@ import type {
   Disposable,
   ExtensionContext,
   TreeDataProvider,
+  TreeView,
   TreeViewVisibilityChangeEvent,
 } from "vscode";
 import {
@@ -42,8 +43,12 @@ export async function activate(context: ExtensionContext): Promise<void> {
 
   const createTreeView = <T>(
     viewId: string,
-    treeDataProvider: TreeDataProvider<T>
-  ) => window.createTreeView(viewId, { treeDataProvider });
+    treeDataProvider: TreeDataProvider<T> & { view: TreeView<T> }
+  ) => {
+    const view = window.createTreeView(viewId, { treeDataProvider });
+    treeDataProvider.view = view;
+    return view;
+  };
 
   const queue = createTreeView("queue", QueueProvider.getInstance());
   const local = createTreeView("local", LocalProvider.getInstance());

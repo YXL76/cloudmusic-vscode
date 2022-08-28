@@ -5,23 +5,24 @@ import {
   TreeItemCollapsibleState,
 } from "vscode";
 import { QueueItemTreeItem, UserTreeItem } from "./index";
+import type { TreeDataProvider, TreeView } from "vscode";
 import { AccountManager } from "../manager";
 import { IPC } from "../utils";
 import type { NeteaseTypings } from "api";
 import type { PlayTreeItemData } from "./index";
-import type { TreeDataProvider } from "vscode";
 import i18n from "../i18n";
 
-export class PlaylistProvider
-  implements
-    TreeDataProvider<UserTreeItem | PlaylistItemTreeItem | QueueItemTreeItem>
-{
+type Content = UserTreeItem | PlaylistItemTreeItem | QueueItemTreeItem;
+
+export class PlaylistProvider implements TreeDataProvider<Content> {
   private static _instance: PlaylistProvider;
 
   private static readonly _actions = new WeakMap<
     PlaylistItemTreeItem,
     { resolve: (value: PlayTreeItemData[]) => void; reject: () => void }
   >();
+
+  readonly view!: TreeView<Content>;
 
   _onDidChangeTreeData = new EventEmitter<
     UserTreeItem | PlaylistItemTreeItem | undefined | void
@@ -50,6 +51,7 @@ export class PlaylistProvider
     return new Promise((resolve, reject) => {
       this._actions.set(element, { resolve, reject });
       this._instance._onDidChangeTreeData.fire(element);
+      void this._instance.view.reveal(element, { expand: true });
     });
   }
 
@@ -58,9 +60,7 @@ export class PlaylistProvider
     this._instance._onDidChangeTreeData.fire(element);
   }
 
-  getTreeItem(
-    element: UserTreeItem | PlaylistItemTreeItem | QueueItemTreeItem
-  ): UserTreeItem | PlaylistItemTreeItem | QueueItemTreeItem {
+  getTreeItem(element: Content): Content {
     return element;
   }
 
@@ -91,6 +91,13 @@ export class PlaylistProvider
       action.resolve(ret.map(({ data }) => data));
     }
     return ret;
+  }
+
+  getParent(element: Content): undefined | UserTreeItem | PlaylistItemTreeItem {
+    if (element instanceof UserTreeItem) return;
+    if (element instanceof PlaylistItemTreeItem)
+      return UserTreeItem.unsafeGet(element.uid);
+    return PlaylistItemTreeItem.unsafeGet(element.data.pid);
   }
 }
 
@@ -127,5 +134,10 @@ ${i18n.word.subscribedCount}: ${this.item.subscribedCount}`;
     element = new this(item, uid);
     this._set.set(item.id, element);
     return element;
+  }
+
+  static unsafeGet(pid: number): PlaylistItemTreeItem {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return this._set.get(pid)!;
   }
 }
