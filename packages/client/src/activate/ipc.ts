@@ -239,12 +239,14 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       },
     }).unref();
     await IPC.connect(ipcHandler, ipcBHandler);
+    State.master = true;
     readdir(SETTING_DIR, { withFileTypes: true })
       .then((dirents) => {
         for (const dirent of dirents) {
           if (
             dirent.isFile() &&
-            dirent.name.startsWith("err") &&
+            dirent.name.startsWith("err-") &&
+            dirent.name.endsWith(".log") &&
             dirent.name !== log
           )
             rm(resolve(SETTING_DIR, dirent.name), {
