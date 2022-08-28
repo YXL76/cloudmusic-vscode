@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.14.1] - 2022-08-28
+
+### Fixed
+
+- Server: each version uses a specific socket
+
 ## [9.14.0] - 2022-08-28
 
 ### Added
