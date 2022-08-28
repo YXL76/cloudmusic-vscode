@@ -46,6 +46,9 @@ export default {
       dailyCheck: "签到成功",
       signIn: "登录成功",
     },
+    warn: {
+      login: "推荐使用二维码登录，其他方式失败的概率较大",
+    },
   },
   word: {
     account: "帐号",

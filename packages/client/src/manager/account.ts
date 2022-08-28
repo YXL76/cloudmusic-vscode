@@ -177,7 +177,7 @@ export class AccountManager {
     };
 
     const enum Type {
-      emial,
+      email,
       phone,
       captcha,
       qrcode,
@@ -192,7 +192,7 @@ export class AccountManager {
           {
             label: `$(mail) ${i18n.word.email}`,
             description: i18n.sentence.label.email,
-            type: Type.emial,
+            type: Type.email,
           },
           {
             label: `$(device-mobile) ${i18n.word.cellphone}`,
@@ -217,13 +217,16 @@ export class AccountManager {
 
       switch (pick.type) {
         case Type.phone:
+          void window.showWarningMessage(i18n.sentence.warn.login);
           captcha = false;
           totalSteps = 4;
           return (input) => inputCountrycode(input);
-        case Type.emial:
+        case Type.email:
+          void window.showWarningMessage(i18n.sentence.warn.login);
           totalSteps = 3;
           return (input) => inputUsername(input);
         case Type.captcha:
+          void window.showWarningMessage(i18n.sentence.warn.login);
           captcha = true;
           totalSteps = 4;
           return (input) => inputCountrycode(input);

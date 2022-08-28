@@ -46,6 +46,9 @@ export default {
       dailyCheck: "簽到成功",
       signIn: "登入成功",
     },
+    warn: {
+      login: "推薦使用二維碼登錄，其他方式失敗的概率較大",
+    },
   },
   word: {
     account: "帳號",
