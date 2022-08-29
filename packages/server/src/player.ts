@@ -60,13 +60,13 @@ async function prefetch() {
   let cache;
   if (!STATE.fm) cache = { id: idS, name: `${name}-${idS}`, path, md5 };
   downloadMusic(url, path, cache);
-  void NeteaseAPI.lyric(id);
+  NeteaseAPI.lyric(id).catch(logError);
 }
 
 export function posHandler(pos: number): void {
   if (pos > 120 && !prefetchLock) {
     prefetchLock = true;
-    void prefetch();
+    prefetch().catch(logError);
   }
 
   const lpos = pos - STATE.lyric.delay;
@@ -103,8 +103,6 @@ class WasmPlayer {
 }
 
 const buildPath = resolve(
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
   fileURLToPath(import.meta.url),
   "..",
   "..",
@@ -273,11 +271,14 @@ export class Player {
     this.playing = true;
     prefetchLock = false;
 
-    if (network)
-      void NeteaseAPI.lyric(data.item.id).then((lyric) => {
-        Object.assign(STATE.lyric, lyric, { idx: 0 });
-        IPCServer.broadcast({ t: IPCPlayer.lyric, lyric });
-      });
+    if (network) {
+      NeteaseAPI.lyric(data.item.id)
+        .then((lyric) => {
+          Object.assign(STATE.lyric, lyric, { idx: 0 });
+          IPCServer.broadcast({ t: IPCPlayer.lyric, lyric });
+        })
+        .catch(logError);
+    }
 
     const pTime = this._time;
     this._time = Date.now();

@@ -53,14 +53,14 @@ else {
 
 (async () => {
   Player.init();
-  void IPCServer.init();
-  void IPCBroadcastServer.init();
+  const ipc = Promise.all([IPCServer.init(), IPCBroadcastServer.init()]);
 
   await mkdir(TMP_DIR).catch(() => undefined);
   await mkdir(CACHE_DIR).catch(() => undefined);
   await mkdir(LYRIC_CACHE_DIR).catch(() => undefined);
   await mkdir(MUSIC_CACHE_DIR).catch(() => undefined);
   await MusicCache.init();
+  await ipc;
 
   setInterval(
     () => {
@@ -78,7 +78,7 @@ else {
           }
           // If no files were deleted, the cache can be considered stable
           // In practice, this is mostly invoked every 4 minutes (two ticks)
-          void MusicCache.store();
+          return MusicCache.store();
         })
         .catch(logError);
     },

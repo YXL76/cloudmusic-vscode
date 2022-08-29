@@ -202,7 +202,7 @@ export class IPCServer {
         Player.mediaSession(data.pid);
         break; */
       case IPCPlayer.load:
-        void Player.load(data);
+        Player.load(data).catch(logError);
         break;
       case IPCPlayer.lyricDelay:
         STATE.lyric.delay = data.delay;

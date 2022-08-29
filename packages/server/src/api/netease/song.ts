@@ -201,7 +201,6 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
 
       const value = await eapiRequest<{
         readonly data: ReadonlyArray<SongUrlItem>;
-        readonly cookie?: string[];
       }>(
         "interface.music.163.com/eapi/song/enhance/player/url/v1",
         {

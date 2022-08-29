@@ -163,7 +163,7 @@ export async function loginQrKey(): Promise<string | void> {
 
 export async function loginRefresh(cookieStr: string): Promise<string | void> {
   const cookie = CookieJar.deserializeSync(cookieStr);
-  const res = await weapiRequest<{ readonly cookie?: string[] }>(
+  const res = await weapiRequest(
     "music.163.com/weapi/login/token/refresh",
     {},
     cookie
@@ -180,7 +180,6 @@ export async function loginStatus(cookieStr: string): Promise<boolean> {
   const cookie = CookieJar.deserializeSync(cookieStr);
   const res = await weapiRequest<{
     readonly profile: NeteaseTypings.Profile;
-    readonly cookie?: string[];
   }>("music.163.com/weapi/w/nuser/account/get", {}, cookie);
   if (!res) return false;
   if (res.cookie) {
@@ -310,12 +309,12 @@ export async function recommendSongs(
   return ret;
 }
 
-export async function scrobble(
+export function scrobble(
   id: number,
   sourceId: number,
   time: number
 ): Promise<void> {
-  await weapiRequest("music.163.com/weapi/feedback/weblog", {
+  return weapiRequest("music.163.com/weapi/feedback/weblog", {
     logs: JSON.stringify([
       {
         action: "play",

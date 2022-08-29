@@ -43,18 +43,16 @@ export class LyricCache {
       ) as LyricCacheItem;
       // 7 * 24 * 60 * 60 * 1000
       if (Date.now() - data.ctime < 604800000) return data;
-      void rm(path, { recursive: true, force: true });
+      rm(path, { recursive: true, force: true }).catch(() => undefined);
     } catch {}
     return;
   }
 
   static put(key: string, data: LyricCacheItem): void {
-    try {
-      void writeFile(
-        resolve(LYRIC_CACHE_DIR, key),
-        Buffer.from(JSON.stringify(data), "utf8")
-      );
-    } catch {}
+    writeFile(
+      resolve(LYRIC_CACHE_DIR, key),
+      Buffer.from(JSON.stringify(data), "utf8")
+    ).catch(() => undefined);
   }
 }
 
@@ -96,7 +94,7 @@ export class MusicCache {
           this._addNode(value);
         });
     } catch {}
-    void this.store();
+    this.store().catch(logError);
 
     for (const name of names) {
       const path = resolve(MUSIC_CACHE_DIR, name);
@@ -112,7 +110,7 @@ export class MusicCache {
     this._cache.clear();
     this._size = 0;
     while (this._list.length) this._list.pop();
-    void this.store();
+    this.store().catch(logError);
   }
 
   static async store(): Promise<void> {
@@ -162,7 +160,10 @@ export class MusicCache {
       this._list.removeNode(node);
       this._cache.delete(key);
       this._size -= node.value.size;
-      void rm(resolve(MUSIC_CACHE_DIR, name), { recursive: true, force: true });
+      rm(resolve(MUSIC_CACHE_DIR, name), {
+        recursive: true,
+        force: true,
+      }).catch(logError);
     }
   }
 }

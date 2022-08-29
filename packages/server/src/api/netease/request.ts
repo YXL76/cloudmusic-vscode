@@ -62,22 +62,23 @@ const responseHandler = async <T>(
   url: string,
   headers: Headers,
   data: QueryInput
-): Promise<T | void> => {
-  const res = await got<{ readonly code?: number } & T>(url, {
-    form: data,
-    headers,
-    http2: true,
-    method: "POST",
-    responseType: "json",
-    timeout: { response: 8000 },
-  });
+): Promise<(T & { readonly cookie?: string[] }) | void> => {
+  const res = await got<{ readonly code?: number; cookie?: string[] } & T>(
+    url,
+    {
+      form: data,
+      headers,
+      http2: true,
+      method: "POST",
+      responseType: "json",
+      timeout: { response: 8000 },
+    }
+  );
   if (!res) return;
   const status = res.body.code || res.statusCode;
   if (status !== 200 && status !== 512) return logError(res.body);
 
   if (res.headers["set-cookie"]?.length) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     res.body.cookie = res.headers["set-cookie"];
   }
   return res.body;
@@ -149,7 +150,7 @@ export const weapiRequest = <T = QueryInput>(
   url: string,
   data: QueryInput = {},
   cookie = AccountState.defaultCookie
-): Promise<T | void> => {
+): Promise<(T & { readonly cookie?: string[] }) | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
   // if (!cookie.MUSIC_U) cookie.MUSIC_A = anonymousToken;
   const headers = generateHeader();
@@ -164,7 +165,7 @@ export const eapiRequest = async <T = QueryInput>(
   data: NodeJS.Dict<string | number | boolean | Headers>,
   encryptUrl: string,
   cookie = AccountState.defaultCookie
-): Promise<T | void> => {
+): Promise<(T & { readonly cookie?: string[] }) | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
   const cookieJSON: Record<string, string | null | undefined> = {};
   for (const c of cookie.getCookiesSync(url)) {
@@ -206,7 +207,7 @@ export const apiRequest = async <T = QueryInput>(
   url: string,
   data: QueryInput = {},
   cookie = AccountState.defaultCookie
-): Promise<T | void> => {
+): Promise<(T & { readonly cookie?: string[] }) | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
   // if (!cookie.MUSIC_U) cookie.MUSIC_A = anonymousToken;
   const headers = generateHeader();
