@@ -1,6 +1,6 @@
 import {
   AccountState,
-  OS_PC_COOKIE,
+  OSCookie,
   resolvePlaylistItem,
   resolveSongItem,
   resolveSongItemSt,
@@ -44,7 +44,7 @@ export async function playlistCreate(
 ): Promise<boolean> {
   const url = `${APISetting.apiProtocol}://music.163.com/weapi/playlist/create`;
   const tmpJar = AccountState.cookies.get(uid)?.cloneSync() ?? new CookieJar();
-  tmpJar.setCookieSync(OS_PC_COOKIE, url);
+  tmpJar.setCookieSync(OSCookie.pc, url);
   return !!(await weapiRequest(
     "music.163.com/weapi/playlist/create",
     {
@@ -62,7 +62,7 @@ export async function playlistDelete(
 ): Promise<boolean> {
   const tmpJar = AccountState.cookies.get(uid)?.cloneSync() ?? new CookieJar();
   const url = `${APISetting.apiProtocol}://music.163.com/weapi/playlist/remove`;
-  tmpJar.setCookieSync(OS_PC_COOKIE, url);
+  tmpJar.setCookieSync(OSCookie.pc, url);
   return !!(await weapiRequest(
     `music.163.com/weapi/playlist/remove`,
     { ids: `[${id}]` },
@@ -179,7 +179,7 @@ export async function playlistUpdate(
 ): Promise<boolean> {
   const tmpJar = AccountState.cookies.get(uid)?.cloneSync() ?? new CookieJar();
   const url = `${APISetting.apiProtocol}://music.163.com/weapi/batch`;
-  tmpJar.setCookieSync(OS_PC_COOKIE, url);
+  tmpJar.setCookieSync(OSCookie.pc, url);
   return !!(await weapiRequest(
     "music.163.com/weapi/batch",
     {

@@ -1,9 +1,4 @@
-import {
-  AccountState,
-  OS_ANDROID_COOKIE,
-  OS_PC_COOKIE,
-  resolveComment,
-} from "./helper";
+import { AccountState, OSCookie, resolveComment } from "./helper";
 import { eapiRequest, weapiRequest } from "./request";
 import { APISetting } from "../helper";
 import type { NeteaseCommentType } from "@cloudmusic/shared";
@@ -27,7 +22,7 @@ export async function commentAdd(
 ): Promise<boolean> {
   const tmpJar = AccountState.defaultCookie.cloneSync();
   const url = `${APISetting.apiProtocol}://music.163.com/weapi/resource/comments/add`;
-  tmpJar.setCookieSync(OS_ANDROID_COOKIE, url);
+  tmpJar.setCookieSync(OSCookie.android, url);
   return !!(await weapiRequest(
     `music.163.com/weapi/resource/comments/add`,
     { threadId: `${resourceTypeMap[type]}${id}`, content },
@@ -43,7 +38,7 @@ export async function commentReply(
 ): Promise<boolean> {
   const tmpJar = AccountState.defaultCookie.cloneSync();
   const url = `${APISetting.apiProtocol}://music.163.com/weapi/resource/comments/reply`;
-  tmpJar.setCookieSync(OS_ANDROID_COOKIE, url);
+  tmpJar.setCookieSync(OSCookie.android, url);
   return !!(await weapiRequest(
     `music.163.com/weapi/resource/comments/reply`,
     { threadId: `${resourceTypeMap[type]}${id}`, content, commentId },
@@ -89,7 +84,7 @@ export async function commentLike(
 ): Promise<boolean> {
   const tmpJar = AccountState.defaultCookie.cloneSync();
   const url = `${APISetting.apiProtocol}://music.163.com/weapi/v1/comment/${t}`;
-  tmpJar.setCookieSync(OS_PC_COOKIE, url);
+  tmpJar.setCookieSync(OSCookie.pc, url);
   return !!(await weapiRequest(
     `music.163.com/weapi/v1/comment/${t}`,
     { threadId: `${resourceTypeMap[type]}${id}`, commentId },
@@ -107,7 +102,7 @@ export async function commentNew(
 ): Promise<NeteaseTypings.CommentRet> {
   const tmpJar = AccountState.defaultCookie.cloneSync();
   const url = `${APISetting.apiProtocol}://music.163.com/eapi/v2/resource/comments`;
-  tmpJar.setCookieSync(OS_PC_COOKIE, url);
+  tmpJar.setCookieSync(OSCookie.pc, url);
 
   switch (sortType) {
     case NeteaseSortType.recommendation:

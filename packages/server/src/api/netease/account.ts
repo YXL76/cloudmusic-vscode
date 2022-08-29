@@ -1,7 +1,7 @@
 import {
   APPVER_COOKIE,
   AccountState,
-  OS_PC_COOKIE,
+  OSCookie,
   resolveAnotherSongItem,
   resolvePlaylistItem,
   resolveProgramDetail,
@@ -98,7 +98,7 @@ export async function like(
   const url = `${APISetting.apiProtocol}://music.163.com/weapi/radio/like`;
   const tmpJar = AccountState.cookies.get(uid)?.cloneSync() ?? new CookieJar();
   tmpJar.setCookieSync(APPVER_COOKIE, url);
-  tmpJar.setCookieSync(OS_PC_COOKIE, url);
+  tmpJar.setCookieSync(OSCookie.pc, url);
   return !!(await weapiRequest(
     "music.163.com/weapi/radio/like",
     { alg: "itembased", trackId, like, time: "3" },

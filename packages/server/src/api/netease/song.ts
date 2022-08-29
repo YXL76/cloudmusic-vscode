@@ -1,14 +1,12 @@
 import {
   AccountState,
-  OS_IOS_COOKIE,
-  OS_PC_COOKIE,
+  OSCookie,
   resolveAnotherSongItem,
   resolveSongItem,
 } from "./helper";
 import { LyricCache, apiCache } from "../../cache";
 import { apiRequest, eapiRequest, weapiRequest } from "./request";
 import { APISetting } from "../helper";
-import { CookieJar } from "tough-cookie";
 import type { NeteaseTopSongType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import { STATE } from "../../state";
@@ -55,7 +53,7 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
 
   const tmpJar = AccountState.defaultCookie.cloneSync();
   const url = `${APISetting.apiProtocol}://music.163.com/api/song/lyric?_nmclfl=1`;
-  tmpJar.setCookieSync(OS_IOS_COOKIE, url);
+  tmpJar.setCookieSync(OSCookie.ios, url);
 
   const res = await apiRequest<{
     lrc?: { lyric?: string };
@@ -155,7 +153,7 @@ export async function songDetail(
   for (let i = 0; i < trackIds.length; i += limit) {
     const ids = trackIds.slice(i, i + limit);
     tasks.push(
-      (async () => {
+      (async (): Promise<readonly NeteaseTypings.SongsItem[]> => {
         const res = await weapiRequest<{
           songs: readonly NeteaseTypings.SongsItem[];
           privileges: readonly { st: number }[];
@@ -194,16 +192,11 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
     freeTrialInfo?: { start: number; end: number };
   };
 
-  for (const [uid, cookie] of AccountState.cookies) {
+  for (const [, cookie] of AccountState.cookies) {
     try {
       const tmpJar = cookie.cloneSync();
       const rurl = `${APISetting.apiProtocol}://interface.music.163.com/eapi/song/enhance/player/url/v1`;
-      tmpJar.setCookieSync(OS_PC_COOKIE, rurl);
-
-      AccountState.eapiCookies
-        .get(uid)
-        ?.getCookiesSync(rurl)
-        .forEach((c) => tmpJar.setCookieSync(c, rurl));
+      tmpJar.setCookieSync(OSCookie.pc, rurl);
 
       const value = await eapiRequest<{
         readonly data: ReadonlyArray<SongUrlItem>;
@@ -220,9 +213,7 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
       if (!value) throw Error();
 
       if (value.cookie) {
-        const jar = AccountState.eapiCookies.get(uid) ?? new CookieJar();
-        for (const c of value.cookie) jar.setCookieSync(c, rurl);
-        AccountState.eapiCookies.set(uid, jar);
+        for (const c of value.cookie) cookie.setCookieSync(c, rurl);
       }
       const [{ url, md5, type, freeTrialInfo }] = value.data;
       if (!freeTrialInfo) return { url, md5, type };

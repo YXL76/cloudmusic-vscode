@@ -1,6 +1,6 @@
 import {
   AccountState,
-  OS_PC_COOKIE,
+  OSCookie,
   resolveAlbumsItem,
   resolveArtist,
   resolveSongItem,
@@ -117,7 +117,7 @@ export async function artistSongs(
 
   const tmpJar = AccountState.defaultCookie.cloneSync();
   const url = `${APISetting.apiProtocol}://music.163.com/weapi/v1/artist/songs`;
-  tmpJar.setCookieSync(OS_PC_COOKIE, url);
+  tmpJar.setCookieSync(OSCookie.pc, url);
   const res = await weapiRequest<{
     songs: readonly NeteaseTypings.SongsItemSt[];
   }>(

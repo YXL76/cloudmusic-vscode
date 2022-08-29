@@ -1,29 +1,19 @@
-import { Cookie, CookieJar } from "tough-cookie";
+import { CookieJar } from "tough-cookie";
 import { IPCControl } from "@cloudmusic/shared";
 import { IPCServer } from "../../server";
 import type { IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import type { Socket } from "node:net";
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-export const OS_PC_COOKIE = Cookie.fromJSON({ key: "os", value: "pc" })!;
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-export const OS_IOS_COOKIE = Cookie.fromJSON({ key: "os", value: "ios" })!;
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-export const OS_ANDROID_COOKIE = Cookie.fromJSON({
-  key: "os",
-  value: "android",
-})!;
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-export const APPVER_COOKIE = Cookie.fromJSON({
-  key: "appver",
-  value: "2.9.7",
-})!;
+export const enum OSCookie {
+  pc = "os=pc",
+  ios = "os=ios",
+  android = "os=android",
+}
+export const APPVER_COOKIE = "appver=2.9.7";
 
 export class AccountState {
   static cookies = new Map<number, CookieJar>();
-
-  static eapiCookies = new Map<number, CookieJar>();
 
   static profile = new Map<number, NeteaseTypings.Profile>();
 
