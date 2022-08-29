@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.14.2] - 2022-08-29
+
+### Fixed
+
+- API: cookie version
+
 ## [9.14.1] - 2022-08-28
 
 ### Fixed
