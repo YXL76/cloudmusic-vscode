@@ -6,6 +6,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.14.3] - 2022-08-30
+
 ## [9.14.2] - 2022-08-29
 
 ### Fixed
