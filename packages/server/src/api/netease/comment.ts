@@ -1,9 +1,8 @@
-import { AccountState, OSCookie, resolveComment } from "./helper";
 import { eapiRequest, weapiRequest } from "./request";
-import { APISetting } from "../helper";
 import type { NeteaseCommentType } from "@cloudmusic/shared";
 import { NeteaseSortType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
+import { resolveComment } from "./helper";
 
 const resourceTypeMap = [
   "R_SO_4_",
@@ -20,14 +19,10 @@ export async function commentAdd(
   id: number,
   content: string
 ): Promise<boolean> {
-  const tmpJar = AccountState.defaultCookie.cloneSync();
-  const url = `${APISetting.apiProtocol}://music.163.com/weapi/resource/comments/add`;
-  tmpJar.setCookieSync(OSCookie.android, url);
-  return !!(await weapiRequest(
-    `music.163.com/weapi/resource/comments/add`,
-    { threadId: `${resourceTypeMap[type]}${id}`, content },
-    tmpJar
-  ));
+  return !!(await weapiRequest(`music.163.com/weapi/resource/comments/add`, {
+    threadId: `${resourceTypeMap[type]}${id}`,
+    content,
+  }));
 }
 
 export async function commentReply(
@@ -36,14 +31,11 @@ export async function commentReply(
   content: string,
   commentId: number
 ): Promise<boolean> {
-  const tmpJar = AccountState.defaultCookie.cloneSync();
-  const url = `${APISetting.apiProtocol}://music.163.com/weapi/resource/comments/reply`;
-  tmpJar.setCookieSync(OSCookie.android, url);
-  return !!(await weapiRequest(
-    `music.163.com/weapi/resource/comments/reply`,
-    { threadId: `${resourceTypeMap[type]}${id}`, content, commentId },
-    tmpJar
-  ));
+  return !!(await weapiRequest(`music.163.com/weapi/resource/comments/reply`, {
+    threadId: `${resourceTypeMap[type]}${id}`,
+    content,
+    commentId,
+  }));
 }
 
 export async function commentFloor(
@@ -82,14 +74,10 @@ export async function commentLike(
   id: number,
   commentId: number
 ): Promise<boolean> {
-  const tmpJar = AccountState.defaultCookie.cloneSync();
-  const url = `${APISetting.apiProtocol}://music.163.com/weapi/v1/comment/${t}`;
-  tmpJar.setCookieSync(OSCookie.pc, url);
-  return !!(await weapiRequest(
-    `music.163.com/weapi/v1/comment/${t}`,
-    { threadId: `${resourceTypeMap[type]}${id}`, commentId },
-    tmpJar
-  ));
+  return !!(await weapiRequest(`music.163.com/weapi/v1/comment/${t}`, {
+    threadId: `${resourceTypeMap[type]}${id}`,
+    commentId,
+  }));
 }
 
 export async function commentNew(
@@ -100,10 +88,6 @@ export async function commentNew(
   sortType: NeteaseSortType,
   cursor: number | string
 ): Promise<NeteaseTypings.CommentRet> {
-  const tmpJar = AccountState.defaultCookie.cloneSync();
-  const url = `${APISetting.apiProtocol}://music.163.com/eapi/v2/resource/comments`;
-  tmpJar.setCookieSync(OSCookie.pc, url);
-
   switch (sortType) {
     case NeteaseSortType.recommendation:
       cursor = (pageNo - 1) * pageSize;
@@ -128,8 +112,7 @@ export async function commentNew(
       cursor,
       sortType,
     },
-    "/api/v2/resource/comments",
-    tmpJar
+    "/api/v2/resource/comments"
   );
   if (!res) return { totalCount: 0, hasMore: false, comments: [] };
   const {

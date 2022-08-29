@@ -1,14 +1,11 @@
 import {
   AccountState,
-  OSCookie,
   resolvePlaylistItem,
   resolveSongItem,
   resolveSongItemSt,
   resolveUserDetail,
 } from "./helper";
 import { apiRequest, weapiRequest } from "./request";
-import { APISetting } from "../helper";
-import { CookieJar } from "tough-cookie";
 import type { NeteaseTypings } from "api";
 import { apiCache } from "../../cache";
 import { songDetail } from "./index";
@@ -42,9 +39,6 @@ export async function playlistCreate(
   name: string,
   privacy: 0 | 10
 ): Promise<boolean> {
-  const url = `${APISetting.apiProtocol}://music.163.com/weapi/playlist/create`;
-  const tmpJar = AccountState.cookies.get(uid)?.cloneSync() ?? new CookieJar();
-  tmpJar.setCookieSync(OSCookie.pc, url);
   return !!(await weapiRequest(
     "music.163.com/weapi/playlist/create",
     {
@@ -52,7 +46,7 @@ export async function playlistCreate(
       privacy, //0 为普通歌单，10 为隐私歌单
       type: "NORMAL", // NORMAL|VIDEO
     },
-    tmpJar
+    AccountState.cookies.get(uid)
   ));
 }
 
@@ -60,13 +54,10 @@ export async function playlistDelete(
   uid: number,
   id: number
 ): Promise<boolean> {
-  const tmpJar = AccountState.cookies.get(uid)?.cloneSync() ?? new CookieJar();
-  const url = `${APISetting.apiProtocol}://music.163.com/weapi/playlist/remove`;
-  tmpJar.setCookieSync(OSCookie.pc, url);
   return !!(await weapiRequest(
     `music.163.com/weapi/playlist/remove`,
     { ids: `[${id}]` },
-    tmpJar
+    AccountState.cookies.get(uid)
   ));
 }
 
@@ -177,9 +168,6 @@ export async function playlistUpdate(
   name: string,
   desc: string
 ): Promise<boolean> {
-  const tmpJar = AccountState.cookies.get(uid)?.cloneSync() ?? new CookieJar();
-  const url = `${APISetting.apiProtocol}://music.163.com/weapi/batch`;
-  tmpJar.setCookieSync(OSCookie.pc, url);
   return !!(await weapiRequest(
     "music.163.com/weapi/batch",
     {
@@ -188,7 +176,7 @@ export async function playlistUpdate(
       // eslint-disable-next-line @typescript-eslint/naming-convention
       "/api/playlist/update/name": `{"id":${id},"name":"${name}"}`,
     },
-    tmpJar
+    AccountState.cookies.get(uid)
   ));
 }
 

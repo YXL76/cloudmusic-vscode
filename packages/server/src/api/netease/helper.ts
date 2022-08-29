@@ -5,13 +5,6 @@ import type { IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import type { Socket } from "node:net";
 
-export const enum OSCookie {
-  pc = "os=pc",
-  ios = "os=ios",
-  android = "os=android",
-}
-export const APPVER_COOKIE = "appver=2.9.7";
-
 export class AccountState {
   static cookies = new Map<number, CookieJar>();
 
@@ -23,6 +16,33 @@ export class AccountState {
       return cookie;
     }
     return new CookieJar();
+  }
+
+  static setStaticCookie(cookie: CookieJar) {
+    for (const url of ["http://music.163.com/weapi/radio/like/"]) {
+      cookie.setCookieSync("appver=2.9.7", url);
+    }
+    for (const url of [
+      "http://music.163.com/weapi/radio/like/",
+      "http://music.163.com/weapi/v1/artist/songs/",
+      "http://music.163.com/weapi/v1/comment/",
+      "http://music.163.com/eapi/v2/resource/comments/",
+      "http://music.163.com/weapi/playlist/create/",
+      "http://music.163.com/weapi/playlist/remove/",
+      "http://music.163.com/weapi/batch/",
+      "http://interface.music.163.com/eapi/song/enhance/player/url/v1/",
+    ]) {
+      cookie.setCookieSync("os=pc", url);
+    }
+    for (const url of ["http://music.163.com/api/song/lyric/"]) {
+      cookie.setCookieSync("os=ios", url);
+    }
+    for (const url of [
+      "http://music.163.com/weapi/resource/comments/add/",
+      "http://music.163.com/weapi/resource/comments/reply/",
+    ]) {
+      cookie.setCookieSync("os=android", url);
+    }
   }
 }
 

@@ -1,13 +1,10 @@
+import type { NeteaseArtistArea, NeteaseArtistType } from "@cloudmusic/shared";
 import {
-  AccountState,
-  OSCookie,
   resolveAlbumsItem,
   resolveArtist,
   resolveSongItem,
   resolveSongItemSt,
 } from "./helper";
-import type { NeteaseArtistArea, NeteaseArtistType } from "@cloudmusic/shared";
-import { APISetting } from "../helper";
 import type { NeteaseTypings } from "api";
 import { apiCache } from "../../cache";
 import { weapiRequest } from "./request";
@@ -115,25 +112,18 @@ export async function artistSongs(
   const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
 
-  const tmpJar = AccountState.defaultCookie.cloneSync();
-  const url = `${APISetting.apiProtocol}://music.163.com/weapi/v1/artist/songs`;
-  tmpJar.setCookieSync(OSCookie.pc, url);
   const res = await weapiRequest<{
     songs: readonly NeteaseTypings.SongsItemSt[];
-  }>(
-    "music.163.com/weapi/v1/artist/songs",
-    {
-      id,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      private_cloud: true,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      work_type: 1,
-      order: "hot", //hot,time
-      offset,
-      limit,
-    },
-    tmpJar
-  );
+  }>("music.163.com/weapi/v1/artist/songs", {
+    id,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    private_cloud: true,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    work_type: 1,
+    order: "hot", //hot,time
+    offset,
+    limit,
+  });
   if (!res) return [];
   const ret = res.songs.map(resolveSongItemSt);
   apiCache.set(key, ret);

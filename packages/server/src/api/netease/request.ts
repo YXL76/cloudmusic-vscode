@@ -113,6 +113,7 @@ export const loginRequest = async (
   if (!res.headers["set-cookie"]?.length) return;
   const cookie = new CookieJar();
   for (const c of res.headers["set-cookie"]) cookie.setCookieSync(c, url);
+  AccountState.setStaticCookie(cookie);
   AccountState.cookies.set(profile.userId, cookie);
   AccountState.profile.set(profile.userId, profile);
   broadcastProfiles();

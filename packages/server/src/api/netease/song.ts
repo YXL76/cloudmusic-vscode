@@ -1,6 +1,5 @@
 import {
   AccountState,
-  OSCookie,
   resolveAnotherSongItem,
   resolveSongItem,
 } from "./helper";
@@ -51,21 +50,19 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
   const lyricCache = await LyricCache.get(`${id}`);
   if (lyricCache) return lyricCache;
 
-  const tmpJar = AccountState.defaultCookie.cloneSync();
-  const url = `${APISetting.apiProtocol}://music.163.com/api/song/lyric?_nmclfl=1`;
-  tmpJar.setCookieSync(OSCookie.ios, url);
-
   const res = await apiRequest<{
     lrc?: { lyric?: string };
     tlyric?: { lyric?: string };
     romalrc?: { lyric?: string };
     lyricUser?: NeteaseTypings.LyricUser;
     transUser?: NeteaseTypings.LyricUser;
-  }>(
-    "music.163.com/api/song/lyric?_nmclfl=1",
-    { id, tv: -1, lv: -1, rv: -1, kv: -1 },
-    tmpJar
-  );
+  }>("music.163.com/api/song/lyric?_nmclfl=1", {
+    id,
+    tv: -1,
+    lv: -1,
+    rv: -1,
+    kv: -1,
+  });
 
   if (!res) return { time: [0], text: [["~", "~", "~"]], user: [] };
 
@@ -194,9 +191,7 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
 
   for (const [, cookie] of AccountState.cookies) {
     try {
-      const tmpJar = cookie.cloneSync();
       const rurl = `${APISetting.apiProtocol}://interface.music.163.com/eapi/song/enhance/player/url/v1`;
-      tmpJar.setCookieSync(OSCookie.pc, rurl);
 
       const value = await eapiRequest<{
         readonly data: ReadonlyArray<SongUrlItem>;
@@ -208,7 +203,7 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
           encodeType: "flac",
         },
         "/api/song/enhance/player/url/v1",
-        tmpJar
+        cookie
       );
       if (!value) throw Error();
 

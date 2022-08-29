@@ -1,7 +1,5 @@
 import {
-  APPVER_COOKIE,
   AccountState,
-  OSCookie,
   resolveAnotherSongItem,
   resolvePlaylistItem,
   resolveProgramDetail,
@@ -95,14 +93,10 @@ export async function like(
   trackId: number,
   like: boolean
 ): Promise<boolean> {
-  const url = `${APISetting.apiProtocol}://music.163.com/weapi/radio/like`;
-  const tmpJar = AccountState.cookies.get(uid)?.cloneSync() ?? new CookieJar();
-  tmpJar.setCookieSync(APPVER_COOKIE, url);
-  tmpJar.setCookieSync(OSCookie.pc, url);
   return !!(await weapiRequest(
     "music.163.com/weapi/radio/like",
     { alg: "itembased", trackId, like, time: "3" },
-    tmpJar
+    AccountState.cookies.get(uid)
   ));
 }
 
@@ -170,7 +164,7 @@ export async function loginRefresh(cookieStr: string): Promise<string | void> {
   );
   if (!res || !res.cookie) return;
   if (res.cookie) {
-    const url = `${APISetting.apiProtocol}://music.163.com/weapi/login/token/refresh`;
+    const url = `http://music.163.com/weapi/login/token/refresh`;
     for (const c of res.cookie) cookie.setCookieSync(c, url);
   }
   return JSON.stringify(cookie.serializeSync());
@@ -187,6 +181,7 @@ export async function loginStatus(cookieStr: string): Promise<boolean> {
     for (const c of res.cookie) cookie.setCookieSync(c, url);
   }
   const { profile } = res;
+  AccountState.setStaticCookie(cookie);
   AccountState.cookies.set(profile.userId, cookie);
   AccountState.profile.set(profile.userId, profile);
   return true;
