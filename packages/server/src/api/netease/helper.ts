@@ -23,6 +23,8 @@ export const APPVER_COOKIE = Cookie.fromJSON({
 export class AccountState {
   static cookies = new Map<number, CookieJar>();
 
+  static eapiCookies = new Map<number, CookieJar>();
+
   static profile = new Map<number, NeteaseTypings.Profile>();
 
   static get defaultCookie(): CookieJar {

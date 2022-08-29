@@ -8,6 +8,7 @@ import {
 import { LyricCache, apiCache } from "../../cache";
 import { apiRequest, eapiRequest, weapiRequest } from "./request";
 import { APISetting } from "../helper";
+import { CookieJar } from "tough-cookie";
 import type { NeteaseTopSongType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import { STATE } from "../../state";
@@ -193,11 +194,16 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
     freeTrialInfo?: { start: number; end: number };
   };
 
-  for (const [, cookie] of AccountState.cookies) {
+  for (const [uid, cookie] of AccountState.cookies) {
     try {
       const tmpJar = cookie.cloneSync();
       const rurl = `${APISetting.apiProtocol}://interface.music.163.com/eapi/song/enhance/player/url/v1`;
       tmpJar.setCookieSync(OS_PC_COOKIE, rurl);
+
+      AccountState.eapiCookies
+        .get(uid)
+        ?.getCookiesSync(rurl)
+        .forEach((c) => tmpJar.setCookieSync(c, rurl));
 
       const value = await eapiRequest<{
         readonly data: ReadonlyArray<SongUrlItem>;
@@ -214,7 +220,9 @@ export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
       if (!value) throw Error();
 
       if (value.cookie) {
-        for (const c of value.cookie) cookie.setCookieSync(c, rurl);
+        const jar = AccountState.eapiCookies.get(uid) ?? new CookieJar();
+        for (const c of value.cookie) jar.setCookieSync(c, rurl);
+        AccountState.eapiCookies.set(uid, jar);
       }
       const [{ url, md5, type, freeTrialInfo }] = value.data;
       if (!freeTrialInfo) return { url, md5, type };

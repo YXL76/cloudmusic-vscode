@@ -165,7 +165,7 @@ export async function playlistTracks(
   if (res.code !== 512) return false;
 
   return !!(await weapiRequest(
-    "music.163.com/api/playlist/manipulate/tracks",
+    "music.163.com/weapi/playlist/manipulate/tracks",
     { op, pid, trackIds: JSON.stringify([...tracks, ...tracks]), imme: "true" },
     AccountState.cookies.get(uid)
   ));
