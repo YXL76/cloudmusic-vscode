@@ -893,7 +893,7 @@
     "@typescript-eslint/eslint-plugin": "5.35.1",
     "@typescript-eslint/parser": "5.35.1",
     "debug": "4.3.4",
-    "esbuild": "0.15.5",
+    "esbuild": "0.15.6",
     "esbuild-plugin-wasm": "1.0.0",
     "eslint": "8.23.0",
     "eslint-config-prettier": "8.5.0",
