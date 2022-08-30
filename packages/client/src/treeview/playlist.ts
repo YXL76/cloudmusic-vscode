@@ -41,6 +41,7 @@ export class PlaylistProvider implements TreeDataProvider<Content> {
   static refreshUser(element: UserTreeItem): void {
     IPC.deleteCache(`user_playlist${element.uid}`);
     this._instance._onDidChangeTreeData.fire(element);
+    void this._instance.view.reveal(element, { expand: true });
   }
 
   static async refreshPlaylist(
@@ -58,6 +59,7 @@ export class PlaylistProvider implements TreeDataProvider<Content> {
   static refreshPlaylistHard(element: PlaylistItemTreeItem): void {
     IPC.deleteCache(`playlist_detail${element.valueOf}`);
     this._instance._onDidChangeTreeData.fire(element);
+    void this._instance.view.reveal(element, { expand: true });
   }
 
   getTreeItem(element: Content): Content {

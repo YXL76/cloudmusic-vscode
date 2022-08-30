@@ -53,7 +53,7 @@ async function prefetch() {
   const idS = `${id}`;
   if (MusicCache.get(idS)) return;
 
-  const { url, md5 } = await NeteaseAPI.songUrl(idS);
+  const { url, md5 } = await NeteaseAPI.songUrl(id);
   if (!url) return;
   const path = resolve(TMP_DIR, idS);
 

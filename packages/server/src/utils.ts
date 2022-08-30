@@ -26,7 +26,7 @@ export async function getMusicPath(
   const cachaUrl = MusicCache.get(idS);
   if (cachaUrl) return cachaUrl;
 
-  const { url, md5 } = await NeteaseAPI.songUrl(idS);
+  const { url, md5 } = await NeteaseAPI.songUrl(id);
   if (!url) return Promise.reject();
   const tmpUri = resolve(TMP_DIR, idS);
 

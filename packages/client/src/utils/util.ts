@@ -233,9 +233,10 @@ export async function pickSong(
       } as QueueItemTreeItem);
       break;
     case PickType.download:
-      void commands.executeCommand("cloudmusic.downloadSong", { item } as
-        | QueueItemTreeItem
-        | ProgramTreeItem);
+      void commands.executeCommand("cloudmusic.downloadSong", {
+        item,
+        valueOf: id,
+      });
       break;
     case PickType.album:
       return (input) => pickAlbum(input, step + 1, (pick as T).id);
@@ -400,7 +401,8 @@ export async function pickProgram(
     case PickType.download:
       void commands.executeCommand("cloudmusic.downloadSong", {
         item: mainSong,
-      } as QueueItemTreeItem | ProgramTreeItem);
+        valueOf: id,
+      });
       break;
     case PickType.user:
       return (input) => pickUser(input, step + 1, (pick as T).id);

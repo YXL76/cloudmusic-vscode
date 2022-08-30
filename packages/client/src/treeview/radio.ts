@@ -41,6 +41,7 @@ export class RadioProvider implements TreeDataProvider<Content> {
   static refreshUser(element: UserTreeItem): void {
     IPC.deleteCache(`dj_sublist${element.uid}`);
     this._instance._onDidChangeTreeData.fire(element);
+    void this._instance.view.reveal(element, { expand: true });
   }
 
   static async refreshRadio(
@@ -58,6 +59,7 @@ export class RadioProvider implements TreeDataProvider<Content> {
   static refreshRadioHard(element: RadioTreeItem): void {
     IPC.deleteCache(`dj_program${element.valueOf}`);
     this._instance._onDidChangeTreeData.fire(element);
+    void this._instance.view.reveal(element, { expand: true });
   }
 
   getTreeItem(element: Content): Content {

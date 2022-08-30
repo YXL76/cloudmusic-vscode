@@ -293,7 +293,7 @@ export function initPlaylist(context: ExtensionContext): void {
     commands.registerCommand(
       "cloudmusic.downloadSong",
       async ({ valueOf, item }: QueueItemTreeItem | ProgramTreeItem) => {
-        const { url, type } = await IPC.netease("songUrl", [`${valueOf}`]);
+        const { url, type } = await IPC.netease("songUrl", [valueOf]);
         if (!url) return;
 
         const uri = await window.showSaveDialog({

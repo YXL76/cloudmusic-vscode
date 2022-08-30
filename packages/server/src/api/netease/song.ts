@@ -184,7 +184,7 @@ const br2level = new Map([
   [999000, "lossless"],
 ]);
 
-export async function songUrl(id: string): Promise<NeteaseTypings.SongDetail> {
+export async function songUrl(id: number): Promise<NeteaseTypings.SongDetail> {
   type SongUrlItem = NeteaseTypings.SongDetail & {
     freeTrialInfo?: { start: number; end: number };
   };
