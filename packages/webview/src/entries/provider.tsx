@@ -41,6 +41,52 @@ function deleteMediaSessionActionHandler() {
 
 deleteMediaSessionActionHandler();
 
+class WebAudioPlayer {
+  private _audio: HTMLAudioElement;
+
+  constructor() {
+    this._audio = new Audio();
+    this._audio.preservesPitch = true;
+  }
+
+  free(): void {
+    // noop
+  }
+
+  load(data: Uint8Array): boolean {
+    this._audio.src = URL.createObjectURL(new Blob([data.buffer]));
+    return this.play();
+  }
+
+  play(): boolean {
+    if (this.empty()) return false;
+    this._audio.play().catch(console.error);
+    return true;
+  }
+
+  pause(): void {
+    this._audio.pause();
+  }
+
+  stop(): void {
+    this._audio.src = "";
+  }
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  set_speed(speed: number): void {
+    this._audio.playbackRate = speed; // TODO
+  }
+
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  set_volume(level: number): void {
+    this._audio.volume = level / 100;
+  }
+
+  empty(): boolean {
+    return this._audio.ended;
+  }
+}
+
 class Controller {
   private static _player?: Player;
 
@@ -62,8 +108,19 @@ class Controller {
   private static _playableFile?: string;
 
   static async init() {
-    if ((window as unknown as { enablePlayer: boolean }).enablePlayer)
-      this._player = new (await import("cloudmusic-wasm")).Player();
+    const { enablePlayer, testfiles } = window as unknown as {
+      enablePlayer: boolean;
+      testfiles: string[];
+    };
+
+    const fakeAudio = await this._testAudioFiles(testfiles);
+    if (fakeAudio && this._master) this._startSilent(fakeAudio);
+
+    if (enablePlayer) {
+      this._player = fakeAudio
+        ? new (await import("cloudmusic-wasm")).Player()
+        : new WebAudioPlayer();
+    }
 
     vscode.postMessage({ command: "pageLoaded" } as ProviderCMsg);
   }
@@ -138,22 +195,28 @@ class Controller {
     }
   }
 
-  static async testAudioFiles(files: string[]) {
+  private static async _testAudioFiles(
+    files: string[]
+  ): Promise<HTMLAudioElement | undefined> {
     const a = new Audio();
+    const passed = [];
     for (const file of files) {
       a.src = file;
       try {
         await a.play();
-        this._playableFile = file;
-        if (this._master && this._player) this._startSilent(a);
-        break;
+        passed.push(file);
       } catch {}
     }
+    if (passed.length !== files.length) {
+      this._playableFile = passed.pop();
+      return a;
+    }
+    return;
   }
 
   private static _startSilent(ele?: HTMLAudioElement) {
-    this._audioEle?.pause();
     if (!this._playableFile) return;
+    this._audioEle?.pause();
     this._audioEle = ele ?? new Audio(this._playableFile);
     this._audioEle.loop = true;
     this._audioEle.play().catch(console.error);
@@ -204,9 +267,6 @@ const Provider = (): JSX.Element => {
       switch (data.command) {
         case "master":
           Controller.setMaster(data.is);
-          break;
-        case "test":
-          Controller.testAudioFiles(data.files).catch(console.error);
           break;
         case "state":
           navigator.mediaSession.playbackState = data.state;

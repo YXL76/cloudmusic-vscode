@@ -145,11 +145,11 @@ export class AccountViewProvider implements WebviewViewProvider {
     }
   }
 
-  resolveWebviewView(
+  async resolveWebviewView(
     webview: WebviewView
     // context: WebviewViewResolveContext
     // token: CancellationToken
-  ): void {
+  ): Promise<void> {
     const extUri = AccountViewProvider.context.extensionUri;
     AccountViewProvider._view = webview;
 
@@ -171,22 +171,7 @@ export class AccountViewProvider implements WebviewViewProvider {
           AccountViewProvider.wasmSpeed(
             AccountViewProvider.context.globalState.get(SPEED_KEY, 1)
           );
-
-          if (State.wasm) {
-            const audioUri = Uri.joinPath(extUri, "media", "audio");
-            workspace.fs.readDirectory(audioUri).then((items) => {
-              const files = items
-                .filter(([name]) => name.startsWith("silent"))
-                .map(([name]) =>
-                  webview.webview
-                    .asWebviewUri(Uri.joinPath(audioUri, name))
-                    .toString()
-                );
-              const msg: ProviderSMsg = { command: "test", files };
-              void webview.webview.postMessage(msg);
-            }, console.error);
-            State.downInit(); // 3
-          }
+          if (State.wasm) State.downInit(); // 3
           break;
         case "account":
           AccountManager.accountQuickPick(msg.userId);
@@ -217,6 +202,14 @@ export class AccountViewProvider implements WebviewViewProvider {
       .asWebviewUri(Uri.joinPath(extUri, "dist", "style.css"))
       .toString();
 
+    const audioUri = Uri.joinPath(extUri, "media", "audio");
+    const items = await workspace.fs.readDirectory(audioUri);
+    const files = items
+      .filter(([name]) => name.startsWith("silent"))
+      .map(([name]) =>
+        webview.webview.asWebviewUri(Uri.joinPath(audioUri, name)).toString()
+      );
+
     webview.webview.html = `
 <!DOCTYPE html>
 <html
@@ -232,6 +225,7 @@ export class AccountViewProvider implements WebviewViewProvider {
     <div id="root"></div>
   </body>
   <script>window.enablePlayer=${State.wasm ? "true" : "false"}</script>
+  <script>window.testfiles=${JSON.stringify(files)}</script>
   <script type="module" src=${js} nonce=${getNonce()}></script>
 </html>`;
   }
