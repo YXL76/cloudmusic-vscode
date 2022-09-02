@@ -13,6 +13,7 @@ import type { ExtensionContext } from "vscode";
 import type { NeteaseTypings } from "api";
 import type { QueueContent } from "../treeview";
 import i18n from "../i18n";
+import { version } from "vscode";
 
 export const enum LyricType {
   ori = 0, // original
@@ -36,7 +37,15 @@ export const defaultLyric: Lyric = {
 export class State {
   static context: ExtensionContext;
 
-  static wasm = PLAYER_MODE === "wasm";
+  static wasm =
+    PLAYER_MODE === "auto"
+      ? (() => {
+          const [major, minor] = version.split(".");
+          // Use `wasm` if version >= 1.71.0
+          // https://github.com/microsoft/vscode/issues/118275
+          return parseInt(major) >= 1 && parseInt(minor) >= 71;
+        })()
+      : PLAYER_MODE === "wasm";
 
   static first = false;
 

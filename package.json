@@ -396,8 +396,9 @@
             "type": "boolean"
           },
           "cloudmusic.player.mode": {
-            "default": "native",
+            "default": "auto",
             "enum": [
+              "auto",
               "native",
               "wasm"
             ],
