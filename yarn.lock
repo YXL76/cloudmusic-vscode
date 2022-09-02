@@ -34,7 +34,7 @@ __metadata:
     "@types/tough-cookie": "npm:4.0.2"
     "@types/yallist": "npm:4.0.1"
     global-agent: "npm:3.0.0"
-    got: "npm:12.3.1"
+    got: "npm:12.4.1"
     md5-file: "npm:5.0.0"
     node-cache: "npm:5.1.2"
     tough-cookie: "npm:4.1.2"
@@ -329,7 +329,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/responselike@npm:*, @types/responselike@npm:^1.0.0":
+"@types/responselike@npm:*":
   version: 1.0.0
   resolution: "@types/responselike@npm:1.0.0"
   dependencies:
@@ -1796,7 +1796,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data-encoder@npm:^2.0.1":
+"form-data-encoder@npm:^2.1.0":
   version: 2.1.0
   resolution: "form-data-encoder@npm:2.1.0"
   checksum: a3b5913db0de233c46ba0bed40823e1ba9226bd028b438933231d0e5f537164e004a415f52ea25cfef702eca26c95ac020bac92933926b2737816f92ac92303c
@@ -2022,24 +2022,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"got@npm:12.3.1":
-  version: 12.3.1
-  resolution: "got@npm:12.3.1"
+"got@npm:12.4.1":
+  version: 12.4.1
+  resolution: "got@npm:12.4.1"
   dependencies:
     "@sindresorhus/is": "npm:^5.2.0"
     "@szmarczak/http-timer": "npm:^5.0.1"
     "@types/cacheable-request": "npm:^6.0.2"
-    "@types/responselike": "npm:^1.0.0"
     cacheable-lookup: "npm:^6.0.4"
     cacheable-request: "npm:^7.0.2"
     decompress-response: "npm:^6.0.0"
-    form-data-encoder: "npm:^2.0.1"
+    form-data-encoder: "npm:^2.1.0"
     get-stream: "npm:^6.0.1"
     http2-wrapper: "npm:^2.1.10"
     lowercase-keys: "npm:^3.0.0"
     p-cancelable: "npm:^3.0.0"
-    responselike: "npm:^2.0.0"
-  checksum: e551bbea3bc1885774b4959c1635d9d815c8b55927e171b5b170ba06eb9910284d74083cc13bf850b43c53f51abaaad2f3f4f19db0f90b165d86abdfefaf4342
+    responselike: "npm:^3.0.0"
+  checksum: a76cf93adbe28e554298b54a6c5c3656f4027c77049612991b8876727010cb8e9c5924a8965662fb24c514637a9160e60c9732ea80517bacf0e9ebb66296730d
   languageName: node
   linkType: hard
 
@@ -3466,6 +3465,15 @@ __metadata:
   dependencies:
     lowercase-keys: "npm:^2.0.0"
   checksum: 630d53fc31717a5a8cd634d4844feb41e70be4c3d01ffc79a9964b289a978ffefed09c70bd71d7006e74e27ed274e7f8f5bf09b0cf333e562e6ef2505ac3f4e5
+  languageName: node
+  linkType: hard
+
+"responselike@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "responselike@npm:3.0.0"
+  dependencies:
+    lowercase-keys: "npm:^3.0.0"
+  checksum: 0f5050a8850d2c63ab3f467ccdb29b8f143a2081282a9014dea2473b25e33395c14f731df690d339b6faed3c53af1cd7a1c55ccb85673e6f4c2d4497715d0400
   languageName: node
   linkType: hard
 
