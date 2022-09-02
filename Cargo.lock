@@ -196,6 +196,7 @@ version = "0.1.0"
 dependencies = [
  "rodio",
  "wasm-bindgen",
+ "web-sys",
 ]
 
 [[package]]

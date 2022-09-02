@@ -26,9 +26,9 @@ export const HTTPS_API = (conf: WorkspaceConfiguration): boolean =>
   conf.get("network.httpsAPI", true);
 export const FOREIGN = (conf: WorkspaceConfiguration): boolean =>
   conf.get("network.foreignUser", false);
-export const PLAYER_MODE = kConf.get<"native" | "wasm">(
+export const PLAYER_MODE = kConf.get<"auto" | "native" | "wasm">(
   "player.mode",
-  "native"
+  "auto"
 );
 export const QUEUE_INIT = kConf.get<"none" | "recommend" | "restore">(
   "queue.initialization",

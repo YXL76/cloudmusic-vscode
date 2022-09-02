@@ -8,10 +8,18 @@ import { vscode } from "../utils";
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const root = createRoot(document.getElementById("root")!);
 
-const toggle = () => vscode.postMessage({ command: "toggle" } as ProviderCMsg);
-const previous = () =>
-  vscode.postMessage({ command: "previous" } as ProviderCMsg);
-const next = () => vscode.postMessage({ command: "next" } as ProviderCMsg);
+const toggle = () => {
+  const msg: ProviderCMsg = { command: "toggle" };
+  vscode.postMessage(msg);
+};
+const previous = () => {
+  const msg: ProviderCMsg = { command: "previous" };
+  vscode.postMessage(msg);
+};
+const next = () => {
+  const msg: ProviderCMsg = { command: "next" };
+  vscode.postMessage(msg);
+};
 
 function setMediaSessionActionHandler() {
   if (!navigator.mediaSession) return;
@@ -44,22 +52,28 @@ deleteMediaSessionActionHandler();
 class WebAudioPlayer {
   private _audio: HTMLAudioElement;
 
+  private _speed = 1;
+
   constructor() {
     this._audio = new Audio();
     this._audio.preservesPitch = true;
+
+    console.log("Audio Player: HTMLAudioElement");
   }
 
-  free(): void {
-    // noop
-  }
+  // load(data: Uint8Array): boolean {
+  //   this._audio.src = URL.createObjectURL(new Blob([data.buffer]));
+  //   return this.play();
+  // }
 
-  load(data: Uint8Array): boolean {
-    this._audio.src = URL.createObjectURL(new Blob([data.buffer]));
+  load(url: string): boolean {
+    this._audio.src = url;
     return this.play();
   }
 
   play(): boolean {
     if (this.empty()) return false;
+    this._audio.playbackRate = this._speed;
     this._audio.play().catch(console.error);
     return true;
   }
@@ -74,29 +88,28 @@ class WebAudioPlayer {
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   set_speed(speed: number): void {
-    this._audio.playbackRate = speed; // TODO
+    this._speed = speed;
+    this._audio.playbackRate = speed;
   }
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   set_volume(level: number): void {
-    this._audio.volume = level / 100;
+    this._audio.volume = level;
   }
 
   empty(): boolean {
     return this._audio.ended;
   }
+
+  position(): number {
+    return this._audio.currentTime;
+  }
 }
 
 class Controller {
-  private static _player?: Player;
-
-  private static _speed = 1;
+  private static _player?: Player | WebAudioPlayer;
 
   private static _playing = false;
-
-  private static _duration = 0;
-
-  private static _instant = 0;
 
   private static _master = false;
 
@@ -122,60 +135,56 @@ class Controller {
         : new WebAudioPlayer();
     }
 
-    vscode.postMessage({ command: "pageLoaded" } as ProviderCMsg);
+    const msg: ProviderCMsg = { command: "pageLoaded" };
+    vscode.postMessage(msg);
   }
 
   static async load(url: string) {
     if (!this._player) return;
 
-    const rep = await fetch(url);
-    const buf = await rep.arrayBuffer();
-    this._playing = !!this._player.load(new Uint8Array(buf));
+    if (this._player instanceof WebAudioPlayer) {
+      this._playing = !!this._player.load(url);
+    } else {
+      const rep = await fetch(url);
+      const buf = await rep.arrayBuffer();
+      this._playing = !!this._player.load(new Uint8Array(buf));
+    }
+
     if (this._playing) {
-      this._instant = Date.now();
-      this._duration = 0;
-      vscode.postMessage({ command: "load" } as ProviderCMsg);
+      const msg: ProviderCMsg = { command: "load" };
+      vscode.postMessage(msg);
     }
   }
 
   static play() {
     if (!this._player) return;
 
-    if (!this._playing) this._instant = Date.now();
     this._playing = !!this._player.play();
-    vscode.postMessage({
+    const msg: ProviderCMsg = {
       command: "playing",
       playing: this._playing,
-    } as ProviderCMsg);
+    };
+    vscode.postMessage(msg);
   }
 
   static pause() {
     if (!this._player) return;
-
     this._player.pause();
-    if (this._playing) {
-      this._duration = (Date.now() - this._instant) * this._speed;
-      this._playing = false;
-    }
+    this._playing = false;
   }
 
   static stop() {
     if (!this._player) return;
-
-    this._duration = 0;
     this._player.stop();
     this._playing = false;
   }
 
   static speed(speed: number) {
     this._player?.set_speed(speed);
-    this._duration += (Date.now() - this._instant) * this._speed;
-    this._instant = Date.now();
-    this._speed = speed;
   }
 
   static volume(level: number) {
-    this._player?.set_volume(level);
+    this._player?.set_volume(level / 100);
   }
 
   static setMaster(value: boolean) {
@@ -238,12 +247,16 @@ class Controller {
     if (!this._player || !this._playing) return;
     if (this._player.empty()) {
       this._playing = false;
-      vscode.postMessage({ command: "end" } as ProviderCMsg);
+      const msg: ProviderCMsg = { command: "end" };
+      vscode.postMessage(msg);
       return;
     }
-    const pos =
-      ((Date.now() - this._instant) * this._speed + this._duration) / 1000;
-    vscode.postMessage({ command: "position", pos } as ProviderCMsg);
+
+    const msg: ProviderCMsg = {
+      command: "position",
+      pos: this._player.position(),
+    };
+    vscode.postMessage(msg);
     /* if (navigator.mediaSession) {
       navigator.mediaSession.setPositionState?.({ position: pos });
     } */
@@ -313,9 +326,10 @@ const Provider = (): JSX.Element => {
           key={userId}
           className="rounded-lg cursor-pointer mx-1 my-2 bg-center bg-cover"
           style={{ backgroundImage: `url("${backgroundUrl}")` }}
-          onClick={() =>
-            vscode.postMessage({ command: "account", userId } as ProviderCMsg)
-          }
+          onClick={() => {
+            const msg: ProviderCMsg = { command: "account", userId };
+            vscode.postMessage(msg);
+          }}
         >
           <div className="h-16 flex flex-row items-center overflow-hidden p-2 bg-black bg-opacity-30">
             <img
