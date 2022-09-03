@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.15.1] - 2022-09-03
+
+### Fixed
+
+- Resume playback after reload
+
 ## [9.15.0] - 2022-09-03
 
 ### Added
