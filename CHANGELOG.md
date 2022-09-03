@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.16.0] - 2022-09-03
+
+### Added
+
+- Treeview: read local files' metadata ([#640](https://github.com/YXL76/cloudmusic-vscode/issues/640))
+
 ## [9.15.1] - 2022-09-03
 
 ### Fixed

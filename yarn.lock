@@ -1729,14 +1729,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-type@npm:^17.1.6":
-  version: 17.1.6
-  resolution: "file-type@npm:17.1.6"
+"file-type@npm:18.0.0":
+  version: 18.0.0
+  resolution: "file-type@npm:18.0.0"
   dependencies:
     readable-web-to-node-stream: "npm:^3.0.2"
-    strtok3: "npm:^7.0.0-alpha.9"
-    token-types: "npm:^5.0.0-alpha.2"
-  checksum: 014e4261f21635182c4427822fe2e516bcc8f7f3480f53cb7211db9cd4da52c152f5fadd86e9a44ac74d92ce794ae9b448e3fcaad94add5c512397f06e8b0401
+    strtok3: "npm:^7.0.0"
+    token-types: "npm:^5.0.1"
+  checksum: 6e1ca6e73601d82b53ecbc116b2e677bb0752739017635a8975a76b18703d81149d42b914805ae04d21d209734efdb30d625aea4c3fe245fbc76f2519d00d302
   languageName: node
   linkType: hard
 
@@ -3768,7 +3768,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strtok3@npm:^7.0.0, strtok3@npm:^7.0.0-alpha.9":
+"strtok3@npm:^7.0.0":
   version: 7.0.0
   resolution: "strtok3@npm:7.0.0"
   dependencies:
@@ -3866,7 +3866,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"token-types@npm:^5.0.0-alpha.2, token-types@npm:^5.0.1":
+"token-types@npm:^5.0.1":
   version: 5.0.1
   resolution: "token-types@npm:5.0.1"
   dependencies:
