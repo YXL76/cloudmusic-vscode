@@ -6,6 +6,19 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.15.0] - 2022-09-03
+
+### Added
+
+- Configuration: use `WebAudioPlayer` as default player when vscode version >= 1.71 ([microsoft/vscode#118275](https://github.com/microsoft/vscode/issues/118275))
+- Player:
+  - Add `WebAudioPlayer`
+  - Support seeking when using `WebAudioPlayer` ([#638](https://github.com/YXL76/cloudmusic-vscode/issues/638), [#776](https://github.com/YXL76/cloudmusic-vscode/issues/776))
+
+### Fixed
+
+- Commands: `cloudmusic.downloadSong` args
+
 ## [9.14.4] - 2022-08-30
 
 ### Fixed
