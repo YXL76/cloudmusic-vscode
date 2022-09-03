@@ -216,6 +216,10 @@ export class IPC {
     ipc.send({ t: IPCPlayer.speed, speed });
   }
 
+  static seek(seekOffset: number): void {
+    ipc.send({ t: IPCPlayer.seek, seekOffset });
+  }
+
   static add(items: readonly PlayTreeItemData[], index?: number): void {
     ipcB.send({ t: IPCQueue.add, items, index });
   }

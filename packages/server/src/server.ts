@@ -228,6 +228,9 @@ export class IPCServer {
         Player.speed(data.speed);
         this.broadcast(data);
         break;
+      case IPCPlayer.seek:
+        Player.seek(data.seekOffset);
+        break;
       case IPCQueue.fm:
         if (data.is) {
           STATE.fm = true;

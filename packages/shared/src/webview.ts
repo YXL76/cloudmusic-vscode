@@ -56,4 +56,5 @@ export type ProviderSMsg =
   | { command: "pause" }
   | { command: "stop" }
   | { command: "speed"; speed: number }
-  | { command: "volume"; level: number };
+  | { command: "volume"; level: number }
+  | { command: "seek"; seekOffset: number };

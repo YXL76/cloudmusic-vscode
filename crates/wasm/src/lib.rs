@@ -179,4 +179,7 @@ impl Player {
     pub fn position(&self) -> f64 {
         self.status.elapsed(self.speed)
     }
+
+    #[wasm_bindgen]
+    pub fn seek(&self, _: f64) {}
 }

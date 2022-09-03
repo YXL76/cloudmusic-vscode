@@ -183,6 +183,9 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       case IPCWasm.speed:
         AccountViewProvider.wasmSpeed(data.speed);
         break;
+      case IPCWasm.seek:
+        AccountViewProvider.wasmSeek(data.seekOffset);
+        break;
     }
   };
 

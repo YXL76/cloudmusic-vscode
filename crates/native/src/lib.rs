@@ -20,6 +20,7 @@ fn main(mut cx: ModuleContext) -> NeonResult<()> {
     cx.export_function("playerSetSpeed", player_set_speed)?;
     cx.export_function("playerSetVolume", player_set_volume)?;
     cx.export_function("playerStop", player_stop)?;
+    cx.export_function("playerSeek", player_seek)?;
 
     // #[cfg(target_os = "windows")]
     // cx.export_function("mediaSessionHwnd", media_session_hwnd)?;

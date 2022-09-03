@@ -136,6 +136,8 @@ export default {
     saved: "Saved",
     saveToPlaylist: "Save to playlist",
     search: "Search",
+    seekbackward: "Seek backward",
+    seekforward: "Seek forward",
     show: "Show",
     signIn: "Sign in",
     signOut: "Sign out",

@@ -20,6 +20,11 @@ const next = () => {
   const msg: ProviderCMsg = { command: "next" };
   vscode.postMessage(msg);
 };
+const seek = (detail: MediaSessionActionDetails) => {
+  if (detail.seekTime) {
+    /* Controller.seek() */
+  } else if (detail.seekOffset) Controller.seek(detail.seekOffset);
+};
 
 function setMediaSessionActionHandler() {
   if (!navigator.mediaSession) return;
@@ -29,6 +34,9 @@ function setMediaSessionActionHandler() {
 
   navigator.mediaSession.setActionHandler("previoustrack", previous);
   navigator.mediaSession.setActionHandler("nexttrack", next);
+
+  navigator.mediaSession.setActionHandler("seekbackward", seek);
+  navigator.mediaSession.setActionHandler("seekforward", seek);
 }
 
 function deleteMediaSessionActionHandler() {
@@ -52,30 +60,35 @@ deleteMediaSessionActionHandler();
 class WebAudioPlayer {
   private _audio: HTMLAudioElement;
 
-  private _speed = 1;
-
   constructor() {
     this._audio = new Audio();
     this._audio.preservesPitch = true;
+    this._audio.preload = "auto";
 
     console.log("Audio Player: HTMLAudioElement");
   }
 
-  // load(data: Uint8Array): boolean {
-  //   this._audio.src = URL.createObjectURL(new Blob([data.buffer]));
+  async load(data: Uint8Array): Promise<boolean> {
+    this._audio.src = URL.createObjectURL(new Blob([data.buffer]));
+    try {
+      await this._audio.play();
+      return true;
+    } catch {}
+    return false;
+  }
+
+  // load(url: string): boolean {
+  //   this._audio.src = url;
   //   return this.play();
   // }
 
-  load(url: string): boolean {
-    this._audio.src = url;
-    return this.play();
-  }
-
-  play(): boolean {
+  async play(): Promise<boolean> {
     if (this.empty()) return false;
-    this._audio.playbackRate = this._speed;
-    this._audio.play().catch(console.error);
-    return true;
+    try {
+      await this._audio.play();
+      return true;
+    } catch {}
+    return false;
   }
 
   pause(): void {
@@ -88,7 +101,7 @@ class WebAudioPlayer {
 
   // eslint-disable-next-line @typescript-eslint/naming-convention
   set_speed(speed: number): void {
-    this._speed = speed;
+    this._audio.defaultPlaybackRate = speed;
     this._audio.playbackRate = speed;
   }
 
@@ -103,6 +116,11 @@ class WebAudioPlayer {
 
   position(): number {
     return this._audio.currentTime;
+  }
+
+  seek(seekOffset: number): void {
+    // this._audio.fastSeek(seekOffset);
+    this._audio.currentTime = this._audio.currentTime + seekOffset;
   }
 }
 
@@ -142,13 +160,9 @@ class Controller {
   static async load(url: string) {
     if (!this._player) return;
 
-    if (this._player instanceof WebAudioPlayer) {
-      this._playing = !!this._player.load(url);
-    } else {
-      const rep = await fetch(url);
-      const buf = await rep.arrayBuffer();
-      this._playing = !!this._player.load(new Uint8Array(buf));
-    }
+    const rep = await fetch(url);
+    const buf = await rep.arrayBuffer();
+    this._playing = !!(await this._player.load(new Uint8Array(buf)));
 
     if (this._playing) {
       const msg: ProviderCMsg = { command: "load" };
@@ -156,10 +170,10 @@ class Controller {
     }
   }
 
-  static play() {
+  static async play() {
     if (!this._player) return;
 
-    this._playing = !!this._player.play();
+    this._playing = !!(await this._player.play());
     const msg: ProviderCMsg = {
       command: "playing",
       playing: this._playing,
@@ -185,6 +199,10 @@ class Controller {
 
   static volume(level: number) {
     this._player?.set_volume(level / 100);
+  }
+
+  static seek(seekOffset: number) {
+    this._player?.seek(seekOffset);
   }
 
   static setMaster(value: boolean) {
@@ -297,7 +315,7 @@ const Provider = (): JSX.Element => {
           Controller.load(data.url).catch(console.error);
           break;
         case "play":
-          Controller.play();
+          Controller.play().catch(console.error);
           break;
         case "pause":
           Controller.pause();
@@ -310,6 +328,9 @@ const Provider = (): JSX.Element => {
           break;
         case "volume":
           Controller.volume(data.level);
+          break;
+        case "seek":
+          Controller.seek(data.seekOffset);
           break;
       }
     };

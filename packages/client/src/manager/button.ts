@@ -6,9 +6,11 @@ import type { QueueContent } from "../treeview";
 import i18n from "../i18n";
 
 const enum Label {
+  seekbackward,
   previous,
   play,
   next,
+  seekforward,
   repeat,
   like,
   speed,
@@ -29,9 +31,11 @@ export class ButtonManager {
   private static _mdSong = "";
 
   private static readonly _defaultText = [
+    "$(triangle-left)",
     "$(chevron-left)",
     "$(play)",
     "$(chevron-right)",
+    "$(triangle-right)",
     "$(sync-ignored)",
     "$(stop)",
     "$(dashboard)",
@@ -41,9 +45,11 @@ export class ButtonManager {
   ] as const;
 
   private static readonly _defaultTooltip = [
+    i18n.word.seekbackward,
     i18n.word.previousTrack,
     i18n.word.play,
     i18n.word.nextTrack,
+    i18n.word.seekforward,
     i18n.word.repeat,
     i18n.word.like,
     i18n.word.speed,
@@ -53,9 +59,11 @@ export class ButtonManager {
   ] as const;
 
   private static readonly _defaultCommand = [
+    "cloudmusic.seekbackward",
     "cloudmusic.previous",
     "cloudmusic.toggle",
     "cloudmusic.next",
+    "cloudmusic.seekforward",
     "cloudmusic.repeat",
     "cloudmusic.like",
     "cloudmusic.speed",
@@ -74,9 +82,11 @@ export class ButtonManager {
     window.createStatusBarItem(LEFT, -134) as MyStatusBarItem,
     window.createStatusBarItem(LEFT, -135) as MyStatusBarItem,
     window.createStatusBarItem(LEFT, -136) as MyStatusBarItem,
+    window.createStatusBarItem(LEFT, -137) as MyStatusBarItem,
+    window.createStatusBarItem(LEFT, -138) as MyStatusBarItem,
   ];
 
-  private static _buttonShow = Array(9).fill(true) as boolean[];
+  private static _buttonShow = Array(11).fill(true) as boolean[];
 
   private static readonly _mdTooltip = new MarkdownString("", true);
 

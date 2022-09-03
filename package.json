@@ -56,6 +56,16 @@
       },
       {
         "category": "Cloudmusic",
+        "command": "cloudmusic.seekbackward",
+        "title": "%commands.seekbackward.title%"
+      },
+      {
+        "category": "Cloudmusic",
+        "command": "cloudmusic.seekforward",
+        "title": "%commands.seekforward.title%"
+      },
+      {
+        "category": "Cloudmusic",
         "command": "cloudmusic.previous",
         "title": "%commands.previous.title%"
       },

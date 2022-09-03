@@ -191,6 +191,9 @@ impl Player {
     fn position(&self) -> f64 {
         self.status.elapsed(self.speed)
     }
+
+    #[inline]
+    fn seek(&self, _: f64) {}
 }
 
 pub fn player_new(mut cx: FunctionContext) -> JsResult<JsValue> {
@@ -264,4 +267,12 @@ pub fn player_position(mut cx: FunctionContext) -> JsResult<JsNumber> {
     let res = player.borrow().position();
 
     Ok(cx.number(res))
+}
+
+pub fn player_seek(mut cx: FunctionContext) -> JsResult<JsUndefined> {
+    let player = cx.argument::<JsBox<RefCell<Player>>>(0)?;
+    let seek_offset = cx.argument::<JsNumber>(1)?.value(&mut cx);
+    player.borrow().seek(seek_offset);
+
+    Ok(cx.undefined())
 }

@@ -135,6 +135,8 @@ export default {
     saved: "已收藏",
     saveToPlaylist: "收藏到歌单",
     search: "搜索",
+    seekbackward: "向后搜索",
+    seekforward: "向前搜索",
     show: "显示",
     signIn: "登录",
     signOut: "登出",

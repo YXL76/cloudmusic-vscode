@@ -121,6 +121,13 @@ export class AccountViewProvider implements WebviewViewProvider {
     }
   }
 
+  static wasmSeek(seekOffset: number): void {
+    if (this._view) {
+      const msg: ProviderSMsg = { command: "seek", seekOffset };
+      void this._view.webview.postMessage(msg);
+    }
+  }
+
   static account(profiles: NeteaseTypings.Profile[]): void {
     if (this._view) {
       const msg: ProviderSMsg = { command: "account", profiles };
@@ -228,6 +235,8 @@ export class AccountViewProvider implements WebviewViewProvider {
   <script>window.testfiles=${JSON.stringify(files)}</script>
   <script type="module" src=${js} nonce=${getNonce()}></script>
 </html>`;
+
+    if (!webview.visible) webview.show();
   }
 }
 

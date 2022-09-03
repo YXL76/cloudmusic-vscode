@@ -257,13 +257,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/json-buffer@npm:~3.0.0":
-  version: 3.0.0
-  resolution: "@types/json-buffer@npm:3.0.0"
-  checksum: 8da7fe010400551f8d9b2846302430634216e212f710017a2414cf5096e1056bca92d657bee5d1609aabe83c72e6dac289def522c3acfccde4d9a8cef11de206
-  languageName: node
-  linkType: hard
-
 "@types/json-schema@npm:*, @types/json-schema@npm:^7.0.9":
   version: 7.0.11
   resolution: "@types/json-schema@npm:7.0.11"
@@ -943,16 +936,6 @@ __metadata:
   bin:
     color-support: bin.js
   checksum: 8dc879a976be92306773276728e0bbb0925478b2373f133a98e563c497ccd58f220b9c30cea37c72678fe071627d7391b3751a1b92aaa5e872cd278b00b96b74
-  languageName: node
-  linkType: hard
-
-"compress-brotli@npm:^1.3.8":
-  version: 1.3.8
-  resolution: "compress-brotli@npm:1.3.8"
-  dependencies:
-    "@types/json-buffer": "npm:~3.0.0"
-    json-buffer: "npm:~3.0.1"
-  checksum: 873a46d7b5775f89209acb1754356e0b2987f9267cf93d609b7844b9ef9c99c989d3378f1dbd02f512912e9d7242daf501f61ef94233801c7e49d378359afdd4
   languageName: node
   linkType: hard
 
@@ -2424,7 +2407,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"json-buffer@npm:3.0.1, json-buffer@npm:~3.0.1":
+"json-buffer@npm:3.0.1":
   version: 3.0.1
   resolution: "json-buffer@npm:3.0.1"
   checksum: 33bf05e0790ed025751047b51bb8bc0f15942be22d22acaa071c44a4e3277bdf23132f49549a7d8dd89ee67679923f21efa21de2aaa448472372e92a837cea15
@@ -2463,12 +2446,11 @@ __metadata:
   linkType: hard
 
 "keyv@npm:^4.0.0":
-  version: 4.4.1
-  resolution: "keyv@npm:4.4.1"
+  version: 4.5.0
+  resolution: "keyv@npm:4.5.0"
   dependencies:
-    compress-brotli: "npm:^1.3.8"
     json-buffer: "npm:3.0.1"
-  checksum: 95ae66c5e65445c1ba3ca94ce6aeb6e6a1e240dd8a34c2a5a1b559ffe03ecf5539637d344b2243df5926a38b81f3005fc74f28d119b78a73d3a35e60b36d9add
+  checksum: da87023748eb7eb2bbc93589367b54b985fd678fb14d1d5c4437417804ef6f54ce23a6a094038edc439f125c037034acff6e099153b73c03abd7e2006787c30a
   languageName: node
   linkType: hard
 

@@ -48,6 +48,8 @@
   "commands.refreshRadioContent.title": "Refresh",
   "commands.repeat.title": "Repeat",
   "commands.saveToPlaylist.title": "Save to playlist",
+  "commands.seekbackward.title": "Seek backward",
+  "commands.seekforward.title": "Seek forward",
   "commands.songComment.title": "Comment",
   "commands.songDetail.title": "Detail",
   "commands.sortQueue.title": "Sort",

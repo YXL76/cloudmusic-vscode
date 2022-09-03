@@ -23,6 +23,7 @@ interface NativeModule {
   playerSetVolume(player: NativePlayer, level: number): void;
   playerSetSpeed(player: NativePlayer, speed: number): void;
   playerStop(player: NativePlayer): void;
+  playerSeek(player: NativePlayer, seekOffset: number): void;
 
   // mediaSessionHwnd(pid: string): string;
   mediaSessionNew(
@@ -99,6 +100,10 @@ class WasmPlayer {
 
   volume(level: number) {
     IPCServer.sendToMaster({ t: IPCWasm.volume, level });
+  }
+
+  seek(seekOffset: number) {
+    IPCServer.sendToMaster({ t: IPCWasm.seek, seekOffset });
   }
 }
 
@@ -340,6 +345,11 @@ export class Player {
   static volume(level: number): void {
     this._native?.playerSetVolume(this._player, level);
     this._wasm?.volume(level);
+  }
+
+  static seek(seekOffset: number): void {
+    this._native?.playerSeek(this._player, seekOffset);
+    this._wasm?.seek(seekOffset);
   }
 
   static wasmOpen(): void {

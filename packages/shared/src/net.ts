@@ -53,6 +53,7 @@ export type IPCClientMsg =
   | IPCMsg<IPCPlayer.toggle>
   | IPCMsg<IPCPlayer.volume, { level: number }>
   | IPCMsg<IPCPlayer.speed, { speed: number }>
+  | IPCMsg<IPCPlayer.seek, { seekOffset: number }>
   | IPCMsg<IPCQueue.fm, { is: false }>
   | IPCMsg<IPCQueue.fm, { is: true; uid: number }>
   | IPCMsg<IPCQueue.fmNext>;
@@ -86,4 +87,5 @@ export type IPCServerMsg =
   | IPCMsg<IPCWasm.play>
   | IPCMsg<IPCWasm.stop>
   | IPCMsg<IPCWasm.volume, { level: number }>
-  | IPCMsg<IPCWasm.speed, { speed: number }>;
+  | IPCMsg<IPCWasm.speed, { speed: number }>
+  | IPCMsg<IPCWasm.seek, { seekOffset: number }>;

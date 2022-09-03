@@ -48,6 +48,8 @@
   "commands.refreshRadioContent.title": "刷新",
   "commands.repeat.title": "单曲循环",
   "commands.saveToPlaylist.title": "添加到歌单",
+  "commands.seekbackward.title": "向后搜索",
+  "commands.seekforward.title": "向前搜索",
   "commands.songComment.title": "评论",
   "commands.songDetail.title": "详情",
   "commands.sortQueue.title": "排序",

@@ -8,6 +8,10 @@ import i18n from "../i18n";
 
 export function initCommand(context: ExtensionContext): void {
   context.subscriptions.push(
+    commands.registerCommand("cloudmusic.seekbackward", () => IPC.seek(-15)),
+
+    commands.registerCommand("cloudmusic.seekforward", () => IPC.seek(15)),
+
     commands.registerCommand("cloudmusic.previous", () => {
       if (!State.fm && QueueProvider.len) IPC.shift(-1);
     }),
