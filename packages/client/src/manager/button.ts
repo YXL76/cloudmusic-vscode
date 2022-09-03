@@ -163,6 +163,10 @@ export class ButtonManager {
     this._setMdTooltip();
   }
 
+  static playing(): boolean {
+    return this._buttons[Label.play].text === "$(debug-pause)";
+  }
+
   static buttonRepeat(r: boolean): void {
     this._buttons[Label.repeat].text = r ? "$(sync)" : "$(sync-ignored)";
     this._setMdTooltip();

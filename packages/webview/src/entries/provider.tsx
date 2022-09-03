@@ -168,29 +168,27 @@ class Controller {
       const msg: ProviderCMsg = { command: "load" };
       vscode.postMessage(msg);
     }
+    this._syncState();
   }
 
   static async play() {
     if (!this._player) return;
-
     this._playing = !!(await this._player.play());
-    const msg: ProviderCMsg = {
-      command: "playing",
-      playing: this._playing,
-    };
-    vscode.postMessage(msg);
+    this._syncState();
   }
 
   static pause() {
     if (!this._player) return;
     this._player.pause();
     this._playing = false;
+    this._syncState();
   }
 
   static stop() {
     if (!this._player) return;
     this._player.stop();
     this._playing = false;
+    this._syncState();
   }
 
   static speed(speed: number) {
@@ -220,6 +218,14 @@ class Controller {
       deleteMediaSessionActionHandler();
       this._stopSilent();
     }
+  }
+
+  private static _syncState() {
+    const msg: ProviderCMsg = {
+      command: "playing",
+      playing: this._playing,
+    };
+    vscode.postMessage(msg);
   }
 
   private static async _testAudioFiles(

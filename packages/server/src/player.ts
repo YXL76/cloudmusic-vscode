@@ -326,9 +326,10 @@ export class Player {
   }
 
   static pause(): void {
-    this._native?.playerPause(this._player);
-    this._wasm?.pause();
-    this.playing = false;
+    if (this._native) {
+      this._native.playerPause(this._player);
+      this.playing = false;
+    } else this._wasm?.pause();
   }
 
   static play(): void {
@@ -341,9 +342,10 @@ export class Player {
   }
 
   static stop(): void {
-    this._native?.playerStop(this._player);
-    this._wasm?.stop();
-    this.playing = false;
+    if (this._native) {
+      this._native.playerStop(this._player);
+      this.playing = false;
+    } else this._wasm?.stop();
   }
 
   static speed(speed: number): void {

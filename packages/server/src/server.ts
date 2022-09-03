@@ -28,6 +28,8 @@ export class IPCServer {
 
   private static _retain: unknown[] = [];
 
+  private static _retainState = false;
+
   private static _timer?: NodeJS.Timeout;
 
   private static readonly _sockets = new Set<Socket>();
@@ -88,6 +90,7 @@ export class IPCServer {
               Player.wasmOpen();
             }
           } else {
+            this._retainState = Player.playing;
             Player.pause();
             this._timer = setTimeout(() => {
               if (this._sockets.size) return;
@@ -106,13 +109,16 @@ export class IPCServer {
       this._setMaster();
 
       if (this._sockets.size === 1) {
-        // retain
-        if (!this._first) {
-          Player.play();
+        if (this._first) this._first = false;
+        /* retain */ else {
+          this.send(socket, {
+            t: this._retainState ? IPCPlayer.play : IPCPlayer.pause,
+          });
+          if (this._retainState) Player.play();
 
           this.send(socket, { t: IPCControl.retain, items: this._retain });
           this._retain = [];
-        } else this._first = false;
+        }
       } else {
         this.sendToMaster({ t: IPCControl.new });
         this.send(socket, {

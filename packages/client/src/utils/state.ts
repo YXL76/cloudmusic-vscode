@@ -69,6 +69,8 @@ export class State {
 
   private static _lyric: Lyric = defaultLyric;
 
+  private static _cb?: () => void;
+
   static get master(): boolean {
     return this._master;
   }
@@ -167,6 +169,11 @@ export class State {
     value.updatePanel?.(value.text);
   }
 
+  static addOnceInitCallback(cb: () => void) {
+    if (this._initializing <= 0) return;
+    this._cb = cb;
+  }
+
   static downInit() {
     if (this._initializing <= 0) return;
     --this._initializing;
@@ -218,14 +225,18 @@ export class State {
       return new Promise((resolve) => setTimeout(resolve, 1024)); // The queue maybe ready
     })()
       .catch(console.error)
-      .finally(() =>
+      .finally(() => {
         this.context.subscriptions.push(
           // Prevent first loading [#507](https://github.com/YXL76/cloudmusic-vscode/issues/507)
           QueueProvider.getInstance().onDidChangeTreeData(() => {
             this.fm = false;
             this.playItem = QueueProvider.head;
           })
-        )
-      );
+        );
+        if (this._cb) {
+          this._cb();
+          this._cb = undefined;
+        }
+      });
   }
 }

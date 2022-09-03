@@ -107,6 +107,12 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         IPC.new();
         break;
       case IPCControl.retain:
+        if (data.items.length && State.wasm) {
+          State.addOnceInitCallback(() => {
+            if (ButtonManager.playing()) IPC.load();
+          });
+        }
+
         QueueProvider.new(data.items as PlayTreeItemData[]);
         State.downInit(); // 1
         break;
