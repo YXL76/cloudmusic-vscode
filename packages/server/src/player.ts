@@ -15,7 +15,7 @@ type NativeMediaSession = unknown;
 
 interface NativeModule {
   playerEmpty(player: NativePlayer): boolean;
-  playerLoad(player: NativePlayer, url: string): boolean;
+  playerLoad(player: NativePlayer, url: string, play: boolean): boolean;
   playerNew(): NativePlayer;
   playerPause(player: NativePlayer): void;
   playerPlay(player: NativePlayer): boolean;
@@ -87,8 +87,8 @@ export function posHandler(pos: number): void {
 }
 
 class WasmPlayer {
-  load(path: string) {
-    IPCServer.sendToMaster({ t: IPCWasm.load, path });
+  load(path: string, play: boolean) {
+    IPCServer.sendToMaster({ t: IPCWasm.load, path, play });
   }
 
   pause() {
@@ -231,11 +231,12 @@ export class Player {
 
   static async load(
     data:
-      | { url: string; local: true }
+      | { url: string; local: true; play: boolean }
       | {
           item: NeteaseTypings.SongsItem;
           pid: number;
           next?: { id: number; name: string };
+          play: boolean;
         }
   ): Promise<void> {
     const loadtime = Date.now();
@@ -260,10 +261,11 @@ export class Player {
     }
 
     if (this._native) {
-      if (!this._native.playerLoad(this._player, path)) {
+      if (!this._native.playerLoad(this._player, path, data.play)) {
         this._failedEnd();
         return;
       }
+      this.playing = data.play;
 
       if (local) {
         this._native.mediaSessionSetMetadata(this._mediaSession, basename(path), "", "", "", 0); // eslint-disable-line
@@ -278,11 +280,10 @@ export class Player {
         );
       }
     } else if (this._wasm) {
-      this._wasm.load(path);
+      this._wasm.load(path, data.play);
     }
 
     this.next = network ? data["next"] : undefined;
-    this.playing = true;
     prefetchLock = false;
 
     if (network) {

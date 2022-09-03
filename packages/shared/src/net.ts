@@ -37,13 +37,14 @@ export type IPCClientMsg =
   | IPCMsg<IPCControl.netease>
   | IPCMsg<IPCControl.retain, { items?: readonly unknown[] }>
   // | IPCMsg<IPCControl.pid, { pid?: string }>
-  | IPCMsg<IPCPlayer.load, { url: string; local: true }>
+  | IPCMsg<IPCPlayer.load, { url: string; local: true; play: boolean }>
   | IPCMsg<
       IPCPlayer.load,
       {
         item: NeteaseTypings.SongsItem;
         pid: number;
         next?: { id: number; name: string };
+        play: boolean;
       }
     >
   | IPCMsg<IPCPlayer.lyricDelay, { delay: number }>
@@ -68,7 +69,7 @@ export type IPCServerMsg =
       }
     >
   | IPCMsg<IPCControl.new>
-  | IPCMsg<IPCControl.retain, { items: readonly unknown[] }>
+  | IPCMsg<IPCControl.retain, { items: readonly unknown[]; play?: boolean }>
   | IPCMsg<IPCPlayer.end, { fail?: true }>
   | IPCMsg<IPCPlayer.loaded>
   | IPCMsg<IPCPlayer.lyric, { lyric: NeteaseTypings.LyricData }>
@@ -82,7 +83,7 @@ export type IPCServerMsg =
   | IPCMsg<IPCPlayer.speed, { speed: number }>
   | IPCMsg<IPCQueue.fm>
   | IPCMsg<IPCQueue.fmNext, { item: NeteaseTypings.SongsItem }>
-  | IPCMsg<IPCWasm.load, { path: string }>
+  | IPCMsg<IPCWasm.load, { path: string; play: boolean }>
   | IPCMsg<IPCWasm.pause>
   | IPCMsg<IPCWasm.play>
   | IPCMsg<IPCWasm.stop>

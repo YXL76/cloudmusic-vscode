@@ -51,7 +51,7 @@ export type ProviderSMsg =
       artwork?: { src: string; sizes?: string; type?: string }[];
     }
   | { command: "account"; profiles: NeteaseTypings.Profile[] }
-  | { command: "load"; url: string }
+  | { command: "load"; url: string; play: boolean }
   | { command: "play" }
   | { command: "pause" }
   | { command: "stop" }

@@ -101,7 +101,7 @@ export class IPCServer {
                 rm(TMP_DIR, { recursive: true }),
                 writeFile(RETAIN_FILE, JSON.stringify(this._retain)),
               ]).finally(() => process.exit());
-            }, 20000);
+            }, 40000);
           }
         })
         .on("error", logError);
@@ -111,12 +111,12 @@ export class IPCServer {
       if (this._sockets.size === 1) {
         if (this._first) this._first = false;
         /* retain */ else {
-          this.send(socket, {
-            t: this._retainState ? IPCPlayer.play : IPCPlayer.pause,
-          });
           if (this._retainState) Player.play();
-
-          this.send(socket, { t: IPCControl.retain, items: this._retain });
+          this.send(socket, {
+            t: IPCControl.retain,
+            items: this._retain,
+            play: this._retainState,
+          });
           this._retain = [];
         }
       } else {

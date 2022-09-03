@@ -78,10 +78,10 @@ export class AccountViewProvider implements WebviewViewProvider {
     }
   }
 
-  static wasmLoad(path: string): void {
+  static wasmLoad(path: string, play: boolean): void {
     if (this._view) {
       const url = this._view.webview.asWebviewUri(Uri.file(path)).toString();
-      const msg: ProviderSMsg = { command: "load", url };
+      const msg: ProviderSMsg = { command: "load", url, play };
       void this._view.webview.postMessage(msg);
     }
   }

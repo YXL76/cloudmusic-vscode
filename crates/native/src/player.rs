@@ -107,7 +107,7 @@ impl Player {
     }
 
     #[inline]
-    fn load(&mut self, url: String) -> bool {
+    fn load(&mut self, url: String, play: bool) -> bool {
         let file = match File::open(url) {
             Ok(f) => f,
             _ => return false,
@@ -134,7 +134,11 @@ impl Player {
         sink.set_volume(self.volume);
         sink.append(source);
 
-        self.status.play();
+        if play {
+            self.status.play();
+        } else {
+            sink.pause()
+        }
         self.sink = Some(sink);
 
         true
@@ -205,7 +209,8 @@ pub fn player_new(mut cx: FunctionContext) -> JsResult<JsValue> {
 pub fn player_load(mut cx: FunctionContext) -> JsResult<JsBoolean> {
     let player = cx.argument::<JsBox<RefCell<Player>>>(0)?;
     let url = cx.argument::<JsString>(1)?.value(&mut cx);
-    let res = player.borrow_mut().load(url);
+    let play = cx.argument::<JsBoolean>(2)?.value(&mut cx);
+    let res = player.borrow_mut().load(url, play);
 
     Ok(cx.boolean(res))
 }

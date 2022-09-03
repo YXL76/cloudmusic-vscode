@@ -126,18 +126,18 @@ export class IPC {
     ipcB.disconnect();
   }
 
-  static load(): void {
+  static load(play = true): void {
     const { playItem } = State;
     if (!playItem) return;
     ipcB.send({ t: IPCPlayer.load });
 
     if (playItem instanceof LocalFileTreeItem) {
-      ipc.send({ t: IPCPlayer.load, url: playItem.tooltip, local: true });
+      ipc.send({ t: IPCPlayer.load, url: playItem.tooltip, local: true, play });
     } else {
       const { data, item } = playItem;
       let next;
       if (!State.fm) next = QueueProvider.next?.item;
-      ipc.send({ t: IPCPlayer.load, item, pid: data.pid, next });
+      ipc.send({ t: IPCPlayer.load, item, pid: data.pid, next, play });
     }
   }
 

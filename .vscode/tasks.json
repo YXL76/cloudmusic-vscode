@@ -32,6 +32,11 @@
       "type": "shell",
       "label": "yarn: test",
       "command": "yarn test"
+    },
+    {
+      "type": "shell",
+      "label": "yarn: package",
+      "command": "yarn dlx vsce package --no-dependencies"
     }
   ]
 }

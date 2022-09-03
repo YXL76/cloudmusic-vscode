@@ -105,8 +105,8 @@ impl Player {
     }
 
     #[wasm_bindgen]
-    pub fn load(&mut self, data: &[u8]) -> bool {
-        self.sink = None;
+    pub fn load(&mut self, data: &[u8], play: bool) -> bool {
+        self.stop();
 
         if let Ok(sink) = Sink::try_new(&self.handle) {
             sink.set_speed(self.speed as f32);
@@ -114,7 +114,11 @@ impl Player {
             let cur = Cursor::new(data.to_owned());
             let decoder = Decoder::new(cur).unwrap();
             sink.append(decoder);
-            self.status.play();
+            if play {
+                self.status.play();
+            } else {
+                sink.pause()
+            }
             self.sink = Some(sink);
             return true;
         }

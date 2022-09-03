@@ -108,11 +108,11 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         break;
       case IPCControl.retain:
         if (data.items.length && State.wasm) {
-          State.addOnceInitCallback(() => {
-            if (ButtonManager.playing()) IPC.load();
-          });
+          // Delay it because `this._instance._onDidChangeTreeData.fire()` is async
+          State.addOnceInitCallback(() =>
+            setTimeout(() => IPC.load(data.play), 1024)
+          );
         }
-
         QueueProvider.new(data.items as PlayTreeItemData[]);
         State.downInit(); // 1
         break;
@@ -174,7 +174,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         });
         break;
       case IPCWasm.load:
-        AccountViewProvider.wasmLoad(data.path);
+        AccountViewProvider.wasmLoad(data.path, data.play);
         break;
       case IPCWasm.pause:
         AccountViewProvider.wasmPause();
