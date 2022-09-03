@@ -17,8 +17,8 @@ __metadata:
     "@types/qrcode": "workspace:*"
     "@types/vscode": "npm:1.67.0"
     array-unsort: "npm:1.1.6"
-    file-type: "npm:18.0.0"
     lodash: "npm:4.17.21"
+    music-metadata: "npm:8.0.1"
     qrcode: "npm:1.5.1"
   languageName: unknown
   linkType: soft
@@ -904,7 +904,7 @@ __metadata:
     eslint: "npm:8.23.0"
     eslint-config-prettier: "npm:8.5.0"
     eslint-plugin-prettier: "npm:4.2.1"
-    eslint-plugin-react: "npm:7.31.1"
+    eslint-plugin-react: "npm:7.31.4"
     eslint-plugin-react-hooks: "npm:4.6.0"
     postcss: "npm:8.4.16"
     prettier: "npm:2.7.1"
@@ -950,6 +950,13 @@ __metadata:
   version: 1.1.0
   resolution: "console-control-strings@npm:1.1.0"
   checksum: d286ffd439aac97472557325e6aa4cc3a2eefe495a70a9640b89508880db4bba1bd1b29bb011608c23033d884c84cac8da95c8f12ca0ec69ccc70d6d5f39c618
+  languageName: node
+  linkType: hard
+
+"content-type@npm:^1.0.4":
+  version: 1.0.4
+  resolution: "content-type@npm:1.0.4"
+  checksum: 20bda9bccfb0086d4e4b35cc5c6073b693d4a8ff0a0da0b68cf283c34a649a5d07068fd240c1ed503a7696dbbf4c875cecb708ea219db1880fbfa40e8fb02620
   languageName: node
   linkType: hard
 
@@ -1495,9 +1502,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-react@npm:7.31.1":
-  version: 7.31.1
-  resolution: "eslint-plugin-react@npm:7.31.1"
+"eslint-plugin-react@npm:7.31.4":
+  version: 7.31.4
+  resolution: "eslint-plugin-react@npm:7.31.4"
   dependencies:
     array-includes: "npm:^3.1.5"
     array.prototype.flatmap: "npm:^1.3.0"
@@ -1515,7 +1522,7 @@ __metadata:
     string.prototype.matchall: "npm:^4.0.7"
   peerDependencies:
     eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
-  checksum: 5510a899c807d8ed348fefd17c1308bc0651b4e8aec63c63f014637de24a8c8b07a5d49e11df3a187f71372c8fb11f2f6900779ee16edd114847b160f15dc29d
+  checksum: 33f0506fa68fcaf365fb27cb461408e328359ef4e08815d2fe65b4c77f7381b17f096b8f71c049700bed7552912b8cc9b2266f6302a94e34cd09e3964ef01383
   languageName: node
   linkType: hard
 
@@ -1722,14 +1729,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"file-type@npm:18.0.0":
-  version: 18.0.0
-  resolution: "file-type@npm:18.0.0"
+"file-type@npm:^17.1.6":
+  version: 17.1.6
+  resolution: "file-type@npm:17.1.6"
   dependencies:
     readable-web-to-node-stream: "npm:^3.0.2"
-    strtok3: "npm:^7.0.0"
-    token-types: "npm:^5.0.1"
-  checksum: 6e1ca6e73601d82b53ecbc116b2e677bb0752739017635a8975a76b18703d81149d42b914805ae04d21d209734efdb30d625aea4c3fe245fbc76f2519d00d302
+    strtok3: "npm:^7.0.0-alpha.9"
+    token-types: "npm:^5.0.0-alpha.2"
+  checksum: 014e4261f21635182c4427822fe2e516bcc8f7f3480f53cb7211db9cd4da52c152f5fadd86e9a44ac74d92ce794ae9b448e3fcaad94add5c512397f06e8b0401
   languageName: node
   linkType: hard
 
@@ -2586,6 +2593,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"media-typer@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "media-typer@npm:1.1.0"
+  checksum: 89ea88d615d999e981dbad79a026a99f82cea8fcb44064c361db556067153bc0f1a604fb7d38345c865ed360d460a2bbba0c3f5685801f6dcb89d77b99822b52
+  languageName: node
+  linkType: hard
+
 "merge2@npm:^1.3.0, merge2@npm:^1.4.1":
   version: 1.4.1
   resolution: "merge2@npm:1.4.1"
@@ -2732,6 +2746,21 @@ __metadata:
   version: 2.1.3
   resolution: "ms@npm:2.1.3"
   checksum: 78c12f6b473a022ebacc393fc14b76fe40b8feda7218124b86c4684e440e10377a063bec1d3902df1f74714f02b74b36ad7d3a6de9e2fbffa26fc29e5ce018fc
+  languageName: node
+  linkType: hard
+
+"music-metadata@npm:8.0.1":
+  version: 8.0.1
+  resolution: "music-metadata@npm:8.0.1"
+  dependencies:
+    "@tokenizer/token": "npm:^0.3.0"
+    content-type: "npm:^1.0.4"
+    debug: "npm:^4.3.4"
+    file-type: "npm:^17.1.6"
+    media-typer: "npm:^1.1.0"
+    strtok3: "npm:^7.0.0"
+    token-types: "npm:^5.0.1"
+  checksum: 3cfcf127e592755ad6ef6e1bdaa96c1952155f94551341b9958b4ba5f325adbb77a9998de0c16b25b4626f3f0468667a66b76ad4c9a89e6178c1d83b42d25476
   languageName: node
   linkType: hard
 
@@ -3739,7 +3768,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strtok3@npm:^7.0.0":
+"strtok3@npm:^7.0.0, strtok3@npm:^7.0.0-alpha.9":
   version: 7.0.0
   resolution: "strtok3@npm:7.0.0"
   dependencies:
@@ -3837,7 +3866,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"token-types@npm:^5.0.1":
+"token-types@npm:^5.0.0-alpha.2, token-types@npm:^5.0.1":
   version: 5.0.1
   resolution: "token-types@npm:5.0.1"
   dependencies:

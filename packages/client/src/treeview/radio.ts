@@ -87,7 +87,7 @@ export class RadioProvider implements TreeDataProvider<Content> {
     } = element;
     const programs = await IPC.netease("djProgram", [uid, pid, programCount]);
     const ret = programs.map((program) =>
-      ProgramTreeItem.new({ ...program, pid })
+      ProgramTreeItem.new({ ...program, pid, itemType: "p" })
     );
     const action = RadioProvider._actions.get(element);
     if (action) {
@@ -164,8 +164,6 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
 
   override readonly contextValue = "ProgramTreeItem";
 
-  readonly item = this.data.mainSong;
-
   override command = {
     title: "Detail",
     command: "cloudmusic.songDetail",
@@ -184,13 +182,13 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
     return this.data.id;
   }
 
-  static new(data: Omit<ProgramTreeItemData, "itemType">): ProgramTreeItem {
+  static new(data: ProgramTreeItemData): ProgramTreeItem {
     let element = this._set.get(data.id);
     if (element) {
       if (data.pid) element.data.pid = data.pid;
       return element;
     }
-    element = new this({ ...data, itemType: "p" });
+    element = new this(data);
     this._set.set(data.id, element);
     return element;
   }

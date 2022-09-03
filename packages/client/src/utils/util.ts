@@ -229,7 +229,7 @@ export async function pickSong(
   switch (pick.type) {
     case PickType.copy:
       void commands.executeCommand("cloudmusic.copySongLink", {
-        item,
+        data: item,
       } as QueueItemTreeItem);
       break;
     case PickType.download:
@@ -257,13 +257,17 @@ export async function pickSong(
     case PickType.add:
       void commands.executeCommand(
         "cloudmusic.addSong",
-        QueueItemTreeItem.new({ ...item, pid: item.al.id })
+        QueueItemTreeItem.new({ ...item, pid: item.al.id, itemType: "q" })
       );
       break;
     case PickType.next:
       void commands.executeCommand(
         "cloudmusic.playNext",
-        QueueItemTreeItem.new({ ...item, pid: item.al.id }) as QueueContent
+        QueueItemTreeItem.new({
+          ...item,
+          pid: item.al.id,
+          itemType: "q",
+        }) as QueueContent
       );
       break;
   }
@@ -292,7 +296,8 @@ export async function pickSongMany(
   });
   IPC.add(
     songs.map(
-      (song) => QueueItemTreeItem.new({ ...song, pid: song.al.id }).data
+      (song) =>
+        QueueItemTreeItem.new({ ...song, pid: song.al.id, itemType: "q" }).data
     ),
     pick.type === PickType.add ? undefined : 1
   );
@@ -415,12 +420,22 @@ export async function pickProgram(
     case PickType.add:
       void commands.executeCommand(
         "cloudmusic.addProgram",
-        ProgramTreeItem.new({ ...program, pid: radio ? radio.id : 0 })
+        ProgramTreeItem.new({
+          ...program,
+          pid: radio ? radio.id : 0,
+          itemType: "p",
+        })
       );
       break;
     case PickType.next:
       IPC.add(
-        [ProgramTreeItem.new({ ...program, pid: program.mainSong.al.id }).data],
+        [
+          ProgramTreeItem.new({
+            ...program,
+            pid: program.mainSong.al.id,
+            itemType: "p",
+          }).data,
+        ],
         1
       );
       break;
@@ -451,7 +466,11 @@ export async function pickProgramMany(
   IPC.add(
     programs.map(
       (program) =>
-        ProgramTreeItem.new({ ...program, pid: program.mainSong.id }).data
+        ProgramTreeItem.new({
+          ...program,
+          pid: program.mainSong.id,
+          itemType: "p",
+        }).data
     ),
     pick.type === PickType.add ? undefined : 1
   );
@@ -874,7 +893,10 @@ export async function pickPlaylist(
       {
         const songs = await IPC.netease("playlistDetail", [0, id]);
         IPC.add(
-          songs.map((song) => QueueItemTreeItem.new({ ...song, pid: id }).data)
+          songs.map(
+            (song) =>
+              QueueItemTreeItem.new({ ...song, pid: id, itemType: "q" }).data
+          )
         );
       }
       break;
@@ -882,7 +904,10 @@ export async function pickPlaylist(
       {
         const songs = await IPC.netease("playlistDetail", [0, id]);
         IPC.add(
-          songs.map((song) => QueueItemTreeItem.new({ ...song, pid: id }).data),
+          songs.map(
+            (song) =>
+              QueueItemTreeItem.new({ ...song, pid: id, itemType: "q" }).data
+          ),
           1
         );
       }

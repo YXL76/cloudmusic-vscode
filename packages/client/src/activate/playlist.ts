@@ -212,7 +212,9 @@ export function initPlaylist(context: ExtensionContext): void {
         IPC.new([
           data,
           ...songs.map(
-            (song) => QueueItemTreeItem.new({ ...song, pid: data.pid }).data
+            (song) =>
+              QueueItemTreeItem.new({ ...song, pid: data.pid, itemType: "q" })
+                .data
           ),
         ]);
       }
@@ -258,8 +260,8 @@ export function initPlaylist(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.saveToPlaylist",
-      ({ item: { id } }: QueueItemTreeItem) =>
-        void MultiStepInput.run((input) => pickAddToPlaylist(input, 1, id))
+      ({ valueOf }: QueueItemTreeItem) =>
+        void MultiStepInput.run((input) => pickAddToPlaylist(input, 1, valueOf))
     ),
 
     commands.registerCommand(
@@ -269,7 +271,7 @@ export function initPlaylist(context: ExtensionContext): void {
         if (!element) return;
         if (element instanceof QueueItemTreeItem)
           void MultiStepInput.run((input) =>
-            pickSong(input, 1, (element as QueueItemTreeItem).item)
+            pickSong(input, 1, (element as QueueItemTreeItem).data)
           );
         else if (element instanceof ProgramTreeItem)
           void MultiStepInput.run((input) =>
@@ -280,28 +282,28 @@ export function initPlaylist(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.songComment",
-      ({ item: { id, name } }: QueueItemTreeItem) =>
+      ({ data: { id, name } }: QueueItemTreeItem) =>
         Webview.comment(NeteaseCommentType.song, id, name)
     ),
 
     commands.registerCommand(
       "cloudmusic.copySongLink",
-      ({ item: { id } }: QueueItemTreeItem) =>
+      ({ data: { id } }: QueueItemTreeItem) =>
         void env.clipboard.writeText(`https://music.163.com/#/song?id=${id}`)
     ),
 
     commands.registerCommand(
       "cloudmusic.downloadSong",
-      async ({ valueOf, item }: QueueItemTreeItem | ProgramTreeItem) => {
+      async ({ valueOf, data }: QueueItemTreeItem | ProgramTreeItem) => {
         const { url, type } = await IPC.netease("songUrl", [valueOf]);
         if (!url) return;
 
+        const item = "mainSong" in data ? data.mainSong : data;
+        const filename = `${item.name} - ${item.ar
+          .map(({ name }) => name)
+          .join(",")}`;
         const uri = await window.showSaveDialog({
-          defaultUri: Uri.file(
-            `${item.name} - ${item.ar.map(({ name }) => name).join(",")}.${
-              type ?? "mp3"
-            }`
-          ),
+          defaultUri: Uri.file(`${filename}.${type ?? "mp3"}`),
           // eslint-disable-next-line @typescript-eslint/naming-convention
           filters: { Music: [type || "mp3"] },
         });

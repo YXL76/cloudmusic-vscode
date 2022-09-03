@@ -9,6 +9,7 @@ export function initLocal(context: ExtensionContext): void {
   context.globalState
     .get<readonly string[]>(LOCAL_FOLDER_KEY)
     ?.forEach((folder) => LocalProvider.folders.push(folder));
+  LocalProvider.refresh();
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.newLocalLibrary", async () => {

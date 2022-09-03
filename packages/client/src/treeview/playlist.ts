@@ -86,7 +86,9 @@ export class PlaylistProvider implements TreeDataProvider<Content> {
       item: { id: pid },
     } = element;
     const songs = await IPC.netease("playlistDetail", [uid, pid]);
-    const ret = songs.map((song) => QueueItemTreeItem.new({ ...song, pid }));
+    const ret = songs.map((song) =>
+      QueueItemTreeItem.new({ ...song, pid, itemType: "q" })
+    );
     const action = PlaylistProvider._actions.get(element);
     if (action) {
       PlaylistProvider._actions.delete(element);

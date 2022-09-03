@@ -116,7 +116,7 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
         case "p":
           return item.mainSong.al.name;
         case "l":
-          return item.ext ?? "";
+          return item.container;
       }
     };
     const getArtist = (item: PlayTreeItemData): string => {
@@ -216,8 +216,6 @@ export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
 
   override readonly contextValue = "QueueItemTreeItem";
 
-  readonly item = this.data;
-
   override readonly command = {
     title: "Detail",
     command: "cloudmusic.songDetail",
@@ -232,13 +230,13 @@ export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
     return this.data.id;
   }
 
-  static new(data: Omit<QueueItemTreeItemData, "itemType">): QueueItemTreeItem {
+  static new(data: QueueItemTreeItemData): QueueItemTreeItem {
     let element = this._set.get(data.id);
     if (element) {
       if (data.pid) element.data.pid = data.pid;
       return element;
     }
-    element = new this({ ...data, itemType: "q" });
+    element = new this(data);
     this._set.set(data.id, element);
     return element;
   }

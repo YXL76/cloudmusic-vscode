@@ -6,17 +6,14 @@ import {
 } from "vscode";
 import type { PlayTreeItem, PlayTreeItemData } from "./index";
 import type { TreeDataProvider, TreeView } from "vscode";
+import type { IAudioMetadata } from "music-metadata";
 import { MUSIC_CACHE_DIR } from "../constant";
-import type { MimeType } from "file-type";
-import { fileTypeFromFile } from "file-type";
+import type { NeteaseTypings } from "api";
+import { parseFile } from "music-metadata";
 import { readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
-const supportedType: MimeType[] = [
-  "audio/vnd.wave",
-  "audio/x-flac",
-  "audio/mpeg",
-];
+const supportedType: Set<string> = new Set(["WAVE", "FLAC", "MPEG"]);
 
 type Content = LocalFileTreeItem | LocalLibraryTreeItem;
 
@@ -97,21 +94,64 @@ export class LocalProvider implements TreeDataProvider<Content> {
 
         for (const dirent of dirents) {
           if (dirent.isFile()) paths.push(dirent.name);
-          else if (dirent.isDirectory())
+          else if (dirent.isDirectory()) {
             folders.push(resolve(folder, dirent.name));
+          }
         }
 
-        (
-          await Promise.all(
-            paths.map(async (filename) => {
-              const id = resolve(folder, filename);
-              const mime = await fileTypeFromFile(id);
-              return { filename, id, ...mime };
-            })
-          )
-        )
-          .filter(({ mime }) => mime && supportedType.includes(mime))
-          .forEach((item) => items.push(LocalFileTreeItem.new(item)));
+        const promises = paths.map(async (filename) => {
+          const abspath = resolve(folder, filename);
+          const meta = await parseFile(abspath, { duration: true });
+          return { filename, abspath, meta };
+        });
+
+        (await Promise.allSettled(promises))
+          .reduce<
+            { filename: string; abspath: string; meta: IAudioMetadata }[]
+          >((acc, res) => {
+            if (
+              res.status === "fulfilled" &&
+              res.value.meta.format.container &&
+              supportedType.has(res.value.meta.format.container)
+            ) {
+              acc.push(res.value);
+            }
+            return acc;
+          }, [])
+          .forEach(({ filename, abspath, meta: { common, format } }) => {
+            const item = {
+              filename,
+              abspath,
+              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+              container: format.container!,
+              itemType: "l" as const,
+              name: "",
+              alia: [],
+              id: 0,
+              al: { id: 0, name: "", picUrl: "" },
+              ar: [{ id: 0, name: "" }],
+              dt: 4800000,
+            };
+
+            if (common.title) item.name = common.title;
+
+            if (common.album) item.al.name = common.album;
+
+            if (common.picture?.length) {
+              const [{ data, format }] = common.picture;
+              item.al.picUrl = `data:${format};base64,${data.toString(
+                "base64"
+              )}`;
+            }
+
+            if (common.artists)
+              item.ar = common.artists.map((name) => ({ name, id: 0 }));
+            else if (common.artist) item.ar = [{ name: common.artist, id: 0 }];
+
+            if (format.duration) item.dt = format.duration;
+
+            items.push(LocalFileTreeItem.new(item));
+          });
       }
     } catch {}
     LocalProvider._files.set(element, items);
@@ -143,20 +183,11 @@ export class LocalLibraryTreeItem extends TreeItem {
   }
 }
 
-export type LocalFileTreeItemData = {
+export type LocalFileTreeItemData = NeteaseTypings.SongsItem & {
   filename: string;
-  ext?: string;
-  id: string; // path
+  container: string;
+  abspath: string;
   itemType: "l";
-};
-
-const fakeItem = {
-  name: "",
-  alia: [],
-  id: 0,
-  al: { id: 0, name: "", picUrl: "" },
-  ar: [{ id: 0, name: "" }],
-  dt: 4800000,
 };
 
 export class LocalFileTreeItem extends TreeItem implements PlayTreeItem {
@@ -166,11 +197,11 @@ export class LocalFileTreeItem extends TreeItem implements PlayTreeItem {
 
   override readonly label = this.data.filename;
 
-  override readonly description = this.data.ext ?? "";
+  override readonly description = this.data.ar
+    .map(({ name }) => name)
+    .join("/");
 
-  override readonly tooltip = this.data.id;
-
-  readonly item = fakeItem;
+  override readonly tooltip = this.data.al.name;
 
   override readonly contextValue = "LocalFileTreeItem";
 
@@ -179,14 +210,14 @@ export class LocalFileTreeItem extends TreeItem implements PlayTreeItem {
   }
 
   override get valueOf(): string {
-    return this.tooltip;
+    return this.data.abspath;
   }
 
-  static new(data: Omit<LocalFileTreeItemData, "itemType">): LocalFileTreeItem {
-    let element = this._set.get(data.id);
+  static new(data: LocalFileTreeItemData): LocalFileTreeItem {
+    let element = this._set.get(data.abspath);
     if (element) return element;
-    element = new this({ ...data, itemType: "l" });
-    this._set.set(data.id, element);
+    element = new this(data);
+    this._set.set(data.abspath, element);
     return element;
   }
 }

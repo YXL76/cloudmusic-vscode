@@ -187,10 +187,10 @@ export class ButtonManager {
       this._buttons[Label.song].text = ele || "$(flame)";
       this._mdSong = "";
     } else {
-      const { item, tooltip } = ele;
+      const item = "mainSong" in ele.data ? ele.data.mainSong : ele.data;
       const ars = item.ar.map(({ name }) => name).join("/");
       this._buttons[Label.song].text = item.name;
-      this._mdSong = `<table><tr><th align="center">${item.name}</th></tr><tr><td align="center">${ars}</td></tr><tr><td align="center">${tooltip}</td></tr><tr><td align="center"><img src="${item.al.picUrl}" alt="${item.al.name}" width="384"/></td></tr><tr><td align="center">`;
+      this._mdSong = `<table><tr><th align="center">${item.name}</th></tr><tr><td align="center">${ars}</td></tr><tr><td align="center">${ele.tooltip}</td></tr><tr><td align="center"><img src="${item.al.picUrl}" alt="${item.al.name}" width="384"/></td></tr><tr><td align="center">`;
     }
 
     this._setMdTooltip();

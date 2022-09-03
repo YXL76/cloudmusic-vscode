@@ -909,7 +909,7 @@
     "eslint": "8.23.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",
-    "eslint-plugin-react": "7.31.1",
+    "eslint-plugin-react": "7.31.4",
     "eslint-plugin-react-hooks": "4.6.0",
     "postcss": "8.4.16",
     "prettier": "2.7.1",

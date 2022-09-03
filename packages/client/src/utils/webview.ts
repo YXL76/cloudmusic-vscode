@@ -138,17 +138,21 @@ export class AccountViewProvider implements WebviewViewProvider {
   static metadata(): void {
     if (this._view) {
       const item = State.playItem;
-      const msg: ProviderSMsg = item
-        ? {
-            command: "metadata",
-            duration: item.item.dt / 1000,
-            title: item.label,
-            artist: item.description,
-            album: item.tooltip,
-            artwork: [{ src: item.item.al.picUrl }],
-          }
-        : { command: "metadata" };
-      void this._view.webview.postMessage(msg);
+      if (!item) {
+        const msg: ProviderSMsg = { command: "metadata" };
+        void this._view.webview.postMessage(msg);
+      } else {
+        const data = "mainSong" in item.data ? item.data.mainSong : item.data;
+        const msg: ProviderSMsg = {
+          command: "metadata",
+          duration: data.dt / 1000,
+          title: item.label,
+          artist: item.description,
+          album: item.tooltip,
+          artwork: [{ src: data.al.picUrl }],
+        };
+        void this._view.webview.postMessage(msg);
+      }
     }
   }
 

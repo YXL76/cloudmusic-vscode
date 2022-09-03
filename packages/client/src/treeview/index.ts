@@ -13,7 +13,6 @@ import type {
   QueueItemTreeItemData,
 } from "./index";
 import type { ThemeIcon, TreeItem } from "vscode";
-import type { NeteaseTypings } from "api";
 
 export type QueueContent =
   | QueueItemTreeItem
@@ -34,6 +33,5 @@ export interface PlayTreeItem extends TreeItem {
   readonly description: string;
   readonly tooltip: string;
   readonly data: PlayTreeItemData;
-  readonly item: NeteaseTypings.SongsItem;
   valueOf: number | string;
 }

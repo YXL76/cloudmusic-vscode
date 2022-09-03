@@ -217,7 +217,9 @@ export class State {
         case "recommend": {
           const songs = await IPC.netease("recommendSongs", [uid]);
           const items = songs.map(
-            (song) => QueueItemTreeItem.new({ ...song, pid: song.al.id }).data
+            (song) =>
+              QueueItemTreeItem.new({ ...song, pid: song.al.id, itemType: "q" })
+                .data
           );
           IPC.new(items);
         }

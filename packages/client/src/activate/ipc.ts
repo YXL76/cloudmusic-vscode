@@ -171,6 +171,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         State.playItem = QueueItemTreeItem.new({
           ...data.item,
           pid: data.item.al.id,
+          itemType: "q",
         });
         break;
       case IPCWasm.load:

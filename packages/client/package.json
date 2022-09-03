@@ -16,8 +16,8 @@
     "@cloudmusic/server": "workspace:*",
     "@cloudmusic/shared": "workspace:*",
     "array-unsort": "1.1.6",
-    "file-type": "18.0.0",
     "lodash": "4.17.21",
+    "music-metadata": "8.0.1",
     "qrcode": "1.5.1"
   }
 }

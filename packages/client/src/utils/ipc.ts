@@ -132,12 +132,18 @@ export class IPC {
     ipcB.send({ t: IPCPlayer.load });
 
     if (playItem instanceof LocalFileTreeItem) {
-      ipc.send({ t: IPCPlayer.load, url: playItem.tooltip, local: true, play });
+      ipc.send({ t: IPCPlayer.load, url: playItem.valueOf, local: true, play });
     } else {
-      const { data, item } = playItem;
+      const { data } = playItem;
       let next;
-      if (!State.fm) next = QueueProvider.next?.item;
-      ipc.send({ t: IPCPlayer.load, item, pid: data.pid, next, play });
+      if (!State.fm) next = QueueProvider.next?.data;
+      ipc.send({
+        t: IPCPlayer.load,
+        item: "mainSong" in data ? data.mainSong : data,
+        pid: data.pid,
+        next: next && "mainSong" in next ? next.mainSong : next,
+        play,
+      });
     }
   }
 
