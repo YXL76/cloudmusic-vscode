@@ -42,13 +42,16 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |      module       |      function      | status |
 | :---------------: | :----------------: | :----: |
 |    check_music    |     歌曲可用性     |   ❌   |
+|       like        | 红心与取消红心歌曲 |   ✔️   |
 |       lyric       |        歌词        |   ✔️   |
 |     simi_song     |      相似歌曲      |   ✔️   |
+|    sheet_list     |      乐谱列表      |   ❌   |
+|   sheet_preview   |      乐谱预览      |   ❌   |
 |    song_detail    |      歌曲详情      |   ✔️   |
+| song_download_url |   客户端歌曲下载   |   ✔️   |
 |     song_url      |      歌曲链接      |   ✔️   |
 |    song_url_v1    |      歌曲链接      |   ✔️   |
-| song_download_url |   客户端歌曲下载   |   ✔️   |
-|       like        | 红心与取消红心歌曲 |   ✔️   |
+| song_wiki_summary |  音乐百科基础信息  |   ❌   |
 
 ## 评论类
 

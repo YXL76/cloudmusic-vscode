@@ -12,6 +12,7 @@ const resourceTypeMap = [
   "A_DJ_1_",
   "R_VI_62_",
   "A_EV_2_",
+  "A_DR_14_",
 ];
 
 export async function commentAdd(
