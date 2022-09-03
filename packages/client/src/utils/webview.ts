@@ -286,9 +286,9 @@ export class Webview {
     });
 
     State.lyric.updatePanel = (text) =>
-      void panel.webview.postMessage({ command: "lyric", text } as LyricSMsg);
+      void panel.webview.postMessage(<LyricSMsg>{ command: "lyric", text });
     State.lyric.updateIndex = (idx) =>
-      void panel.webview.postMessage({ command: "index", idx } as LyricSMsg);
+      void panel.webview.postMessage(<LyricSMsg>{ command: "index", idx });
 
     setHtml();
 

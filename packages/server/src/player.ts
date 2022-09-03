@@ -71,10 +71,19 @@ export function posHandler(pos: number): void {
   }
 
   const lpos = pos - STATE.lyric.delay;
-  const prev = STATE.lyric.idx;
-  while (STATE.lyric.time[STATE.lyric.idx] <= lpos) ++STATE.lyric.idx;
-  if (prev !== STATE.lyric.idx)
-    IPCServer.broadcast({ t: IPCPlayer.lyricIndex, idx: STATE.lyric.idx - 1 });
+  {
+    let l = 0;
+    let r = STATE.lyric.time.length - 1;
+    while (l <= r) {
+      const mid = Math.trunc((l + r) / 2);
+      if (STATE.lyric.time[mid] <= lpos) l = mid + 1;
+      else r = mid - 1;
+    }
+    if (STATE.lyric.idx !== r) {
+      STATE.lyric.idx = r;
+      IPCServer.broadcast({ t: IPCPlayer.lyricIndex, idx: Math.max(0, r) });
+    }
+  }
 }
 
 class WasmPlayer {
