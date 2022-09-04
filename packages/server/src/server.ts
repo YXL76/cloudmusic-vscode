@@ -87,7 +87,7 @@ export class IPCServer {
             if (isMaster) {
               // Master was gone, the wasm player was destroyed
               // So we need to recreate it on new master
-              Player.wasmOpen();
+              Player.wasmOpen?.();
             }
           } else {
             this._retainState = Player.playing;
@@ -116,6 +116,7 @@ export class IPCServer {
             t: IPCControl.retain,
             items: this._retain,
             play: this._retainState,
+            seek: Player.lastPos,
           });
           this._retain = [];
         }

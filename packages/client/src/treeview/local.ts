@@ -125,17 +125,16 @@ export class LocalProvider implements TreeDataProvider<Content> {
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               container: format.container!,
               itemType: "l" as const,
-              name: "",
+              name: common.title || filename,
               alia: [],
               id: 0,
-              al: { id: 0, name: "", picUrl: "" },
-              ar: [{ id: 0, name: "" }],
-              dt: 4800000,
+              al: { id: 0, name: common.album ?? "", picUrl: "" },
+              ar: (common.artists ?? [common.artist ?? ""]).map((name) => ({
+                name,
+                id: 0,
+              })),
+              dt: format.duration ?? 4800000,
             };
-
-            if (common.title) item.name = common.title;
-
-            if (common.album) item.al.name = common.album;
 
             if (common.picture?.length) {
               const [{ data, format }] = common.picture;
@@ -143,12 +142,6 @@ export class LocalProvider implements TreeDataProvider<Content> {
                 "base64"
               )}`;
             }
-
-            if (common.artists)
-              item.ar = common.artists.map((name) => ({ name, id: 0 }));
-            else if (common.artist) item.ar = [{ name: common.artist, id: 0 }];
-
-            if (format.duration) item.dt = format.duration;
 
             items.push(LocalFileTreeItem.new(item));
           });

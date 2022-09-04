@@ -1,6 +1,6 @@
 import { IPCPlayer, IPCWasm } from "@cloudmusic/shared";
-import { basename, resolve } from "node:path";
 import { downloadMusic, getMusicPath, logError } from "./utils";
+import type { IPCClientLoadMsg } from "@cloudmusic/shared";
 import { IPCServer } from "./server";
 import { MusicCache } from "./cache";
 import { NeteaseAPI } from "./api";
@@ -9,30 +9,31 @@ import { PersonalFm } from "./state";
 import { STATE } from "./state";
 import { TMP_DIR } from "./constant";
 import { fileURLToPath } from "node:url";
+import { resolve } from "node:path";
 
-type NativePlayer = unknown;
-type NativeMediaSession = unknown;
+type NativePlayerHdl = unknown;
+type NativeMediaSessionHdl = unknown;
 
 interface NativeModule {
-  playerEmpty(player: NativePlayer): boolean;
-  playerLoad(player: NativePlayer, url: string, play: boolean): boolean;
-  playerNew(): NativePlayer;
-  playerPause(player: NativePlayer): void;
-  playerPlay(player: NativePlayer): boolean;
-  playerPosition(player: NativePlayer): number;
-  playerSetVolume(player: NativePlayer, level: number): void;
-  playerSetSpeed(player: NativePlayer, speed: number): void;
-  playerStop(player: NativePlayer): void;
-  playerSeek(player: NativePlayer, seekOffset: number): void;
+  playerEmpty(player: NativePlayerHdl): boolean;
+  playerLoad(player: NativePlayerHdl, url: string, play: boolean): boolean;
+  playerNew(): NativePlayerHdl;
+  playerPause(player: NativePlayerHdl): void;
+  playerPlay(player: NativePlayerHdl): boolean;
+  playerPosition(player: NativePlayerHdl): number;
+  playerSetVolume(player: NativePlayerHdl, level: number): void;
+  playerSetSpeed(player: NativePlayerHdl, speed: number): void;
+  playerStop(player: NativePlayerHdl): void;
+  playerSeek(player: NativePlayerHdl, seekOffset: number): void;
 
   // mediaSessionHwnd(pid: string): string;
   mediaSessionNew(
     // hwnd: string,
     handler: (type: number) => void,
     path: string
-  ): NativeMediaSession;
+  ): NativeMediaSessionHdl;
   mediaSessionSetMetadata(
-    mediaSession: NativeMediaSession,
+    mediaSession: NativeMediaSessionHdl,
     title: string,
     album: string,
     artist: string,
@@ -40,7 +41,7 @@ interface NativeModule {
     duration: number
   ): void;
   mediaSessionSetPlayback(
-    mediaSession: NativeMediaSession,
+    mediaSession: NativeMediaSessionHdl,
     playing: boolean,
     position: number
   ): void;
@@ -65,6 +66,8 @@ async function prefetch() {
 }
 
 export function posHandler(pos: number): void {
+  Player.lastPos = pos;
+
   if (pos > 120 && !prefetchLock) {
     prefetchLock = true;
     prefetch().catch(logError);
@@ -86,10 +89,118 @@ export function posHandler(pos: number): void {
   }
 }
 
-class WasmPlayer {
-  load(path: string, play: boolean) {
-    IPCServer.sendToMaster({ t: IPCWasm.load, path, play });
+const buildPath = resolve(
+  fileURLToPath(import.meta.url),
+  "..",
+  "..",
+  "build",
+  process.env["CM_NATIVE_MODULE"] as string
+);
+
+abstract class PlayerBase {
+  id = 0;
+
+  lastPos = 0;
+
+  next?: { id: number; name: string };
+
+  protected _playing = false;
+
+  private _loadtime = 0;
+
+  private _scrobbleArgs?: { dt: number; pid: number };
+
+  protected abstract readonly _wasm: boolean;
+
+  get playing() {
+    return this._playing;
   }
+
+  set playing(value: boolean) {
+    if (this._playing !== value) {
+      this._playing = value;
+      this._setPlaying?.();
+      IPCServer.broadcast({ t: value ? IPCPlayer.play : IPCPlayer.pause });
+    }
+  }
+
+  async load(data: IPCClientLoadMsg): Promise<void> {
+    const loadtime = Date.now();
+    if (loadtime < this._loadtime) return;
+    const lastTime = this._loadtime;
+
+    if (this._scrobbleArgs && this.id) {
+      const { dt, pid } = this._scrobbleArgs;
+      this._scrobbleArgs = undefined;
+      const diff = loadtime - lastTime;
+      if (diff > 60000) {
+        const time = Math.floor(Math.min(diff, dt) / 1000);
+        NeteaseAPI.scrobble(this.id, pid, time).catch(logError);
+      }
+    }
+
+    try {
+      const path =
+        "url" in data && data.url
+          ? data.url
+          : await getMusicPath(data.item.id, data.item.name, this._wasm);
+
+      this._loadtime = loadtime;
+      this._load(path, data.play, data.item);
+    } catch (err) {
+      logError(err);
+      IPCServer.sendToMaster({ t: IPCPlayer.end, fail: true });
+      return;
+    }
+
+    this.next = data.next;
+    prefetchLock = false;
+
+    this.id = data.item.id;
+    if (data.item.id) {
+      NeteaseAPI.lyric(data.item.id)
+        .then((lyric) => {
+          Object.assign(STATE.lyric, lyric, { idx: 0 });
+          IPCServer.broadcast({ t: IPCPlayer.lyric, lyric });
+        })
+        .catch(logError);
+
+      this._scrobbleArgs = {
+        dt: data.item.dt,
+        pid: data.pid || 0,
+      };
+    }
+
+    this._loaded?.();
+  }
+
+  toggle(): void {
+    this._playing ? this.pause() : this.play();
+  }
+
+  abstract pause(): void;
+  abstract pause(): void;
+  abstract play(): void;
+  abstract stop(): void;
+  abstract speed(speed: number): void;
+  abstract volume(level: number): void;
+  abstract seek(seekOffset: number): void;
+  protected abstract _load(
+    path: string,
+    play: boolean,
+    item: NeteaseTypings.SongsItem
+  ): void;
+  protected abstract _loaded?(): void; // WASM is sent from webview
+  protected abstract _setPlaying?(): void;
+  protected abstract wasmOpen?(): void;
+}
+
+class WasmPlayer extends PlayerBase {
+  protected readonly _wasm = true;
+
+  protected readonly _loaded = undefined;
+
+  protected readonly _setPlaying = undefined;
 
   pause() {
     IPCServer.sendToMaster({ t: IPCWasm.pause });
@@ -114,81 +225,40 @@ class WasmPlayer {
   seek(seekOffset: number) {
     IPCServer.sendToMaster({ t: IPCWasm.seek, seekOffset });
   }
+
+  wasmOpen() {
+    setTimeout(
+      () => IPCServer.sendToMaster({ t: IPCPlayer.end, reload: true }),
+      1024
+    );
+  }
+
+  protected _load(path: string, play: boolean) {
+    IPCServer.sendToMaster({ t: IPCWasm.load, path, play });
+  }
 }
 
-const buildPath = resolve(
-  fileURLToPath(import.meta.url),
-  "..",
-  "..",
-  "build",
-  process.env["CM_NATIVE_MODULE"] as string
-);
+class NativePlayer extends PlayerBase {
+  readonly wasmOpen = undefined;
 
-export class Player {
-  static next?: { id: number; name: string };
+  protected readonly _wasm = false;
 
-  static id = 0;
+  private readonly _native: NativeModule;
 
-  private static _dt = 0;
+  private readonly _player: NativePlayerHdl;
 
-  private static _pid = 0;
+  private readonly _mediaSession: NativeMediaSessionHdl;
 
-  private static _time = 0;
+  constructor() {
+    super();
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    this._native = require(buildPath) as NativeModule;
+    this._player = this._native.playerNew();
+    const volume = parseInt(process.env["CM_VOLUME"] || "85", 10);
+    const speed = parseFloat(process.env["CM_SPEED"] || "1");
+    this._native.playerSetVolume(this._player, volume);
+    this._native.playerSetSpeed(this._player, speed);
 
-  private static _loadtime = 0;
-
-  private static _wasm?: WasmPlayer;
-
-  private static _native?: NativeModule;
-
-  private static _player: NativePlayer;
-
-  private static _mediaSession: NativeMediaSession;
-
-  private static _playing = false;
-
-  static get playing() {
-    return this._playing;
-  }
-
-  static set playing(value: boolean) {
-    if (this._playing !== value) {
-      this._playing = value;
-      if (this._native) {
-        const pos = this._native.playerPosition(this._player);
-        this._native.mediaSessionSetPlayback(this._mediaSession, value, pos);
-      }
-      IPCServer.broadcast({ t: value ? IPCPlayer.play : IPCPlayer.pause });
-    }
-  }
-
-  static init() {
-    if (this._wasm || this._native) return;
-    if (process.env["CM_WASM"] === "0") {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      this._native = require(buildPath) as NativeModule;
-      this._player = this._native.playerNew();
-      const volume = parseInt(process.env["CM_VOLUME"] || "85", 10);
-      const speed = parseFloat(process.env["CM_SPEED"] || "1");
-      this._native.playerSetVolume(this._player, volume);
-      this._native.playerSetSpeed(this._player, speed);
-
-      this.mediaSession(/* process.env["VSCODE_PID"], true */);
-
-      setInterval(() => {
-        if (!this._playing) return;
-        if (Player.empty()) {
-          this.playing = false;
-          IPCServer.sendToMaster({ t: IPCPlayer.end });
-          return;
-        }
-        posHandler(Player.position());
-      }, 800);
-    } else this._wasm = new WasmPlayer();
-  }
-
-  static mediaSession(/* pid?: string, init?: true*/) {
-    if (!this._native) return;
     /* let hwnd = "";
     if (process.platform === "win32" && pid)
       hwnd = this._native.mediaSessionHwnd(pid);
@@ -223,152 +293,73 @@ export class Player {
           this.stop();
       }
     }, buildPath.replace(".node", "-media"));
-  }
 
-  static empty(): boolean {
-    return this._native ? this._native.playerEmpty(this._player) : true;
-  }
-
-  static async load(
-    data:
-      | { url: string; local: true; play: boolean }
-      | {
-          item: NeteaseTypings.SongsItem;
-          pid: number;
-          next?: { id: number; name: string };
-          play: boolean;
-        }
-  ): Promise<void> {
-    const loadtime = Date.now();
-    if (loadtime < this._loadtime) {
-      this._failedEnd();
-      return;
-    }
-    this._loadtime = loadtime;
-
-    let path: string;
-    const local = "local" in data && data.local;
-    const network = "item" in data && data.item;
-    try {
-      if (local) path = data.url;
-      else if (network) {
-        path = await getMusicPath(data.item.id, data.item.name, !!this._wasm);
-      } else throw Error;
-    } catch (err) {
-      logError(err);
-      this._failedEnd();
-      return;
-    }
-
-    if (this._native) {
-      if (!this._native.playerLoad(this._player, path, data.play)) {
-        this._failedEnd();
+    setInterval(() => {
+      if (!this._playing) return;
+      if (this._native.playerEmpty(this._player)) {
+        this.playing = false;
+        IPCServer.sendToMaster({ t: IPCPlayer.end });
         return;
       }
-      this.playing = data.play;
-
-      if (local) {
-        this._native.mediaSessionSetMetadata(this._mediaSession, basename(path), "", "", "", 0); // eslint-disable-line
-      } else if (network) {
-        this._native.mediaSessionSetMetadata(
-          this._mediaSession,
-          data.item.name || "",
-          data.item.al?.name || "",
-          data.item.ar?.map((ar) => ar.name).join("/") || "",
-          data.item.al?.picUrl || "",
-          data.item.dt / 1000
-        );
-      }
-    } else if (this._wasm) {
-      this._wasm.load(path, data.play);
-    }
-
-    this.next = network ? data["next"] : undefined;
-    prefetchLock = false;
-
-    if (network) {
-      NeteaseAPI.lyric(data.item.id)
-        .then((lyric) => {
-          Object.assign(STATE.lyric, lyric, { idx: 0 });
-          IPCServer.broadcast({ t: IPCPlayer.lyric, lyric });
-        })
-        .catch(logError);
-    }
-
-    const pTime = this._time;
-    this._time = Date.now();
-
-    if (this.id) {
-      const diff = this._time - pTime;
-      if (diff > 60000) {
-        const time = Math.floor(Math.min(diff, this._dt) / 1000);
-        NeteaseAPI.scrobble(this.id, this._pid, time).catch(logError);
-      }
-    }
-
-    if (network) {
-      this.id = data.item.id;
-      this._dt = data.item.dt;
-      this._pid = data.pid;
-    } else {
-      this.id = 0;
-      this._dt = 0;
-      this._pid = 0;
-    }
-
-    if (this._native) {
-      // WASM is sent from webview
-      IPCServer.broadcast({ t: IPCPlayer.loaded });
-    }
+      posHandler(this._native.playerPosition(this._player));
+    }, 800);
   }
 
-  static toggle(): void {
-    this._playing ? this.pause() : this.play();
+  pause() {
+    this._native.playerPause(this._player);
+    this.playing = false;
   }
 
-  static pause(): void {
-    if (this._native) {
-      this._native.playerPause(this._player);
-      this.playing = false;
-    } else this._wasm?.pause();
+  play() {
+    if (this._native.playerPlay(this._player)) this.playing = true;
   }
 
-  static play(): void {
-    if (this._native?.playerPlay(this._player)) this.playing = true;
-    this._wasm?.play();
+  stop() {
+    this._native.playerStop(this._player);
+    this.playing = false;
   }
 
-  static position(): number {
-    return this._native?.playerPosition(this._player) || 0;
+  speed(speed: number) {
+    this._native.playerSetSpeed(this._player, speed);
   }
 
-  static stop(): void {
-    if (this._native) {
-      this._native.playerStop(this._player);
-      this.playing = false;
-    } else this._wasm?.stop();
+  volume(level: number) {
+    this._native.playerSetVolume(this._player, level);
   }
 
-  static speed(speed: number): void {
-    this._native?.playerSetSpeed(this._player, speed);
-    this._wasm?.speed(speed);
+  seek(seekOffset: number) {
+    this._native.playerSeek(this._player, seekOffset);
   }
 
-  static volume(level: number): void {
-    this._native?.playerSetVolume(this._player, level);
-    this._wasm?.volume(level);
+  protected _load(path: string, play: boolean, item: NeteaseTypings.SongsItem) {
+    if (!this._native.playerLoad(this._player, path, play))
+      throw Error(`Failed to load ${path}`);
+    this.playing = play;
+
+    this._native.mediaSessionSetMetadata(
+      this._mediaSession,
+      item.name || "",
+      item.al?.name || "",
+      item.ar?.map((ar) => ar.name).join("/") || "",
+      item.al?.picUrl || "",
+      item.dt / 1000
+    );
   }
 
-  static seek(seekOffset: number): void {
-    this._native?.playerSeek(this._player, seekOffset);
-    this._wasm?.seek(seekOffset);
+  protected _loaded() {
+    IPCServer.broadcast({ t: IPCPlayer.loaded });
   }
 
-  static wasmOpen(): void {
-    if (this._wasm) setTimeout(() => this._failedEnd(), 1024);
-  }
-
-  private static _failedEnd(): void {
-    IPCServer.sendToMaster({ t: IPCPlayer.end, fail: true });
+  protected _setPlaying() {
+    const pos = this._native.playerPosition(this._player);
+    this._native.mediaSessionSetPlayback(
+      this._mediaSession,
+      this._playing,
+      pos
+    );
   }
 }
+
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const Player =
+  process.env["CM_WASM"] === "0" ? new NativePlayer() : new WasmPlayer();

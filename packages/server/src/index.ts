@@ -52,7 +52,6 @@ else {
 }
 
 (async () => {
-  Player.init();
   const ipc = Promise.all([IPCServer.init(), IPCBroadcastServer.init()]);
 
   await mkdir(TMP_DIR).catch(() => undefined);

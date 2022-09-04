@@ -12,6 +12,14 @@ export type CSConnPool = Map<
   { resolve: (value?: any) => void; reject: (reason?: string) => void }
 >;
 
+export type IPCClientLoadMsg = {
+  url?: string;
+  item: NeteaseTypings.SongsItem;
+  pid?: number;
+  next?: { id: number; name: string };
+  play: boolean;
+};
+
 export type IPCMsg<T = string, U = Record<never, never>> = { t: T } & U;
 
 export type IPCBroadcastMsg =
@@ -37,16 +45,7 @@ export type IPCClientMsg =
   | IPCMsg<IPCControl.netease>
   | IPCMsg<IPCControl.retain, { items?: readonly unknown[] }>
   // | IPCMsg<IPCControl.pid, { pid?: string }>
-  | IPCMsg<IPCPlayer.load, { url: string; local: true; play: boolean }>
-  | IPCMsg<
-      IPCPlayer.load,
-      {
-        item: NeteaseTypings.SongsItem;
-        pid: number;
-        next?: { id: number; name: string };
-        play: boolean;
-      }
-    >
+  | IPCMsg<IPCPlayer.load, IPCClientLoadMsg>
   | IPCMsg<IPCPlayer.lyricDelay, { delay: number }>
   | IPCMsg<IPCPlayer.playing, { playing: boolean }>
   | IPCMsg<IPCPlayer.position, { pos: number }>
@@ -69,8 +68,11 @@ export type IPCServerMsg =
       }
     >
   | IPCMsg<IPCControl.new>
-  | IPCMsg<IPCControl.retain, { items: readonly unknown[]; play?: boolean }>
-  | IPCMsg<IPCPlayer.end, { fail?: true }>
+  | IPCMsg<
+      IPCControl.retain,
+      { items: readonly unknown[]; play?: boolean; seek?: number }
+    >
+  | IPCMsg<IPCPlayer.end, { fail?: true; reload?: true }>
   | IPCMsg<IPCPlayer.loaded>
   | IPCMsg<IPCPlayer.lyric, { lyric: NeteaseTypings.LyricData }>
   | IPCMsg<IPCPlayer.lyricIndex, { idx: number }>

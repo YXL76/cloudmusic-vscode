@@ -117,7 +117,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         State.downInit(); // 1
         break;
       case IPCPlayer.end:
-        if (!data.fail && State.repeat) IPC.load();
+        if (!data.fail && (State.repeat || data.reload)) IPC.load();
         else void commands.executeCommand("cloudmusic.next");
         break;
       case IPCPlayer.loaded:
