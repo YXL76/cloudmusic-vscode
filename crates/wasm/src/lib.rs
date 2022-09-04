@@ -105,7 +105,7 @@ impl Player {
     }
 
     #[wasm_bindgen]
-    pub fn load(&mut self, data: &[u8], play: bool) -> bool {
+    pub fn load(&mut self, data: &[u8], play: bool, _seek: Option<f64>) -> bool {
         self.stop();
 
         if let Ok(sink) = Sink::try_new(&self.handle) {

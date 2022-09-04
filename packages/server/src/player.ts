@@ -146,7 +146,7 @@ abstract class PlayerBase {
           : await getMusicPath(data.item.id, data.item.name, this._wasm);
 
       this._loadtime = loadtime;
-      this._load(path, data.play, data.item);
+      this._load(path, data.play, data.item, data.seek);
     } catch (err) {
       logError(err);
       IPCServer.sendToMaster({ t: IPCPlayer.end, fail: true });
@@ -188,7 +188,8 @@ abstract class PlayerBase {
   protected abstract _load(
     path: string,
     play: boolean,
-    item: NeteaseTypings.SongsItem
+    item: NeteaseTypings.SongsItem,
+    seek?: number
   ): void;
   protected abstract _loaded?(): void; // WASM is sent from webview
   protected abstract _setPlaying?(): void;
@@ -228,13 +229,23 @@ class WasmPlayer extends PlayerBase {
 
   wasmOpen() {
     setTimeout(
-      () => IPCServer.sendToMaster({ t: IPCPlayer.end, reload: true }),
+      () =>
+        IPCServer.sendToMaster({
+          t: IPCPlayer.end,
+          pause: !this.playing,
+          reloadNseek: this.lastPos,
+        }),
       1024
     );
   }
 
-  protected _load(path: string, play: boolean) {
-    IPCServer.sendToMaster({ t: IPCWasm.load, path, play });
+  protected _load(
+    path: string,
+    play: boolean,
+    _: NeteaseTypings.SongsItem,
+    seek?: number
+  ) {
+    IPCServer.sendToMaster({ t: IPCWasm.load, path, play, seek });
   }
 }
 

@@ -18,6 +18,7 @@ export type IPCClientLoadMsg = {
   pid?: number;
   next?: { id: number; name: string };
   play: boolean;
+  seek?: number;
 };
 
 export type IPCMsg<T = string, U = Record<never, never>> = { t: T } & U;
@@ -72,7 +73,10 @@ export type IPCServerMsg =
       IPCControl.retain,
       { items: readonly unknown[]; play?: boolean; seek?: number }
     >
-  | IPCMsg<IPCPlayer.end, { fail?: true; reload?: true }>
+  | IPCMsg<
+      IPCPlayer.end,
+      { fail?: true; pause?: boolean; reloadNseek?: number }
+    >
   | IPCMsg<IPCPlayer.loaded>
   | IPCMsg<IPCPlayer.lyric, { lyric: NeteaseTypings.LyricData }>
   | IPCMsg<IPCPlayer.lyricIndex, { idx: number }>
@@ -85,7 +89,7 @@ export type IPCServerMsg =
   | IPCMsg<IPCPlayer.speed, { speed: number }>
   | IPCMsg<IPCQueue.fm>
   | IPCMsg<IPCQueue.fmNext, { item: NeteaseTypings.SongsItem }>
-  | IPCMsg<IPCWasm.load, { path: string; play: boolean }>
+  | IPCMsg<IPCWasm.load, { path: string; play: boolean; seek?: number }>
   | IPCMsg<IPCWasm.pause>
   | IPCMsg<IPCWasm.play>
   | IPCMsg<IPCWasm.stop>

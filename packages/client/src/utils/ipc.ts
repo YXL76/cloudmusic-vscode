@@ -126,7 +126,7 @@ export class IPC {
     ipcB.disconnect();
   }
 
-  static load(play = true): void {
+  static load(play = true, seek?: number): void {
     const { playItem } = State;
     if (!playItem) return;
     ipcB.send({ t: IPCPlayer.load });
@@ -142,6 +142,7 @@ export class IPC {
       pid: "pid" in data ? data.pid : undefined,
       next: next && "mainSong" in next ? next.mainSong : next,
       play,
+      seek,
     });
   }
 

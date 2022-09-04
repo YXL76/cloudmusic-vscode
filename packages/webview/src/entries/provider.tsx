@@ -68,9 +68,10 @@ class WebAudioPlayer {
     console.log("Audio Player: HTMLAudioElement");
   }
 
-  async load(data: Uint8Array, play: boolean): Promise<boolean> {
+  async load(data: Uint8Array, play: boolean, seek?: number): Promise<boolean> {
     this._audio.src = URL.createObjectURL(new Blob([data.buffer]));
     try {
+      if (seek) this._audio.currentTime += seek;
       if (play) await this._audio.play();
       return true;
     } catch {}
@@ -120,7 +121,7 @@ class WebAudioPlayer {
 
   seek(seekOffset: number): void {
     // this._audio.fastSeek(seekOffset);
-    this._audio.currentTime = this._audio.currentTime + seekOffset;
+    this._audio.currentTime += seekOffset;
   }
 }
 
@@ -157,13 +158,13 @@ class Controller {
     vscode.postMessage(msg);
   }
 
-  static async load(url: string, play: boolean) {
+  static async load(url: string, play: boolean, seek?: number) {
     if (!this._player) return;
 
     const rep = await fetch(url);
     const buf = await rep.arrayBuffer();
 
-    if (await this._player.load(new Uint8Array(buf), play)) {
+    if (await this._player.load(new Uint8Array(buf), play, seek)) {
       this._playing = play;
       const msg: ProviderCMsg = { command: "load" };
       vscode.postMessage(msg);
@@ -318,7 +319,7 @@ const Provider = (): JSX.Element => {
           setProfiles(data.profiles);
           break;
         case "load":
-          Controller.load(data.url, data.play).catch(console.error);
+          Controller.load(data.url, data.play, data.seek).catch(console.error);
           break;
         case "play":
           Controller.play().catch(console.error);
