@@ -351,7 +351,7 @@ class NativePlayer extends PlayerBase {
       this._mediaSession,
       item.name || "",
       item.al?.name || "",
-      item.ar?.map((ar) => ar.name).join("/") || "",
+      item.ar?.map(({ name }) => name).join("/") || "",
       item.al?.picUrl || "",
       item.dt / 1000
     );

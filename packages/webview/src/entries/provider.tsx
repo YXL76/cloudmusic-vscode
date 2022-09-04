@@ -20,10 +20,15 @@ const next = () => {
   const msg: ProviderCMsg = { command: "next" };
   vscode.postMessage(msg);
 };
-const seek = (detail: MediaSessionActionDetails) => {
-  if (detail.seekTime) {
-    /* Controller.seek() */
-  } else if (detail.seekOffset) Controller.seek(detail.seekOffset);
+const seek = ({ action, seekTime, seekOffset }: MediaSessionActionDetails) => {
+  if (seekTime) {
+    const pos = Controller.position();
+    if (pos) Controller.seek(seekTime - pos);
+  } else if (seekOffset) Controller.seek(seekOffset);
+  else {
+    if (action === "seekbackward") Controller.seek(-15);
+    else Controller.seek(15);
+  }
 };
 
 function setMediaSessionActionHandler() {
@@ -37,6 +42,7 @@ function setMediaSessionActionHandler() {
 
   navigator.mediaSession.setActionHandler("seekbackward", seek);
   navigator.mediaSession.setActionHandler("seekforward", seek);
+  navigator.mediaSession.setActionHandler("seekto", seek);
 }
 
 function deleteMediaSessionActionHandler() {
@@ -64,6 +70,10 @@ class WebAudioPlayer {
     this._audio = new Audio();
     this._audio.preservesPitch = true;
     this._audio.preload = "auto";
+
+    this._audio.addEventListener("durationchange", () => {
+      if (this._audio.duration) Controller.duration = this._audio.duration;
+    });
 
     console.log("Audio Player: HTMLAudioElement");
   }
@@ -126,6 +136,10 @@ class WebAudioPlayer {
 }
 
 class Controller {
+  static duration = 300;
+
+  static playbackRate = 1;
+
   private static _player?: Player | WebAudioPlayer;
 
   private static _playing = false;
@@ -145,13 +159,20 @@ class Controller {
       testfiles: string[];
     };
 
-    const fakeAudio = await this._testAudioFiles(testfiles);
-    if (fakeAudio && this._master) this._startSilent(fakeAudio);
-
     if (enablePlayer) {
+      const fakeAudio = await this._testAudioFiles(testfiles);
+      if (fakeAudio) this._playableFile = fakeAudio;
+
       this._player = fakeAudio
         ? new (await import("cloudmusic-wasm")).Player()
         : new WebAudioPlayer();
+
+      if (this._master) {
+        setMediaSessionActionHandler();
+        this._startSilent().catch(console.error);
+        if (!this._timerId)
+          this._timerId = setInterval(this._posHandler.bind(this), 800);
+      }
     }
 
     const msg: ProviderCMsg = { command: "pageLoaded" };
@@ -166,6 +187,7 @@ class Controller {
 
     if (await this._player.load(new Uint8Array(buf), play, seek)) {
       this._playing = play;
+      navigator.mediaSession.playbackState = play ? "playing" : "paused";
       const msg: ProviderCMsg = { command: "load" };
       vscode.postMessage(msg);
     }
@@ -175,6 +197,7 @@ class Controller {
   static async play() {
     if (!this._player) return;
     this._playing = !!(await this._player.play());
+    navigator.mediaSession.playbackState = this._playing ? "playing" : "paused";
     this._syncState();
   }
 
@@ -182,6 +205,7 @@ class Controller {
     if (!this._player) return;
     this._player.pause();
     this._playing = false;
+    navigator.mediaSession.playbackState = "paused";
     this._syncState();
   }
 
@@ -189,11 +213,13 @@ class Controller {
     if (!this._player) return;
     this._player.stop();
     this._playing = false;
+    navigator.mediaSession.playbackState = "paused";
     this._syncState();
   }
 
   static speed(speed: number) {
     this._player?.set_speed(speed);
+    this.playbackRate = speed;
   }
 
   static volume(level: number) {
@@ -204,21 +230,36 @@ class Controller {
     this._player?.seek(seekOffset);
   }
 
+  static position() {
+    return this._player?.position();
+  }
+
   static setMaster(value: boolean) {
-    this._dropTimer();
     this._master = value;
+    if (this._timerId) {
+      clearInterval(this._timerId);
+      this._timerId = undefined;
+    }
     if (this._master) {
       // Only when player is enabled
       if (this._player) {
         setMediaSessionActionHandler();
         this._timerId = setInterval(this._posHandler.bind(this), 800);
-        this._startSilent();
+        this._startSilent().catch(console.error);
       }
     } else {
       this._player?.stop();
       deleteMediaSessionActionHandler();
       this._stopSilent();
     }
+  }
+
+  static setStatus(position: number) {
+    navigator.mediaSession.setPositionState?.({
+      duration: this.duration,
+      playbackRate: this.playbackRate,
+      position,
+    });
   }
 
   private static _syncState() {
@@ -231,29 +272,33 @@ class Controller {
 
   private static async _testAudioFiles(
     files: string[]
-  ): Promise<HTMLAudioElement | undefined> {
-    const a = new Audio();
+  ): Promise<string | undefined> {
+    const audioCtx = new window.AudioContext();
     const passed = [];
     for (const file of files) {
-      a.src = file;
+      const rep = await fetch(file);
+      const buf = await rep.arrayBuffer();
       try {
-        await a.play();
+        await audioCtx.decodeAudioData(buf);
         passed.push(file);
       } catch {}
     }
     if (passed.length !== files.length) {
-      this._playableFile = passed.pop();
-      return a;
+      return passed.pop();
     }
     return;
   }
 
-  private static _startSilent(ele?: HTMLAudioElement) {
-    if (!this._playableFile) return;
-    this._audioEle?.pause();
-    this._audioEle = ele ?? new Audio(this._playableFile);
+  private static async _startSilent() {
+    if (!this._playableFile || this._audioEle) return;
+    const rep = await fetch(this._playableFile);
+    const buf = await rep.arrayBuffer();
+    this._audioEle = new Audio();
+    this._audioEle.src = URL.createObjectURL(new Blob([buf]));
+    this._audioEle.preload = "auto";
     this._audioEle.loop = true;
-    this._audioEle.play().catch(console.error);
+    this._audioEle.volume = 0.05;
+    await this._audioEle.play();
   }
 
   private static _stopSilent() {
@@ -261,30 +306,20 @@ class Controller {
     this._audioEle = undefined;
   }
 
-  private static _dropTimer() {
-    if (this._timerId) {
-      clearInterval(this._timerId);
-      this._timerId = undefined;
-    }
-  }
-
   private static _posHandler() {
     if (!this._player || !this._playing) return;
     if (this._player.empty()) {
       this._playing = false;
+      navigator.mediaSession.playbackState = "paused";
       const msg: ProviderCMsg = { command: "end" };
       vscode.postMessage(msg);
       return;
     }
 
-    const msg: ProviderCMsg = {
-      command: "position",
-      pos: this._player.position(),
-    };
+    const pos = this._player.position();
+    const msg: ProviderCMsg = { command: "position", pos };
     vscode.postMessage(msg);
-    /* if (navigator.mediaSession) {
-      navigator.mediaSession.setPositionState?.({ position: pos });
-    } */
+    this.setStatus(pos);
   }
 }
 
@@ -310,10 +345,11 @@ const Provider = (): JSX.Element => {
           navigator.mediaSession.playbackState = data.state;
           break;
         case "metadata":
-          navigator.mediaSession.metadata = new MediaMetadata(data);
-          /* navigator.mediaSession.setPositionState?.({
-            duration: data.duration,
-          }); */
+          navigator.mediaSession.metadata = data.meta
+            ? new MediaMetadata(data.meta)
+            : null;
+          if (data.duration) Controller.duration = data.duration;
+          Controller.setStatus(0);
           break;
         case "account":
           setProfiles(data.profiles);

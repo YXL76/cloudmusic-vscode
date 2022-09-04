@@ -45,10 +45,12 @@ export type ProviderSMsg =
   | {
       command: "metadata";
       duration?: number;
-      title?: string;
-      artist?: string;
-      album?: string;
-      artwork?: { src: string; sizes?: string; type?: string }[];
+      meta?: {
+        title?: string;
+        artist?: string;
+        album?: string;
+        artwork?: { src: string; sizes?: string; type?: string }[];
+      };
     }
   | { command: "account"; profiles: NeteaseTypings.Profile[] }
   | { command: "load"; url: string; play: boolean; seek?: number }

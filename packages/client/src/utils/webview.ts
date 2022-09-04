@@ -146,10 +146,12 @@ export class AccountViewProvider implements WebviewViewProvider {
         const msg: ProviderSMsg = {
           command: "metadata",
           duration: data.dt / 1000,
-          title: item.label,
-          artist: item.description,
-          album: item.tooltip,
-          artwork: [{ src: data.al.picUrl }],
+          meta: {
+            title: item.label,
+            artist: item.description,
+            album: item.tooltip,
+            artwork: [{ src: data.al.picUrl }],
+          },
         };
         void this._view.webview.postMessage(msg);
       }
@@ -175,7 +177,6 @@ export class AccountViewProvider implements WebviewViewProvider {
         case "pageLoaded":
           AccountViewProvider.master();
           AccountViewProvider.account([...AccountManager.accounts.values()]);
-          AccountViewProvider.metadata();
           AccountViewProvider.wasmVolume(
             AccountViewProvider.context.globalState.get(VOLUME_KEY, 85)
           );
