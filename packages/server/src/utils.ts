@@ -4,7 +4,7 @@ import type { Readable } from "stream";
 import { STATE } from "./state";
 import { TMP_DIR } from "./constant";
 import { createWriteStream } from "node:fs";
-import got from "got";
+import { got } from "got";
 import { resolve } from "node:path";
 
 export const logError = (err: unknown): void =>
@@ -69,6 +69,7 @@ function getMusic(
   try {
     const data = got(url, {
       isStream: true,
+      http2: true,
       timeout: { response: 8000 },
     });
     if (cache) {

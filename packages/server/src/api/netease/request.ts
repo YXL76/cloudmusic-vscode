@@ -5,9 +5,19 @@ import { CookieJar } from "tough-cookie";
 import type { Headers } from "got";
 import type { NeteaseTypings } from "api";
 import { STATE } from "../../state";
-import got from "got";
+import { got } from "got";
 import { logError } from "../../utils";
 import { loginStatus } from "./index";
+
+const client = got.extend({
+  method: "POST",
+  http2: true,
+  responseType: "json",
+  timeout: { response: 8000 },
+  retry: {
+    methods: ["GET", "POST", "PUT", "HEAD", "DELETE", "OPTIONS", "TRACE"],
+  },
+});
 
 const userAgent = (() => {
   switch (process.platform) {
@@ -63,16 +73,9 @@ const responseHandler = async <T>(
   headers: Headers,
   data: QueryInput
 ): Promise<(T & { readonly cookie?: string[] }) | void> => {
-  const res = await got<{ readonly code?: number; cookie?: string[] } & T>(
+  const res = await client<{ readonly code?: number; cookie?: string[] } & T>(
     url,
-    {
-      form: data,
-      headers,
-      http2: true,
-      method: "POST",
-      responseType: "json",
-      timeout: { response: 8000 },
-    }
+    { form: data, headers }
   );
   if (!res) return;
   const status = res.body.code || res.statusCode;
@@ -91,17 +94,10 @@ export const loginRequest = async (
   url = `${APISetting.apiProtocol}://${url}`;
   const headers = generateHeader();
   headers["Cookie"] = jsonToCookie({ os: "pc", appver: "2.9.7" });
-  const res = await got<{
+  const res = await client<{
     readonly code?: number;
     profile?: NeteaseTypings.Profile;
-  }>(url, {
-    form: weapi(data),
-    headers,
-    http2: true,
-    method: "POST",
-    responseType: "json",
-    timeout: { response: 8000 },
-  });
+  }>(url, { form: weapi(data), headers });
 
   if (!res) return;
   const status = res.body.code || res.statusCode;
@@ -126,13 +122,9 @@ export const qrloginRequest = async (
 ): Promise<number | void> => {
   url = `${APISetting.apiProtocol}://${url}`;
   const headers = generateHeader();
-  const res = await got<{ readonly code?: number }>(url, {
+  const res = await client<{ readonly code?: number }>(url, {
     form: weapi(data),
     headers,
-    http2: true,
-    method: "POST",
-    responseType: "json",
-    timeout: { response: 8000 },
   });
   if (!res) return;
   const status = res.body.code || res.statusCode;
