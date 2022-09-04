@@ -6,6 +6,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.16.2] - 2022-09-04
+
+### Fixed
+
+- Player
+  - MediaSession do not conflict with native player
+  - Resume playback position when using `wasm` player
+
 ## [9.16.1] - 2022-09-04
 
 ### Changed
