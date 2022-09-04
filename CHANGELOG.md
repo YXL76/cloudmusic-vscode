@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.16.1] - 2022-09-04
+
+### Changed
+
+- API: retry on `POST` by default
+
 ## [9.16.0] - 2022-09-03
 
 ### Added
