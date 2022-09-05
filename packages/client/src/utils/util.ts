@@ -37,7 +37,7 @@ export async function likeMusic(
   if (await IPC.netease("like", [uid, id, like])) {
     IPC.deleteCache(`likelist${uid}`);
     void window.showInformationMessage(
-      like ? i18n.word.like : i18n.word.dislike
+      like ? i18n.word.liked : i18n.word.unliked
     );
   } else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
   return input.stay();
