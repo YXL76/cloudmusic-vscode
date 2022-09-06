@@ -902,8 +902,8 @@
   },
   "devDependencies": {
     "@types/eslint": "8.4.6",
-    "@typescript-eslint/eslint-plugin": "5.36.1",
-    "@typescript-eslint/parser": "5.36.1",
+    "@typescript-eslint/eslint-plugin": "5.36.2",
+    "@typescript-eslint/parser": "5.36.2",
     "debug": "4.3.4",
     "esbuild": "0.15.7",
     "esbuild-plugin-wasm": "1.0.0",
