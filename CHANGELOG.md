@@ -6,6 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.16.3] - 2022-09-07
+
+### Fixed
+
+- Webview: set `localResourceRoots` as fs root ([#800](https://github.com/YXL76/cloudmusic-vscode/issues/800), [#807](https://github.com/YXL76/cloudmusic-vscode/issues/807))
+
+### Changed
+
+- I18n: clearer liking status prompts ([@xuan25](https://github.com/xuan25))
+- IPC: close socket after 2s on Windows
+
 ## [9.16.2] - 2022-09-04
 
 ### Fixed
