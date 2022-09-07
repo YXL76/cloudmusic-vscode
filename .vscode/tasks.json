@@ -30,8 +30,13 @@
     },
     {
       "type": "shell",
-      "label": "yarn: test",
-      "command": "yarn test"
+      "label": "yarn: check",
+      "command": "yarn check"
+    },
+    {
+      "type": "shell",
+      "label": "yarn: lint",
+      "command": "yarn lint"
     },
     {
       "type": "shell",

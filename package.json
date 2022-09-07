@@ -896,9 +896,10 @@
   "scripts": {
     "build": "yarn node scripts/build.js --prod",
     "build-dev": "yarn node scripts/build.js",
+    "check": "yarn workspaces foreach -p run check",
     "generate-css": "NODE_ENV=production yarn tailwindcss --no-autoprefixer --minify -o dist/style.css",
-    "publish": "yarn node scripts/publish.js",
-    "test": "yarn workspaces foreach -p run test"
+    "lint": "yarn workspaces foreach -p run lint",
+    "publish": "yarn node scripts/publish.js"
   },
   "devDependencies": {
     "@types/eslint": "8.4.6",

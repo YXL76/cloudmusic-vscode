@@ -4,7 +4,8 @@
   "private": true,
   "main": "./src/index.ts",
   "scripts": {
-    "test": "tsc -p tsconfig.json"
+    "check": "tsc -p tsconfig.json",
+    "lint": "eslint src/**"
   },
   "devDependencies": {
     "@types/api": "workspace:*",

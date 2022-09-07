@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "eslint src/**"
+    "check": "",
+    "lint": "eslint src/**"
   },
   "devDependencies": {
     "@types/api": "workspace:*",
