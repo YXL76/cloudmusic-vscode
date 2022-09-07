@@ -70,7 +70,10 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   }
 
   static top(that: number | string): void {
-    this.shift(this._songs.findIndex(({ id }) => that === id));
+    const index = this._songs.findIndex(
+      (i) => that === this._parseRaw(i).valueOf
+    );
+    if (index > 0) this.shift(index);
   }
 
   static shift(index: number): void {
@@ -89,7 +92,9 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
   }
 
   static delete(that: number | string): void {
-    const index = this._songs.findIndex(({ id }) => that === id);
+    const index = this._songs.findIndex(
+      (i) => that === this._parseRaw(i).valueOf
+    );
     if (index >= 0) this._songs.splice(index, 1);
 
     this._instance._onDidChangeTreeData.fire();
@@ -102,31 +107,28 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
     const getName = (item: PlayTreeItemData): string => {
       switch (item.itemType) {
         case "q":
+        case "l":
           return item.name;
         case "p":
           return item.mainSong.name;
-        case "l":
-          return item.filename;
       }
     };
     const getAlbum = (item: PlayTreeItemData): string => {
       switch (item.itemType) {
         case "q":
+        case "l":
           return item.al.name;
         case "p":
           return item.mainSong.al.name;
-        case "l":
-          return item.container;
       }
     };
     const getArtist = (item: PlayTreeItemData): string => {
       switch (item.itemType) {
         case "q":
+        case "l":
           return item.ar?.[0].name ?? "";
         case "p":
           return item.mainSong.ar?.[0].name ?? "";
-        case "l":
-          return "";
       }
     };
 
