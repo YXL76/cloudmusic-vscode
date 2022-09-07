@@ -6,6 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.16.5] - 2022-09-08
+
+### Fixed
+
+- Treeview: `LocalFileTreeItem` do not use `id` to identify
+
+### Changed
+
+- ES2022 target
+- Update minimum supported Vs Code Version to 1.67.0
+
 ## [9.16.3] - 2022-09-07
 
 ### Fixed
