@@ -26,7 +26,7 @@ export function initStatusBar(context: ExtensionContext): void {
       }
 
       await MultiStepInput.run(async (input) => {
-        const user = STATE.lyric.user[STATE.lyric.type as 0 | 1];
+        const user = STATE.lyric.user[<0 | 1>STATE.lyric.type];
         const { type } = await input.showQuickPick({
           title,
           step: 1,

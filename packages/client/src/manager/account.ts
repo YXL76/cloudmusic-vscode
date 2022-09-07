@@ -33,7 +33,7 @@ type States = Record<number, NeteaseTypings.Account>;
 async function getCookies() {
   try {
     const cookieStr = (await CONTEXT.context.secrets.get(COOKIE_KEY)) ?? "[]";
-    return JSON.parse(cookieStr) as CookieState;
+    return <CookieState>JSON.parse(cookieStr);
   } catch (err) {
     console.error(err);
   }
@@ -43,7 +43,7 @@ async function getCookies() {
 async function getStates() {
   try {
     const statesStr = (await CONTEXT.context.secrets.get(ACCOUNT_KEY)) ?? "{}";
-    return JSON.parse(statesStr) as States;
+    return <States>JSON.parse(statesStr);
   } catch (err) {
     console.error(err);
   }
@@ -626,10 +626,7 @@ export class AccountManager {
         title: i18n.word.initial,
         step: 5,
         totalSteps: 7,
-        items: [
-          { label: i18n.word.all, type: "" as const },
-          ...allInitial.map((i) => ({ label: i as string, type: i })),
-        ],
+        items: [{ label: i18n.word.all, type: <const>"" }, ...allInitial.map((i) => ({ label: <string>i, type: i }))],
       });
       initial = pick.type;
       return (input) => pickAllArtist(input, 0);

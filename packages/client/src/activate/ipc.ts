@@ -36,13 +36,13 @@ const ipcBHandler = (data: IPCBroadcastMsg) => {
     case IPCPlayer.repeat:
       return (STATE.repeat = data.r);
     case IPCQueue.add:
-      return QueueProvider.add(data.items as readonly PlayTreeItemData[], data.index);
+      return QueueProvider.add(<readonly PlayTreeItemData[]>data.items, data.index);
     case IPCQueue.clear:
       return QueueProvider.clear();
     case IPCQueue.delete:
       return QueueProvider.delete(data.id);
     case IPCQueue.new:
-      QueueProvider.new(data.items as readonly PlayTreeItemData[], data.id);
+      QueueProvider.new(<readonly PlayTreeItemData[]>data.items, data.id);
       return STATE.downInit(); // 1
     case IPCQueue.play:
       return QueueProvider.top(data.id);
@@ -83,7 +83,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
           // Delay it because `this._instance._onDidChangeTreeData.fire()` is async
           STATE.addOnceInitCallback(() => setTimeout(() => IPC.load(data.play, data.seek), 1024));
         }
-        QueueProvider.new(data.items as PlayTreeItemData[]);
+        QueueProvider.new(<readonly PlayTreeItemData[]>data.items);
         return STATE.downInit(); // 1
       case IPCPlayer.end:
         if (!data.fail && (STATE.repeat || data.reloadNseek)) IPC.load(!data.pause, data.reloadNseek);

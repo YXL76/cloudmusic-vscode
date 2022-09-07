@@ -118,7 +118,7 @@ export class LocalProvider implements TreeDataProvider<Content> {
               abspath,
               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
               container: format.container!,
-              itemType: "l" as const,
+              itemType: <const>"l",
               name: common.title || filename,
               alia: [],
               id: 0,
@@ -175,16 +175,19 @@ export class LocalFileTreeItem extends TreeItem implements PlayTreeItem {
 
   override readonly iconPath = new ThemeIcon("file-media");
 
-  override readonly label = this.data.filename;
+  declare readonly label: string;
 
-  override readonly description = this.data.ar.map(({ name }) => name).join("/");
+  override readonly description: string;
 
-  override readonly tooltip = this.data.al.name;
+  override readonly tooltip: string;
 
   override readonly contextValue = "LocalFileTreeItem";
 
   private constructor(readonly data: LocalFileTreeItemData) {
     super(data.filename, TreeItemCollapsibleState.None);
+
+    this.description = data.ar.map(({ name }) => name).join("/");
+    this.tooltip = data.al.name;
   }
 
   override get valueOf(): string {

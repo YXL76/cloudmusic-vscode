@@ -168,9 +168,9 @@ export async function pickSong(
       void commands.executeCommand("cloudmusic.downloadSong", { item, valueOf: id });
       break;
     case PickType.album:
-      return (input) => pickAlbum(input, step + 1, (pick as T).id);
+      return (input) => pickAlbum(input, step + 1, (<T>pick).id);
     case PickType.artist:
-      return (input) => pickArtist(input, step + 1, (pick as T).id);
+      return (input) => pickArtist(input, step + 1, (<T>pick).id);
     case PickType.save:
       return (input) => pickAddToPlaylist(input, step + 1, id);
     case PickType.similar:
@@ -297,9 +297,9 @@ export async function pickProgram(
       void commands.executeCommand("cloudmusic.downloadSong", { item: mainSong, valueOf: id });
       break;
     case PickType.user:
-      return (input) => pickUser(input, step + 1, (pick as T).id);
+      return (input) => pickUser(input, step + 1, (<T>pick).id);
     case PickType.radio:
-      return (input) => pickRadio(input, step + 1, radio as NeteaseTypings.RadioDetail);
+      return (input) => pickRadio(input, step + 1, <NeteaseTypings.RadioDetail>radio);
     case PickType.comment:
       Webview.comment(NeteaseCommentType.dj, id, name);
       break;
@@ -384,7 +384,7 @@ export async function pickRadio(
       void commands.executeCommand("cloudmusic.copyRadioLink", { item: { id } });
       break;
     case PickType.user:
-      return (input) => pickUser(input, step + 1, (pick as T).id);
+      return (input) => pickUser(input, step + 1, (<T>pick).id);
     case PickType.subscribed:
       return async (input) =>
         pickUsers(input, step + 1, (id, limit) => IPC.netease("djSubscriber", [id, limit]), -1, id);
@@ -427,7 +427,8 @@ export async function pickArtist(input: MultiStepInput, step: number, id: number
       await Webview.description(id, name);
       break;
     case PickType.albums:
-      return async (input) => pickAlbums(input, step + 1, await IPC.netease("artistAlbum", [pick.id as number]));
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      return async (input) => pickAlbums(input, step + 1, await IPC.netease("artistAlbum", [pick.id!]));
     case PickType.hot:
       return (input) => pickSongs(input, step + 1, hotSongs);
     case PickType.songs:
@@ -497,7 +498,7 @@ export async function pickAlbum(input: MultiStepInput, step: number, id: number)
   });
   switch (pick.type) {
     case PickType.artist:
-      return (input) => pickArtist(input, step + 1, (pick as T).id);
+      return (input) => pickArtist(input, step + 1, (<T>pick).id);
     case PickType.songs:
       return (input) => pickSongs(input, step + 1, songs);
     case PickType.unsave:
@@ -572,7 +573,7 @@ export async function pickPlaylist(
           id
         );
     case PickType.user:
-      return (input) => pickUser(input, step + 1, (pick as T).id);
+      return (input) => pickUser(input, step + 1, (<T>pick).id);
     case PickType.add:
       {
         const songs = await IPC.netease("playlistDetail", [0, id]);
@@ -687,7 +688,7 @@ export async function pickUser(input: MultiStepInput, step: number, uid: number)
       return (input) =>
         pickUsers(input, step + 1, (uid, limit, offset) => IPC.netease("userFollows", [uid, limit, offset]), 0, uid);
     case PickType.playlist:
-      return (input) => pickPlaylist(input, step + 1, pick.item as NeteaseTypings.PlaylistItem);
+      return (input) => pickPlaylist(input, step + 1, <NeteaseTypings.PlaylistItem>pick.item);
   }
   return input.stay();
 }

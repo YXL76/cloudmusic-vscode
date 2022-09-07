@@ -95,17 +95,17 @@ export class PlaylistItemTreeItem extends TreeItem {
 
   declare readonly label: string;
 
-  override readonly tooltip = `${i18n.word.description}: ${this.item.description || ""}
-${i18n.word.trackCount}: ${this.item.trackCount}
-${i18n.word.playCount}: ${this.item.playCount}
-${i18n.word.subscribedCount}: ${this.item.subscribedCount}`;
-
   override readonly iconPath = new ThemeIcon("list-ordered");
 
   override readonly contextValue = "PlaylistItemTreeItem";
 
   constructor(readonly item: NeteaseTypings.PlaylistItem, public uid: number) {
     super(item.name, TreeItemCollapsibleState.Collapsed);
+
+    this.tooltip = `${i18n.word.description}: ${item.description || ""}
+${i18n.word.trackCount}: ${item.trackCount}
+${i18n.word.playCount}: ${item.playCount}
+${i18n.word.subscribedCount}: ${item.subscribedCount}`;
   }
 
   override get valueOf(): number {

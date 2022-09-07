@@ -24,7 +24,7 @@ const limit = 30;
 type State = { keyword: string };
 
 export async function inputKeyword(input: MultiStepInput, uid: number): Promise<InputStep> {
-  const state = {} as State;
+  const state = <State>{};
 
   const items: QuickPickItem[] = [
     { label: state.keyword ?? (await IPC.netease("searchDefault", [uid])) },

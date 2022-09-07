@@ -193,9 +193,9 @@ export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
 
   declare readonly label: string;
 
-  override readonly description = this.data.ar.map(({ name }) => name).join("/");
+  override readonly description: string;
 
-  override readonly tooltip = this.data.al.name;
+  override readonly tooltip: string;
 
   override readonly iconPath = new ThemeIcon("zap");
 
@@ -209,6 +209,9 @@ export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
 
   constructor(readonly data: QueueItemTreeItemData) {
     super(`${data.name}${data.alia[0] ? ` (${data.alia.join("/")})` : ""}`);
+
+    this.description = data.ar.map(({ name }) => name).join("/");
+    this.tooltip = data.al.name;
   }
 
   override get valueOf(): number {

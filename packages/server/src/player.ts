@@ -145,6 +145,10 @@ abstract class PlayerBase {
         .catch(logError);
 
       this.#scrobbleArgs = { dt: data.item.dt, pid: data.pid || 0 };
+    } else {
+      const lyric: NeteaseTypings.LyricData = { time: [0], text: [["~", "~", "~"]], user: [] };
+      Object.assign(STATE.lyric, lyric, { idx: 0 });
+      IPC_SRV.broadcast({ t: IPCPlayer.lyric, lyric });
     }
 
     this._loaded?.();

@@ -41,7 +41,7 @@ class IPCClient<T, U = T> {
                 const buffer = this.#buffer + data.toString();
                 const msgs = buffer.split(ipcDelimiter);
                 this.#buffer = msgs.pop() ?? "";
-                for (const msg of msgs) handler(JSON.parse(msg) as U);
+                for (const msg of msgs) handler(<U>JSON.parse(msg));
               })
               .on("close", () => this.disconnect())
               .on("error", console.error);

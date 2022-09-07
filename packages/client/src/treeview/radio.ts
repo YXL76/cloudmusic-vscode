@@ -95,17 +95,17 @@ export class RadioTreeItem extends TreeItem {
 
   declare readonly label: string;
 
-  override readonly tooltip = `${i18n.word.description}: ${this.item.desc || ""}
-${i18n.word.trackCount}: ${this.item.programCount}
-${i18n.word.playCount}: ${this.item.playCount}
-${i18n.word.subscribedCount}: ${this.item.subCount}`;
-
   override readonly iconPath = new ThemeIcon("rss");
 
   override readonly contextValue = "RadioTreeItem";
 
   constructor(readonly item: NeteaseTypings.RadioDetail, public uid: number) {
     super(item.name, TreeItemCollapsibleState.Collapsed);
+
+    this.tooltip = `${i18n.word.description}: ${item.desc || ""}
+${i18n.word.trackCount}: ${item.programCount}
+${i18n.word.playCount}: ${item.playCount}
+${i18n.word.subscribedCount}: ${item.subCount}`;
   }
 
   override get valueOf(): number {
@@ -139,9 +139,9 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
 
   declare readonly label: string;
 
-  override readonly description = this.data.mainSong.ar.map(({ name }) => name).join("/");
+  override readonly description: string;
 
-  override readonly tooltip = this.data.dj.nickname;
+  override readonly tooltip: string;
 
   override readonly iconPath = new ThemeIcon("radio-tower");
 
@@ -155,6 +155,9 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
 
   private constructor(readonly data: ProgramTreeItemData) {
     super(`${data.mainSong.name}${data.mainSong.alia[0] ? ` (${data.mainSong.alia.join("/")})` : ""}`);
+
+    this.description = data.mainSong.ar.map(({ name }) => name).join("/");
+    this.tooltip = data.dj.nickname;
   }
 
   override get valueOf(): number {
