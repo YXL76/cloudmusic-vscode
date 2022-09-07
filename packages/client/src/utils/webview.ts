@@ -34,6 +34,8 @@ import { SPEED_KEY, VOLUME_KEY } from "../constant";
 import { AccountManager } from "../manager";
 import type { NeteaseTypings } from "api";
 import i18n from "../i18n";
+import { platform } from "node:os";
+import { spawnSync } from "node:child_process";
 import { toDataURL } from "qrcode";
 
 const getNonce = (): string => {
@@ -166,11 +168,34 @@ export class AccountViewProvider implements WebviewViewProvider {
     const extUri = AccountViewProvider.context.extensionUri;
     AccountViewProvider._view = webview;
 
+    const localResourceRoots: string[] = [];
+    if (platform() === "win32") {
+      const { stdout } = spawnSync(
+        "powershell.exe",
+        [
+          "-NoLogo",
+          "-NoProfile",
+          "-Command",
+          "Get-PSDrive -PSProvider FileSystem | Format-Table -Property Root -HideTableHeaders",
+        ],
+        {
+          encoding: "utf8",
+          shell: false,
+          stdio: ["ignore", "pipe", "ignore"],
+        }
+      );
+      (stdout || "C:\\")
+        .split("\r\n")
+        .map((line) => line.trim())
+        .filter((line) => line.length === 3)
+        .forEach((line) => localResourceRoots.push(line));
+    } else localResourceRoots.push("/");
+
     webview.title = i18n.word.account;
     webview.webview.options = {
       enableScripts: true,
       // localResourceRoots: [extUri, Uri.file(SETTING_DIR)],
-      localResourceRoots: [Uri.file("/")],
+      localResourceRoots: localResourceRoots.map(Uri.file.bind(Uri)),
     };
 
     webview.webview.onDidReceiveMessage((msg: ProviderCMsg) => {
