@@ -24,11 +24,7 @@ export const Comment = ({
 }: CommentProps): JSX.Element => {
   const [l, setL] = useState(liked);
   const likeAction = useCallback(() => {
-    request<boolean, CommentCSMsg>({
-      command: "like",
-      id: commentId,
-      t: l ? "unlike" : "like",
-    })
+    request<boolean, CommentCSMsg>({ command: "like", id: commentId, t: l ? "unlike" : "like" })
       .then((res) => {
         if (res) setL(!l);
       })
@@ -42,9 +38,7 @@ export const Comment = ({
         src={user.avatarUrl}
         alt={user.nickname}
         onClick={() => {
-          const data: Omit<CommentCMsg, "channel"> = {
-            msg: { command: "user", id: user.userId },
-          };
+          const data: Omit<CommentCMsg, "channel"> = { msg: { command: "user", id: user.userId } };
           vscode.postMessage(data);
         }}
       />
@@ -53,17 +47,13 @@ export const Comment = ({
           <div
             className="cursor-pointer inline-block text-blue-600 text-lg"
             onClick={() => {
-              const data: Omit<CommentCMsg, "channel"> = {
-                msg: { command: "user", id: user.userId },
-              };
+              const data: Omit<CommentCMsg, "channel"> = { msg: { command: "user", id: user.userId } };
               vscode.postMessage(data);
             }}
           >
             {user.nickname}
           </div>
-          <div className="inline-block ml-4 text-sm">
-            {dayjs(time).fromNow()}
-          </div>
+          <div className="inline-block ml-4 text-sm">{dayjs(time).fromNow()}</div>
         </div>
         <div className="mt-1">{content}</div>
         {beReplied && (
@@ -71,9 +61,7 @@ export const Comment = ({
             <div
               className="cursor-pointer inline-block text-blue-600"
               onClick={() => {
-                const data: Omit<CommentCMsg, "channel"> = {
-                  msg: { command: "user", id: beReplied.user.userId },
-                };
+                const data: Omit<CommentCMsg, "channel"> = { msg: { command: "user", id: beReplied.user.userId } };
                 vscode.postMessage(data);
               }}
             >

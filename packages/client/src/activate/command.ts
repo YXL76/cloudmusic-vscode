@@ -23,9 +23,7 @@ export function initCommand(context: ExtensionContext): void {
 
     commands.registerCommand("cloudmusic.toggle", () => IPC.toggle()),
 
-    commands.registerCommand("cloudmusic.repeat", () =>
-      IPC.repeat(!State.repeat)
-    ),
+    commands.registerCommand("cloudmusic.repeat", () => IPC.repeat(!State.repeat)),
 
     commands.registerCommand("cloudmusic.like", () => {
       if (State.like && State.playItem instanceof QueueItemTreeItem) {
@@ -74,8 +72,6 @@ export function initCommand(context: ExtensionContext): void {
         })
     ),
 
-    commands.registerCommand("cloudmusic.toggleButton", () =>
-      ButtonManager.toggle()
-    )
+    commands.registerCommand("cloudmusic.toggleButton", () => ButtonManager.toggle())
   );
 }

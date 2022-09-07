@@ -1,13 +1,6 @@
 import { AccountManager, ButtonManager } from "../manager";
 import { AccountViewProvider, IPC } from "./index";
-import {
-  FM_KEY,
-  LYRIC_KEY,
-  PLAYER_MODE,
-  QUEUE_INIT,
-  REPEAT_KEY,
-  SHOW_LYRIC_KEY,
-} from "../constant";
+import { FM_KEY, LYRIC_KEY, PLAYER_MODE, QUEUE_INIT, REPEAT_KEY, SHOW_LYRIC_KEY } from "../constant";
 import { QueueItemTreeItem, QueueProvider } from "../treeview";
 import type { ExtensionContext } from "vscode";
 import type { NeteaseTypings } from "api";
@@ -135,11 +128,7 @@ export class State {
 
   static set loading(value: boolean) {
     // if (value === this._loading) return;
-    ButtonManager.buttonSong(
-      value
-        ? `$(loading~spin) ${i18n.word.song}: ${i18n.word.loading}`
-        : this._playItem
-    );
+    ButtonManager.buttonSong(value ? `$(loading~spin) ${i18n.word.song}: ${i18n.word.loading}` : this._playItem);
   }
 
   // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
@@ -216,11 +205,7 @@ export class State {
           break;
         case "recommend": {
           const songs = await IPC.netease("recommendSongs", [uid]);
-          const items = songs.map(
-            (song) =>
-              QueueItemTreeItem.new({ ...song, pid: song.al.id, itemType: "q" })
-                .data
-          );
+          const items = songs.map((song) => QueueItemTreeItem.new({ ...song, pid: song.al.id, itemType: "q" }).data);
           IPC.new(items);
         }
       }

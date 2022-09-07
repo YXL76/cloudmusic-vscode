@@ -1,11 +1,4 @@
-import {
-  IPC,
-  LyricType,
-  MultiStepInput,
-  State,
-  Webview,
-  pickUser,
-} from "../utils";
+import { IPC, LyricType, MultiStepInput, State, Webview, pickUser } from "../utils";
 import { ButtonManager } from "../manager";
 import type { ExtensionContext } from "vscode";
 import type { InputStep } from "../utils";
@@ -68,9 +61,7 @@ export function initStatusBar(context: ExtensionContext): void {
                 : `$(circle-large-outline) ${i18n.word.enable}`,
               type: Type.disable,
             },
-            ...(user
-              ? [{ label: `$(account) ${i18n.word.user}`, type: Type.user }]
-              : []),
+            ...(user ? [{ label: `$(account) ${i18n.word.user}`, type: Type.user }] : []),
             {
               label: `$(book) ${i18n.sentence.label.showInEditor}`,
               type: Type.panel,
@@ -107,8 +98,7 @@ export function initStatusBar(context: ExtensionContext): void {
           totalSteps,
           prompt: i18n.sentence.hint.lyricDelay,
         });
-        if (/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay))
-          IPC.lyricDelay(parseFloat(delay));
+        if (/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay)) IPC.lyricDelay(parseFloat(delay));
         return input.stay();
       }
 

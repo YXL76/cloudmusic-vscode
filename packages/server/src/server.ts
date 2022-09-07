@@ -1,186 +1,154 @@
-import { APISetting, NeteaseAPI } from "./api";
-import {
-  IPCApi,
-  IPCControl,
-  IPCPlayer,
-  IPCQueue,
-  ipcDelimiter,
-} from "@cloudmusic/shared";
+import { API_CACHE, LYRIC_CACHE, MUSIC_CACHE } from "./cache";
+import { API_CONFIG, NeteaseAPI } from "./api";
+import { IPCApi, IPCControl, IPCPlayer, IPCQueue, ipcDelimiter } from "@cloudmusic/shared";
 import type { IPCClientMsg, IPCServerMsg } from "@cloudmusic/shared";
-import { LyricCache, MusicCache, apiCache } from "./cache";
 import type { NeteaseAPICMsg, NeteaseAPISMsg } from "./index";
-import { PersonalFm, STATE } from "./state";
-import { Player, posHandler } from "./player";
-import {
-  RETAIN_FILE,
-  TMP_DIR,
-  ipcBroadcastServerPath,
-  ipcServerPath,
-} from "./constant";
+import { PERSONAL_FM, STATE } from "./state";
+import { PLAYER, posHandler } from "./player";
+import { RETAIN_FILE, TMP_DIR, ipcBroadcastServerPath, ipcServerPath } from "./constant";
 import type { Server, Socket } from "node:net";
 import { downloadMusic, logError } from "./utils";
 import { readFile, rm, writeFile } from "node:fs/promises";
 import { broadcastProfiles } from "./api/netease/helper";
 import { createServer } from "node:net";
+import { rmSync } from "node:fs";
 
-export class IPCServer {
-  private static _first = true;
+class IPCServer {
+  #first = true;
 
-  private static _retain: unknown[] = [];
+  #retain: unknown[] = [];
 
-  private static _retainState = false;
+  #retainState = false;
 
-  private static _timer?: NodeJS.Timeout;
+  #timer?: NodeJS.Timeout;
 
-  private static readonly _sockets = new Set<Socket>();
+  readonly #sockets = new Set<Socket>();
 
-  private static readonly _buffer = new WeakMap<Socket, string>();
+  readonly #buffer = new WeakMap<Socket, string>();
 
-  private static _server: Server;
+  readonly #server: Server;
 
-  private static get _master(): Socket | undefined {
-    const [socket] = this._sockets;
-    return socket;
-  }
+  constructor() {
+    readFile(RETAIN_FILE)
+      .then((buf) => (this.#retain = <unknown[]>JSON.parse(buf.toString())))
+      .catch(logError);
 
-  static async init() {
-    const [buf] = await Promise.allSettled([
-      readFile(RETAIN_FILE),
-      rm(ipcServerPath, { recursive: true, force: true }),
-    ]);
-    if (buf.status === "fulfilled")
-      this._retain = JSON.parse(buf.value.toString()) as unknown[];
+    rmSync(ipcServerPath, { recursive: true, force: true });
 
-    this._server = createServer((socket) => {
-      if (this._timer) {
-        clearTimeout(this._timer);
-        this._timer = undefined;
+    this.#server = createServer((socket) => {
+      if (this.#timer) {
+        clearTimeout(this.#timer);
+        this.#timer = undefined;
       }
-      this._sockets.add(socket);
-      this._buffer.set(socket, "");
+      this.#sockets.add(socket);
+      this.#buffer.set(socket, "");
 
       socket
         .setEncoding("utf8")
         .on("data", (data) => {
-          const buffer = (this._buffer.get(socket) ?? "") + data.toString();
+          const buffer = (this.#buffer.get(socket) ?? "") + data.toString();
 
           const msgs = buffer.split(ipcDelimiter);
-          this._buffer.set(socket, msgs.pop() ?? "");
-          for (const msg of msgs)
-            this._handler(
-              JSON.parse(msg) as IPCClientMsg | NeteaseAPICMsg<"album">,
-              socket
-            );
+          this.#buffer.set(socket, msgs.pop() ?? "");
+          for (const msg of msgs) this.#handler(<IPCClientMsg | NeteaseAPICMsg<"album">>JSON.parse(msg), socket);
         })
         .on("close", (/* err */) => {
-          let isMaster = false;
-          {
-            const [master] = this._sockets;
-            isMaster = master === socket;
-          }
-          socket?.destroy();
-          this._sockets.delete(socket);
-          this._buffer.delete(socket);
+          const isMaster = this.#master === socket;
 
-          if (this._sockets.size) {
+          socket?.destroy();
+          this.#sockets.delete(socket);
+          this.#buffer.delete(socket);
+
+          if (this.#sockets.size) {
             this._setMaster();
-            if (isMaster) {
-              // Master was gone, the wasm player was destroyed
-              // So we need to recreate it on new master
-              Player.wasmOpen?.();
-            }
-          } else {
-            this._retainState = Player.playing;
-            Player.pause();
-            this._timer = setTimeout(() => {
-              if (this._sockets.size) return;
-              this.stop();
-              IPCBroadcastServer.stop();
-              Promise.allSettled([
-                MusicCache.store(),
-                rm(TMP_DIR, { recursive: true }),
-                writeFile(RETAIN_FILE, JSON.stringify(this._retain)),
-              ]).finally(() => process.exit());
-            }, 40000);
-          }
+            // Master was gone, the wasm player was destroyed
+            // So we need to recreate it on new master
+            if (isMaster) PLAYER.wasmOpen?.();
+          } else this.#suspend();
         })
         .on("error", logError);
 
       this._setMaster();
 
-      if (this._sockets.size === 1) {
-        if (this._first) this._first = false;
-        /* retain */ else {
-          if (this._retainState) Player.play();
-          this.send(socket, {
-            t: IPCControl.retain,
-            items: this._retain,
-            play: this._retainState,
-            seek: Player.lastPos,
-          });
-          this._retain = [];
-        }
+      if (this.#sockets.size === 1) {
+        if (this.#first) this.#first = false;
+        else this.#resume(socket);
       } else {
         this.sendToMaster({ t: IPCControl.new });
-        this.send(socket, {
-          t: Player.playing ? IPCPlayer.play : IPCPlayer.pause,
-        });
+        this.send(socket, { t: PLAYER.playing ? IPCPlayer.play : IPCPlayer.pause });
       }
     })
       .on("error", logError)
       .listen(ipcServerPath);
   }
 
-  static stop() {
-    this._server.close(() => {
-      for (const socket of this._sockets) socket?.destroy();
-      this._sockets.clear();
+  get #master(): Socket | undefined {
+    const [socket] = this.#sockets;
+    return socket;
+  }
+
+  stop() {
+    this.#server.close(() => {
+      for (const socket of this.#sockets) socket?.destroy();
+      this.#sockets.clear();
     });
   }
 
-  static send(socket: Socket, data: IPCServerMsg | NeteaseAPISMsg<"album">) {
+  send(socket: Socket, data: IPCServerMsg | NeteaseAPISMsg<"album">) {
     socket.write(`${JSON.stringify(data)}${ipcDelimiter}`);
   }
 
-  static sendToMaster(data: IPCServerMsg): void {
-    this._master?.write(`${JSON.stringify(data)}${ipcDelimiter}`);
+  sendToMaster(data: IPCServerMsg): void {
+    this.#master?.write(`${JSON.stringify(data)}${ipcDelimiter}`);
   }
 
-  static broadcast(data: IPCServerMsg): void {
+  broadcast(data: IPCServerMsg): void {
     const str = `${JSON.stringify(data)}${ipcDelimiter}`;
-    for (const socket of this._sockets) socket.write(str);
+    for (const socket of this.#sockets) socket.write(str);
   }
 
-  private static _setMaster() {
-    const [master, ...slaves] = this._sockets;
+  _setMaster() {
+    const [master, ...slaves] = this.#sockets;
     this.send(master, { t: IPCControl.master, is: true });
     for (const slave of slaves) this.send(slave, { t: IPCControl.master });
   }
 
-  private static _handler(
-    data: IPCClientMsg | NeteaseAPICMsg<"album">,
-    socket: Socket
-  ): void {
+  #resume(socket: Socket): void {
+    if (this.#retainState) PLAYER.play();
+    this.send(socket, { t: IPCControl.retain, items: this.#retain, play: this.#retainState, seek: PLAYER.lastPos });
+    this.#retain = [];
+  }
+
+  #suspend(): void {
+    this.#retainState = PLAYER.playing;
+    PLAYER.pause();
+    this.#timer = setTimeout(() => {
+      if (this.#sockets.size) return;
+      this.stop();
+      IPC_BCST_SRV.stop();
+      Promise.allSettled([
+        MUSIC_CACHE.store(),
+        rm(TMP_DIR, { recursive: true }),
+        writeFile(RETAIN_FILE, JSON.stringify(this.#retain)),
+      ]).finally(() => process.exit());
+    }, 40000);
+  }
+
+  #handler(data: IPCClientMsg | NeteaseAPICMsg<"album">, socket: Socket): void {
     switch (data.t) {
       case IPCApi.netease:
-        NeteaseAPI[data.msg.i]
-          .apply(undefined, data.msg.p)
-          .then((msg) =>
-            this.send(socket, { t: data.t, channel: data.channel, msg })
-          )
-          .catch((err) => {
-            this.send(socket, {
-              t: data.t,
-              channel: data.channel,
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              // @ts-ignore
-              msg: { err: true },
+        if (data.msg) {
+          NeteaseAPI[data.msg.i]
+            .apply(undefined, data.msg.p)
+            .then((msg) => this.send(socket, { t: data.t, channel: data.channel, msg }))
+            .catch((err) => {
+              this.send(socket, { t: data.t, channel: data.channel, err: true });
+              logError(err);
             });
-            logError(err);
-          });
+        }
         break;
       case IPCControl.deleteCache:
-        apiCache.del(data.key);
+        API_CACHE.del(data.key);
         break;
       case IPCControl.download:
         downloadMusic(data.url, data.path);
@@ -190,63 +158,63 @@ export class IPCServer {
         STATE.musicQuality = data.mq;
         STATE.cacheSize = data.cs;
         STATE.foreign = data.foreign;
-        APISetting.apiProtocol = data.https ? "https" : "http";
+        API_CONFIG.protocol = data.https ? "https" : "http";
         break;
       case IPCControl.lyric:
-        LyricCache.clear();
+        LYRIC_CACHE.clear();
         break;
       case IPCControl.netease:
         broadcastProfiles(socket);
         break;
       case IPCControl.cache:
-        MusicCache.clear();
+        MUSIC_CACHE.clear();
         break;
       case IPCControl.retain:
-        if (data.items) this._retain = data.items as unknown[];
-        else this.send(socket, { t: IPCControl.retain, items: this._retain });
+        if (data.items) this.#retain = <unknown[]>data.items;
+        else this.send(socket, { t: IPCControl.retain, items: this.#retain });
         break;
       /* case IPCControl.pid:
-        Player.mediaSession(data.pid);
+        PLAYER.mediaSession(data.pid);
         break; */
       case IPCPlayer.load:
-        Player.load(data).catch(logError);
+        PLAYER.load(data).catch(logError);
         break;
       case IPCPlayer.lyricDelay:
         STATE.lyric.delay = data.delay;
         break;
       case IPCPlayer.playing:
-        Player.playing = data.playing;
+        PLAYER.playing = data.playing;
         break;
       case IPCPlayer.position:
         posHandler(data.pos);
         break;
       case IPCPlayer.toggle:
-        Player.toggle();
+        PLAYER.toggle();
         break;
       case IPCPlayer.stop:
-        Player.stop();
+        PLAYER.stop();
         this.broadcast(data);
         break;
       case IPCPlayer.volume:
-        Player.volume(data.level);
+        PLAYER.volume(data.level);
         this.broadcast(data);
         break;
       case IPCPlayer.speed:
-        Player.speed(data.speed);
+        PLAYER.speed(data.speed);
         this.broadcast(data);
         break;
       case IPCPlayer.seek:
-        Player.seek(data.seekOffset);
+        PLAYER.seek(data.seekOffset);
         break;
       case IPCQueue.fm:
         if (data.is) {
           STATE.fm = true;
-          PersonalFm.uid = data.uid;
+          PERSONAL_FM.uid = data.uid;
           this.broadcast({ t: IPCQueue.fm });
         } else STATE.fm = false;
         break;
       case IPCQueue.fmNext:
-        PersonalFm.head()
+        PERSONAL_FM.head()
           .then((item) => {
             if (item) {
               STATE.fm = true;
@@ -259,25 +227,23 @@ export class IPCServer {
   }
 }
 
-export class IPCBroadcastServer {
-  private static readonly _sockets = new Set<Socket>();
+class IPCBroadcastServer {
+  readonly #sockets = new Set<Socket>();
 
-  private static _server: Server;
+  readonly #server: Server;
 
-  static async init(): Promise<void> {
-    await rm(ipcBroadcastServerPath, { recursive: true, force: true }).catch(
-      () => undefined
-    );
+  constructor() {
+    rmSync(ipcBroadcastServerPath, { recursive: true, force: true });
 
-    this._server = createServer((socket) => {
-      this._sockets.add(socket);
+    this.#server = createServer((socket) => {
+      this.#sockets.add(socket);
 
       socket
         .setEncoding("utf8")
-        .on("data", (data) => this._broadcast(data))
+        .on("data", (data) => this.#broadcast(data))
         .on("close", (/* err */) => {
           socket?.destroy();
-          this._sockets.delete(socket);
+          this.#sockets.delete(socket);
         })
         .on("error", logError);
     })
@@ -285,14 +251,17 @@ export class IPCBroadcastServer {
       .listen(ipcBroadcastServerPath);
   }
 
-  static stop(): void {
-    this._server.close(() => {
-      for (const socket of this._sockets) socket?.destroy();
-      this._sockets.clear();
+  stop(): void {
+    this.#server.close(() => {
+      for (const socket of this.#sockets) socket?.destroy();
+      this.#sockets.clear();
     });
   }
 
-  private static _broadcast(data: Buffer): void {
-    for (const socket of this._sockets) socket.write(data);
+  #broadcast(data: Buffer): void {
+    for (const socket of this.#sockets) socket.write(data);
   }
 }
+
+export const IPC_SRV = new IPCServer();
+export const IPC_BCST_SRV = new IPCBroadcastServer();

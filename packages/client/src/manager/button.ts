@@ -91,26 +91,17 @@ export class ButtonManager {
   private static readonly _mdTooltip = new MarkdownString("", true);
 
   static init(): void {
-    this._defaultText.forEach(
-      (value, index) => (this._buttons[index].text = value)
-    );
+    this._defaultText.forEach((value, index) => (this._buttons[index].text = value));
 
-    this._defaultTooltip.forEach(
-      (value, index) => (this._buttons[index].tooltip = value)
-    );
+    this._defaultTooltip.forEach((value, index) => (this._buttons[index].tooltip = value));
 
-    this._defaultCommand.forEach(
-      (value, index) => (this._buttons[index].command = value)
-    );
+    this._defaultCommand.forEach((value, index) => (this._buttons[index].command = value));
 
     this._mdTooltip.isTrusted = true;
     this._mdTooltip.supportHtml = true;
     this._setMdTooltip();
 
-    this._buttonShow = this.context.globalState.get(
-      BUTTON_KEY,
-      this._buttonShow
-    );
+    this._buttonShow = this.context.globalState.get(BUTTON_KEY, this._buttonShow);
 
     this._buttonShow.forEach((v, i) => {
       if (i === Label.song) this._buttons[i].show();
@@ -157,9 +148,7 @@ export class ButtonManager {
 
   static buttonPlay(playing: boolean): void {
     this._buttons[Label.play].text = playing ? "$(debug-pause)" : "$(play)";
-    this._buttons[Label.play].tooltip = playing
-      ? i18n.word.pause
-      : i18n.word.play;
+    this._buttons[Label.play].tooltip = playing ? i18n.word.pause : i18n.word.play;
     this._setMdTooltip();
   }
 
@@ -197,17 +186,14 @@ export class ButtonManager {
   }
 
   static buttonLyric(text?: string): void {
-    this._buttons[Label.lyric].text =
-      State.showLyric && text ? text : "$(text-size)";
+    this._buttons[Label.lyric].text = State.showLyric && text ? text : "$(text-size)";
   }
 
   private static _setMdTooltip() {
     this._mdTooltip.value = `${this._mdSong}${this._buttons
       .slice(0, this._buttons.length - 2)
       .map(({ text, command }) => `<a href="command:${command}">${text}</a>`)
-      .join(
-        "<span>&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;</span>"
-      )}</td></tr></table>`;
+      .join("<span>&nbsp;&nbsp;&nbsp;·&nbsp;&nbsp;&nbsp;</span>")}</td></tr></table>`;
 
     this._buttons[Label.song].tooltip = this._mdTooltip;
   }

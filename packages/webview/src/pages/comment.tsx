@@ -11,24 +11,17 @@ export type CommentListProps = {
 };
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const CommentList = ({
-  titles,
-  list,
-}: CommentListProps): JSX.Element => {
+export const CommentList = ({ titles, list }: CommentListProps): JSX.Element => {
   const [index, setIndex] = useState(0);
   const [state, setState] = useState(list);
 
   const previousAction = useCallback(() => {
-    request<{ list: NeteaseTypings.CommentRet }, CommentCSMsg>({
-      command: "prev",
-    })
+    request<{ list: NeteaseTypings.CommentRet }, CommentCSMsg>({ command: "prev" })
       .then(({ list }) => setState(list))
       .catch(console.error);
   }, []);
   const nextAction = useCallback(() => {
-    request<{ list: NeteaseTypings.CommentRet }, CommentCSMsg>({
-      command: "next",
-    })
+    request<{ list: NeteaseTypings.CommentRet }, CommentCSMsg>({ command: "next" })
       .then(({ list }) => setState(list))
       .catch(console.error);
   }, []);
@@ -41,10 +34,7 @@ export const CommentList = ({
           titles={titles}
           selectd={index}
           switchTab={(index) => {
-            request<{ list: NeteaseTypings.CommentRet }, CommentCSMsg>({
-              command: "tabs",
-              index,
-            })
+            request<{ list: NeteaseTypings.CommentRet }, CommentCSMsg>({ command: "tabs", index })
               .then(({ list }) => {
                 setIndex(index);
                 setState(list);

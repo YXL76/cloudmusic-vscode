@@ -47,8 +47,7 @@ export default {
       signIn: "Sign in successful",
     },
     warn: {
-      login:
-        "Recommend to log in via QR code, other methods are more likely to fail",
+      login: "Recommend to log in via QR code, other methods are more likely to fail",
     },
   },
   word: {

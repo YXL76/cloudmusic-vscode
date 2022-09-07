@@ -1,10 +1,4 @@
-import {
-  FiCircle,
-  FiCrosshair,
-  FiLifeBuoy,
-  FiMinus,
-  FiPlus,
-} from "react-icons/fi";
+import { FiCircle, FiCrosshair, FiLifeBuoy, FiMinus, FiPlus } from "react-icons/fi";
 import { useEffect, useMemo, useState } from "react";
 import type { LyricSMsg } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
@@ -32,32 +26,27 @@ export const Lyric = (): JSX.Element => {
         case "lyric":
           cnt += 1;
           setLyric(data.text);
-          window.scrollTo({ top: 0, behavior: "smooth" });
-          break;
-        case "index":
-          {
-            const prev = document.getElementById(`${cnt}-${active}`);
-            if (prev) {
-              prev.style.fontSize = "";
-              prev.style.opacity = "";
-              prev.style.fontWeight = "";
-            }
-            active = data.idx;
-            const curr = document.getElementById(`${cnt}-${active}`);
-            if (curr) {
-              curr.style.fontSize = `${bigFontSize}px`;
-              curr.style.opacity = "1";
-              curr.style.fontWeight = "bold";
-              if (focus === FocusMode.center) {
-                curr.scrollIntoView({ block: "center", behavior: "smooth" });
-              } else if (focus === FocusMode.inview) {
-                const { top, bottom } = curr.getBoundingClientRect();
-                if (top > innerHeight || bottom < 0)
-                  curr.scrollIntoView({ block: "center", behavior: "smooth" });
-              }
-            }
+          return window.scrollTo({ top: 0, behavior: "smooth" });
+        case "index": {
+          const prev = document.getElementById(`${cnt}-${active}`);
+          if (prev) {
+            prev.style.fontSize = "";
+            prev.style.opacity = "";
+            prev.style.fontWeight = "";
           }
-          break;
+          active = data.idx;
+          const curr = document.getElementById(`${cnt}-${active}`);
+          if (!curr) return;
+
+          curr.style.fontSize = `${bigFontSize}px`;
+          curr.style.opacity = "1";
+          curr.style.fontWeight = "bold";
+          if (focus === FocusMode.center) curr.scrollIntoView({ block: "center", behavior: "smooth" });
+          else if (focus === FocusMode.inview) {
+            const { top, bottom } = curr.getBoundingClientRect();
+            if (top > innerHeight || bottom < 0) curr.scrollIntoView({ block: "center", behavior: "smooth" });
+          }
+        }
       }
     };
 
@@ -89,12 +78,7 @@ export const Lyric = (): JSX.Element => {
 
       {useMemo(() => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        const Icon =
-          focus === FocusMode.center
-            ? FiCrosshair
-            : focus === FocusMode.inview
-            ? FiLifeBuoy
-            : FiCircle;
+        const Icon = focus === FocusMode.center ? FiCrosshair : focus === FocusMode.inview ? FiLifeBuoy : FiCircle;
         return (
           <div
             className="fixed right-8 bottom-40 bg-slate-700 rounded-full p-1 cursor-pointer z-10"

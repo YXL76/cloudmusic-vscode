@@ -1,6 +1,6 @@
-import { AccountState, broadcastProfiles, jsonToCookie } from "./helper";
+import { ACCOUNT_STATE, broadcastProfiles, jsonToCookie } from "./helper";
 import { eapi, weapi } from "./crypto";
-import { APISetting } from "../index";
+import { API_CONFIG } from "../index";
 import { CookieJar } from "tough-cookie";
 import type { Headers } from "got";
 import type { NeteaseTypings } from "api";
@@ -73,31 +73,23 @@ const responseHandler = async <T>(
   headers: Headers,
   data: QueryInput
 ): Promise<(T & { readonly cookie?: string[] }) | void> => {
-  const res = await client<{ readonly code?: number; cookie?: string[] } & T>(
-    url,
-    { form: data, headers }
-  );
+  const res = await client<{ readonly code?: number; cookie?: string[] } & T>(url, { form: data, headers });
   if (!res) return;
   const status = res.body.code || res.statusCode;
   if (status !== 200 && status !== 512) return logError(res.body);
 
-  if (res.headers["set-cookie"]?.length) {
-    res.body.cookie = res.headers["set-cookie"];
-  }
+  if (res.headers["set-cookie"]?.length) res.body.cookie = res.headers["set-cookie"];
   return res.body;
 };
 
-export const loginRequest = async (
-  url: string,
-  data: QueryInput
-): Promise<NeteaseTypings.Profile | void> => {
-  url = `${APISetting.apiProtocol}://${url}`;
+export const loginRequest = async (url: string, data: QueryInput): Promise<NeteaseTypings.Profile | void> => {
+  url = `${API_CONFIG.protocol}://${url}`;
   const headers = generateHeader();
   headers["Cookie"] = jsonToCookie({ os: "pc", appver: "2.9.7" });
-  const res = await client<{
-    readonly code?: number;
-    profile?: NeteaseTypings.Profile;
-  }>(url, { form: weapi(data), headers });
+  const res = await client<{ readonly code?: number; profile?: NeteaseTypings.Profile }>(url, {
+    form: weapi(data),
+    headers,
+  });
 
   if (!res) return;
   const status = res.body.code || res.statusCode;
@@ -109,27 +101,21 @@ export const loginRequest = async (
   if (!res.headers["set-cookie"]?.length) return;
   const cookie = new CookieJar();
   for (const c of res.headers["set-cookie"]) cookie.setCookieSync(c, url);
-  AccountState.setStaticCookie(cookie);
-  AccountState.cookies.set(profile.userId, cookie);
-  AccountState.profile.set(profile.userId, profile);
+  ACCOUNT_STATE.setStaticCookie(cookie);
+  ACCOUNT_STATE.cookies.set(profile.userId, cookie);
+  ACCOUNT_STATE.profile.set(profile.userId, profile);
   broadcastProfiles();
   return profile;
 };
 
-export const qrloginRequest = async (
-  url: string,
-  data: QueryInput
-): Promise<number | void> => {
-  url = `${APISetting.apiProtocol}://${url}`;
+export const qrloginRequest = async (url: string, data: QueryInput): Promise<number | void> => {
+  url = `${API_CONFIG.protocol}://${url}`;
   const headers = generateHeader();
-  const res = await client<{ readonly code?: number }>(url, {
-    form: weapi(data),
-    headers,
-  });
+  const res = await client<{ readonly code?: number }>(url, { form: weapi(data), headers });
   if (!res) return;
   const status = res.body.code || res.statusCode;
   if (status === 801 || status === 802) return;
-  if (status !== 803) throw Error(res.body as string);
+  if (status !== 803) throw Error(<string>res.body);
 
   if (!res.headers["set-cookie"]?.length) return;
   const cookie = new CookieJar();
@@ -142,9 +128,9 @@ export const qrloginRequest = async (
 export const weapiRequest = <T = QueryInput>(
   url: string,
   data: QueryInput = {},
-  cookie = AccountState.defaultCookie
+  cookie = ACCOUNT_STATE.defaultCookie
 ): Promise<(T & { readonly cookie?: string[] }) | void> => {
-  url = `${APISetting.apiProtocol}://${url}`;
+  url = `${API_CONFIG.protocol}://${url}`;
   // if (!cookie.MUSIC_U) cookie.MUSIC_A = anonymousToken;
   const headers = generateHeader();
   headers["Cookie"] = cookie.getCookieStringSync(url);
@@ -157,12 +143,12 @@ export const eapiRequest = async <T = QueryInput>(
   url: string,
   data: NodeJS.Dict<string | number | boolean | Headers>,
   encryptUrl: string,
-  cookie = AccountState.defaultCookie
+  cookie = ACCOUNT_STATE.defaultCookie
 ): Promise<(T & { readonly cookie?: string[] }) | void> => {
-  url = `${APISetting.apiProtocol}://${url}`;
+  url = `${API_CONFIG.protocol}://${url}`;
   const cookieJSON: Record<string, string | null | undefined> = {};
   for (const c of cookie.getCookiesSync(url)) {
-    const { key, value } = c.toJSON() as { key: string; value?: string | null };
+    const { key, value } = <{ key: string; value?: string | null }>c.toJSON();
     cookieJSON[key] = value;
   }
 
@@ -177,7 +163,7 @@ export const eapiRequest = async <T = QueryInput>(
     resolution: cookieJSON["resolution"] || "1920x1080",
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __csrf: cookieJSON["__csrf"] || "",
-    os: cookieJSON["os"] || ("android" as const),
+    os: cookieJSON["os"] || <const>"android",
     channel: cookieJSON["channel"] || "",
     requestId: `${now}_${Math.floor(Math.random() * 1000)
       .toString()
@@ -199,9 +185,9 @@ export const eapiRequest = async <T = QueryInput>(
 export const apiRequest = async <T = QueryInput>(
   url: string,
   data: QueryInput = {},
-  cookie = AccountState.defaultCookie
+  cookie = ACCOUNT_STATE.defaultCookie
 ): Promise<(T & { readonly cookie?: string[] }) | void> => {
-  url = `${APISetting.apiProtocol}://${url}`;
+  url = `${API_CONFIG.protocol}://${url}`;
   // if (!cookie.MUSIC_U) cookie.MUSIC_A = anonymousToken;
   const headers = generateHeader();
   headers["Cookie"] = cookie.getCookieStringSync(url);

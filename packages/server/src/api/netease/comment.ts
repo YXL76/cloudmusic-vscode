@@ -4,22 +4,9 @@ import { NeteaseSortType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import { resolveComment } from "./helper";
 
-const resourceTypeMap = [
-  "R_SO_4_",
-  "R_MV_5_",
-  "A_PL_0_",
-  "R_AL_3_",
-  "A_DJ_1_",
-  "R_VI_62_",
-  "A_EV_2_",
-  "A_DR_14_",
-];
+const resourceTypeMap = ["R_SO_4_", "R_MV_5_", "A_PL_0_", "R_AL_3_", "A_DJ_1_", "R_VI_62_", "A_EV_2_", "A_DR_14_"];
 
-export async function commentAdd(
-  type: NeteaseCommentType,
-  id: number,
-  content: string
-): Promise<boolean> {
+export async function commentAdd(type: NeteaseCommentType, id: number, content: string): Promise<boolean> {
   return !!(await weapiRequest(`music.163.com/weapi/resource/comments/add`, {
     threadId: `${resourceTypeMap[type]}${id}`,
     content,
@@ -47,11 +34,7 @@ export async function commentFloor(
   time: number
 ): Promise<NeteaseTypings.CommentRet> {
   const res = await weapiRequest<{
-    data: {
-      totalCount: number;
-      hasMore: boolean;
-      comments: readonly NeteaseTypings.RawCommentDetail[];
-    };
+    data: { totalCount: number; hasMore: boolean; comments: readonly NeteaseTypings.RawCommentDetail[] };
   }>("music.163.com/weapi/resource/comment/floor/get", {
     parentCommentId,
     threadId: `${resourceTypeMap[type]}${id}`,
@@ -62,11 +45,7 @@ export async function commentFloor(
   const {
     data: { totalCount, hasMore, comments },
   } = res;
-  return {
-    totalCount,
-    hasMore,
-    comments: comments.map(resolveComment),
-  };
+  return { totalCount, hasMore, comments: comments.map(resolveComment) };
 }
 
 export async function commentLike(
@@ -98,30 +77,15 @@ export async function commentNew(
       break;
   }
   const res = await eapiRequest<{
-    data: {
-      totalCount: number;
-      hasMore: boolean;
-      comments: readonly NeteaseTypings.RawCommentDetail[];
-    };
+    data: { totalCount: number; hasMore: boolean; comments: readonly NeteaseTypings.RawCommentDetail[] };
   }>(
     "music.163.com/eapi/v2/resource/comments",
-    {
-      threadId: `${resourceTypeMap[type]}${id}`,
-      pageNo,
-      showInner: true,
-      pageSize,
-      cursor,
-      sortType,
-    },
+    { threadId: `${resourceTypeMap[type]}${id}`, pageNo, showInner: true, pageSize, cursor, sortType },
     "/api/v2/resource/comments"
   );
   if (!res) return { totalCount: 0, hasMore: false, comments: [] };
   const {
     data: { totalCount, hasMore, comments },
   } = res;
-  return {
-    totalCount,
-    hasMore,
-    comments: comments.map(resolveComment),
-  };
+  return { totalCount, hasMore, comments: comments.map(resolveComment) };
 }

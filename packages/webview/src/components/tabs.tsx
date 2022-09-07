@@ -6,17 +6,10 @@ export interface TabsProps {
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const Tabs = ({
-  title,
-  titles,
-  selectd,
-  switchTab,
-}: TabsProps): JSX.Element => (
+export const Tabs = ({ title, titles, selectd, switchTab }: TabsProps): JSX.Element => (
   <nav className="flex flex-row items-center mb-4">
     {title && (
-      <div className="inline-block px-4 font-bold text-xl text-black dark:text-white">
-        {title.toLocaleUpperCase()}
-      </div>
+      <div className="inline-block px-4 font-bold text-xl text-black dark:text-white">{title.toLocaleUpperCase()}</div>
     )}
     {titles.map((title, index) => (
       <button

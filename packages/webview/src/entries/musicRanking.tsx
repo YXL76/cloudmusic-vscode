@@ -13,10 +13,7 @@ request<ReadonlyArray<readonly NeteaseTypings.RecordData[]>>(undefined)
     root.render(
       <MusicRanking
         record={record}
-        max={record.map(
-          (i) =>
-            i.reduce((pre, { playCount }) => Math.max(pre, playCount), 0) / 100
-        )}
+        max={record.map((i) => i.reduce((pre, { playCount }) => Math.max(pre, playCount), 0) / 100)}
       />
     )
   )

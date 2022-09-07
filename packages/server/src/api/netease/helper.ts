@@ -1,16 +1,16 @@
 import { CookieJar } from "tough-cookie";
 import { IPCControl } from "@cloudmusic/shared";
-import { IPCServer } from "../../server";
 import type { IPCServerMsg } from "@cloudmusic/shared";
+import { IPC_SRV } from "../../server";
 import type { NeteaseTypings } from "api";
 import type { Socket } from "node:net";
 
-export class AccountState {
-  static cookies = new Map<number, CookieJar>();
+class AccountState {
+  cookies = new Map<number, CookieJar>();
 
-  static profile = new Map<number, NeteaseTypings.Profile>();
+  profile = new Map<number, NeteaseTypings.Profile>();
 
-  static get defaultCookie(): CookieJar {
+  get defaultCookie(): CookieJar {
     if (this.cookies.size) {
       const [[, cookie]] = this.cookies;
       return cookie;
@@ -18,7 +18,7 @@ export class AccountState {
     return new CookieJar();
   }
 
-  static setStaticCookie(cookie: CookieJar) {
+  setStaticCookie(cookie: CookieJar) {
     for (const url of ["http://music.163.com/weapi/radio/like/"]) {
       cookie.setCookieSync("appver=2.9.7", url);
     }
@@ -46,16 +46,18 @@ export class AccountState {
   }
 }
 
+export const ACCOUNT_STATE = new AccountState();
+
 export function broadcastProfiles(socket?: Socket): void {
   const msg: IPCServerMsg = {
     t: IPCControl.netease,
-    cookies: [...AccountState.cookies].map(([uid, c]) => ({
+    cookies: [...ACCOUNT_STATE.cookies].map(([uid, c]) => ({
       uid,
       cookie: JSON.stringify(c.serializeSync()),
     })),
-    profiles: [...AccountState.profile.values()],
+    profiles: [...ACCOUNT_STATE.profile.values()],
   };
-  socket ? IPCServer.send(socket, msg) : IPCServer.broadcast(msg);
+  socket ? IPC_SRV.send(socket, msg) : IPC_SRV.broadcast(msg);
 }
 
 export const jsonToCookie = (json: NeteaseTypings.Cookie): string => {
@@ -73,14 +75,7 @@ export const resolveArtist = ({
   briefDesc,
   albumSize,
   musicSize,
-}: NeteaseTypings.Artist): NeteaseTypings.Artist => ({
-  name,
-  id,
-  alias,
-  briefDesc,
-  albumSize,
-  musicSize,
-});
+}: NeteaseTypings.Artist): NeteaseTypings.Artist => ({ name, id, alias, briefDesc, albumSize, musicSize });
 
 export const resolveAlbumsItem = ({
   artists,
@@ -187,11 +182,7 @@ export const resolveSimplyUserDetail = ({
   userId,
   nickname,
   avatarUrl,
-}: NeteaseTypings.SimplyUserDetail): NeteaseTypings.SimplyUserDetail => ({
-  userId,
-  nickname,
-  avatarUrl,
-});
+}: NeteaseTypings.SimplyUserDetail): NeteaseTypings.SimplyUserDetail => ({ userId, nickname, avatarUrl });
 
 export const resolveComment = ({
   user,

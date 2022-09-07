@@ -14,21 +14,10 @@ import {
   STRICT_SSL,
   VOLUME_KEY,
 } from "../constant";
-import {
-  IPCApi,
-  IPCControl,
-  IPCPlayer,
-  IPCQueue,
-  IPCWasm,
-  logFile,
-} from "@cloudmusic/shared";
+import { IPCApi, IPCControl, IPCPlayer, IPCQueue, IPCWasm, logFile } from "@cloudmusic/shared";
 import type { IPCBroadcastMsg, IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseAPIKey, NeteaseAPISMsg } from "@cloudmusic/server";
-import {
-  PlaylistProvider,
-  QueueItemTreeItem,
-  RadioProvider,
-} from "../treeview";
+import { PlaylistProvider, QueueItemTreeItem, RadioProvider } from "../treeview";
 import { Uri, commands, window, workspace } from "vscode";
 import { readdir, rm } from "node:fs/promises";
 import type { ExtensionContext } from "vscode";
@@ -79,13 +68,8 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
           const req = IPC.requestPool.get(data.channel);
           if (!req) break;
           IPC.requestPool.delete(data.channel);
-          if (
-            typeof data.msg === "object" &&
-            data.msg !== null &&
-            "err" in data.msg
-          ) {
-            req.reject();
-          } else req.resolve(data.msg);
+          if (("err" in data && data.err) || !("msg" in data)) req.reject();
+          else req.resolve(data.msg);
         }
         break;
       case IPCControl.netease:
@@ -109,16 +93,13 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       case IPCControl.retain:
         if (data.items.length && State.wasm) {
           // Delay it because `this._instance._onDidChangeTreeData.fire()` is async
-          State.addOnceInitCallback(() =>
-            setTimeout(() => IPC.load(data.play, data.seek), 1024)
-          );
+          State.addOnceInitCallback(() => setTimeout(() => IPC.load(data.play, data.seek), 1024));
         }
         QueueProvider.new(data.items as PlayTreeItemData[]);
         State.downInit(); // 1
         break;
       case IPCPlayer.end:
-        if (!data.fail && (State.repeat || data.reloadNseek))
-          IPC.load(!data.pause, data.reloadNseek);
+        if (!data.fail && (State.repeat || data.reloadNseek)) IPC.load(!data.pause, data.reloadNseek);
         else void commands.executeCommand("cloudmusic.next");
         break;
       case IPCPlayer.loaded:
@@ -131,9 +112,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         };
         break;
       case IPCPlayer.lyricIndex:
-        ButtonManager.buttonLyric(
-          State.lyric.text?.[data.idx]?.[State.lyric.type]
-        );
+        ButtonManager.buttonLyric(State.lyric.text?.[data.idx]?.[State.lyric.type]);
         State.lyric.updateIndex?.(data.idx);
         break;
       case IPCPlayer.pause:
@@ -200,10 +179,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
   };
 
   const logPath = resolve(SETTING_DIR, logFile);
-  commands.registerCommand(
-    "cloudmusic.openLogFile",
-    () => void window.showTextDocument(Uri.file(logPath))
-  );
+  commands.registerCommand("cloudmusic.openLogFile", () => void window.showTextDocument(Uri.file(logPath)));
 
   try {
     const firstTry = await IPC.connect(ipcHandler, ipcBHandler, 0);

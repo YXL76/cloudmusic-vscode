@@ -1,11 +1,7 @@
-import {
-  AccountState,
-  resolveAnotherSongItem,
-  resolveSongItem,
-} from "./helper";
-import { LyricCache, apiCache } from "../../cache";
+import { ACCOUNT_STATE, resolveAnotherSongItem, resolveSongItem } from "./helper";
+import { API_CACHE, LYRIC_CACHE } from "../../cache";
 import { apiRequest, eapiRequest, weapiRequest } from "./request";
-import { APISetting } from "../helper";
+import { API_CONFIG } from "../helper";
 import type { NeteaseTopSongType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import { STATE } from "../../state";
@@ -36,18 +32,16 @@ const parseLyric = (raw: string): readonly (readonly [number, string])[] => {
   const len = unsorted.length;
   for (let i = 0; i < len; ++i) {
     const [time, text] = unsorted[i];
-    if (text) ret.push([time, text] as const);
+    if (text) ret.push(<const>[time, text]);
   }
   return ret;
 };
 
-const parseLyricUser = (
-  user?: NeteaseTypings.LyricUser
-): NeteaseTypings.LyricUser | undefined =>
+const parseLyricUser = (user?: NeteaseTypings.LyricUser): NeteaseTypings.LyricUser | undefined =>
   user ? { nickname: user.nickname, userid: user.userid } : undefined;
 
 export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
-  const lyricCache = await LyricCache.get(`${id}`);
+  const lyricCache = await LYRIC_CACHE.get(`${id}`);
   if (lyricCache) return lyricCache;
 
   const res = await apiRequest<{
@@ -56,20 +50,14 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
     romalrc?: { lyric?: string };
     lyricUser?: NeteaseTypings.LyricUser;
     transUser?: NeteaseTypings.LyricUser;
-  }>("music.163.com/api/song/lyric?_nmclfl=1", {
-    id,
-    tv: -1,
-    lv: -1,
-    rv: -1,
-    kv: -1,
-  });
+  }>("music.163.com/api/song/lyric?_nmclfl=1", { id, tv: -1, lv: -1, rv: -1, kv: -1 });
 
   if (!res) return { time: [0], text: [["~", "~", "~"]], user: [] };
 
-  const user = [
+  const user = <[NeteaseTypings.LyricUser?, NeteaseTypings.LyricUser?]>[
     parseLyricUser(res.lyricUser),
     parseLyricUser(res.transUser),
-  ] as [NeteaseTypings.LyricUser?, NeteaseTypings.LyricUser?];
+  ];
 
   const o = parseLyric(res?.lrc?.lyric ?? "");
   if (!o.length) return { time: [0], text: [["~", "~", "~"]], user: [] };
@@ -78,14 +66,12 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
   const r = parseLyric(res?.romalrc?.lyric ?? "");
 
   const time = o.map(([t]) => t);
-  const text = o.map(([, t]) => [t, "", ""] as [string, string, string]);
+  const text = o.map(([, t]) => <[string, string, string]>[t, "", ""]);
 
   let i = 0;
   outer: for (const [ttime, ttext] of t) {
     if (time[i] > ttime) continue;
-    while (time[i] < ttime) {
-      if (++i >= time.length) break outer;
-    }
+    while (time[i] < ttime) if (++i >= time.length) break outer;
     if (time[i] === ttime) text[i][1] = ttext;
     if (++i >= time.length) break;
   }
@@ -93,9 +79,7 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
   i = 0;
   outer: for (const [rtime, rtext] of r) {
     if (time[i] > rtime) continue;
-    while (time[i] < rtime) {
-      if (++i >= time.length) break outer;
-    }
+    while (time[i] < rtime) if (++i >= time.length) break outer;
     if (time[i] === rtime) text[i][2] = rtext;
     if (++i >= time.length) break;
   }
@@ -114,7 +98,7 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
   type Lyric = NeteaseTypings.LyricData & { ctime: number };
   const lyric: Lyric = { ctime: Date.now(), time, text, user };
 
-  LyricCache.put(`${id}`, lyric);
+  LYRIC_CACHE.put(`${id}`, lyric);
   return lyric;
 }
 
@@ -124,14 +108,14 @@ export async function simiSong(
   offset: number
 ): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `simi_song${songid}-${limit}-${offset}`;
-  const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
+  const value = API_CACHE.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
   const res = await weapiRequest<{
     songs: readonly NeteaseTypings.AnotherSongItem[];
   }>("music.163.com/weapi/v1/discovery/simiSong", { songid, limit, offset });
   if (!res) return [];
   const ret = res.songs.map(resolveAnotherSongItem);
-  apiCache.set(key, ret);
+  API_CACHE.set(key, ret);
   return ret;
 }
 
@@ -141,7 +125,7 @@ export async function songDetail(
 ): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `song_detail${trackIds[0]}`;
   if (trackIds.length === 1) {
-    const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
+    const value = API_CACHE.get<readonly NeteaseTypings.SongsItem[]>(key);
     if (value) return value;
   }
 
@@ -157,19 +141,17 @@ export async function songDetail(
         }>(
           "music.163.com/weapi/v3/song/detail",
           { c: `[${ids.map((id) => `{"id":${id}}`).join(",")}]` },
-          AccountState.cookies.get(uid)
+          ACCOUNT_STATE.cookies.get(uid)
         );
         if (!res) throw Error;
         const { songs, privileges } = res;
-        return songs
-          .filter((_, i) => privileges[i].st >= 0)
-          .map(resolveSongItem);
+        return songs.filter((_, i) => privileges[i].st >= 0).map(resolveSongItem);
       })()
     );
   }
   try {
     const ret = (await Promise.all(tasks)).flat();
-    if (trackIds.length === 1) apiCache.set(key, ret);
+    if (trackIds.length === 1) API_CACHE.set(key, ret);
     return ret;
   } catch (err) {
     logError(err);
@@ -185,31 +167,24 @@ const br2level = new Map([
 ]);
 
 export async function songUrl(id: number): Promise<NeteaseTypings.SongDetail> {
-  type SongUrlItem = NeteaseTypings.SongDetail & {
-    freeTrialInfo?: { start: number; end: number };
-  };
+  type SongUrlItem = NeteaseTypings.SongDetail & { freeTrialInfo?: { start: number; end: number } };
 
-  for (const [, cookie] of AccountState.cookies) {
+  for (const [, cookie] of ACCOUNT_STATE.cookies) {
     try {
-      const rurl = `${APISetting.apiProtocol}://interface.music.163.com/eapi/song/enhance/player/url/v1`;
+      const rurl = `${API_CONFIG.protocol}://interface.music.163.com/eapi/song/enhance/player/url/v1`;
 
       const value = await eapiRequest<{
         readonly data: ReadonlyArray<SongUrlItem>;
       }>(
         "interface.music.163.com/eapi/song/enhance/player/url/v1",
-        {
-          ids: `[${id}]`,
-          level: br2level.get(STATE.musicQuality) ?? "standard",
-          encodeType: "flac",
-        },
+        { ids: `[${id}]`, level: br2level.get(STATE.musicQuality) ?? "standard", encodeType: "flac" },
         "/api/song/enhance/player/url/v1",
         cookie
       );
       if (!value) throw Error();
 
-      if (value.cookie) {
-        for (const c of value.cookie) cookie.setCookieSync(c, rurl);
-      }
+      if (value.cookie) for (const c of value.cookie) cookie.setCookieSync(c, rurl);
+
       const [{ url, md5, type, freeTrialInfo }] = value.data;
       if (!freeTrialInfo) return { url, md5, type };
     } catch (err) {
@@ -230,14 +205,12 @@ export async function songUrl(id: number): Promise<NeteaseTypings.SongDetail> {
       logError(err);
     }
   }
-  return {} as NeteaseTypings.SongDetail;
+  return <NeteaseTypings.SongDetail>{};
 }
 
-export async function topSong(
-  areaId: NeteaseTopSongType
-): Promise<readonly NeteaseTypings.SongsItem[]> {
+export async function topSong(areaId: NeteaseTopSongType): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `top_song${areaId}`;
-  const value = apiCache.get<readonly NeteaseTypings.SongsItem[]>(key);
+  const value = API_CACHE.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
   const res = await weapiRequest<{
     data: readonly NeteaseTypings.AnotherSongItem[];
@@ -249,6 +222,6 @@ export async function topSong(
   });
   if (!res) return [];
   const ret = res.data.map(resolveAnotherSongItem);
-  apiCache.set(key, ret);
+  API_CACHE.set(key, ret);
   return ret;
 }

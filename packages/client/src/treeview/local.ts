@@ -1,9 +1,4 @@
-import {
-  EventEmitter,
-  ThemeIcon,
-  TreeItem,
-  TreeItemCollapsibleState,
-} from "vscode";
+import { EventEmitter, ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 import type { PlayTreeItem, PlayTreeItemData } from "./index";
 import type { TreeDataProvider, TreeView } from "vscode";
 import type { IAudioMetadata } from "music-metadata";
@@ -22,10 +17,7 @@ export class LocalProvider implements TreeDataProvider<Content> {
 
   private static _instance: LocalProvider;
 
-  private static readonly _files = new Map<
-    LocalLibraryTreeItem,
-    LocalFileTreeItem[]
-  >();
+  private static readonly _files = new Map<LocalLibraryTreeItem, LocalFileTreeItem[]>();
 
   private static _actions = new WeakMap<
     LocalLibraryTreeItem,
@@ -62,10 +54,7 @@ export class LocalProvider implements TreeDataProvider<Content> {
     this._instance._onDidChangeTreeData.fire();
   }
 
-  static async refreshLibrary(
-    element: LocalLibraryTreeItem,
-    hard?: boolean
-  ): Promise<readonly PlayTreeItemData[]> {
+  static async refreshLibrary(element: LocalLibraryTreeItem, hard?: boolean): Promise<readonly PlayTreeItemData[]> {
     if (hard) this._files.delete(element);
     const old = this._actions.get(element);
     old?.reject();
@@ -76,19 +65,13 @@ export class LocalProvider implements TreeDataProvider<Content> {
     });
   }
 
-  getTreeItem(
-    element: LocalFileTreeItem | LocalLibraryTreeItem
-  ): LocalFileTreeItem | LocalLibraryTreeItem {
+  getTreeItem(element: LocalFileTreeItem | LocalLibraryTreeItem): LocalFileTreeItem | LocalLibraryTreeItem {
     return element;
   }
 
-  async getChildren(
-    element?: LocalLibraryTreeItem
-  ): Promise<(LocalFileTreeItem | LocalLibraryTreeItem)[]> {
+  async getChildren(element?: LocalLibraryTreeItem): Promise<(LocalFileTreeItem | LocalLibraryTreeItem)[]> {
     if (!element) {
-      return [MUSIC_CACHE_DIR, ...LocalProvider._folders].map(
-        (folder) => new LocalLibraryTreeItem(folder)
-      );
+      return [MUSIC_CACHE_DIR, ...LocalProvider._folders].map((folder) => new LocalLibraryTreeItem(folder));
     }
 
     const action = LocalProvider._actions.get(element);
@@ -123,9 +106,7 @@ export class LocalProvider implements TreeDataProvider<Content> {
         });
 
         (await Promise.allSettled(promises))
-          .reduce<
-            { filename: string; abspath: string; meta: IAudioMetadata }[]
-          >((acc, res) => {
+          .reduce<{ filename: string; abspath: string; meta: IAudioMetadata }[]>((acc, res) => {
             if (
               res.status === "fulfilled" &&
               res.value.meta.format.container &&
@@ -155,9 +136,7 @@ export class LocalProvider implements TreeDataProvider<Content> {
 
             if (common.picture?.length) {
               const [{ data, format }] = common.picture;
-              item.al.picUrl = `data:${format};base64,${data.toString(
-                "base64"
-              )}`;
+              item.al.picUrl = `data:${format};base64,${data.toString("base64")}`;
             }
 
             items.push(LocalFileTreeItem.new(item));
@@ -207,9 +186,7 @@ export class LocalFileTreeItem extends TreeItem implements PlayTreeItem {
 
   override readonly label = this.data.filename;
 
-  override readonly description = this.data.ar
-    .map(({ name }) => name)
-    .join("/");
+  override readonly description = this.data.ar.map(({ name }) => name).join("/");
 
   override readonly tooltip = this.data.al.name;
 

@@ -6,9 +6,7 @@ import { LOCAL_FOLDER_KEY } from "../constant";
 import { LocalProvider } from "../treeview";
 
 export function initLocal(context: ExtensionContext): void {
-  context.globalState
-    .get<readonly string[]>(LOCAL_FOLDER_KEY)
-    ?.forEach((folder) => LocalProvider.addFolder(folder));
+  context.globalState.get<readonly string[]>(LOCAL_FOLDER_KEY)?.forEach((folder) => LocalProvider.addFolder(folder));
   LocalProvider.refresh();
 
   context.subscriptions.push(
@@ -29,51 +27,33 @@ export function initLocal(context: ExtensionContext): void {
       } catch {}
     }),
 
-    commands.registerCommand("cloudmusic.refreshLocalLibrary", () =>
-      LocalProvider.refresh()
-    ),
+    commands.registerCommand("cloudmusic.refreshLocalLibrary", () => LocalProvider.refresh()),
 
-    commands.registerCommand(
-      "cloudmusic.deleteLocalLibrary",
-      ({ label }: LocalLibraryTreeItem) => LocalProvider.deleteFolder(label)
+    commands.registerCommand("cloudmusic.deleteLocalLibrary", ({ label }: LocalLibraryTreeItem) =>
+      LocalProvider.deleteFolder(label)
     ),
 
     commands.registerCommand(
       "cloudmusic.openLocalLibrary",
-      ({ label }: LocalLibraryTreeItem) =>
-        void env.openExternal(Uri.file(label))
+      ({ label }: LocalLibraryTreeItem) => void env.openExternal(Uri.file(label))
     ),
 
-    commands.registerCommand(
-      "cloudmusic.playLocalLibrary",
-      async (element: LocalLibraryTreeItem) => {
-        const items = await LocalProvider.refreshLibrary(element);
-        IPC.new(items);
-      }
+    commands.registerCommand("cloudmusic.playLocalLibrary", async (element: LocalLibraryTreeItem) => {
+      const items = await LocalProvider.refreshLibrary(element);
+      IPC.new(items);
+    }),
+
+    commands.registerCommand("cloudmusic.addLocalLibrary", async (element: LocalLibraryTreeItem) => {
+      const items = await LocalProvider.refreshLibrary(element);
+      IPC.add(items);
+    }),
+
+    commands.registerCommand("cloudmusic.refreshLocalFile", (element: LocalLibraryTreeItem) =>
+      LocalProvider.refreshLibrary(element, true)
     ),
 
-    commands.registerCommand(
-      "cloudmusic.addLocalLibrary",
-      async (element: LocalLibraryTreeItem) => {
-        const items = await LocalProvider.refreshLibrary(element);
-        IPC.add(items);
-      }
-    ),
+    commands.registerCommand("cloudmusic.addLocalFile", ({ data }: LocalFileTreeItem) => IPC.add([data])),
 
-    commands.registerCommand(
-      "cloudmusic.refreshLocalFile",
-      (element: LocalLibraryTreeItem) =>
-        LocalProvider.refreshLibrary(element, true)
-    ),
-
-    commands.registerCommand(
-      "cloudmusic.addLocalFile",
-      ({ data }: LocalFileTreeItem) => IPC.add([data])
-    ),
-
-    commands.registerCommand(
-      "cloudmusic.playLocalFile",
-      ({ data }: LocalFileTreeItem) => IPC.new([data])
-    )
+    commands.registerCommand("cloudmusic.playLocalFile", ({ data }: LocalFileTreeItem) => IPC.new([data]))
   );
 }

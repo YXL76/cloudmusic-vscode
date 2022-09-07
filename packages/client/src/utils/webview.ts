@@ -6,44 +6,22 @@ import type {
   MusicRankingCMsg,
   ProviderCMsg,
 } from "@cloudmusic/shared";
-import {
-  ColorThemeKind,
-  Uri,
-  ViewColumn,
-  commands,
-  window,
-  workspace,
-} from "vscode";
-import type {
-  ExtensionContext,
-  WebviewView,
-  WebviewViewProvider,
-} from "vscode";
-import {
-  IPC,
-  MultiStepInput,
-  State,
-  pickAlbum,
-  pickArtist,
-  pickSong,
-  pickUser,
-} from "./index";
+import { ColorThemeKind, Uri, ViewColumn, commands, window, workspace } from "vscode";
+import type { ExtensionContext, WebviewView, WebviewViewProvider } from "vscode";
+import { IPC, MultiStepInput, State, pickAlbum, pickArtist, pickSong, pickUser } from "./index";
 import { NeteaseCommentType, NeteaseSortType } from "@cloudmusic/shared";
 import type { ProviderSMsg, WebviewType } from "@cloudmusic/shared";
 import { SPEED_KEY, VOLUME_KEY } from "../constant";
 import { AccountManager } from "../manager";
 import type { NeteaseTypings } from "api";
 import i18n from "../i18n";
-import { platform } from "node:os";
 import { spawnSync } from "node:child_process";
 import { toDataURL } from "qrcode";
 
 const getNonce = (): string => {
   let text = "";
-  const possible =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  for (let i = 0; i < 32; i++)
-    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  const possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  for (let i = 0; i < 32; i++) text += possible.charAt(Math.floor(Math.random() * possible.length));
   return text;
 };
 
@@ -169,7 +147,7 @@ export class AccountViewProvider implements WebviewViewProvider {
     AccountViewProvider._view = webview;
 
     const localResourceRoots: string[] = [];
-    if (platform() === "win32") {
+    if (process.platform === "win32") {
       const { stdout } = spawnSync(
         "powershell.exe",
         [
@@ -203,12 +181,8 @@ export class AccountViewProvider implements WebviewViewProvider {
         case "pageLoaded":
           AccountViewProvider.master();
           AccountViewProvider.account([...AccountManager.accounts.values()]);
-          AccountViewProvider.wasmVolume(
-            AccountViewProvider.context.globalState.get(VOLUME_KEY, 85)
-          );
-          AccountViewProvider.wasmSpeed(
-            AccountViewProvider.context.globalState.get(SPEED_KEY, 1)
-          );
+          AccountViewProvider.wasmVolume(AccountViewProvider.context.globalState.get(VOLUME_KEY, 85));
+          AccountViewProvider.wasmSpeed(AccountViewProvider.context.globalState.get(SPEED_KEY, 1));
           if (State.wasm) State.downInit(); // 3
           break;
         case "account":
@@ -233,20 +207,14 @@ export class AccountViewProvider implements WebviewViewProvider {
       }
     });
 
-    const js = webview.webview
-      .asWebviewUri(Uri.joinPath(extUri, "dist", "provider.js"))
-      .toString();
-    const css = webview.webview
-      .asWebviewUri(Uri.joinPath(extUri, "dist", "style.css"))
-      .toString();
+    const js = webview.webview.asWebviewUri(Uri.joinPath(extUri, "dist", "provider.js")).toString();
+    const css = webview.webview.asWebviewUri(Uri.joinPath(extUri, "dist", "style.css")).toString();
 
     const audioUri = Uri.joinPath(extUri, "media", "audio");
     const items = await workspace.fs.readDirectory(audioUri);
     const files = items
       .filter(([name]) => name.startsWith("silent"))
-      .map(([name]) =>
-        webview.webview.asWebviewUri(Uri.joinPath(audioUri, name)).toString()
-      );
+      .map(([name]) => webview.webview.asWebviewUri(Uri.joinPath(audioUri, name)).toString());
 
     webview.webview.html = `
 <!DOCTYPE html>
@@ -277,9 +245,7 @@ export class Webview {
   static async login(): Promise<void> {
     const key = await IPC.netease("loginQrKey", []);
     if (!key) return;
-    const imgSrc = await toDataURL(
-      `https://music.163.com/login?codekey=${key}`
-    );
+    const imgSrc = await toDataURL(`https://music.163.com/login?codekey=${key}`);
     const { panel, setHtml } = this._getPanel(i18n.word.signIn, "login");
 
     panel.webview.onDidReceiveMessage(({ channel }: CSMessage) => {
@@ -316,10 +282,8 @@ export class Webview {
       State.lyric.updateIndex = undefined;
     });
 
-    State.lyric.updatePanel = (text) =>
-      void panel.webview.postMessage(<LyricSMsg>{ command: "lyric", text });
-    State.lyric.updateIndex = (idx) =>
-      void panel.webview.postMessage(<LyricSMsg>{ command: "index", idx });
+    State.lyric.updatePanel = (text) => void panel.webview.postMessage(<LyricSMsg>{ command: "lyric", text });
+    State.lyric.updateIndex = (idx) => void panel.webview.postMessage(<LyricSMsg>{ command: "index", idx });
 
     setHtml();
 
@@ -339,37 +303,28 @@ export class Webview {
 
   static async musicRanking(uid: number): Promise<void> {
     const record = await IPC.netease("userRecord", [uid]);
-    const { panel, setHtml } = this._getPanel(
-      i18n.word.musicRanking,
-      "musicRanking"
-    );
+    const { panel, setHtml } = this._getPanel(i18n.word.musicRanking, "musicRanking");
 
-    panel.webview.onDidReceiveMessage(
-      ({ msg, channel }: CSMessage | MusicRankingCMsg) => {
-        if (channel) {
-          void panel.webview.postMessage({ msg: record, channel });
-          return;
-        }
-        if (!msg) return;
-        switch (msg.command) {
-          case "song":
-            void MultiStepInput.run(async (input) =>
-              pickSong(
-                input,
-                1,
-                (await IPC.netease("songDetail", [uid, [msg.id]]))[0]
-              )
-            );
-            break;
-          case "album":
-            void MultiStepInput.run((input) => pickAlbum(input, 1, msg.id));
-            break;
-          case "artist":
-            void MultiStepInput.run((input) => pickArtist(input, 1, msg.id));
-            break;
-        }
+    panel.webview.onDidReceiveMessage(({ msg, channel }: CSMessage | MusicRankingCMsg) => {
+      if (channel) {
+        void panel.webview.postMessage({ msg: record, channel });
+        return;
       }
-    );
+      if (!msg) return;
+      switch (msg.command) {
+        case "song":
+          void MultiStepInput.run(async (input) =>
+            pickSong(input, 1, (await IPC.netease("songDetail", [uid, [msg.id]]))[0])
+          );
+          break;
+        case "album":
+          void MultiStepInput.run((input) => pickAlbum(input, 1, msg.id));
+          break;
+        case "artist":
+          void MultiStepInput.run((input) => pickArtist(input, 1, msg.id));
+          break;
+      }
+    });
     setHtml();
   }
 
@@ -381,9 +336,7 @@ export class Webview {
 
     const sortTypes = [
       NeteaseSortType.hottest,
-      ...(type === NeteaseCommentType.dj
-        ? []
-        : [NeteaseSortType.recommendation]),
+      ...(type === NeteaseCommentType.dj ? [] : [NeteaseSortType.recommendation]),
       NeteaseSortType.latest,
     ];
     const titles = [
@@ -394,95 +347,72 @@ export class Webview {
 
     const getList = async (channel: number) => {
       try {
-        const list = await IPC.netease("commentNew", [
-          type,
-          gid,
-          pageNo,
-          pageSize,
-          sortTypes[index],
-          time,
-        ]);
+        const list = await IPC.netease("commentNew", [type, gid, pageNo, pageSize, sortTypes[index], time]);
         time = list.comments?.[list.comments.length - 1]?.time || 0;
 
         await panel.webview.postMessage({ msg: { titles, list }, channel });
       } catch {
-        await panel.webview.postMessage({ msg: { err: true }, channel });
+        await panel.webview.postMessage({ err: true, channel });
       }
     };
 
-    const { panel, setHtml } = this._getPanel(
-      `${i18n.word.comment} (${title})`,
-      "comment"
-    );
+    const { panel, setHtml } = this._getPanel(`${i18n.word.comment} (${title})`, "comment");
 
-    panel.webview.onDidReceiveMessage(
-      ({ msg, channel }: CSMessage<CommentCSMsg> | CommentCMsg) => {
-        if (!channel) {
-          switch (msg.command) {
-            case "user":
-              void MultiStepInput.run((input) => pickUser(input, 1, msg.id));
-              break;
-            /* case "floor":
+    panel.webview.onDidReceiveMessage(({ msg, channel }: CSMessage<CommentCSMsg> | CommentCMsg) => {
+      if (!msg) return;
+
+      if (!channel) {
+        switch (msg.command) {
+          case "user":
+            void MultiStepInput.run((input) => pickUser(input, 1, msg.id));
+            break;
+          /* case "floor":
               await apiCommentFloor(type, gid, id, pageSize, time);
               break;
             case "reply":
               break; */
-          }
-          return;
         }
-
-        if (msg.command === "init") {
-          void getList(channel);
-          return;
-        }
-        if (msg.command === "like") {
-          IPC.netease("commentLike", [type, msg.t, gid, msg.id])
-            .then((msg) => panel.webview.postMessage({ msg, channel }))
-            .catch(() =>
-              panel.webview.postMessage({ msg: { err: true }, channel })
-            );
-
-          return;
-        }
-        switch (msg.command) {
-          case "prev":
-            if (pageNo <= 1) {
-              void panel.webview.postMessage({ msg: { err: true }, channel });
-              return;
-            }
-            --pageNo;
-            if (index === sortTypes.length - 1) time = 0;
-            break;
-          case "next":
-            ++pageNo;
-            break;
-          case "tabs":
-            time = 0;
-            index = msg.index;
-            pageNo = 1;
-            break;
-        }
-        void getList(channel);
+        return;
       }
-    );
+
+      if (msg.command === "init") return void getList(channel);
+
+      if (msg.command === "like") {
+        return void IPC.netease("commentLike", [type, msg.t, gid, msg.id])
+          .then((msg) => panel.webview.postMessage({ msg, channel }))
+          .catch(() => panel.webview.postMessage({ err: true, channel }));
+      }
+
+      switch (msg.command) {
+        case "prev":
+          if (pageNo <= 1) return void panel.webview.postMessage({ err: true, channel });
+
+          --pageNo;
+          if (index === sortTypes.length - 1) time = 0;
+          break;
+        case "next":
+          ++pageNo;
+          break;
+        case "tabs":
+          time = 0;
+          index = msg.index;
+          pageNo = 1;
+          break;
+      }
+      return void getList(channel);
+    });
 
     setHtml();
   }
 
   private static _getPanel(title: string, type: WebviewType) {
-    const panel = window.createWebviewPanel(
-      "Cloudmusic",
-      title,
-      ViewColumn.One,
-      { enableScripts: true, retainContextWhenHidden: true }
-    );
+    const panel = window.createWebviewPanel("Cloudmusic", title, ViewColumn.One, {
+      enableScripts: true,
+      retainContextWhenHidden: true,
+    });
     panel.iconPath = Uri.joinPath(this.extUri, "media", "icon.ico");
-    const css = panel.webview
-      .asWebviewUri(Uri.joinPath(this.extUri, "dist", "style.css"))
-      .toString();
-    const js = panel.webview
-      .asWebviewUri(Uri.joinPath(this.extUri, "dist", `${type}.js`))
-      .toString();
+    const css = panel.webview.asWebviewUri(Uri.joinPath(this.extUri, "dist", "style.css")).toString();
+    const js = panel.webview.asWebviewUri(Uri.joinPath(this.extUri, "dist", `${type}.js`)).toString();
     return {
       panel,
       setHtml: () => (panel.webview.html = this._layout(title, css, js)),

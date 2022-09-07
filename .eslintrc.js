@@ -68,11 +68,7 @@ const browserTsConfig = (files, project) => ({
 const config = {
   env: { browser: false, node: true },
   extends: ["eslint:recommended", "plugin:prettier/recommended"],
-  ignorePatterns: [
-    "./packages/wasi/**/*.*",
-    "./packages/wasm/**/*.*",
-    "*.json",
-  ],
+  ignorePatterns: ["./packages/wasi/**/*.*", "./packages/wasm/**/*.*", "*.json"],
   parser: "@typescript-eslint/parser",
   plugins: ["prettier"],
   rules: {
@@ -97,10 +93,7 @@ const config = {
     nodeTsConfig("./packages/client/**/*.ts", "/packages/client/tsconfig.json"),
     nodeTsConfig("./packages/server/**/*.ts", "/packages/server/tsconfig.json"),
     nodeTsConfig("./packages/shared/**/*.ts", "/packages/shared/tsconfig.json"),
-    browserTsConfig(
-      "./packages/webview/**/*.ts*",
-      "/packages/webview/tsconfig.json"
-    ),
+    browserTsConfig("./packages/webview/**/*.ts*", "/packages/webview/tsconfig.json"),
   ],
 };
 

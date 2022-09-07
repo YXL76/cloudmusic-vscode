@@ -1,9 +1,4 @@
-import {
-  EventEmitter,
-  ThemeIcon,
-  TreeItem,
-  TreeItemCollapsibleState,
-} from "vscode";
+import { EventEmitter, ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 import type { PlayTreeItem, PlayTreeItemData } from "./index";
 import type { TreeDataProvider, TreeView } from "vscode";
 import { AccountManager } from "../manager";
@@ -24,9 +19,7 @@ export class RadioProvider implements TreeDataProvider<Content> {
 
   readonly view!: TreeView<Content>;
 
-  _onDidChangeTreeData = new EventEmitter<
-    UserTreeItem | RadioTreeItem | ProgramTreeItem | void
-  >();
+  _onDidChangeTreeData = new EventEmitter<UserTreeItem | RadioTreeItem | ProgramTreeItem | void>();
 
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
@@ -44,9 +37,7 @@ export class RadioProvider implements TreeDataProvider<Content> {
     void this._instance.view.reveal(element, { expand: true });
   }
 
-  static async refreshRadio(
-    element: RadioTreeItem
-  ): Promise<readonly PlayTreeItemData[]> {
+  static async refreshRadio(element: RadioTreeItem): Promise<readonly PlayTreeItemData[]> {
     const old = this._actions.get(element);
     old?.reject();
     return new Promise((resolve, reject) => {
@@ -71,24 +62,19 @@ export class RadioProvider implements TreeDataProvider<Content> {
   ): Promise<UserTreeItem[] | RadioTreeItem[] | ProgramTreeItem[]> {
     if (!element) {
       const accounts = [];
-      for (const [, { userId, nickname }] of AccountManager.accounts)
-        accounts.push(UserTreeItem.new(nickname, userId));
+      for (const [, { userId, nickname }] of AccountManager.accounts) accounts.push(UserTreeItem.new(nickname, userId));
       return accounts;
     }
     if (element instanceof UserTreeItem) {
       const { uid } = element;
-      return (await AccountManager.djradio(uid)).map((radio) =>
-        RadioTreeItem.new(radio, uid)
-      );
+      return (await AccountManager.djradio(uid)).map((radio) => RadioTreeItem.new(radio, uid));
     }
     const {
       uid,
       item: { id: pid, programCount },
     } = element;
     const programs = await IPC.netease("djProgram", [uid, pid, programCount]);
-    const ret = programs.map((program) =>
-      ProgramTreeItem.new({ ...program, pid, itemType: "p" })
-    );
+    const ret = programs.map((program) => ProgramTreeItem.new({ ...program, pid, itemType: "p" }));
     const action = RadioProvider._actions.get(element);
     if (action) {
       RadioProvider._actions.delete(element);
@@ -99,8 +85,7 @@ export class RadioProvider implements TreeDataProvider<Content> {
 
   getParent(element: Content): undefined | UserTreeItem | RadioTreeItem {
     if (element instanceof UserTreeItem) return;
-    if (element instanceof RadioTreeItem)
-      return UserTreeItem.unsafeGet(element.uid);
+    if (element instanceof RadioTreeItem) return UserTreeItem.unsafeGet(element.uid);
     return RadioTreeItem.unsafeGet(element.data.pid);
   }
 }
@@ -154,9 +139,7 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
 
   override readonly label!: string;
 
-  override readonly description = this.data.mainSong.ar
-    .map(({ name }) => name)
-    .join("/");
+  override readonly description = this.data.mainSong.ar.map(({ name }) => name).join("/");
 
   override readonly tooltip = this.data.dj.nickname;
 
@@ -171,11 +154,7 @@ export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
   };
 
   private constructor(readonly data: ProgramTreeItemData) {
-    super(
-      `${data.mainSong.name}${
-        data.mainSong.alia[0] ? ` (${data.mainSong.alia.join("/")})` : ""
-      }`
-    );
+    super(`${data.mainSong.name}${data.mainSong.alia[0] ? ` (${data.mainSong.alia.join("/")})` : ""}`);
   }
 
   override get valueOf(): number {

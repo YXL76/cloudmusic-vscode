@@ -8,15 +8,7 @@ export interface MusicCardProps extends NeteaseTypings.RecordData {
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export const MusicCard = ({
-  name,
-  id,
-  alia,
-  ar,
-  al,
-  playCount,
-  max,
-}: MusicCardProps): JSX.Element => (
+export const MusicCard = ({ name, id, alia, ar, al, playCount, max }: MusicCardProps): JSX.Element => (
   <div className="relative box-border h-24 w-full my-4 rounded-xl bg-black bg-opacity-20 shadow-md flex flex-row px-4 justify-between items-center overflow-hidden">
     <div
       className="absolute h-full bg-blue-600 left-0 top-0 -z-10"
@@ -27,9 +19,7 @@ export const MusicCard = ({
       src={al.picUrl}
       alt={al.name}
       onClick={() => {
-        const data: Omit<MusicRankingCMsg, "channel"> = {
-          msg: { command: "album", id: al.id },
-        };
+        const data: Omit<MusicRankingCMsg, "channel"> = { msg: { command: "album", id: al.id } };
         vscode.postMessage(data);
       }}
     />
@@ -37,9 +27,7 @@ export const MusicCard = ({
       <div
         className="font-medium text-xl"
         onClick={() => {
-          const data: Omit<MusicRankingCMsg, "channel"> = {
-            msg: { command: "song", id },
-          };
+          const data: Omit<MusicRankingCMsg, "channel"> = { msg: { command: "song", id } };
           vscode.postMessage(data);
         }}
       >{`${name}${alia[0] ? ` (${alia.join("/")})` : ""}`}</div>
@@ -48,11 +36,10 @@ export const MusicCard = ({
           <div
             key={id}
             className="text-base inline-block"
-            onClick={() =>
-              vscode.postMessage({
-                msg: { command: "artist", id },
-              } as MusicRankingCMsg)
-            }
+            onClick={() => {
+              const data: Omit<MusicRankingCMsg, "channel"> = { msg: { command: "artist", id } };
+              vscode.postMessage(data);
+            }}
           >
             {name}
             {idx < ar.length - 1 ? "/" : ""}

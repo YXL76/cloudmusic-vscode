@@ -14,17 +14,11 @@ import type {
 } from "./index";
 import type { ThemeIcon, TreeItem } from "vscode";
 
-export type QueueContent =
-  | QueueItemTreeItem
-  | LocalFileTreeItem
-  | ProgramTreeItem;
+export type QueueContent = QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem;
 
 export type TreeItemId = "q" | "p" | "l";
 
-export type PlayTreeItemData =
-  | LocalFileTreeItemData
-  | ProgramTreeItemData
-  | QueueItemTreeItemData;
+export type PlayTreeItemData = LocalFileTreeItemData | ProgramTreeItemData | QueueItemTreeItemData;
 
 export interface PlayTreeItem extends TreeItem {
   readonly iconPath: ThemeIcon;

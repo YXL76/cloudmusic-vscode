@@ -5,16 +5,13 @@ export const vscode = acquireVsCodeApi();
 const requestPool = new Map() as CSConnPool;
 
 export function startEventListener(): void {
-  window.addEventListener(
-    "message",
-    ({ data: { msg, channel } }: MessageEvent<CSMessage<unknown>>) => {
-      const req = requestPool.get(channel);
-      if (!req) return;
-      requestPool.delete(channel);
-      if (typeof msg === "object" && msg !== null && "err" in msg) req.reject();
-      else req.resolve(msg);
-    }
-  );
+  window.addEventListener("message", ({ data }: MessageEvent<CSMessage<unknown>>) => {
+    const req = requestPool.get(data.channel);
+    if (!req) return;
+    requestPool.delete(data.channel);
+    if (("err" in data && data.err) || !("msg" in data)) req.reject();
+    else req.resolve(data.msg);
+  });
 }
 
 let nextChan = 0;

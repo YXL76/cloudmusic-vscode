@@ -1,9 +1,4 @@
-import {
-  EventEmitter,
-  ThemeIcon,
-  TreeItem,
-  TreeItemCollapsibleState,
-} from "vscode";
+import { EventEmitter, ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 import { QueueItemTreeItem, UserTreeItem } from "./index";
 import type { TreeDataProvider, TreeView } from "vscode";
 import { AccountManager } from "../manager";
@@ -24,9 +19,7 @@ export class PlaylistProvider implements TreeDataProvider<Content> {
 
   readonly view!: TreeView<Content>;
 
-  _onDidChangeTreeData = new EventEmitter<
-    UserTreeItem | PlaylistItemTreeItem | undefined | void
-  >();
+  _onDidChangeTreeData = new EventEmitter<UserTreeItem | PlaylistItemTreeItem | undefined | void>();
 
   readonly onDidChangeTreeData = this._onDidChangeTreeData.event;
 
@@ -44,9 +37,7 @@ export class PlaylistProvider implements TreeDataProvider<Content> {
     void this._instance.view.reveal(element, { expand: true });
   }
 
-  static async refreshPlaylist(
-    element: PlaylistItemTreeItem
-  ): Promise<readonly PlayTreeItemData[]> {
+  static async refreshPlaylist(element: PlaylistItemTreeItem): Promise<readonly PlayTreeItemData[]> {
     const old = this._actions.get(element);
     old?.reject();
     return new Promise((resolve, reject) => {
@@ -71,24 +62,19 @@ export class PlaylistProvider implements TreeDataProvider<Content> {
   ): Promise<UserTreeItem[] | PlaylistItemTreeItem[] | QueueItemTreeItem[]> {
     if (!element) {
       const accounts = [];
-      for (const [, { userId, nickname }] of AccountManager.accounts)
-        accounts.push(UserTreeItem.new(nickname, userId));
+      for (const [, { userId, nickname }] of AccountManager.accounts) accounts.push(UserTreeItem.new(nickname, userId));
       return accounts;
     }
     if (element instanceof UserTreeItem) {
       const { uid } = element;
-      return (await AccountManager.playlist(uid)).map((playlist) =>
-        PlaylistItemTreeItem.new(playlist, uid)
-      );
+      return (await AccountManager.playlist(uid)).map((playlist) => PlaylistItemTreeItem.new(playlist, uid));
     }
     const {
       uid,
       item: { id: pid },
     } = element;
     const songs = await IPC.netease("playlistDetail", [uid, pid]);
-    const ret = songs.map((song) =>
-      QueueItemTreeItem.new({ ...song, pid, itemType: "q" })
-    );
+    const ret = songs.map((song) => QueueItemTreeItem.new({ ...song, pid, itemType: "q" }));
     const action = PlaylistProvider._actions.get(element);
     if (action) {
       PlaylistProvider._actions.delete(element);
@@ -99,8 +85,7 @@ export class PlaylistProvider implements TreeDataProvider<Content> {
 
   getParent(element: Content): undefined | UserTreeItem | PlaylistItemTreeItem {
     if (element instanceof UserTreeItem) return;
-    if (element instanceof PlaylistItemTreeItem)
-      return UserTreeItem.unsafeGet(element.uid);
+    if (element instanceof PlaylistItemTreeItem) return UserTreeItem.unsafeGet(element.uid);
     return PlaylistItemTreeItem.unsafeGet(element.data.pid);
   }
 }
@@ -110,9 +95,7 @@ export class PlaylistItemTreeItem extends TreeItem {
 
   override readonly label!: string;
 
-  override readonly tooltip = `${i18n.word.description}: ${
-    this.item.description || ""
-  }
+  override readonly tooltip = `${i18n.word.description}: ${this.item.description || ""}
 ${i18n.word.trackCount}: ${this.item.trackCount}
 ${i18n.word.playCount}: ${this.item.playCount}
 ${i18n.word.subscribedCount}: ${this.item.subscribedCount}`;

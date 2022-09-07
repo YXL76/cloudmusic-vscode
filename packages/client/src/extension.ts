@@ -1,19 +1,8 @@
 import { AUTO_START, BUTTON_KEY, NATIVE_MODULE, SETTING_DIR } from "./constant";
 import { AccountManager, ButtonManager } from "./manager";
 import { AccountViewProvider, IPC, State, Webview } from "./utils";
-import type {
-  Disposable,
-  ExtensionContext,
-  TreeDataProvider,
-  TreeView,
-  TreeViewVisibilityChangeEvent,
-} from "vscode";
-import {
-  LocalProvider,
-  PlaylistProvider,
-  QueueProvider,
-  RadioProvider,
-} from "./treeview";
+import type { Disposable, ExtensionContext, TreeDataProvider, TreeView, TreeViewVisibilityChangeEvent } from "vscode";
+import { LocalProvider, PlaylistProvider, QueueProvider, RadioProvider } from "./treeview";
 import { Uri, window, workspace } from "vscode";
 import { mkdir } from "node:fs/promises";
 import { realActivate } from "./activate";
@@ -41,10 +30,7 @@ export async function activate(context: ExtensionContext): Promise<void> {
   }
   console.log("Cloudmusic:", State.wasm ? "wasm" : "native", "mode.");
 
-  const createTreeView = <T>(
-    viewId: string,
-    treeDataProvider: TreeDataProvider<T> & { view: TreeView<T> }
-  ) => {
+  const createTreeView = <T>(viewId: string, treeDataProvider: TreeDataProvider<T> & { view: TreeView<T> }) => {
     const view = window.createTreeView(viewId, { treeDataProvider });
     treeDataProvider.view = view;
     return view;

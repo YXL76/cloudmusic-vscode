@@ -1,11 +1,4 @@
-import type {
-  Disposable,
-  InputBox,
-  QuickInput,
-  QuickInputButton,
-  QuickPick,
-  QuickPickItem,
-} from "vscode";
+import type { Disposable, InputBox, QuickInput, QuickInputButton, QuickPick, QuickPickItem } from "vscode";
 import { QuickInputButtons, ThemeIcon, window } from "vscode";
 import i18n from "../i18n";
 
@@ -92,9 +85,7 @@ export class MultiStepInput {
     return this._steps[this._step];
   }
 
-  async showQuickPick<T extends QuickPickItem>(
-    _: QuickPickParameters<T>
-  ): Promise<T>;
+  async showQuickPick<T extends QuickPickItem>(_: QuickPickParameters<T>): Promise<T>;
   async showQuickPick<T extends QuickPickItem>(
     _: QuickPickParameters<T> & { canSelectMany: true }
   ): Promise<readonly T[]>;
@@ -116,9 +107,7 @@ export class MultiStepInput {
     canSelectMany,
     previous,
     next,
-  }: QuickPickParameters<T> & QuickPickOption): Promise<
-    readonly T[] | T | ButtonAction
-  > {
+  }: QuickPickParameters<T> & QuickPickOption): Promise<readonly T[] | T | ButtonAction> {
     const disposables: Disposable[] = [];
 
     return new Promise<readonly T[] | T | ButtonAction>((resolve, reject) => {
@@ -129,11 +118,7 @@ export class MultiStepInput {
       input.ignoreFocusOut = true;
       input.title = title;
       input.step = step;
-      input.totalSteps = Math.max(
-        totalSteps || 1,
-        this._step,
-        this._steps.length
-      );
+      input.totalSteps = Math.max(totalSteps || 1, this._step, this._steps.length);
       input.placeholder = placeholder;
       input.items = items;
       /* if (activeItems) {
@@ -167,15 +152,10 @@ export class MultiStepInput {
               input.hide();
           }
         }),
-        input.onDidAccept(() =>
-          resolve(canSelectMany ? input.selectedItems : input.selectedItems[0])
-        ),
+        input.onDidAccept(() => resolve(canSelectMany ? input.selectedItems : input.selectedItems[0])),
         input.onDidHide(() => reject(InputFlowAction.cancel))
       );
-      if (changeCallback)
-        disposables.push(
-          input.onDidChangeValue((value) => changeCallback(input, value))
-        );
+      if (changeCallback) disposables.push(input.onDidChangeValue((value) => changeCallback(input, value)));
       if (this._current) this._current.dispose();
       this._current = input;
       this._current.show();
@@ -198,11 +178,7 @@ export class MultiStepInput {
       input.ignoreFocusOut = true;
       input.title = title;
       input.step = step;
-      input.totalSteps = Math.max(
-        totalSteps || 1,
-        this._step,
-        this._steps.length
-      );
+      input.totalSteps = Math.max(totalSteps || 1, this._step, this._steps.length);
       input.value = value || "";
       input.prompt = prompt;
       input.buttons = [
@@ -231,10 +207,7 @@ export class MultiStepInput {
         }),
         input.onDidHide(() => reject(InputFlowAction.cancel))
       );
-      if (changeCallback)
-        disposables.push(
-          input.onDidChangeValue((value) => changeCallback(input, value))
-        );
+      if (changeCallback) disposables.push(input.onDidChangeValue((value) => changeCallback(input, value)));
       if (this._current) this._current.dispose();
       this._current = input;
       this._current.show();

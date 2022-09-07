@@ -167,24 +167,18 @@ class Controller {
   }
 
   static async init() {
-    const { enablePlayer, testfiles } = window as unknown as {
-      enablePlayer: boolean;
-      testfiles: string[];
-    };
+    const { enablePlayer, testfiles } = window as unknown as { enablePlayer: boolean; testfiles: string[] };
 
     if (enablePlayer) {
       const fakeAudio = await this._testAudioFiles(testfiles);
       if (fakeAudio) this._playableFile = fakeAudio;
 
-      this._player = fakeAudio
-        ? new (await import("cloudmusic-wasm")).Player()
-        : new WebAudioPlayer();
+      this._player = fakeAudio ? new (await import("cloudmusic-wasm")).Player() : new WebAudioPlayer();
 
       if (this._master) {
         setMediaSessionActionHandler();
         this._startSilent().catch(console.error);
-        if (!this._timerId)
-          this._timerId = setInterval(this._posHandler.bind(this), 800);
+        if (!this._timerId) this._timerId = setInterval(this._posHandler.bind(this), 800);
       }
     }
 
@@ -260,16 +254,10 @@ class Controller {
   }
 
   static setStatus(position: number) {
-    navigator.mediaSession.setPositionState?.({
-      duration: this.duration,
-      playbackRate: this._playbackRate,
-      position,
-    });
+    navigator.mediaSession.setPositionState?.({ duration: this.duration, playbackRate: this._playbackRate, position });
   }
 
-  private static async _testAudioFiles(
-    files: string[]
-  ): Promise<string | undefined> {
+  private static async _testAudioFiles(files: string[]): Promise<string | undefined> {
     const audioCtx = new window.AudioContext();
     const passed = [];
     for (const file of files) {
@@ -280,9 +268,7 @@ class Controller {
         passed.push(file);
       } catch {}
     }
-    if (passed.length !== files.length) {
-      return passed.pop();
-    }
+    if (passed.length !== files.length) return passed.pop();
     return;
   }
 
@@ -330,46 +316,33 @@ const Provider = (): JSX.Element => {
   const [profiles, setProfiles] = useState<NeteaseTypings.Profile[]>([]);
 
   useEffect(() => {
-    const handler = ({ data }: { data: ProviderSMsg }) => {
+    const handler = ({ data }: { data: ProviderSMsg }): void => {
       if (!navigator.mediaSession) return;
       switch (data.command) {
         case "master":
-          Controller.setMaster(data.is);
-          break;
+          return Controller.setMaster(data.is);
         case "state":
-          navigator.mediaSession.playbackState = data.state;
-          break;
+          return void (navigator.mediaSession.playbackState = data.state);
         case "metadata":
-          navigator.mediaSession.metadata = data.meta
-            ? new MediaMetadata(data.meta)
-            : null;
+          navigator.mediaSession.metadata = data.meta ? new MediaMetadata(data.meta) : null;
           if (data.duration) Controller.duration = data.duration;
-          Controller.setStatus(0);
-          break;
+          return Controller.setStatus(0);
         case "account":
-          setProfiles(data.profiles);
-          break;
+          return setProfiles(data.profiles);
         case "load":
-          Controller.load(data.url, data.play, data.seek).catch(console.error);
-          break;
+          return void Controller.load(data.url, data.play, data.seek).catch(console.error);
         case "play":
-          Controller.play().catch(console.error);
-          break;
+          return void Controller.play().catch(console.error);
         case "pause":
-          Controller.pause();
-          break;
+          return Controller.pause();
         case "stop":
-          Controller.stop();
-          break;
+          return Controller.stop();
         case "speed":
-          Controller.speed(data.speed);
-          break;
+          return Controller.speed(data.speed);
         case "volume":
-          Controller.volume(data.level);
-          break;
+          return Controller.volume(data.level);
         case "seek":
-          Controller.seek(data.seekOffset);
-          break;
+          return Controller.seek(data.seekOffset);
       }
     };
 
@@ -391,11 +364,7 @@ const Provider = (): JSX.Element => {
           }}
         >
           <div className="h-16 flex flex-row items-center overflow-hidden p-2 bg-black bg-opacity-30">
-            <img
-              className="rounded-full mx-4"
-              src={avatarUrl}
-              alt={nickname}
-            ></img>
+            <img className="rounded-full mx-4" src={avatarUrl} alt={nickname}></img>
             <div className="text-white font-bold text-xl">{nickname}</div>
           </div>
         </div>

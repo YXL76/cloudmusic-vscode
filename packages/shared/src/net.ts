@@ -1,16 +1,10 @@
 import type { IPCControl, IPCPlayer, IPCQueue, IPCWasm } from "./index";
 import type { NeteaseTypings } from "api";
 
-export type CSMessage<T = undefined, U = number> = {
-  channel: U;
-  msg: T;
-};
+export type CSMessage<T = undefined, U = number> = { channel: U; msg?: T; err?: true };
 
-export type CSConnPool = Map<
-  number | string,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  { resolve: (value?: any) => void; reject: (reason?: string) => void }
->;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type CSConnPool = Map<number | string, { resolve: (value?: any) => void; reject: (reason?: string) => void }>;
 
 export type IPCClientLoadMsg = {
   url?: string;
@@ -37,10 +31,7 @@ export type IPCBroadcastMsg =
 export type IPCClientMsg =
   | IPCMsg<IPCControl.deleteCache, { key: string }>
   | IPCMsg<IPCControl.download, { url: string; path: string }>
-  | IPCMsg<
-      IPCControl.setting,
-      { mq: number; cs: number; https: boolean; foreign: boolean }
-    >
+  | IPCMsg<IPCControl.setting, { mq: number; cs: number; https: boolean; foreign: boolean }>
   | IPCMsg<IPCControl.lyric>
   | IPCMsg<IPCControl.cache>
   | IPCMsg<IPCControl.netease>
@@ -61,22 +52,10 @@ export type IPCClientMsg =
 
 export type IPCServerMsg =
   | IPCMsg<IPCControl.master, { is?: true }>
-  | IPCMsg<
-      IPCControl.netease,
-      {
-        cookies: { uid: number; cookie: string }[];
-        profiles: NeteaseTypings.Profile[];
-      }
-    >
+  | IPCMsg<IPCControl.netease, { cookies: { uid: number; cookie: string }[]; profiles: NeteaseTypings.Profile[] }>
   | IPCMsg<IPCControl.new>
-  | IPCMsg<
-      IPCControl.retain,
-      { items: readonly unknown[]; play?: boolean; seek?: number }
-    >
-  | IPCMsg<
-      IPCPlayer.end,
-      { fail?: true; pause?: boolean; reloadNseek?: number }
-    >
+  | IPCMsg<IPCControl.retain, { items: readonly unknown[]; play?: boolean; seek?: number }>
+  | IPCMsg<IPCPlayer.end, { fail?: true; pause?: boolean; reloadNseek?: number }>
   | IPCMsg<IPCPlayer.loaded>
   | IPCMsg<IPCPlayer.lyric, { lyric: NeteaseTypings.LyricData }>
   | IPCMsg<IPCPlayer.lyricIndex, { idx: number }>

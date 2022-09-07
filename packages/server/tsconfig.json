@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "lib": ["ES2021"],
+    "lib": ["ES2022"],
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
@@ -14,7 +14,7 @@
     "noUnusedParameters": true,
     "resolveJsonModule": true,
     "strict": true,
-    "target": "ES2021"
+    "target": "ES2022"
   },
   "include": ["src"]
 }

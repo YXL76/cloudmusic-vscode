@@ -7,26 +7,10 @@ import {
   ipcBroadcastServerPath,
   ipcServerPath,
 } from "../constant";
-import type {
-  CSConnPool,
-  IPCBroadcastMsg,
-  IPCClientMsg,
-  IPCServerMsg,
-} from "@cloudmusic/shared";
-import {
-  IPCApi,
-  IPCControl,
-  IPCPlayer,
-  IPCQueue,
-  ipcDelimiter,
-} from "@cloudmusic/shared";
+import type { CSConnPool, IPCBroadcastMsg, IPCClientMsg, IPCServerMsg } from "@cloudmusic/shared";
+import { IPCApi, IPCControl, IPCPlayer, IPCQueue, ipcDelimiter } from "@cloudmusic/shared";
 import { LocalFileTreeItem, QueueProvider } from "../treeview";
-import type {
-  NeteaseAPICMsg,
-  NeteaseAPIKey,
-  NeteaseAPIParameters,
-  NeteaseAPIReturn,
-} from "@cloudmusic/server";
+import type { NeteaseAPICMsg, NeteaseAPIKey, NeteaseAPIParameters, NeteaseAPIReturn } from "@cloudmusic/server";
 import type { PlayTreeItemData } from "../treeview";
 import type { Socket } from "node:net";
 import { State } from "./index";
@@ -40,8 +24,7 @@ class IPCClient<T, U = T> {
   constructor(private readonly _path: string) {}
 
   connect(handler: (data: U) => void, retry: number): Promise<boolean> {
-    if (this._socket?.readable && this._socket.writable)
-      return Promise.resolve(true);
+    if (this._socket?.readable && this._socket.writable) return Promise.resolve(true);
     else this.disconnect();
     return new Promise(
       (resolve) =>
@@ -52,7 +35,6 @@ class IPCClient<T, U = T> {
             this._socket = socket
               .on("data", (data) => {
                 const buffer = this._buffer + data.toString();
-
                 const msgs = buffer.split(ipcDelimiter);
                 this._buffer = msgs.pop() ?? "";
                 for (const msg of msgs) handler(JSON.parse(msg) as U);
@@ -66,7 +48,7 @@ class IPCClient<T, U = T> {
     );
   }
 
-  disconnect(): void {
+  disconnect() {
     this._socket?.destroy();
     this._socket = undefined;
   }
@@ -105,28 +87,22 @@ class IPCClient<T, U = T> {
 const ipc = new IPCClient<IPCClientMsg, IPCServerMsg>(ipcServerPath);
 const ipcB = new IPCClient<IPCBroadcastMsg>(ipcBroadcastServerPath);
 
-export class IPC {
-  static readonly requestPool = new Map() as CSConnPool;
+let _nextChann = 0;
 
-  private static _nextChann = 0;
+export const IPC = {
+  requestPool: <CSConnPool>new Map(),
 
-  static connect(
+  connect: (
     ipcHandler: Parameters<typeof ipc.connect>[0],
     ipcBHandler: Parameters<typeof ipcB.connect>[0],
     retry = 4
-  ): Promise<[boolean, boolean]> {
-    return Promise.all([
-      ipc.connect(ipcHandler, retry),
-      ipcB.connect(ipcBHandler, retry),
-    ]);
-  }
-
-  static disconnect(): void {
+  ): Promise<[boolean, boolean]> => Promise.all([ipc.connect(ipcHandler, retry), ipcB.connect(ipcBHandler, retry)]),
+  disconnect: () => {
     ipc.disconnect();
     ipcB.disconnect();
-  }
+  },
 
-  static load(play = true, seek?: number): void {
+  load: (play = true, seek?: number) => {
     const { playItem } = State;
     if (!playItem) return;
     ipcB.send({ t: IPCPlayer.load });
@@ -144,21 +120,11 @@ export class IPC {
       play,
       seek,
     });
-  }
-
-  static loaded(): void {
-    ipcB.send({ t: IPCPlayer.loaded });
-  }
-
-  static deleteCache(key: string): void {
-    ipc.send({ t: IPCControl.deleteCache, key });
-  }
-
-  static download(url: string, path: string): void {
-    ipc.send({ t: IPCControl.download, url, path });
-  }
-
-  static setting(): void {
+  },
+  loaded: () => ipcB.send({ t: IPCPlayer.loaded }),
+  deleteCache: (key: string) => ipc.send({ t: IPCControl.deleteCache, key }),
+  download: (url: string, path: string) => ipc.send({ t: IPCControl.download, url, path }),
+  setting: () => {
     const conf = CONF();
     ipc.send({
       t: IPCControl.setting,
@@ -167,120 +133,41 @@ export class IPC {
       https: HTTPS_API(conf),
       foreign: FOREIGN(conf),
     });
-  }
+  },
+  lyric: () => ipc.send({ t: IPCControl.lyric }),
+  cache: () => ipc.send({ t: IPCControl.cache }),
+  neteaseAc: () => ipc.send({ t: IPCControl.netease }),
+  retain: (items?: readonly PlayTreeItemData[]) => ipc.send({ t: IPCControl.retain, items }),
+  // pid: () => ipc.send({ t: IPCControl.pid, pid: process.env["VSCODE_PID"] }),
+  lyricDelay: (delay: number) => ipc.send({ t: IPCPlayer.lyricDelay, delay }),
+  playing: (playing: boolean) => ipc.send({ t: IPCPlayer.playing, playing }),
+  position: (pos: number) => ipc.send({ t: IPCPlayer.position, pos }),
+  repeat: (r: boolean) => ipcB.send({ t: IPCPlayer.repeat, r }),
+  stop: () => ipc.send({ t: IPCPlayer.stop }),
+  toggle: () => ipc.send({ t: IPCPlayer.toggle }),
+  volume: (level: number) => ipc.send({ t: IPCPlayer.volume, level }),
+  speed: (speed: number) => ipc.send({ t: IPCPlayer.speed, speed }),
+  seek: (seekOffset: number) => ipc.send({ t: IPCPlayer.seek, seekOffset }),
+  add: (items: readonly PlayTreeItemData[], index?: number) => ipcB.send({ t: IPCQueue.add, items, index }),
+  clear: () => ipcB.send({ t: IPCQueue.clear }),
+  delete: (id: number | string) => ipcB.send({ t: IPCQueue.delete, id }),
+  fm: (is: boolean, uid = 0) => ipc.send({ t: IPCQueue.fm, uid, is }),
+  fmNext: () => ipc.send({ t: IPCQueue.fmNext }),
+  new: (items?: readonly PlayTreeItemData[]) =>
+    ipcB.send(
+      items
+        ? { t: IPCQueue.new, id: QueueProvider.id + 1, items }
+        : { t: IPCQueue.new, id: QueueProvider.id, items: QueueProvider.songs }
+    ),
+  playSong: (id: number | string) => ipcB.send({ t: IPCQueue.play, id }),
+  random: () => ipcB.send({ t: IPCQueue.new, id: QueueProvider.id + 1, items: QueueProvider.random() }),
+  shift: (index: number) => ipcB.send({ t: IPCQueue.shift, index }),
 
-  static lyric(): void {
-    ipc.send({ t: IPCControl.lyric });
-  }
-
-  static cache(): void {
-    ipc.send({ t: IPCControl.cache });
-  }
-
-  static neteaseAc(): void {
-    ipc.send({ t: IPCControl.netease });
-  }
-
-  static retain(items?: readonly PlayTreeItemData[]): void {
-    ipc.send({ t: IPCControl.retain, items });
-  }
-
-  /* static pid(): void {
-    ipc.send({ t: IPCControl.pid, pid: process.env["VSCODE_PID"] });
-  } */
-
-  static lyricDelay(delay: number): void {
-    ipc.send({ t: IPCPlayer.lyricDelay, delay });
-  }
-
-  static playing(playing: boolean): void {
-    ipc.send({ t: IPCPlayer.playing, playing });
-  }
-
-  static position(pos: number): void {
-    ipc.send({ t: IPCPlayer.position, pos });
-  }
-
-  static repeat(r: boolean): void {
-    ipcB.send({ t: IPCPlayer.repeat, r });
-  }
-
-  static stop(): void {
-    ipc.send({ t: IPCPlayer.stop });
-  }
-
-  static toggle(): void {
-    ipc.send({ t: IPCPlayer.toggle });
-  }
-
-  static volume(level: number): void {
-    ipc.send({ t: IPCPlayer.volume, level });
-  }
-
-  static speed(speed: number): void {
-    ipc.send({ t: IPCPlayer.speed, speed });
-  }
-
-  static seek(seekOffset: number): void {
-    ipc.send({ t: IPCPlayer.seek, seekOffset });
-  }
-
-  static add(items: readonly PlayTreeItemData[], index?: number): void {
-    ipcB.send({ t: IPCQueue.add, items, index });
-  }
-
-  static clear(): void {
-    ipcB.send({ t: IPCQueue.clear });
-  }
-
-  static delete(id: number | string): void {
-    ipcB.send({ t: IPCQueue.delete, id });
-  }
-
-  static fm(is: boolean, uid = 0): void {
-    ipc.send({ t: IPCQueue.fm, uid, is });
-  }
-
-  static fmNext(): void {
-    ipc.send({ t: IPCQueue.fmNext });
-  }
-
-  static new(items?: readonly PlayTreeItemData[]): void {
-    if (items) {
-      const id = QueueProvider.id + 1;
-      ipcB.send({ t: IPCQueue.new, id, items });
-    } else {
-      const id = QueueProvider.id;
-      const items = QueueProvider.songs;
-      ipcB.send({ t: IPCQueue.new, id, items });
-    }
-  }
-
-  static playSong(id: number | string): void {
-    ipcB.send({ t: IPCQueue.play, id });
-  }
-
-  static random(): void {
-    const id = QueueProvider.id + 1;
-    ipcB.send({ t: IPCQueue.new, id, items: QueueProvider.random() });
-  }
-
-  static shift(index: number): void {
-    ipcB.send({ t: IPCQueue.shift, index });
-  }
-
-  static netease<I extends NeteaseAPIKey>(
-    i: I,
-    p: NeteaseAPIParameters<I>
-  ): Promise<NeteaseAPIReturn<I>> {
-    const channel = ++this._nextChann;
+  netease: <I extends NeteaseAPIKey>(i: I, p: NeteaseAPIParameters<I>): Promise<NeteaseAPIReturn<I>> => {
+    const channel = ++_nextChann;
     return new Promise((resolve, reject) => {
-      this.requestPool.set(channel, { resolve, reject });
-      ipc.request<NeteaseAPICMsg<I>>({
-        t: IPCApi.netease,
-        channel,
-        msg: { i, p },
-      });
+      IPC.requestPool.set(channel, { resolve, reject });
+      ipc.request<NeteaseAPICMsg<I>>({ t: IPCApi.netease, channel, msg: { i, p } });
     });
-  }
-}
+  },
+};

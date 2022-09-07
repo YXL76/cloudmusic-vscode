@@ -1,4 +1,4 @@
-import { MusicCache } from "./cache";
+import { MUSIC_CACHE } from "./cache";
 import { NeteaseAPI } from "./api";
 import type { Readable } from "stream";
 import { STATE } from "./state";
@@ -10,20 +10,12 @@ import { resolve } from "node:path";
 export const logError = (err: unknown): void =>
   console.error(
     new Date().toISOString(),
-    typeof err === "object"
-      ? (err as Partial<Error>)?.stack ||
-          (err as Partial<Error>)?.message ||
-          err
-      : err
+    typeof err === "object" ? (<Partial<Error>>err)?.stack || (<Partial<Error>>err)?.message || err : err
   );
 
-export async function getMusicPath(
-  id: number,
-  name: string,
-  wasm?: boolean
-): Promise<string> {
+export async function getMusicPath(id: number, name: string, wasm?: boolean): Promise<string> {
   const idS = `${id}`;
-  const cachaUrl = MusicCache.get(idS);
+  const cachaUrl = MUSIC_CACHE.get(idS);
   if (cachaUrl) return cachaUrl;
 
   const { url, md5 } = await NeteaseAPI.songUrl(id);
@@ -36,10 +28,7 @@ export async function getMusicPath(
   if (!download) return Promise.reject();
 
   return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => {
-      download.destroy();
-      reject();
-    }, 30000);
+    const timer = setTimeout(() => reject(void download.destroy()), 30000);
 
     const ret = () => {
       clearTimeout(timer);
@@ -62,25 +51,17 @@ export async function getMusicPath(
   });
 }
 
-function getMusic(
-  url: string,
-  cache?: { id: string; name: string; path: string; md5?: string }
-): Readable | void {
+function getMusic(url: string, cache?: { id: string; name: string; path: string; md5?: string }): Readable | void {
   try {
-    const data = got(url, {
-      isStream: true,
-      http2: true,
-      timeout: { response: 8000 },
-    });
+    const data = got(url, { isStream: true, http2: true, timeout: { response: 8000 } });
     if (cache) {
       const { id, name, path, md5 } = cache;
-      data.on("end", () => void MusicCache.put(id, name, path, md5));
+      data.on("end", () => void MUSIC_CACHE.put(id, name, path, md5));
     }
     return data;
   } catch (err) {
     logError(err);
   }
-  return;
 }
 
 export function downloadMusic(
