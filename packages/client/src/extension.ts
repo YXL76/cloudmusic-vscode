@@ -73,8 +73,16 @@ export async function activate(context: ExtensionContext): Promise<void> {
   }
 }
 
-export function deactivate(): void {
+export async function deactivate(): Promise<void> {
   if (State.master) IPC.retain(QueueProvider.songs);
   // On windows, the data will be lost when the PIPE is closed.
   if (process.platform !== "win32") IPC.disconnect();
+  else {
+    await new Promise<void>((resolve) =>
+      setTimeout(() => {
+        IPC.disconnect();
+        resolve();
+      }, 2048)
+    );
+  }
 }
