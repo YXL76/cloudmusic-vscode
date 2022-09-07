@@ -13,15 +13,13 @@ export function initRadio(context: ExtensionContext): void {
       RadioProvider.refreshRadioHard(element)
     ),
 
-    commands.registerCommand("cloudmusic.playRadio", async (element: RadioTreeItem) => {
-      const items = await RadioProvider.refreshRadio(element);
-      IPC.new(items);
-    }),
+    commands.registerCommand("cloudmusic.playRadio", async (element: RadioTreeItem) =>
+      IPC.new(await RadioProvider.refreshRadio(element))
+    ),
 
-    commands.registerCommand("cloudmusic.addRadio", async (element: RadioTreeItem) => {
-      const items = await RadioProvider.refreshRadio(element);
-      IPC.add(items);
-    }),
+    commands.registerCommand("cloudmusic.addRadio", async (element: RadioTreeItem) =>
+      IPC.add(await RadioProvider.refreshRadio(element))
+    ),
 
     commands.registerCommand("cloudmusic.unsubRadio", ({ item: { id } }: RadioTreeItem) =>
       IPC.netease("djSub", [id, "unsub"])

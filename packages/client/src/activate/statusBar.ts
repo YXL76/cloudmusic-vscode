@@ -1,12 +1,12 @@
-import { IPC, LyricType, MultiStepInput, State, Webview, pickUser } from "../utils";
-import { ButtonManager } from "../manager";
+import { IPC, LyricType, MultiStepInput, STATE, Webview, pickUser } from "../utils";
+import { BUTTON_MANAGER } from "../manager";
 import type { ExtensionContext } from "vscode";
 import type { InputStep } from "../utils";
 import { commands } from "vscode";
 import i18n from "../i18n";
 
 export function initStatusBar(context: ExtensionContext): void {
-  ButtonManager.init();
+  BUTTON_MANAGER.init();
 
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.lyric", async () => {
@@ -26,7 +26,7 @@ export function initStatusBar(context: ExtensionContext): void {
       }
 
       await MultiStepInput.run(async (input) => {
-        const user = State.lyric.user[State.lyric.type as 0 | 1];
+        const user = STATE.lyric.user[STATE.lyric.type as 0 | 1];
         const { type } = await input.showQuickPick({
           title,
           step: 1,
@@ -39,33 +39,24 @@ export function initStatusBar(context: ExtensionContext): void {
             },
             {
               label: `$(symbol-type-parameter) ${
-                State.lyric.type === LyricType.ori
+                STATE.lyric.type === LyricType.ori
                   ? i18n.word.original
-                  : State.lyric.type === LyricType.tra
+                  : STATE.lyric.type === LyricType.tra
                   ? i18n.word.translation
                   : i18n.word.romanization
               }`,
               type: Type.type,
             },
+            { label: `$(list-ordered) ${i18n.word.fullLyric}`, type: Type.all },
+            { label: `$(trash) ${i18n.word.cleanCache}`, type: Type.cache },
             {
-              label: `$(list-ordered) ${i18n.word.fullLyric}`,
-              type: Type.all,
-            },
-            {
-              label: `$(trash) ${i18n.word.cleanCache}`,
-              type: Type.cache,
-            },
-            {
-              label: State.showLyric
+              label: STATE.showLyric
                 ? `$(circle-slash) ${i18n.word.disable}`
                 : `$(circle-large-outline) ${i18n.word.enable}`,
               type: Type.disable,
             },
             ...(user ? [{ label: `$(account) ${i18n.word.user}`, type: Type.user }] : []),
-            {
-              label: `$(book) ${i18n.sentence.label.showInEditor}`,
-              type: Type.panel,
-            },
+            { label: `$(book) ${i18n.sentence.label.showInEditor}`, type: Type.panel },
           ],
         });
         switch (type) {
@@ -74,13 +65,13 @@ export function initStatusBar(context: ExtensionContext): void {
           case Type.all:
             return (input) => pickLyric(input);
           case Type.type:
-            State.lyric.type = (State.lyric.type + 1) % 3;
+            STATE.lyric.type = (STATE.lyric.type + 1) % 3;
             break;
           case Type.cache:
             IPC.lyric();
             break;
           case Type.disable:
-            State.showLyric = !State.showLyric;
+            STATE.showLyric = !STATE.showLyric;
             break;
           case Type.user:
             return (input) => pickUser(input, 2, user?.userid || 0);
@@ -92,12 +83,7 @@ export function initStatusBar(context: ExtensionContext): void {
       });
 
       async function inputDelay(input: MultiStepInput): Promise<InputStep> {
-        const delay = await input.showInputBox({
-          title,
-          step: 2,
-          totalSteps,
-          prompt: i18n.sentence.hint.lyricDelay,
-        });
+        const delay = await input.showInputBox({ title, step: 2, totalSteps, prompt: i18n.sentence.hint.lyricDelay });
         if (/^-?[0-9]+([.]{1}[0-9]+){0,1}$/.test(delay)) IPC.lyricDelay(parseFloat(delay));
         return input.stay();
       }
@@ -107,11 +93,8 @@ export function initStatusBar(context: ExtensionContext): void {
           title,
           step: 2,
           totalSteps: totalSteps + 1,
-          items: State.lyric.time
-            .map((time, i) => ({
-              label: State.lyric.text[i][State.lyric.type],
-              description: `${time}`,
-            }))
+          items: STATE.lyric.time
+            .map((time, i) => ({ label: STATE.lyric.text[i][STATE.lyric.type], description: `${time}` }))
             .filter(({ label }) => label),
         });
         select = pick.label;
@@ -119,18 +102,13 @@ export function initStatusBar(context: ExtensionContext): void {
       }
 
       async function showLyric(input: MultiStepInput) {
-        await input.showInputBox({
-          title,
-          step: 3,
-          totalSteps: totalSteps + 1,
-          value: select,
-        });
+        await input.showInputBox({ title, step: 3, totalSteps: totalSteps + 1, value: select });
       }
     }),
 
     commands.registerCommand("cloudmusic.fmTrash", () => {
-      if (State.fm && typeof State.playItem?.valueOf === "number") {
-        void IPC.netease("fmTrash", [State.playItem.valueOf]);
+      if (STATE.fm && typeof STATE.playItem?.valueOf === "number") {
+        void IPC.netease("fmTrash", [STATE.playItem.valueOf]);
         void commands.executeCommand("cloudmusic.next");
       }
     })

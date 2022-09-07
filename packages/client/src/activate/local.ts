@@ -12,18 +12,12 @@ export function initLocal(context: ExtensionContext): void {
   context.subscriptions.push(
     commands.registerCommand("cloudmusic.newLocalLibrary", async () => {
       const path = (
-        await window.showOpenDialog({
-          canSelectFiles: false,
-          canSelectFolders: true,
-          canSelectMany: false,
-        })
+        await window.showOpenDialog({ canSelectFiles: false, canSelectFolders: true, canSelectMany: false })
       )?.shift()?.fsPath;
       if (!path) return;
       try {
         const folders = LocalProvider.addFolder(path);
-        if (folders) {
-          await context.globalState.update(LOCAL_FOLDER_KEY, folders);
-        }
+        if (folders) await context.globalState.update(LOCAL_FOLDER_KEY, folders);
       } catch {}
     }),
 

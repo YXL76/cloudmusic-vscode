@@ -1,3 +1,4 @@
+import { CONTEXT, IPC, MultiStepInput, STATE, pickAlbum, pickArtist, pickSong, pickUser } from "./index";
 import type {
   CSMessage,
   CommentCMsg,
@@ -7,11 +8,10 @@ import type {
   ProviderCMsg,
 } from "@cloudmusic/shared";
 import { ColorThemeKind, Uri, ViewColumn, commands, window, workspace } from "vscode";
-import type { ExtensionContext, WebviewView, WebviewViewProvider } from "vscode";
-import { IPC, MultiStepInput, State, pickAlbum, pickArtist, pickSong, pickUser } from "./index";
 import { NeteaseCommentType, NeteaseSortType } from "@cloudmusic/shared";
 import type { ProviderSMsg, WebviewType } from "@cloudmusic/shared";
 import { SPEED_KEY, VOLUME_KEY } from "../constant";
+import type { WebviewView, WebviewViewProvider } from "vscode";
 import { AccountManager } from "../manager";
 import type { NeteaseTypings } from "api";
 import i18n from "../i18n";
@@ -26,13 +26,11 @@ const getNonce = (): string => {
 };
 
 export class AccountViewProvider implements WebviewViewProvider {
-  static context: ExtensionContext;
-
   private static _view?: WebviewView;
 
   static master(): void {
     if (this._view) {
-      const msg: ProviderSMsg = { command: "master", is: State.master };
+      const msg: ProviderSMsg = { command: "master", is: STATE.master };
       void this._view.webview.postMessage(msg);
     }
   }
@@ -117,7 +115,7 @@ export class AccountViewProvider implements WebviewViewProvider {
 
   static metadata(): void {
     if (this._view) {
-      const item = State.playItem;
+      const item = STATE.playItem;
       if (!item) {
         const msg: ProviderSMsg = { command: "metadata" };
         void this._view.webview.postMessage(msg);
@@ -143,7 +141,7 @@ export class AccountViewProvider implements WebviewViewProvider {
     // context: WebviewViewResolveContext
     // token: CancellationToken
   ): Promise<void> {
-    const extUri = AccountViewProvider.context.extensionUri;
+    const extUri = CONTEXT.context.extensionUri;
     AccountViewProvider._view = webview;
 
     const localResourceRoots: string[] = [];
@@ -156,11 +154,7 @@ export class AccountViewProvider implements WebviewViewProvider {
           "-Command",
           "Get-PSDrive -PSProvider FileSystem | Format-Table -Property Root -HideTableHeaders",
         ],
-        {
-          encoding: "utf8",
-          shell: false,
-          stdio: ["ignore", "pipe", "ignore"],
-        }
+        { encoding: "utf8", shell: false, stdio: ["ignore", "pipe", "ignore"] }
       );
       (stdout || "C:\\")
         .split("\r\n")
@@ -181,29 +175,24 @@ export class AccountViewProvider implements WebviewViewProvider {
         case "pageLoaded":
           AccountViewProvider.master();
           AccountViewProvider.account([...AccountManager.accounts.values()]);
-          AccountViewProvider.wasmVolume(AccountViewProvider.context.globalState.get(VOLUME_KEY, 85));
-          AccountViewProvider.wasmSpeed(AccountViewProvider.context.globalState.get(SPEED_KEY, 1));
-          if (State.wasm) State.downInit(); // 3
-          break;
+          AccountViewProvider.wasmVolume(CONTEXT.context.globalState.get(VOLUME_KEY, 85));
+          AccountViewProvider.wasmSpeed(CONTEXT.context.globalState.get(SPEED_KEY, 1));
+          if (STATE.wasm) STATE.downInit(); // 3
+          return;
         case "account":
-          AccountManager.accountQuickPick(msg.userId);
-          break;
+          return AccountManager.accountQuickPick(msg.userId);
         case "end":
-          if (State.repeat) IPC.load();
+          if (STATE.repeat) IPC.load();
           else void commands.executeCommand("cloudmusic.next");
-          break;
+          return;
         case "load":
-          IPC.loaded();
-          break;
+          return IPC.loaded();
         case "position":
-          IPC.position(msg.pos);
-          break;
+          return IPC.position(msg.pos);
         case "playing":
-          IPC.playing(msg.playing);
-          break;
+          return IPC.playing(msg.playing);
         default:
-          void commands.executeCommand(`cloudmusic.${msg.command}`);
-          break;
+          return void commands.executeCommand(`cloudmusic.${msg.command}`);
       }
     });
 
@@ -230,7 +219,7 @@ export class AccountViewProvider implements WebviewViewProvider {
   <body>
     <div id="root"></div>
   </body>
-  <script>window.enablePlayer=${State.wasm ? "true" : "false"}</script>
+  <script>window.enablePlayer=${STATE.wasm ? "true" : "false"}</script>
   <script>window.testfiles=${JSON.stringify(files)}</script>
   <script type="module" src=${js} nonce=${getNonce()}></script>
 </html>`;
@@ -240,30 +229,25 @@ export class AccountViewProvider implements WebviewViewProvider {
 }
 
 export class Webview {
-  static extUri: Uri;
-
   static async login(): Promise<void> {
     const key = await IPC.netease("loginQrKey", []);
     if (!key) return;
     const imgSrc = await toDataURL(`https://music.163.com/login?codekey=${key}`);
     const { panel, setHtml } = this._getPanel(i18n.word.signIn, "login");
 
-    panel.webview.onDidReceiveMessage(({ channel }: CSMessage) => {
-      void panel.webview.postMessage({ msg: { imgSrc }, channel });
-    });
+    panel.webview.onDidReceiveMessage(
+      ({ channel }: CSMessage) => void panel.webview.postMessage({ msg: { imgSrc }, channel })
+    );
 
     return new Promise((resolve, reject) => {
       const timer = setInterval(
         () =>
           void IPC.netease("loginQrCheck", [key])
             .then((code) => {
-              if (code === 803) {
-                panel.dispose();
-                resolve();
-              } else if (code === 800) {
-                panel.dispose();
+              if (code === 803) resolve(void panel.dispose());
+              else if (code === 800) {
                 void window.showErrorMessage(i18n.sentence.fail.signIn);
-                reject();
+                reject(void panel.dispose());
               }
             })
             .catch(reject),
@@ -278,26 +262,26 @@ export class Webview {
     const { panel, setHtml } = this._getPanel(i18n.word.lyric, "lyric");
 
     panel.onDidDispose(() => {
-      State.lyric.updatePanel = undefined;
-      State.lyric.updateIndex = undefined;
+      STATE.lyric.updatePanel = undefined;
+      STATE.lyric.updateIndex = undefined;
     });
 
-    State.lyric.updatePanel = (text) => void panel.webview.postMessage(<LyricSMsg>{ command: "lyric", text });
-    State.lyric.updateIndex = (idx) => void panel.webview.postMessage(<LyricSMsg>{ command: "index", idx });
+    STATE.lyric.updatePanel = (text) => void panel.webview.postMessage(<LyricSMsg>{ command: "lyric", text });
+    STATE.lyric.updateIndex = (idx) => void panel.webview.postMessage(<LyricSMsg>{ command: "index", idx });
 
     setHtml();
 
     // Dirty
-    setTimeout(() => State.lyric.updatePanel?.(State.lyric.text), 1024);
+    setTimeout(() => STATE.lyric.updatePanel?.(STATE.lyric.text), 1024);
   }
 
   static async description(id: number, name: string): Promise<void> {
     const desc = await IPC.netease("artistDesc", [id]);
     const { panel, setHtml } = this._getPanel(name, "description");
 
-    panel.webview.onDidReceiveMessage(({ channel }: CSMessage) => {
-      void panel.webview.postMessage({ msg: { name, desc }, channel });
-    });
+    panel.webview.onDidReceiveMessage(
+      ({ channel }: CSMessage) => void panel.webview.postMessage({ msg: { name, desc }, channel })
+    );
     setHtml();
   }
 
@@ -306,25 +290,21 @@ export class Webview {
     const { panel, setHtml } = this._getPanel(i18n.word.musicRanking, "musicRanking");
 
     panel.webview.onDidReceiveMessage(({ msg, channel }: CSMessage | MusicRankingCMsg) => {
-      if (channel) {
-        void panel.webview.postMessage({ msg: record, channel });
-        return;
-      }
+      if (channel) return void panel.webview.postMessage({ msg: record, channel });
+
       if (!msg) return;
       switch (msg.command) {
         case "song":
-          void MultiStepInput.run(async (input) =>
+          return void MultiStepInput.run(async (input) =>
             pickSong(input, 1, (await IPC.netease("songDetail", [uid, [msg.id]]))[0])
           );
-          break;
         case "album":
-          void MultiStepInput.run((input) => pickAlbum(input, 1, msg.id));
-          break;
+          return void MultiStepInput.run((input) => pickAlbum(input, 1, msg.id));
         case "artist":
-          void MultiStepInput.run((input) => pickArtist(input, 1, msg.id));
-          break;
+          return void MultiStepInput.run((input) => pickArtist(input, 1, msg.id));
       }
     });
+
     setHtml();
   }
 
@@ -364,15 +344,15 @@ export class Webview {
       if (!channel) {
         switch (msg.command) {
           case "user":
-            void MultiStepInput.run((input) => pickUser(input, 1, msg.id));
-            break;
+            return void MultiStepInput.run((input) => pickUser(input, 1, msg.id));
           /* case "floor":
               await apiCommentFloor(type, gid, id, pageSize, time);
               break;
             case "reply":
               break; */
+          default:
+            return;
         }
-        return;
       }
 
       if (msg.command === "init") return void getList(channel);
@@ -410,13 +390,11 @@ export class Webview {
       enableScripts: true,
       retainContextWhenHidden: true,
     });
-    panel.iconPath = Uri.joinPath(this.extUri, "media", "icon.ico");
-    const css = panel.webview.asWebviewUri(Uri.joinPath(this.extUri, "dist", "style.css")).toString();
-    const js = panel.webview.asWebviewUri(Uri.joinPath(this.extUri, "dist", `${type}.js`)).toString();
-    return {
-      panel,
-      setHtml: () => (panel.webview.html = this._layout(title, css, js)),
-    };
+    const extUri = CONTEXT.context.extensionUri;
+    panel.iconPath = Uri.joinPath(CONTEXT.context.extensionUri, "media", "icon.ico");
+    const css = panel.webview.asWebviewUri(Uri.joinPath(extUri, "dist", "style.css")).toString();
+    const js = panel.webview.asWebviewUri(Uri.joinPath(extUri, "dist", `${type}.js`)).toString();
+    return { panel, setHtml: () => (panel.webview.html = this._layout(title, css, js)) };
   }
 
   private static _layout(title: string, css: string, js: string) {

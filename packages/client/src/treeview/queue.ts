@@ -191,7 +191,7 @@ export type QueueItemTreeItemData = NeteaseTypings.SongsItem & {
 export class QueueItemTreeItem extends TreeItem implements PlayTreeItem {
   private static readonly _set = new Map<number, QueueItemTreeItem>();
 
-  override readonly label!: string;
+  declare readonly label: string;
 
   override readonly description = this.data.ar.map(({ name }) => name).join("/");
 

@@ -1,4 +1,4 @@
-import { IPC, MultiStepInput, State, Webview, pickAddToPlaylist, pickPlaylist, pickProgram, pickSong } from "../utils";
+import { IPC, MultiStepInput, STATE, Webview, pickAddToPlaylist, pickPlaylist, pickProgram, pickSong } from "../utils";
 import type { PlaylistItemTreeItem, QueueContent, UserTreeItem } from "../treeview";
 import { PlaylistProvider, ProgramTreeItem, QueueItemTreeItem } from "../treeview";
 import { Uri, commands, env, window } from "vscode";
@@ -38,14 +38,8 @@ export function initPlaylist(context: ExtensionContext): void {
           step: 2,
           totalSteps: 2,
           items: [
-            {
-              label: i18n.word.public,
-              type: Type.public,
-            },
-            {
-              label: i18n.word.private,
-              type: Type.private,
-            },
+            { label: i18n.word.public, type: Type.public },
+            { label: i18n.word.private, type: Type.private },
           ],
         });
 
@@ -59,10 +53,9 @@ export function initPlaylist(context: ExtensionContext): void {
       PlaylistProvider.refreshPlaylistHard(element)
     ),
 
-    commands.registerCommand("cloudmusic.playPlaylist", async (element: PlaylistItemTreeItem) => {
-      const items = await PlaylistProvider.refreshPlaylist(element);
-      IPC.new(items);
-    }),
+    commands.registerCommand("cloudmusic.playPlaylist", async (element: PlaylistItemTreeItem) =>
+      IPC.new(await PlaylistProvider.refreshPlaylist(element))
+    ),
 
     commands.registerCommand(
       "cloudmusic.deletePlaylist",
@@ -92,10 +85,10 @@ export function initPlaylist(context: ExtensionContext): void {
     ),
 
     commands.registerCommand("cloudmusic.editPlaylist", (element: UserTreeItem) => {
-      type State = { name: string; desc: string };
+      type STATE = { name: string; desc: string };
       const title = i18n.word.editPlaylist;
       const totalSteps = 3;
-      const state: State = { name: "", desc: "" };
+      const state: STATE = { name: "", desc: "" };
       const { uid } = element;
 
       void MultiStepInput.run(async (input) => {
@@ -133,10 +126,9 @@ export function initPlaylist(context: ExtensionContext): void {
       }
     }),
 
-    commands.registerCommand("cloudmusic.addPlaylist", async (element: PlaylistItemTreeItem) => {
-      const items = await PlaylistProvider.refreshPlaylist(element);
-      IPC.add(items);
-    }),
+    commands.registerCommand("cloudmusic.addPlaylist", async (element: PlaylistItemTreeItem) =>
+      IPC.add(await PlaylistProvider.refreshPlaylist(element))
+    ),
 
     commands.registerCommand(
       "cloudmusic.playlistDetail",
@@ -199,12 +191,13 @@ export function initPlaylist(context: ExtensionContext): void {
     ),
 
     commands.registerCommand("cloudmusic.songDetail", (element?: QueueContent) => {
-      element = element ?? State.playItem;
+      element = element ?? STATE.playItem;
       if (!element) return;
-      if (element instanceof QueueItemTreeItem)
+      if (element instanceof QueueItemTreeItem) {
         void MultiStepInput.run((input) => pickSong(input, 1, (element as QueueItemTreeItem).data));
-      else if (element instanceof ProgramTreeItem)
+      } else if (element instanceof ProgramTreeItem) {
         void MultiStepInput.run((input) => pickProgram(input, 1, (element as ProgramTreeItem).data));
+      }
     }),
 
     commands.registerCommand("cloudmusic.songComment", ({ data: { id, name } }: QueueItemTreeItem) =>

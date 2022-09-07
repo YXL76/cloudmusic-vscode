@@ -36,22 +36,10 @@ const pickButtons: {
   next: QuickInputButton;
   close: QuickInputButton;
 } = {
-  forward: {
-    iconPath: new ThemeIcon("arrow-right"),
-    tooltip: i18n.word.forward,
-  },
-  previous: {
-    iconPath: new ThemeIcon("arrow-up"),
-    tooltip: i18n.word.previousPage,
-  },
-  next: {
-    iconPath: new ThemeIcon("arrow-down"),
-    tooltip: i18n.word.nextPage,
-  },
-  close: {
-    iconPath: new ThemeIcon("close"),
-    tooltip: i18n.word.close,
-  },
+  forward: { iconPath: new ThemeIcon("arrow-right"), tooltip: i18n.word.forward },
+  previous: { iconPath: new ThemeIcon("arrow-up"), tooltip: i18n.word.previousPage },
+  next: { iconPath: new ThemeIcon("arrow-down"), tooltip: i18n.word.nextPage },
+  close: { iconPath: new ThemeIcon("close"), tooltip: i18n.word.close },
 };
 
 export const enum ButtonAction {
@@ -68,21 +56,21 @@ interface QuickPickOption extends ButtonOption {
 }
 
 export class MultiStepInput {
-  private _step = 0;
+  #step = 0;
 
-  private _current?: QuickInput;
+  #current?: QuickInput;
 
-  private readonly _steps: InputStep[] = [];
+  readonly #steps: InputStep[] = [];
 
-  static async run(start: InputStep): Promise<void> {
+  static run(start: InputStep): Promise<void> {
     const input = new MultiStepInput();
-    return input.stepThrough(start);
+    return input.#stepThrough(start);
   }
 
   stay(step?: InputStep): InputStep {
-    --this._step;
-    if (step) this._steps[this._step] = step;
-    return this._steps[this._step];
+    --this.#step;
+    if (step) this.#steps[this.#step] = step;
+    return this.#steps[this.#step];
   }
 
   async showQuickPick<T extends QuickPickItem>(_: QuickPickParameters<T>): Promise<T>;
@@ -118,7 +106,7 @@ export class MultiStepInput {
       input.ignoreFocusOut = true;
       input.title = title;
       input.step = step;
-      input.totalSteps = Math.max(totalSteps || 1, this._step, this._steps.length);
+      input.totalSteps = Math.max(totalSteps || 1, this.#step, this.#steps.length);
       input.placeholder = placeholder;
       input.items = items;
       /* if (activeItems) {
@@ -128,37 +116,33 @@ export class MultiStepInput {
       if (previous) button.push(pickButtons.previous);
       if (next) button.push(pickButtons.next);
       input.buttons = [
-        ...(this._step > 1 ? [QuickInputButtons.Back] : []),
+        ...(this.#step > 1 ? [QuickInputButtons.Back] : []),
         ...button,
-        ...(this._step < this._steps.length ? [pickButtons.forward] : []),
+        ...(this.#step < this.#steps.length ? [pickButtons.forward] : []),
         pickButtons.close,
       ];
       disposables.push(
         input.onDidTriggerButton((item) => {
           switch (item) {
             case QuickInputButtons.Back:
-              reject(InputFlowAction.back);
-              break;
+              return reject(InputFlowAction.back);
             case pickButtons.forward:
-              reject(InputFlowAction.forward);
-              break;
+              return reject(InputFlowAction.forward);
             case pickButtons.previous:
-              resolve(ButtonAction.previous);
-              break;
+              return resolve(ButtonAction.previous);
             case pickButtons.next:
-              resolve(ButtonAction.next);
-              break;
+              return resolve(ButtonAction.next);
             default:
-              input.hide();
+              return input.hide();
           }
         }),
         input.onDidAccept(() => resolve(canSelectMany ? input.selectedItems : input.selectedItems[0])),
         input.onDidHide(() => reject(InputFlowAction.cancel))
       );
       if (changeCallback) disposables.push(input.onDidChangeValue((value) => changeCallback(input, value)));
-      if (this._current) this._current.dispose();
-      this._current = input;
-      this._current.show();
+      if (this.#current) this.#current.dispose();
+      this.#current = input;
+      this.#current.show();
     }).finally(() => disposables.forEach((d) => void d.dispose()));
   }
 
@@ -178,12 +162,12 @@ export class MultiStepInput {
       input.ignoreFocusOut = true;
       input.title = title;
       input.step = step;
-      input.totalSteps = Math.max(totalSteps || 1, this._step, this._steps.length);
+      input.totalSteps = Math.max(totalSteps || 1, this.#step, this.#steps.length);
       input.value = value || "";
       input.prompt = prompt;
       input.buttons = [
-        ...(this._step > 1 ? [QuickInputButtons.Back] : []),
-        ...(this._step < this._steps.length ? [pickButtons.forward] : []),
+        ...(this.#step > 1 ? [QuickInputButtons.Back] : []),
+        ...(this.#step < this.#steps.length ? [pickButtons.forward] : []),
         pickButtons.close,
       ];
       input.password = password || false;
@@ -191,54 +175,48 @@ export class MultiStepInput {
         input.onDidTriggerButton((item) => {
           switch (item) {
             case QuickInputButtons.Back:
-              reject(InputFlowAction.back);
-              break;
+              return reject(InputFlowAction.back);
             case pickButtons.forward:
-              reject(InputFlowAction.forward);
-              break;
+              return reject(InputFlowAction.forward);
             default:
-              input.hide();
-              break;
+              return input.hide();
           }
         }),
-        input.onDidAccept(() => {
-          const value = input.value;
-          resolve(value);
-        }),
+        input.onDidAccept(() => resolve((value = input.value))),
         input.onDidHide(() => reject(InputFlowAction.cancel))
       );
       if (changeCallback) disposables.push(input.onDidChangeValue((value) => changeCallback(input, value)));
-      if (this._current) this._current.dispose();
-      this._current = input;
-      this._current.show();
+      if (this.#current) this.#current.dispose();
+      this.#current = input;
+      this.#current.show();
     }).finally(() => disposables.forEach((d) => void d.dispose()));
   }
 
-  private async stepThrough(start: InputStep): Promise<void> {
+  async #stepThrough(start: InputStep): Promise<void> {
     let step: InputStep | void = start;
-    ++this._step;
-    this._steps.push(step);
+    ++this.#step;
+    this.#steps.push(step);
     while (step) {
-      if (this._current) {
-        this._current.enabled = false;
-        this._current.busy = true;
+      if (this.#current) {
+        this.#current.enabled = false;
+        this.#current.busy = true;
       }
       try {
         step = await step(this);
         if (step) {
-          while (this._steps.length > this._step) this._steps.pop();
-          ++this._step;
-          this._steps.push(step);
+          while (this.#steps.length > this.#step) this.#steps.pop();
+          ++this.#step;
+          this.#steps.push(step);
         }
       } catch (err) {
         switch (err) {
           case InputFlowAction.back:
-            --this._step;
-            step = this._steps[this._step - 1];
+            --this.#step;
+            step = this.#steps[this.#step - 1];
             break;
           case InputFlowAction.forward:
-            ++this._step;
-            step = this._steps[this._step - 1];
+            ++this.#step;
+            step = this.#steps[this.#step - 1];
             break;
           case InputFlowAction.cancel:
             step = undefined;
@@ -250,6 +228,6 @@ export class MultiStepInput {
         }
       }
     }
-    if (this._current) this._current.dispose();
+    if (this.#current) this.#current.dispose();
   }
 }

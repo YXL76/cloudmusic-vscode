@@ -1,9 +1,10 @@
 import { ACCOUNT_KEY, AUTO_CHECK, COOKIE_KEY } from "../constant";
 import {
   ButtonAction,
+  CONTEXT,
   IPC,
   MultiStepInput,
-  State,
+  STATE,
   Webview,
   inputKeyword,
   pickAlbums,
@@ -18,20 +19,20 @@ import {
   pickSongs,
   pickUser,
 } from "../utils";
-import type { ExtensionContext, QuickPickItem } from "vscode";
 import { NeteaseArtistArea, NeteaseArtistType, NeteaseTopSongType } from "@cloudmusic/shared";
 import { commands, window } from "vscode";
 import type { InputStep } from "../utils";
 import type { NeteaseTypings } from "api";
+import type { QuickPickItem } from "vscode";
 import { createHash } from "node:crypto";
 import i18n from "../i18n";
 
 type CookieState = { uid: number; cookie: string }[];
 type States = Record<number, NeteaseTypings.Account>;
 
-async function getCookies(context: ExtensionContext) {
+async function getCookies() {
   try {
-    const cookieStr = (await context.secrets.get(COOKIE_KEY)) ?? "[]";
+    const cookieStr = (await CONTEXT.context.secrets.get(COOKIE_KEY)) ?? "[]";
     return JSON.parse(cookieStr) as CookieState;
   } catch (err) {
     console.error(err);
@@ -39,9 +40,9 @@ async function getCookies(context: ExtensionContext) {
   return [];
 }
 
-async function getStates(context: ExtensionContext) {
+async function getStates() {
   try {
-    const statesStr = (await context.secrets.get(ACCOUNT_KEY)) ?? "{}";
+    const statesStr = (await CONTEXT.context.secrets.get(ACCOUNT_KEY)) ?? "{}";
     return JSON.parse(statesStr) as States;
   } catch (err) {
     console.error(err);
@@ -50,17 +51,15 @@ async function getStates(context: ExtensionContext) {
 }
 
 export class AccountManager {
-  static context: ExtensionContext;
-
   static readonly accounts = new Map<number, NeteaseTypings.Profile>();
 
   static async init(): Promise<void> {
-    if (State.master) await this.masterInit();
+    if (STATE.master) await this.masterInit();
     IPC.neteaseAc();
   }
 
   static async masterInit(): Promise<void> {
-    const cookies = await getCookies(this.context);
+    const cookies = await getCookies();
 
     if (!cookies.length) {
       void window.showInformationMessage(i18n.sentence.hint.trySignIn, i18n.word.signIn).then((action) => {
@@ -69,7 +68,7 @@ export class AccountManager {
       return;
     }
 
-    const states = await getStates(this.context);
+    const states = await getStates();
 
     for (const { uid, cookie } of cookies) {
       const newCookie = uid in states ? await IPC.netease("loginRefresh", [cookie]) : undefined; // Use password
@@ -89,7 +88,7 @@ export class AccountManager {
       if (!res) delete states[uid];
     }
 
-    await this.context.secrets.store(ACCOUNT_KEY, JSON.stringify(states));
+    await CONTEXT.context.secrets.store(ACCOUNT_KEY, JSON.stringify(states));
   }
 
   static async dailyCheck(): Promise<boolean> {
@@ -105,9 +104,8 @@ export class AccountManager {
     return (await this.playlist(uid)).filter(({ creator: { userId } }) => userId === uid);
   }
 
-  static async playlist(uid: number): Promise<readonly NeteaseTypings.PlaylistItem[]> {
-    const lists = await IPC.netease("userPlaylist", [uid]);
-    return lists;
+  static playlist(uid: number): Promise<readonly NeteaseTypings.PlaylistItem[]> {
+    return IPC.netease("userPlaylist", [uid]);
   }
 
   static djradio(uid: number): Promise<readonly NeteaseTypings.RadioDetail[]> {
@@ -123,17 +121,17 @@ export class AccountManager {
       void window.showErrorMessage(i18n.sentence.fail.signIn);
       return false;
     } else {
-      const states = await getStates(this.context);
+      const states = await getStates();
       states[res.userId] = state;
-      await this.context.secrets.store(ACCOUNT_KEY, JSON.stringify(states));
+      await CONTEXT.context.secrets.store(ACCOUNT_KEY, JSON.stringify(states));
       return true;
     }
   }
 
   static async logout(uid: number): Promise<boolean> {
-    const states = await getStates(this.context);
+    const states = await getStates();
     delete states[uid];
-    await this.context.secrets.store(ACCOUNT_KEY, JSON.stringify(states));
+    await CONTEXT.context.secrets.store(ACCOUNT_KEY, JSON.stringify(states));
 
     if (!(await IPC.netease("logout", [uid]))) return false;
     IPC.neteaseAc();
@@ -144,13 +142,7 @@ export class AccountManager {
     const title = i18n.word.signIn;
     let captcha = false;
     let totalSteps = 3;
-    const state: NeteaseTypings.Account = {
-      phone: "",
-      username: "",
-      password: "",
-      captcha: "",
-      countrycode: "86",
-    };
+    const state: NeteaseTypings.Account = { phone: "", username: "", password: "", captcha: "", countrycode: "86" };
 
     const enum Type {
       email,
@@ -165,26 +157,14 @@ export class AccountManager {
         step: 1,
         totalSteps,
         items: [
-          {
-            label: `$(mail) ${i18n.word.email}`,
-            description: i18n.sentence.label.email,
-            type: Type.email,
-          },
+          { label: `$(mail) ${i18n.word.email}`, description: i18n.sentence.label.email, type: Type.email },
           {
             label: `$(device-mobile) ${i18n.word.cellphone}`,
             description: i18n.sentence.label.cellphone,
             type: Type.phone,
           },
-          {
-            label: `$(code) ${i18n.word.captcha}`,
-            description: i18n.sentence.label.captcha,
-            type: Type.captcha,
-          },
-          {
-            label: `$(diff) ${i18n.word.qrcode}`,
-            description: i18n.sentence.label.qrcode,
-            type: Type.qrcode,
-          },
+          { label: `$(code) ${i18n.word.captcha}`, description: i18n.sentence.label.captcha, type: Type.captcha },
+          { label: `$(diff) ${i18n.word.qrcode}`, description: i18n.sentence.label.qrcode, type: Type.qrcode },
         ],
         placeholder: i18n.sentence.hint.signIn,
       });
@@ -299,47 +279,20 @@ export class AccountManager {
         step: 1,
         totalSteps: 1,
         items: [
-          {
-            label: `$(account) ${AccountManager.accounts.get(uid)?.nickname ?? ""}`,
-            type: Type.user,
-          },
+          { label: `$(account) ${AccountManager.accounts.get(uid)?.nickname ?? ""}`, type: Type.user },
           {
             label: `$(graph) Lv.${level.level}`,
             description: `${Math.floor(level.progress * 100)}%`,
             type: Type.level,
           },
-          {
-            label: `$(radio-tower) ${i18n.word.personalFm}`,
-            type: Type.fm,
-          },
-          {
-            label: `$(search) ${i18n.word.search}`,
-            type: Type.search,
-          },
-          {
-            label: `$(symbol-color) ${i18n.word.recommendation}`,
-            type: Type.recommendation,
-          },
-          {
-            label: `$(rocket) ${i18n.word.toplist}`,
-            type: Type.toplist,
-          },
-          {
-            label: `$(telescope) ${i18n.word.explore}`,
-            type: Type.explore,
-          },
-          {
-            label: `$(list-ordered) ${i18n.word.musicRanking}`,
-            type: Type.musicRanking,
-          },
-          {
-            label: `$(diff-added) ${i18n.word.saved}`,
-            type: Type.save,
-          },
-          {
-            label: `$(sign-out) ${i18n.word.signOut}`,
-            type: Type.signOut,
-          },
+          { label: `$(radio-tower) ${i18n.word.personalFm}`, type: Type.fm },
+          { label: `$(search) ${i18n.word.search}`, type: Type.search },
+          { label: `$(symbol-color) ${i18n.word.recommendation}`, type: Type.recommendation },
+          { label: `$(rocket) ${i18n.word.toplist}`, type: Type.toplist },
+          { label: `$(telescope) ${i18n.word.explore}`, type: Type.explore },
+          { label: `$(list-ordered) ${i18n.word.musicRanking}`, type: Type.musicRanking },
+          { label: `$(diff-added) ${i18n.word.saved}`, type: Type.save },
+          { label: `$(sign-out) ${i18n.word.signOut}`, type: Type.signOut },
         ],
       });
 
@@ -383,30 +336,12 @@ export class AccountManager {
         step: 2,
         totalSteps: 3,
         items: [
-          {
-            label: `$(list-unordered) ${i18n.sentence.label.dailyRecommendedPlaylists}`,
-            type: Type.dailyPlaylist,
-          },
-          {
-            label: `$(zap) ${i18n.sentence.label.dailyRecommendedSongs}`,
-            type: Type.dailySong,
-          },
-          {
-            label: `$(list-unordered) ${i18n.sentence.label.playlistRecommendation}`,
-            type: Type.playlist,
-          },
-          {
-            label: `$(zap) ${i18n.sentence.label.newsongRecommendation}`,
-            type: Type.song,
-          },
-          {
-            label: `$(rss) ${i18n.sentence.label.radioRecommendation}`,
-            type: Type.radio,
-          },
-          {
-            label: `$(radio-tower) ${i18n.sentence.label.programRecommendation}`,
-            type: Type.program,
-          },
+          { label: `$(list-unordered) ${i18n.sentence.label.dailyRecommendedPlaylists}`, type: Type.dailyPlaylist },
+          { label: `$(zap) ${i18n.sentence.label.dailyRecommendedSongs}`, type: Type.dailySong },
+          { label: `$(list-unordered) ${i18n.sentence.label.playlistRecommendation}`, type: Type.playlist },
+          { label: `$(zap) ${i18n.sentence.label.newsongRecommendation}`, type: Type.song },
+          { label: `$(rss) ${i18n.sentence.label.radioRecommendation}`, type: Type.radio },
+          { label: `$(radio-tower) ${i18n.sentence.label.programRecommendation}`, type: Type.program },
         ],
       });
       switch (pick.type) {
@@ -463,30 +398,12 @@ export class AccountManager {
         step: 2,
         totalSteps: 3,
         items: [
-          {
-            label: `$(zap) ${i18n.word.songList}`,
-            type: Type.song,
-          },
-          {
-            label: `$(account) ${i18n.word.artistList}`,
-            type: Type.artist,
-          },
-          {
-            label: `$(rss) ${i18n.word.radio} (${i18n.word.new})`,
-            type: Type.radioNew,
-          },
-          {
-            label: `$(rss) ${i18n.word.radio} (${i18n.word.hot})`,
-            type: Type.radioHot,
-          },
-          {
-            label: `$(radio-tower) ${i18n.word.program}`,
-            type: Type.program,
-          },
-          {
-            label: `$(radio-tower) ${i18n.word.program} (${i18n.word.today})`,
-            type: Type.program24,
-          },
+          { label: `$(zap) ${i18n.word.songList}`, type: Type.song },
+          { label: `$(account) ${i18n.word.artistList}`, type: Type.artist },
+          { label: `$(rss) ${i18n.word.radio} (${i18n.word.new})`, type: Type.radioNew },
+          { label: `$(rss) ${i18n.word.radio} (${i18n.word.hot})`, type: Type.radioHot },
+          { label: `$(radio-tower) ${i18n.word.program}`, type: Type.program },
+          { label: `$(radio-tower) ${i18n.word.program} (${i18n.word.today})`, type: Type.program24 },
         ],
       });
       switch (pick.type) {
@@ -521,38 +438,14 @@ export class AccountManager {
         step: 2,
         totalSteps: 3,
         items: [
-          {
-            label: `$(list-unordered) ${i18n.word.playlist}`,
-            type: Type.playlist,
-          },
-          {
-            label: `$(list-unordered) ${i18n.word.highqualityPlaylist}`,
-            type: Type.highqualityPlaylist,
-          },
-          {
-            label: `$(account) ${i18n.word.artist}`,
-            type: Type.artist,
-          },
-          {
-            label: `$(circuit-board) ${i18n.word.topAlbums}`,
-            type: Type.topAlbums,
-          },
-          {
-            label: `$(account) ${i18n.word.topArtists}`,
-            type: Type.topArtists,
-          },
-          {
-            label: `$(zap) ${i18n.word.topSong}`,
-            type: Type.topSongs,
-          },
-          {
-            label: `$(circuit-board) ${i18n.word.albumNewest}`,
-            type: Type.albumNewest,
-          },
-          {
-            label: `$(rss) ${i18n.word.radioHot}`,
-            type: Type.radioHot,
-          },
+          { label: `$(list-unordered) ${i18n.word.playlist}`, type: Type.playlist },
+          { label: `$(list-unordered) ${i18n.word.highqualityPlaylist}`, type: Type.highqualityPlaylist },
+          { label: `$(account) ${i18n.word.artist}`, type: Type.artist },
+          { label: `$(circuit-board) ${i18n.word.topAlbums}`, type: Type.topAlbums },
+          { label: `$(account) ${i18n.word.topArtists}`, type: Type.topArtists },
+          { label: `$(zap) ${i18n.word.topSong}`, type: Type.topSongs },
+          { label: `$(circuit-board) ${i18n.word.albumNewest}`, type: Type.albumNewest },
+          { label: `$(rss) ${i18n.word.radioHot}`, type: Type.radioHot },
         ],
       });
       switch (pick.type) {
@@ -587,22 +480,10 @@ export class AccountManager {
         step: 3,
         totalSteps: 4,
         items: [
-          {
-            label: i18n.word.zh,
-            type: NeteaseTopSongType.zh,
-          },
-          {
-            label: i18n.word.en,
-            type: NeteaseTopSongType.ea,
-          },
-          {
-            label: i18n.word.ja,
-            type: NeteaseTopSongType.ja,
-          },
-          {
-            label: i18n.word.kr,
-            type: NeteaseTopSongType.kr,
-          },
+          { label: i18n.word.zh, type: NeteaseTopSongType.zh },
+          { label: i18n.word.en, type: NeteaseTopSongType.ea },
+          { label: i18n.word.ja, type: NeteaseTopSongType.ja },
+          { label: i18n.word.kr, type: NeteaseTopSongType.kr },
         ],
       });
       return async (input) => pickSongs(input, 4, await IPC.netease("topSong", [pick.type]));
@@ -645,12 +526,7 @@ export class AccountManager {
       input: MultiStepInput,
       items: readonly QuickPickItem[]
     ): Promise<InputStep> {
-      const pick = await input.showQuickPick({
-        title: i18n.word.categorie,
-        step: 4,
-        totalSteps: 6,
-        items,
-      });
+      const pick = await input.showQuickPick({ title: i18n.word.categorie, step: 4, totalSteps: 6, items });
       cat = pick.label;
       return (input) => pickAllPlaylists(input, 0);
     }
@@ -689,18 +565,9 @@ export class AccountManager {
         step: 3,
         totalSteps: 7,
         items: [
-          {
-            label: i18n.word.male,
-            type: NeteaseArtistType.male,
-          },
-          {
-            label: i18n.word.female,
-            type: NeteaseArtistType.female,
-          },
-          {
-            label: i18n.word.band,
-            type: NeteaseArtistType.band,
-          },
+          { label: i18n.word.male, type: NeteaseArtistType.male },
+          { label: i18n.word.female, type: NeteaseArtistType.female },
+          { label: i18n.word.band, type: NeteaseArtistType.band },
         ],
       });
       type = pick.type;
@@ -713,30 +580,12 @@ export class AccountManager {
         step: 4,
         totalSteps: 7,
         items: [
-          {
-            label: i18n.word.all,
-            type: NeteaseArtistArea.all,
-          },
-          {
-            label: i18n.word.zh,
-            type: NeteaseArtistArea.zh,
-          },
-          {
-            label: i18n.word.en,
-            type: NeteaseArtistArea.ea,
-          },
-          {
-            label: i18n.word.ja,
-            type: NeteaseArtistArea.ja,
-          },
-          {
-            label: i18n.word.kr,
-            type: NeteaseArtistArea.kr,
-          },
-          {
-            label: i18n.word.other,
-            type: NeteaseArtistArea.other,
-          },
+          { label: i18n.word.all, type: NeteaseArtistArea.all },
+          { label: i18n.word.zh, type: NeteaseArtistArea.zh },
+          { label: i18n.word.en, type: NeteaseArtistArea.ea },
+          { label: i18n.word.ja, type: NeteaseArtistArea.ja },
+          { label: i18n.word.kr, type: NeteaseArtistArea.kr },
+          { label: i18n.word.other, type: NeteaseArtistArea.other },
         ],
       });
       area = pick.type;
@@ -778,14 +627,8 @@ export class AccountManager {
         step: 5,
         totalSteps: 7,
         items: [
-          {
-            label: i18n.word.all,
-            type: "" as const,
-          },
-          ...allInitial.map((i) => ({
-            label: i as string,
-            type: i,
-          })),
+          { label: i18n.word.all, type: "" as const },
+          ...allInitial.map((i) => ({ label: i as string, type: i })),
         ],
       });
       initial = pick.type;
@@ -819,14 +662,8 @@ export class AccountManager {
         step: 2,
         totalSteps: 3,
         items: [
-          {
-            label: `$(circuit-board) ${i18n.word.album}`,
-            type: Type.album,
-          },
-          {
-            label: `$(account) ${i18n.word.artist}`,
-            type: Type.artist,
-          },
+          { label: `$(circuit-board) ${i18n.word.album}`, type: Type.album },
+          { label: `$(account) ${i18n.word.artist}`, type: Type.artist },
         ],
       });
       switch (pick.type) {

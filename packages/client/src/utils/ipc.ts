@@ -12,31 +12,35 @@ import { IPCApi, IPCControl, IPCPlayer, IPCQueue, ipcDelimiter } from "@cloudmus
 import { LocalFileTreeItem, QueueProvider } from "../treeview";
 import type { NeteaseAPICMsg, NeteaseAPIKey, NeteaseAPIParameters, NeteaseAPIReturn } from "@cloudmusic/server";
 import type { PlayTreeItemData } from "../treeview";
+import { STATE } from "./index";
 import type { Socket } from "node:net";
-import { State } from "./index";
 import { connect } from "node:net";
 
 class IPCClient<T, U = T> {
-  private _buffer = "";
+  #buffer = "";
 
-  private _socket?: Socket;
+  #socket?: Socket;
 
-  constructor(private readonly _path: string) {}
+  #path: string;
+
+  constructor(path: string) {
+    this.#path = path;
+  }
 
   connect(handler: (data: U) => void, retry: number): Promise<boolean> {
-    if (this._socket?.readable && this._socket.writable) return Promise.resolve(true);
+    if (this.#socket?.readable && this.#socket.writable) return Promise.resolve(true);
     else this.disconnect();
     return new Promise(
       (resolve) =>
-        void this._tryConnect(retry)
+        void this.#tryConnect(retry)
           .then((socket) => {
             if (!socket) throw new Error();
 
-            this._socket = socket
+            this.#socket = socket
               .on("data", (data) => {
-                const buffer = this._buffer + data.toString();
+                const buffer = this.#buffer + data.toString();
                 const msgs = buffer.split(ipcDelimiter);
-                this._buffer = msgs.pop() ?? "";
+                this.#buffer = msgs.pop() ?? "";
                 for (const msg of msgs) handler(JSON.parse(msg) as U);
               })
               .on("close", () => this.disconnect())
@@ -49,22 +53,22 @@ class IPCClient<T, U = T> {
   }
 
   disconnect() {
-    this._socket?.destroy();
-    this._socket = undefined;
+    this.#socket?.destroy();
+    this.#socket = undefined;
   }
 
   send(data: T): void {
-    this._socket?.write(`${JSON.stringify(data)}${ipcDelimiter}`);
+    this.#socket?.write(`${JSON.stringify(data)}${ipcDelimiter}`);
   }
 
   request<D>(data: D): void {
-    this._socket?.write(`${JSON.stringify(data)}${ipcDelimiter}`);
+    this.#socket?.write(`${JSON.stringify(data)}${ipcDelimiter}`);
   }
 
-  private _tryConnect(retry: number): Promise<Socket | undefined> {
+  #tryConnect(retry: number): Promise<Socket | undefined> {
     return new Promise((resolve) => {
       const setTimer = (remain: number) => {
-        const socket = connect({ path: this._path }).setEncoding("utf8");
+        const socket = connect({ path: this.#path }).setEncoding("utf8");
         const listener = () => {
           socket.destroy();
           if (remain > 0) setTimeout(() => setTimer(remain - 1), 512);
@@ -103,14 +107,14 @@ export const IPC = {
   },
 
   load: (play = true, seek?: number) => {
-    const { playItem } = State;
+    const { playItem } = STATE;
     if (!playItem) return;
     ipcB.send({ t: IPCPlayer.load });
 
     const { data } = playItem;
 
     let next;
-    if (!State.fm) next = QueueProvider.next?.data;
+    if (!STATE.fm) next = QueueProvider.next?.data;
     ipc.send({
       t: IPCPlayer.load,
       url: playItem instanceof LocalFileTreeItem ? playItem.valueOf : undefined,

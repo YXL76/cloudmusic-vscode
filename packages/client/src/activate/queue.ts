@@ -58,9 +58,9 @@ export function initQueue(context: ExtensionContext): void {
       });
     }),
 
-    commands.registerCommand("cloudmusic.clearQueue", () => IPC.clear()),
+    commands.registerCommand("cloudmusic.clearQueue", IPC.clear),
 
-    commands.registerCommand("cloudmusic.randomQueue", () => IPC.random()),
+    commands.registerCommand("cloudmusic.randomQueue", IPC.random),
 
     commands.registerCommand("cloudmusic.playSong", ({ valueOf }: QueueContent) => IPC.playSong(valueOf)),
 

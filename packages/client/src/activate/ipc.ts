@@ -1,5 +1,5 @@
-import { AccountManager, ButtonManager } from "../manager";
-import { AccountViewProvider, IPC, State, defaultLyric } from "../utils";
+import { AccountManager, BUTTON_MANAGER } from "../manager";
+import { AccountViewProvider, IPC, STATE, defaultLyric } from "../utils";
 import {
   CONF,
   COOKIE_KEY,
@@ -30,151 +30,109 @@ import { spawn } from "node:child_process";
 const ipcBHandler = (data: IPCBroadcastMsg) => {
   switch (data.t) {
     case IPCPlayer.load:
-      State.loading = true;
-      break;
+      return (STATE.loading = true);
     case IPCPlayer.loaded:
-      State.loading = false;
-      break;
+      return (STATE.loading = false);
     case IPCPlayer.repeat:
-      State.repeat = data.r;
-      break;
+      return (STATE.repeat = data.r);
     case IPCQueue.add:
-      QueueProvider.add(data.items as readonly PlayTreeItemData[], data.index);
-      break;
+      return QueueProvider.add(data.items as readonly PlayTreeItemData[], data.index);
     case IPCQueue.clear:
-      QueueProvider.clear();
-      break;
+      return QueueProvider.clear();
     case IPCQueue.delete:
-      QueueProvider.delete(data.id);
-      break;
+      return QueueProvider.delete(data.id);
     case IPCQueue.new:
       QueueProvider.new(data.items as readonly PlayTreeItemData[], data.id);
-      State.downInit(); // 1
-      break;
+      return STATE.downInit(); // 1
     case IPCQueue.play:
-      QueueProvider.top(data.id);
-      break;
+      return QueueProvider.top(data.id);
     case IPCQueue.shift:
-      QueueProvider.shift(data.index);
-      break;
+      return QueueProvider.shift(data.index);
   }
 };
 
 export async function initIPC(context: ExtensionContext): Promise<void> {
   const ipcHandler = (data: IPCServerMsg | NeteaseAPISMsg<NeteaseAPIKey>) => {
     switch (data.t) {
-      case IPCApi.netease:
-        {
-          const req = IPC.requestPool.get(data.channel);
-          if (!req) break;
-          IPC.requestPool.delete(data.channel);
-          if (("err" in data && data.err) || !("msg" in data)) req.reject();
-          else req.resolve(data.msg);
-        }
-        break;
+      case IPCApi.netease: {
+        const req = IPC.requestPool.get(data.channel);
+        if (!req) break;
+        IPC.requestPool.delete(data.channel);
+        if (("err" in data && data.err) || !("msg" in data)) req.reject();
+        else req.resolve(data.msg);
+        return;
+      }
       case IPCControl.netease:
         AccountManager.accounts.clear();
         data.profiles.forEach((i) => AccountManager.accounts.set(i.userId, i));
         PlaylistProvider.refresh();
         RadioProvider.refresh();
         AccountViewProvider.account(data.profiles);
-        State.downInit(); // 2
-        if (State.master) {
+        STATE.downInit(); // 2
+        if (STATE.master) {
           if (!data.cookies.length) IPC.clear();
           void context.secrets.store(COOKIE_KEY, JSON.stringify(data.cookies));
         }
-        break;
+        return;
       case IPCControl.master:
-        State.master = !!data.is;
-        break;
+        return (STATE.master = !!data.is);
       case IPCControl.new:
-        IPC.new();
-        break;
+        return IPC.new();
       case IPCControl.retain:
-        if (data.items.length && State.wasm) {
+        if (data.items.length && STATE.wasm) {
           // Delay it because `this._instance._onDidChangeTreeData.fire()` is async
-          State.addOnceInitCallback(() => setTimeout(() => IPC.load(data.play, data.seek), 1024));
+          STATE.addOnceInitCallback(() => setTimeout(() => IPC.load(data.play, data.seek), 1024));
         }
         QueueProvider.new(data.items as PlayTreeItemData[]);
-        State.downInit(); // 1
-        break;
+        return STATE.downInit(); // 1
       case IPCPlayer.end:
-        if (!data.fail && (State.repeat || data.reloadNseek)) IPC.load(!data.pause, data.reloadNseek);
+        if (!data.fail && (STATE.repeat || data.reloadNseek)) IPC.load(!data.pause, data.reloadNseek);
         else void commands.executeCommand("cloudmusic.next");
-        break;
+        return;
       case IPCPlayer.loaded:
-        State.loading = false;
-        break;
+        return (STATE.loading = false);
       case IPCPlayer.lyric:
-        State.lyric = {
-          ...State.lyric,
-          ...data.lyric,
-        };
-        break;
+        return (STATE.lyric = { ...STATE.lyric, ...data.lyric });
       case IPCPlayer.lyricIndex:
-        ButtonManager.buttonLyric(State.lyric.text?.[data.idx]?.[State.lyric.type]);
-        State.lyric.updateIndex?.(data.idx);
-        break;
+        BUTTON_MANAGER.buttonLyric(STATE.lyric.text?.[data.idx]?.[STATE.lyric.type]);
+        return STATE.lyric.updateIndex?.(data.idx);
       case IPCPlayer.pause:
-        ButtonManager.buttonPlay(false);
-        AccountViewProvider.pause();
-        break;
+        BUTTON_MANAGER.buttonPlay(false);
+        return AccountViewProvider.pause();
       case IPCPlayer.play:
-        ButtonManager.buttonPlay(true);
-        AccountViewProvider.play();
-        break;
+        BUTTON_MANAGER.buttonPlay(true);
+        return AccountViewProvider.play();
       case IPCPlayer.stop:
-        ButtonManager.buttonSong();
-        ButtonManager.buttonLyric();
-        State.lyric = {
-          ...State.lyric,
-          ...defaultLyric,
-        };
-        AccountViewProvider.stop();
-        break;
+        BUTTON_MANAGER.buttonSong();
+        BUTTON_MANAGER.buttonLyric();
+        STATE.lyric = { ...STATE.lyric, ...defaultLyric };
+        return AccountViewProvider.stop();
       case IPCPlayer.volume:
-        ButtonManager.buttonVolume(data.level);
-        break;
+        return BUTTON_MANAGER.buttonVolume(data.level);
       case IPCPlayer.next:
-        void commands.executeCommand("cloudmusic.next");
-        break;
+        return void commands.executeCommand("cloudmusic.next");
       case IPCPlayer.previous:
-        void commands.executeCommand("cloudmusic.previous");
-        break;
+        return void commands.executeCommand("cloudmusic.previous");
       case IPCPlayer.speed:
-        ButtonManager.buttonSpeed(data.speed);
-        break;
+        return BUTTON_MANAGER.buttonSpeed(data.speed);
       case IPCQueue.fm:
-        State.fm = true;
-        break;
+        return (STATE.fm = true);
       case IPCQueue.fmNext:
-        State.playItem = QueueItemTreeItem.new({
-          ...data.item,
-          pid: data.item.al.id,
-          itemType: "q",
-        });
-        break;
+        return (STATE.playItem = QueueItemTreeItem.new({ ...data.item, pid: data.item.al.id, itemType: "q" }));
       case IPCWasm.load:
-        AccountViewProvider.wasmLoad(data.path, data.play, data.seek);
-        break;
+        return AccountViewProvider.wasmLoad(data.path, data.play, data.seek);
       case IPCWasm.pause:
-        AccountViewProvider.wasmPause();
-        break;
+        return AccountViewProvider.wasmPause();
       case IPCWasm.play:
-        AccountViewProvider.wasmPlay();
-        break;
+        return AccountViewProvider.wasmPlay();
       case IPCWasm.stop:
-        AccountViewProvider.wasmStop();
-        break;
+        return AccountViewProvider.wasmStop();
       case IPCWasm.volume:
-        AccountViewProvider.wasmVolume(data.level);
-        break;
+        return AccountViewProvider.wasmVolume(data.level);
       case IPCWasm.speed:
-        AccountViewProvider.wasmSpeed(data.speed);
-        break;
+        return AccountViewProvider.wasmSpeed(data.speed);
       case IPCWasm.seek:
-        AccountViewProvider.wasmSeek(data.seekOffset);
-        break;
+        return AccountViewProvider.wasmSeek(data.seekOffset);
     }
   };
 
@@ -185,8 +143,8 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
     const firstTry = await IPC.connect(ipcHandler, ipcBHandler, 0);
     if (firstTry.includes(false)) throw Error;
   } catch {
-    State.first = true;
-    State.downInit(); // 1
+    STATE.first = true;
+    STATE.downInit(); // 1
 
     const httpProxy =
       PROXY ||
@@ -214,7 +172,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         CM_SPEED: context.globalState.get(SPEED_KEY, 1).toString(),
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        CM_WASM: State.wasm ? "1" : "0",
+        CM_WASM: STATE.wasm ? "1" : "0",
         // eslint-disable-next-line @typescript-eslint/naming-convention
         CM_MUSIC_QUALITY: MUSIC_QUALITY(conf).toString(),
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -226,22 +184,14 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       },
     }).unref();
     await IPC.connect(ipcHandler, ipcBHandler);
-    State.master = true;
+    STATE.master = true;
     readdir(SETTING_DIR, { withFileTypes: true })
-      .then((dirents) => {
-        for (const dirent of dirents) {
-          if (
-            dirent.isFile() &&
-            dirent.name.startsWith("err-") &&
-            dirent.name.endsWith(".log") &&
-            dirent.name !== logFile
-          )
-            rm(resolve(SETTING_DIR, dirent.name), {
-              recursive: true,
-              force: true,
-            }).catch(console.error);
-        }
-      })
+      .then((dirents) =>
+        dirents
+          .filter((dirent) => dirent.isFile() && dirent.name.startsWith("err-") && dirent.name !== logFile)
+          .map((dirent) => resolve(SETTING_DIR, dirent.name))
+          .forEach((p) => void rm(p, { recursive: true, force: true }).catch(console.error))
+      )
       .catch(console.error);
   }
 }

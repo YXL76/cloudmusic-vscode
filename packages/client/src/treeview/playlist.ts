@@ -93,7 +93,7 @@ export class PlaylistProvider implements TreeDataProvider<Content> {
 export class PlaylistItemTreeItem extends TreeItem {
   private static readonly _set = new Map<number, PlaylistItemTreeItem>();
 
-  override readonly label!: string;
+  declare readonly label: string;
 
   override readonly tooltip = `${i18n.word.description}: ${this.item.description || ""}
 ${i18n.word.trackCount}: ${this.item.trackCount}

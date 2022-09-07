@@ -1,6 +1,5 @@
 import { ButtonAction, IPC, Webview } from "./index";
 import type { InputStep, MultiStepInput } from "./index";
-import type { PlaylistItemTreeItem, QueueContent, RadioTreeItem } from "../treeview";
 import { ProgramTreeItem, QueueItemTreeItem } from "../treeview";
 import { commands, window } from "vscode";
 import { AccountManager } from "../manager";
@@ -147,66 +146,26 @@ export async function pickSong(
     title: `${i18n.word.song}-${i18n.word.detail}`,
     step,
     items: [
-      {
-        label: `$(code) ${name}`,
-        detail: alia.join("/"),
-      },
-      {
-        label: `$(link) ${i18n.word.copyLink}`,
-        type: PickType.copy,
-      },
-      {
-        label: `$(cloud-download) ${i18n.word.download}`,
-        type: PickType.download,
-      },
+      { label: `$(code) ${name}`, detail: alia.join("/") },
+      { label: `$(link) ${i18n.word.copyLink}`, type: PickType.copy },
+      { label: `$(cloud-download) ${i18n.word.download}`, type: PickType.download },
       ...pickArtistItems(ar),
-      {
-        label: `$(circuit-board) ${i18n.word.album}`,
-        detail: al.name,
-        id: al.id,
-        type: PickType.album,
-      },
-      {
-        label: `$(heart) ${i18n.word.like}`,
-        type: PickType.like,
-      },
-      {
-        label: `$(comment) ${i18n.word.comment}`,
-        type: PickType.comment,
-      },
-      {
-        label: `$(add) ${i18n.word.addToQueue}`,
-        type: PickType.add,
-      },
-      {
-        label: `$(play) ${i18n.word.nextTrack}`,
-        type: PickType.next,
-      },
-      {
-        label: `$(diff-added) ${i18n.word.saveToPlaylist}`,
-        type: PickType.save,
-      },
-      {
-        label: `$(library) ${i18n.word.similarSongs}`,
-        type: PickType.similar,
-      },
-      {
-        label: `$(library) ${i18n.word.similarPlaylists}`,
-        type: PickType.similar,
-      },
+      { label: `$(circuit-board) ${i18n.word.album}`, detail: al.name, id: al.id, type: PickType.album },
+      { label: `$(heart) ${i18n.word.like}`, type: PickType.like },
+      { label: `$(comment) ${i18n.word.comment}`, type: PickType.comment },
+      { label: `$(add) ${i18n.word.addToQueue}`, type: PickType.add },
+      { label: `$(play) ${i18n.word.nextTrack}`, type: PickType.next },
+      { label: `$(diff-added) ${i18n.word.saveToPlaylist}`, type: PickType.save },
+      { label: `$(library) ${i18n.word.similarSongs}`, type: PickType.similar },
+      { label: `$(library) ${i18n.word.similarPlaylists}`, type: PickType.similar },
     ],
   });
   switch (pick.type) {
     case PickType.copy:
-      void commands.executeCommand("cloudmusic.copySongLink", {
-        data: item,
-      } as QueueItemTreeItem);
+      void commands.executeCommand("cloudmusic.copySongLink", { data: item });
       break;
     case PickType.download:
-      void commands.executeCommand("cloudmusic.downloadSong", {
-        item,
-        valueOf: id,
-      });
+      void commands.executeCommand("cloudmusic.downloadSong", { item, valueOf: id });
       break;
     case PickType.album:
       return (input) => pickAlbum(input, step + 1, (pick as T).id);
@@ -233,11 +192,7 @@ export async function pickSong(
     case PickType.next:
       void commands.executeCommand(
         "cloudmusic.playNext",
-        QueueItemTreeItem.new({
-          ...item,
-          pid: item.al.id,
-          itemType: "q",
-        }) as QueueContent
+        QueueItemTreeItem.new({ ...item, pid: item.al.id, itemType: "q" })
       );
       break;
   }
@@ -254,14 +209,8 @@ export async function pickSongMany(
     title: i18n.word.song,
     step,
     items: [
-      {
-        label: `$(add) ${i18n.word.addToQueue}`,
-        type: PickType.add,
-      },
-      {
-        label: `$(play) ${i18n.word.nextTrack}`,
-        type: PickType.next,
-      },
+      { label: `$(add) ${i18n.word.addToQueue}`, type: PickType.add },
+      { label: `$(play) ${i18n.word.nextTrack}`, type: PickType.next },
     ],
   });
   IPC.add(
@@ -331,41 +280,21 @@ export async function pickProgram(
     step,
     items: [
       { label: `$(code) ${name}` },
-      {
-        label: `$(link) ${i18n.word.copyLink}`,
-        type: PickType.copy,
-      },
-      {
-        label: `$(cloud-download) ${i18n.word.download}`,
-        type: PickType.download,
-      },
+      { label: `$(link) ${i18n.word.copyLink}`, type: PickType.copy },
+      { label: `$(cloud-download) ${i18n.word.download}`, type: PickType.download },
       ...pickUserDetails([dj]),
       ...pickRadioDetails(radio ? [radio] : []),
-      {
-        label: `$(comment) ${i18n.word.comment}`,
-        type: PickType.comment,
-      },
-      {
-        label: `$(add) ${i18n.word.addToQueue}`,
-        type: PickType.add,
-      },
-      {
-        label: `$(play) ${i18n.word.nextTrack}`,
-        type: PickType.next,
-      },
+      { label: `$(comment) ${i18n.word.comment}`, type: PickType.comment },
+      { label: `$(add) ${i18n.word.addToQueue}`, type: PickType.add },
+      { label: `$(play) ${i18n.word.nextTrack}`, type: PickType.next },
     ],
   });
   switch (pick.type) {
     case PickType.copy:
-      void commands.executeCommand("cloudmusic.copyProgramLink", {
-        data: { id },
-      } as ProgramTreeItem);
+      void commands.executeCommand("cloudmusic.copyProgramLink", { data: { id } });
       break;
     case PickType.download:
-      void commands.executeCommand("cloudmusic.downloadSong", {
-        item: mainSong,
-        valueOf: id,
-      });
+      void commands.executeCommand("cloudmusic.downloadSong", { item: mainSong, valueOf: id });
       break;
     case PickType.user:
       return (input) => pickUser(input, step + 1, (pick as T).id);
@@ -377,24 +306,11 @@ export async function pickProgram(
     case PickType.add:
       void commands.executeCommand(
         "cloudmusic.addProgram",
-        ProgramTreeItem.new({
-          ...program,
-          pid: radio ? radio.id : 0,
-          itemType: "p",
-        })
+        ProgramTreeItem.new({ ...program, pid: radio ? radio.id : 0, itemType: "p" })
       );
       break;
     case PickType.next:
-      IPC.add(
-        [
-          ProgramTreeItem.new({
-            ...program,
-            pid: program.mainSong.al.id,
-            itemType: "p",
-          }).data,
-        ],
-        1
-      );
+      IPC.add([ProgramTreeItem.new({ ...program, pid: program.mainSong.al.id, itemType: "p" }).data], 1);
       break;
   }
 
@@ -410,25 +326,12 @@ export async function pickProgramMany(
     title: i18n.word.program,
     step,
     items: [
-      {
-        label: `$(add) ${i18n.word.addToQueue}`,
-        type: PickType.add,
-      },
-      {
-        label: `$(play) ${i18n.word.nextTrack}`,
-        type: PickType.next,
-      },
+      { label: `$(add) ${i18n.word.addToQueue}`, type: PickType.add },
+      { label: `$(play) ${i18n.word.nextTrack}`, type: PickType.next },
     ],
   });
   IPC.add(
-    programs.map(
-      (program) =>
-        ProgramTreeItem.new({
-          ...program,
-          pid: program.mainSong.id,
-          itemType: "p",
-        }).data
-    ),
+    programs.map((program) => ProgramTreeItem.new({ ...program, pid: program.mainSong.id, itemType: "p" }).data),
     pick.type === PickType.add ? undefined : 1
   );
   return input.stay();
@@ -469,32 +372,16 @@ export async function pickRadio(
     items: [
       { label: `$(code) ${name}` },
       { label: `$(markdown) ${desc}` },
-      {
-        label: `$(link) ${i18n.word.copyLink}`,
-        type: PickType.copy,
-      },
+      { label: `$(link) ${i18n.word.copyLink}`, type: PickType.copy },
       ...pickUserDetails([dj]),
-      {
-        label: `$(symbol-number) ${i18n.word.playCount}`,
-        description: `${playCount}`,
-      },
-      {
-        label: `$(symbol-number) ${i18n.word.subscribedCount}`,
-        description: `${subCount}`,
-        type: PickType.subscribed,
-      },
-      {
-        label: `$(symbol-number) ${i18n.word.trackCount}`,
-        description: `${programCount}`,
-        type: PickType.programs,
-      },
+      { label: `$(symbol-number) ${i18n.word.playCount}`, description: `${playCount}` },
+      { label: `$(symbol-number) ${i18n.word.subscribedCount}`, description: `${subCount}`, type: PickType.subscribed },
+      { label: `$(symbol-number) ${i18n.word.trackCount}`, description: `${programCount}`, type: PickType.programs },
     ],
   });
   switch (pick.type) {
     case PickType.copy:
-      void commands.executeCommand("cloudmusic.copyRadioLink", {
-        item: { id },
-      } as RadioTreeItem);
+      void commands.executeCommand("cloudmusic.copyRadioLink", { item: { id } });
       break;
     case PickType.user:
       return (input) => pickUser(input, step + 1, (pick as T).id);
@@ -513,11 +400,7 @@ export async function pickRadios(
   step: number,
   radios: readonly NeteaseTypings.RadioDetail[]
 ): Promise<InputStep> {
-  const { item } = await input.showQuickPick({
-    title: i18n.word.radio,
-    step,
-    items: pickRadioDetails(radios),
-  });
+  const { item } = await input.showQuickPick({ title: i18n.word.radio, step, items: pickRadioDetails(radios) });
   return (input) => pickRadio(input, step + 1, item);
 }
 
@@ -529,44 +412,14 @@ export async function pickArtist(input: MultiStepInput, step: number, id: number
     title: `${i18n.word.artist}-${i18n.word.detail}`,
     step,
     items: [
-      {
-        label: `$(code) ${name}`,
-        detail: alias.join("/"),
-      },
-      {
-        label: `$(markdown) ${i18n.word.description}`,
-        detail: briefDesc,
-        type: PickType.description,
-      },
-      {
-        label: `$(circuit-board) ${i18n.word.album}`,
-        description: `${albumSize}`,
-        id,
-        type: PickType.albums,
-      },
-      {
-        label: `$(flame) ${i18n.word.hotSongs}`,
-        description: `${hotSongs.length}`,
-        type: PickType.hot,
-      },
-      {
-        label: `$(symbol-number) ${i18n.word.trackCount}`,
-        description: `${musicSize}`,
-        id,
-        type: PickType.songs,
-      },
-      {
-        label: `$(library) ${i18n.word.similarArtists}`,
-        type: PickType.similar,
-      },
-      {
-        label: `$(diff-added) ${i18n.word.save}`,
-        type: PickType.save,
-      },
-      {
-        label: `$(diff-removed) ${i18n.word.unsave}`,
-        type: PickType.unsave,
-      },
+      { label: `$(code) ${name}`, detail: alias.join("/") },
+      { label: `$(markdown) ${i18n.word.description}`, detail: briefDesc, type: PickType.description },
+      { label: `$(circuit-board) ${i18n.word.album}`, description: `${albumSize}`, id, type: PickType.albums },
+      { label: `$(flame) ${i18n.word.hotSongs}`, description: `${hotSongs.length}`, type: PickType.hot },
+      { label: `$(symbol-number) ${i18n.word.trackCount}`, description: `${musicSize}`, id, type: PickType.songs },
+      { label: `$(library) ${i18n.word.similarArtists}`, type: PickType.similar },
+      { label: `$(diff-added) ${i18n.word.save}`, type: PickType.save },
+      { label: `$(diff-removed) ${i18n.word.unsave}`, type: PickType.unsave },
     ],
   });
   switch (pick.type) {
@@ -621,11 +474,7 @@ export async function pickArtists(
   step: number,
   artists: readonly NeteaseTypings.Artist[]
 ): Promise<InputStep> {
-  const pick = await input.showQuickPick({
-    title: i18n.word.artist,
-    step,
-    items: pickArtistItems(artists),
-  });
+  const pick = await input.showQuickPick({ title: i18n.word.artist, step, items: pickArtistItems(artists) });
   return (input) => pickArtist(input, step + 1, pick.id);
 }
 
@@ -637,32 +486,13 @@ export async function pickAlbum(input: MultiStepInput, step: number, id: number)
     title: `${i18n.word.album}-${i18n.word.detail}`,
     step,
     items: [
-      {
-        label: `$(code) ${name}`,
-        description: alias.join("/"),
-        detail: company,
-      },
-      {
-        label: `$(markdown) ${i18n.word.description}`,
-        detail: description,
-      },
-      {
-        label: `$(zap) ${i18n.word.content}`,
-        type: PickType.songs,
-      },
-      {
-        label: `$(comment) ${i18n.word.comment}`,
-        type: PickType.comment,
-      },
+      { label: `$(code) ${name}`, description: alias.join("/"), detail: company },
+      { label: `$(markdown) ${i18n.word.description}`, detail: description },
+      { label: `$(zap) ${i18n.word.content}`, type: PickType.songs },
+      { label: `$(comment) ${i18n.word.comment}`, type: PickType.comment },
       ...pickArtistItems(artists),
-      {
-        label: `$(diff-added) ${i18n.word.save}`,
-        type: PickType.save,
-      },
-      {
-        label: `$(diff-removed) ${i18n.word.unsave}`,
-        type: PickType.unsave,
-      },
+      { label: `$(diff-added) ${i18n.word.save}`, type: PickType.save },
+      { label: `$(diff-removed) ${i18n.word.unsave}`, type: PickType.unsave },
     ],
   });
   switch (pick.type) {
@@ -689,11 +519,7 @@ export async function pickAlbums(
   step: number,
   albums: readonly NeteaseTypings.AlbumsItem[]
 ): Promise<InputStep> {
-  const pick = await input.showQuickPick({
-    title: i18n.word.album,
-    step,
-    items: pickAlbumItems(albums),
-  });
+  const pick = await input.showQuickPick({ title: i18n.word.album, step, items: pickAlbumItems(albums) });
   return (input) => pickAlbum(input, step + 1, pick.id);
 }
 
@@ -707,29 +533,11 @@ export async function pickPlaylist(
     title: i18n.word.playlist,
     step,
     items: [
-      {
-        label: `$(code) ${name}`,
-      },
-      {
-        label: `$(markdown) ${i18n.word.description}`,
-        detail: description || "",
-      },
-      {
-        label: `$(link) ${i18n.word.copyLink}`,
-        type: PickType.copy,
-      },
-      {
-        label: `$(comment) ${i18n.word.comment}`,
-        type: PickType.comment,
-      },
-      ...(playCount
-        ? [
-            {
-              label: `$(symbol-number) ${i18n.word.playCount}`,
-              description: `${playCount}`,
-            },
-          ]
-        : []),
+      { label: `$(code) ${name}` },
+      { label: `$(markdown) ${i18n.word.description}`, detail: description || "" },
+      { label: `$(link) ${i18n.word.copyLink}`, type: PickType.copy },
+      { label: `$(comment) ${i18n.word.comment}`, type: PickType.comment },
+      ...(playCount ? [{ label: `$(symbol-number) ${i18n.word.playCount}`, description: `${playCount}` }] : []),
       ...(subscribedCount
         ? [
             {
@@ -740,34 +548,17 @@ export async function pickPlaylist(
           ]
         : []),
       ...(trackCount
-        ? [
-            {
-              label: `$(symbol-number) ${i18n.word.trackCount}`,
-              description: `${trackCount}`,
-              type: PickType.songs,
-            },
-          ]
+        ? [{ label: `$(symbol-number) ${i18n.word.trackCount}`, description: `${trackCount}`, type: PickType.songs }]
         : []),
       ...pickUserDetails([creator]),
-      {
-        label: `$(add) ${i18n.word.addToQueue}`,
-        type: PickType.add,
-      },
-      {
-        label: `$(play) ${i18n.word.nextTrack}`,
-        type: PickType.next,
-      },
-      {
-        label: `$(diff-added) ${i18n.word.save}`,
-        type: PickType.save,
-      },
+      { label: `$(add) ${i18n.word.addToQueue}`, type: PickType.add },
+      { label: `$(play) ${i18n.word.nextTrack}`, type: PickType.next },
+      { label: `$(diff-added) ${i18n.word.save}`, type: PickType.save },
     ],
   });
   switch (pick.type) {
     case PickType.copy:
-      void commands.executeCommand("cloudmusic.copyPlaylistLink", {
-        item,
-      } as PlaylistItemTreeItem);
+      void commands.executeCommand("cloudmusic.copyPlaylistLink", { item });
       break;
     case PickType.songs:
       return async (input) => pickSongs(input, step + 1, await IPC.netease("playlistDetail", [0, id]));
@@ -788,15 +579,14 @@ export async function pickPlaylist(
         IPC.add(songs.map((song) => QueueItemTreeItem.new({ ...song, pid: id, itemType: "q" }).data));
       }
       break;
-    case PickType.next:
-      {
-        const songs = await IPC.netease("playlistDetail", [0, id]);
-        IPC.add(
-          songs.map((song) => QueueItemTreeItem.new({ ...song, pid: id, itemType: "q" }).data),
-          1
-        );
-      }
+    case PickType.next: {
+      const songs = await IPC.netease("playlistDetail", [0, id]);
+      IPC.add(
+        songs.map((song) => QueueItemTreeItem.new({ ...song, pid: id, itemType: "q" }).data),
+        1
+      );
       break;
+    }
     case PickType.comment:
       Webview.comment(NeteaseCommentType.playlist, id, name);
       break;
@@ -809,10 +599,7 @@ export async function pickPlaylist(
     const pick = await input.showQuickPick({
       title: i18n.word.saveToPlaylist,
       step,
-      items: [...AccountManager.accounts].map(([uid, { nickname }]) => ({
-        label: `$(account) ${nickname}`,
-        uid,
-      })),
+      items: [...AccountManager.accounts].map(([uid, { nickname }]) => ({ label: `$(account) ${nickname}`, uid })),
     });
     if (!pick) return;
     await IPC.netease("playlistSubscribe", [pick.uid, id, "subscribe"]);
@@ -840,22 +627,14 @@ export async function pickPlaylists(
   step: number,
   items: readonly NeteaseTypings.PlaylistItem[]
 ): Promise<InputStep> {
-  const pick = await input.showQuickPick({
-    title: i18n.word.playlist,
-    step,
-    items: pickPlaylistItems(items),
-  });
+  const pick = await input.showQuickPick({ title: i18n.word.playlist, step, items: pickPlaylistItems(items) });
   return (input) => pickPlaylist(input, step + 1, pick.item);
 }
 
 export async function pickAddToPlaylist(input: MultiStepInput, step: number, id: number): Promise<InputStep | void> {
   const items = [];
   for (const [uid, { nickname }] of AccountManager.accounts) items.push({ label: `$(account) ${nickname}`, uid });
-  const { uid } = await input.showQuickPick({
-    title: i18n.word.user,
-    step,
-    items,
-  });
+  const { uid } = await input.showQuickPick({ title: i18n.word.user, step, items });
   return (input) => _pickPlaylist(input, step + 1, uid);
 
   async function _pickPlaylist(input: MultiStepInput, step: number, uid: number) {
@@ -863,33 +642,25 @@ export async function pickAddToPlaylist(input: MultiStepInput, step: number, id:
     const pick = await input.showQuickPick({
       title: i18n.word.saveToPlaylist,
       step,
-      items: lists.map(({ name, id }) => ({
-        label: `$(list-unordered) ${name}`,
-        id,
-      })),
+      items: lists.map(({ name, id }) => ({ label: `$(list-unordered) ${name}`, id })),
     });
-    if (await IPC.netease("playlistTracks", [uid, "add", pick.id, [id]]))
+    if (await IPC.netease("playlistTracks", [uid, "add", pick.id, [id]])) {
       void window.showInformationMessage(i18n.sentence.success.addToPlaylist);
-    else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
+    } else void window.showErrorMessage(i18n.sentence.fail.addToPlaylist);
     return input.stay();
   }
 }
 
 export async function pickUser(input: MultiStepInput, step: number, uid: number): Promise<InputStep> {
   const user = await IPC.netease("userDetail", [uid]);
-  if (!user) {
-    return input.stay();
-  }
+  if (!user) return input.stay();
+
   const playlists = await IPC.netease("userPlaylist", [uid]);
   const pick = await input.showQuickPick({
     title: i18n.word.user,
     step,
     items: [
-      {
-        label: `$(account) ${user.nickname}`,
-        detail: user.signature,
-        item: 0,
-      },
+      { label: `$(account) ${user.nickname}`, detail: user.signature, item: 0 },
       {
         label: `$(symbol-number) ${i18n.word.followeds}`,
         description: `${user.followeds}`,
@@ -902,15 +673,9 @@ export async function pickUser(input: MultiStepInput, step: number, uid: number)
         type: PickType.follows,
         item: 0,
       },
-      {
-        label: `>>>>    ${i18n.word.playlist}`,
-        item: 0,
-      },
+      { label: `>>>>    ${i18n.word.playlist}`, item: 0 },
       ...pickPlaylistItems(playlists.filter((playlist) => playlist.creator.userId === uid)),
-      {
-        label: `>>>>    ${i18n.word.saved}`,
-        item: 0,
-      },
+      { label: `>>>>    ${i18n.word.saved}`, item: 0 },
       ...pickPlaylistItems(playlists.filter((playlist) => playlist.creator.userId !== uid)),
     ],
   });

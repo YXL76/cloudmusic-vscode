@@ -2,14 +2,14 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["ES2021"],
+    "lib": ["ES2022"],
     "module": "commonjs",
     "noEmit": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
     "strict": true,
     "strictFunctionTypes": true,
-    "target": "ES2021"
+    "target": "ES2022"
   },
   "include": ["."]
 }

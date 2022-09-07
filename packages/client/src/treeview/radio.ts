@@ -93,7 +93,7 @@ export class RadioProvider implements TreeDataProvider<Content> {
 export class RadioTreeItem extends TreeItem {
   private static readonly _set = new Map<number, RadioTreeItem>();
 
-  override readonly label!: string;
+  declare readonly label: string;
 
   override readonly tooltip = `${i18n.word.description}: ${this.item.desc || ""}
 ${i18n.word.trackCount}: ${this.item.programCount}
@@ -137,7 +137,7 @@ export type ProgramTreeItemData = NeteaseTypings.ProgramDetail & {
 export class ProgramTreeItem extends TreeItem implements PlayTreeItem {
   private static readonly _set = new Map<number, ProgramTreeItem>();
 
-  override readonly label!: string;
+  declare readonly label: string;
 
   override readonly description = this.data.mainSong.ar.map(({ name }) => name).join("/");
 

@@ -1,6 +1,5 @@
 import { AUTO_START, BUTTON_KEY, NATIVE_MODULE, SETTING_DIR } from "./constant";
-import { AccountManager, ButtonManager } from "./manager";
-import { AccountViewProvider, IPC, State, Webview } from "./utils";
+import { CONTEXT, IPC, STATE } from "./utils";
 import type { Disposable, ExtensionContext, TreeDataProvider, TreeView, TreeViewVisibilityChangeEvent } from "vscode";
 import { LocalProvider, PlaylistProvider, QueueProvider, RadioProvider } from "./treeview";
 import { Uri, window, workspace } from "vscode";
@@ -8,6 +7,7 @@ import { mkdir } from "node:fs/promises";
 import { realActivate } from "./activate";
 
 export async function activate(context: ExtensionContext): Promise<void> {
+  CONTEXT.context = context;
   /* process.setUncaughtExceptionCaptureCallback(({ message }) =>
     console.error(message)
   ); */
@@ -15,20 +15,15 @@ export async function activate(context: ExtensionContext): Promise<void> {
   await mkdir(SETTING_DIR, { recursive: true }).catch();
 
   context.globalState.setKeysForSync([BUTTON_KEY]);
-  AccountViewProvider.context = context;
-  AccountManager.context = context;
-  ButtonManager.context = context;
-  State.context = context;
-  Webview.extUri = context.extensionUri;
 
   // Check mode
-  if (!State.wasm) {
+  if (!STATE.wasm) {
     const buildUri = Uri.joinPath(context.extensionUri, "build");
     const files = await workspace.fs.readDirectory(buildUri);
-    State.wasm = files.findIndex(([file]) => file === NATIVE_MODULE) === -1;
-    if (!State.wasm) State.downInit(); // 3
+    STATE.wasm = files.findIndex(([file]) => file === NATIVE_MODULE) === -1;
+    if (!STATE.wasm) STATE.downInit(); // 3
   }
-  console.log("Cloudmusic:", State.wasm ? "wasm" : "native", "mode.");
+  console.log("Cloudmusic:", STATE.wasm ? "wasm" : "native", "mode.");
 
   const createTreeView = <T>(viewId: string, treeDataProvider: TreeDataProvider<T> & { view: TreeView<T> }) => {
     const view = window.createTreeView(viewId, { treeDataProvider });
@@ -43,9 +38,8 @@ export async function activate(context: ExtensionContext): Promise<void> {
   context.subscriptions.push(queue, local, playlist, radio);
 
   // Only checking the visibility of the queue treeview is enough.
-  if (AUTO_START || queue.visible) {
-    await realActivate(context);
-  } else {
+  if (AUTO_START || queue.visible) await realActivate(context);
+  else {
     let done = false;
     const disposables: Disposable[] = [];
     const callback = ({ visible }: TreeViewVisibilityChangeEvent) => {
@@ -59,16 +53,9 @@ export async function activate(context: ExtensionContext): Promise<void> {
   }
 }
 
-export async function deactivate(): Promise<void> {
-  if (State.master) IPC.retain(QueueProvider.songs);
+export function deactivate(): Promise<void> {
+  if (STATE.master) IPC.retain(QueueProvider.songs);
   // On windows, the data will be lost when the PIPE is closed.
-  if (process.platform !== "win32") IPC.disconnect();
-  else {
-    await new Promise<void>((resolve) =>
-      setTimeout(() => {
-        IPC.disconnect();
-        resolve();
-      }, 2048)
-    );
-  }
+  if (process.platform !== "win32") return Promise.resolve(IPC.disconnect());
+  else return new Promise<void>((resolve) => setTimeout(() => resolve(IPC.disconnect()), 2048));
 }

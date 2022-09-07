@@ -1,33 +1,33 @@
-import { IPC, MultiStepInput, State, likeMusic } from "../utils";
+import { IPC, MultiStepInput, STATE, likeMusic } from "../utils";
 import { QueueItemTreeItem, QueueProvider } from "../treeview";
 import { SPEED_KEY, VOLUME_KEY } from "../constant";
-import { ButtonManager } from "../manager";
+import { BUTTON_MANAGER } from "../manager";
 import type { ExtensionContext } from "vscode";
 import { commands } from "vscode";
 import i18n from "../i18n";
 
 export function initCommand(context: ExtensionContext): void {
   context.subscriptions.push(
-    commands.registerCommand("cloudmusic.seekbackward", () => IPC.seek(-15)),
+    commands.registerCommand("cloudmusic.seekbackward", IPC.seek.bind(undefined, -15)),
 
-    commands.registerCommand("cloudmusic.seekforward", () => IPC.seek(15)),
+    commands.registerCommand("cloudmusic.seekforward", IPC.seek.bind(undefined, 15)),
 
     commands.registerCommand("cloudmusic.previous", () => {
-      if (!State.fm && QueueProvider.len) IPC.shift(-1);
+      if (!STATE.fm && QueueProvider.len) IPC.shift(-1);
     }),
 
     commands.registerCommand("cloudmusic.next", () => {
-      if (State.fm) IPC.fmNext();
+      if (STATE.fm) IPC.fmNext();
       else if (QueueProvider.len) IPC.shift(1);
     }),
 
-    commands.registerCommand("cloudmusic.toggle", () => IPC.toggle()),
+    commands.registerCommand("cloudmusic.toggle", IPC.toggle),
 
-    commands.registerCommand("cloudmusic.repeat", () => IPC.repeat(!State.repeat)),
+    commands.registerCommand("cloudmusic.repeat", () => IPC.repeat(!STATE.repeat)),
 
     commands.registerCommand("cloudmusic.like", () => {
-      if (State.like && State.playItem instanceof QueueItemTreeItem) {
-        const id = State.playItem.valueOf;
+      if (STATE.like && STATE.playItem instanceof QueueItemTreeItem) {
+        const id = STATE.playItem.valueOf;
         void MultiStepInput.run((input) => likeMusic(input, 1, id));
       }
     }),
@@ -72,6 +72,6 @@ export function initCommand(context: ExtensionContext): void {
         })
     ),
 
-    commands.registerCommand("cloudmusic.toggleButton", () => ButtonManager.toggle())
+    commands.registerCommand("cloudmusic.toggleButton", () => BUTTON_MANAGER.toggle())
   );
 }

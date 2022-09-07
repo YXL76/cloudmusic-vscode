@@ -21,9 +21,7 @@ const title = i18n.word.search;
 const totalSteps = 4;
 const limit = 30;
 
-type State = {
-  keyword: string;
-};
+type State = { keyword: string };
 
 export async function inputKeyword(input: MultiStepInput, uid: number): Promise<InputStep> {
   const state = {} as State;
@@ -41,9 +39,7 @@ export async function inputKeyword(input: MultiStepInput, uid: number): Promise<
     that.enabled = false;
     that.busy = true;
     IPC.netease("searchSuggest", [uid, value])
-      .then((suggestions) => {
-        that.items = [that.items[0], ...suggestions.map((label) => ({ label }))];
-      })
+      .then((suggestions) => (that.items = [that.items[0], ...suggestions.map((label) => ({ label }))]))
       .catch(console.error)
       .finally(() => {
         that.enabled = true;
@@ -61,9 +57,7 @@ export async function inputKeyword(input: MultiStepInput, uid: number): Promise<
       if (value) {
         that.items = [{ label: value }, ...that.items.slice(1)];
         updateSuggestions(that, value);
-      } else {
-        that.items = items;
-      }
+      } else that.items = items;
     },
   });
   state.keyword = pick.label;
@@ -76,26 +70,11 @@ export async function inputKeyword(input: MultiStepInput, uid: number): Promise<
       step: 3,
       totalSteps,
       items: [
-        {
-          label: `$(zap) ${i18n.word.single}`,
-          type: NeteaseSearchType.single,
-        },
-        {
-          label: `$(circuit-board) ${i18n.word.album}`,
-          type: NeteaseSearchType.album,
-        },
-        {
-          label: `$(account) ${i18n.word.artist}`,
-          type: NeteaseSearchType.artist,
-        },
-        {
-          label: `$(list-unordered) ${i18n.word.playlist}`,
-          type: NeteaseSearchType.playlist,
-        },
-        {
-          label: `$(text-size) ${i18n.word.lyric}`,
-          type: NeteaseSearchType.lyric,
-        },
+        { label: `$(zap) ${i18n.word.single}`, type: NeteaseSearchType.single },
+        { label: `$(circuit-board) ${i18n.word.album}`, type: NeteaseSearchType.album },
+        { label: `$(account) ${i18n.word.artist}`, type: NeteaseSearchType.artist },
+        { label: `$(list-unordered) ${i18n.word.playlist}`, type: NeteaseSearchType.playlist },
+        { label: `$(text-size) ${i18n.word.lyric}`, type: NeteaseSearchType.lyric },
       ],
       placeholder: i18n.sentence.hint.search,
     });

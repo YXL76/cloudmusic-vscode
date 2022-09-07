@@ -70,9 +70,7 @@ export class LocalProvider implements TreeDataProvider<Content> {
   }
 
   async getChildren(element?: LocalLibraryTreeItem): Promise<(LocalFileTreeItem | LocalLibraryTreeItem)[]> {
-    if (!element) {
-      return [MUSIC_CACHE_DIR, ...LocalProvider._folders].map((folder) => new LocalLibraryTreeItem(folder));
-    }
+    if (!element) return [MUSIC_CACHE_DIR, ...LocalProvider._folders].map((folder) => new LocalLibraryTreeItem(folder));
 
     const action = LocalProvider._actions.get(element);
     LocalProvider._actions.delete(element);
@@ -94,9 +92,7 @@ export class LocalProvider implements TreeDataProvider<Content> {
 
         for (const dirent of dirents) {
           if (dirent.isFile()) paths.push(dirent.name);
-          else if (dirent.isDirectory()) {
-            folders.push(resolve(folder, dirent.name));
-          }
+          else if (dirent.isDirectory()) folders.push(resolve(folder, dirent.name));
         }
 
         const promises = paths.map(async (filename) => {
@@ -127,10 +123,7 @@ export class LocalProvider implements TreeDataProvider<Content> {
               alia: [],
               id: 0,
               al: { id: 0, name: common.album ?? "", picUrl: "" },
-              ar: (common.artists ?? [common.artist ?? ""]).map((name) => ({
-                name,
-                id: 0,
-              })),
+              ar: (common.artists ?? [common.artist ?? ""]).map((name) => ({ name, id: 0 })),
               dt: format.duration ?? 4800000,
             };
 
@@ -151,15 +144,13 @@ export class LocalProvider implements TreeDataProvider<Content> {
 
   getParent(element: Content): undefined | LocalLibraryTreeItem {
     if (element instanceof LocalLibraryTreeItem) return;
-    for (const [library, files] of LocalProvider._files) {
-      if (files.includes(element)) return library;
-    }
+    for (const [library, files] of LocalProvider._files) if (files.includes(element)) return library;
     throw Error(`{element.data.filename} not found`);
   }
 }
 
 export class LocalLibraryTreeItem extends TreeItem {
-  override readonly label!: string;
+  declare readonly label: string;
 
   override readonly tooltip = this.label;
 
