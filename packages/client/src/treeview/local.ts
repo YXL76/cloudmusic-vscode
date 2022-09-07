@@ -18,7 +18,7 @@ const supportedType: Set<string> = new Set(["WAVE", "FLAC", "MPEG"]);
 type Content = LocalFileTreeItem | LocalLibraryTreeItem;
 
 export class LocalProvider implements TreeDataProvider<Content> {
-  static readonly folders: string[] = [];
+  private static readonly _folders: Set<string> = new Set();
 
   private static _instance: LocalProvider;
 
@@ -40,6 +40,22 @@ export class LocalProvider implements TreeDataProvider<Content> {
 
   static getInstance(): LocalProvider {
     return this._instance || (this._instance = new LocalProvider());
+  }
+
+  static addFolder(path: string): string[] | undefined {
+    if (!this._folders.has(path)) {
+      this._folders.add(path);
+      this.refresh();
+      return [...this._folders];
+    }
+    return;
+  }
+
+  static deleteFolder(path: string): void {
+    if (this._folders.has(path)) {
+      this._folders.delete(path);
+      this.refresh();
+    }
   }
 
   static refresh(): void {
@@ -70,7 +86,7 @@ export class LocalProvider implements TreeDataProvider<Content> {
     element?: LocalLibraryTreeItem
   ): Promise<(LocalFileTreeItem | LocalLibraryTreeItem)[]> {
     if (!element) {
-      return [MUSIC_CACHE_DIR, ...LocalProvider.folders].map(
+      return [MUSIC_CACHE_DIR, ...LocalProvider._folders].map(
         (folder) => new LocalLibraryTreeItem(folder)
       );
     }
@@ -87,8 +103,9 @@ export class LocalProvider implements TreeDataProvider<Content> {
 
     const folders: string[] = [element.label];
     try {
-      for (let idx = 0; idx < folders.length; ++idx) {
-        const folder = folders[idx];
+      while (folders.length) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const folder = folders.pop()!;
         const dirents = await readdir(folder, { withFileTypes: true });
         const paths: string[] = [];
 

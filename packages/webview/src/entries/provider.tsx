@@ -72,7 +72,10 @@ class WebAudioPlayer {
     this._audio.preload = "auto";
 
     this._audio.addEventListener("durationchange", () => {
-      if (this._audio.duration) Controller.duration = this._audio.duration;
+      if (this._audio.duration) {
+        Controller.duration = this._audio.duration;
+        Controller.setStatus(this._audio.currentTime);
+      }
     });
 
     console.log("Audio Player: HTMLAudioElement");
@@ -138,7 +141,7 @@ class WebAudioPlayer {
 class Controller {
   static duration = 300;
 
-  static playbackRate = 1;
+  private static _playbackRate = 1;
 
   private static _player?: Player | WebAudioPlayer;
 
@@ -152,6 +155,16 @@ class Controller {
   private static _timerId?: number;
 
   private static _playableFile?: string;
+
+  private static set playing(playing: boolean) {
+    if (this._playing !== playing) {
+      this._playing = playing;
+      navigator.mediaSession.playbackState = playing ? "playing" : "paused";
+      if (this._player) this.setStatus(this._player.position());
+      const msg: ProviderCMsg = { command: "playing", playing };
+      vscode.postMessage(msg);
+    }
+  }
 
   static async init() {
     const { enablePlayer, testfiles } = window as unknown as {
@@ -186,40 +199,32 @@ class Controller {
     const buf = await rep.arrayBuffer();
 
     if (await this._player.load(new Uint8Array(buf), play, seek)) {
-      this._playing = play;
-      navigator.mediaSession.playbackState = play ? "playing" : "paused";
+      this.playing = play;
       const msg: ProviderCMsg = { command: "load" };
       vscode.postMessage(msg);
     }
-    this._syncState();
   }
 
   static async play() {
     if (!this._player) return;
-    this._playing = !!(await this._player.play());
-    navigator.mediaSession.playbackState = this._playing ? "playing" : "paused";
-    this._syncState();
+    this.playing = !!(await this._player.play());
   }
 
   static pause() {
     if (!this._player) return;
     this._player.pause();
-    this._playing = false;
-    navigator.mediaSession.playbackState = "paused";
-    this._syncState();
+    this.playing = false;
   }
 
   static stop() {
     if (!this._player) return;
     this._player.stop();
-    this._playing = false;
-    navigator.mediaSession.playbackState = "paused";
-    this._syncState();
+    this.playing = false;
   }
 
   static speed(speed: number) {
     this._player?.set_speed(speed);
-    this.playbackRate = speed;
+    this._playbackRate = speed;
   }
 
   static volume(level: number) {
@@ -257,17 +262,9 @@ class Controller {
   static setStatus(position: number) {
     navigator.mediaSession.setPositionState?.({
       duration: this.duration,
-      playbackRate: this.playbackRate,
+      playbackRate: this._playbackRate,
       position,
     });
-  }
-
-  private static _syncState() {
-    const msg: ProviderCMsg = {
-      command: "playing",
-      playing: this._playing,
-    };
-    vscode.postMessage(msg);
   }
 
   private static async _testAudioFiles(
@@ -309,8 +306,7 @@ class Controller {
   private static _posHandler() {
     if (!this._player || !this._playing) return;
     if (this._player.empty()) {
-      this._playing = false;
-      navigator.mediaSession.playbackState = "paused";
+      this.playing = false;
       const msg: ProviderCMsg = { command: "end" };
       vscode.postMessage(msg);
       return;
@@ -319,7 +315,6 @@ class Controller {
     const pos = this._player.position();
     const msg: ProviderCMsg = { command: "position", pos };
     vscode.postMessage(msg);
-    this.setStatus(pos);
   }
 }
 

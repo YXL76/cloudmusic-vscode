@@ -8,7 +8,7 @@ import { LocalProvider } from "../treeview";
 export function initLocal(context: ExtensionContext): void {
   context.globalState
     .get<readonly string[]>(LOCAL_FOLDER_KEY)
-    ?.forEach((folder) => LocalProvider.folders.push(folder));
+    ?.forEach((folder) => LocalProvider.addFolder(folder));
   LocalProvider.refresh();
 
   context.subscriptions.push(
@@ -22,13 +22,9 @@ export function initLocal(context: ExtensionContext): void {
       )?.shift()?.fsPath;
       if (!path) return;
       try {
-        if (!LocalProvider.folders.includes(path)) {
-          LocalProvider.folders.push(path);
-          await context.globalState.update(
-            LOCAL_FOLDER_KEY,
-            LocalProvider.folders
-          );
-          LocalProvider.refresh();
+        const folders = LocalProvider.addFolder(path);
+        if (folders) {
+          await context.globalState.update(LOCAL_FOLDER_KEY, folders);
         }
       } catch {}
     }),
@@ -39,11 +35,7 @@ export function initLocal(context: ExtensionContext): void {
 
     commands.registerCommand(
       "cloudmusic.deleteLocalLibrary",
-      ({ label }: LocalLibraryTreeItem) => {
-        const idx = LocalProvider.folders.indexOf(label);
-        LocalProvider.folders.splice(idx, 1);
-        LocalProvider.refresh();
-      }
+      ({ label }: LocalLibraryTreeItem) => LocalProvider.deleteFolder(label)
     ),
 
     commands.registerCommand(

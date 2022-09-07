@@ -30,7 +30,7 @@ import {
 } from "./index";
 import { NeteaseCommentType, NeteaseSortType } from "@cloudmusic/shared";
 import type { ProviderSMsg, WebviewType } from "@cloudmusic/shared";
-import { SETTING_DIR, SPEED_KEY, VOLUME_KEY } from "../constant";
+import { SPEED_KEY, VOLUME_KEY } from "../constant";
 import { AccountManager } from "../manager";
 import type { NeteaseTypings } from "api";
 import i18n from "../i18n";
@@ -150,7 +150,7 @@ export class AccountViewProvider implements WebviewViewProvider {
             title: item.label,
             artist: item.description,
             album: item.tooltip,
-            artwork: [{ src: data.al.picUrl }],
+            artwork: data.al.picUrl ? [{ src: data.al.picUrl }] : undefined,
           },
         };
         void this._view.webview.postMessage(msg);
@@ -169,7 +169,8 @@ export class AccountViewProvider implements WebviewViewProvider {
     webview.title = i18n.word.account;
     webview.webview.options = {
       enableScripts: true,
-      localResourceRoots: [extUri, Uri.file(SETTING_DIR)],
+      // localResourceRoots: [extUri, Uri.file(SETTING_DIR)],
+      localResourceRoots: [Uri.file("/")],
     };
 
     webview.webview.onDidReceiveMessage((msg: ProviderCMsg) => {
