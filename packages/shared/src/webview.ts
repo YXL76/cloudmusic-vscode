@@ -1,12 +1,7 @@
 import type { CSMessage } from "./index";
 import type { NeteaseTypings } from "api";
 
-export type WebviewType =
-  | "comment"
-  | "login"
-  | "description"
-  | "lyric"
-  | "musicRanking";
+export type WebviewType = "comment" | "login" | "description" | "lyric" | "musicRanking";
 
 export type CommentCSMsg =
   | { command: "init" }
@@ -35,7 +30,7 @@ export type ProviderCMsg =
   | { command: "next" }
   | { command: "account"; userId: number }
   | { command: "end" }
-  | { command: "load" }
+  | { command: "load"; fail?: true }
   | { command: "position"; pos: number }
   | { command: "playing"; playing: boolean };
 

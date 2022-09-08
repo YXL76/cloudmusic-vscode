@@ -6,7 +6,7 @@ import { LOCAL_FOLDER_KEY } from "../constant";
 import { LocalProvider } from "../treeview";
 
 export function initLocal(context: ExtensionContext): void {
-  context.globalState.get<readonly string[]>(LOCAL_FOLDER_KEY)?.forEach((folder) => LocalProvider.addFolder(folder));
+  context.globalState.get<readonly string[]>(LOCAL_FOLDER_KEY)?.forEach((f) => void LocalProvider.addFolder(f));
   LocalProvider.refresh();
 
   context.subscriptions.push(
@@ -16,7 +16,7 @@ export function initLocal(context: ExtensionContext): void {
       )?.shift()?.fsPath;
       if (!path) return;
       try {
-        const folders = LocalProvider.addFolder(path);
+        const folders = await LocalProvider.addFolder(path);
         if (folders) await context.globalState.update(LOCAL_FOLDER_KEY, folders);
       } catch {}
     }),

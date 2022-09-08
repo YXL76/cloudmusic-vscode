@@ -196,6 +196,10 @@ class Controller {
       this.playing = play;
       const msg: ProviderCMsg = { command: "load" };
       vscode.postMessage(msg);
+    } else {
+      this.playing = false;
+      const msg: ProviderCMsg = { command: "load", fail: true };
+      vscode.postMessage(msg);
     }
   }
 
@@ -217,8 +221,11 @@ class Controller {
   }
 
   static speed(speed: number) {
-    this._player?.set_speed(speed);
     this._playbackRate = speed;
+    if (this._player) {
+      this._player.set_speed(speed);
+      Controller.setStatus(this._player.position());
+    }
   }
 
   static volume(level: number) {
@@ -226,7 +233,10 @@ class Controller {
   }
 
   static seek(seekOffset: number) {
-    this._player?.seek(seekOffset);
+    if (this._player) {
+      this._player.seek(seekOffset);
+      Controller.setStatus(this._player.position());
+    }
   }
 
   static position() {

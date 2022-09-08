@@ -1,11 +1,11 @@
 import { EventEmitter, ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
 import type { PlayTreeItem, PlayTreeItemData } from "./index";
 import type { TreeDataProvider, TreeView } from "vscode";
+import { readdir, stat } from "node:fs/promises";
 import type { IAudioMetadata } from "music-metadata";
 import { MUSIC_CACHE_DIR } from "../constant";
 import type { NeteaseTypings } from "api";
 import { parseFile } from "music-metadata";
-import { readdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const supportedType: Set<string> = new Set(["WAVE", "FLAC", "MPEG"]);
@@ -34,11 +34,14 @@ export class LocalProvider implements TreeDataProvider<Content> {
     return this._instance || (this._instance = new LocalProvider());
   }
 
-  static addFolder(path: string): string[] | undefined {
+  static async addFolder(path: string): Promise<string[] | undefined> {
     if (!this._folders.has(path)) {
-      this._folders.add(path);
-      this.refresh();
-      return [...this._folders];
+      try {
+        await stat(path);
+        this._folders.add(path);
+        this.refresh();
+        return [...this._folders];
+      } catch {}
     }
     return;
   }
@@ -106,7 +109,8 @@ export class LocalProvider implements TreeDataProvider<Content> {
             if (
               res.status === "fulfilled" &&
               res.value.meta.format.container &&
-              supportedType.has(res.value.meta.format.container)
+              supportedType.has(res.value.meta.format.container) &&
+              !res.value.meta.format.codecProfile?.startsWith("AAC")
             ) {
               acc.push(res.value);
             }

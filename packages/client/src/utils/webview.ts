@@ -186,7 +186,7 @@ export class AccountViewProvider implements WebviewViewProvider {
           else void commands.executeCommand("cloudmusic.next");
           return;
         case "load":
-          return IPC.loaded();
+          return msg.fail ? void commands.executeCommand("cloudmusic.next") : IPC.loaded();
         case "position":
           return IPC.position(msg.pos);
         case "playing":
