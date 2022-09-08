@@ -5,10 +5,10 @@ import type { IPCClientMsg, IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseAPICMsg, NeteaseAPISMsg } from "./index";
 import { PERSONAL_FM, STATE } from "./state";
 import { PLAYER, posHandler } from "./player";
-import { RETAIN_FILE, TMP_DIR, ipcBroadcastServerPath, ipcServerPath } from "./constant";
+import { RETAIN_FILE, ipcBroadcastServerPath, ipcServerPath } from "./constant";
 import type { Server, Socket } from "node:net";
 import { downloadMusic, logError } from "./utils";
-import { readFile, rm, writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { broadcastProfiles } from "./api/netease/helper";
 import { createServer } from "node:net";
 import { rmSync } from "node:fs";
@@ -53,6 +53,7 @@ class IPCServer {
           for (const msg of msgs) this.#handler(<IPCClientMsg | NeteaseAPICMsg<"album">>JSON.parse(msg), socket);
         })
         .on("close", (/* err */) => {
+          MUSIC_CACHE.store().catch(logError);
           const isMaster = this.#master === socket;
 
           socket?.destroy();
@@ -126,11 +127,9 @@ class IPCServer {
       if (this.#sockets.size) return;
       this.stop();
       IPC_BCST_SRV.stop();
-      Promise.allSettled([
-        MUSIC_CACHE.store(),
-        rm(TMP_DIR, { recursive: true }),
-        writeFile(RETAIN_FILE, JSON.stringify(this.#retain)),
-      ]).finally(() => process.exit());
+      Promise.allSettled([MUSIC_CACHE.store(), writeFile(RETAIN_FILE, JSON.stringify(this.#retain))]).finally(() =>
+        process.exit()
+      );
     }, 40000);
   }
 

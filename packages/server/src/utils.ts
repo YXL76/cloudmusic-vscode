@@ -13,7 +13,7 @@ export const logError = (err: unknown): void =>
     typeof err === "object" ? (<Partial<Error>>err)?.stack || (<Partial<Error>>err)?.message || err : err
   );
 
-export async function getMusicPath(id: number, name: string, wasm?: boolean): Promise<string> {
+export async function getMusicPath(id: number, name: string, all: boolean): Promise<string> {
   const idS = `${id}`;
   const cachaUrl = MUSIC_CACHE.get(idS);
   if (cachaUrl) return cachaUrl;
@@ -22,31 +22,30 @@ export async function getMusicPath(id: number, name: string, wasm?: boolean): Pr
   if (!url) return Promise.reject();
   const tmpUri = resolve(TMP_DIR, idS);
 
-  let cache;
-  if (!STATE.fm) cache = { id: idS, name: `${name}-${idS}`, path: tmpUri, md5 };
-  const download = getMusic(url, cache);
+  const download = getMusic(url, { id: idS, name: `${name}-${idS}`, path: tmpUri, md5 });
   if (!download) return Promise.reject();
 
   return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => reject(void download.destroy()), 30000);
+    const guard = setTimeout(() => reject(void download.destroy()), 32000);
 
     const ret = () => {
-      clearTimeout(timer);
+      clearTimeout(guard);
       resolve(tmpUri);
     };
 
-    let len = 0;
-    const onData = ({ length }: { length: number }) => {
-      len += length;
-      if (len > STATE.minSize) {
-        download.removeListener("data", onData);
-        ret();
-      }
-    };
-
     const file = createWriteStream(tmpUri);
-    if (wasm) file.once("finish", () => ret());
-    else download.on("data", onData);
+    if (all) file.once("finish", ret);
+    else {
+      let len = 0;
+      const onData = ({ length }: { length: number }) => {
+        len += length;
+        if (len > STATE.minSize) {
+          download.removeListener("data", onData);
+          ret();
+        }
+      };
+      download.on("data", onData);
+    }
     download.once("error", reject).pipe(file);
   });
 }
@@ -64,13 +63,8 @@ function getMusic(url: string, cache?: { id: string; name: string; path: string;
   }
 }
 
-export function downloadMusic(
-  url: string,
-  path: string,
-  cache?: { id: string; name: string; path: string; md5?: string }
-) {
-  if (cache) cache.path = path;
-  const download = getMusic(url, cache);
+export function downloadMusic(url: string, path: string) {
+  const download = getMusic(url);
   if (!download) return;
   const file = createWriteStream(path);
   download.pipe(file);

@@ -1,8 +1,7 @@
 import { IPCPlayer, IPCWasm } from "@cloudmusic/shared";
-import { downloadMusic, getMusicPath, logError } from "./utils";
+import { getMusicPath, logError } from "./utils";
 import type { IPCClientLoadMsg } from "@cloudmusic/shared";
 import { IPC_SRV } from "./server";
-import { MUSIC_CACHE } from "./cache";
 import { NeteaseAPI } from "./api";
 import type { NeteaseTypings } from "api";
 import { PERSONAL_FM } from "./state";
@@ -10,6 +9,7 @@ import { STATE } from "./state";
 import { TMP_DIR } from "./constant";
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
+import { rm } from "node:fs/promises";
 
 type NativePlayerHdl = unknown;
 type NativeMediaSessionHdl = unknown;
@@ -39,31 +39,17 @@ interface NativeModule {
   mediaSessionSetPlayback(mediaSession: NativeMediaSessionHdl, playing: boolean, position: number): void;
 }
 
-let prefetchLock = false;
-
-async function prefetch() {
-  const { id, name } = (STATE.fm ? await PERSONAL_FM.next() : PLAYER.next) || {};
+function prefetch(next: { id?: number; name?: string }): void {
+  const { id, name } = next || {};
   if (!id || !name) return;
-  const idS = `${id}`;
-  if (MUSIC_CACHE.get(idS)) return;
-
-  const { url, md5 } = await NeteaseAPI.songUrl(id);
-  if (!url) return;
-  const path = resolve(TMP_DIR, idS);
-
-  let cache;
-  if (!STATE.fm) cache = { id: idS, name: `${name}-${idS}`, path, md5 };
-  downloadMusic(url, path, cache);
+  getMusicPath(id, name, true)
+    .then((tmpUri) => rm(tmpUri, { force: true }))
+    .catch(logError);
   NeteaseAPI.lyric(id).catch(logError);
 }
 
 export function posHandler(pos: number): void {
   PLAYER.lastPos = pos;
-
-  if (pos > 120 && !prefetchLock) {
-    prefetchLock = true;
-    prefetch().catch(logError);
-  }
 
   const lpos = pos - STATE.lyric.delay;
   {
@@ -82,28 +68,26 @@ export function posHandler(pos: number): void {
 }
 
 abstract class PlayerBase {
-  id = 0;
-
   lastPos = 0;
 
-  next?: { id: number; name: string };
+  #prefetchTimer?: NodeJS.Timeout;
 
   #loadtime = 0;
 
-  #scrobbleArgs?: { dt: number; pid: number };
+  #scrobbleArgs?: { id: number; dt: number; pid: number };
 
-  protected _playing = false;
+  #playing = false;
 
   protected abstract readonly _wasm: boolean;
 
   get playing() {
-    return this._playing;
+    return this.#playing;
   }
 
   set playing(value: boolean) {
-    if (this._playing !== value) {
-      this._playing = value;
-      this._setPlaying?.();
+    if (this.#playing !== value) {
+      this.#playing = value;
+      this._setPlaying?.(value);
       IPC_SRV.broadcast({ t: value ? IPCPlayer.play : IPCPlayer.pause });
     }
   }
@@ -113,15 +97,21 @@ abstract class PlayerBase {
     if (loadtime < this.#loadtime) return;
     const lastTime = this.#loadtime;
 
-    if (this.#scrobbleArgs && this.id) {
-      const { dt, pid } = this.#scrobbleArgs;
+    if (this.#scrobbleArgs) {
+      const { id, dt, pid } = this.#scrobbleArgs;
       this.#scrobbleArgs = undefined;
       const diff = loadtime - lastTime;
       if (diff > 60000) {
         const time = Math.floor(Math.min(diff, dt) / 1000);
-        NeteaseAPI.scrobble(this.id, pid, time).catch(logError);
+        NeteaseAPI.scrobble(id, pid, time).catch(logError);
       }
+      rm(resolve(TMP_DIR, `${id}`), { force: true }).catch(logError);
     }
+
+    if (this.#prefetchTimer) clearTimeout(this.#prefetchTimer);
+    (STATE.fm ? PERSONAL_FM.next() : Promise.resolve(data.next))
+      .then((next) => (this.#prefetchTimer = next ? setTimeout(() => prefetch(next), 120000) : undefined))
+      .catch(logError);
 
     try {
       const path = "url" in data && data.url ? data.url : await getMusicPath(data.item.id, data.item.name, this._wasm);
@@ -132,10 +122,6 @@ abstract class PlayerBase {
       return IPC_SRV.sendToMaster({ t: IPCPlayer.end, fail: true });
     }
 
-    this.next = data.next;
-    prefetchLock = false;
-
-    this.id = data.item.id;
     if (data.item.id) {
       NeteaseAPI.lyric(data.item.id)
         .then((lyric) => {
@@ -144,7 +130,7 @@ abstract class PlayerBase {
         })
         .catch(logError);
 
-      this.#scrobbleArgs = { dt: data.item.dt, pid: data.pid || 0 };
+      this.#scrobbleArgs = { id: data.item.id, dt: data.item.dt, pid: data.pid || 0 };
     } else {
       const lyric: NeteaseTypings.LyricData = { time: [0], text: [["~", "~", "~"]], user: [] };
       Object.assign(STATE.lyric, lyric, { idx: 0 });
@@ -155,7 +141,7 @@ abstract class PlayerBase {
   }
 
   toggle(): void {
-    this._playing ? this.pause() : this.play();
+    this.#playing ? this.pause() : this.play();
   }
 
   abstract pause(): void;
@@ -167,7 +153,7 @@ abstract class PlayerBase {
   abstract seek(seekOffset: number): void;
   protected abstract _load(path: string, play: boolean, item: NeteaseTypings.SongsItem, seek?: number): void;
   protected abstract _loaded?(): void; // WASM is sent from webview
-  protected abstract _setPlaying?(): void;
+  protected abstract _setPlaying?(playing: boolean): void;
   protected abstract wasmOpen?(): void;
 }
 
@@ -266,7 +252,7 @@ class NativePlayer extends PlayerBase {
     }, buildPath.replace(".node", "-media"));
 
     setInterval(() => {
-      if (!this._playing) return;
+      if (!this.playing) return;
       if (this.#native.playerEmpty(this.#player)) {
         this.playing = false;
         return IPC_SRV.sendToMaster({ t: IPCPlayer.end });
@@ -319,9 +305,9 @@ class NativePlayer extends PlayerBase {
     IPC_SRV.broadcast({ t: IPCPlayer.loaded });
   }
 
-  protected _setPlaying() {
+  protected _setPlaying(playing: boolean) {
     const pos = this.#native.playerPosition(this.#player);
-    this.#native.mediaSessionSetPlayback(this.#mediaSession, this._playing, pos);
+    this.#native.mediaSessionSetPlayback(this.#mediaSession, playing, pos);
   }
 }
 

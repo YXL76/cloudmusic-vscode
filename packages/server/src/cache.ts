@@ -95,9 +95,9 @@ class MusicCache {
     this.store().catch(logError);
   }
 
-  async store(): Promise<void> {
+  store(): Promise<void> {
     const json = JSON.stringify(this.#list.toArray());
-    await writeFile(this.#listPath, json).catch(logError);
+    return writeFile(this.#listPath, json);
   }
 
   get(key: string): string | void {

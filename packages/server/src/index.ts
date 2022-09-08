@@ -1,15 +1,12 @@
 import { CACHE_DIR, LYRIC_CACHE_DIR, MUSIC_CACHE_DIR, TMP_DIR } from "./constant";
 import type { CSMessage, IPCApi, IPCMsg } from "@cloudmusic/shared";
-import { readdir, rm } from "node:fs/promises";
 import { MUSIC_CACHE } from "./cache";
 import type { NeteaseAPI } from "./api";
-import { PLAYER } from "./player";
 import { bootstrap } from "global-agent";
 import http from "node:http";
 import https from "node:https";
 import { logError } from "./utils";
 import { mkdir } from "node:fs/promises";
-import { resolve } from "node:path";
 
 export type NeteaseAPIKey = keyof typeof NeteaseAPI;
 
@@ -35,34 +32,8 @@ else {
   https.globalAgent = new https.Agent(agentOptions);
 }
 
-(async () => {
-  await mkdir(TMP_DIR).catch(() => undefined);
-  await mkdir(CACHE_DIR).catch(() => undefined);
-  await mkdir(LYRIC_CACHE_DIR).catch(() => undefined);
-  await mkdir(MUSIC_CACHE_DIR).catch(() => undefined);
-  await MUSIC_CACHE.init();
-
-  setInterval(
-    () => {
-      readdir(TMP_DIR)
-        .then((files) => {
-          for (const file of files) {
-            // Playing || Downloading
-            if (file === `${PLAYER.id}` || file === `${PLAYER.next?.id || ""}`) continue;
-            // Remove unused file
-            const path = resolve(TMP_DIR, file);
-            rm(path).catch(logError);
-            // every tick only delete one file
-            return;
-          }
-          // If no files were deleted, the cache can be considered stable
-          // In practice, this is mostly invoked every 4 minutes (two ticks)
-          return MUSIC_CACHE.store();
-        })
-        .catch(logError);
-    },
-    // Assume the duration of a song is 3.5 minutes
-    // Do the cleanup every 2 minutes (2 * 60 * 1000 = 120000)
-    120000
-  );
-})().catch(logError);
+await mkdir(TMP_DIR).catch(() => undefined);
+await mkdir(CACHE_DIR).catch(() => undefined);
+await mkdir(LYRIC_CACHE_DIR).catch(() => undefined);
+await mkdir(MUSIC_CACHE_DIR).catch(() => undefined);
+await MUSIC_CACHE.init();
