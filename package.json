@@ -915,7 +915,7 @@
     "eslint-plugin-react-hooks": "4.6.0",
     "postcss": "8.4.16",
     "prettier": "2.7.1",
-    "supports-color": "9.2.2",
+    "supports-color": "9.2.3",
     "tailwindcss": "3.1.8",
     "typescript": "4.8.2"
   },
