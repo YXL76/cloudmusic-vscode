@@ -107,7 +107,7 @@ export function initStatusBar(context: ExtensionContext): void {
     }),
 
     commands.registerCommand("cloudmusic.fmTrash", () => {
-      if (STATE.fm && typeof STATE.playItem?.valueOf === "number") {
+      if (STATE.fmUid && typeof STATE.playItem?.valueOf === "number") {
         void IPC.netease("fmTrash", [STATE.playItem.valueOf]);
         void commands.executeCommand("cloudmusic.next");
       }

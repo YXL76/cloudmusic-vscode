@@ -34,7 +34,7 @@ export const VOLUME_KEY = "volume";
 export const LYRIC_KEY = "lyric-v3";
 export const LOCAL_FOLDER_KEY = "local-folder-v2";
 export const REPEAT_KEY = "repeat-v1";
-export const FM_KEY = "fm-v1";
+export const FM_KEY = "fm-v2";
 export const SHOW_LYRIC_KEY = "show-lyric-v1";
 
 // export const AUTH_PROVIDER_ID = "cloudmusic-auth-provider";

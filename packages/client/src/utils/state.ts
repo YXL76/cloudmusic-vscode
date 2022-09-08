@@ -51,7 +51,7 @@ class State {
 
   #like = false;
 
-  #fm = false;
+  #fmUid?: number;
 
   #showLyric = false;
 
@@ -75,8 +75,8 @@ class State {
     return this.#like;
   }
 
-  get fm(): boolean {
-    return this.#fm;
+  get fmUid(): number | undefined {
+    return this.#fmUid;
   }
 
   get showLyric(): boolean {
@@ -127,13 +127,16 @@ class State {
   }
 
   // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
-  set fm(value: boolean) {
-    if (this.#fm !== value) {
-      this.#fm = value;
-      BUTTON_MANAGER.buttonPrevious(value);
+  set fmUid(value: number | undefined) {
+    if (this.#fmUid !== value) {
+      this.#fmUid = value;
+      BUTTON_MANAGER.buttonPrevious(!!value);
       if (this.#master) {
-        if (value) IPC.fmNext();
-        else IPC.fm(false); // Only need to tell the server. Do not reply.
+        if (this.#fmUid) {
+          IPC.netease("personalFm", [this.#fmUid])
+            .then((i) => i && (this.playItem = QueueItemTreeItem.new({ ...i, pid: i.al.id, itemType: "q" })))
+            .catch(console.error);
+        }
         void CONTEXT.context.globalState.update(FM_KEY, value);
       }
     }
@@ -165,12 +168,22 @@ class State {
 
     this.repeat = CONTEXT.context.globalState.get(REPEAT_KEY, false);
 
-    /** From {@link fm}*/
+    /** From {@link fmUid}*/
     {
-      const value = CONTEXT.context.globalState.get(FM_KEY, false);
-      this.#fm = value;
-      BUTTON_MANAGER.buttonPrevious(value);
-      if (value && this.first) IPC.fmNext();
+      this.#fmUid = CONTEXT.context.globalState.get(FM_KEY, undefined);
+      BUTTON_MANAGER.buttonPrevious(!!this.#fmUid);
+      if (this.#fmUid && this.first) {
+        IPC.netease("personalFm", [this.#fmUid])
+          .then((item) => {
+            if (item) {
+              this.#playItem = QueueItemTreeItem.new({ ...item, pid: item.al.id, itemType: "q" });
+              this.like = true;
+              AccountViewProvider.metadata();
+              IPC.load(false);
+            }
+          })
+          .catch(console.error);
+      }
     }
 
     this.#showLyric = CONTEXT.context.globalState.get(SHOW_LYRIC_KEY, false);
@@ -178,7 +191,7 @@ class State {
     this.#lyric = CONTEXT.context.globalState.get(LYRIC_KEY, defaultLyric);
 
     /** From {@link playItem}*/
-    if (!this.#fm) {
+    if (!this.#fmUid) {
       const { head } = QueueProvider;
       this.#playItem = head;
       this.like = !!(head && head instanceof QueueItemTreeItem);
@@ -211,7 +224,7 @@ class State {
         CONTEXT.context.subscriptions.push(
           // Prevent first loading [#507](https://github.com/YXL76/cloudmusic-vscode/issues/507)
           QueueProvider.getInstance().onDidChangeTreeData(() => {
-            this.fm = false;
+            this.fmUid = undefined;
             this.playItem = QueueProvider.head;
           })
         );

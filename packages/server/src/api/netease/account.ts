@@ -142,12 +142,26 @@ export async function logout(uid: number): Promise<boolean> {
   return true;
 }
 
-export async function personalFm(uid: number): Promise<readonly NeteaseTypings.SongsItem[]> {
-  const res = await weapiRequest<{
-    data: readonly NeteaseTypings.AnotherSongItem[];
-  }>("music.163.com/weapi/v1/radio/get", {}, ACCOUNT_STATE.cookies.get(uid));
-  if (!res) return [];
-  return res.data.map(resolveAnotherSongItem);
+const fmSongsCache = new Map<number, NeteaseTypings.SongsItem[]>();
+async function _personalFm(uid: number): Promise<void> {
+  if (!fmSongsCache.has(uid)) fmSongsCache.set(uid, []);
+  const songs = fmSongsCache.get(uid);
+  if (songs) {
+    const res = await weapiRequest<{
+      data: readonly NeteaseTypings.AnotherSongItem[];
+    }>("music.163.com/weapi/v1/radio/get", {}, ACCOUNT_STATE.cookies.get(uid));
+    if (res) songs.push(...res.data.map(resolveAnotherSongItem));
+  }
+}
+export async function personalFm(uid: number): Promise<NeteaseTypings.SongsItem | undefined> {
+  if (!fmSongsCache.get(uid)?.length) await _personalFm(uid);
+  return fmSongsCache.get(uid)?.shift();
+}
+
+export async function personalFmNext(uid: number): Promise<NeteaseTypings.SongsItem | undefined> {
+  const songs = fmSongsCache.get(uid);
+  if (!songs || songs.length <= 1) await _personalFm(uid);
+  return fmSongsCache.get(uid)?.at(1);
 }
 
 export async function personalized(uid: number): Promise<readonly NeteaseTypings.PlaylistItem[]> {

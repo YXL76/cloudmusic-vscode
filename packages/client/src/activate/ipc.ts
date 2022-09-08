@@ -17,7 +17,7 @@ import {
 import { IPCApi, IPCControl, IPCPlayer, IPCQueue, IPCWasm, logFile } from "@cloudmusic/shared";
 import type { IPCBroadcastMsg, IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseAPIKey, NeteaseAPISMsg } from "@cloudmusic/server";
-import { PlaylistProvider, QueueItemTreeItem, RadioProvider } from "../treeview";
+import { PlaylistProvider, RadioProvider } from "../treeview";
 import { Uri, commands, window, workspace } from "vscode";
 import { readdir, rm } from "node:fs/promises";
 import type { ExtensionContext } from "vscode";
@@ -116,9 +116,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       case IPCPlayer.speed:
         return BUTTON_MANAGER.buttonSpeed(data.speed);
       case IPCQueue.fm:
-        return (STATE.fm = true);
-      case IPCQueue.fmNext:
-        return (STATE.playItem = QueueItemTreeItem.new({ ...data.item, pid: data.item.al.id, itemType: "q" }));
+        return (STATE.fmUid = data.uid);
       case IPCWasm.load:
         return AccountViewProvider.wasmLoad(data.path, data.play, data.seek);
       case IPCWasm.pause:

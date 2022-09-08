@@ -1,10 +1,9 @@
 import { IPCPlayer, IPCWasm } from "@cloudmusic/shared";
-import { getMusicPath, logError } from "./utils";
+import { getMusicPath, getMusicPathClean, logError } from "./utils";
+import { lyric, scrobble } from "./api/netease";
 import type { IPCClientLoadMsg } from "@cloudmusic/shared";
 import { IPC_SRV } from "./server";
-import { NeteaseAPI } from "./api";
 import type { NeteaseTypings } from "api";
-import { PERSONAL_FM } from "./state";
 import { STATE } from "./state";
 import { TMP_DIR } from "./constant";
 import { fileURLToPath } from "node:url";
@@ -42,10 +41,8 @@ interface NativeModule {
 function prefetch(next: { id?: number; name?: string }): void {
   const { id, name } = next || {};
   if (!id || !name) return;
-  getMusicPath(id, name, true)
-    .then((tmpUri) => rm(tmpUri, { force: true }))
-    .catch(logError);
-  NeteaseAPI.lyric(id).catch(logError);
+  getMusicPathClean(id, name).catch(logError);
+  lyric(id).catch(logError);
 }
 
 export function posHandler(pos: number): void {
@@ -103,15 +100,13 @@ abstract class PlayerBase {
       const diff = loadtime - lastTime;
       if (diff > 60000) {
         const time = Math.floor(Math.min(diff, dt) / 1000);
-        NeteaseAPI.scrobble(id, pid, time).catch(logError);
+        scrobble(id, pid, time).catch(logError);
       }
       rm(resolve(TMP_DIR, `${id}`), { force: true }).catch(logError);
     }
 
     if (this.#prefetchTimer) clearTimeout(this.#prefetchTimer);
-    (STATE.fm ? PERSONAL_FM.next() : Promise.resolve(data.next))
-      .then((next) => (this.#prefetchTimer = next ? setTimeout(() => prefetch(next), 120000) : undefined))
-      .catch(logError);
+    this.#prefetchTimer = data.next ? setTimeout(prefetch, 120000, data.next) : undefined;
 
     try {
       const path = "url" in data && data.url ? data.url : await getMusicPath(data.item.id, data.item.name, this._wasm);
@@ -123,7 +118,7 @@ abstract class PlayerBase {
     }
 
     if (data.item.id) {
-      NeteaseAPI.lyric(data.item.id)
+      lyric(data.item.id)
         .then((lyric) => {
           Object.assign(STATE.lyric, lyric, { idx: 0 });
           IPC_SRV.broadcast({ t: IPCPlayer.lyric, lyric });

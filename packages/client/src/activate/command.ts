@@ -13,12 +13,14 @@ export function initCommand(context: ExtensionContext): void {
     commands.registerCommand("cloudmusic.seekforward", IPC.seek.bind(undefined, 15)),
 
     commands.registerCommand("cloudmusic.previous", () => {
-      if (!STATE.fm && QueueProvider.len) IPC.shift(-1);
+      if (!STATE.fmUid && QueueProvider.len) IPC.shift(-1);
     }),
 
-    commands.registerCommand("cloudmusic.next", () => {
-      if (STATE.fm) IPC.fmNext();
-      else if (QueueProvider.len) IPC.shift(1);
+    commands.registerCommand("cloudmusic.next", async () => {
+      if (STATE.fmUid) {
+        const item = await IPC.netease("personalFm", [STATE.fmUid]);
+        if (item) STATE.playItem = QueueItemTreeItem.new({ ...item, pid: item.al.id, itemType: "q" });
+      } else if (QueueProvider.len) IPC.shift(1);
     }),
 
     commands.registerCommand("cloudmusic.toggle", IPC.toggle),

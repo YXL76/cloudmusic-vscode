@@ -3,12 +3,12 @@ import { API_CONFIG, NeteaseAPI } from "./api";
 import { IPCApi, IPCControl, IPCPlayer, IPCQueue, ipcDelimiter } from "@cloudmusic/shared";
 import type { IPCClientMsg, IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseAPICMsg, NeteaseAPISMsg } from "./index";
-import { PERSONAL_FM, STATE } from "./state";
 import { PLAYER, posHandler } from "./player";
 import { RETAIN_FILE, ipcBroadcastServerPath, ipcServerPath } from "./constant";
 import type { Server, Socket } from "node:net";
 import { downloadMusic, logError } from "./utils";
 import { readFile, writeFile } from "node:fs/promises";
+import { STATE } from "./state";
 import { broadcastProfiles } from "./api/netease/helper";
 import { createServer } from "node:net";
 import { rmSync } from "node:fs";
@@ -79,7 +79,7 @@ class IPCServer {
         this.send(socket, { t: PLAYER.playing ? IPCPlayer.play : IPCPlayer.pause });
       }
     })
-      .on("error", logError)
+      .on("error", (e) => logError(e))
       .listen(ipcServerPath);
   }
 
@@ -145,29 +145,23 @@ class IPCServer {
               logError(err);
             });
         }
-        break;
+        return;
       case IPCControl.deleteCache:
-        API_CACHE.del(data.key);
-        break;
+        return void API_CACHE.del(data.key);
       case IPCControl.download:
-        downloadMusic(data.url, data.path);
-        break;
+        return downloadMusic(data.url, data.path);
       case IPCControl.setting:
         STATE.minSize = data.mq === 999000 ? 2 * 1024 * 1024 : 256 * 1024;
         STATE.musicQuality = data.mq;
         STATE.cacheSize = data.cs;
         STATE.foreign = data.foreign;
-        API_CONFIG.protocol = data.https ? "https" : "http";
-        break;
+        return void (API_CONFIG.protocol = data.https ? "https" : "http");
       case IPCControl.lyric:
-        LYRIC_CACHE.clear();
-        break;
+        return LYRIC_CACHE.clear();
       case IPCControl.netease:
-        broadcastProfiles(socket);
-        break;
+        return broadcastProfiles(socket);
       case IPCControl.cache:
-        MUSIC_CACHE.clear();
-        break;
+        return MUSIC_CACHE.clear();
       case IPCControl.retain:
         if (data.items) this.#retain = <unknown[]>data.items;
         else this.send(socket, { t: IPCControl.retain, items: this.#retain });
@@ -176,52 +170,28 @@ class IPCServer {
         PLAYER.mediaSession(data.pid);
         break; */
       case IPCPlayer.load:
-        PLAYER.load(data).catch(logError);
-        break;
+        return void PLAYER.load(data).catch(logError);
       case IPCPlayer.lyricDelay:
-        STATE.lyric.delay = data.delay;
-        break;
+        return void (STATE.lyric.delay = data.delay);
       case IPCPlayer.playing:
-        PLAYER.playing = data.playing;
-        break;
+        return void (PLAYER.playing = data.playing);
       case IPCPlayer.position:
-        posHandler(data.pos);
-        break;
+        return posHandler(data.pos);
       case IPCPlayer.toggle:
-        PLAYER.toggle();
-        break;
+        return PLAYER.toggle();
       case IPCPlayer.stop:
         PLAYER.stop();
-        this.broadcast(data);
-        break;
+        return this.broadcast(data);
       case IPCPlayer.volume:
         PLAYER.volume(data.level);
-        this.broadcast(data);
-        break;
+        return this.broadcast(data);
       case IPCPlayer.speed:
         PLAYER.speed(data.speed);
-        this.broadcast(data);
-        break;
+        return this.broadcast(data);
       case IPCPlayer.seek:
-        PLAYER.seek(data.seekOffset);
-        break;
+        return PLAYER.seek(data.seekOffset);
       case IPCQueue.fm:
-        if (data.is) {
-          STATE.fm = true;
-          PERSONAL_FM.uid = data.uid;
-          this.broadcast({ t: IPCQueue.fm });
-        } else STATE.fm = false;
-        break;
-      case IPCQueue.fmNext:
-        PERSONAL_FM.head()
-          .then((item) => {
-            if (item) {
-              STATE.fm = true;
-              this.broadcast({ t: IPCQueue.fmNext, item });
-            }
-          })
-          .catch(logError);
-        break;
+        return this.broadcast(data);
     }
   }
 }
@@ -246,7 +216,7 @@ class IPCBroadcastServer {
         })
         .on("error", logError);
     })
-      .on("error", logError)
+      .on("error", (e) => logError(e))
       .listen(ipcBroadcastServerPath);
   }
 

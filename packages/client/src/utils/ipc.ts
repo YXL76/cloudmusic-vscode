@@ -113,17 +113,19 @@ export const IPC = {
 
     const { data } = playItem;
 
-    let next;
-    if (!STATE.fm) next = QueueProvider.next?.data;
-    ipc.send({
-      t: IPCPlayer.load,
-      url: playItem instanceof LocalFileTreeItem ? playItem.valueOf : undefined,
-      item: "mainSong" in data ? data.mainSong : data,
-      pid: "pid" in data ? data.pid : undefined,
-      next: next && "mainSong" in next ? next.mainSong : next,
-      play,
-      seek,
-    });
+    (STATE.fmUid ? IPC.netease("personalFmNext", [STATE.fmUid]) : Promise.resolve(QueueProvider.next?.data))
+      .then((next) =>
+        ipc.send({
+          t: IPCPlayer.load,
+          url: playItem instanceof LocalFileTreeItem ? playItem.valueOf : undefined,
+          item: "mainSong" in data ? data.mainSong : data,
+          pid: "pid" in data ? data.pid : undefined,
+          next: next && "mainSong" in next ? next.mainSong : next,
+          play,
+          seek,
+        })
+      )
+      .catch(console.error);
   },
   loaded: () => ipcB.send({ t: IPCPlayer.loaded }),
   deleteCache: (key: string) => ipc.send({ t: IPCControl.deleteCache, key }),
@@ -155,8 +157,7 @@ export const IPC = {
   add: (items: readonly PlayTreeItemData[], index?: number) => ipcB.send({ t: IPCQueue.add, items, index }),
   clear: () => ipcB.send({ t: IPCQueue.clear }),
   delete: (id: number | string) => ipcB.send({ t: IPCQueue.delete, id }),
-  fm: (is: boolean, uid = 0) => ipc.send({ t: IPCQueue.fm, uid, is }),
-  fmNext: () => ipc.send({ t: IPCQueue.fmNext }),
+  fm: (uid: number) => ipc.send({ t: IPCQueue.fm, uid }),
   new: (items?: readonly PlayTreeItemData[]) =>
     ipcB.send(
       items
