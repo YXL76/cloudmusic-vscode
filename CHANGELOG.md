@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.16.6] - 2022-09-08
+
+### Fixed
+
+- Cache: Temp folder conflict ([#812](https://github.com/YXL76/cloudmusic-vscode/issues/812))
+- Local library: check `codecProfile` ([#813](https://github.com/YXL76/cloudmusic-vscode/issues/813))
+
 ## [9.16.5] - 2022-09-08
 
 ### Fixed
