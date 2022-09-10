@@ -108,7 +108,7 @@ class MusicCache {
     }
   }
 
-  async put(key: string, name: string, path: string, md5?: string): Promise<void> {
+  async put(key: string, name: string, path: string, md5?: string): Promise<string | void> {
     try {
       if (!md5 || (await md5File(path)) === md5) {
         const target = resolve(MUSIC_CACHE_DIR, name);
@@ -116,6 +116,7 @@ class MusicCache {
         const { size } = await stat(target);
         this.#deleteNode({ key, name });
         this.#addNode({ key, name, size });
+        return target;
       }
     } catch {}
   }

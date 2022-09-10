@@ -151,10 +151,11 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       process.env.HTTP_PROXY;
     const ipcServerPath = resolve(context.extensionPath, "dist", "server.mjs");
     const conf = CONF();
+    const errlogHandle = await open(logPath, "a");
     spawn(process.execPath, [...process.execArgv, ipcServerPath], {
       detached: true,
       shell: false,
-      stdio: ["ignore", "ignore", (await open(logPath, "a")).fd],
+      stdio: ["ignore", "ignore", errlogHandle.fd],
       env: {
         ...process.env,
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -181,6 +182,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         CM_FOREIGN: FOREIGN(conf) ? "1" : "0",
       },
     }).unref();
+    await errlogHandle.close();
     await IPC.connect(ipcHandler, ipcBHandler);
     STATE.master = true;
     readdir(SETTING_DIR, { withFileTypes: true })

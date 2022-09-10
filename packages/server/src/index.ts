@@ -1,12 +1,13 @@
 import { CACHE_DIR, LYRIC_CACHE_DIR, MUSIC_CACHE_DIR, TMP_DIR } from "./constant";
 import type { CSMessage, IPCApi, IPCMsg } from "@cloudmusic/shared";
+import { mkdir, readdir, rm, stat } from "node:fs/promises";
 import { MUSIC_CACHE } from "./cache";
 import type { NeteaseAPI } from "./api";
 import { bootstrap } from "global-agent";
 import http from "node:http";
 import https from "node:https";
 import { logError } from "./utils";
-import { mkdir } from "node:fs/promises";
+import { resolve } from "node:path";
 
 export type NeteaseAPIKey = keyof typeof NeteaseAPI;
 
@@ -32,8 +33,18 @@ else {
   https.globalAgent = new https.Agent(agentOptions);
 }
 
-await mkdir(TMP_DIR).catch(() => undefined);
-await mkdir(CACHE_DIR).catch(() => undefined);
-await mkdir(LYRIC_CACHE_DIR).catch(() => undefined);
-await mkdir(MUSIC_CACHE_DIR).catch(() => undefined);
+await Promise.allSettled([mkdir(TMP_DIR), mkdir(CACHE_DIR)]);
+await Promise.allSettled([mkdir(LYRIC_CACHE_DIR), mkdir(MUSIC_CACHE_DIR)]);
 await MUSIC_CACHE.init();
+
+{
+  const exp = Date.now() - 86400000; // 1 day
+  const names = await readdir(TMP_DIR);
+  await Promise.allSettled(
+    names.map(async (name) => {
+      const path = resolve(TMP_DIR, name);
+      const { birthtimeMs } = await stat(path);
+      if (exp >= birthtimeMs) return rm(path, { force: true });
+    })
+  );
+}

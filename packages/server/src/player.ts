@@ -75,7 +75,7 @@ abstract class PlayerBase {
 
   #playing = false;
 
-  protected abstract readonly _wasm: boolean;
+  protected abstract readonly _getPath: (id: number, name: string) => Promise<string>;
 
   get playing() {
     return this.#playing;
@@ -102,14 +102,14 @@ abstract class PlayerBase {
         const time = Math.floor(Math.min(diff, dt) / 1000);
         scrobble(id, pid, time).catch(logError);
       }
-      rm(resolve(TMP_DIR, `${id}`), { force: true }).catch(logError);
+      setTimeout(() => void rm(resolve(TMP_DIR, `${id}`), { force: true }).catch(logError));
     }
 
     if (this.#prefetchTimer) clearTimeout(this.#prefetchTimer);
     this.#prefetchTimer = data.next ? setTimeout(prefetch, 120000, data.next) : undefined;
 
     try {
-      const path = "url" in data && data.url ? data.url : await getMusicPath(data.item.id, data.item.name, this._wasm);
+      const path = "url" in data && data.url ? data.url : await this._getPath(data.item.id, data.item.name);
       this.#loadtime = loadtime;
       this._load(path, data.play, data.item, data.seek);
     } catch (err) {
@@ -153,7 +153,7 @@ abstract class PlayerBase {
 }
 
 class WasmPlayer extends PlayerBase {
-  protected readonly _wasm = true;
+  protected readonly _getPath = getMusicPathClean;
 
   protected readonly _loaded = undefined;
 
@@ -201,7 +201,7 @@ class NativePlayer extends PlayerBase {
 
   readonly #mediaSession: NativeMediaSessionHdl;
 
-  protected readonly _wasm = false;
+  protected readonly _getPath = getMusicPath;
 
   constructor() {
     super();
