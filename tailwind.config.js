@@ -1,6 +1,6 @@
 // @ts-check
 
-/** @type {import("tailwindcss/tailwind-config").TailwindConfig } */
+/** @type {import("tailwindcss").Config } */
 const config = {
   corePlugins: { preflight: false },
   darkMode: "class",

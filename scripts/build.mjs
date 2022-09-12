@@ -1,17 +1,17 @@
 // @ts-check
 
-const { readdir, stat } = require("fs/promises");
-const { build } = require("esbuild");
-const { resolve } = require("path");
-const { spawn } = require("child_process");
-const { wasmLoader } = require("esbuild-plugin-wasm");
+import { readdir, stat } from "fs/promises";
+import { build } from "esbuild";
+import { resolve } from "path";
+import { spawn } from "child_process";
+import { wasmLoader } from "esbuild-plugin-wasm";
 
 const prod = process.argv.includes("--prod");
 
 const nodeTarget = "node16.13";
 const browserTarget = "chrome98";
 
-const rootPath = resolve(__dirname, "..");
+const rootPath = process.cwd();
 const distPath = resolve(rootPath, "dist");
 const pkgsPath = resolve(rootPath, "packages");
 
@@ -41,11 +41,7 @@ const globalSharedConfig = {
     .catch(
       () =>
         new Promise((resolve, reject) =>
-          spawn("yarn", ["generate-css"], {
-            cwd: rootPath,
-            shell: false,
-            windowsHide: true,
-          })
+          spawn("yarn", ["generate-css"], { cwd: rootPath, shell: false, windowsHide: true })
             .once("close", resolve)
             .once("error", reject)
         )
@@ -53,11 +49,8 @@ const globalSharedConfig = {
     .then(() =>
       build({
         ...globalSharedConfig,
-        format: "cjs",
         target: browserTarget,
-
         outfile,
-        banner: { js: "'use strict';" },
         platform: "browser",
         allowOverwrite: true,
         loader: { ".css": "css" },
@@ -94,9 +87,7 @@ const globalSharedConfig = {
     ...globalSharedConfig,
 
     outfile: resolve(distPath, "server.mjs"),
-    banner: {
-      js: `import{createRequire}from"module";const require=createRequire(import.meta.url);`,
-    },
+    banner: { js: `import{createRequire}from"module";const require=createRequire(import.meta.url);` },
     tsconfig,
     entryPoints: [resolve(srcPath, "index.ts")],
   });

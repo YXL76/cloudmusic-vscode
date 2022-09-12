@@ -894,12 +894,12 @@
     "file-type": "18.0.0"
   },
   "scripts": {
-    "build": "yarn node scripts/build.js --prod",
-    "build-dev": "yarn node scripts/build.js",
+    "build": "yarn node scripts/build.mjs --prod",
+    "build-dev": "yarn node scripts/build.mjs",
     "check": "yarn workspaces foreach -p run check",
     "generate-css": "NODE_ENV=production yarn tailwindcss --no-autoprefixer --minify -o dist/style.css",
     "lint": "yarn workspaces foreach -p run lint",
-    "publish": "yarn node scripts/publish.js"
+    "publish": "yarn node scripts/publish.mjs"
   },
   "devDependencies": {
     "@types/eslint": "8.4.6",

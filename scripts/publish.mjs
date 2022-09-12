@@ -1,26 +1,23 @@
 // @ts-check
 // Reference: [Platform-specific extensions](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#platformspecific-extensions)
 
-const {
-  mkdirSync,
-  readdirSync,
-  copyFileSync,
-  rmdirSync,
-  readFileSync,
-} = require("fs");
-const { resolve, basename, extname } = require("path");
-const { spawnSync } = require("child_process");
-// const { rm } = require("fs/promises");
+import { basename, extname, resolve } from "path";
+import { copyFileSync, mkdirSync, readdirSync, rmdirSync } from "fs";
+import assert from "assert";
+import packageJSON from "../package.json" assert { type: "json" };
+import { spawnSync } from "child_process";
 
-const rootPath = resolve(__dirname, "..");
+const vsceToken = process.env["VSCE_TOKEN"];
+const ovsxToken = process.env["OVSX_TOKEN"];
+assert(vsceToken, "Missing VSCE_TOKEN");
+assert(ovsxToken, "Missing OVSX_TOKEN");
+
+const rootPath = process.cwd();
 const buildPath = resolve(rootPath, "build");
 const artifactPath = resolve(rootPath, ".artifact", "build");
 const mediaArtifactPath = resolve(rootPath, ".artifact", "media");
 
-const { version } = JSON.parse(
-  readFileSync(resolve(rootPath, "package.json"), "utf8")
-);
-console.log(`Building extension version ${version}`);
+console.log(`Building extension version ${packageJSON.version}`);
 
 const targetMap = {
   // [Node target]: [VS Code target]
@@ -36,10 +33,7 @@ const targetMap = {
 const nodeTargets = new Set(Object.keys(targetMap));
 // const vscodeTargets = new Set(Object.values(targetMap).flat());
 
-const artifacts = readdirSync(artifactPath).map((name) => {
-  const ext = extname(name);
-  return { name, base: basename(name, ext) };
-});
+const artifacts = readdirSync(artifactPath).map((name) => ({ name, base: basename(name, extname(name)) }));
 const spawnConf = { cwd: rootPath, shell: false, windowsHide: true };
 
 // [vscode:prepublish] replacement
@@ -48,16 +42,7 @@ console.log("Build complete");
 
 // Publish
 // Publish to Visual Studio Marketplace
-const publishArgs = [
-  "dlx",
-  "-q",
-  "vsce",
-  "publish",
-  "--no-dependencies",
-  "-p",
-  process.env["VSCE_TOKEN"],
-  "--target",
-];
+const publishArgs = ["dlx", "-q", "vsce", "publish", "--no-dependencies", "-p", vsceToken, "--target"];
 
 // Publish native
 for (const { name, base } of artifacts) {
@@ -71,11 +56,7 @@ for (const { name, base } of artifacts) {
   }
 
   for (const target of targetMap[base]) {
-    let { stdout, stderr } = spawnSync(
-      "yarn",
-      [...publishArgs, target],
-      spawnConf
-    );
+    let { stdout, stderr } = spawnSync("yarn", [...publishArgs, target], spawnConf);
     console.log(stdout.toString(), stderr.toString());
   }
 
@@ -86,11 +67,7 @@ console.log("Native extension published");
 // Publish wasm
 for (const nodeTarget of nodeTargets) {
   for (const target of targetMap[nodeTarget]) {
-    let { stdout, stderr } = spawnSync(
-      "yarn",
-      [...publishArgs, target],
-      spawnConf
-    );
+    let { stdout, stderr } = spawnSync("yarn", [...publishArgs, target], spawnConf);
     console.log(stdout.toString(), stderr.toString());
   }
 }
@@ -108,16 +85,8 @@ mkdirSync(buildPath, { recursive: true });
 for (const { name } of artifacts) {
   copyFileSync(resolve(artifactPath, name), resolve(buildPath, name));
 }
-spawnSync(
-  "yarn",
-  ["dlx", "-q", "vsce", "package", "--no-dependencies"],
-  spawnConf
-);
-const vsix = `cloudmusic-${version}.vsix`;
-let { stdout, stderr } = spawnSync(
-  "yarn",
-  ["dlx", "-q", "ovsx", "publish", vsix, "-p", process.env["OVSX_TOKEN"]],
-  spawnConf
-);
+spawnSync("yarn", ["dlx", "-q", "vsce", "package", "--no-dependencies"], spawnConf);
+const vsix = `cloudmusic-${packageJSON.version}.vsix`;
+let { stdout, stderr } = spawnSync("yarn", ["dlx", "-q", "ovsx", "publish", vsix, "-p", ovsxToken], spawnConf);
 // skip the error
 console.log(stdout.toString(), stderr.toString());
