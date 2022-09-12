@@ -6,6 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.16.7] - 2022-09-12
+
+### Changed
+
+- Webview: Make `spawn` async
+
+### Fixed
+
+- Cache: automatically clean up the tmp dir
+
 ## [9.16.6] - 2022-09-08
 
 ### Fixed
