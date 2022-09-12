@@ -15,7 +15,7 @@ import type { WebviewView, WebviewViewProvider } from "vscode";
 import { AccountManager } from "../manager";
 import type { NeteaseTypings } from "api";
 import i18n from "../i18n";
-import { spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { toDataURL } from "qrcode";
 
 const getNonce = (): string => {
@@ -146,16 +146,21 @@ export class AccountViewProvider implements WebviewViewProvider {
 
     const localResourceRoots: string[] = [];
     if (process.platform === "win32") {
-      const { stdout } = spawnSync(
-        "powershell.exe",
-        [
-          "-NoLogo",
-          "-NoProfile",
-          "-Command",
-          "Get-PSDrive -PSProvider FileSystem | Format-Table -Property Root -HideTableHeaders",
-        ],
-        { encoding: "utf8", shell: false, stdio: ["ignore", "pipe", "ignore"] }
-      );
+      const stdout = await new Promise<string>((resolve, reject) => {
+        let res = "";
+        const p = spawn(
+          "powershell.exe",
+          [
+            "-NoLogo",
+            "-NoProfile",
+            "-Command",
+            "Get-PSDrive -PSProvider FileSystem | Format-Table -Property Root -HideTableHeaders",
+          ],
+          { shell: false, stdio: ["ignore", "pipe", "ignore"] }
+        );
+        p.stdout.on("data", (data: Buffer) => (res += data.toString()));
+        p.once("close", () => resolve(res)).once("error", reject);
+      });
       (stdout || "C:\\")
         .split("\r\n")
         .map((line) => line.trim())
