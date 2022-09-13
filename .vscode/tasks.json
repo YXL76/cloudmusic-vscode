@@ -41,7 +41,7 @@
     {
       "type": "shell",
       "label": "yarn: package",
-      "command": "yarn dlx vsce package --no-dependencies"
+      "command": "yarn build-dev && yarn dlx vsce package --no-dependencies"
     }
   ]
 }

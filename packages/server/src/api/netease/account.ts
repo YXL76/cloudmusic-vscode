@@ -153,9 +153,12 @@ async function _personalFm(uid: number): Promise<void> {
     if (res) songs.push(...res.data.map(resolveAnotherSongItem));
   }
 }
-export async function personalFm(uid: number): Promise<NeteaseTypings.SongsItem | undefined> {
-  if (!fmSongsCache.get(uid)?.length) await _personalFm(uid);
-  return fmSongsCache.get(uid)?.shift();
+export async function personalFm(uid: number, next: boolean): Promise<NeteaseTypings.SongsItem | undefined> {
+  if (fmSongsCache.get(uid)?.length || 0 <= 1) await _personalFm(uid);
+  const songs = fmSongsCache.get(uid);
+  if (!songs) return;
+  if (next) songs.shift();
+  return songs[0];
 }
 
 export async function personalFmNext(uid: number): Promise<NeteaseTypings.SongsItem | undefined> {

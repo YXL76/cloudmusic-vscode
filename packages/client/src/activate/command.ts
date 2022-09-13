@@ -18,7 +18,7 @@ export function initCommand(context: ExtensionContext): void {
 
     commands.registerCommand("cloudmusic.next", async () => {
       if (STATE.fmUid) {
-        const item = await IPC.netease("personalFm", [STATE.fmUid]);
+        const item = await IPC.netease("personalFm", [STATE.fmUid, true]);
         if (item) STATE.playItem = QueueItemTreeItem.new({ ...item, pid: item.al.id, itemType: "q" });
       } else if (QueueProvider.len) IPC.shift(1);
     }),

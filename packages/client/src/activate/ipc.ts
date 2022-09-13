@@ -79,12 +79,8 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       case IPCControl.new:
         return IPC.new();
       case IPCControl.retain:
-        if (data.items.length && STATE.wasm) {
-          // Delay it because `this._instance._onDidChangeTreeData.fire()` is async
-          STATE.addOnceInitCallback(() => setTimeout(() => IPC.load(data.play, data.seek), 1024));
-        }
         QueueProvider.new(<readonly PlayTreeItemData[]>data.items);
-        return STATE.downInit(); // 1
+        return STATE.downInit(data.play, data.seek); // 1
       case IPCPlayer.end:
         if (!data.fail && (STATE.repeat || data.reloadNseek)) IPC.load(!data.pause, data.reloadNseek);
         else void commands.executeCommand("cloudmusic.next");

@@ -57,8 +57,6 @@ class State {
 
   #lyric: Lyric = defaultLyric;
 
-  #cb?: () => void;
-
   get master(): boolean {
     return this.#master;
   }
@@ -106,9 +104,7 @@ class State {
   // eslint-disable-next-line @typescript-eslint/adjacent-overload-signatures
   set playItem(value: QueueContent | undefined) {
     if (value !== this.#playItem) {
-      this.#playItem = value;
-      this.like = !!(value && value instanceof QueueItemTreeItem);
-      AccountViewProvider.metadata();
+      this.#setPlayItem(value);
       if (this.#master) value ? IPC.load() : IPC.stop();
     }
   }
@@ -133,7 +129,7 @@ class State {
       BUTTON_MANAGER.buttonPrevious(!!value);
       if (this.#master) {
         if (this.#fmUid) {
-          IPC.netease("personalFm", [this.#fmUid])
+          IPC.netease("personalFm", [this.#fmUid, true])
             .then((i) => i && (this.playItem = QueueItemTreeItem.new({ ...i, pid: i.al.id, itemType: "q" })))
             .catch(console.error);
         }
@@ -156,83 +152,78 @@ class State {
     value.updatePanel?.(value.text);
   }
 
-  addOnceInitCallback(cb: () => void) {
-    if (this.#initializing <= 0) return;
-    this.#cb = cb;
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  #initPlay?: boolean;
+
+  // eslint-disable-next-line @typescript-eslint/member-ordering
+  #initSeek?: number;
+
+  downInit(play?: boolean, seek?: number) {
+    if (play !== undefined) this.#initPlay = play;
+    if (seek !== undefined) this.#initSeek = seek;
+
+    if (this.#initializing <= -1) return;
+    --this.#initializing;
+    if (this.#initializing > 0) return;
+
+    if (this.#initializing === 0) {
+      if (!this.first) {
+        --this.#initializing;
+        return void this.#downInit();
+      }
+
+      switch (QUEUE_INIT) {
+        case "none":
+          return IPC.new([]);
+        case "restore":
+          return IPC.retain();
+        case "recommend": {
+          if (!AccountManager.accounts.size) return IPC.new([]);
+          const [[uid]] = AccountManager.accounts;
+          return void IPC.netease("recommendSongs", [uid])
+            .catch(() => [])
+            .then((songs) =>
+              IPC.new(songs.map((song) => QueueItemTreeItem.new({ ...song, pid: song.al.id, itemType: "q" }).data))
+            );
+        }
+      }
+    } else void this.#downInit();
   }
 
-  downInit() {
-    if (this.#initializing <= 0) return;
-    --this.#initializing;
-    if (this.#initializing !== 0) return;
+  #setPlayItem(value?: QueueContent) {
+    this.#playItem = value;
+    this.like = !!(value && value instanceof QueueItemTreeItem);
+    AccountViewProvider.metadata();
+  }
 
+  async #downInit(): Promise<void> {
     this.repeat = CONTEXT.context.globalState.get(REPEAT_KEY, false);
 
-    /** From {@link fmUid}*/
-    {
-      this.#fmUid = CONTEXT.context.globalState.get(FM_KEY, undefined);
-      BUTTON_MANAGER.buttonPrevious(!!this.#fmUid);
-      if (this.#fmUid && this.first) {
-        IPC.netease("personalFm", [this.#fmUid])
-          .then((item) => {
-            if (item) {
-              this.#playItem = QueueItemTreeItem.new({ ...item, pid: item.al.id, itemType: "q" });
-              this.like = true;
-              AccountViewProvider.metadata();
-              IPC.load(false);
-            }
-          })
-          .catch(console.error);
-      }
+    this.#fmUid = CONTEXT.context.globalState.get(FM_KEY, undefined);
+    if (this.#fmUid) {
+      /** From {@link fmUid}*/
+      BUTTON_MANAGER.buttonPrevious(true);
+      const item = await IPC.netease("personalFm", [this.#fmUid, false]).catch(console.error);
+      if (item) this.#setPlayItem(QueueItemTreeItem.new({ ...item, pid: item.al.id, itemType: "q" }));
+    } else this.#setPlayItem(QueueProvider.head);
+
+    if (this.#master) {
+      const play = this.#initPlay ?? false;
+      IPC.load(play, this.#initSeek);
+      BUTTON_MANAGER.buttonPlay(play);
     }
+    BUTTON_MANAGER.buttonSong(this.#playItem);
 
     this.#showLyric = CONTEXT.context.globalState.get(SHOW_LYRIC_KEY, false);
 
     this.#lyric = CONTEXT.context.globalState.get(LYRIC_KEY, defaultLyric);
 
-    /** From {@link playItem}*/
-    if (!this.#fmUid) {
-      const { head } = QueueProvider;
-      this.#playItem = head;
-      this.like = !!(head && head instanceof QueueItemTreeItem);
-      AccountViewProvider.metadata();
-    }
-
-    (async () => {
-      if (!this.first || !AccountManager.accounts.size) {
-        /** {@link loading} */
-        return BUTTON_MANAGER.buttonSong(QueueProvider.head);
-      }
-
-      const [[uid]] = AccountManager.accounts;
-      switch (QUEUE_INIT) {
-        case "none":
-          return; // No need to sleep
-        case "restore":
-          IPC.retain();
-          break;
-        case "recommend": {
-          const songs = await IPC.netease("recommendSongs", [uid]);
-          const items = songs.map((song) => QueueItemTreeItem.new({ ...song, pid: song.al.id, itemType: "q" }).data);
-          IPC.new(items);
-        }
-      }
-      return new Promise((resolve) => setTimeout(resolve, 1024)); // The queue maybe ready
-    })()
-      .catch(console.error)
-      .finally(() => {
-        CONTEXT.context.subscriptions.push(
-          // Prevent first loading [#507](https://github.com/YXL76/cloudmusic-vscode/issues/507)
-          QueueProvider.getInstance().onDidChangeTreeData(() => {
-            this.fmUid = undefined;
-            this.playItem = QueueProvider.head;
-          })
-        );
-        if (this.#cb) {
-          this.#cb();
-          this.#cb = undefined;
-        }
-      });
+    CONTEXT.context.subscriptions.push(
+      QueueProvider.getInstance().onDidChangeTreeData(() => {
+        this.fmUid = undefined;
+        this.playItem = QueueProvider.head;
+      })
+    );
   }
 }
 
