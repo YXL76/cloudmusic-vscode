@@ -6,6 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.16.8] - 2022-09-13
+
+### Changed
+
+- Treeview: use unique id ([#818](https://github.com/YXL76/cloudmusic-vscode/issues/818))
+
+### Fixed
+
+- API: `songUrl` level
+- Player: playback state
+
 ## [9.16.7] - 2022-09-12
 
 ### Changed
