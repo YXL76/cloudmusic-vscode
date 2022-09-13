@@ -12,12 +12,11 @@ const aesEncrypt = (buffer: Buffer, mode: string, key: Uint8Array | Buffer | str
   return Buffer.concat([cipher.update(buffer), cipher.final()]);
 };
 
-const rsaEncrypt = (buffer: Uint8Array) => {
-  return publicEncrypt(
+const rsaEncrypt = (buffer: Uint8Array) =>
+  publicEncrypt(
     { key: publicKey, padding: constants.RSA_NO_PADDING },
     Buffer.concat([Buffer.alloc(128 - buffer.length), buffer])
   );
-};
 
 export const weapi = (object: Record<string, number | string | boolean>): { params: string; encSecKey: string } => {
   const text = JSON.stringify(object);

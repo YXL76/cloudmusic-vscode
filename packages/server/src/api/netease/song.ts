@@ -161,7 +161,7 @@ export async function songDetail(
 
 const br2level = new Map([
   [128000, "standard"],
-  [192000, "standard"],
+  [192000, "higher"],
   [320000, "exhigh"],
   [999000, "lossless"],
 ]);
