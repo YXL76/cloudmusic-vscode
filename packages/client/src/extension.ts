@@ -31,10 +31,10 @@ export async function activate(context: ExtensionContext): Promise<void> {
     return view;
   };
 
-  const queue = createTreeView("queue", QueueProvider.getInstance());
-  const local = createTreeView("local", LocalProvider.getInstance());
-  const playlist = createTreeView("playlist", PlaylistProvider.getInstance());
-  const radio = createTreeView("radio", RadioProvider.getInstance());
+  const queue = createTreeView("cloudmusic-queue", QueueProvider.getInstance());
+  const local = createTreeView("cloudmusic-local", LocalProvider.getInstance());
+  const playlist = createTreeView("cloudmusic-playlist", PlaylistProvider.getInstance());
+  const radio = createTreeView("cloudmusic-radio", RadioProvider.getInstance());
   context.subscriptions.push(queue, local, playlist, radio);
 
   // Only checking the visibility of the queue treeview is enough.

@@ -13,7 +13,7 @@ import { window } from "vscode";
 
 export async function realActivate(context: ExtensionContext) {
   context.subscriptions.push(
-    window.registerWebviewViewProvider("account", new AccountViewProvider(), {
+    window.registerWebviewViewProvider("cloudmusic-account", new AccountViewProvider(), {
       webviewOptions: { retainContextWhenHidden: true },
     })
   );

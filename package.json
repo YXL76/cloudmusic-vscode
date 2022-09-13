@@ -624,92 +624,92 @@
         {
           "command": "cloudmusic.refreshLocalFile",
           "group": "inline",
-          "when": "view == local && viewItem == LocalLibraryTreeItem"
+          "when": "view == cloudmusic-local && viewItem == LocalLibraryTreeItem"
         },
         {
           "command": "cloudmusic.deleteLocalLibrary",
-          "when": "view == local && viewItem == LocalLibraryTreeItem"
+          "when": "view == cloudmusic-local && viewItem == LocalLibraryTreeItem"
         },
         {
           "command": "cloudmusic.openLocalLibrary",
-          "when": "view == local && viewItem == LocalLibraryTreeItem"
+          "when": "view == cloudmusic-local && viewItem == LocalLibraryTreeItem"
         },
         {
           "command": "cloudmusic.playLocalLibrary",
           "group": "inline",
-          "when": "view == local && viewItem == LocalLibraryTreeItem"
+          "when": "view == cloudmusic-local && viewItem == LocalLibraryTreeItem"
         },
         {
           "command": "cloudmusic.addLocalLibrary",
           "group": "inline",
-          "when": "view == local && viewItem == LocalLibraryTreeItem"
+          "when": "view == cloudmusic-local && viewItem == LocalLibraryTreeItem"
         },
         {
           "command": "cloudmusic.addLocalFile",
           "group": "inline",
-          "when": "view == local && viewItem == LocalFileTreeItem"
+          "when": "view == cloudmusic-local && viewItem == LocalFileTreeItem"
         },
         {
           "command": "cloudmusic.playLocalFile",
           "group": "inline",
-          "when": "view == local && viewItem == LocalFileTreeItem"
+          "when": "view == cloudmusic-local && viewItem == LocalFileTreeItem"
         },
         {
           "command": "cloudmusic.refreshPlaylist",
           "group": "inline",
-          "when": "view == playlist && viewItem == UserTreeItem"
+          "when": "view == cloudmusic-playlist && viewItem == UserTreeItem"
         },
         {
           "command": "cloudmusic.createPlaylist",
           "group": "inline",
-          "when": "view == playlist && viewItem == UserTreeItem"
+          "when": "view == cloudmusic-playlist && viewItem == UserTreeItem"
         },
         {
           "command": "cloudmusic.deletePlaylist",
-          "when": "view == playlist && viewItem == UserTreeItem"
+          "when": "view == cloudmusic-playlist && viewItem == UserTreeItem"
         },
         {
           "command": "cloudmusic.editPlaylist",
-          "when": "view == playlist && viewItem == UserTreeItem"
+          "when": "view == cloudmusic-playlist && viewItem == UserTreeItem"
         },
         {
           "command": "cloudmusic.refreshPlaylistContent",
           "group": "inline",
-          "when": "view == playlist && viewItem == PlaylistItemTreeItem"
+          "when": "view == cloudmusic-playlist && viewItem == PlaylistItemTreeItem"
         },
         {
           "command": "cloudmusic.playPlaylist",
           "group": "inline",
-          "when": "view == playlist && viewItem == PlaylistItemTreeItem"
+          "when": "view == cloudmusic-playlist && viewItem == PlaylistItemTreeItem"
         },
         {
           "command": "cloudmusic.addPlaylist",
           "group": "inline",
-          "when": "view == playlist && viewItem == PlaylistItemTreeItem"
+          "when": "view == cloudmusic-playlist && viewItem == PlaylistItemTreeItem"
         },
         {
           "command": "cloudmusic.deleteFromPlaylist",
-          "when": "view == playlist && viewItem == PlaylistItemTreeItem"
+          "when": "view == cloudmusic-playlist && viewItem == PlaylistItemTreeItem"
         },
         {
           "command": "cloudmusic.addSong",
           "group": "inline",
-          "when": "view == playlist && viewItem == QueueItemTreeItem"
+          "when": "view == cloudmusic-playlist && viewItem == QueueItemTreeItem"
         },
         {
           "command": "cloudmusic.intelligence",
           "group": "inline",
-          "when": "view == playlist && viewItem == QueueItemTreeItem"
+          "when": "view == cloudmusic-playlist && viewItem == QueueItemTreeItem"
         },
         {
           "command": "cloudmusic.playSong",
           "group": "inline",
-          "when": "view == queue && viewItem == QueueItemTreeItem || view == queue && viewItem == LocalFileTreeItem || view == queue && viewItem == ProgramTreeItem"
+          "when": "view == cloudmusic-queue && viewItem == QueueItemTreeItem || view == cloudmusic-queue && viewItem == LocalFileTreeItem || view == cloudmusic-queue && viewItem == ProgramTreeItem"
         },
         {
           "command": "cloudmusic.deleteSong",
           "group": "inline",
-          "when": "view == queue && viewItem == QueueItemTreeItem || view == queue && viewItem == LocalFileTreeItem || view == queue && viewItem == ProgramTreeItem"
+          "when": "view == cloudmusic-queue && viewItem == QueueItemTreeItem || view == cloudmusic-queue && viewItem == LocalFileTreeItem || view == cloudmusic-queue && viewItem == ProgramTreeItem"
         },
         {
           "command": "cloudmusic.playNext",
@@ -759,92 +759,92 @@
         {
           "command": "cloudmusic.refreshRadioContent",
           "group": "inline",
-          "when": "view == radio && viewItem == RadioTreeItem"
+          "when": "view == cloudmusic-radio && viewItem == RadioTreeItem"
         },
         {
           "command": "cloudmusic.playRadio",
           "group": "inline",
-          "when": "view == radio && viewItem == RadioTreeItem"
+          "when": "view == cloudmusic-radio && viewItem == RadioTreeItem"
         },
         {
           "command": "cloudmusic.addRadio",
           "group": "inline",
-          "when": "view == radio && viewItem == RadioTreeItem"
+          "when": "view == cloudmusic-radio && viewItem == RadioTreeItem"
         },
         {
           "command": "cloudmusic.unsubRadio",
-          "when": "view == radio && viewItem == RadioTreeItem"
+          "when": "view == cloudmusic-radio && viewItem == RadioTreeItem"
         },
         {
           "command": "cloudmusic.radioDetail",
-          "when": "view == radio && viewItem == RadioTreeItem"
+          "when": "view == cloudmusic-radio && viewItem == RadioTreeItem"
         },
         {
           "command": "cloudmusic.addProgram",
           "group": "inline",
-          "when": "view == radio && viewItem == ProgramTreeItem"
+          "when": "view == cloudmusic-radio && viewItem == ProgramTreeItem"
         }
       ],
       "view/title": [
         {
           "command": "cloudmusic.addAccount",
           "group": "navigation",
-          "when": "view == account"
+          "when": "view == cloudmusic-account"
         },
         {
           "command": "cloudmusic.newLocalLibrary",
           "group": "navigation",
-          "when": "view == local"
+          "when": "view == cloudmusic-local"
         },
         {
           "command": "cloudmusic.refreshLocalLibrary",
           "group": "navigation",
-          "when": "view == local"
+          "when": "view == cloudmusic-local"
         },
         {
           "command": "cloudmusic.refreshRadio",
           "group": "navigation",
-          "when": "view == radio"
+          "when": "view == cloudmusic-radio"
         },
         {
           "command": "cloudmusic.sortQueue",
           "group": "navigation",
-          "when": "view == queue"
+          "when": "view == cloudmusic-queue"
         },
         {
           "command": "cloudmusic.clearQueue",
           "group": "navigation",
-          "when": "view == queue"
+          "when": "view == cloudmusic-queue"
         },
         {
           "command": "cloudmusic.randomQueue",
           "group": "navigation",
-          "when": "view == queue"
+          "when": "view == cloudmusic-queue"
         }
       ]
     },
     "views": {
       "cloudmusic": [
         {
-          "id": "account",
-          "name": "%views.account.name%",
+          "id": "cloudmusic-account",
+          "name": "%views.cloudmusic-account.name%",
           "type": "webview"
         },
         {
-          "id": "local",
-          "name": "%views.local.name%"
+          "id": "cloudmusic-local",
+          "name": "%views.cloudmusic-local.name%"
         },
         {
-          "id": "playlist",
-          "name": "%views.playlist.name%"
+          "id": "cloudmusic-playlist",
+          "name": "%views.cloudmusic-playlist.name%"
         },
         {
-          "id": "radio",
-          "name": "%views.radio.name%"
+          "id": "cloudmusic-radio",
+          "name": "%views.cloudmusic-radio.name%"
         },
         {
-          "id": "queue",
-          "name": "%views.queue.name%"
+          "id": "cloudmusic-queue",
+          "name": "%views.cloudmusic-queue.name%"
         }
       ]
     },

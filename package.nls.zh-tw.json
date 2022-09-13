@@ -68,10 +68,10 @@
   "configuration.music.quality.enumDescriptions.medium": "較高",
   "configuration.music.quality.markdownDescription": "選擇優先播放的音質",
   "configuration.network.strictSSL.markdownDescription": "SSL 證書檢查",
-  "views.account.name": "帳號",
-  "views.local.name": "本地曲庫",
-  "views.playlist.name": "歌單",
-  "views.queue.name": "隊列",
-  "views.radio.name": "播單",
+  "views.cloudmusic-account.name": "帳號",
+  "views.cloudmusic-local.name": "本地曲庫",
+  "views.cloudmusic-playlist.name": "歌單",
+  "views.cloudmusic-queue.name": "隊列",
+  "views.cloudmusic-radio.name": "播單",
   "viewsContainers.activitybar.title": "雲音樂"
 }

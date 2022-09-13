@@ -68,10 +68,10 @@
   "configuration.music.quality.enumDescriptions.medium": "Medium Quality",
   "configuration.music.quality.markdownDescription": "Choose your prefer music quality",
   "configuration.network.strictSSL.markdownDescription": "SSL certificate verification",
-  "views.account.name": "Account",
-  "views.local.name": "Local library",
-  "views.playlist.name": "Playlist",
-  "views.queue.name": "Queue",
-  "views.radio.name": "Radio",
+  "views.cloudmusic-account.name": "Account",
+  "views.cloudmusic-local.name": "Local library",
+  "views.cloudmusic-playlist.name": "Playlist",
+  "views.cloudmusic-queue.name": "Queue",
+  "views.cloudmusic-radio.name": "Radio",
   "viewsContainers.activitybar.title": "Cloudmusic"
 }
