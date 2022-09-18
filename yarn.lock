@@ -18,7 +18,7 @@ __metadata:
     "@types/vscode": "npm:1.67.0"
     array-unsort: "npm:1.1.6"
     lodash: "npm:4.17.21"
-    music-metadata: "npm:8.0.1"
+    music-metadata: "npm:8.1.0"
     qrcode: "npm:1.5.1"
   languageName: unknown
   linkType: soft
@@ -2756,18 +2756,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"music-metadata@npm:8.0.1":
-  version: 8.0.1
-  resolution: "music-metadata@npm:8.0.1"
+"music-metadata@npm:8.1.0":
+  version: 8.1.0
+  resolution: "music-metadata@npm:8.1.0"
   dependencies:
     "@tokenizer/token": "npm:^0.3.0"
     content-type: "npm:^1.0.4"
     debug: "npm:^4.3.4"
-    file-type: "npm:^17.1.6"
+    file-type: "npm:^18.0.0"
     media-typer: "npm:^1.1.0"
     strtok3: "npm:^7.0.0"
     token-types: "npm:^5.0.1"
-  checksum: 3cfcf127e592755ad6ef6e1bdaa96c1952155f94551341b9958b4ba5f325adbb77a9998de0c16b25b4626f3f0468667a66b76ad4c9a89e6178c1d83b42d25476
+  checksum: 67805da42cae7a12d81349b4673f5957bfb1eba60a3d6f835cc28902fd6e141a26554ae126bcb59f6579310b312e5a1933f65c8427608866ac1842bd1a48d685
   languageName: node
   linkType: hard
 
