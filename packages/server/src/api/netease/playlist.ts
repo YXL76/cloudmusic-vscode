@@ -141,6 +141,10 @@ export async function playlistUpdate(uid: number, id: number, name: string, desc
   ));
 }
 
+export function playlistUpdatePlaycount(id: number) {
+  return weapiRequest("music.163.com/weapi/playlist/update/playcount", { id });
+}
+
 export async function playmodeIntelligenceList(
   songId: number,
   playlistId: number

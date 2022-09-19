@@ -62,9 +62,10 @@ export function initPlaylist(context: ExtensionContext): void {
       PlaylistProvider.refreshPlaylistHard(element)
     ),
 
-    commands.registerCommand("cloudmusic.playPlaylist", async (element: PlaylistItemTreeItem) =>
-      IPC.new(await PlaylistProvider.refreshPlaylist(element))
-    ),
+    commands.registerCommand("cloudmusic.playPlaylist", async (element: PlaylistItemTreeItem) => {
+      IPC.new(await PlaylistProvider.refreshPlaylist(element));
+      IPC.netease("playlistUpdatePlaycount", [element.valueOf]).catch(() => undefined);
+    }),
 
     commands.registerCommand(
       "cloudmusic.deletePlaylist",
@@ -135,9 +136,10 @@ export function initPlaylist(context: ExtensionContext): void {
       }
     }),
 
-    commands.registerCommand("cloudmusic.addPlaylist", async (element: PlaylistItemTreeItem) =>
-      IPC.add(await PlaylistProvider.refreshPlaylist(element))
-    ),
+    commands.registerCommand("cloudmusic.addPlaylist", async (element: PlaylistItemTreeItem) => {
+      IPC.add(await PlaylistProvider.refreshPlaylist(element));
+      IPC.netease("playlistUpdatePlaycount", [element.valueOf]).catch(() => undefined);
+    }),
 
     commands.registerCommand(
       "cloudmusic.playlistDetail",
@@ -157,6 +159,7 @@ export function initPlaylist(context: ExtensionContext): void {
     commands.registerCommand("cloudmusic.intelligence", async ({ data }: QueueItemTreeItem) => {
       const songs = await IPC.netease("playmodeIntelligenceList", [data.id, data.pid]);
       IPC.new([data, ...songs.map((song) => QueueItemTreeItem.new({ ...song, pid: data.pid, itemType: "q" }).data)]);
+      if (data.pid) IPC.netease("playlistUpdatePlaycount", [data.pid]).catch(() => undefined);
     }),
 
     commands.registerCommand("cloudmusic.addSong", ({ data }: QueueItemTreeItem) => IPC.add([data])),
