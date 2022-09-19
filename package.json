@@ -890,8 +890,7 @@
     "debug": "latest",
     "isarray": "latest",
     "loose-envify": "latest",
-    "object-assign": "latest",
-    "file-type": "18.0.0"
+    "object-assign": "latest"
   },
   "scripts": {
     "build": "yarn node scripts/build.mjs --prod",
