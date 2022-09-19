@@ -22,6 +22,9 @@
     "**/node_modules/**": true,
     "**/target/**": true
   },
+  "markdownlint.config": {
+    "MD024": false
+  },
   "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
   "search.exclude": {
     ".cache": true,

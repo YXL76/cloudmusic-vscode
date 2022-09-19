@@ -193,13 +193,15 @@ export class AccountManager {
     });
 
     async function inputCountrycode(input: MultiStepInput): Promise<InputStep> {
-      state.countrycode = await input.showInputBox({
+      const list = await IPC.netease("countriesCodeList", []);
+      const { label } = await input.showQuickPick({
         title,
         step: 2,
         totalSteps,
-        value: state.countrycode,
-        prompt: i18n.sentence.hint.countrycode,
+        items: list.map(({ zh, en, code }) => ({ label: code, description: `${zh} (${en})` })),
+        placeholder: i18n.sentence.hint.countrycode,
       });
+      state.countrycode = label;
       return (input) => inputPhone(input);
     }
 

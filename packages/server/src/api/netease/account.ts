@@ -19,6 +19,29 @@ export function captchaSent(ctcode: string, cellphone: string): Promise<void> {
   return weapiRequest("music.163.com/weapi/sms/captcha/sent", { cellphone, ctcode });
 }
 
+type CountryList = readonly { code: string; en: string; locale: string; zh: string }[];
+export async function countriesCodeList(): Promise<CountryList> {
+  const key = "countries_code_list";
+  const value = API_CACHE.get<CountryList>(key);
+  if (value) return value;
+
+  const res = await eapiRequest<{
+    data: { countryList: CountryList; label: string }[];
+  }>("interface3.music.163.com/eapi/lbs/countries/v1", {}, "/api/lbs/countries/v1");
+  if (!res || !res.data) {
+    return [
+      { zh: "中国", en: "China", locale: "CN", code: "86" },
+      { zh: "中国香港", en: "Hongkong", locale: "HK", code: "852" },
+      { zh: "中国澳门", en: "Macao", locale: "MO", code: "853" },
+      { zh: "中国台湾", en: "Taiwan", locale: "TW", code: "886" },
+    ];
+  }
+
+  const ret = res.data.map(({ countryList }) => countryList).flat();
+  API_CACHE.set(key, ret, 0);
+  return ret;
+}
+
 export async function dailyCheck(uid: number): Promise<boolean> {
   try {
     const actions = [];

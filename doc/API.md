@@ -293,7 +293,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |         banner         |      首页轮播图       |   ❌   |
 |         batch          |     批量请求接口      |   ❌   |
 |        calendar        |       音乐日历        |   ❌   |
-|  countries_code_list   |     国家编码列表      |   ❌   |
+|  countries_code_list   |     国家编码列表      |   ✔️   |
 |       dj_banner        |      电台 banner      |   ❌   |
 |  homepage_block_page   | 首页-发现 block page  |   ❌   |
 |  homepage_dragon_ball  | 首页-发现 dragon ball |   ❌   |
