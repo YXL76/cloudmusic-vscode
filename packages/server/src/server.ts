@@ -1,5 +1,4 @@
 import { API_CACHE, LYRIC_CACHE, MUSIC_CACHE } from "./cache.js";
-import { API_CONFIG, NeteaseAPI } from "./api/index.js";
 import { IPCApi, IPCControl, IPCPlayer, IPCQueue, ipcDelimiter } from "@cloudmusic/shared";
 import type { IPCClientMsg, IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseAPICMsg, NeteaseAPISMsg } from "./index.js";
@@ -8,6 +7,8 @@ import { RETAIN_FILE, ipcBroadcastServerPath, ipcServerPath } from "./constant.j
 import type { Server, Socket } from "node:net";
 import { downloadMusic, logError } from "./utils.js";
 import { readFile, writeFile } from "node:fs/promises";
+import { API_CONFIG } from "./api/helper.js";
+import { NeteaseAPI } from "./api/index.js";
 import { STATE } from "./state.js";
 import { broadcastProfiles } from "./api/netease/helper.js";
 import { createServer } from "node:net";

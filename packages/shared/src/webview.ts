@@ -1,4 +1,4 @@
-import type { CSMessage } from "./index";
+import type { CSMessage } from "./net.js";
 import type { NeteaseTypings } from "api";
 
 export type WebviewType = "comment" | "login" | "description" | "lyric" | "musicRanking";

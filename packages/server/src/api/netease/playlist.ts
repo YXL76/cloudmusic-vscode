@@ -2,7 +2,7 @@ import { ACCOUNT_STATE, resolvePlaylistItem, resolveSongItem, resolveSongItemSt,
 import { apiRequest, weapiRequest } from "./request.js";
 import { API_CACHE } from "../../cache.js";
 import type { NeteaseTypings } from "api";
-import { songDetail } from "./index.js";
+import { songDetail } from "./song.js";
 
 type PlaylistCatlistItem = { name: string; category?: number; hot: boolean };
 

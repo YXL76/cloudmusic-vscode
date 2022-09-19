@@ -1,6 +1,6 @@
 import { ACCOUNT_STATE, broadcastProfiles, jsonToCookie } from "./helper.js";
 import { eapi, weapi } from "./crypto.js";
-import { API_CONFIG } from "../index.js";
+import { API_CONFIG } from "../helper.js";
 import { CookieJar } from "tough-cookie";
 import type { Headers } from "got";
 import type { NeteaseTypings } from "api";

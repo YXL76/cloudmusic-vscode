@@ -1,4 +1,4 @@
-import type { IPCControl, IPCPlayer, IPCQueue, IPCWasm } from "./index";
+import type { IPCControl, IPCPlayer, IPCQueue, IPCWasm } from "./event.js";
 import type { NeteaseTypings } from "api";
 
 export type CSMessage<T = undefined, U = number> = { channel: U; msg?: T; err?: true };
