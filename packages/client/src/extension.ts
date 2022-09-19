@@ -1,10 +1,10 @@
-import { AUTO_START, BUTTON_KEY, NATIVE_MODULE, SETTING_DIR } from "./constant";
-import { CONTEXT, IPC, STATE } from "./utils";
+import { AUTO_START, BUTTON_KEY, NATIVE_MODULE, SETTING_DIR } from "./constant/index.js";
+import { CONTEXT, IPC, STATE } from "./utils/index.js";
 import type { Disposable, ExtensionContext, TreeDataProvider, TreeView, TreeViewVisibilityChangeEvent } from "vscode";
-import { LocalProvider, PlaylistProvider, QueueProvider, RadioProvider } from "./treeview";
+import { LocalProvider, PlaylistProvider, QueueProvider, RadioProvider } from "./treeview/index.js";
 import { Uri, window, workspace } from "vscode";
 import { mkdir } from "node:fs/promises";
-import { realActivate } from "./activate";
+import { realActivate } from "./activate/index.js";
 
 export async function activate(context: ExtensionContext): Promise<void> {
   CONTEXT.context = context;

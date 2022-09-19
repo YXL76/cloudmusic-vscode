@@ -1,13 +1,13 @@
-import { ACCOUNT_STATE, broadcastProfiles, jsonToCookie } from "./helper";
-import { eapi, weapi } from "./crypto";
-import { API_CONFIG } from "../index";
+import { ACCOUNT_STATE, broadcastProfiles, jsonToCookie } from "./helper.js";
+import { eapi, weapi } from "./crypto.js";
+import { API_CONFIG } from "../index.js";
 import { CookieJar } from "tough-cookie";
 import type { Headers } from "got";
 import type { NeteaseTypings } from "api";
-import { STATE } from "../../state";
+import { STATE } from "../../state.js";
 import { got } from "got";
-import { logError } from "../../utils";
-import { loginStatus } from "./index";
+import { logError } from "../../utils.js";
+import { loginStatus } from "./account.js";
 
 const client = got.extend({
   method: "POST",

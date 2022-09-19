@@ -1,6 +1,6 @@
 import type { Disposable, InputBox, QuickInput, QuickInputButton, QuickPick, QuickPickItem } from "vscode";
 import { QuickInputButtons, ThemeIcon, window } from "vscode";
-import i18n from "../i18n";
+import i18n from "../i18n/index.js";
 
 const enum InputFlowAction {
   back,

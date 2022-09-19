@@ -1,8 +1,8 @@
 import type { NeteaseArtistArea, NeteaseArtistType } from "@cloudmusic/shared";
-import { resolveAlbumsItem, resolveArtist, resolveSongItem, resolveSongItemSt } from "./helper";
-import { API_CACHE } from "../../cache";
+import { resolveAlbumsItem, resolveArtist, resolveSongItem, resolveSongItemSt } from "./helper.js";
+import { API_CACHE } from "../../cache.js";
 import type { NeteaseTypings } from "api";
-import { weapiRequest } from "./request";
+import { weapiRequest } from "./request.js";
 
 type ArtistsRet = {
   readonly artist: NeteaseTypings.Artist;

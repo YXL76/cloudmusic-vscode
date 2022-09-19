@@ -1,14 +1,14 @@
-import { AccountViewProvider } from "../utils";
+import { AccountViewProvider } from "../utils/index.js";
 import type { ExtensionContext } from "vscode";
-import { initAccount } from "./account";
-import { initCache } from "./cache";
-import { initCommand } from "./command";
-import { initIPC } from "./ipc";
-import { initLocal } from "./local";
-import { initPlaylist } from "./playlist";
-import { initQueue } from "./queue";
-import { initRadio } from "./radio";
-import { initStatusBar } from "./statusBar";
+import { initAccount } from "./account.js";
+import { initCache } from "./cache.js";
+import { initCommand } from "./command.js";
+import { initIPC } from "./ipc.js";
+import { initLocal } from "./local.js";
+import { initPlaylist } from "./playlist.js";
+import { initQueue } from "./queue.js";
+import { initRadio } from "./radio.js";
+import { initStatusBar } from "./statusBar.js";
 import { window } from "vscode";
 
 export async function realActivate(context: ExtensionContext) {

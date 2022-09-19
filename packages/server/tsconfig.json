@@ -3,7 +3,7 @@
     "esModuleInterop": true,
     "lib": ["ES2022"],
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitAny": true,
@@ -13,6 +13,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "resolveJsonModule": true,
+    "skipLibCheck": true, // https://github.com/sindresorhus/got/issues/2051
     "strict": true,
     "target": "ES2022"
   },

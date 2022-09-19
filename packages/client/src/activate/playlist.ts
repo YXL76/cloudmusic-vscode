@@ -1,11 +1,20 @@
-import { IPC, MultiStepInput, STATE, Webview, pickAddToPlaylist, pickPlaylist, pickProgram, pickSong } from "../utils";
-import type { PlaylistItemTreeItem, QueueContent, UserTreeItem } from "../treeview";
-import { PlaylistProvider, ProgramTreeItem, QueueItemTreeItem } from "../treeview";
+import {
+  IPC,
+  MultiStepInput,
+  STATE,
+  Webview,
+  pickAddToPlaylist,
+  pickPlaylist,
+  pickProgram,
+  pickSong,
+} from "../utils/index.js";
+import type { PlaylistItemTreeItem, QueueContent, UserTreeItem } from "../treeview/index.js";
+import { PlaylistProvider, ProgramTreeItem, QueueItemTreeItem } from "../treeview/index.js";
 import { Uri, commands, env, window } from "vscode";
-import { AccountManager } from "../manager";
+import { AccountManager } from "../manager/index.js";
 import type { ExtensionContext } from "vscode";
 import { NeteaseCommentType } from "@cloudmusic/shared";
-import i18n from "../i18n";
+import i18n from "../i18n/index.js";
 
 export function initPlaylist(context: ExtensionContext): void {
   context.subscriptions.push(

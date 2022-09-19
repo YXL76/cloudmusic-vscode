@@ -1,8 +1,8 @@
-import { eapiRequest, weapiRequest } from "./request";
+import { eapiRequest, weapiRequest } from "./request.js";
 import type { NeteaseCommentType } from "@cloudmusic/shared";
 import { NeteaseSortType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
-import { resolveComment } from "./helper";
+import { resolveComment } from "./helper.js";
 
 const resourceTypeMap = ["R_SO_4_", "R_MV_5_", "A_PL_0_", "R_AL_3_", "A_DJ_1_", "R_VI_62_", "A_EV_2_", "A_DR_14_"];
 

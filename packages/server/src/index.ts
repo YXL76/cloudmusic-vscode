@@ -1,12 +1,12 @@
-import { CACHE_DIR, LYRIC_CACHE_DIR, MUSIC_CACHE_DIR, TMP_DIR } from "./constant";
+import { CACHE_DIR, LYRIC_CACHE_DIR, MUSIC_CACHE_DIR, TMP_DIR } from "./constant.js";
 import type { CSMessage, IPCApi, IPCMsg } from "@cloudmusic/shared";
 import { mkdir, readdir, rm, stat } from "node:fs/promises";
-import { MUSIC_CACHE } from "./cache";
-import type { NeteaseAPI } from "./api";
+import { MUSIC_CACHE } from "./cache.js";
+import type { NeteaseAPI } from "./api/index.js";
 import { bootstrap } from "global-agent";
 import http from "node:http";
 import https from "node:https";
-import { logError } from "./utils";
+import { logError } from "./utils.js";
 import { resolve } from "node:path";
 
 export type NeteaseAPIKey = keyof typeof NeteaseAPI;

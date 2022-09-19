@@ -6,6 +6,7 @@
     "check": "tsc -p tsconfig.json",
     "lint": "eslint src/**/*.ts*"
   },
+  "type": "module",
   "devDependencies": {
     "@types/api": "workspace:*",
     "@types/react": "18.0.19",

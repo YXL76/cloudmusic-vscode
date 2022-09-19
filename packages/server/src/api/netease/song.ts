@@ -1,11 +1,11 @@
-import { ACCOUNT_STATE, resolveAnotherSongItem, resolveSongItem } from "./helper";
-import { API_CACHE, LYRIC_CACHE } from "../../cache";
-import { apiRequest, eapiRequest, weapiRequest } from "./request";
-import { API_CONFIG } from "../helper";
+import { ACCOUNT_STATE, resolveAnotherSongItem, resolveSongItem } from "./helper.js";
+import { API_CACHE, LYRIC_CACHE } from "../../cache.js";
+import { apiRequest, eapiRequest, weapiRequest } from "./request.js";
+import { API_CONFIG } from "../helper.js";
 import type { NeteaseTopSongType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
-import { STATE } from "../../state";
-import { logError } from "../../utils";
+import { STATE } from "../../state.js";
+import { logError } from "../../utils.js";
 
 const parseLyric = (raw: string): readonly (readonly [number, string])[] => {
   const unsorted: Array<[number, string]> = [];

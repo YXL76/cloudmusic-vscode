@@ -1,9 +1,9 @@
 // @ts-check
 
-import { readdir, stat } from "fs/promises";
+import { readdir, stat } from "node:fs/promises";
 import { build } from "esbuild";
-import { resolve } from "path";
-import { spawn } from "child_process";
+import { resolve } from "node:path";
+import { spawn } from "node:child_process";
 import { wasmLoader } from "esbuild-plugin-wasm";
 
 const prod = process.argv.includes("--prod");

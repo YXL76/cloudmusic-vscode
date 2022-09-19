@@ -1,9 +1,9 @@
-import { IPC, MultiStepInput, Webview, pickRadio } from "../utils";
-import type { ProgramTreeItem, RadioTreeItem, UserTreeItem } from "../treeview";
+import { IPC, MultiStepInput, Webview, pickRadio } from "../utils/index.js";
+import type { ProgramTreeItem, RadioTreeItem, UserTreeItem } from "../treeview/index.js";
 import { commands, env } from "vscode";
 import type { ExtensionContext } from "vscode";
 import { NeteaseCommentType } from "@cloudmusic/shared";
-import { RadioProvider } from "../treeview";
+import { RadioProvider } from "../treeview/index.js";
 
 export function initRadio(context: ExtensionContext): void {
   context.subscriptions.push(

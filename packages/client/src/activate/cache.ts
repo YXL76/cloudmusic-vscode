@@ -1,6 +1,6 @@
-import { CACHE_KEY, CONF, LYRIC_CACHE_KEY, MUSIC_QUALITY } from "../constant";
+import { CACHE_KEY, CONF, LYRIC_CACHE_KEY, MUSIC_QUALITY } from "../constant/index.js";
 import type { ExtensionContext } from "vscode";
-import { IPC } from "../utils";
+import { IPC } from "../utils/index.js";
 import { workspace } from "vscode";
 
 export function initCache(context: ExtensionContext): void {

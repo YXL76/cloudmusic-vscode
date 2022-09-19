@@ -1,8 +1,8 @@
 import { commands, window } from "vscode";
-import { AccountManager } from "../manager";
+import { AccountManager } from "../manager/index.js";
 import type { ExtensionContext } from "vscode";
-import { MultiStepInput } from "../utils";
-import i18n from "../i18n";
+import { MultiStepInput } from "../utils/index.js";
+import i18n from "../i18n/index.js";
 
 export async function initAccount(context: ExtensionContext): Promise<void> {
   context.subscriptions.push(

@@ -1,7 +1,7 @@
-import { resolveAlbumsItem, resolveSongItem } from "./helper";
-import { API_CACHE } from "../../cache";
+import { resolveAlbumsItem, resolveSongItem } from "./helper.js";
+import { API_CACHE } from "../../cache.js";
 import type { NeteaseTypings } from "api";
-import { weapiRequest } from "./request";
+import { weapiRequest } from "./request.js";
 
 type AlbumRet = {
   readonly album: NeteaseTypings.AlbumsItem;

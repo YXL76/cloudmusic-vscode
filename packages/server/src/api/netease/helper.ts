@@ -1,7 +1,7 @@
 import { CookieJar } from "tough-cookie";
 import { IPCControl } from "@cloudmusic/shared";
 import type { IPCServerMsg } from "@cloudmusic/shared";
-import { IPC_SRV } from "../../server";
+import { IPC_SRV } from "../../server.js";
 import type { NeteaseTypings } from "api";
 import type { Socket } from "node:net";
 

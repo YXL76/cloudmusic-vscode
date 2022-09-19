@@ -1,6 +1,6 @@
 import { EventEmitter, ThemeIcon, TreeItem } from "vscode";
-import { LocalFileTreeItem, ProgramTreeItem } from "./index";
-import type { PlayTreeItem, PlayTreeItemData, QueueContent } from "./index";
+import { LocalFileTreeItem, ProgramTreeItem } from "./index.js";
+import type { PlayTreeItem, PlayTreeItemData, QueueContent } from "./index.js";
 import type { TreeDataProvider, TreeView } from "vscode";
 import type { NeteaseTypings } from "api";
 import { unsortInplace } from "array-unsort";

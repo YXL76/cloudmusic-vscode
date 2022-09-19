@@ -1,8 +1,8 @@
-export * from "./radio";
-export * from "./local";
-export * from "./playlist";
-export * from "./queue";
-export * from "./user";
+export * from "./radio.js";
+export * from "./local.js";
+export * from "./playlist.js";
+export * from "./queue.js";
+export * from "./user.js";
 
 import type {
   LocalFileTreeItem,
@@ -11,7 +11,7 @@ import type {
   ProgramTreeItemData,
   QueueItemTreeItem,
   QueueItemTreeItemData,
-} from "./index";
+} from "./index.js";
 import type { ThemeIcon, TreeItem } from "vscode";
 
 export type QueueContent = QueueItemTreeItem | LocalFileTreeItem | ProgramTreeItem;

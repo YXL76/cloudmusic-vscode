@@ -1,10 +1,10 @@
-import { IPC, MultiStepInput, STATE, likeMusic } from "../utils";
-import { QueueItemTreeItem, QueueProvider } from "../treeview";
-import { SPEED_KEY, VOLUME_KEY } from "../constant";
-import { BUTTON_MANAGER } from "../manager";
+import { IPC, MultiStepInput, STATE, likeMusic } from "../utils/index.js";
+import { QueueItemTreeItem, QueueProvider } from "../treeview/index.js";
+import { SPEED_KEY, VOLUME_KEY } from "../constant/index.js";
+import { BUTTON_MANAGER } from "../manager/index.js";
 import type { ExtensionContext } from "vscode";
 import { commands } from "vscode";
-import i18n from "../i18n";
+import i18n from "../i18n/index.js";
 
 export function initCommand(context: ExtensionContext): void {
   context.subscriptions.push(

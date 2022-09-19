@@ -1,11 +1,11 @@
-import { MUSIC_CACHE } from "./cache";
-import { STATE } from "./state";
-import { TMP_DIR } from "./constant";
+import { MUSIC_CACHE } from "./cache.js";
+import { STATE } from "./state.js";
+import { TMP_DIR } from "./constant.js";
 import { createWriteStream } from "node:fs";
 import { got } from "got";
 import { resolve } from "node:path";
 import { rm } from "node:fs/promises";
-import { songUrl } from "./api/netease";
+import { songUrl } from "./api/netease/song.js";
 
 export const logError = (err: unknown): void => {
   if (err) {

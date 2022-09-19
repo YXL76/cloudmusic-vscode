@@ -1,11 +1,11 @@
 import { IPCPlayer, IPCWasm } from "@cloudmusic/shared";
-import { getMusicPath, getMusicPathClean, logError } from "./utils";
-import { lyric, scrobble } from "./api/netease";
+import { getMusicPath, getMusicPathClean, logError } from "./utils.js";
+import { lyric, scrobble } from "./api/netease/index.js";
 import type { IPCClientLoadMsg } from "@cloudmusic/shared";
-import { IPC_SRV } from "./server";
+import { IPC_SRV } from "./server.js";
 import type { NeteaseTypings } from "api";
-import { STATE } from "./state";
-import { TMP_DIR } from "./constant";
+import { STATE } from "./state.js";
+import { TMP_DIR } from "./constant.js";
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 import { rm } from "node:fs/promises";

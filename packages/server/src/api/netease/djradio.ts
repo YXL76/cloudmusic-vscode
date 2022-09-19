@@ -1,7 +1,7 @@
-import { ACCOUNT_STATE, resolveProgramDetail, resolveRadioDetail, resolveUserDetail } from "./helper";
-import { API_CACHE } from "../../cache";
+import { ACCOUNT_STATE, resolveProgramDetail, resolveRadioDetail, resolveUserDetail } from "./helper.js";
+import { API_CACHE } from "../../cache.js";
 import type { NeteaseTypings } from "api";
-import { weapiRequest } from "./request";
+import { weapiRequest } from "./request.js";
 
 /* export async function djCategoryRecommend() {
   const key = "dj_category_recommend";

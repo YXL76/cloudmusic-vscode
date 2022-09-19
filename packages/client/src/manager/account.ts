@@ -1,4 +1,4 @@
-import { ACCOUNT_KEY, AUTO_CHECK, COOKIE_KEY } from "../constant";
+import { ACCOUNT_KEY, AUTO_CHECK, COOKIE_KEY } from "../constant/index.js";
 import {
   ButtonAction,
   CONTEXT,
@@ -18,14 +18,14 @@ import {
   pickRadios,
   pickSongs,
   pickUser,
-} from "../utils";
+} from "../utils/index.js";
 import { NeteaseArtistArea, NeteaseArtistType, NeteaseTopSongType } from "@cloudmusic/shared";
 import { commands, window } from "vscode";
-import type { InputStep } from "../utils";
+import type { InputStep } from "../utils/index.js";
 import type { NeteaseTypings } from "api";
 import type { QuickPickItem } from "vscode";
 import { createHash } from "node:crypto";
-import i18n from "../i18n";
+import i18n from "../i18n/index.js";
 
 type CookieState = { uid: number; cookie: string }[];
 type States = Record<number, NeteaseTypings.Account>;

@@ -1,15 +1,15 @@
-import { API_CACHE, LYRIC_CACHE, MUSIC_CACHE } from "./cache";
-import { API_CONFIG, NeteaseAPI } from "./api";
+import { API_CACHE, LYRIC_CACHE, MUSIC_CACHE } from "./cache.js";
+import { API_CONFIG, NeteaseAPI } from "./api/index.js";
 import { IPCApi, IPCControl, IPCPlayer, IPCQueue, ipcDelimiter } from "@cloudmusic/shared";
 import type { IPCClientMsg, IPCServerMsg } from "@cloudmusic/shared";
-import type { NeteaseAPICMsg, NeteaseAPISMsg } from "./index";
-import { PLAYER, posHandler } from "./player";
-import { RETAIN_FILE, ipcBroadcastServerPath, ipcServerPath } from "./constant";
+import type { NeteaseAPICMsg, NeteaseAPISMsg } from "./index.js";
+import { PLAYER, posHandler } from "./player.js";
+import { RETAIN_FILE, ipcBroadcastServerPath, ipcServerPath } from "./constant.js";
 import type { Server, Socket } from "node:net";
-import { downloadMusic, logError } from "./utils";
+import { downloadMusic, logError } from "./utils.js";
 import { readFile, writeFile } from "node:fs/promises";
-import { STATE } from "./state";
-import { broadcastProfiles } from "./api/netease/helper";
+import { STATE } from "./state.js";
+import { broadcastProfiles } from "./api/netease/helper.js";
 import { createServer } from "node:net";
 import { rmSync } from "node:fs";
 

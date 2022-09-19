@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "check": "",
+    "check": "tsc -p tsconfig.json",
     "lint": "eslint src/**"
   },
+  "type": "module",
   "devDependencies": {
     "@types/api": "workspace:*",
     "@types/lodash": "4.14.185",

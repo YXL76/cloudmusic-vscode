@@ -1,12 +1,12 @@
-import { ButtonAction, IPC, Webview } from "./index";
-import type { InputStep, MultiStepInput } from "./index";
-import { ProgramTreeItem, QueueItemTreeItem } from "../treeview";
+import { ButtonAction, IPC, Webview } from "./index.js";
+import type { InputStep, MultiStepInput } from "./index.js";
+import { ProgramTreeItem, QueueItemTreeItem } from "../treeview/index.js";
 import { commands, window } from "vscode";
-import { AccountManager } from "../manager";
+import { AccountManager } from "../manager/index.js";
 import { NeteaseCommentType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 import type { QuickPickItem } from "vscode";
-import i18n from "../i18n";
+import i18n from "../i18n/index.js";
 
 export async function likeMusic(input: MultiStepInput, step: number, id: number): Promise<InputStep> {
   const title = i18n.word.like;

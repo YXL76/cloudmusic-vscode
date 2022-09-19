@@ -1,11 +1,11 @@
 // @ts-check
 // Reference: [Platform-specific extensions](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#platformspecific-extensions)
 
-import { basename, extname, resolve } from "path";
-import { copyFileSync, mkdirSync, readdirSync, rmdirSync } from "fs";
-import assert from "assert";
+import { basename, extname, resolve } from "node:path";
+import { copyFileSync, mkdirSync, readdirSync, rmdirSync } from "node:fs";
+import assert from "node:assert";
 import packageJSON from "../package.json" assert { type: "json" };
-import { spawnSync } from "child_process";
+import { spawnSync } from "node:child_process";
 
 const vsceToken = process.env["VSCE_TOKEN"];
 const ovsxToken = process.env["OVSX_TOKEN"];

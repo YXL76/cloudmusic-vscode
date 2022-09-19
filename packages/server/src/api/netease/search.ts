@@ -1,6 +1,6 @@
-import { ACCOUNT_STATE, resolveAlbumsItem, resolveArtist, resolvePlaylistItem, resolveSongItemSt } from "./helper";
-import { eapiRequest, weapiRequest } from "./request";
-import { API_CACHE } from "../../cache";
+import { ACCOUNT_STATE, resolveAlbumsItem, resolveArtist, resolvePlaylistItem, resolveSongItemSt } from "./helper.js";
+import { eapiRequest, weapiRequest } from "./request.js";
+import { API_CACHE } from "../../cache.js";
 import { NeteaseSearchType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
 

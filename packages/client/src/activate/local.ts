@@ -1,9 +1,9 @@
-import type { LocalFileTreeItem, LocalLibraryTreeItem } from "../treeview";
+import type { LocalFileTreeItem, LocalLibraryTreeItem } from "../treeview/index.js";
 import { Uri, commands, env, window } from "vscode";
 import type { ExtensionContext } from "vscode";
-import { IPC } from "../utils";
-import { LOCAL_FOLDER_KEY } from "../constant";
-import { LocalProvider } from "../treeview";
+import { IPC } from "../utils/index.js";
+import { LOCAL_FOLDER_KEY } from "../constant/index.js";
+import { LocalProvider } from "../treeview/index.js";
 
 export function initLocal(context: ExtensionContext): void {
   context.globalState.get<readonly string[]>(LOCAL_FOLDER_KEY)?.forEach((f) => void LocalProvider.addFolder(f));

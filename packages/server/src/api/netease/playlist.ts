@@ -1,8 +1,8 @@
-import { ACCOUNT_STATE, resolvePlaylistItem, resolveSongItem, resolveSongItemSt, resolveUserDetail } from "./helper";
-import { apiRequest, weapiRequest } from "./request";
-import { API_CACHE } from "../../cache";
+import { ACCOUNT_STATE, resolvePlaylistItem, resolveSongItem, resolveSongItemSt, resolveUserDetail } from "./helper.js";
+import { apiRequest, weapiRequest } from "./request.js";
+import { API_CACHE } from "../../cache.js";
 import type { NeteaseTypings } from "api";
-import { songDetail } from "./index";
+import { songDetail } from "./index.js";
 
 type PlaylistCatlistItem = { name: string; category?: number; hot: boolean };
 

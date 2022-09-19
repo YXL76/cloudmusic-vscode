@@ -7,13 +7,13 @@ import {
   resolveSongItem,
   resolveSongItemSt,
   resolveUserDetail,
-} from "./helper";
-import { eapiRequest, loginRequest, qrloginRequest, weapiRequest } from "./request";
-import { API_CACHE } from "../../cache";
-import { API_CONFIG } from "../helper";
+} from "./helper.js";
+import { eapiRequest, loginRequest, qrloginRequest, weapiRequest } from "./request.js";
+import { API_CACHE } from "../../cache.js";
+import { API_CONFIG } from "../helper.js";
 import { CookieJar } from "tough-cookie";
 import type { NeteaseTypings } from "api";
-import { logError } from "../../utils";
+import { logError } from "../../utils.js";
 
 export function captchaSent(ctcode: string, cellphone: string): Promise<void> {
   return weapiRequest("music.163.com/weapi/sms/captcha/sent", { cellphone, ctcode });

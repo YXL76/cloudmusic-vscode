@@ -1,7 +1,7 @@
-import en from "./en";
+import en from "./en.js";
 import { env } from "vscode";
-import type zhCn from "./zh-cn";
-import type zhTw from "./zh-tw";
+import type zhCn from "./zh-cn.js";
+import type zhTw from "./zh-tw.js";
 
 const i18n: typeof en | typeof zhCn | typeof zhTw = en;
 
@@ -13,10 +13,10 @@ const lang = availableLanguages.find((value) => env.language === value);
 
 switch (lang) {
   case "zh-cn":
-    import("./zh-cn").then((i) => Object.assign(i18n, i.default)).catch(console.error);
+    import("./zh-cn.js").then((i) => Object.assign(i18n, i.default)).catch(console.error);
     break;
   case "zh-tw":
-    import("./zh-tw").then((i) => Object.assign(i18n, i.default)).catch(console.error);
+    import("./zh-tw.js").then((i) => Object.assign(i18n, i.default)).catch(console.error);
     break;
 }
 

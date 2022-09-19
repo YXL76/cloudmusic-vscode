@@ -1,9 +1,9 @@
-import { IPC, LyricType, MultiStepInput, STATE, Webview, pickUser } from "../utils";
-import { BUTTON_MANAGER } from "../manager";
+import { IPC, LyricType, MultiStepInput, STATE, Webview, pickUser } from "../utils/index.js";
+import { BUTTON_MANAGER } from "../manager/index.js";
 import type { ExtensionContext } from "vscode";
-import type { InputStep } from "../utils";
+import type { InputStep } from "../utils/index.js";
 import { commands } from "vscode";
-import i18n from "../i18n";
+import i18n from "../i18n/index.js";
 
 export function initStatusBar(context: ExtensionContext): void {
   BUTTON_MANAGER.init();

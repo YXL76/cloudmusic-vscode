@@ -10,11 +10,11 @@ import {
   pickSong,
   pickSongItems,
   pickSongMany,
-} from "./index";
-import type { InputStep, MultiStepInput } from "./index";
+} from "./index.js";
+import type { InputStep, MultiStepInput } from "./index.js";
 import type { QuickPick, QuickPickItem } from "vscode";
 import { NeteaseSearchType } from "@cloudmusic/shared";
-import i18n from "../i18n";
+import i18n from "../i18n/index.js";
 import { throttle } from "lodash";
 
 const title = i18n.word.search;

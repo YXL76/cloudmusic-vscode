@@ -1,11 +1,11 @@
-import { AccountManager, BUTTON_MANAGER } from "../manager";
-import { AccountViewProvider, IPC } from "./index";
-import { FM_KEY, LYRIC_KEY, PLAYER_MODE, QUEUE_INIT, REPEAT_KEY, SHOW_LYRIC_KEY } from "../constant";
-import { QueueItemTreeItem, QueueProvider } from "../treeview";
+import { AccountManager, BUTTON_MANAGER } from "../manager/index.js";
+import { AccountViewProvider, IPC } from "./index.js";
+import { FM_KEY, LYRIC_KEY, PLAYER_MODE, QUEUE_INIT, REPEAT_KEY, SHOW_LYRIC_KEY } from "../constant/index.js";
+import { QueueItemTreeItem, QueueProvider } from "../treeview/index.js";
 import type { ExtensionContext } from "vscode";
 import type { NeteaseTypings } from "api";
-import type { QueueContent } from "../treeview";
-import i18n from "../i18n";
+import type { QueueContent } from "../treeview/index.js";
+import i18n from "../i18n/index.js";
 import { version } from "vscode";
 
 export const enum LyricType {

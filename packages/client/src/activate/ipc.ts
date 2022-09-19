@@ -1,5 +1,5 @@
-import { AccountManager, BUTTON_MANAGER } from "../manager";
-import { AccountViewProvider, IPC, STATE, defaultLyric } from "../utils";
+import { AccountManager, BUTTON_MANAGER } from "../manager/index.js";
+import { AccountViewProvider, IPC, STATE, defaultLyric } from "../utils/index.js";
 import {
   CONF,
   COOKIE_KEY,
@@ -13,16 +13,16 @@ import {
   SPEED_KEY,
   STRICT_SSL,
   VOLUME_KEY,
-} from "../constant";
+} from "../constant/index.js";
 import { IPCApi, IPCControl, IPCPlayer, IPCQueue, IPCWasm, logFile } from "@cloudmusic/shared";
 import type { IPCBroadcastMsg, IPCServerMsg } from "@cloudmusic/shared";
 import type { NeteaseAPIKey, NeteaseAPISMsg } from "@cloudmusic/server";
-import { PlaylistProvider, RadioProvider } from "../treeview";
+import { PlaylistProvider, RadioProvider } from "../treeview/index.js";
 import { Uri, commands, window, workspace } from "vscode";
 import { readdir, rm } from "node:fs/promises";
 import type { ExtensionContext } from "vscode";
-import type { PlayTreeItemData } from "../treeview";
-import { QueueProvider } from "../treeview";
+import type { PlayTreeItemData } from "../treeview/index.js";
+import { QueueProvider } from "../treeview/index.js";
 import { open } from "node:fs/promises";
 import { resolve } from "node:path";
 import { spawn } from "node:child_process";

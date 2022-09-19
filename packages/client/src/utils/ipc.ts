@@ -6,13 +6,13 @@ import {
   MUSIC_QUALITY,
   ipcBroadcastServerPath,
   ipcServerPath,
-} from "../constant";
+} from "../constant/index.js";
 import type { CSConnPool, IPCBroadcastMsg, IPCClientMsg, IPCServerMsg } from "@cloudmusic/shared";
 import { IPCApi, IPCControl, IPCPlayer, IPCQueue, ipcDelimiter } from "@cloudmusic/shared";
-import { LocalFileTreeItem, QueueProvider } from "../treeview";
+import { LocalFileTreeItem, QueueProvider } from "../treeview/index.js";
 import type { NeteaseAPICMsg, NeteaseAPIKey, NeteaseAPIParameters, NeteaseAPIReturn } from "@cloudmusic/server";
-import type { PlayTreeItemData } from "../treeview";
-import { STATE } from "./index";
+import type { PlayTreeItemData } from "../treeview/index.js";
+import { STATE } from "./index.js";
 import type { Socket } from "node:net";
 import { connect } from "node:net";
 

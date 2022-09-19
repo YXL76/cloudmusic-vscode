@@ -1,4 +1,4 @@
-import { CONTEXT, IPC, MultiStepInput, STATE, pickAlbum, pickArtist, pickSong, pickUser } from "./index";
+import { CONTEXT, IPC, MultiStepInput, STATE, pickAlbum, pickArtist, pickSong, pickUser } from "./index.js";
 import type {
   CSMessage,
   CommentCMsg,
@@ -10,11 +10,11 @@ import type {
 import { ColorThemeKind, Uri, ViewColumn, commands, window, workspace } from "vscode";
 import { NeteaseCommentType, NeteaseSortType } from "@cloudmusic/shared";
 import type { ProviderSMsg, WebviewType } from "@cloudmusic/shared";
-import { SPEED_KEY, VOLUME_KEY } from "../constant";
+import { SPEED_KEY, VOLUME_KEY } from "../constant/index.js";
 import type { WebviewView, WebviewViewProvider } from "vscode";
-import { AccountManager } from "../manager";
+import { AccountManager } from "../manager/index.js";
 import type { NeteaseTypings } from "api";
-import i18n from "../i18n";
+import i18n from "../i18n/index.js";
 import { spawn } from "node:child_process";
 import { toDataURL } from "qrcode";
 

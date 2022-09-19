@@ -1,4 +1,4 @@
-export * from "./shared";
+export * from "./shared.js";
 
 import type { WorkspaceConfiguration } from "vscode";
 import { homedir } from "node:os";

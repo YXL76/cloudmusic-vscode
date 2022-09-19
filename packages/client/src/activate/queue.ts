@@ -1,9 +1,9 @@
-import { IPC, MultiStepInput } from "../utils";
-import { QueueProvider, QueueSortOrder, QueueSortType } from "../treeview";
+import { IPC, MultiStepInput } from "../utils/index.js";
+import { QueueProvider, QueueSortOrder, QueueSortType } from "../treeview/index.js";
 import type { ExtensionContext } from "vscode";
-import type { QueueContent } from "../treeview";
+import type { QueueContent } from "../treeview/index.js";
 import { commands } from "vscode";
-import i18n from "../i18n";
+import i18n from "../i18n/index.js";
 
 export function initQueue(context: ExtensionContext): void {
   context.subscriptions.push(

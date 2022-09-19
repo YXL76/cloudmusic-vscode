@@ -1,9 +1,9 @@
-import { CONTEXT, MultiStepInput, STATE } from "../utils";
+import { CONTEXT, MultiStepInput, STATE } from "../utils/index.js";
 import { MarkdownString, StatusBarAlignment, window } from "vscode";
-import { BUTTON_KEY } from "../constant";
-import type { QueueContent } from "../treeview";
+import { BUTTON_KEY } from "../constant/index.js";
+import type { QueueContent } from "../treeview/index.js";
 import type { StatusBarItem } from "vscode";
-import i18n from "../i18n";
+import i18n from "../i18n/index.js";
 
 const enum Label {
   seekbackward,

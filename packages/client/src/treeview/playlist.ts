@@ -1,11 +1,11 @@
 import { EventEmitter, ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
-import { QueueItemTreeItem, UserTreeItem } from "./index";
+import { QueueItemTreeItem, UserTreeItem } from "./index.js";
 import type { TreeDataProvider, TreeView } from "vscode";
-import { AccountManager } from "../manager";
-import { IPC } from "../utils";
+import { AccountManager } from "../manager/index.js";
+import { IPC } from "../utils/index.js";
 import type { NeteaseTypings } from "api";
-import type { PlayTreeItemData } from "./index";
-import i18n from "../i18n";
+import type { PlayTreeItemData } from "./index.js";
+import i18n from "../i18n/index.js";
 
 type Content = UserTreeItem | PlaylistItemTreeItem | QueueItemTreeItem;
 

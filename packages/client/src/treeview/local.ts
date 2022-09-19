@@ -1,9 +1,9 @@
 import { EventEmitter, ThemeIcon, TreeItem, TreeItemCollapsibleState } from "vscode";
-import type { PlayTreeItem, PlayTreeItemData } from "./index";
+import type { PlayTreeItem, PlayTreeItemData } from "./index.js";
 import type { TreeDataProvider, TreeView } from "vscode";
 import { readdir, stat } from "node:fs/promises";
 import type { IAudioMetadata } from "music-metadata";
-import { MUSIC_CACHE_DIR } from "../constant";
+import { MUSIC_CACHE_DIR } from "../constant/index.js";
 import type { NeteaseTypings } from "api";
 import { parseFile } from "music-metadata";
 import { resolve } from "node:path";

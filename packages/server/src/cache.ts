@@ -1,10 +1,10 @@
-import { CACHE_DIR, LYRIC_CACHE_DIR, MUSIC_CACHE_DIR } from "./constant";
+import { CACHE_DIR, LYRIC_CACHE_DIR, MUSIC_CACHE_DIR } from "./constant.js";
 import { copyFile, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import type { NeteaseTypings } from "api";
 import NodeCache from "node-cache";
-import { STATE } from "./state";
+import { STATE } from "./state.js";
 import Yallist from "yallist";
-import { logError } from "./utils";
+import { logError } from "./utils.js";
 import md5File from "md5-file";
 import { resolve } from "node:path";
 
