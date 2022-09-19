@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.16.9] - 2022-09-19
+
+### Changed
+
+- Status bar: shrink image size
+
 ## [9.16.8] - 2022-09-13
 
 ### Changed
