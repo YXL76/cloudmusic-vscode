@@ -8,6 +8,8 @@
   "[typescriptreact]": {
     "editor.defaultFormatter": "dbaeumer.vscode-eslint"
   },
+  "deno.config": "./deno.json",
+  "deno.enablePaths": ["./scripts"],
   "eslint.nodePath": ".yarn/sdks",
   "files.exclude": {
     "out": false

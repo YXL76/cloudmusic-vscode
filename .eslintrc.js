@@ -68,7 +68,7 @@ const browserTsConfig = (files, project) => ({
 const config = {
   env: { browser: false, node: true },
   extends: ["eslint:recommended", "plugin:prettier/recommended"],
-  ignorePatterns: ["./packages/wasi/**/*.*", "./packages/wasm/**/*.*", "*.json"],
+  ignorePatterns: ["/packages/wasi/**/*.*", "/packages/wasm/**/*.*", "/scripts/**/*.*", "*.json"],
   parser: "@typescript-eslint/parser",
   plugins: ["prettier"],
   rules: {

@@ -893,20 +893,18 @@
     "object-assign": "latest"
   },
   "scripts": {
-    "build": "yarn node scripts/build.mjs --prod",
-    "build-dev": "yarn node scripts/build.mjs",
+    "build": "deno run --allow-all scripts/build.mts --prod",
+    "build-dev": "deno run --allow-all scripts/build.mts",
     "check": "yarn workspaces foreach -p run check",
     "generate-css": "NODE_ENV=production yarn tailwindcss --no-autoprefixer --minify -o dist/style.css",
     "lint": "yarn workspaces foreach -p run lint",
-    "publish": "yarn node scripts/publish.mjs"
+    "publish": "deno run --allow-all scripts/publish.mts"
   },
   "devDependencies": {
     "@types/eslint": "8.4.6",
     "@typescript-eslint/eslint-plugin": "5.36.2",
     "@typescript-eslint/parser": "5.36.2",
     "debug": "4.3.4",
-    "esbuild": "0.15.8",
-    "esbuild-plugin-wasm": "1.0.0",
     "eslint": "8.23.1",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.2.1",

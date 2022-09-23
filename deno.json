@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "strict": true
+  },
+  "fmt": {
+    "files": {
+      "include": ["scripts/"]
+    },
+    "options": {
+      "lineWidth": 120
+    }
+  },
+  "lint": {
+    "files": {
+      "include": ["scripts/"]
+    },
+    "rules": {
+      "include": ["camelcase", "eqeqeq", "explicit-module-boundary-types"],
+      "tags": ["recommended"]
+    }
+  }
+}
