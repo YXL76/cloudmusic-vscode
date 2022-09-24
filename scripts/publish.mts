@@ -48,7 +48,7 @@ for await (const { name } of Deno.readDir(artifactPath)) {
 }
 
 // [vscode:prepublish] replacement
-await Deno.run({ cmd: ["yarn", "build"] });
+await Deno.run({ cmd: ["yarn", "build"] }).status();
 console.log("Build complete");
 
 // Publish

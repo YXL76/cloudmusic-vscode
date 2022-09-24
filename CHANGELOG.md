@@ -6,6 +6,19 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.17.0] - 2022-09-24
+
+### Added
+
+- API:
+  - `countries_code_list`: login
+  - `playlist_update_playcount`: play playlist
+  - `mv_detail` and `mv_url`: support mv playback
+
+### Changed
+
+- Scripts: use `deno` runtime
+
 ## [9.16.9] - 2022-09-19
 
 ### Changed
