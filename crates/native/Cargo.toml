@@ -21,9 +21,8 @@ branch = "master"
 default-features = false
 features = ["symphonia-flac", "symphonia-mp3", "symphonia-wav"]
 
-[target.'cfg(not(target_os = "macos"))'.dependencies.souvlaki]
-git = "https://github.com/YXL76/souvlaki"
-branch = "deps"
+[target.'cfg(not(target_os = "macos"))'.dependencies]
+souvlaki = "0.5"
 
 [target.'cfg(all(target_os = "windows", any(target_arch = "x86_64", target_arch = "x86")))'.dependencies]
 raw-window-handle = "0.5"

@@ -6,8 +6,5 @@ build = "build.rs"
 edition = "2021"
 
 [dependencies]
+souvlaki = "0.5"
 winit = "0.27"
-
-[dependencies.souvlaki]
-git = "https://github.com/YXL76/souvlaki"
-branch = "deps"
