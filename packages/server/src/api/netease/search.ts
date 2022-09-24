@@ -1,4 +1,4 @@
-import { ACCOUNT_STATE, resolveAlbumsItem, resolveArtist, resolvePlaylistItem, resolveSongItemSt } from "./helper.js";
+import { ACCOUNT_STATE, resolveAlbumsItem, resolveArtist, resolvePlaylistItem, resolveSongItem } from "./helper.js";
 import { eapiRequest, weapiRequest } from "./request.js";
 import { API_CACHE } from "../../cache.js";
 import { NeteaseSearchType } from "@cloudmusic/shared";
@@ -39,7 +39,7 @@ export async function searchSingle(
     ACCOUNT_STATE.cookies.get(uid)
   );
   if (!res) return [];
-  const ret = res.result.songs.map(resolveSongItemSt);
+  const ret = res.result.songs.map(resolveSongItem);
   API_CACHE.set(key, ret);
   return ret;
 }
@@ -136,7 +136,7 @@ export async function searchLyric(
   );
   if (!res) return [];
   const ret = res.result.songs.map((song) => ({
-    ...resolveSongItemSt(song),
+    ...resolveSongItem(song),
     lyrics: song.lyrics,
   }));
   API_CACHE.set(key, ret);

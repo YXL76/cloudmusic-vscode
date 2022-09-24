@@ -137,13 +137,13 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |      module       |       function        | status |
 | :---------------: | :-------------------: | :----: |
 |      mv_all       |        全部 MV        |   ❌   |
-|     mv_detail     |        MV 详情        |   ❌   |
+|     mv_detail     |        MV 详情        |   ✔️   |
 |  mv_detail_info   | MV 点赞转发评论数数据 |   ❌   |
 | mv_exclusive_rcmd |       网易出品        |   ❌   |
 |     mv_first      |        最新 MV        |   ❌   |
 |      mv_sub       |   收藏与取消收藏 MV   |   ❌   |
 |    mv_sublist     |    已收藏 MV 列表     |   ❌   |
-|      mv_url       |        MV 链接        |   ❌   |
+|      mv_url       |        MV 链接        |   ✔️   |
 | related_allvideo  |       相关视频        |   ❌   |
 |      simi_mv      |        相似 MV        |   ❌   |
 
@@ -227,7 +227,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |             setting              |          设置          |   ❌   |
 |          share_resource          |     分享歌曲到动态     |        |
 |         sign_happy_info          |        乐签信息        |   ❌   |
-|         signin_progress          |        签到进度        |        |
+|         signin_progress          |        签到进度        |   ❌   |
 |            simi_user             |        相似用户        |   ❌   |
 |          song_purchased          |        已购单曲        |        |
 |          topic_sub_list          |       收藏的专栏       |        |
@@ -281,7 +281,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 
 |          module           |    function    | status |
 | :-----------------------: | :------------: | :----: |
-|  musician_data_overview`  | 音乐人数据概况 |   ❌   |
+|  musician_data_overview   | 音乐人数据概况 |   ❌   |
 |    musician_play_trend    | 音乐人播放趋势 |   ❌   |
 |      musician_tasks       |   音乐人任务   |   ❌   |
 |    musician_cloudbean     |   账号云豆数   |   ❌   |

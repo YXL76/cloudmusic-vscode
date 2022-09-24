@@ -45,6 +45,7 @@ const enum PickType {
   followeds,
   follows,
   comment,
+  mv,
   copy,
   download,
   program,
@@ -153,6 +154,7 @@ export async function pickSong(
       { label: `$(circuit-board) ${i18n.word.album}`, detail: al.name, id: al.id, type: PickType.album },
       { label: `$(heart) ${i18n.word.like}`, type: PickType.like },
       { label: `$(comment) ${i18n.word.comment}`, type: PickType.comment },
+      ...(item.mv ? [{ label: `$(device-camera) MV`, type: PickType.mv }] : []),
       { label: `$(add) ${i18n.word.addToQueue}`, type: PickType.add },
       { label: `$(play) ${i18n.word.nextTrack}`, type: PickType.next },
       { label: `$(diff-added) ${i18n.word.saveToPlaylist}`, type: PickType.save },
@@ -180,6 +182,9 @@ export async function pickSong(
       return (input) => pickSimiPlaylists(input, step + 1, id, 0);
     case PickType.comment:
       Webview.comment(NeteaseCommentType.song, id, name);
+      break;
+    case PickType.mv:
+      if (item.mv) await Webview.video(item.mv);
       break;
     case PickType.like:
       return (input) => likeMusic(input, step + 1, id);

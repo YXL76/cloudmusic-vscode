@@ -96,17 +96,10 @@ export namespace NeteaseTypings {
     alia: string[];
     ar: { id: number; name: string }[];
     al: { id: number; name: string; picUrl: string };
+    mv: number | undefined;
   };
 
-  export type SongsItemSt = {
-    name: string;
-    id: number;
-    dt: number;
-    alia: string[];
-    ar: { id: number; name: string }[];
-    al: { id: number; name: string; picUrl: string };
-    privilege: { st: number };
-  };
+  export type SongsItemSt = SongsItem & { privilege: { st: number } };
 
   export type RecordData = SongsItem & { playCount: number };
 
@@ -118,6 +111,7 @@ export namespace NeteaseTypings {
     artists: { id: number; name: string }[];
     album: { id: number; name: string; picUrl: string };
     privilege: { st: number };
+    mvid: number;
   };
 
   export type AlbumsItem = {
@@ -231,5 +225,20 @@ export namespace NeteaseTypings {
     coverUrl: string;
     description: string;
     id: number;
+  };
+
+  export type MvDetail = {
+    name: string;
+    cover: string;
+    // briefDesc: string;
+    // desc: string | null;
+    // playCount: number;
+    // subCount: number;
+    // shareCount: number;
+    // commentCount: number;
+    // duration: number;
+    // publishTime: string;
+    brs: { size: number; br: number; point: number }[];
+    // commentThreadId: string;
   };
 }

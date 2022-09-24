@@ -1,5 +1,5 @@
 import type { NeteaseArtistArea, NeteaseArtistType } from "@cloudmusic/shared";
-import { resolveAlbumsItem, resolveArtist, resolveSongItem, resolveSongItemSt } from "./helper.js";
+import { resolveAlbumsItem, resolveArtist, resolveSongItem } from "./helper.js";
 import { API_CACHE } from "../../cache.js";
 import type { NeteaseTypings } from "api";
 import { weapiRequest } from "./request.js";
@@ -108,7 +108,7 @@ export async function artistSongs(
     limit,
   });
   if (!res) return [];
-  const ret = res.songs.map(resolveSongItemSt);
+  const ret = res.songs.map(resolveSongItem);
   API_CACHE.set(key, ret);
   return ret;
 }

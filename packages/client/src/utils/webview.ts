@@ -390,6 +390,20 @@ export class Webview {
     setHtml();
   }
 
+  static async video(mvid: number): Promise<void> {
+    const detail = await IPC.netease("mvDetail", [mvid]);
+    if (!detail) return;
+    const { name, cover, brs } = detail;
+    const url = await IPC.netease("mvUrl", [mvid, brs.at(-1)?.br]);
+    if (!url) return;
+
+    const { panel, setHtml } = this._getPanel(name, "video");
+    panel.webview.onDidReceiveMessage(
+      ({ channel }: CSMessage) => void panel.webview.postMessage({ msg: { cover, url }, channel })
+    );
+    setHtml();
+  }
+
   private static _getPanel(title: string, type: WebviewType) {
     const panel = window.createWebviewPanel("Cloudmusic", title, ViewColumn.One, {
       enableScripts: true,

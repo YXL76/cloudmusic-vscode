@@ -68,7 +68,7 @@ export const jsonToCookie = (json: NeteaseTypings.Cookie): string => {
 
 const http2Https = (url?: string): string => {
   if (!url) return "";
-  if (url.startsWith("http://")) url = url.replace("http://", "https://");
+  if (url.startsWith("http://")) url = `https://${url.substring(7)}`;
   return `${url}?param=384y384`;
 };
 
@@ -104,29 +104,15 @@ export const resolveSongItem = ({
   alia,
   ar,
   al,
-}: NeteaseTypings.SongsItem): NeteaseTypings.SongsItem => ({
+  mv,
+}: NeteaseTypings.SongsItem | NeteaseTypings.SongsItemSt): NeteaseTypings.SongsItem => ({
   name,
   id,
   dt,
   alia: alia ?? [""],
   ar: ar.map(({ id, name }) => ({ id, name })),
   al: { id: al.id, name: al.name, picUrl: http2Https(al.picUrl) },
-});
-
-export const resolveSongItemSt = ({
-  name,
-  id,
-  dt,
-  alia,
-  ar,
-  al,
-}: NeteaseTypings.SongsItemSt): NeteaseTypings.SongsItem => ({
-  name,
-  id,
-  dt,
-  alia: alia ?? [""],
-  ar: ar.map(({ id, name }) => ({ id, name })),
-  al: { id: al.id, name: al.name, picUrl: http2Https(al.picUrl) },
+  mv: mv ? mv : undefined,
 });
 
 export const resolveAnotherSongItem = ({
@@ -136,6 +122,7 @@ export const resolveAnotherSongItem = ({
   alias,
   artists,
   album,
+  mvid,
 }: NeteaseTypings.AnotherSongItem): NeteaseTypings.SongsItem => ({
   name,
   id,
@@ -143,6 +130,7 @@ export const resolveAnotherSongItem = ({
   alia: alias,
   ar: artists.map(({ id, name }) => ({ id, name })),
   al: { id: album.id, name: album.name, picUrl: http2Https(album.picUrl) },
+  mv: mvid ? mvid : undefined,
 });
 
 export const resolvePlaylistItem = ({
@@ -249,4 +237,10 @@ export const resolveProgramDetail = ({
   description,
   id,
   rid: radio.id,
+});
+
+export const resolveMvDetail = ({ name, cover, brs }: NeteaseTypings.MvDetail): NeteaseTypings.MvDetail => ({
+  name,
+  cover: http2Https(cover),
+  brs,
 });

@@ -5,7 +5,6 @@ import {
   resolveProgramDetail,
   resolveRadioDetail,
   resolveSongItem,
-  resolveSongItemSt,
   resolveUserDetail,
 } from "./helper.js";
 import { eapiRequest, loginRequest, qrloginRequest, weapiRequest } from "./request.js";
@@ -43,18 +42,19 @@ export async function countriesCodeList(): Promise<CountryList> {
 }
 
 export async function dailyCheck(uid: number): Promise<boolean> {
-  try {
-    const actions = [];
-    const [yunbei, sign] = await Promise.allSettled([yunbeiToday(uid), yunbeiInfo(uid)]);
-    if (yunbei.status === "fulfilled" && !yunbei.value) actions.push(yunbeiSign(uid));
-    if (sign.status === "fulfilled") {
-      if (!sign.value.mobileSign) actions.push(dailySigninAndroid(uid));
-      if (!sign.value.pcSign) actions.push(dailySigninWeb(uid));
-    }
-    await Promise.allSettled(actions);
-    return true;
-  } catch {}
-  return false;
+  const actions = [];
+  const [yunbei, sign] = await Promise.allSettled([yunbeiToday(uid), yunbeiInfo(uid)]);
+  if (yunbei.status === "fulfilled" && !yunbei.value) actions.push(yunbeiSign(uid));
+  if (sign.status === "fulfilled") {
+    if (!sign.value.mobileSign) actions.push(dailySigninAndroid(uid));
+    if (!sign.value.pcSign) actions.push(dailySigninWeb(uid));
+  }
+  const res = await Promise.allSettled(actions);
+  return (
+    yunbei.status === "fulfilled" &&
+    sign.status === "fulfilled" &&
+    res.reduce((a, b) => a && b.status === "fulfilled", true)
+  );
 }
 
 function dailySigninAndroid(uid: number): Promise<void> {
@@ -254,7 +254,7 @@ export async function recommendSongs(uid: number): Promise<readonly NeteaseTypin
     data: { dailySongs?: readonly NeteaseTypings.SongsItemSt[] };
   }>("music.163.com/weapi/v3/discovery/recommend/songs", {}, ACCOUNT_STATE.cookies.get(uid));
   if (!res || !res.data.dailySongs) return [];
-  const ret = res.data.dailySongs.map(resolveSongItemSt);
+  const ret = res.data.dailySongs.map(resolveSongItem);
   API_CACHE.set(key, ret);
   return ret;
 }

@@ -482,6 +482,7 @@ export class AccountManager {
         step: 3,
         totalSteps: 4,
         items: [
+          { label: i18n.word.all, type: NeteaseTopSongType.all },
           { label: i18n.word.zh, type: NeteaseTopSongType.zh },
           { label: i18n.word.en, type: NeteaseTopSongType.ea },
           { label: i18n.word.ja, type: NeteaseTopSongType.ja },

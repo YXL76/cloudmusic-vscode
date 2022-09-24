@@ -1,4 +1,4 @@
-import { ACCOUNT_STATE, resolvePlaylistItem, resolveSongItem, resolveSongItemSt, resolveUserDetail } from "./helper.js";
+import { ACCOUNT_STATE, resolvePlaylistItem, resolveSongItem, resolveUserDetail } from "./helper.js";
 import { apiRequest, weapiRequest } from "./request.js";
 import { API_CACHE } from "../../cache.js";
 import type { NeteaseTypings } from "api";
@@ -158,7 +158,7 @@ export async function playmodeIntelligenceList(
     // ACCOUNT_STATE .cookies.get(uid)
   );
   if (!res) return [];
-  return res.data.map(({ songInfo }) => resolveSongItemSt(songInfo));
+  return res.data.map(({ songInfo }) => resolveSongItem(songInfo));
 }
 
 export async function simiPlaylist(

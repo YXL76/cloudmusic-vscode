@@ -19,5 +19,6 @@
       "include": ["camelcase", "eqeqeq", "explicit-module-boundary-types"],
       "tags": ["recommended"]
     }
-  }
+  },
+  "tasks": {}
 }
