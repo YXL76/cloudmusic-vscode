@@ -13,7 +13,6 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true, // https://github.com/sindresorhus/got/issues/2051
     "strict": true,
     "target": "ES2022"
   },

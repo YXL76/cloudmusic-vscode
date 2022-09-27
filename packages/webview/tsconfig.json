@@ -16,7 +16,7 @@
     "resolveJsonModule": true,
     "strict": true,
     "target": "ES2022",
-    "types": ["api", "react", "react-dom", "vscode-webview", "wicg-mediasession"]
+    "types": ["api", "react", "react-dom", "vscode-webview"]
   },
   "include": ["src"]
 }

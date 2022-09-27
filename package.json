@@ -902,8 +902,8 @@
   },
   "devDependencies": {
     "@types/eslint": "8.4.6",
-    "@typescript-eslint/eslint-plugin": "5.38.0",
-    "@typescript-eslint/parser": "5.38.0",
+    "@typescript-eslint/eslint-plugin": "5.38.1",
+    "@typescript-eslint/parser": "5.38.1",
     "debug": "4.3.4",
     "eslint": "8.24.0",
     "eslint-config-prettier": "8.5.0",
@@ -916,5 +916,5 @@
     "tailwindcss": "3.1.8",
     "typescript": "4.8.3"
   },
-  "packageManager": "yarn@4.0.0-rc.20"
+  "packageManager": "yarn@4.0.0-rc.21"
 }
