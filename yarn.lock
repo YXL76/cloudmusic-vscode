@@ -59,7 +59,7 @@ __metadata:
     "@types/react": "npm:18.0.21"
     "@types/react-dom": "npm:18.0.6"
     "@types/vscode-webview": "npm:1.57.0"
-    "@types/wicg-mediasession": "npm:1.1.3"
+    "@types/wicg-mediasession": "npm:1.1.4"
     cloudmusic-wasm: "workspace:*"
     dayjs: "npm:1.11.5"
     react: "npm:18.2.0"
@@ -315,10 +315,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/wicg-mediasession@npm:1.1.3":
-  version: 1.1.3
-  resolution: "@types/wicg-mediasession@npm:1.1.3"
-  checksum: 95d727784d48010d3c3da24c1291bade7a176de14ae1e0170528b0d0b197e6e38cc75bc39acf959fd7a4c7768ae8c567e3047a3fb22cc34c964c1f79d4b568c5
+"@types/wicg-mediasession@npm:1.1.4":
+  version: 1.1.4
+  resolution: "@types/wicg-mediasession@npm:1.1.4"
+  checksum: e4fc6537fc08eb8097ccd9f13cf1cef22cc6feb3dfb1bb070ab2d70702e5d710bd1b30d8dc7c940ae6cf2f9450243e17c19d72fc3fb742e65c0950c52389df06
   languageName: node
   linkType: hard
 
