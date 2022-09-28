@@ -3,7 +3,7 @@ import { LocalFileTreeItem, ProgramTreeItem } from "./index.js";
 import type { PlayTreeItem, PlayTreeItemData, QueueContent } from "./index.js";
 import type { TreeDataProvider, TreeView } from "vscode";
 import type { NeteaseTypings } from "api";
-import { unsortInplace } from "array-unsort";
+import { shuffle } from "lodash";
 
 export const enum QueueSortType {
   song,
@@ -51,7 +51,7 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
 
   static random(): readonly PlayTreeItemData[] {
     const [head, ...rest] = this._songs;
-    return head ? [head, ...unsortInplace(rest)] : [];
+    return head ? [head, ...shuffle(rest)] : [];
   }
 
   static new(elements: readonly PlayTreeItemData[], id = this.id + 1): void {

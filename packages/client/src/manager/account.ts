@@ -238,7 +238,7 @@ export class AccountManager {
         password: true,
       });
       state.password = createHash("md5").update(password).digest("hex");
-      await AccountManager.login(state);
+      if (await AccountManager.login(state)) void window.showInformationMessage(i18n.sentence.success.signIn);
     }
 
     async function inputCaptcha(input: MultiStepInput) {
@@ -249,7 +249,7 @@ export class AccountManager {
         totalSteps,
         prompt: i18n.sentence.hint.captcha,
       });
-      await AccountManager.login(state);
+      if (await AccountManager.login(state)) void window.showInformationMessage(i18n.sentence.success.signIn);
     }
   }
 

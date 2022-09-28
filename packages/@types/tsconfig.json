@@ -2,7 +2,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "lib": ["ES2022"],
+    "lib": ["es2022", "dom"],
     "module": "node16",
     "noEmit": true,
     "noImplicitAny": true,

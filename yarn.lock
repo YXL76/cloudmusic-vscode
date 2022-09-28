@@ -14,12 +14,9 @@ __metadata:
     "@types/api": "workspace:*"
     "@types/lodash": "npm:4.14.185"
     "@types/node": "npm:*"
-    "@types/qrcode": "workspace:*"
     "@types/vscode": "npm:1.67.0"
-    array-unsort: "npm:1.1.6"
     lodash: "npm:4.17.21"
     music-metadata: "npm:8.1.0"
-    qrcode: "npm:1.5.1"
   languageName: unknown
   linkType: soft
 
@@ -56,11 +53,13 @@ __metadata:
   dependencies:
     "@cloudmusic/shared": "workspace:*"
     "@types/api": "workspace:*"
+    "@types/qrcode": "workspace:*"
     "@types/react": "npm:18.0.21"
     "@types/react-dom": "npm:18.0.6"
     "@types/vscode-webview": "npm:1.57.0"
     cloudmusic-wasm: "workspace:*"
     dayjs: "npm:1.11.5"
+    qrcode: "npm:1.5.1"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
     react-icons: "npm:4.4.0"
@@ -268,8 +267,6 @@ __metadata:
 "@types/qrcode@workspace:*, @types/qrcode@workspace:packages/@types/qrcode":
   version: 0.0.0-use.local
   resolution: "@types/qrcode@workspace:packages/@types/qrcode"
-  dependencies:
-    "@types/node": "npm:*"
   languageName: unknown
   linkType: soft
 
@@ -613,13 +610,6 @@ __metadata:
   version: 2.1.0
   resolution: "array-union@npm:2.1.0"
   checksum: 0644809ce6ada3bcf5d25379f3c96f0335dd45516da5303fcb9eb2477dc8ad222fe39be2d0b58a7bbc3207e68d714e5f592316b881e2b13a11cd705d11cc5d45
-  languageName: node
-  linkType: hard
-
-"array-unsort@npm:1.1.6":
-  version: 1.1.6
-  resolution: "array-unsort@npm:1.1.6"
-  checksum: 4b9c904ad41fe6f25450cfe1b66439a74dc0f7963e62ec596a3484cef1eecbd37c18c3942fe467b56e29e6f6324e913d576314385fdf08e44250cdc30716e319
   languageName: node
   linkType: hard
 

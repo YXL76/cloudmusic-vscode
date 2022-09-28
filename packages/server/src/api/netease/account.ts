@@ -122,7 +122,7 @@ export function loginCellphone(
   });
 }
 
-export function loginQrCheck(key: string): Promise<number | void> {
+export function loginQrCheck(key: string) {
   return qrloginRequest("music.163.com/weapi/login/qrcode/client/login", { key, type: 1 });
 }
 

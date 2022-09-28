@@ -86,21 +86,25 @@ export const loginRequest = async (url: string, data: QueryInput): Promise<Netea
   return profile;
 };
 
-export const qrloginRequest = async (url: string, data: QueryInput): Promise<number | void> => {
+type QRCheckRes =
+  | { readonly code: number; readonly message: string }
+  | { readonly code: 802; readonly message: string; readonly nickname: string; readonly avatarUrl: string };
+export const qrloginRequest = async (url: string, data: QueryInput): Promise<QRCheckRes> => {
   url = `${API_CONFIG.protocol}://${url}`;
   const headers = generateHeader();
-  const res = await client<{ readonly code?: number }>(url, { form: weapi(data), headers });
-  if (!res) return;
+  const res = await client<{ readonly code: number; readonly message: string }>(url, { form: weapi(data), headers });
+  if (!res) throw Error("QR Code login error!");
   const status = res.body.code || res.statusCode;
-  if (status === 801 || status === 802) return;
-  if (status !== 803) throw Error(<string>res.body);
+  if (status === 800 || status === 801 || status === 802) return res.body;
+  if (status !== 803) throw Error(<string>(<unknown>res.body));
 
-  if (!res.headers["set-cookie"]?.length) return;
-  const cookie = new CookieJar();
-  for (const c of res.headers["set-cookie"]) cookie.setCookieSync(c, url);
-  await loginStatus(JSON.stringify(cookie.serializeSync()));
-  broadcastProfiles();
-  return status;
+  if (res.headers["set-cookie"]?.length) {
+    const cookie = new CookieJar();
+    for (const c of res.headers["set-cookie"]) cookie.setCookieSync(c, url);
+    await loginStatus(JSON.stringify(cookie.serializeSync()));
+    broadcastProfiles();
+  }
+  return res.body;
 };
 
 export const weapiRequest = <T = QueryInput>(

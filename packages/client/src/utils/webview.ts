@@ -3,6 +3,7 @@ import type {
   CSMessage,
   CommentCMsg,
   CommentCSMsg,
+  LoginSMsg,
   LyricSMsg,
   MusicRankingCMsg,
   ProviderCMsg,
@@ -16,7 +17,6 @@ import { AccountManager } from "../manager/index.js";
 import type { NeteaseTypings } from "api";
 import i18n from "../i18n/index.js";
 import { spawn } from "node:child_process";
-import { toDataURL } from "qrcode";
 
 const getNonce = (): string => {
   let text = "";
@@ -237,25 +237,28 @@ export class Webview {
   static async login(): Promise<void> {
     const key = await IPC.netease("loginQrKey", []);
     if (!key) return;
-    const imgSrc = await toDataURL(`https://music.163.com/login?codekey=${key}`);
     const { panel, setHtml } = this._getPanel(i18n.word.signIn, "login");
 
-    panel.webview.onDidReceiveMessage(
-      ({ channel }: CSMessage) => void panel.webview.postMessage({ msg: { imgSrc }, channel })
-    );
+    panel.webview.onDidReceiveMessage(() => void panel.webview.postMessage(<LoginSMsg>{ command: "key", key }));
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       const timer = setInterval(
         () =>
           void IPC.netease("loginQrCheck", [key])
-            .then((code) => {
-              if (code === 803) resolve(void panel.dispose());
-              else if (code === 800) {
-                void window.showErrorMessage(i18n.sentence.fail.signIn);
-                reject(void panel.dispose());
+            .then(({ code, message }) => {
+              if (code === 803) {
+                void window.showInformationMessage(`${i18n.sentence.success.signIn} (${message})`);
+                return resolve(void panel.dispose());
+              } else if (code === 800) {
+                void window.showErrorMessage(`${i18n.sentence.fail.signIn} (${message})`);
+                return resolve(void panel.dispose());
               }
+              void panel.webview.postMessage(<LoginSMsg>{ command: "message", message });
             })
-            .catch(reject),
+            .catch((err: string) => {
+              void window.showErrorMessage(JSON.stringify(err));
+              resolve(void panel.dispose());
+            }),
         512
       );
       panel.onDidDispose(() => clearInterval(timer));

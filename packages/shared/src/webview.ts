@@ -14,6 +14,8 @@ export type CommentCMsg = CSMessage<{ command: "user"; id: number }, undefined>;
 /* | CSMessage<{ command: "reply"; id: number }, undefined>
   | CSMessage<{ command: "floor"; id: number }, undefined> */
 
+export type LoginSMsg = { command: "message"; message: string } | { command: "key"; key: string };
+
 export type LyricSMsg =
   | { command: "lyric"; text: NeteaseTypings.LyricData["text"] }
   | { command: "index"; idx: number };
