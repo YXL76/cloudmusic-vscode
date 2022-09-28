@@ -36,36 +36,14 @@ const csrfTokenReg = RegExp(/_csrf=([^(;|$)]+)/);
 
 type QueryInput = Record<string, string | number | boolean>;
 
-/* type Headers = {
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  Cookie: string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  Referer?: string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  "Content-Type": string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  "User-Agent": string;
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  "X-Real-IP"?: string;
-}; */
-
 export const generateHeader = () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+  /* eslint-disable @typescript-eslint/naming-convention */
   Cookie: "",
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   "Content-Type": "application/x-www-form-urlencoded",
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   "User-Agent": userAgent,
-  ...(STATE.foreign
-    ? // eslint-disable-next-line @typescript-eslint/naming-convention
-      { "X-Real-IP": "118.88.88.88", "X-Forwarded-For": "118.88.88.88" }
-    : {}),
-  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ...(STATE.foreign ? { "X-Real-IP": "118.88.88.88", "X-Forwarded-For": "118.88.88.88" } : {}),
   Referer: "music.163.com",
-  /* ...(url.includes("music.163.com/")
-    ? // eslint-disable-next-line @typescript-eslint/naming-convention
-      { Referer: "music.163.com" }
-    : {}), */
+  /* eslint-enable @typescript-eslint/naming-convention */
 });
 
 const responseHandler = async <T>(

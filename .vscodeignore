@@ -25,6 +25,7 @@ yarn.lock
 Cargo.*
 docker/
 Cross.toml
+deno.json
 
 ## editors
 .vim

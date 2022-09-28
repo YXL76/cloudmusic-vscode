@@ -154,28 +154,19 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
       stdio: ["ignore", "ignore", errlogHandle.fd],
       env: {
         ...process.env,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
+        /* eslint-disable @typescript-eslint/naming-convention */
         ...(STRICT_SSL ? {} : { NODE_TLS_REJECT_UNAUTHORIZED: "0" }),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         ...(httpProxy ? { GLOBAL_AGENT_HTTP_PROXY: httpProxy } : {}),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         CM_SETTING_DIR: SETTING_DIR,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         CM_NATIVE_MODULE: NATIVE_MODULE,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         CM_VOLUME: context.globalState.get(VOLUME_KEY, 85).toString(),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         CM_SPEED: context.globalState.get(SPEED_KEY, 1).toString(),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         CM_WASM: STATE.wasm ? "1" : "0",
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         CM_MUSIC_QUALITY: MUSIC_QUALITY(conf).toString(),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         CM_MUSIC_CACHE_SIZE: MUSIC_CACHE_SIZE(conf).toString(),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         CM_HTTPS_API: HTTPS_API(conf) ? "1" : "0",
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         CM_FOREIGN: FOREIGN(conf) ? "1" : "0",
+        /* eslint-enable @typescript-eslint/naming-convention */
       },
     }).unref();
     await errlogHandle.close();

@@ -41,12 +41,11 @@ export namespace NeteaseTypings {
     os?: OS;
     requestId?: string;
     channel?: string;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
+    /* eslint-disable @typescript-eslint/naming-convention */
     __csrf?: string;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     MUSIC_A?: string;
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     MUSIC_U?: string;
+    /* eslint-enable @typescript-eslint/naming-convention */
   };
 
   export type Profile = {
