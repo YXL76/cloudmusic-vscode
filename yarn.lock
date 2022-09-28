@@ -12,7 +12,7 @@ __metadata:
     "@cloudmusic/server": "workspace:*"
     "@cloudmusic/shared": "workspace:*"
     "@types/api": "workspace:*"
-    "@types/lodash": "npm:4.14.185"
+    "@types/lodash": "npm:4.14.186"
     "@types/node": "npm:*"
     "@types/vscode": "npm:1.67.0"
     lodash: "npm:4.17.21"
@@ -243,10 +243,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:4.14.185":
-  version: 4.14.185
-  resolution: "@types/lodash@npm:4.14.185"
-  checksum: 9612a2388e4fd099727d137eaeeb6bb34f374472a3c364a53595f9aff0b70f3d920c62bcfd4a14c5dc1ff941a1b138e7398abfc878292e545c117a0daf580ce7
+"@types/lodash@npm:4.14.186":
+  version: 4.14.186
+  resolution: "@types/lodash@npm:4.14.186"
+  checksum: 27149ac2daac2c7f75ba1012a995a80382edab71addf23dc81f1659357753fdcdb5e6b6181c2de8cf2a8e23aa227ecfa8502bea8c7c24743a9ebae37a19e28f5
   languageName: node
   linkType: hard
 
