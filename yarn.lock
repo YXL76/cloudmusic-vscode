@@ -843,7 +843,7 @@ __metadata:
     prettier: "npm:2.7.1"
     supports-color: "npm:9.2.3"
     tailwindcss: "npm:3.1.8"
-    typescript: "npm:4.8.3"
+    typescript: "npm:4.8.4"
   languageName: unknown
   linkType: soft
 
@@ -3608,23 +3608,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:4.8.3":
-  version: 4.8.3
-  resolution: "typescript@npm:4.8.3"
+"typescript@npm:4.8.4":
+  version: 4.8.4
+  resolution: "typescript@npm:4.8.4"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: af0b64299469d69d68cfc8751183012dacca1553b2789fb60f2ed6cd0c262b433daa21a04bd4e9b5b2f09b13d5389adf674b4019c298ed07251ba320437e4f87
+  checksum: 008c336ed785130b6e13254adbfc4084f5dbbe62851df9bac3eaf62fc29e0a396839c00ce47e0d92db44fa9a08b9f7ba4d31304f2b10cf7d42a0817728e822a1
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A4.8.3#optional!builtin<compat/typescript>":
-  version: 4.8.3
-  resolution: "typescript@patch:typescript@npm%3A4.8.3#optional!builtin<compat/typescript>::version=4.8.3&hash=a1c5e5"
+"typescript@patch:typescript@npm%3A4.8.4#optional!builtin<compat/typescript>":
+  version: 4.8.4
+  resolution: "typescript@patch:typescript@npm%3A4.8.4#optional!builtin<compat/typescript>::version=4.8.4&hash=a1c5e5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 39c0dac8f415b62d5f8234dc285ae22b790f48c3c5c1ebfb34de56871bf0089fcaa92930dddced9e0345beb9b1e812607e81181cabd4ee1f942fd31c6c6a9097
+  checksum: 696783974850fa4a345b270a7629f37bbb5277504e7262a105e44d3e3776a4337f13b5f0a484ebb0b377449391a7fd270746c8c9f7492bfa389613477fb5ea6a
   languageName: node
   linkType: hard
 

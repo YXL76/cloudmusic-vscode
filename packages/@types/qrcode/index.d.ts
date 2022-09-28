@@ -6,6 +6,8 @@
 //                 BendingBender <https://github.com/BendingBender>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
+/// <reference lib="dom" />
+
 export type QRCodeErrorCorrectionLevel = "low" | "medium" | "quartile" | "high" | "L" | "M" | "Q" | "H";
 export type QRCodeMaskPattern = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
 export type QRCodeToSJISFunc = (codePoint: string) => number;
