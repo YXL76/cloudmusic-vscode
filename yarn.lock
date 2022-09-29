@@ -12,7 +12,7 @@ __metadata:
     "@cloudmusic/server": "workspace:*"
     "@cloudmusic/shared": "workspace:*"
     "@types/api": "workspace:*"
-    "@types/lodash": "npm:4.14.185"
+    "@types/lodash": "npm:4.14.186"
     "@types/node": "npm:*"
     "@types/vscode": "npm:1.67.0"
     lodash: "npm:4.17.21"
@@ -91,13 +91,13 @@ __metadata:
   linkType: hard
 
 "@humanwhocodes/config-array@npm:^0.10.5":
-  version: 0.10.5
-  resolution: "@humanwhocodes/config-array@npm:0.10.5"
+  version: 0.10.6
+  resolution: "@humanwhocodes/config-array@npm:0.10.6"
   dependencies:
     "@humanwhocodes/object-schema": "npm:^1.2.1"
     debug: "npm:^4.1.1"
     minimatch: "npm:^3.0.4"
-  checksum: 9bf08561df9fa3c97e8d031a0523ea85d5bd4bc39dbaaa612db527decef99d2b836a1561fc254c315615f7ef6e1695ac74c9b572812f3d78b1b726161ff455b1
+  checksum: e44a6af24ddbdbee0120f3b58f29c379b2b5647b7e7309dc26cd91b54b7dfb46ac8e250c25d50e161ed067b7cf438dde5ab47a316517ace8e94c4ea82876c904
   languageName: node
   linkType: hard
 
@@ -243,10 +243,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:4.14.185":
-  version: 4.14.185
-  resolution: "@types/lodash@npm:4.14.185"
-  checksum: 9612a2388e4fd099727d137eaeeb6bb34f374472a3c364a53595f9aff0b70f3d920c62bcfd4a14c5dc1ff941a1b138e7398abfc878292e545c117a0daf580ce7
+"@types/lodash@npm:4.14.186":
+  version: 4.14.186
+  resolution: "@types/lodash@npm:4.14.186"
+  checksum: 27149ac2daac2c7f75ba1012a995a80382edab71addf23dc81f1659357753fdcdb5e6b6181c2de8cf2a8e23aa227ecfa8502bea8c7c24743a9ebae37a19e28f5
   languageName: node
   linkType: hard
 
@@ -3620,11 +3620,11 @@ __metadata:
 
 "typescript@patch:typescript@npm%3A4.8.4#optional!builtin<compat/typescript>":
   version: 4.8.4
-  resolution: "typescript@patch:typescript@npm%3A4.8.4#optional!builtin<compat/typescript>::version=4.8.4&hash=a1c5e5"
+  resolution: "typescript@patch:typescript@npm%3A4.8.4#optional!builtin<compat/typescript>::version=4.8.4&hash=701156"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 696783974850fa4a345b270a7629f37bbb5277504e7262a105e44d3e3776a4337f13b5f0a484ebb0b377449391a7fd270746c8c9f7492bfa389613477fb5ea6a
+  checksum: 72574875bac1c13aec22010780d4841a10a88342d73744dbbad538bb0ed601f2024187f197239f2dcbf2442f83ecc4de04a80941d49730c403969fbba035ed81
   languageName: node
   linkType: hard
 
