@@ -31,7 +31,7 @@ __metadata:
     "@types/tough-cookie": "npm:4.0.2"
     "@types/yallist": "npm:4.0.1"
     global-agent: "npm:3.0.0"
-    got: "npm:12.5.1"
+    got: "npm:12.5.2"
     md5-file: "npm:5.0.0"
     node-cache: "npm:5.1.2"
     tough-cookie: "npm:4.1.2"
@@ -1700,9 +1700,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"got@npm:12.5.1":
-  version: 12.5.1
-  resolution: "got@npm:12.5.1"
+"got@npm:12.5.2":
+  version: 12.5.2
+  resolution: "got@npm:12.5.2"
   dependencies:
     "@sindresorhus/is": "npm:^5.2.0"
     "@szmarczak/http-timer": "npm:^5.0.1"
@@ -1715,7 +1715,7 @@ __metadata:
     lowercase-keys: "npm:^3.0.0"
     p-cancelable: "npm:^3.0.0"
     responselike: "npm:^3.0.0"
-  checksum: c20361f42834c914911cd70fa5d8fc957a3c235dfa7c4bbf1338fa1bfebdb4471dc80f7c68933341143d0125fe7b790004026edc4827e6300f82e307b3c6fd13
+  checksum: 1466eb6020e404037ec684afa8e1cd5a0f355350f9525db5af0d674647e66b21f10c5a12d8e6bb6ae5bb46d4fcc82235577bba0f6e2df618ab2c2daa6f77cea3
   languageName: node
   linkType: hard
 
