@@ -58,7 +58,7 @@ __metadata:
     "@types/react-dom": "npm:18.0.6"
     "@types/vscode-webview": "npm:1.57.0"
     cloudmusic-wasm: "workspace:*"
-    dayjs: "npm:1.11.5"
+    dayjs: "npm:1.11.6"
     qrcode: "npm:1.5.1"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
@@ -920,10 +920,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dayjs@npm:1.11.5":
-  version: 1.11.5
-  resolution: "dayjs@npm:1.11.5"
-  checksum: ea78d43de0ff67d65f54cd8c927908ee72421f4d73ce5aa19060e20f26b1940db2980b273427eb1813434fdb2df6731e2ac609d97e89e665d29e7b638f762894
+"dayjs@npm:1.11.6":
+  version: 1.11.6
+  resolution: "dayjs@npm:1.11.6"
+  checksum: f59ea45f2438056f10955a979124738906d897fb642b6157ead34b675240a79a1424655f691a35af810248575506459bf65eadd7d51625cdc537bf805a92dea6
   languageName: node
   linkType: hard
 
