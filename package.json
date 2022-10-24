@@ -902,8 +902,8 @@
   },
   "devDependencies": {
     "@types/eslint": "8.4.6",
-    "@typescript-eslint/eslint-plugin": "5.38.1",
-    "@typescript-eslint/parser": "5.38.1",
+    "@typescript-eslint/eslint-plugin": "5.41.0",
+    "@typescript-eslint/parser": "5.41.0",
     "debug": "4.3.4",
     "eslint": "8.24.0",
     "eslint-config-prettier": "8.5.0",
