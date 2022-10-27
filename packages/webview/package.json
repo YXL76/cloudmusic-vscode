@@ -10,7 +10,7 @@
   "devDependencies": {
     "@types/api": "workspace:*",
     "@types/qrcode": "workspace:*",
-    "@types/react": "18.0.21",
+    "@types/react": "18.0.24",
     "@types/react-dom": "18.0.6",
     "@types/vscode-webview": "1.57.0"
   },
