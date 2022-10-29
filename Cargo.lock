@@ -87,9 +87,9 @@ checksum = "0d8c1fef690941d3e7788d328517591fecc684c084084702d6ff1641e993699a"
 
 [[package]]
 name = "bumpalo"
-version = "3.11.0"
+version = "3.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c1ad822118d20d2c234f427000d5acc36eabe1e29a348c89b63dd60b13f28e5d"
+checksum = "572f695136211188308f16ad2ca5c851a712c464060ae6974944458eb83880ba"
 
 [[package]]
 name = "bytemuck"
@@ -173,7 +173,7 @@ dependencies = [
  "raw-window-handle 0.5.0",
  "rodio",
  "souvlaki",
- "windows 0.42.0",
+ "windows 0.43.0",
  "winit",
 ]
 
@@ -318,24 +318,24 @@ dependencies = [
 [[package]]
 name = "cpal"
 version = "0.14.0"
-source = "git+https://github.com/RustAudio/cpal?branch=master#f19ceeb8e0e9a9aeb99b714524176b4ed90ff86f"
+source = "git+https://github.com/RustAudio/cpal?branch=master#29999e6857be4bd4cd04a8a80fdc5ab07e1172a9"
 dependencies = [
  "alsa",
  "core-foundation-sys",
  "coreaudio-rs",
+ "dasp_sample",
  "jni",
  "js-sys",
  "libc",
  "mach",
  "ndk 0.7.0",
  "ndk-context",
- "nix 0.23.1",
  "oboe",
  "once_cell",
  "parking_lot",
- "stdweb",
  "thiserror",
  "wasm-bindgen",
+ "wasm-bindgen-futures",
  "web-sys",
  "windows 0.37.0",
 ]
@@ -351,9 +351,9 @@ dependencies = [
 
 [[package]]
 name = "crossfont"
-version = "0.5.0"
+version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f66b1c1979c4362323f03ab6bf7fb522902bfc418e0c37319ab347f9561d980f"
+checksum = "21fd3add36ea31aba1520aa5288714dd63be506106753226d0eb387a93bc9c45"
 dependencies = [
  "cocoa",
  "core-foundation",
@@ -412,6 +412,12 @@ dependencies = [
  "quote",
  "syn",
 ]
+
+[[package]]
+name = "dasp_sample"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0c87e182de0887fd5361989c677c4e8f5000cd9491d6d563161a8f3a5519fc7f"
 
 [[package]]
 name = "dbus"
@@ -622,9 +628,9 @@ dependencies = [
 
 [[package]]
 name = "js-sys"
-version = "0.3.57"
+version = "0.3.60"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "671a26f820db17c2a2750743f1dd03bafd15b98c9f30c7c2628c024c05d73397"
+checksum = "49409df3e3bf0856b916e2ceaca09ee28e6871cf7d9ce97a692cacfdb2a25a47"
 dependencies = [
  "wasm-bindgen",
 ]
@@ -643,9 +649,9 @@ checksum = "830d08ce1d1d941e6b30645f1a0eb5643013d835ce3779a5fc208261dbe10f55"
 
 [[package]]
 name = "libc"
-version = "0.2.133"
+version = "0.2.137"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c0f80d65747a3e43d1596c7c5492d95d5edddaabd45a7fcdb02b95f644164966"
+checksum = "fc7fcc620a3bff7cdd7a365be3376c97191aeaccc2a603e600951e452615bf89"
 
 [[package]]
 name = "libdbus-sys"
@@ -744,14 +750,14 @@ dependencies = [
 
 [[package]]
 name = "mio"
-version = "0.8.4"
+version = "0.8.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "57ee1c23c7c63b0c9250c339ffdc69255f110b298b901b9f6c82547b7b87caaf"
+checksum = "e5d732bc30207a6423068df043e3d02e0735b155ad7ce1a6f76fe2baa5b158de"
 dependencies = [
  "libc",
  "log",
  "wasi",
- "windows-sys",
+ "windows-sys 0.42.0",
 ]
 
 [[package]]
@@ -966,9 +972,9 @@ dependencies = [
 
 [[package]]
 name = "once_cell"
-version = "1.15.0"
+version = "1.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e82dad04139b71a90c080c8463fe0dc7902db5192d939bd0950f074d014339e1"
+checksum = "86f0b0d4bf799edbc74508c1e8bf170ff5f41238e5f8225603ca7caaae2b7860"
 
 [[package]]
 name = "parking_lot"
@@ -982,15 +988,15 @@ dependencies = [
 
 [[package]]
 name = "parking_lot_core"
-version = "0.9.3"
+version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "09a279cbf25cb0757810394fbc1e359949b59e348145c643a939a525692e6929"
+checksum = "4dc9e0dc2adc1c69d09143aff38d3d30c5c3f0df0dad82e6d25547af174ebec0"
 dependencies = [
  "cfg-if",
  "libc",
  "redox_syscall",
  "smallvec",
- "windows-sys",
+ "windows-sys 0.42.0",
 ]
 
 [[package]]
@@ -1007,9 +1013,9 @@ checksum = "478c572c3d73181ff3c2539045f6eb99e5491218eae919370993b890cdbdd98e"
 
 [[package]]
 name = "pkg-config"
-version = "0.3.25"
+version = "0.3.26"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1df8c4ec4b0627e53bdf214615ad287367e482558cf84b109250b37464dc03ae"
+checksum = "6ac9a59f73473f1b8d852421e59e64809f025994837ef743615c6d0c5b305160"
 
 [[package]]
 name = "png"
@@ -1036,9 +1042,9 @@ dependencies = [
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.44"
+version = "1.0.47"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7bd7356a8122b6c4a24a82b278680c73357984ca2fc79a0f9fa6dea7dced7c58"
+checksum = "5ea3d908b0e36316caf9e9e2c4625cdde190a7e6f440d794667ed17a1855e725"
 dependencies = [
  "unicode-ident",
 ]
@@ -1097,7 +1103,7 @@ checksum = "a3f87b73ce11b1619a3c6332f45341e0047173771e8b8b73f87bfeefb7b56244"
 [[package]]
 name = "rodio"
 version = "0.16.0"
-source = "git+https://github.com/RustAudio/rodio?branch=master#e7faaf7506250b6f11f468682eee7e2006946397"
+source = "git+https://github.com/YXL76/rodio?branch=patch-cpal#6f3c94c6b9a70df13016a32cadbba975209056d2"
 dependencies = [
  "cpal",
  "symphonia",
@@ -1141,9 +1147,9 @@ checksum = "d29ab0c6d3fc0ee92fe66e2d99f700eab17a8d57d1c1d3b748380fb20baa78cd"
 
 [[package]]
 name = "sctk-adwaita"
-version = "0.4.2"
+version = "0.4.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "04b7c47a572f73de28bee5b5060d085b42b6ce1e4ee2b49c956ea7b25e94b6f0"
+checksum = "61270629cc6b4d77ec1907db1033d5c2e1a404c412743621981a871dc9c12339"
 dependencies = [
  "crossfont",
  "log",
@@ -1159,15 +1165,15 @@ checksum = "e25dfac463d778e353db5be2449d1cce89bd6fd23c9f1ea21310ce6e5a1b29c4"
 
 [[package]]
 name = "serde"
-version = "1.0.145"
+version = "1.0.147"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "728eb6351430bccb993660dfffc5a72f91ccc1295abaa8ce19b27ebe4f75568b"
+checksum = "d193d69bae983fc11a79df82342761dfbf28a99fc8d203dca4c3c1b590948965"
 
 [[package]]
 name = "serde_derive"
-version = "1.0.145"
+version = "1.0.147"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "81fa1584d3d1bcacd84c277a0dfe21f5b0f6accf4a23d04d4c6d61f1af522b4c"
+checksum = "4f1d362ca8fc9c3e3a7484440752472d68a6caa98f1ab81d99b5dfe517cec852"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1212,9 +1218,9 @@ dependencies = [
 
 [[package]]
 name = "smallvec"
-version = "1.9.0"
+version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2fd0db749597d91ff862fd1d55ea87f7855a744a8425a64695b6fca237d1dad1"
+checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 
 [[package]]
 name = "smithay-client-toolkit"
@@ -1252,12 +1258,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "stdweb"
-version = "0.1.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ef5430c8e36b713e13b48a9f709cc21e046723fe44ce34587b73a830203b533e"
-
-[[package]]
 name = "strsim"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1266,7 +1266,7 @@ checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
 [[package]]
 name = "symphonia"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#2323cbcaead077ec08bd4b49974e59c081589973"
 dependencies = [
  "lazy_static",
  "symphonia-bundle-flac",
@@ -1283,7 +1283,7 @@ dependencies = [
 [[package]]
 name = "symphonia-bundle-flac"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#2323cbcaead077ec08bd4b49974e59c081589973"
 dependencies = [
  "log",
  "symphonia-core",
@@ -1294,7 +1294,7 @@ dependencies = [
 [[package]]
 name = "symphonia-bundle-mp3"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#2323cbcaead077ec08bd4b49974e59c081589973"
 dependencies = [
  "bitflags",
  "lazy_static",
@@ -1306,7 +1306,7 @@ dependencies = [
 [[package]]
 name = "symphonia-codec-pcm"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#2323cbcaead077ec08bd4b49974e59c081589973"
 dependencies = [
  "log",
  "symphonia-core",
@@ -1315,7 +1315,7 @@ dependencies = [
 [[package]]
 name = "symphonia-codec-vorbis"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#2323cbcaead077ec08bd4b49974e59c081589973"
 dependencies = [
  "log",
  "symphonia-core",
@@ -1325,7 +1325,7 @@ dependencies = [
 [[package]]
 name = "symphonia-core"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#2323cbcaead077ec08bd4b49974e59c081589973"
 dependencies = [
  "arrayvec 0.7.2",
  "bitflags",
@@ -1337,7 +1337,7 @@ dependencies = [
 [[package]]
 name = "symphonia-format-mkv"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#2323cbcaead077ec08bd4b49974e59c081589973"
 dependencies = [
  "lazy_static",
  "log",
@@ -1349,7 +1349,7 @@ dependencies = [
 [[package]]
 name = "symphonia-format-ogg"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#2323cbcaead077ec08bd4b49974e59c081589973"
 dependencies = [
  "log",
  "symphonia-core",
@@ -1360,7 +1360,7 @@ dependencies = [
 [[package]]
 name = "symphonia-format-wav"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#2323cbcaead077ec08bd4b49974e59c081589973"
 dependencies = [
  "log",
  "symphonia-core",
@@ -1370,7 +1370,7 @@ dependencies = [
 [[package]]
 name = "symphonia-metadata"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#2323cbcaead077ec08bd4b49974e59c081589973"
 dependencies = [
  "encoding_rs",
  "lazy_static",
@@ -1381,7 +1381,7 @@ dependencies = [
 [[package]]
 name = "symphonia-utils-xiph"
 version = "0.5.1"
-source = "git+https://github.com/pdeljanov/Symphonia?branch=master#17ffc93ec7629e7b4133b3577f28b3e9efecd6b1"
+source = "git+https://github.com/pdeljanov/Symphonia?branch=master#2323cbcaead077ec08bd4b49974e59c081589973"
 dependencies = [
  "symphonia-core",
  "symphonia-metadata",
@@ -1389,9 +1389,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.101"
+version = "1.0.103"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e90cde112c4b9690b8cbe810cba9ddd8bc1d7472e2cae317b69e9438c1cba7d2"
+checksum = "a864042229133ada95abf3b54fdc62ef5ccabe9515b64717bcb9a1919e59445d"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1465,9 +1465,9 @@ dependencies = [
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.4"
+version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dcc811dc4066ac62f84f11307873c4850cb653bfa9b1719cee2bd2204a4bc5dd"
+checksum = "6ceab39d59e4c9499d4e5a8ee0e2735b891bb7308ac83dfb4e80cad195c9f6f3"
 
 [[package]]
 name = "vec_map"
@@ -1500,9 +1500,9 @@ checksum = "9c8d87e72b64a3b4db28d11ce29237c246188f4f51057d65a7eab63b7987e423"
 
 [[package]]
 name = "wasm-bindgen"
-version = "0.2.80"
+version = "0.2.83"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "27370197c907c55e3f1a9fbe26f44e937fe6451368324e009cba39e139dc08ad"
+checksum = "eaf9f5aceeec8be17c128b2e93e031fb8a4d469bb9c4ae2d7dc1888b26887268"
 dependencies = [
  "cfg-if",
  "wasm-bindgen-macro",
@@ -1510,13 +1510,13 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-backend"
-version = "0.2.80"
+version = "0.2.83"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "53e04185bfa3a779273da532f5025e33398409573f348985af9a1cbf3774d3f4"
+checksum = "4c8ffb332579b0557b52d268b91feab8df3615f265d5270fec2a8c95b17c1142"
 dependencies = [
  "bumpalo",
- "lazy_static",
  "log",
+ "once_cell",
  "proc-macro2",
  "quote",
  "syn",
@@ -1524,10 +1524,22 @@ dependencies = [
 ]
 
 [[package]]
-name = "wasm-bindgen-macro"
-version = "0.2.80"
+name = "wasm-bindgen-futures"
+version = "0.4.33"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "17cae7ff784d7e83a2fe7611cfe766ecf034111b49deb850a3dc7699c08251f5"
+checksum = "23639446165ca5a5de86ae1d8896b737ae80319560fbaa4c2887b7da6e7ebd7d"
+dependencies = [
+ "cfg-if",
+ "js-sys",
+ "wasm-bindgen",
+ "web-sys",
+]
+
+[[package]]
+name = "wasm-bindgen-macro"
+version = "0.2.83"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "052be0f94026e6cbc75cdefc9bae13fd6052cdcaf532fa6c45e7ae33a1e6c810"
 dependencies = [
  "quote",
  "wasm-bindgen-macro-support",
@@ -1535,9 +1547,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-macro-support"
-version = "0.2.80"
+version = "0.2.83"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "99ec0dc7a4756fffc231aab1b9f2f578d23cd391390ab27f952ae0c9b3ece20b"
+checksum = "07bc0c051dc5f23e307b13285f9d75df86bfdf816c5721e573dec1f9b8aa193c"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -1548,9 +1560,9 @@ dependencies = [
 
 [[package]]
 name = "wasm-bindgen-shared"
-version = "0.2.80"
+version = "0.2.83"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d554b7f530dee5964d9a9468d95c1f8b8acae4f282807e7d27d4b03099a46744"
+checksum = "1c38c045535d93ec4f0b4defec448e4291638ee608530863b1e2ba115d4fff7f"
 
 [[package]]
 name = "wayland-client"
@@ -1627,9 +1639,9 @@ dependencies = [
 
 [[package]]
 name = "web-sys"
-version = "0.3.57"
+version = "0.3.60"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7b17e741662c70c8bd24ac5c5b18de314a2c26c32bf8346ee1e6f53de919c283"
+checksum = "bcda906d8be16e728fd5adc5b729afad4e444e106ab28cd1c7256e54fa61510f"
 dependencies = [
  "js-sys",
  "wasm-bindgen",
@@ -1694,9 +1706,9 @@ dependencies = [
 
 [[package]]
 name = "windows"
-version = "0.42.0"
+version = "0.43.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0286ba339aa753e70765d521bb0242cc48e1194562bfa2a2ad7ac8a6de28f5d5"
+checksum = "04662ed0e3e5630dfa9b26e4cb823b817f1a9addda855d973a9458c236556244"
 dependencies = [
  "windows_aarch64_gnullvm",
  "windows_aarch64_msvc 0.42.0",
@@ -1718,6 +1730,21 @@ dependencies = [
  "windows_i686_msvc 0.36.1",
  "windows_x86_64_gnu 0.36.1",
  "windows_x86_64_msvc 0.36.1",
+]
+
+[[package]]
+name = "windows-sys"
+version = "0.42.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5a3e1820f08b8513f676f7ab6c1f99ff312fb97b553d30ff4dd86f9f15728aa7"
+dependencies = [
+ "windows_aarch64_gnullvm",
+ "windows_aarch64_msvc 0.42.0",
+ "windows_i686_gnu 0.42.0",
+ "windows_i686_msvc 0.42.0",
+ "windows_x86_64_gnu 0.42.0",
+ "windows_x86_64_gnullvm",
+ "windows_x86_64_msvc 0.42.0",
 ]
 
 [[package]]
@@ -1854,9 +1881,9 @@ checksum = "f40009d85759725a34da6d89a94e63d7bdc50a862acf0dbc7c8e488f1edcb6f5"
 
 [[package]]
 name = "winit"
-version = "0.27.3"
+version = "0.27.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a22e94ba35ca3ff11820044bfa0dc48b95a3a15569c0068555566a12ef41c9e5"
+checksum = "bb796d6fbd86b2fd896c9471e6f04d39d750076ebe5680a3958f00f5ab97657c"
 dependencies = [
  "bitflags",
  "cocoa",
@@ -1881,7 +1908,7 @@ dependencies = [
  "wayland-client",
  "wayland-protocols",
  "web-sys",
- "windows-sys",
+ "windows-sys 0.36.1",
  "x11-dl",
 ]
 

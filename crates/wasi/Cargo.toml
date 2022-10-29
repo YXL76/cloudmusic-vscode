@@ -9,4 +9,3 @@ crate-type = ['cdylib']
 
 [dependencies.wasm-bindgen]
 version = "0.2"
-features = ["nightly"]

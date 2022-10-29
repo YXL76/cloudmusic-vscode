@@ -14,14 +14,13 @@ crate-type = ['cdylib']
 # console_error_panic_hook = { version = "0.1", optional = true }
 
 [dependencies.rodio]
-git = "https://github.com/RustAudio/rodio"
-branch = "master"
+git = "https://github.com/YXL76/rodio"
+branch = "patch-cpal"
 default-features = false
-features = ["symphonia-flac", "symphonia-mp3", "symphonia-wav", "wasm-bindgen"]
+features = ["symphonia-flac", "symphonia-mp3", "symphonia-wav"]
 
 [dependencies.wasm-bindgen]
 version = "0.2"
-features = ["nightly"]
 
 [dependencies.web-sys]
 version = "0.3"
