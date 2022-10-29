@@ -11,7 +11,7 @@
     "@types/api": "workspace:*",
     "@types/lodash": "4.14.186",
     "@types/node": "*",
-    "@types/vscode": "1.67.0"
+    "@types/vscode": "1.72.0"
   },
   "dependencies": {
     "@cloudmusic/server": "workspace:*",

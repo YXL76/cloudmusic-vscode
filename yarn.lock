@@ -14,7 +14,7 @@ __metadata:
     "@types/api": "workspace:*"
     "@types/lodash": "npm:4.14.186"
     "@types/node": "npm:*"
-    "@types/vscode": "npm:1.67.0"
+    "@types/vscode": "npm:1.72.0"
     lodash: "npm:4.17.21"
     music-metadata: "npm:8.1.0"
   languageName: unknown
@@ -311,10 +311,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/vscode@npm:1.67.0":
-  version: 1.67.0
-  resolution: "@types/vscode@npm:1.67.0"
-  checksum: 4c85e686ca7c5069c01665f06cb2eef40840d27471f9ce2d372009460a8ae5bd22284c9c828852d3ea306fd1293b9d22ae17e94d2ccaabb9544f81d86345ac42
+"@types/vscode@npm:1.72.0":
+  version: 1.72.0
+  resolution: "@types/vscode@npm:1.72.0"
+  checksum: 5a74c9b39f1ca578eaeaa418348ea5ba970ee13f8b22302e9d8db341b72b8a7cc7e45b1ad70b9f17d806e53b6b6317fcc87c779ae29899f583ecfcf62c75e80f
   languageName: node
   linkType: hard
 
