@@ -843,7 +843,7 @@ dependencies = [
 [[package]]
 name = "neon"
 version = "1.0.0-alpha.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#3c6f62dbaac1bcf17fbd539f4854d7cd94f57741"
+source = "git+https://github.com/neon-bindings/neon?branch=main#eebdc8d612177c3860a1443223c7c2cb4b3903bb"
 dependencies = [
  "libloading",
  "neon-macros",
@@ -855,7 +855,7 @@ dependencies = [
 [[package]]
 name = "neon-macros"
 version = "1.0.0-alpha.1"
-source = "git+https://github.com/neon-bindings/neon?branch=main#3c6f62dbaac1bcf17fbd539f4854d7cd94f57741"
+source = "git+https://github.com/neon-bindings/neon?branch=main#eebdc8d612177c3860a1443223c7c2cb4b3903bb"
 dependencies = [
  "quote",
  "syn",
