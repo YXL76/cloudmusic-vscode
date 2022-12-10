@@ -16,8 +16,8 @@ default-features = false
 features = ["napi-7"]
 
 [dependencies.rodio]
-git = "https://github.com/YXL76/rodio"
-branch = "patch-cpal"
+git = "https://github.com/RustAudio/rodio"
+branch = "master"
 default-features = false
 features = ["symphonia-flac", "symphonia-mp3", "symphonia-wav"]
 
