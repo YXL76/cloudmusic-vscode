@@ -6,6 +6,16 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.17.1] - 2022-12-11
+
+### Changed
+
+- Webview: better UX
+
+### Fixed
+
+- Temporary fixes for 1.74 issues
+
 ## [9.17.0] - 2022-09-24
 
 ### Added
