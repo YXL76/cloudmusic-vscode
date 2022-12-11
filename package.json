@@ -884,7 +884,7 @@
     ]
   },
   "resolutions": {
-    "@types/node": "16.11.27",
+    "@types/node": "16.18.8",
     "buffer": "latest",
     "buffer-from": "latest",
     "debug": "latest",

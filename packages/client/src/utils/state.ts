@@ -31,7 +31,7 @@ class State {
           const [major, minor] = version.split(".");
           // Use `wasm` if version >= 1.71.0
           // https://github.com/microsoft/vscode/issues/118275
-          return parseInt(major) >= 1 && parseInt(minor) >= 71;
+          return parseInt(major) >= 1 && parseInt(minor) >= 71 && parseInt(minor) < 74;
         })()
       : PLAYER_MODE === "wasm";
 
