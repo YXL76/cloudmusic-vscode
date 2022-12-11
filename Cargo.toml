@@ -5,7 +5,7 @@ default-members = ["crates/native"]
 [patch.crates-io]
 symphonia = { git = "https://github.com/pdeljanov/Symphonia", branch = "master" }
 # minimp3 = { git = "https://github.com/YXL76/minimp3-rs", branch = "dev" }
-cpal = { git = "https://github.com/RustAudio/cpal", branch = "master" }
+# cpal = { git = "https://github.com/RustAudio/cpal", branch = "master" }
 
 [profile.release]
 codegen-units = 1

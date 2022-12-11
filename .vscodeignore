@@ -18,10 +18,10 @@ yarn.lock
 **/.gitignore
 **/.editorconfig
 **/tsconfig.json
-**/.eslintrc.js
+**/.eslintrc.*
 **/.browserslistrc
-**/postcss.config.js
-**/tailwind.config.js
+**/postcss.config.*
+**/tailwind.config.*
 Cargo.*
 docker/
 Cross.toml

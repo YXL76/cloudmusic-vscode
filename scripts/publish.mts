@@ -1,7 +1,7 @@
 // Reference: [Platform-specific extensions](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#platformspecific-extensions)
 
-import { basename, extname, resolve } from "https://deno.land/std@0.157.0/path/mod.ts";
-import { assert } from "https://deno.land/std@0.157.0/testing/asserts.ts";
+import { basename, extname, resolve } from "https://deno.land/std@0.167.0/path/mod.ts";
+import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import packageJSON from "../package.json" assert { type: "json" };
 
 const vsceToken = Deno.env.get("VSCE_TOKEN");
