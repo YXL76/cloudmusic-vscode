@@ -63,7 +63,7 @@ const responseHandler = async <T>(
 export const loginRequest = async (url: string, data: QueryInput): Promise<NeteaseTypings.Profile | void> => {
   url = `${API_CONFIG.protocol}://${url}`;
   const headers = generateHeader();
-  headers["Cookie"] = jsonToCookie({ os: "pc", appver: "2.9.7" });
+  headers["Cookie"] = jsonToCookie({ os: "pc", appver: "2.10.6" });
   const res = await client<{ readonly code?: number; profile?: NeteaseTypings.Profile }>(url, {
     form: weapi(data),
     headers,
