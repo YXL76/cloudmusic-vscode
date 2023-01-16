@@ -1128,7 +1128,7 @@ checksum = "456c603be3e8d448b072f410900c09faf164fbce2d480456f50eea6e25f9c848"
 [[package]]
 name = "rodio"
 version = "0.16.0"
-source = "git+https://github.com/RustAudio/rodio?branch=master#268dddae64a9370831dccd841313d0ecf15d719a"
+source = "git+https://github.com/RustAudio/rodio?branch=master#18911085a7c703d74ce70c63129b604b7791c6c9"
 dependencies = [
  "cpal",
  "symphonia",
