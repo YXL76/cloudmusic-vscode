@@ -56,7 +56,7 @@ __metadata:
     "@types/qrcode": "workspace:*"
     "@types/react": "npm:18.0.26"
     "@types/react-dom": "npm:18.0.9"
-    "@types/vscode-webview": "npm:1.57.0"
+    "@types/vscode-webview": "npm:1.57.1"
     cloudmusic-wasm: "workspace:*"
     dayjs: "npm:1.11.7"
     qrcode: "npm:1.5.1"
@@ -315,10 +315,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/vscode-webview@npm:1.57.0":
-  version: 1.57.0
-  resolution: "@types/vscode-webview@npm:1.57.0"
-  checksum: 2a7818093a35119f0465dff322935ec6c3d634cba3bcec32edf3e341057ba2022ba14a5633f8c64b8a602ac3f131c1b31a973c88edff95bee41e095b390bf156
+"@types/vscode-webview@npm:1.57.1":
+  version: 1.57.1
+  resolution: "@types/vscode-webview@npm:1.57.1"
+  checksum: 89fd5a76eec17b5914f0316ef1c122765e1f1431f3337c4f974abc8621c34064d3eb3d89d6c0b783138ad5466c7837e3f14ad56feca96d40f39e7d6d3b309667
   languageName: node
   linkType: hard
 
