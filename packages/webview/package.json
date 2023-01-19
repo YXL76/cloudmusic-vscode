@@ -10,9 +10,9 @@
   "devDependencies": {
     "@types/api": "workspace:*",
     "@types/qrcode": "workspace:*",
-    "@types/react": "18.0.26",
-    "@types/react-dom": "18.0.9",
-    "@types/vscode-webview": "1.57.0"
+    "@types/react": "18.0.27",
+    "@types/react-dom": "18.0.10",
+    "@types/vscode-webview": "1.57.1"
   },
   "dependencies": {
     "@cloudmusic/shared": "workspace:*",
