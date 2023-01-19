@@ -6,6 +6,20 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.18.0] - 2023-01-19
+
+### Added
+
+- UI: fallback lyric display ([#855](https://github.com/YXL76/cloudmusic-vscode/issues/855))
+
+### Changed
+
+- Deps: update
+
+### Fixed
+
+- UI: search input loses focus ([#848](https://github.com/YXL76/cloudmusic-vscode/issues/848))
+
 ## [9.17.1] - 2022-12-11
 
 ### Changed
