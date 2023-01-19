@@ -36,16 +36,16 @@ export async function inputKeyword(input: MultiStepInput, uid: number): Promise<
   ];
 
   const updateSuggestions = throttle((that: QuickPick<QuickPickItem>, value) => {
-    that.enabled = false;
+    // that.enabled = false;
     that.busy = true;
     IPC.netease("searchSuggest", [uid, value])
       .then((suggestions) => (that.items = [that.items[0], ...suggestions.map((label) => ({ label }))]))
       .catch(console.error)
       .finally(() => {
-        that.enabled = true;
         that.busy = false;
+        // that.enabled = true;
       });
-  }, 256);
+  }, 512);
 
   const pick = await input.showQuickPick({
     title,
