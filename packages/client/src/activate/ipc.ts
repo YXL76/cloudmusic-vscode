@@ -1,5 +1,5 @@
 import { AccountManager, BUTTON_MANAGER } from "../manager/index.js";
-import { AccountViewProvider, IPC, STATE, defaultLyric } from "../utils/index.js";
+import { AccountViewProvider, IPC, LyricType, STATE, defaultLyric } from "../utils/index.js";
 import {
   CONF,
   COOKIE_KEY,
@@ -89,9 +89,11 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         return (STATE.loading = false);
       case IPCPlayer.lyric:
         return (STATE.lyric = { ...STATE.lyric, ...data.lyric });
-      case IPCPlayer.lyricIndex:
-        BUTTON_MANAGER.buttonLyric(STATE.lyric.text?.[data.idx]?.[STATE.lyric.type]);
+      case IPCPlayer.lyricIndex: {
+        const lyric = STATE.lyric.text?.[data.idx];
+        BUTTON_MANAGER.buttonLyric(lyric[STATE.lyric.type] || lyric[LyricType.ori]);
         return STATE.lyric.updateIndex?.(data.idx);
+      }
       case IPCPlayer.pause:
         BUTTON_MANAGER.buttonPlay(false);
         return AccountViewProvider.pause();
