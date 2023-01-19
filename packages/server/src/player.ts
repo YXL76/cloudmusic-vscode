@@ -196,13 +196,13 @@ class WasmPlayer extends PlayerBase {
 class NativePlayer extends PlayerBase {
   readonly wasmOpen = undefined;
 
+  protected readonly _getPath = getMusicPath;
+
   readonly #native: NativeModule;
 
   readonly #player: NativePlayerHdl;
 
   readonly #mediaSession: NativeMediaSessionHdl;
-
-  protected readonly _getPath = getMusicPath;
 
   constructor() {
     super();

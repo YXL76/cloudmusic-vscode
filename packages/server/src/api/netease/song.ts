@@ -1,6 +1,6 @@
 import { ACCOUNT_STATE, resolveAnotherSongItem, resolveSongItem } from "./helper.js";
 import { API_CACHE, LYRIC_CACHE } from "../../cache.js";
-import { apiRequest, eapiRequest, weapiRequest } from "./request.js";
+import { eapiRequest, weapiRequest } from "./request.js";
 import { API_CONFIG } from "../helper.js";
 import type { NeteaseTopSongType } from "@cloudmusic/shared";
 import type { NeteaseTypings } from "api";
@@ -12,7 +12,13 @@ const parseLyric = (raw: string): readonly (readonly [number, string])[] => {
   const lines = raw.split("\n");
   for (const line of lines) {
     const r = /^((\[\d+:\d{2}[.:]\d{2,3}\])+)(.*)$/g.exec(line.trim());
-    if (!r) continue;
+    if (!r) {
+      try {
+        const { t, c } = JSON.parse(line) as { t: number; c: { tx: string }[] };
+        unsorted.push([t / 1000, c.map(({ tx }) => tx).join("")]);
+      } catch {}
+      continue;
+    }
     const text = r[3]?.trim() ?? "";
     let t = r[1];
     while (t) {
@@ -44,13 +50,31 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
   const lyricCache = await LYRIC_CACHE.get(`${id}`);
   if (lyricCache) return lyricCache;
 
-  const res = await apiRequest<{
-    lrc?: { lyric?: string };
-    tlyric?: { lyric?: string };
-    romalrc?: { lyric?: string };
+  const res = await eapiRequest<{
+    lrc?: { version: number; lyric?: string };
+    klyric?: { version: number; lyric?: string };
+    tlyric?: { version: number; lyric?: string };
+    romalrc?: { version: number; lyric?: string };
+    yrc?: { version: number; lyric?: string };
+    ytlrc?: { version: number; lyric?: string };
+    yromalrc?: { version: number; lyric?: string };
     lyricUser?: NeteaseTypings.LyricUser;
     transUser?: NeteaseTypings.LyricUser;
-  }>("music.163.com/api/song/lyric?_nmclfl=1", { id, tv: -1, lv: -1, rv: -1, kv: -1 });
+  }>(
+    "interface3.music.163.com/eapi/song/lyric/v1",
+    {
+      id,
+      cp: false,
+      tv: 0,
+      lv: 0,
+      rv: 0,
+      kv: 0,
+      yv: 0,
+      ytv: 0,
+      yrv: 0,
+    },
+    "/api/song/lyric/v1"
+  );
 
   if (!res) return { time: [0], text: [["~", "~", "~"]], user: [] };
 

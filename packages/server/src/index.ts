@@ -11,11 +11,11 @@ import { resolve } from "node:path";
 
 export type NeteaseAPIKey = keyof typeof NeteaseAPI;
 
-export type NeteaseAPIParameters<T extends NeteaseAPIKey> = Parameters<typeof NeteaseAPI[T]>;
+export type NeteaseAPIParameters<T extends NeteaseAPIKey> = Parameters<(typeof NeteaseAPI)[T]>;
 
-export type NeteaseAPIReturn<T extends NeteaseAPIKey> = ReturnType<typeof NeteaseAPI[T]> extends PromiseLike<infer U>
+export type NeteaseAPIReturn<T extends NeteaseAPIKey> = ReturnType<(typeof NeteaseAPI)[T]> extends PromiseLike<infer U>
   ? U
-  : ReturnType<typeof NeteaseAPI[T]>;
+  : ReturnType<(typeof NeteaseAPI)[T]>;
 
 export type NeteaseAPICMsg<T extends NeteaseAPIKey> = IPCMsg<
   IPCApi.netease,

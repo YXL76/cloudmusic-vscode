@@ -46,6 +46,7 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 |    check_music    |     歌曲可用性     |   ❌   |
 |       like        | 红心与取消红心歌曲 |   ✔️   |
 |       lyric       |        歌词        |   ✔️   |
+|     lyric_new     |        歌词        |   ✔️   |
 |     simi_song     |      相似歌曲      |   ✔️   |
 |    sheet_list     |      乐谱列表      |   ❌   |
 |   sheet_preview   |      乐谱预览      |   ❌   |
@@ -290,25 +291,32 @@ Use [NeteaseCloudMusicApi](https://github.com/Binaryify/NeteaseCloudMusicApi) to
 
 ## 杂项
 
-|         module         |       function        | status |
-| :--------------------: | :-------------------: | :----: |
-|         banner         |      首页轮播图       |   ❌   |
-|         batch          |     批量请求接口      |   ❌   |
-|        calendar        |       音乐日历        |   ❌   |
-|  countries_code_list   |     国家编码列表      |   ✔️   |
-|       dj_banner        |      电台 banner      |   ❌   |
-|  homepage_block_page   | 首页-发现 block page  |   ❌   |
-|  homepage_dragon_ball  | 首页-发现 dragon ball |   ❌   |
-|       hot_topic        |       热门话题        |   ❌   |
-|   program_recommend    |       推荐节目        |   ✔️   |
-|       top_album        |       新碟上架        |   ✔️   |
-|      top_artists       |       热门歌手        |   ✔️   |
-|        top_list        |        排行榜         |   ❌   |
-|         top_mv         |       MV 排行榜       |   ❌   |
-|        top_song        |       新歌速递        |   ✔️   |
-|      topic_detail      |       话题详情        |   ❌   |
-| topic_detail_event_hot |   话题详情热门动态    |   ❌   |
-|        toplist         |     所有榜单介绍      |   ✔️   |
-|     toplist_artist     |        歌手榜         |   ✔️   |
-|     toplist_detail     |   所有榜单内容摘要    |   ❌   |
-|         weblog         |       操作记录        |   ❌   |
+|              module              |       function        | status |
+| :------------------------------: | :-------------------: | :----: |
+|              banner              |      首页轮播图       |   ❌   |
+|              batch               |     批量请求接口      |   ❌   |
+|             calendar             |       音乐日历        |   ❌   |
+|       countries_code_list        |     国家编码列表      |   ✔️   |
+|            dj_banner             |      电台 banner      |   ❌   |
+|       homepage_block_page        | 首页-发现 block page  |   ❌   |
+|       homepage_dragon_ball       | 首页-发现 dragon ball |   ❌   |
+|            hot_topic             |       热门话题        |   ❌   |
+|        listentogether_end        |    一起听 结束房间    |   ❌   |
+|     listentogether_heartbeat     |    一起听 发送心跳    |   ❌   |
+|   listentogether_play_command    |  一起听 发送播放状态  |   ❌   |
+|    listentogether_room_check     |    一起听 房间情况    |   ❌   |
+|    listentogether_room_create    |    一起听 创建房间    |   ❌   |
+| listentogether_sync_list_command |  一起听 更新播放列表  |   ❌   |
+| listentogether_sync_playlist_get |  一起听 当前列表获取  |   ❌   |
+|        program_recommend         |       推荐节目        |   ✔️   |
+|            top_album             |       新碟上架        |   ✔️   |
+|           top_artists            |       热门歌手        |   ✔️   |
+|             top_list             |        排行榜         |   ❌   |
+|              top_mv              |       MV 排行榜       |   ❌   |
+|             top_song             |       新歌速递        |   ✔️   |
+|           topic_detail           |       话题详情        |   ❌   |
+|      topic_detail_event_hot      |   话题详情热门动态    |   ❌   |
+|             toplist              |     所有榜单介绍      |   ✔️   |
+|          toplist_artist          |        歌手榜         |   ✔️   |
+|          toplist_detail          |   所有榜单内容摘要    |   ❌   |
+|              weblog              |       操作记录        |   ❌   |

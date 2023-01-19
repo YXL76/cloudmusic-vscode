@@ -31,11 +31,12 @@ export async function searchSingle(
   const key = `cloudsearch${NeteaseSearchType.single}-${s}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.SongsItem[]>(key);
   if (value) return value;
-  const res = await weapiRequest<{
+  const res = await eapiRequest<{
     result: { songs: readonly NeteaseTypings.SongsItemSt[] };
   }>(
-    "music.163.com/weapi/cloudsearch/pc",
+    "interface.music.163.com/eapi/cloudsearch/pc",
     { s, type: NeteaseSearchType.single, limit, offset, total: true },
+    "/api/cloudsearch/pc",
     ACCOUNT_STATE.cookies.get(uid)
   );
   if (!res) return [];
@@ -53,11 +54,12 @@ export async function searchAlbum(
   const key = `cloudsearch${NeteaseSearchType.album}-${s}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.AlbumsItem[]>(key);
   if (value) return value;
-  const res = await weapiRequest<{
+  const res = await eapiRequest<{
     result: { albums: readonly NeteaseTypings.AlbumsItem[] };
   }>(
-    "music.163.com/weapi/cloudsearch/pc",
+    "interface.music.163.com/eapi/cloudsearch/pc",
     { s, type: NeteaseSearchType.album, limit, offset, total: true },
+    "/api/cloudsearch/pc",
     ACCOUNT_STATE.cookies.get(uid)
   );
   if (!res) return [];
@@ -75,11 +77,12 @@ export async function searchArtist(
   const key = `cloudsearch${NeteaseSearchType.artist}-${s}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.Artist[]>(key);
   if (value) return value;
-  const res = await weapiRequest<{
+  const res = await eapiRequest<{
     result: { artists: readonly NeteaseTypings.Artist[] };
   }>(
-    "music.163.com/weapi/cloudsearch/pc",
+    "interface.music.163.com/eapi/cloudsearch/pc",
     { s, type: NeteaseSearchType.artist, limit, offset, total: true },
+    "/api/cloudsearch/pc",
     ACCOUNT_STATE.cookies.get(uid)
   );
   if (!res) return [];
@@ -97,11 +100,12 @@ export async function searchPlaylist(
   const key = `cloudsearch${NeteaseSearchType.playlist}-${s}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.PlaylistItem[]>(key);
   if (value) return value;
-  const res = await weapiRequest<{
+  const res = await eapiRequest<{
     result: { playlists: readonly NeteaseTypings.RawPlaylistItem[] };
   }>(
-    "music.163.com/weapi/cloudsearch/pc",
+    "interface.music.163.com/eapi/cloudsearch/pc",
     { s, type: NeteaseSearchType.playlist, limit, offset, total: true },
+    "/api/cloudsearch/pc",
     ACCOUNT_STATE.cookies.get(uid)
   );
   if (!res) return [];
@@ -123,15 +127,16 @@ export async function searchLyric(
   const key = `cloudsearch${NeteaseSearchType.lyric}-${s}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly SearchLyricResult[]>(key);
   if (value) return value;
-  const res = await weapiRequest<{
+  const res = await eapiRequest<{
     result: {
       songs: readonly (NeteaseTypings.SongsItemSt & {
         lyrics: readonly string[];
       })[];
     };
   }>(
-    "music.163.com/weapi/cloudsearch/pc",
+    "interface.music.163.com/eapi/cloudsearch/pc",
     { s, type: NeteaseSearchType.lyric, limit, offset, total: true },
+    "/api/cloudsearch/pc",
     ACCOUNT_STATE.cookies.get(uid)
   );
   if (!res) return [];
