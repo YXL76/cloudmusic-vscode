@@ -904,7 +904,7 @@
     "@types/eslint": "8.4.10",
     "@types/http-cache-semantics": "4.0.1",
     "@typescript-eslint/eslint-plugin": "5.48.2",
-    "@typescript-eslint/parser": "5.48.2",
+    "@typescript-eslint/parser": "5.52.0",
     "debug": "4.3.4",
     "eslint": "8.32.0",
     "eslint-config-prettier": "8.6.0",
