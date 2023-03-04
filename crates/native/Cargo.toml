@@ -22,14 +22,14 @@ default-features = false
 features = ["symphonia-flac", "symphonia-mp3", "symphonia-wav"]
 
 [target.'cfg(not(target_os = "macos"))'.dependencies]
-souvlaki = "0.5"
+souvlaki = "0.6"
 
 [target.'cfg(all(target_os = "windows", any(target_arch = "x86_64", target_arch = "x86")))'.dependencies]
 raw-window-handle = "0.5"
-winit = "0.27"
+winit = "0.28"
 
 [target.'cfg(target_os = "windows")'.dependencies.windows]
-version = "0.43"
+version = "0.44"
 features = ["Win32_Foundation", "Win32_System_Threading"]
 
 # [dependencies.curl]

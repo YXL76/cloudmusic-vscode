@@ -10,8 +10,8 @@
   "devDependencies": {
     "@types/api": "workspace:*",
     "@types/qrcode": "workspace:*",
-    "@types/react": "18.0.27",
-    "@types/react-dom": "18.0.10",
+    "@types/react": "18.0.28",
+    "@types/react-dom": "18.0.11",
     "@types/vscode-webview": "1.57.1"
   },
   "dependencies": {
@@ -21,6 +21,6 @@
     "qrcode": "1.5.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-icons": "4.7.1"
+    "react-icons": "4.8.0"
   }
 }
