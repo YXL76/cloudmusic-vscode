@@ -6,6 +6,17 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.19.0] - 2023-03-04
+
+### Changed
+
+- Update deps
+
+### Fixed
+
+- I18n: import error ([#897](https://github.com/YXL76/cloudmusic-vscode/issues/897))
+- Media session: ignore missing view ([#909](https://github.com/YXL76/cloudmusic-vscode/issues/909))
+
 ## [9.18.0] - 2023-01-19
 
 ### Added
