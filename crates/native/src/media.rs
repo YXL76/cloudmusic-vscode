@@ -15,12 +15,14 @@ pub struct MediaSession {
     stdin: std::process::ChildStdin,
 }
 
+type JSMediaSession = Option<MediaSession>;
+
 impl Finalize for MediaSession {}
 
 #[cfg(not(target_os = "macos"))]
 impl MediaSession {
     #[inline]
-    fn new() -> Self {
+    fn new() -> Option<Self> {
         use {
             souvlaki::{MediaControls, PlatformConfig},
             std::ffi::c_void,
@@ -70,7 +72,6 @@ impl MediaSession {
             }
         }
 
-        let controls = MediaControls::new(config(hwnd)).unwrap();
         /* let controls = match MediaControls::new(config(hwnd)) {
             Ok(controls) => controls,
             // Access to other windows requires admin rights,
@@ -81,8 +82,10 @@ impl MediaSession {
                 MediaControls::new(config(fallback())).unwrap()
             }
         }; */
-
-        MediaSession { controls }
+        match MediaControls::new(config(hwnd)) {
+            Ok(controls) => Some(MediaSession { controls }),
+            Err(_) => None,
+        }
     }
 
     #[inline]
@@ -241,13 +244,12 @@ pub fn media_session_new(mut cx: FunctionContext) -> JsResult<JsValue> {
     // let hwnd = cx.argument::<JsString>(0)?.value(&mut cx);
     let handler = Arc::new(cx.argument::<JsFunction>(0)?.root(&mut cx));
 
-    let media_session = cx.boxed(RefCell::new(MediaSession::new()));
+    let media_session: JSMediaSession = MediaSession::new();
+    let media_session = cx.boxed(RefCell::new(media_session));
     let channel = cx.channel();
 
-    let _ = media_session
-        .borrow_mut()
-        .controls
-        .attach(move |event: MediaControlEvent| {
+    let _ = media_session.borrow_mut().as_mut().map(|m| {
+        m.controls.attach(move |event: MediaControlEvent| {
             let type_ = match event {
                 MediaControlEvent::Play => 0.,
                 MediaControlEvent::Pause => 1.,
@@ -265,12 +267,13 @@ pub fn media_session_new(mut cx: FunctionContext) -> JsResult<JsValue> {
                 handler.to_inner(&mut cx).call(&mut cx, this, args)?;
                 Ok(())
             });
-        });
+        })
+    });
 
     let _ = media_session
         .borrow_mut()
-        .controls
-        .set_playback(MediaPlayback::Stopped);
+        .as_mut()
+        .map(|m| m.controls.set_playback(MediaPlayback::Stopped));
 
     Ok(media_session.upcast())
 }
@@ -311,12 +314,13 @@ pub fn media_session_new(mut cx: FunctionContext) -> JsResult<JsValue> {
     });
 
     let stdin = child.stdin.take().unwrap();
-    let media_session = cx.boxed(RefCell::new(MediaSession { stdin }));
+    let media_session: JSMediaSession = Some(MediaSession { stdin });
+    let media_session = cx.boxed(RefCell::new(media_session));
     Ok(media_session.upcast())
 }
 
 pub fn media_session_set_metadata(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-    let media_session = cx.argument::<JsBox<RefCell<MediaSession>>>(0)?;
+    let media_session = cx.argument::<JsBox<RefCell<JSMediaSession>>>(0)?;
     let title = cx.argument::<JsString>(1)?.value(&mut cx);
     let album = cx.argument::<JsString>(2)?.value(&mut cx);
     let artist = cx.argument::<JsString>(3)?.value(&mut cx);
@@ -325,17 +329,21 @@ pub fn media_session_set_metadata(mut cx: FunctionContext) -> JsResult<JsUndefin
 
     media_session
         .borrow_mut()
-        .set_metadata(title, album, artist, cover_url, duration);
+        .as_mut()
+        .map(|m| m.set_metadata(title, album, artist, cover_url, duration));
 
     Ok(cx.undefined())
 }
 
 pub fn media_session_set_playback(mut cx: FunctionContext) -> JsResult<JsUndefined> {
-    let media_session = cx.argument::<JsBox<RefCell<MediaSession>>>(0)?;
+    let media_session = cx.argument::<JsBox<RefCell<JSMediaSession>>>(0)?;
     let playing = cx.argument::<JsBoolean>(1)?.value(&mut cx);
     let position = cx.argument::<JsNumber>(2)?.value(&mut cx);
 
-    media_session.borrow_mut().set_playback(playing, position);
+    media_session
+        .borrow_mut()
+        .as_mut()
+        .map(|m| m.set_playback(playing, position));
 
     Ok(cx.undefined())
 }
