@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.19.1] - 2023-04-03
+
+### Fixed
+
+- Player: playback interrupted ([#897](https://github.com/YXL76/cloudmusic-vscode/issues/868), [#909](https://github.com/YXL76/cloudmusic-vscode/issues/909))
+
 ## [9.19.0] - 2023-03-04
 
 ### Changed
