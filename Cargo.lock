@@ -717,20 +717,21 @@ dependencies = [
 
 [[package]]
 name = "neon"
-version = "1.0.0-alpha.2"
-source = "git+https://github.com/neon-bindings/neon?branch=main#3e83d7312fd2dfb3ed25ebd43cdc8776f679733b"
+version = "1.0.0-alpha.4"
+source = "git+https://github.com/neon-bindings/neon?branch=main#4c2e455a9e6814f1ba0178616d63caec7f4df317"
 dependencies = [
  "libloading",
  "neon-macros",
  "once_cell",
  "semver",
+ "send_wrapper",
  "smallvec",
 ]
 
 [[package]]
 name = "neon-macros"
-version = "1.0.0-alpha.2"
-source = "git+https://github.com/neon-bindings/neon?branch=main#3e83d7312fd2dfb3ed25ebd43cdc8776f679733b"
+version = "1.0.0-alpha.4"
+source = "git+https://github.com/neon-bindings/neon?branch=main#4c2e455a9e6814f1ba0178616d63caec7f4df317"
 dependencies = [
  "quote",
  "syn 1.0.109",
@@ -1115,6 +1116,12 @@ name = "semver"
 version = "1.0.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bebd363326d05ec3e2f532ab7660680f3b02130d780c299bca73469d521bc0ed"
+
+[[package]]
+name = "send_wrapper"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cd0b0ec5f1c1ca621c432a25813d8d60c88abe6d3e08a3eb9cf37d97a0fe3d73"
 
 [[package]]
 name = "shlex"
