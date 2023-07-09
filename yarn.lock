@@ -34,7 +34,7 @@ __metadata:
     got: "npm:12.6.0"
     md5-file: "npm:5.0.0"
     node-cache: "npm:5.1.2"
-    tough-cookie: "npm:4.1.2"
+    tough-cookie: "npm:4.1.3"
     yallist: "npm:4.0.0"
   languageName: unknown
   linkType: soft
@@ -3739,15 +3739,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tough-cookie@npm:4.1.2":
-  version: 4.1.2
-  resolution: "tough-cookie@npm:4.1.2"
+"tough-cookie@npm:4.1.3":
+  version: 4.1.3
+  resolution: "tough-cookie@npm:4.1.3"
   dependencies:
     psl: "npm:^1.1.33"
     punycode: "npm:^2.1.1"
     universalify: "npm:^0.2.0"
     url-parse: "npm:^1.5.3"
-  checksum: c79eeb71f6aa7e97d0e3ab5268e5be72bdd21c71e4e3a9883879c23686363525d85f9a76eec7cc66f2fe24fb9b422c4e72d3c500ddf3320f949b334f0c7b3de3
+  checksum: 87508864be555b8f2bfd59b01197dacac952e8379892054875b1203a276bcecc44bf3cff6f015e6a1782f504c8bf94925d91691c45f7a48f700da3eaea5c8820
   languageName: node
   linkType: hard
 
