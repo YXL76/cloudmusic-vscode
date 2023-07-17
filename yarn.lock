@@ -55,7 +55,7 @@ __metadata:
     "@types/api": "workspace:*"
     "@types/qrcode": "workspace:*"
     "@types/react": "npm:18.0.32"
-    "@types/react-dom": "npm:18.0.11"
+    "@types/react-dom": "npm:18.2.7"
     "@types/vscode-webview": "npm:1.57.1"
     cloudmusic-wasm: "workspace:*"
     dayjs: "npm:1.11.7"
@@ -288,12 +288,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@types/react-dom@npm:18.0.11":
-  version: 18.0.11
-  resolution: "@types/react-dom@npm:18.0.11"
+"@types/react-dom@npm:18.2.7":
+  version: 18.2.7
+  resolution: "@types/react-dom@npm:18.2.7"
   dependencies:
     "@types/react": "npm:*"
-  checksum: 429119548045bb8ca6f34522c2698973fb92a0ebb1f1b2afa061e41ae9d091d10d0cc9bbbfd52b3cfe948486898cfaaf29d3721650a6d52dc0d3ab81c0245b82
+  checksum: 20c9dbe8ba41ca1e50ba65da829d80b8200b21de4891496ee0cb5dbb43fa73d995a7f88410e062ad4c3d6211cc81dc9349bf7528e59543883fef145d1a154153
   languageName: node
   linkType: hard
 

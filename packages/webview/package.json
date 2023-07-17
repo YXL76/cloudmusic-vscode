@@ -11,7 +11,7 @@
     "@types/api": "workspace:*",
     "@types/qrcode": "workspace:*",
     "@types/react": "18.0.32",
-    "@types/react-dom": "18.0.11",
+    "@types/react-dom": "18.2.7",
     "@types/vscode-webview": "1.57.1"
   },
   "dependencies": {
