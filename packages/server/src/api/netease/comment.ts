@@ -17,7 +17,7 @@ export async function commentReply(
   type: NeteaseCommentType,
   id: number,
   content: string,
-  commentId: number
+  commentId: number,
 ): Promise<boolean> {
   return !!(await weapiRequest(`music.163.com/weapi/resource/comments/reply`, {
     threadId: `${resourceTypeMap[type]}${id}`,
@@ -31,7 +31,7 @@ export async function commentFloor(
   id: number,
   parentCommentId: number,
   limit: number,
-  time: number
+  time: number,
 ): Promise<NeteaseTypings.CommentRet> {
   const res = await weapiRequest<{
     data: { totalCount: number; hasMore: boolean; comments: readonly NeteaseTypings.RawCommentDetail[] };
@@ -52,7 +52,7 @@ export async function commentLike(
   type: NeteaseCommentType,
   t: "like" | "unlike",
   id: number,
-  commentId: number
+  commentId: number,
 ): Promise<boolean> {
   return !!(await weapiRequest(`music.163.com/weapi/v1/comment/${t}`, {
     threadId: `${resourceTypeMap[type]}${id}`,
@@ -66,7 +66,7 @@ export async function commentNew(
   pageNo: number,
   pageSize: number,
   sortType: NeteaseSortType,
-  cursor: number | string
+  cursor: number | string,
 ): Promise<NeteaseTypings.CommentRet> {
   switch (sortType) {
     case NeteaseSortType.recommendation:
@@ -81,7 +81,7 @@ export async function commentNew(
   }>(
     "music.163.com/eapi/v2/resource/comments",
     { threadId: `${resourceTypeMap[type]}${id}`, pageNo, showInner: true, pageSize, cursor, sortType },
-    "/api/v2/resource/comments"
+    "/api/v2/resource/comments",
   );
   if (!res) return { totalCount: 0, hasMore: false, comments: [] };
   const {

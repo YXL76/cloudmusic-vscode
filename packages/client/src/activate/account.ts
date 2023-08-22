@@ -21,16 +21,16 @@ export async function initAccount(context: ExtensionContext): Promise<void> {
             })),
           });
           AccountManager.accountQuickPick(pick.uid);
-        })
+        }),
     ),
 
     commands.registerCommand(
       "cloudmusic.dailyCheck",
       async () =>
         void window.showInformationMessage(
-          (await AccountManager.dailyCheck()) ? i18n.sentence.success.dailyCheck : i18n.sentence.error.needSignIn
-        )
-    )
+          (await AccountManager.dailyCheck()) ? i18n.sentence.success.dailyCheck : i18n.sentence.error.needSignIn,
+        ),
+    ),
   );
 
   await AccountManager.init();

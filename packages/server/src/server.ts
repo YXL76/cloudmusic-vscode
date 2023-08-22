@@ -128,8 +128,8 @@ class IPCServer {
       if (this.#sockets.size) return;
       this.stop();
       IPC_BCST_SRV.stop();
-      Promise.allSettled([MUSIC_CACHE.store(), writeFile(RETAIN_FILE, JSON.stringify(this.#retain))]).finally(() =>
-        process.exit()
+      void Promise.allSettled([MUSIC_CACHE.store(), writeFile(RETAIN_FILE, JSON.stringify(this.#retain))]).finally(() =>
+        process.exit(),
       );
     }, 40000);
   }

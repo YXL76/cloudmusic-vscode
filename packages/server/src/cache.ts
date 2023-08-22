@@ -62,7 +62,7 @@ class MusicCache {
 
   async init(): Promise<void> {
     const names = new Set(
-      (await readdir(MUSIC_CACHE_DIR, { withFileTypes: true })).filter((i) => i.isFile()).map(({ name }) => name)
+      (await readdir(MUSIC_CACHE_DIR, { withFileTypes: true })).filter((i) => i.isFile()).map(({ name }) => name),
     );
 
     try {

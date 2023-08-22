@@ -895,27 +895,27 @@
   "scripts": {
     "build": "deno run --allow-all scripts/build.mts --prod",
     "build-dev": "deno run --allow-all scripts/build.mts",
-    "check": "yarn workspaces foreach -p run check",
+    "check": "yarn workspaces foreach --all -p run check",
     "generate-css": "NODE_ENV=production yarn tailwindcss --config tailwind.config.cjs --no-autoprefixer --minify -o dist/style.css",
-    "lint": "yarn workspaces foreach -p run lint",
+    "lint": "yarn workspaces foreach --all -p run lint",
     "publish": "deno run --allow-all scripts/publish.mts"
   },
   "devDependencies": {
-    "@types/eslint": "8.37.0",
+    "@types/eslint": "8.44.2",
     "@types/http-cache-semantics": "4.0.1",
-    "@typescript-eslint/eslint-plugin": "5.57.0",
-    "@typescript-eslint/parser": "5.57.0",
+    "@typescript-eslint/eslint-plugin": "6.4.1",
+    "@typescript-eslint/parser": "6.4.1",
     "debug": "4.3.4",
-    "eslint": "8.37.0",
-    "eslint-config-prettier": "8.8.0",
-    "eslint-plugin-prettier": "4.2.1",
-    "eslint-plugin-react": "7.32.2",
+    "eslint": "8.47.0",
+    "eslint-config-prettier": "9.0.0",
+    "eslint-plugin-prettier": "5.0.0",
+    "eslint-plugin-react": "7.33.2",
     "eslint-plugin-react-hooks": "4.6.0",
-    "postcss": "8.4.21",
-    "prettier": "2.8.7",
-    "supports-color": "9.3.1",
-    "tailwindcss": "3.3.1",
-    "typescript": "5.0.3"
+    "postcss": "8.4.28",
+    "prettier": "3.0.2",
+    "supports-color": "9.4.0",
+    "tailwindcss": "3.3.3",
+    "typescript": "5.1.6"
   },
-  "packageManager": "yarn@4.0.0-rc.42"
+  "packageManager": "yarn@4.0.0-rc.49"
 }

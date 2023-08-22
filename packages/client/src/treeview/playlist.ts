@@ -58,7 +58,7 @@ export class PlaylistProvider implements TreeDataProvider<Content> {
   }
 
   async getChildren(
-    element?: UserTreeItem | PlaylistItemTreeItem
+    element?: UserTreeItem | PlaylistItemTreeItem,
   ): Promise<UserTreeItem[] | PlaylistItemTreeItem[] | QueueItemTreeItem[]> {
     if (!element) {
       const accounts = [];
@@ -99,7 +99,10 @@ export class PlaylistItemTreeItem extends TreeItem {
 
   override readonly contextValue = "PlaylistItemTreeItem";
 
-  constructor(readonly item: NeteaseTypings.PlaylistItem, public uid: number) {
+  constructor(
+    readonly item: NeteaseTypings.PlaylistItem,
+    public uid: number,
+  ) {
     super(item.name, TreeItemCollapsibleState.Collapsed);
 
     this.tooltip = `${i18n.word.description}: ${item.description || ""}

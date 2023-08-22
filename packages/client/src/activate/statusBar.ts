@@ -111,6 +111,6 @@ export function initStatusBar(context: ExtensionContext): void {
         void IPC.netease("fmTrash", [STATE.playItem.valueOf]);
         void commands.executeCommand("cloudmusic.next");
       }
-    })
+    }),
   );
 }

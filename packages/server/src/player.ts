@@ -34,7 +34,7 @@ interface NativeModule {
     album: string,
     artist: string,
     cover_url: string,
-    duration: number
+    duration: number,
   ): void;
   mediaSessionSetPlayback(mediaSession: NativeMediaSessionHdl, playing: boolean, position: number): void;
 }
@@ -222,30 +222,33 @@ class NativePlayer extends PlayerBase {
       hwnd = this.#native.mediaSessionHwnd(pid);
     if (init || hwnd) {
     } */
-    this.#mediaSession = this.#native.mediaSessionNew((type) => {
-      const enum Type {
-        play,
-        pause,
-        toggle,
-        next,
-        previous,
-        stop,
-      }
-      switch (type) {
-        case Type.play:
-          return this.play();
-        case Type.pause:
-          return this.pause();
-        case Type.toggle:
-          return this.toggle();
-        case Type.next:
-          return IPC_SRV.sendToMaster({ t: IPCPlayer.next });
-        case Type.previous:
-          return IPC_SRV.sendToMaster({ t: IPCPlayer.previous });
-        case Type.stop:
-          return this.stop();
-      }
-    }, buildPath.replace(".node", "-media"));
+    this.#mediaSession = this.#native.mediaSessionNew(
+      (type) => {
+        const enum Type {
+          play,
+          pause,
+          toggle,
+          next,
+          previous,
+          stop,
+        }
+        switch (type) {
+          case Type.play:
+            return this.play();
+          case Type.pause:
+            return this.pause();
+          case Type.toggle:
+            return this.toggle();
+          case Type.next:
+            return IPC_SRV.sendToMaster({ t: IPCPlayer.next });
+          case Type.previous:
+            return IPC_SRV.sendToMaster({ t: IPCPlayer.previous });
+          case Type.stop:
+            return this.stop();
+        }
+      },
+      buildPath.replace(".node", "-media"),
+    );
 
     setInterval(() => {
       if (!this.playing) return;
@@ -293,7 +296,7 @@ class NativePlayer extends PlayerBase {
       item.al?.name || "",
       item.ar?.map(({ name }) => name).join("/") || "",
       item.al?.picUrl || "",
-      item.dt / 1000
+      item.dt / 1000,
     );
   }
 

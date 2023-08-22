@@ -113,7 +113,7 @@ export async function inputKeyword(input: MultiStepInput, uid: number): Promise<
       pickSongMany(
         input,
         5,
-        pick.map(({ item }) => item)
+        pick.map(({ item }) => item),
       );
   }
 
@@ -187,7 +187,7 @@ export async function inputKeyword(input: MultiStepInput, uid: number): Promise<
       pickSongMany(
         input,
         5,
-        pick.map(({ item }) => item)
+        pick.map(({ item }) => item),
       );
   }
 }

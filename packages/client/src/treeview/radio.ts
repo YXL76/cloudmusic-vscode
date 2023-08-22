@@ -58,7 +58,7 @@ export class RadioProvider implements TreeDataProvider<Content> {
   }
 
   async getChildren(
-    element?: UserTreeItem | RadioTreeItem
+    element?: UserTreeItem | RadioTreeItem,
   ): Promise<UserTreeItem[] | RadioTreeItem[] | ProgramTreeItem[]> {
     if (!element) {
       const accounts = [];
@@ -99,7 +99,10 @@ export class RadioTreeItem extends TreeItem {
 
   override readonly contextValue = "RadioTreeItem";
 
-  constructor(readonly item: NeteaseTypings.RadioDetail, public uid: number) {
+  constructor(
+    readonly item: NeteaseTypings.RadioDetail,
+    public uid: number,
+  ) {
     super(item.name, TreeItemCollapsibleState.Collapsed);
 
     this.tooltip = `${i18n.word.description}: ${item.desc || ""}

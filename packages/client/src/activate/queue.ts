@@ -66,6 +66,6 @@ export function initQueue(context: ExtensionContext): void {
 
     commands.registerCommand("cloudmusic.deleteSong", ({ valueOf }: QueueContent) => IPC.delete(valueOf)),
 
-    commands.registerCommand("cloudmusic.playNext", ({ data }: QueueContent) => IPC.add([data], 1))
+    commands.registerCommand("cloudmusic.playNext", ({ data }: QueueContent) => IPC.add([data], 1)),
   );
 }

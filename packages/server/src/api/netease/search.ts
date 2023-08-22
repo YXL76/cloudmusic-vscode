@@ -12,7 +12,7 @@ export async function searchDefault(uid: number): Promise<string> {
     "interface3.music.163.com/eapi/search/defaultkeyword/get",
     {},
     "/api/search/defaultkeyword/get",
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   );
   if (!res) return "";
   const {
@@ -26,7 +26,7 @@ export async function searchSingle(
   uid: number,
   s: string,
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `cloudsearch${NeteaseSearchType.single}-${s}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.SongsItem[]>(key);
@@ -37,7 +37,7 @@ export async function searchSingle(
     "interface.music.163.com/eapi/cloudsearch/pc",
     { s, type: NeteaseSearchType.single, limit, offset, total: true },
     "/api/cloudsearch/pc",
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   );
   if (!res) return [];
   const ret = res.result.songs.map(resolveSongItem);
@@ -49,7 +49,7 @@ export async function searchAlbum(
   uid: number,
   s: string,
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.AlbumsItem[]> {
   const key = `cloudsearch${NeteaseSearchType.album}-${s}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.AlbumsItem[]>(key);
@@ -60,7 +60,7 @@ export async function searchAlbum(
     "interface.music.163.com/eapi/cloudsearch/pc",
     { s, type: NeteaseSearchType.album, limit, offset, total: true },
     "/api/cloudsearch/pc",
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   );
   if (!res) return [];
   const ret = res.result.albums.map(resolveAlbumsItem);
@@ -72,7 +72,7 @@ export async function searchArtist(
   uid: number,
   s: string,
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.Artist[]> {
   const key = `cloudsearch${NeteaseSearchType.artist}-${s}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.Artist[]>(key);
@@ -83,7 +83,7 @@ export async function searchArtist(
     "interface.music.163.com/eapi/cloudsearch/pc",
     { s, type: NeteaseSearchType.artist, limit, offset, total: true },
     "/api/cloudsearch/pc",
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   );
   if (!res) return [];
   const ret = res.result.artists.map((artist) => resolveArtist({ ...artist, briefDesc: "" }));
@@ -95,7 +95,7 @@ export async function searchPlaylist(
   uid: number,
   s: string,
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.PlaylistItem[]> {
   const key = `cloudsearch${NeteaseSearchType.playlist}-${s}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.PlaylistItem[]>(key);
@@ -106,7 +106,7 @@ export async function searchPlaylist(
     "interface.music.163.com/eapi/cloudsearch/pc",
     { s, type: NeteaseSearchType.playlist, limit, offset, total: true },
     "/api/cloudsearch/pc",
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   );
   if (!res) return [];
   const ret = res.result.playlists.map(resolvePlaylistItem);
@@ -122,7 +122,7 @@ export async function searchLyric(
   uid: number,
   s: string,
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly SearchLyricResult[]> {
   const key = `cloudsearch${NeteaseSearchType.lyric}-${s}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly SearchLyricResult[]>(key);
@@ -137,7 +137,7 @@ export async function searchLyric(
     "interface.music.163.com/eapi/cloudsearch/pc",
     { s, type: NeteaseSearchType.lyric, limit, offset, total: true },
     "/api/cloudsearch/pc",
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   );
   if (!res) return [];
   const ret = res.result.songs.map((song) => ({
@@ -157,7 +157,7 @@ export async function searchHotDetail(uid: number): Promise<HotDetail> {
   const res = await weapiRequest<{ data: HotDetail }>(
     "music.163.com/weapi/hotsearchlist/get",
     {},
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   );
   if (!res) return [];
   const ret = res.data.map(({ searchWord, content }) => ({

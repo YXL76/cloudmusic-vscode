@@ -51,7 +51,7 @@ export function initCommand(context: ExtensionContext): void {
             await context.globalState.update(VOLUME_KEY, level);
           }
           return input.stay();
-        })
+        }),
     ),
 
     commands.registerCommand(
@@ -71,9 +71,9 @@ export function initCommand(context: ExtensionContext): void {
             await context.globalState.update(SPEED_KEY, speed);
           }
           return input.stay();
-        })
+        }),
     ),
 
-    commands.registerCommand("cloudmusic.toggleButton", () => BUTTON_MANAGER.toggle())
+    commands.registerCommand("cloudmusic.toggleButton", () => BUTTON_MANAGER.toggle()),
   );
 }

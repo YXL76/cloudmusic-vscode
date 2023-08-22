@@ -137,7 +137,7 @@ export class AccountViewProvider implements WebviewViewProvider {
   }
 
   async resolveWebviewView(
-    webview: WebviewView
+    webview: WebviewView,
     // context: WebviewViewResolveContext
     // token: CancellationToken
   ): Promise<void> {
@@ -156,7 +156,7 @@ export class AccountViewProvider implements WebviewViewProvider {
             "-Command",
             "Get-PSDrive -PSProvider FileSystem | Format-Table -Property Root -HideTableHeaders",
           ],
-          { shell: false, stdio: ["ignore", "pipe", "ignore"] }
+          { shell: false, stdio: ["ignore", "pipe", "ignore"] },
         );
         p.stdout.on("data", (data: Buffer) => (res += data.toString()));
         p.once("close", () => resolve(res)).once("error", reject);
@@ -259,7 +259,7 @@ export class Webview {
               void window.showErrorMessage(JSON.stringify(err));
               resolve(void panel.dispose());
             }),
-        512
+        512,
       );
       panel.onDidDispose(() => clearInterval(timer));
       setHtml();
@@ -288,7 +288,7 @@ export class Webview {
     const { panel, setHtml } = this._getPanel(name, "description");
 
     panel.webview.onDidReceiveMessage(
-      ({ channel }: CSMessage) => void panel.webview.postMessage({ msg: { name, desc }, channel })
+      ({ channel }: CSMessage) => void panel.webview.postMessage({ msg: { name, desc }, channel }),
     );
     setHtml();
   }
@@ -304,7 +304,7 @@ export class Webview {
       switch (msg.command) {
         case "song":
           return void MultiStepInput.run(async (input) =>
-            pickSong(input, 1, (await IPC.netease("songDetail", [uid, [msg.id]]))[0])
+            pickSong(input, 1, (await IPC.netease("songDetail", [uid, [msg.id]]))[0]),
           );
         case "album":
           return void MultiStepInput.run((input) => pickAlbum(input, 1, msg.id));
@@ -402,7 +402,7 @@ export class Webview {
 
     const { panel, setHtml } = this._getPanel(name, "video");
     panel.webview.onDidReceiveMessage(
-      ({ channel }: CSMessage) => void panel.webview.postMessage({ msg: { cover, url }, channel })
+      ({ channel }: CSMessage) => void panel.webview.postMessage({ msg: { cover, url }, channel }),
     );
     setHtml();
   }

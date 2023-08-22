@@ -7,7 +7,10 @@ export class UserTreeItem extends TreeItem {
 
   override readonly contextValue = "UserTreeItem";
 
-  constructor(override readonly label: string, readonly uid: number) {
+  constructor(
+    override readonly label: string,
+    readonly uid: number,
+  ) {
     super(label, TreeItemCollapsibleState.Collapsed);
   }
 

@@ -179,7 +179,7 @@ export async function initIPC(context: ExtensionContext): Promise<void> {
         dirents
           .filter((dirent) => dirent.isFile() && dirent.name.startsWith("err-") && dirent.name !== logFile)
           .map((dirent) => resolve(SETTING_DIR, dirent.name))
-          .forEach((p) => void rm(p, { recursive: true, force: true }).catch(console.error))
+          .forEach((p) => void rm(p, { recursive: true, force: true }).catch(console.error)),
       )
       .catch(console.error);
   }

@@ -21,6 +21,6 @@ export function initCache(context: ExtensionContext): void {
         updateMQ();
         IPC.setting();
       }
-    })
+    }),
   );
 }

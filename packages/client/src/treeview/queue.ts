@@ -127,21 +127,21 @@ export class QueueProvider implements TreeDataProvider<QueueContent> {
         this._songs.sort(
           order === QueueSortOrder.ascending
             ? (a, b) => getName(a).localeCompare(getName(b))
-            : (a, b) => getName(b).localeCompare(getName(a))
+            : (a, b) => getName(b).localeCompare(getName(a)),
         );
         break;
       case QueueSortType.album:
         this._songs.sort(
           order === QueueSortOrder.ascending
             ? (a, b) => getAlbum(a).localeCompare(getAlbum(b))
-            : (a, b) => getAlbum(b).localeCompare(getAlbum(a))
+            : (a, b) => getAlbum(b).localeCompare(getAlbum(a)),
         );
         break;
       case QueueSortType.artist:
         this._songs.sort(
           order === QueueSortOrder.ascending
             ? (a, b) => getArtist(a).localeCompare(getArtist(b))
-            : (a, b) => getArtist(b).localeCompare(getArtist(a))
+            : (a, b) => getArtist(b).localeCompare(getArtist(a)),
         );
     }
     return this._songs;

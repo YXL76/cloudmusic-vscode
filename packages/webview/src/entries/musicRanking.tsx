@@ -14,7 +14,7 @@ request<ReadonlyArray<readonly NeteaseTypings.RecordData[]>>(undefined)
       <MusicRanking
         record={record}
         max={record.map((i) => i.reduce((pre, { playCount }) => Math.max(pre, playCount), 0) / 100)}
-      />
-    )
+      />,
+    ),
   )
   .catch(console.error);

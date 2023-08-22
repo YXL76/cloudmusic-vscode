@@ -10,17 +10,17 @@
   "devDependencies": {
     "@types/api": "workspace:*",
     "@types/qrcode": "workspace:*",
-    "@types/react": "18.0.32",
-    "@types/react-dom": "18.0.11",
+    "@types/react": "18.2.20",
+    "@types/react-dom": "18.2.7",
     "@types/vscode-webview": "1.57.1"
   },
   "dependencies": {
     "@cloudmusic/shared": "workspace:*",
     "cloudmusic-wasm": "workspace:*",
-    "dayjs": "1.11.7",
-    "qrcode": "1.5.1",
+    "dayjs": "1.11.9",
+    "qrcode": "1.5.3",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-icons": "4.8.0"
+    "react-icons": "4.10.1"
   }
 }

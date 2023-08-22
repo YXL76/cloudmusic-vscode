@@ -29,7 +29,7 @@ raw-window-handle = "0.5"
 winit = "0.28"
 
 [target.'cfg(target_os = "windows")'.dependencies.windows]
-version = "0.48"
+version = "0.51"
 features = ["Win32_Foundation", "Win32_System_Threading"]
 
 # [dependencies.curl]

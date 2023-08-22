@@ -49,7 +49,7 @@ export const generateHeader = () => ({
 const responseHandler = async <T>(
   url: string,
   headers: Headers,
-  data: QueryInput
+  data: QueryInput,
 ): Promise<(T & { readonly cookie?: string[] }) | void> => {
   const res = await client<{ readonly code?: number; cookie?: string[] } & T>(url, { form: data, headers });
   if (!res) return;
@@ -110,7 +110,7 @@ export const qrloginRequest = async (url: string, data: QueryInput): Promise<QRC
 export const weapiRequest = <T = QueryInput>(
   url: string,
   data: QueryInput = {},
-  cookie = ACCOUNT_STATE.defaultCookie
+  cookie = ACCOUNT_STATE.defaultCookie,
 ): Promise<(T & { readonly cookie?: string[] }) | void> => {
   url = `${API_CONFIG.protocol}://${url}`;
   // if (!cookie.MUSIC_U) cookie.MUSIC_A = anonymousToken;
@@ -125,7 +125,7 @@ export const eapiRequest = async <T = QueryInput>(
   url: string,
   data: NodeJS.Dict<string | number | boolean | Headers>,
   encryptUrl: string,
-  cookie = ACCOUNT_STATE.defaultCookie
+  cookie = ACCOUNT_STATE.defaultCookie,
 ): Promise<(T & { readonly cookie?: string[] }) | void> => {
   url = `${API_CONFIG.protocol}://${url}`;
   const cookieJSON: Record<string, string | null | undefined> = {};
@@ -167,7 +167,7 @@ export const eapiRequest = async <T = QueryInput>(
 export const apiRequest = async <T = QueryInput>(
   url: string,
   data: QueryInput = {},
-  cookie = ACCOUNT_STATE.defaultCookie
+  cookie = ACCOUNT_STATE.defaultCookie,
 ): Promise<(T & { readonly cookie?: string[] }) | void> => {
   url = `${API_CONFIG.protocol}://${url}`;
   // if (!cookie.MUSIC_U) cookie.MUSIC_A = anonymousToken;

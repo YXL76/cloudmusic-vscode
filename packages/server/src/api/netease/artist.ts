@@ -67,7 +67,7 @@ export async function artistList(
   area: NeteaseArtistArea,
   initial: NeteaseTypings.ArtistInitial,
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.Artist[]> {
   const key = `artist_album${type}-${area}-${initial}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.Artist[]>(key);
@@ -89,7 +89,7 @@ export async function artistList(
 export async function artistSongs(
   id: number,
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `artist_songs${id}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.SongsItem[]>(key);
@@ -172,7 +172,7 @@ export async function toplistArtist(): Promise<readonly NeteaseTypings.Artist[]>
   if (value) return value;
   const res = await weapiRequest<{ list: { artists: readonly NeteaseTypings.Artist[] } }>(
     "music.163.com/weapi/toplist/artist",
-    { type: 1, limit: 100, offset: 0, total: true }
+    { type: 1, limit: 100, offset: 0, total: true },
   );
   if (!res) return [];
   const ret = res.list.artists.map(resolveArtist);

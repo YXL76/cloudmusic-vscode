@@ -86,7 +86,7 @@ export async function like(uid: number, trackId: number, like: boolean): Promise
   return !!(await weapiRequest(
     "music.163.com/weapi/radio/like",
     { alg: "itembased", trackId, like, time: "3" },
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   ));
 }
 
@@ -97,7 +97,7 @@ export async function likelist(uid: number): Promise<readonly number[]> {
   const res = await weapiRequest<{ ids: readonly number[] }>(
     "music.163.com/weapi/song/like/get",
     { uid },
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   );
   if (!res) return [];
   API_CACHE.set(key, res.ids);
@@ -112,7 +112,7 @@ export function loginCellphone(
   phone: string,
   countrycode: string,
   password: string,
-  captcha: string
+  captcha: string,
 ): Promise<NeteaseTypings.Profile | void> {
   return loginRequest("music.163.com/weapi/login/cellphone", {
     phone,
@@ -225,7 +225,7 @@ export async function personalizedNewsong(uid: number): Promise<readonly Netease
   }>(
     "music.163.com/weapi/personalized/newsong",
     { type: "recommend", limit: 10, areaId: 0 },
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   );
   if (!res) return [];
   const ret = res.result.map(({ song }) => resolveAnotherSongItem(song));
@@ -285,7 +285,7 @@ export async function userDetail(uid: number): Promise<NeteaseTypings.UserDetail
 export async function userFolloweds(
   userId: number,
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.UserDetail[]> {
   const key = `user_followeds${userId}-${limit}`;
   const value = API_CACHE.get<readonly NeteaseTypings.UserDetail[]>(key);
@@ -296,7 +296,7 @@ export async function userFolloweds(
     `music.163.com/eapi/user/getfolloweds/${userId}`,
     { userId, time: 0, limit, offset, getcounts: true },
     "/api/user/getfolloweds",
-    ACCOUNT_STATE.cookies.get(userId)
+    ACCOUNT_STATE.cookies.get(userId),
   );
   if (!res) return [];
   const ret = res.followeds.map(resolveUserDetail);
@@ -306,7 +306,7 @@ export async function userFolloweds(
 export async function userFollows(
   uid: number,
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.UserDetail[]> {
   const key = `user_follows${uid}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.UserDetail[]>(key);
@@ -328,7 +328,7 @@ export async function userLevel(uid: number): Promise<UserLevel> {
   const res = await weapiRequest<{ data: UserLevel }>(
     "music.163.com/weapi/user/level",
     {},
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   );
   if (!res) return <UserLevel>{};
   const {
@@ -348,7 +348,7 @@ export async function userPlaylist(uid: number): Promise<readonly NeteaseTypings
   }>(
     "music.163.com/weapi/user/playlist",
     { uid, limit: 30, offset: 0, includeVideo: true },
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   );
   if (!res) return [];
   const ret = res.playlist.map(resolvePlaylistItem);
@@ -366,7 +366,7 @@ export async function userRecord(uid: number): Promise<ReadonlyArray<readonly Ne
       const res = await weapiRequest<{ weekData: readonly { playCount: number; song: NeteaseTypings.SongsItem }[] }>(
         "music.163.com/weapi/v1/play/record",
         { type: 1, uid },
-        ACCOUNT_STATE.cookies.get(uid)
+        ACCOUNT_STATE.cookies.get(uid),
       );
       if (!res) throw Error("");
       return res.weekData.map(({ playCount, song }) => ({ ...resolveSongItem(song), playCount }));
@@ -375,7 +375,7 @@ export async function userRecord(uid: number): Promise<ReadonlyArray<readonly Ne
       const res = await weapiRequest<{ allData: readonly { playCount: number; song: NeteaseTypings.SongsItem }[] }>(
         "music.163.com/weapi/v1/play/record",
         { type: 0, uid },
-        ACCOUNT_STATE.cookies.get(uid)
+        ACCOUNT_STATE.cookies.get(uid),
       );
       if (!res) throw Error("");
       return res.allData.map(({ playCount, song }) => ({ ...resolveSongItem(song), playCount }));
@@ -413,7 +413,7 @@ async function yunbeiToday(uid: number): Promise<boolean> {
   const res = await weapiRequest<{ code: number }>(
     "music.163.com/weapi/point/today/get",
     {},
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   );
   return !!(res && res.code !== 400);
 }

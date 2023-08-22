@@ -48,7 +48,7 @@ class IPCClient<T, U = T> {
 
             resolve(true);
           })
-          .catch(() => resolve(false))
+          .catch(() => resolve(false)),
     );
   }
 
@@ -99,7 +99,7 @@ export const IPC = {
   connect: (
     ipcHandler: Parameters<typeof ipc.connect>[0],
     ipcBHandler: Parameters<typeof ipcB.connect>[0],
-    retry = 4
+    retry = 4,
   ): Promise<[boolean, boolean]> => Promise.all([ipc.connect(ipcHandler, retry), ipcB.connect(ipcBHandler, retry)]),
   disconnect: () => {
     ipc.disconnect();
@@ -123,7 +123,7 @@ export const IPC = {
           next: next && "mainSong" in next ? next.mainSong : next,
           play,
           seek,
-        })
+        }),
       )
       .catch(console.error);
   },
@@ -162,7 +162,7 @@ export const IPC = {
     ipcB.send(
       items
         ? { t: IPCQueue.new, id: QueueProvider.id + 1, items }
-        : { t: IPCQueue.new, id: QueueProvider.id, items: QueueProvider.songs }
+        : { t: IPCQueue.new, id: QueueProvider.id, items: QueueProvider.songs },
     ),
   playSong: (id: number | string) => ipcB.send({ t: IPCQueue.play, id }),
   random: () => ipcB.send({ t: IPCQueue.new, id: QueueProvider.id + 1, items: QueueProvider.random() }),

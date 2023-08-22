@@ -45,6 +45,6 @@ await MUSIC_CACHE.init();
       const path = resolve(TMP_DIR, name);
       const { birthtimeMs } = await stat(path);
       if (exp >= birthtimeMs) return rm(path, { force: true });
-    })
+    }),
   );
 }

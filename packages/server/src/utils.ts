@@ -11,7 +11,7 @@ export const logError = (err: unknown): void => {
   if (err) {
     console.error(
       new Date().toISOString(),
-      typeof err === "object" ? (<Partial<Error>>err)?.stack || (<Partial<Error>>err)?.message || err : err
+      typeof err === "object" ? (<Partial<Error>>err)?.stack || (<Partial<Error>>err)?.message || err : err,
     );
   }
 };
@@ -69,7 +69,7 @@ export async function getMusicPathClean(id: number, name: string): Promise<strin
           void MUSIC_CACHE.put(idS, `${name}-${idS}`, tmpUri, md5).then((target) => {
             rm(tmpUri, { force: true }).catch(() => undefined);
             target ? resolve(target) : reject();
-          })
+          }),
       )
       .pipe(file);
   });

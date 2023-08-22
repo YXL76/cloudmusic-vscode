@@ -36,7 +36,7 @@ export async function playlistCreate(uid: number, name: string, privacy: 0 | 10)
       privacy, //0 为普通歌单，10 为隐私歌单
       type: "NORMAL", // NORMAL|VIDEO
     },
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   ));
 }
 
@@ -44,7 +44,7 @@ export async function playlistDelete(uid: number, id: number): Promise<boolean> 
   return !!(await weapiRequest(
     `music.163.com/weapi/playlist/remove`,
     { ids: `[${id}]` },
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   ));
 }
 
@@ -77,7 +77,7 @@ export async function highqualityTags(): Promise<readonly PlaylistCatlistItem[]>
   const value = API_CACHE.get<readonly PlaylistCatlistItem[]>(key);
   if (value) return value;
   const res = await weapiRequest<{ tags: readonly { name: string; hot: boolean }[] }>(
-    "music.163.com/weapi/playlist/highquality/tags"
+    "music.163.com/weapi/playlist/highquality/tags",
   );
   if (!res) return [];
   const ret = res.tags.map(({ name, hot }) => ({ name, hot }));
@@ -92,7 +92,7 @@ export async function playlistSubscribe(uid: number, id: number, t: "subscribe" 
 export async function playlistSubscribers(
   id: number,
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.UserDetail[]> {
   const key = `playlist_subscribers${id}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.UserDetail[]>(key);
@@ -110,12 +110,12 @@ export async function playlistTracks(
   uid: number,
   op: "add" | "del",
   pid: number,
-  tracks: readonly number[]
+  tracks: readonly number[],
 ): Promise<boolean> {
   const res = await weapiRequest<{ code: number }>(
     "music.163.com/weapi/playlist/manipulate/tracks",
     { op, pid, trackIds: JSON.stringify(tracks), imme: "true" },
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   );
   if (!res) return false;
   if (res.code === 200) return true;
@@ -124,7 +124,7 @@ export async function playlistTracks(
   return !!(await weapiRequest(
     "music.163.com/weapi/playlist/manipulate/tracks",
     { op, pid, trackIds: JSON.stringify([...tracks, ...tracks]), imme: "true" },
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   ));
 }
 
@@ -137,7 +137,7 @@ export async function playlistUpdate(uid: number, id: number, name: string, desc
       // eslint-disable-next-line @typescript-eslint/naming-convention
       "/api/playlist/update/name": `{"id":${id},"name":"${name}"}`,
     },
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   ));
 }
 
@@ -147,13 +147,13 @@ export function playlistUpdatePlaycount(id: number) {
 
 export async function playmodeIntelligenceList(
   songId: number,
-  playlistId: number
+  playlistId: number,
 ): Promise<readonly NeteaseTypings.SongsItem[]> {
   const res = await weapiRequest<{
     data: readonly { songInfo: NeteaseTypings.SongsItemSt }[];
   }>(
     "music.163.com/weapi/playmode/intelligence/list",
-    { songId, type: "fromPlayOne", playlistId, startMusicId: songId, count: 1 }
+    { songId, type: "fromPlayOne", playlistId, startMusicId: songId, count: 1 },
     // TODO
     // ACCOUNT_STATE .cookies.get(uid)
   );
@@ -164,7 +164,7 @@ export async function playmodeIntelligenceList(
 export async function simiPlaylist(
   songid: number,
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.PlaylistItem[]> {
   const key = `simi_playlist${songid}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.PlaylistItem[]>(key);
@@ -181,7 +181,7 @@ export async function simiPlaylist(
 export async function topPlaylist(
   cat: string,
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.PlaylistItem[]> {
   const key = `top_playlist${cat}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.PlaylistItem[]>(key);
@@ -203,7 +203,7 @@ export async function topPlaylist(
 
 export async function topPlaylistHighquality(
   cat: string,
-  limit: number
+  limit: number,
 ): Promise<readonly NeteaseTypings.PlaylistItem[]> {
   const key = `top_playlist_highquality${cat}-${limit}`;
   const value = API_CACHE.get<readonly NeteaseTypings.PlaylistItem[]>(key);

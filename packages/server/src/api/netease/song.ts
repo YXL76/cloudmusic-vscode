@@ -73,7 +73,7 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
       ytv: 0,
       yrv: 0,
     },
-    "/api/song/lyric/v1"
+    "/api/song/lyric/v1",
   );
 
   if (!res) return { time: [0], text: [["~", "~", "~"]], user: [] };
@@ -129,7 +129,7 @@ export async function lyric(id: number): Promise<NeteaseTypings.LyricData> {
 export async function simiSong(
   songid: number,
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `simi_song${songid}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.SongsItem[]>(key);
@@ -145,7 +145,7 @@ export async function simiSong(
 
 export async function songDetail(
   uid: number,
-  trackIds: readonly number[]
+  trackIds: readonly number[],
 ): Promise<readonly NeteaseTypings.SongsItem[]> {
   const key = `song_detail${trackIds[0]}`;
   if (trackIds.length === 1) {
@@ -165,12 +165,12 @@ export async function songDetail(
         }>(
           "music.163.com/weapi/v3/song/detail",
           { c: `[${ids.map((id) => `{"id":${id}}`).join(",")}]` },
-          ACCOUNT_STATE.cookies.get(uid)
+          ACCOUNT_STATE.cookies.get(uid),
         );
         if (!res) throw Error;
         const { songs, privileges } = res;
         return songs.filter((_, i) => privileges[i].st >= 0).map(resolveSongItem);
-      })()
+      })(),
     );
   }
   try {
@@ -203,7 +203,7 @@ export async function songUrl(id: number): Promise<NeteaseTypings.SongDetail> {
         "interface.music.163.com/eapi/song/enhance/player/url/v1",
         { ids: `[${id}]`, level: br2level.get(STATE.musicQuality) ?? "standard", encodeType: "flac" },
         "/api/song/enhance/player/url/v1",
-        cookie
+        cookie,
       );
       if (!value) throw Error();
 
@@ -220,7 +220,7 @@ export async function songUrl(id: number): Promise<NeteaseTypings.SongDetail> {
         "interface.music.163.com/eapi/song/enhance/download/url",
         { id, br: STATE.musicQuality },
         "/api/song/enhance/download/url",
-        cookie
+        cookie,
       );
       if (!value) throw Error();
       const { url, md5, type, freeTrialInfo } = value.data;

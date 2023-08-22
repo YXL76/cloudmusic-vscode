@@ -73,7 +73,7 @@ export const Lyric = (): JSX.Element => {
             </div>
           </>
         ),
-        []
+        [],
       )}
 
       {useMemo(() => {

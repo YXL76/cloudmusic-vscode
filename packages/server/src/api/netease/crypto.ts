@@ -15,7 +15,7 @@ const aesEncrypt = (buffer: Buffer, mode: string, key: Uint8Array | Buffer | str
 const rsaEncrypt = (buffer: Uint8Array) =>
   publicEncrypt(
     { key: publicKey, padding: constants.RSA_NO_PADDING },
-    Buffer.concat([Buffer.alloc(128 - buffer.length), buffer])
+    Buffer.concat([Buffer.alloc(128 - buffer.length), buffer]),
   );
 
 export const weapi = (object: Record<string, number | string | boolean>): { params: string; encSecKey: string } => {
@@ -26,7 +26,7 @@ export const weapi = (object: Record<string, number | string | boolean>): { para
       Buffer.from(aesEncrypt(Buffer.from(text), "cbc", presetKey, iv).toString("base64")),
       "cbc",
       secretKey,
-      iv
+      iv,
     ).toString("base64"),
     encSecKey: rsaEncrypt(secretKey.reverse()).toString("hex"),
   };

@@ -100,7 +100,7 @@ class ButtonManager {
 
   init(): void {
     this.#buttonShow = CONTEXT.context.globalState.get(BUTTON_KEY, this.#buttonShow);
-    this.#buttonShow.forEach((v, i) => {
+    this.#buttonShow.forEach((v, i: Label) => {
       if (i === Label.song) this.#buttons[i].show();
       else v ? this.#buttons[i].show() : this.#buttons[i].hide();
     });
@@ -112,7 +112,7 @@ class ButtonManager {
         title: "",
         step: 1,
         totalSteps: 1,
-        items: this.#defaultText.map((text, i) => ({
+        items: this.#defaultText.map((text, i: Label) => ({
           label: `${text} ${this.#defaultTooltip[i]}`,
           description: this.#buttonShow[i] ? i18n.word.show : i18n.word.hide,
           i,

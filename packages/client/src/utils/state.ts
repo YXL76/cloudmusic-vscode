@@ -183,7 +183,7 @@ class State {
           return void IPC.netease("recommendSongs", [uid])
             .catch(() => [])
             .then((songs) =>
-              IPC.new(songs.map((song) => QueueItemTreeItem.new({ ...song, pid: song.al.id, itemType: "q" }).data))
+              IPC.new(songs.map((song) => QueueItemTreeItem.new({ ...song, pid: song.al.id, itemType: "q" }).data)),
             );
         }
       }
@@ -222,7 +222,7 @@ class State {
       QueueProvider.getInstance().onDidChangeTreeData(() => {
         this.fmUid = undefined;
         this.playItem = QueueProvider.head;
-      })
+      }),
     );
   }
 }

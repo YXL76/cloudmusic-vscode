@@ -60,7 +60,7 @@ export async function djHot(limit: number, offset: number): Promise<readonly Net
 export async function djProgram(
   uid: number,
   radioId: number,
-  limit: number
+  limit: number,
 ): Promise<readonly NeteaseTypings.ProgramDetail[]> {
   const key = `dj_program${radioId}`;
   const value = API_CACHE.get<readonly NeteaseTypings.ProgramDetail[]>(key);
@@ -70,7 +70,7 @@ export async function djProgram(
   }>(
     "music.163.com/weapi/dj/program/byradio",
     { radioId, limit, offset: 0, asc: false },
-    ACCOUNT_STATE.cookies.get(uid)
+    ACCOUNT_STATE.cookies.get(uid),
   );
   if (!res) return [];
   const ret = res.programs.map(resolveProgramDetail);
@@ -94,7 +94,7 @@ export async function djProgramDetail(id: number): Promise<NeteaseTypings.Progra
 
 export async function djProgramToplist(
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.ProgramDetail[]> {
   const key = `dj_program_toplist${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.ProgramDetail[]>(key);
@@ -125,7 +125,7 @@ export async function djProgramToplistHours(): Promise<readonly NeteaseTypings.P
 export async function djRadioHot(
   cateId: number,
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.RadioDetail[]> {
   const key = `dj_radio_hot${cateId}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.RadioDetail[]>(key);
@@ -167,7 +167,7 @@ export async function djRecommendType(uid: number, cateId: number): Promise<read
 
 export async function programRecommend(
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.ProgramDetail[]> {
   const key = `program_recommend${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.ProgramDetail[]>(key);
@@ -248,7 +248,7 @@ export async function djSubscriber(id: number, limit: number): Promise<readonly 
 export async function djToplist(
   type: 0 | 1,
   limit: number,
-  offset: number
+  offset: number,
 ): Promise<readonly NeteaseTypings.RadioDetail[]> {
   const key = `dj_toplist${type}-${limit}-${offset}`;
   const value = API_CACHE.get<readonly NeteaseTypings.RadioDetail[]>(key);

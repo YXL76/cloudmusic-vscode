@@ -1,6 +1,6 @@
-import type { BuildOptions, Plugin } from "https://deno.land/x/esbuild@v0.17.11/mod.js";
-import { build, stop } from "https://deno.land/x/esbuild@v0.17.11/mod.js";
-import { dirname, isAbsolute, join, resolve } from "https://deno.land/std@0.178.0/path/mod.ts";
+import type { BuildOptions, Plugin } from "https://deno.land/x/esbuild@v0.19.2/mod.js";
+import { build, stop } from "https://deno.land/x/esbuild@v0.19.2/mod.js";
+import { dirname, isAbsolute, join, resolve } from "https://deno.land/std@0.199.0/path/mod.ts";
 
 const prod = Deno.args.includes("--prod");
 

@@ -361,7 +361,7 @@ export class AccountManager {
               input,
               3,
               () => IPC.netease("djRecommend", [uid]),
-              (cateId) => IPC.netease("djRecommendType", [uid, cateId])
+              (cateId) => IPC.netease("djRecommendType", [uid, cateId]),
             );
         case Type.program:
           return async (input) => pickPrograms(input, 3, await IPC.netease("personalizedDjprogram", [uid]));
@@ -372,7 +372,7 @@ export class AccountManager {
       input: MultiStepInput,
       step: number,
       allFunc: (...args: readonly number[]) => Promise<readonly NeteaseTypings.RadioDetail[]>,
-      typeFunc: (id: number, ...args: readonly number[]) => Promise<readonly NeteaseTypings.RadioDetail[]>
+      typeFunc: (id: number, ...args: readonly number[]) => Promise<readonly NeteaseTypings.RadioDetail[]>,
     ): Promise<InputStep> {
       const types = await IPC.netease("djCatelist", []);
       const pick = await input.showQuickPick({
@@ -471,7 +471,7 @@ export class AccountManager {
               input,
               3,
               (limit, offset) => IPC.netease("djHot", [limit, offset]),
-              (cateId, limit, offset) => IPC.netease("djRadioHot", [cateId, limit, offset])
+              (cateId, limit, offset) => IPC.netease("djRadioHot", [cateId, limit, offset]),
             );
       }
     }
@@ -506,7 +506,7 @@ export class AccountManager {
           categories[pick.label].map(({ name, hot }) => ({
             label: name,
             description: hot ? "$(flame)" : undefined,
-          }))
+          })),
         );
     }
 
@@ -527,7 +527,7 @@ export class AccountManager {
 
     async function pickPlaylistSubCategories(
       input: MultiStepInput,
-      items: readonly QuickPickItem[]
+      items: readonly QuickPickItem[],
     ): Promise<InputStep> {
       const pick = await input.showQuickPick({ title: i18n.word.categorie, step: 4, totalSteps: 6, items });
       cat = pick.label;

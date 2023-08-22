@@ -75,13 +75,13 @@ export class MultiStepInput {
 
   async showQuickPick<T extends QuickPickItem>(_: QuickPickParameters<T>): Promise<T>;
   async showQuickPick<T extends QuickPickItem>(
-    _: QuickPickParameters<T> & { canSelectMany: true }
+    _: QuickPickParameters<T> & { canSelectMany: true },
   ): Promise<readonly T[]>;
   async showQuickPick<T extends QuickPickItem>(
-    _: QuickPickParameters<T> & Required<ButtonOption>
+    _: QuickPickParameters<T> & Required<ButtonOption>,
   ): Promise<T | ButtonAction>;
   async showQuickPick<T extends QuickPickItem>(
-    _: QuickPickParameters<T> & Required<QuickPickOption>
+    _: QuickPickParameters<T> & Required<QuickPickOption>,
   ): Promise<readonly T[] | ButtonAction>;
 
   showQuickPick<T extends QuickPickItem>({
@@ -137,7 +137,7 @@ export class MultiStepInput {
           }
         }),
         input.onDidAccept(() => resolve(canSelectMany ? input.selectedItems : input.selectedItems[0])),
-        input.onDidHide(() => reject(InputFlowAction.cancel))
+        input.onDidHide(() => reject(InputFlowAction.cancel)),
       );
       if (changeCallback) disposables.push(input.onDidChangeValue((value) => changeCallback(input, value)));
       if (this.#current) this.#current.dispose();
@@ -183,7 +183,7 @@ export class MultiStepInput {
           }
         }),
         input.onDidAccept(() => resolve((value = input.value))),
-        input.onDidHide(() => reject(InputFlowAction.cancel))
+        input.onDidHide(() => reject(InputFlowAction.cancel)),
       );
       if (changeCallback) disposables.push(input.onDidChangeValue((value) => changeCallback(input, value)));
       if (this.#current) this.#current.dispose();

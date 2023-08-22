@@ -18,7 +18,7 @@ export async function mvDetail(id: number) {
 export async function mvUrl(id: number, r = 1080) {
   const res = await weapiRequest<{ data: { url: string; r: number; size: number; md5: string } }>(
     "music.163.com/weapi/song/enhance/play/mv/url",
-    { id, r }
+    { id, r },
   );
   if (!res) return;
   return res.data.url;

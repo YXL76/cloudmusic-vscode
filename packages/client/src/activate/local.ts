@@ -24,12 +24,12 @@ export function initLocal(context: ExtensionContext): void {
     commands.registerCommand("cloudmusic.refreshLocalLibrary", () => LocalProvider.refresh()),
 
     commands.registerCommand("cloudmusic.deleteLocalLibrary", ({ label }: LocalLibraryTreeItem) =>
-      LocalProvider.deleteFolder(label)
+      LocalProvider.deleteFolder(label),
     ),
 
     commands.registerCommand(
       "cloudmusic.openLocalLibrary",
-      ({ label }: LocalLibraryTreeItem) => void env.openExternal(Uri.file(label))
+      ({ label }: LocalLibraryTreeItem) => void env.openExternal(Uri.file(label)),
     ),
 
     commands.registerCommand("cloudmusic.playLocalLibrary", async (element: LocalLibraryTreeItem) => {
@@ -43,11 +43,11 @@ export function initLocal(context: ExtensionContext): void {
     }),
 
     commands.registerCommand("cloudmusic.refreshLocalFile", (element: LocalLibraryTreeItem) =>
-      LocalProvider.refreshLibrary(element, true)
+      LocalProvider.refreshLibrary(element, true),
     ),
 
     commands.registerCommand("cloudmusic.addLocalFile", ({ data }: LocalFileTreeItem) => IPC.add([data])),
 
-    commands.registerCommand("cloudmusic.playLocalFile", ({ data }: LocalFileTreeItem) => IPC.new([data]))
+    commands.registerCommand("cloudmusic.playLocalFile", ({ data }: LocalFileTreeItem) => IPC.new([data])),
   );
 }

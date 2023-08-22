@@ -15,7 +15,7 @@ export async function realActivate(context: ExtensionContext) {
   context.subscriptions.push(
     window.registerWebviewViewProvider("cloudmusic-account", new AccountViewProvider(), {
       webviewOptions: { retainContextWhenHidden: true },
-    })
+    }),
   );
   initQueue(context);
   initCommand(context);
