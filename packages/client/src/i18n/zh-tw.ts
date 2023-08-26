@@ -26,6 +26,7 @@ export default {
       speed: "請輸入播放速度",
       trySignIn: "發現到您還沒登入",
       volume: "請輸入音量",
+      expandView: "展開隊列激活拓展",
     },
     label: {
       captcha: "使用驗證碼登錄",

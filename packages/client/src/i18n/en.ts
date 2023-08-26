@@ -26,6 +26,7 @@ export default {
       speed: "Please enter the speed",
       trySignIn: "Found that you have not logged in",
       volume: "Please enter the volume",
+      expandView: "Expand Queue to activate extension",
     },
     label: {
       captcha: "Use captcha to sign in",
