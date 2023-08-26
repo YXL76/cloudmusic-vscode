@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.19.2] - 2023-08-26
+
+### Added
+
+- Add hint ([#919](https://github.com/YXL76/cloudmusic-vscode/issues/919))
+
 ## [9.19.1] - 2023-04-03
 
 ### Fixed
