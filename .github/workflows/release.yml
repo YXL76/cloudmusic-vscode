@@ -18,14 +18,14 @@ jobs:
         id: cargo-cache
         with:
           path: |
-            ~/.cargo/registry
+            ~/.cargo/bin/
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Setup nightly rust
-        run: rustup default nightly
+      # - name: Setup nightly rust
+      #   run: rustup default nightly
 
       - name: Install rust target
         run: |
@@ -87,8 +87,8 @@ jobs:
             ~/.cargo/git/db/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Setup nightly rust
-        run: rustup default nightly
+      # - name: Setup nightly rust
+      #   run: rustup default nightly
 
       - name: Install rust target
         run: |
@@ -153,14 +153,14 @@ jobs:
         id: cargo-cache
         with:
           path: |
-            ~/.cargo/registry
+            ~/.cargo/bin/
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Setup nightly rust
-        run: rustup default nightly
+      # - name: Setup nightly rust
+      #   run: rustup default nightly
 
       - name: Install rust target
         run: |
@@ -235,7 +235,7 @@ jobs:
         id: cargo-cache
         with:
           path: |
-            ~/.cargo/registry
+            ~/.cargo/bin/
             ~/.cargo/registry/index/
             ~/.cargo/registry/cache/
             ~/.cargo/git/db/
@@ -245,8 +245,8 @@ jobs:
         with:
           deno-version: v1.x
 
-      - name: Setup nightly rust
-        run: rustup default nightly
+      # - name: Setup nightly rust
+      #   run: rustup default nightly
 
       - name: Install rust target
         run: rustup target add wasm32-unknown-unknown

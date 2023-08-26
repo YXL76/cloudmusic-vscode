@@ -1,6 +1,7 @@
 [workspace]
 members = ["crates/macmedia", "crates/native", "crates/wasi", "crates/wasm"]
 default-members = ["crates/native"]
+resolver =  "2"
 
 [patch.crates-io]
 symphonia = { git = "https://github.com/pdeljanov/Symphonia", branch = "master" }
