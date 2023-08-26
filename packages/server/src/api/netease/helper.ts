@@ -30,7 +30,6 @@ class AccountState {
       "http://music.163.com/weapi/playlist/create/",
       "http://music.163.com/weapi/playlist/remove/",
       "http://music.163.com/weapi/batch/",
-      "http://interface.music.163.com/eapi/song/enhance/player/url/v1/",
     ]) {
       cookie.setCookieSync("os=pc", url);
     }
@@ -40,6 +39,7 @@ class AccountState {
     for (const url of [
       "http://music.163.com/weapi/resource/comments/add/",
       "http://music.163.com/weapi/resource/comments/reply/",
+      "http://interface.music.163.com/eapi/song/enhance/player/url/v1/",
     ]) {
       cookie.setCookieSync("os=android", url);
     }

@@ -22,11 +22,11 @@ const client = got.extend({
 const userAgent = (() => {
   switch (process.platform) {
     case "win32":
-      return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36";
+      return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.62";
     case "darwin":
-      return "Mozilla/5.0 (Macintosh; Intel Mac OS X 12_5_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.6 Safari/605.1.15";
+      return "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Safari/605.1.15";
     default:
-      return "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36";
+      return "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36";
   }
 })();
 
@@ -63,7 +63,7 @@ const responseHandler = async <T>(
 export const loginRequest = async (url: string, data: QueryInput): Promise<NeteaseTypings.Profile | void> => {
   url = `${API_CONFIG.protocol}://${url}`;
   const headers = generateHeader();
-  headers["Cookie"] = jsonToCookie({ os: "ios", appver: "8.7.01" });
+  headers["Cookie"] = jsonToCookie({ os: "ios", appver: "8.9.70" });
   const res = await client<{ readonly code?: number; profile?: NeteaseTypings.Profile }>(url, {
     form: weapi(data),
     headers,
@@ -138,7 +138,7 @@ export const eapiRequest = async <T = QueryInput>(
   const header: Headers = {
     osver: cookieJSON["osver"] || "",
     deviceId: cookieJSON["deviceId"] || "",
-    appver: cookieJSON["appver"] || "8.7.01",
+    appver: cookieJSON["appver"] || "8.9.70",
     versioncode: cookieJSON["versioncode"] || "140",
     mobilename: cookieJSON["mobilename"] || "",
     buildver: cookieJSON["buildver"] || now.toString().slice(0, 10),
