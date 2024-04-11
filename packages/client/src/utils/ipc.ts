@@ -48,7 +48,7 @@ class IPCClient<T, U = T> {
 
             resolve(true);
           })
-          .catch(() => resolve(false)),
+          .catch(() => resolve(false))
     );
   }
 
@@ -92,6 +92,12 @@ const ipc = new IPCClient<IPCClientMsg, IPCServerMsg>(ipcServerPath);
 const ipcB = new IPCClient<IPCBroadcastMsg>(ipcBroadcastServerPath);
 
 let _nextChann = 0;
+const removePicUrl = (items?: PlayTreeItemData[]) => {
+  if (items)
+    for (const item of items) {
+      if ("al" in item && item.al.picUrl.length > 1000) item.al.picUrl = "";
+    }
+};
 
 export const IPC = {
   requestPool: <CSConnPool>new Map(),
@@ -99,7 +105,7 @@ export const IPC = {
   connect: (
     ipcHandler: Parameters<typeof ipc.connect>[0],
     ipcBHandler: Parameters<typeof ipcB.connect>[0],
-    retry = 4,
+    retry = 4
   ): Promise<[boolean, boolean]> => Promise.all([ipc.connect(ipcHandler, retry), ipcB.connect(ipcBHandler, retry)]),
   disconnect: () => {
     ipc.disconnect();
@@ -123,7 +129,7 @@ export const IPC = {
           next: next && "mainSong" in next ? next.mainSong : next,
           play,
           seek,
-        }),
+        })
       )
       .catch(console.error);
   },
@@ -154,16 +160,21 @@ export const IPC = {
   volume: (level: number) => ipc.send({ t: IPCPlayer.volume, level }),
   speed: (speed: number) => ipc.send({ t: IPCPlayer.speed, speed }),
   seek: (seekOffset: number) => ipc.send({ t: IPCPlayer.seek, seekOffset }),
-  add: (items: readonly PlayTreeItemData[], index?: number) => ipcB.send({ t: IPCQueue.add, items, index }),
+  add: (items: PlayTreeItemData[], index?: number) => {
+    removePicUrl(items);
+    ipcB.send({ t: IPCQueue.add, items, index });
+  },
   clear: () => ipcB.send({ t: IPCQueue.clear }),
   delete: (id: number | string) => ipcB.send({ t: IPCQueue.delete, id }),
   fm: (uid: number) => ipc.send({ t: IPCQueue.fm, uid }),
-  new: (items?: readonly PlayTreeItemData[]) =>
+  new: (items?: PlayTreeItemData[]) => {
+    removePicUrl(items);
     ipcB.send(
       items
         ? { t: IPCQueue.new, id: QueueProvider.id + 1, items }
-        : { t: IPCQueue.new, id: QueueProvider.id, items: QueueProvider.songs },
-    ),
+        : { t: IPCQueue.new, id: QueueProvider.id, items: QueueProvider.songs }
+    );
+  },
   playSong: (id: number | string) => ipcB.send({ t: IPCQueue.play, id }),
   random: () => ipcB.send({ t: IPCQueue.new, id: QueueProvider.id + 1, items: QueueProvider.random() }),
   shift: (index: number) => ipcB.send({ t: IPCQueue.shift, index }),
