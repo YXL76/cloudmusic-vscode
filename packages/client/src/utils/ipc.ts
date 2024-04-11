@@ -92,7 +92,7 @@ const ipc = new IPCClient<IPCClientMsg, IPCServerMsg>(ipcServerPath);
 const ipcB = new IPCClient<IPCBroadcastMsg>(ipcBroadcastServerPath);
 
 let _nextChann = 0;
-let removePicUrl = (items?: PlayTreeItemData[]) => {
+const removePicUrl = (items?: PlayTreeItemData[]) => {
   if (items)
     for (const item of items) {
       if ("al" in item && item.al.picUrl.length > 1000) item.al.picUrl = "";
