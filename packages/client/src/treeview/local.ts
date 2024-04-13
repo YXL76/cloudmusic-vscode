@@ -132,7 +132,7 @@ export class LocalProvider implements TreeDataProvider<Content> {
               mv: undefined,
             };
 
-            if (common.picture?.length) {
+            if (common.picture?.length && common.picture.length < 1024) {
               const [{ data, format }] = common.picture;
               item.al.picUrl = `data:${format};base64,${data.toString("base64")}`;
             }

@@ -92,12 +92,6 @@ const ipc = new IPCClient<IPCClientMsg, IPCServerMsg>(ipcServerPath);
 const ipcB = new IPCClient<IPCBroadcastMsg>(ipcBroadcastServerPath);
 
 let _nextChann = 0;
-const removePicUrl = (items: PlayTreeItemData[]) => {
-  for (const item of items) {
-    if ("al" in item && item.al.picUrl.length > 1000) item.al.picUrl = "";
-  }
-  return items;
-};
 
 export const IPC = {
   requestPool: <CSConnPool>new Map(),
@@ -160,14 +154,14 @@ export const IPC = {
   volume: (level: number) => ipc.send({ t: IPCPlayer.volume, level }),
   speed: (speed: number) => ipc.send({ t: IPCPlayer.speed, speed }),
   seek: (seekOffset: number) => ipc.send({ t: IPCPlayer.seek, seekOffset }),
-  add: (items: PlayTreeItemData[], index?: number) => ipcB.send({ t: IPCQueue.add, items: removePicUrl(items), index }),
+  add: (items: readonly PlayTreeItemData[], index?: number) => ipcB.send({ t: IPCQueue.add, items, index }),
   clear: () => ipcB.send({ t: IPCQueue.clear }),
   delete: (id: number | string) => ipcB.send({ t: IPCQueue.delete, id }),
   fm: (uid: number) => ipc.send({ t: IPCQueue.fm, uid }),
-  new: (items?: PlayTreeItemData[]) =>
+  new: (items?: readonly PlayTreeItemData[]) =>
     ipcB.send(
       items
-        ? { t: IPCQueue.new, id: QueueProvider.id + 1, items: removePicUrl(items) }
+        ? { t: IPCQueue.new, id: QueueProvider.id + 1, items }
         : { t: IPCQueue.new, id: QueueProvider.id, items: QueueProvider.songs },
     ),
   playSong: (id: number | string) => ipcB.send({ t: IPCQueue.play, id }),
