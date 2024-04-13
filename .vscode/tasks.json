@@ -21,7 +21,12 @@
     {
       "type": "shell",
       "label": "yarn: update",
-      "command": "rm yarn.lock && yarn && yarn dlx @yarnpkg/sdks vscode vim"
+      "command": "rm yarn.lock && yarn && yarn dlx @yarnpkg/sdks vscode vim",
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     },
     {
       "type": "shell",

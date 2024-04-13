@@ -10,18 +10,18 @@
   },
   "devDependencies": {
     "@types/api": "workspace:*",
-    "@types/global-agent": "2.1.1",
+    "@types/global-agent": "2.1.3",
     "@types/node": "*",
-    "@types/tough-cookie": "4.0.2",
-    "@types/yallist": "4.0.1"
+    "@types/tough-cookie": "4.0.5",
+    "@types/yallist": "4.0.4"
   },
   "dependencies": {
     "@cloudmusic/shared": "workspace:*",
     "global-agent": "3.0.0",
-    "got": "13.0.0",
+    "got": "14.2.1",
     "md5-file": "5.0.0",
     "node-cache": "5.1.2",
     "tough-cookie": "4.1.3",
-    "yallist": "4.0.0"
+    "yallist": "5.0.0"
   }
 }

@@ -29,7 +29,7 @@
   "markdownlint.config": {
     "MD024": false
   },
-  "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
+  "prettier.prettierPath": ".yarn/sdks/prettier/index.cjs",
   "search.exclude": {
     ".cache": true,
     ".yarn": true,
