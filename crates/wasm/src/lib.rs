@@ -1,6 +1,6 @@
 use {
     rodio::{Decoder, OutputStream, OutputStreamHandle, Sink},
-    std::io::Cursor,
+    std::{io::Cursor, time::Duration},
     wasm_bindgen::prelude::*,
     web_sys::{console, window},
 };
@@ -185,5 +185,10 @@ impl Player {
     }
 
     #[wasm_bindgen]
-    pub fn seek(&self, _: f64) {}
+    pub fn seek(&self, offset: f64) {
+        if let Some(ref sink) = self.sink {
+            let pos = self.position() + offset;
+            let _ = sink.try_seek(Duration::from_secs_f64(pos));
+        }
+    }
 }

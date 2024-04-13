@@ -197,7 +197,12 @@ impl Player {
     }
 
     #[inline]
-    fn seek(&self, _: f64) {}
+    fn seek(&self, offset: f64) {
+        if let Some(ref sink) = self.sink {
+            let pos = self.position() + offset;
+            let _ = sink.try_seek(Duration::from_secs_f64(pos));
+        }
+    }
 }
 
 pub fn player_new(mut cx: FunctionContext) -> JsResult<JsValue> {

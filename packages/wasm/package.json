@@ -12,5 +12,8 @@
   ],
   "module": "index.js",
   "types": "index.d.ts",
-  "sideEffects": false
+  "sideEffects": [
+    "./index.js",
+    "./snippets/*"
+  ]
 }
