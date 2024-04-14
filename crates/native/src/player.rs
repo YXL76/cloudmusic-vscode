@@ -55,6 +55,17 @@ impl Status {
             *self = Status::Playing(Instant::now(), start.elapsed().mul_f64(speed) + extra)
         }
     }
+
+    #[inline]
+    fn seek(&mut self, pos: Duration) {
+        match self {
+            Status::Stopped(d) => *d = pos,
+            Status::Playing(start, extra) => {
+                *start = Instant::now();
+                *extra = pos;
+            }
+        }
+    }
 }
 
 pub struct Player {
@@ -197,10 +208,13 @@ impl Player {
     }
 
     #[inline]
-    fn seek(&self, offset: f64) {
+    fn seek(&mut self, offset: f64) {
         if let Some(ref sink) = self.sink {
-            let pos = self.position() + offset;
-            let _ = sink.try_seek(Duration::from_secs_f64(pos));
+            if let Ok(pos) = Duration::try_from_secs_f64(self.position() + offset) {
+                if let Ok(_) = sink.try_seek(pos) {
+                    self.status.seek(pos);
+                }
+            }
         }
     }
 }
@@ -282,7 +296,7 @@ pub fn player_position(mut cx: FunctionContext) -> JsResult<JsNumber> {
 pub fn player_seek(mut cx: FunctionContext) -> JsResult<JsUndefined> {
     let player = cx.argument::<JsBox<RefCell<Player>>>(0)?;
     let seek_offset = cx.argument::<JsNumber>(1)?.value(&mut cx);
-    player.borrow().seek(seek_offset);
+    player.borrow_mut().seek(seek_offset);
 
     Ok(cx.undefined())
 }

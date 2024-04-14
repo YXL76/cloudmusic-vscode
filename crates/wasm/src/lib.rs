@@ -69,6 +69,17 @@ impl Status {
             *self = Status::Playing(now(), elapsed(start) * speed + extra)
         }
     }
+
+    #[inline]
+    fn seek(&mut self, pos: f64) {
+        match self {
+            Status::Stopped(d) => *d = pos,
+            Status::Playing(start, extra) => {
+                *start = now();
+                *extra = pos;
+            }
+        }
+    }
 }
 
 #[wasm_bindgen]
@@ -185,10 +196,13 @@ impl Player {
     }
 
     #[wasm_bindgen]
-    pub fn seek(&self, offset: f64) {
+    pub fn seek(&mut self, offset: f64) {
         if let Some(ref sink) = self.sink {
-            let pos = self.position() + offset;
-            let _ = sink.try_seek(Duration::from_secs_f64(pos));
+            if let Ok(pos) = Duration::try_from_secs_f64(self.position() + offset) {
+                if let Ok(_) = sink.try_seek(pos) {
+                    self.status.seek(pos.as_secs_f64());
+                }
+            }
         }
     }
 }

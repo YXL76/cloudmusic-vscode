@@ -301,7 +301,7 @@ class NativePlayer extends PlayerBase {
   }
 
   protected _loaded() {
-    IPC_SRV.broadcast({ t: IPCPlayer.loaded });
+    setTimeout(() => IPC_SRV.broadcast({ t: IPCPlayer.loaded }), 16);
   }
 
   protected _setPlaying(playing: boolean) {
