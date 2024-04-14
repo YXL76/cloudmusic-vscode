@@ -176,7 +176,7 @@ class ButtonManager {
     } else {
       const item = "mainSong" in ele.data ? ele.data.mainSong : ele.data;
       const ars = item.ar.map(({ name }) => name).join("/");
-      this.#buttons[Label.song].text = item.name;
+      this.#buttons[Label.song].text = ars ? `${item.name}-${ars}` : item.name;
       this.#mdSong = `<table><tr><th align="center">${item.name}</th></tr><tr><td align="center">${ars}</td></tr><tr><td align="center">${ele.tooltip}</td></tr><tr><td align="center"><img src="${item.al.picUrl}" alt="${item.al.name}" width="384"/></td></tr><tr><td align="center">`;
     }
 
