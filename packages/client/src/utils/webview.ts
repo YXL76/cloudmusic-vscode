@@ -16,7 +16,6 @@ import type { WebviewView, WebviewViewProvider } from "vscode";
 import { AccountManager } from "../manager/index.js";
 import type { NeteaseTypings } from "api";
 import i18n from "../i18n/index.js";
-import { spawn } from "node:child_process";
 
 const getNonce = (): string => {
   let text = "";
@@ -146,7 +145,7 @@ export class AccountViewProvider implements WebviewViewProvider {
 
     const localResourceRoots: string[] = [];
     if (process.platform === "win32") {
-      const stdout = await new Promise<string>((resolve, reject) => {
+      /* const stdout = await new Promise<string>((resolve, reject) => {
         let res = "";
         const p = spawn(
           "powershell.exe",
@@ -165,7 +164,10 @@ export class AccountViewProvider implements WebviewViewProvider {
         .split("\r\n")
         .map((line) => line.trim())
         .filter((line) => line.length === 3)
-        .forEach((line) => localResourceRoots.push(line));
+        .forEach((line) => localResourceRoots.push(line)); */
+      for (const i of ["C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N"]) {
+        localResourceRoots.push(`${i}:\\`);
+      }
     } else localResourceRoots.push("/");
 
     webview.title = i18n.word.account;
