@@ -6,6 +6,19 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.20.0] - 2024-04-14
+
+### Added
+
+- Seeking
+- Show artist name in status bar ([#971](https://github.com/YXL76/cloudmusic-vscode/issues/971))
+
+### Fixed
+
+- `picUrl` too large ([#975](https://github.com/YXL76/cloudmusic-vscode/issues/975))
+- Remove powershell ([#965](https://github.com/YXL76/cloudmusic-vscode/issues/965))
+- Generate UUID for status bar items ([#953](https://github.com/YXL76/cloudmusic-vscode/issues/953))
+
 ## [9.19.2] - 2023-08-26
 
 ### Added
