@@ -81,10 +81,16 @@ console.log("Native extension published");
 // Publish wasm
 for (const nodeTarget of nodeTargets) {
   for (const target of targetMap[nodeTarget]) {
-    const p = Deno.run({ cmd: [...publishArgs, target], stdout: "piped", stderr: "piped" });
-    const [status, stdout, stderr] = await Promise.all([p.status(), p.output(), p.stderrOutput()]);
-    assert(status.success, `Failed to publish ${target}`);
-    console.log(decoder.decode(stdout), decoder.decode(stderr));
+    try {
+      const p = Deno.run({ cmd: [...publishArgs, target], stdout: "piped", stderr: "piped" });
+      const status = await p.status();
+      assert(status.success, `Failed to publish ${target}`);
+    } catch {
+      const p = Deno.run({ cmd: [...publishArgs, target], stdout: "piped", stderr: "piped" });
+      const [status, stdout, stderr] = await Promise.all([p.status(), p.output(), p.stderrOutput()]);
+      assert(status.success, `Failed to publish ${target}`);
+      console.log(decoder.decode(stdout), decoder.decode(stderr));
+    }
   }
 }
 console.log("WASM extension published");
