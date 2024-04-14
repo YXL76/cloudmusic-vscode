@@ -4,6 +4,7 @@ import { BUTTON_KEY } from "../constant/index.js";
 import type { QueueContent } from "../treeview/index.js";
 import type { StatusBarItem } from "vscode";
 import i18n from "../i18n/index.js";
+import { randomUUID } from "node:crypto";
 
 const enum Label {
   seekbackward,
@@ -69,17 +70,17 @@ class ButtonManager {
   ];
 
   readonly #buttons = [
-    <MyStatusBarItem>window.createStatusBarItem(StatusBarAlignment.Left, -128),
-    <MyStatusBarItem>window.createStatusBarItem(StatusBarAlignment.Left, -129),
-    <MyStatusBarItem>window.createStatusBarItem(StatusBarAlignment.Left, -130),
-    <MyStatusBarItem>window.createStatusBarItem(StatusBarAlignment.Left, -131),
-    <MyStatusBarItem>window.createStatusBarItem(StatusBarAlignment.Left, -132),
-    <MyStatusBarItem>window.createStatusBarItem(StatusBarAlignment.Left, -133),
-    <MyStatusBarItem>window.createStatusBarItem(StatusBarAlignment.Left, -134),
-    <MyStatusBarItem>window.createStatusBarItem(StatusBarAlignment.Left, -135),
-    <MyStatusBarItem>window.createStatusBarItem(StatusBarAlignment.Left, -136),
-    <MyStatusBarItem>window.createStatusBarItem(StatusBarAlignment.Left, -137),
-    <MyStatusBarItem>window.createStatusBarItem(StatusBarAlignment.Left, -138),
+    <MyStatusBarItem>window.createStatusBarItem(randomUUID(), StatusBarAlignment.Left, -128),
+    <MyStatusBarItem>window.createStatusBarItem(randomUUID(), StatusBarAlignment.Left, -129),
+    <MyStatusBarItem>window.createStatusBarItem(randomUUID(), StatusBarAlignment.Left, -130),
+    <MyStatusBarItem>window.createStatusBarItem(randomUUID(), StatusBarAlignment.Left, -131),
+    <MyStatusBarItem>window.createStatusBarItem(randomUUID(), StatusBarAlignment.Left, -132),
+    <MyStatusBarItem>window.createStatusBarItem(randomUUID(), StatusBarAlignment.Left, -133),
+    <MyStatusBarItem>window.createStatusBarItem(randomUUID(), StatusBarAlignment.Left, -134),
+    <MyStatusBarItem>window.createStatusBarItem(randomUUID(), StatusBarAlignment.Left, -135),
+    <MyStatusBarItem>window.createStatusBarItem(randomUUID(), StatusBarAlignment.Left, -136),
+    <MyStatusBarItem>window.createStatusBarItem(randomUUID(), StatusBarAlignment.Left, -137),
+    <MyStatusBarItem>window.createStatusBarItem(randomUUID(), StatusBarAlignment.Left, -138),
   ];
 
   #buttonShow = <boolean[]>Array(11).fill(true);
