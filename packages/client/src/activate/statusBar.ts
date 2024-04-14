@@ -42,8 +42,8 @@ export function initStatusBar(context: ExtensionContext): void {
                 STATE.lyric.type === LyricType.ori
                   ? i18n.word.original
                   : STATE.lyric.type === LyricType.tra
-                  ? i18n.word.translation
-                  : i18n.word.romanization
+                    ? i18n.word.translation
+                    : i18n.word.romanization
               }`,
               type: Type.type,
             },

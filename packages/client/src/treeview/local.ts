@@ -157,7 +157,7 @@ export class LocalProvider implements TreeDataProvider<Content> {
 export class LocalLibraryTreeItem extends TreeItem {
   declare readonly label: string;
 
-  override readonly tooltip = this.label;
+  declare readonly tooltip: string;
 
   override readonly iconPath = new ThemeIcon("file-directory");
 
@@ -165,6 +165,7 @@ export class LocalLibraryTreeItem extends TreeItem {
 
   constructor(label: string) {
     super(label, TreeItemCollapsibleState.Collapsed);
+    this.tooltip = label;
   }
 }
 

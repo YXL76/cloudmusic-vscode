@@ -2,7 +2,7 @@
   "compilerOptions": {
     "esModuleInterop": true,
     "lib": ["ES2022"],
-    "module": "esnext",
+    "module": "node16",
     "moduleResolution": "node16",
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,

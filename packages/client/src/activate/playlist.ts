@@ -206,9 +206,9 @@ export function initPlaylist(context: ExtensionContext): void {
       element = element ?? STATE.playItem;
       if (!element) return;
       if (element instanceof QueueItemTreeItem) {
-        void MultiStepInput.run((input) => pickSong(input, 1, (<QueueItemTreeItem>element).data));
+        void MultiStepInput.run((input) => pickSong(input, 1, element.data));
       } else if (element instanceof ProgramTreeItem) {
-        void MultiStepInput.run((input) => pickProgram(input, 1, (<ProgramTreeItem>element).data));
+        void MultiStepInput.run((input) => pickProgram(input, 1, element.data));
       }
     }),
 

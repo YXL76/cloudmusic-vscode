@@ -222,16 +222,16 @@ class NativePlayer extends PlayerBase {
       hwnd = this.#native.mediaSessionHwnd(pid);
     if (init || hwnd) {
     } */
+    const enum Type {
+      play,
+      pause,
+      toggle,
+      next,
+      previous,
+      stop,
+    }
     this.#mediaSession = this.#native.mediaSessionNew(
-      (type) => {
-        const enum Type {
-          play,
-          pause,
-          toggle,
-          next,
-          previous,
-          stop,
-        }
+      (type: Type) => {
         switch (type) {
           case Type.play:
             return this.play();

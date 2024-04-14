@@ -1,9 +1,10 @@
 import { CACHE_DIR, LYRIC_CACHE_DIR, MUSIC_CACHE_DIR } from "./constant.js";
 import { copyFile, mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import type { NeteaseTypings } from "api";
+import type { Node } from "yallist";
 import NodeCache from "node-cache";
 import { STATE } from "./state.js";
-import Yallist from "yallist";
+import { Yallist } from "yallist";
 import { logError } from "./utils.js";
 import md5File from "md5-file";
 import { resolve } from "node:path";
@@ -56,7 +57,7 @@ class MusicCache {
 
   readonly #list = new Yallist<MusicCacheNode>();
 
-  readonly #cache = new Map<string, Yallist.Node<MusicCacheNode>>();
+  readonly #cache = new Map<string, Node<MusicCacheNode>>();
 
   readonly #listPath = resolve(CACHE_DIR, "music-list");
 
