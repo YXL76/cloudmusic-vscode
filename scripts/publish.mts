@@ -19,6 +19,7 @@ console.log(`Building extension version ${packageJSON.version}`);
 const targetMap = {
   // [Node target]: [VS Code target]
   "win32-x64": ["win32-x64"],
+  "win32-ia32": ["win32-ia32"],
   "win32-arm64": ["win32-arm64"],
   "linux-x64": ["linux-x64", "alpine-x64"],
   "linux-arm64": ["linux-arm64", "alpine-arm64"],
@@ -34,6 +35,7 @@ for await (const { name } of Deno.readDir(artifactPath)) {
   const base = basename(name, extname(name));
   if (
     base === "win32-x64" ||
+    base === "win32-ia32" ||
     base === "win32-arm64" ||
     base === "linux-x64" ||
     base === "linux-arm64" ||
@@ -51,7 +53,7 @@ console.log("Build complete");
 
 // Publish
 // Publish to Visual Studio Marketplace
-const publishArgs = ["yarn", "dlx", "-q", "vsce", "publish", "--no-dependencies", "-p", vsceToken, "--target"];
+const publishArgs = ["yarn", "dlx", "-q", "vsce", "publish", "--no-dependencies", "--skip-duplicate", "-p", vsceToken, "--target"];
 const decoder = new TextDecoder();
 
 // Publish native
