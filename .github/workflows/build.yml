@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         id: cargo-cache
         with:
           path: |
@@ -82,7 +82,7 @@ jobs:
             libdbus-1-dev \
           # sudo apt-get install -y libx11-dev
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         id: cargo-cache
         with:
           path: |
@@ -154,7 +154,7 @@ jobs:
           version: "14"
           directory: ${{ runner.temp }}/llvm
 
-      - uses: actions/cache@v3
+      - uses: actions/cache@v4
         id: cargo-cache
         with:
           path: |
