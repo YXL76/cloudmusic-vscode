@@ -37,12 +37,12 @@ jobs:
           cargo build --release --target=x86_64-apple-darwin
           cargo build --release --target=x86_64-apple-darwin --package cloudmusic-macmedia
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-x86_64
           path: crates/native/index.node
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-media-x86_64
           path: crates/macmedia/media
@@ -52,12 +52,12 @@ jobs:
           cargo build --release --target=aarch64-apple-darwin
           cargo build --release --target=aarch64-apple-darwin --package cloudmusic-macmedia
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-aarch64
           path: crates/native/index.node
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-media-aarch64
           path: crates/macmedia/media
@@ -99,7 +99,7 @@ jobs:
       - name: Build x86-64
         run: cargo build --release --target x86_64-unknown-linux-gnu
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-x86_64
           path: crates/native/index.node
@@ -117,7 +117,7 @@ jobs:
           use-cross: true
           args: --release --target aarch64-unknown-linux-gnu
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-aarch64
           path: crates/native/index.node
@@ -130,7 +130,7 @@ jobs:
           use-cross: true
           args: --release --target armv7-unknown-linux-gnueabihf
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-armv7
           path: crates/native/index.node
@@ -172,7 +172,7 @@ jobs:
         env:
           LIBCLANG_PATH: ${{ runner.temp }}/llvm/bin
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-x86_64
           path: crates/native/index.node
@@ -182,7 +182,7 @@ jobs:
         env:
           LIBCLANG_PATH: ${{ runner.temp }}/llvm/bin
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: ${{ runner.os }}-aarch64
           path: crates/native/index.node
