@@ -6,5 +6,5 @@ build = "build.rs"
 edition = "2021"
 
 [dependencies]
-souvlaki = "0.6"
+souvlaki = "0.7"
 winit = "0.28"
