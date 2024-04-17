@@ -24,4 +24,4 @@ version = "0.2"
 
 [dependencies.web-sys]
 version = "0.3"
-features = ["console", "Performance"]
+features = ["console", "Performance", "Window"]
