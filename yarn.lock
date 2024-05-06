@@ -76,7 +76,7 @@ __metadata:
     qrcode: "npm:1.5.3"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
-    react-icons: "npm:5.0.1"
+    react-icons: "npm:5.2.0"
   languageName: unknown
   linkType: soft
 
@@ -3406,12 +3406,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-icons@npm:5.0.1":
-  version: 5.0.1
-  resolution: "react-icons@npm:5.0.1"
+"react-icons@npm:5.2.0":
+  version: 5.2.0
+  resolution: "react-icons@npm:5.2.0"
   peerDependencies:
     react: "*"
-  checksum: 10c0/717022d93a3b2b30082f86fbb3c725a94a603b3fa1c611533439cc886f691a13b1833c30446d257a177667779239eac57411fa7516d8a4787bd735e965c9f63d
+  checksum: 10c0/bd9176b1aa6ddaa99b2abea2cecb523443b39a470912725e12da0b478697312fdefb55daaee921cf28bd9d76f580f0fa879d127c8f63fa1ca4516d44817eb6f4
   languageName: node
   linkType: hard
 
