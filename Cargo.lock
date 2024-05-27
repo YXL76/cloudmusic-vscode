@@ -625,7 +625,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0c2a198fb6b0eada2a8df47933734e6d35d350665a33a3593d7164fa52c75c19"
 dependencies = [
  "cfg-if",
- "windows-targets 0.52.5",
+ "windows-targets 0.48.5",
 ]
 
 [[package]]
@@ -637,6 +637,26 @@ dependencies = [
  "bitflags 2.5.0",
  "libc",
  "redox_syscall 0.4.1",
+]
+
+[[package]]
+name = "linkme"
+version = "0.3.26"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "833222afbfe72868ac8f9770c91a33673f0d5fefc37c9dbe94aa3548b571623f"
+dependencies = [
+ "linkme-impl",
+]
+
+[[package]]
+name = "linkme-impl"
+version = "0.3.26"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "39f0dea92dbea3271557cc2e1848723967bba81f722f95026860974ec9283f08"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.58",
 ]
 
 [[package]]
@@ -770,9 +790,10 @@ dependencies = [
 [[package]]
 name = "neon"
 version = "1.0.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#2e0a0f1bd5b2b1b2aaed465437ba6bcec2d5db59"
+source = "git+https://github.com/neon-bindings/neon?branch=main#a07025c7e07310a6d8d2a2a7cada181c1fde08f9"
 dependencies = [
  "libloading",
+ "linkme",
  "neon-macros",
  "once_cell",
  "semver",
@@ -783,11 +804,11 @@ dependencies = [
 [[package]]
 name = "neon-macros"
 version = "1.0.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#2e0a0f1bd5b2b1b2aaed465437ba6bcec2d5db59"
+source = "git+https://github.com/neon-bindings/neon?branch=main#a07025c7e07310a6d8d2a2a7cada181c1fde08f9"
 dependencies = [
+ "proc-macro2",
  "quote",
  "syn 2.0.58",
- "syn-mid",
 ]
 
 [[package]]
@@ -1347,17 +1368,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
-]
-
-[[package]]
-name = "syn-mid"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5dc35bb08dd1ca3dfb09dce91fd2d13294d6711c88897d9a9d60acf39bce049"
-dependencies = [
- "proc-macro2",
- "quote",
- "syn 2.0.58",
 ]
 
 [[package]]
