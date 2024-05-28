@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.21.0] - 2024-05-28
+
+### Changed
+
+- Load local file cover on playing time
+
 ## [9.20.0] - 2024-04-14
 
 ### Added
