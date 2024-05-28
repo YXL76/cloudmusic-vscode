@@ -36,19 +36,24 @@ impl MediaSession {
                 #[cfg(any(target_arch = "x86_64", target_arch = "x86"))]
                 {
                     use {
-                        raw_window_handle::{HasRawWindowHandle, RawWindowHandle},
-                        winit::{event_loop::EventLoop, window::WindowBuilder},
+                        raw_window_handle::{HasWindowHandle, RawWindowHandle},
+                        winit::{event_loop::EventLoop, window::Window},
                     };
-                    match WindowBuilder::new()
-                        .with_title(TITLE)
-                        .with_visible(false)
-                        .with_transparent(true)
-                        .with_decorations(false)
-                        .build(&EventLoop::new())
+                    match EventLoop::new()
                         .unwrap()
-                        .raw_window_handle()
+                        .create_window(
+                            Window::default_attributes()
+                                .with_title(TITLE)
+                                .with_visible(false)
+                                .with_transparent(true)
+                                .with_decorations(false),
+                        )
+                        .unwrap()
+                        .window_handle()
+                        .unwrap()
+                        .as_raw()
                     {
-                        RawWindowHandle::Win32(han) => Some(han.hwnd),
+                        RawWindowHandle::Win32(han) => Some(han.hwnd.get() as *mut c_void),
                         _ => panic!("No hwnd was found! Try to use wasm mode."),
                     }
                 }
