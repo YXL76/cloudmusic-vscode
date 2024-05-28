@@ -53,7 +53,7 @@ console.log("Build complete");
 
 // Publish
 // Publish to Visual Studio Marketplace
-const publishArgs = ["yarn", "dlx", "-q", "vsce", "publish", "--no-dependencies", "--skip-duplicate", "-p", vsceToken, "--target"];
+const publishArgs = ["yarn", "dlx", "-q", "@vscode/vsce", "publish", "--no-dependencies", "--skip-duplicate", "-p", vsceToken, "--target"];
 const decoder = new TextDecoder();
 
 // Publish native
@@ -107,7 +107,7 @@ await Deno.mkdir(buildPath, { recursive: true });
 await Promise.all(artifacts.map(({ name }) => Deno.copyFile(resolve(artifactPath, name), resolve(buildPath, name))));
 
 assert(
-  (await Deno.run({ cmd: ["yarn", "dlx", "-q", "vsce", "package", "--no-dependencies"] }).status()).success,
+  (await Deno.run({ cmd: ["yarn", "dlx", "-q", "@vscode/vsce", "package", "--no-dependencies"] }).status()).success,
   "Failed to package ",
 );
 const vsix = `cloudmusic-${packageJSON.version}.vsix`;

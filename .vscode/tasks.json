@@ -62,7 +62,7 @@
     {
       "type": "shell",
       "label": "yarn: package",
-      "command": "yarn build-dev && yarn dlx vsce package --no-dependencies",
+      "command": "yarn build-dev && yarn dlx @vscode/vsce package --no-dependencies",
       "group": {
         "kind": "build"
       }

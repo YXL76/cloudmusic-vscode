@@ -6,6 +6,12 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.21.1] - 2024-05-28
+
+### Fixed
+
+- Fix deleting local library ([#974](https://github.com/YXL76/cloudmusic-vscode/issues/974))
+
 ## [9.21.0] - 2024-05-28
 
 ### Changed
