@@ -1,7 +1,7 @@
 // Reference: [Platform-specific extensions](https://code.visualstudio.com/api/working-with-extensions/publishing-extension#platformspecific-extensions)
 
-import { basename, extname, resolve } from "https://deno.land/std@0.199.0/path/mod.ts";
-import { assert } from "https://deno.land/std@0.199.0/testing/asserts.ts";
+import { basename, extname, resolve } from "https://deno.land/std@0.224.0/path/mod.ts";
+import { assert } from "https://deno.land/std@0.224.0/testing/asserts.ts";
 import packageJSON from "../package.json" assert { type: "json" };
 
 const vsceToken = Deno.env.get("VSCE_TOKEN");
@@ -19,7 +19,7 @@ console.log(`Building extension version ${packageJSON.version}`);
 const targetMap = {
   // [Node target]: [VS Code target]
   "win32-x64": ["win32-x64"],
-  "win32-ia32": ["win32-ia32"],
+  // "win32-ia32": ["win32-ia32"],
   "win32-arm64": ["win32-arm64"],
   "linux-x64": ["linux-x64", "alpine-x64"],
   "linux-arm64": ["linux-arm64", "alpine-arm64"],
