@@ -6,47 +6,66 @@
     {
       "type": "shell",
       "label": "cargo: update",
-      "command": "cargo update"
+      "command": "cargo update",
+      "group": {
+        "kind": "build"
+      }
     },
     {
       "type": "shell",
       "label": "cargo: build macmedia",
-      "command": "cargo build --release --package cloudmusic-macmedia"
+      "command": "cargo build --release --package cloudmusic-macmedia",
+      "group": {
+        "kind": "build"
+      }
     },
     {
       "type": "shell",
       "label": "cargo: build",
-      "command": "cargo build --release"
+      "command": "cargo build --release",
+      "group": {
+        "kind": "build"
+      }
     },
     {
       "type": "shell",
       "label": "yarn: update",
       "command": "rm yarn.lock && yarn && yarn dlx @yarnpkg/sdks vscode vim",
-      "problemMatcher": [],
       "group": {
-        "kind": "build",
-        "isDefault": true
+        "kind": "build"
       }
     },
     {
       "type": "shell",
       "label": "yarn: self-update",
-      "command": "yarn set version canary"
+      "command": "yarn set version canary",
+      "group": {
+        "kind": "build"
+      }
     },
     {
       "type": "shell",
       "label": "yarn: check",
-      "command": "yarn check"
+      "command": "yarn check",
+      "group": {
+        "kind": "build"
+      }
     },
     {
       "type": "shell",
       "label": "yarn: lint",
-      "command": "yarn lint"
+      "command": "yarn lint",
+      "group": {
+        "kind": "build"
+      }
     },
     {
       "type": "shell",
       "label": "yarn: package",
-      "command": "yarn build-dev && yarn dlx vsce package --no-dependencies"
+      "command": "yarn build-dev && yarn dlx vsce package --no-dependencies",
+      "group": {
+        "kind": "build"
+      }
     }
   ]
 }

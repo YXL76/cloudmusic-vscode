@@ -20,8 +20,8 @@ default-features = false
 features = ["symphonia-flac", "symphonia-mp3", "symphonia-wav"]
 
 [dependencies.wasm-bindgen]
-version = "0.2"
+version = "0.2.92"
 
 [dependencies.web-sys]
-version = "0.3"
+version = "0.3.69"
 features = ["console", "Performance"]

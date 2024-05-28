@@ -18,10 +18,10 @@
   "dependencies": {
     "@cloudmusic/shared": "workspace:*",
     "global-agent": "3.0.0",
-    "got": "14.2.1",
+    "got": "14.3.0",
     "md5-file": "5.0.0",
     "node-cache": "5.1.2",
-    "tough-cookie": "4.1.3",
+    "tough-cookie": "4.1.4",
     "yallist": "5.0.0"
   }
 }
