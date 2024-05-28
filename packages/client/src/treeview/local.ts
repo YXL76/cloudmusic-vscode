@@ -100,7 +100,7 @@ export class LocalProvider implements TreeDataProvider<Content> {
 
         const promises = paths.map(async (filename) => {
           const abspath = resolve(folder, filename);
-          const meta = await parseFile(abspath, { duration: true });
+          const meta = await parseFile(abspath, { duration: true, skipCovers: true });
           return { filename, abspath, meta };
         });
 
@@ -131,11 +131,6 @@ export class LocalProvider implements TreeDataProvider<Content> {
               dt: format.duration ?? 4800000,
               mv: undefined,
             };
-
-            if (common.picture?.length && common.picture.length < 1024) {
-              const [{ data, format }] = common.picture;
-              item.al.picUrl = `data:${format};base64,${data.toString("base64")}`;
-            }
 
             items.push(LocalFileTreeItem.new(item));
           });

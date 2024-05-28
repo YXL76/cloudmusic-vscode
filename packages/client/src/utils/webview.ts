@@ -14,8 +14,10 @@ import type { ProviderSMsg, WebviewType } from "@cloudmusic/shared";
 import { SPEED_KEY, VOLUME_KEY } from "../constant/index.js";
 import type { WebviewView, WebviewViewProvider } from "vscode";
 import { AccountManager } from "../manager/index.js";
+import { LocalFileTreeItem } from "../treeview/index.js";
 import type { NeteaseTypings } from "api";
 import i18n from "../i18n/index.js";
+import { parseFile } from "music-metadata";
 
 const getNonce = (): string => {
   let text = "";
@@ -123,6 +125,7 @@ export class AccountViewProvider implements WebviewViewProvider {
         const msg: ProviderSMsg = {
           command: "metadata",
           duration: data.dt / 1000,
+          // TODO
           meta: {
             title: item.label,
             artist: item.description,
@@ -130,7 +133,17 @@ export class AccountViewProvider implements WebviewViewProvider {
             artwork: data.al.picUrl ? [{ src: data.al.picUrl }] : undefined,
           },
         };
-        void this._view.webview.postMessage(msg);
+        if (item instanceof LocalFileTreeItem) {
+          parseFile(item.data.abspath)
+            .then(({ common: { picture } }) => {
+              if (!picture?.length || !msg.meta) return;
+              const [{ data, format }] = picture;
+              const picUrl = `data:${format};base64,${data.toString("base64")}`;
+              msg.meta.artwork = [{ src: picUrl }];
+            })
+            .catch(console.error)
+            .finally(() => void this._view?.webview.postMessage(msg));
+        } else void this._view.webview.postMessage(msg);
       }
     }
   }
