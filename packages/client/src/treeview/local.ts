@@ -37,20 +37,23 @@ export class LocalProvider implements TreeDataProvider<Content> {
   static async addFolder(path: string): Promise<string[] | undefined> {
     if (!this._folders.has(path)) {
       try {
-        await stat(path);
-        this._folders.add(path);
-        this.refresh();
-        return [...this._folders];
+        if ((await stat(path)).isDirectory()) {
+          this._folders.add(path);
+          this.refresh();
+          return [...this._folders];
+        }
       } catch {}
     }
     return;
   }
 
-  static deleteFolder(path: string): void {
+  static deleteFolder(path: string): string[] | undefined {
     if (this._folders.has(path)) {
       this._folders.delete(path);
       this.refresh();
+      return [...this._folders];
     }
+    return;
   }
 
   static refresh(): void {

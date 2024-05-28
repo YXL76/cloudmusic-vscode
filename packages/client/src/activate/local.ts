@@ -15,17 +15,16 @@ export function initLocal(context: ExtensionContext): void {
         await window.showOpenDialog({ canSelectFiles: false, canSelectFolders: true, canSelectMany: false })
       )?.shift()?.fsPath;
       if (!path) return;
-      try {
-        const folders = await LocalProvider.addFolder(path);
-        if (folders) await context.globalState.update(LOCAL_FOLDER_KEY, folders);
-      } catch {}
+      const folders = await LocalProvider.addFolder(path);
+      if (folders) await context.globalState.update(LOCAL_FOLDER_KEY, folders);
     }),
 
     commands.registerCommand("cloudmusic.refreshLocalLibrary", () => LocalProvider.refresh()),
 
-    commands.registerCommand("cloudmusic.deleteLocalLibrary", ({ label }: LocalLibraryTreeItem) =>
-      LocalProvider.deleteFolder(label),
-    ),
+    commands.registerCommand("cloudmusic.deleteLocalLibrary", ({ label }: LocalLibraryTreeItem) => {
+      const folders = LocalProvider.deleteFolder(label);
+      if (folders !== undefined) void context.globalState.update(LOCAL_FOLDER_KEY, folders);
+    }),
 
     commands.registerCommand(
       "cloudmusic.openLocalLibrary",
