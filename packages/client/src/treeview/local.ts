@@ -131,7 +131,7 @@ export class LocalProvider implements TreeDataProvider<Content> {
               id: 0,
               al: { id: 0, name: common.album ?? "", picUrl: "" },
               ar: (common.artists ?? [common.artist ?? ""]).map((name) => ({ name, id: 0 })),
-              dt: format.duration ?? 4800000,
+              dt: format.duration ? format.duration * 1000 : 480000,
               mv: undefined,
             };
 

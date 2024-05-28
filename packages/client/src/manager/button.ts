@@ -178,14 +178,18 @@ class ButtonManager {
       const item = "mainSong" in ele.data ? ele.data.mainSong : ele.data;
       const ars = item.ar.map(({ name }) => name).join("/");
       this.#buttons[Label.song].text = ars ? `${item.name}-${ars}` : item.name;
-      this.#mdSong = `<table><tr><th align="center">${item.name}</th></tr><tr><td align="center">${ars}</td></tr><tr><td align="center">${ele.tooltip}</td></tr><tr><td align="center"><img src="" alt="${item.al.name}" width="384"/></td></tr><tr><td align="center">`;
-      if (item instanceof LocalFileTreeItem) {
-        parseFile(item.data.abspath)
+      this.#mdSong = `<table><tr><th align="center">${item.name}</th></tr><tr><td align="center">${ars}</td></tr><tr><td align="center">${ele.tooltip}</td></tr><tr><td align="center"><img src="${item.al.picUrl}" alt="${item.al.name}" width="384"/></td></tr><tr><td align="center">`;
+      if (ele instanceof LocalFileTreeItem) {
+        parseFile(ele.data.abspath)
           .then(({ common: { picture } }) => {
             if (!picture?.length) return;
             const [{ data, format }] = picture;
             const picUrl = `data:${format};base64,${data.toString("base64")}`;
-            this.#mdSong.replace(`<img src="" `, `<img src="${picUrl}" `);
+            if (picUrl.length < 81920) {
+              // TODO: resize large image
+              this.#mdSong = this.#mdSong.replace(`<img src="" `, `<img src="${picUrl}" `);
+              this.#setMdTooltip();
+            }
           })
           .catch(console.error);
       }
