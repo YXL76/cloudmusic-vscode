@@ -19,27 +19,22 @@ class AccountState {
   }
 
   setStaticCookie(cookie: CookieJar) {
-    for (const url of ["http://music.163.com/weapi/radio/like/"]) {
-      cookie.setCookieSync("appver=2.9.7", url);
-    }
     for (const url of [
-      "http://music.163.com/weapi/radio/like/",
       "http://music.163.com/weapi/v1/artist/songs/",
       "http://music.163.com/weapi/v1/comment/",
       "http://music.163.com/eapi/v2/resource/comments/",
       "http://music.163.com/weapi/playlist/create/",
       "http://music.163.com/weapi/playlist/remove/",
       "http://music.163.com/weapi/batch/",
+      "http://music.163.com/weapi/personalized/newsong",
+      "http://music.163.com/weapi/playlist/manipulate/tracks",
     ]) {
       cookie.setCookieSync("os=pc", url);
-    }
-    for (const url of ["http://music.163.com/api/song/lyric/"]) {
-      cookie.setCookieSync("os=ios", url);
+      cookie.setCookieSync("appver=2.9.7", url);
     }
     for (const url of [
       "http://music.163.com/weapi/resource/comments/add/",
       "http://music.163.com/weapi/resource/comments/reply/",
-      "http://interface.music.163.com/eapi/song/enhance/player/url/v1/",
     ]) {
       cookie.setCookieSync("os=android", url);
     }

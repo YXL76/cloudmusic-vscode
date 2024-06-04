@@ -1,7 +1,7 @@
 import { ACCOUNT_STATE, broadcastProfiles, jsonToCookie } from "./helper.js";
+import { Cookie, CookieJar, cookieCompare } from "tough-cookie";
 import { eapi, weapi } from "./crypto.js";
 import { API_CONFIG } from "../helper.js";
-import { CookieJar } from "tough-cookie";
 import type { Headers } from "got";
 import type { NeteaseTypings } from "api";
 import { STATE } from "../../state.js";
@@ -22,11 +22,11 @@ const client = got.extend({
 const userAgent = (() => {
   switch (process.platform) {
     case "win32":
-      return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 Edg/116.0.1938.62";
+      return "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.2535.67";
     case "darwin":
-      return "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_5_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Safari/605.1.15";
+      return "Mozilla/5.0 (Macintosh; Intel Mac OS X 14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4.1 Safari/605.1.15";
     default:
-      return "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36";
+      return "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36";
   }
 })();
 
@@ -36,15 +36,36 @@ const csrfTokenReg = RegExp(/_csrf=([^(;|$)]+)/);
 
 type QueryInput = Record<string, string | number | boolean>;
 
-export const generateHeader = () => ({
-  /* eslint-disable @typescript-eslint/naming-convention */
-  Cookie: "",
-  "Content-Type": "application/x-www-form-urlencoded",
-  "User-Agent": userAgent,
-  ...(STATE.foreign ? { "X-Real-IP": "118.88.88.88", "X-Forwarded-For": "118.88.88.88" } : {}),
-  Referer: "music.163.com",
-  /* eslint-enable @typescript-eslint/naming-convention */
-});
+export const generateHeader = (cookie: NeteaseTypings.Cookie | Cookie[]) => {
+  const header: Record<string, string> = {
+    /* eslint-disable @typescript-eslint/naming-convention */
+    "Content-Type": "application/x-www-form-urlencoded",
+    "User-Agent": userAgent,
+    ...(STATE.foreign ? { "X-Real-IP": "118.88.88.88", "X-Forwarded-For": "118.88.88.88" } : {}),
+    Referer: "music.163.com",
+    /* eslint-enable @typescript-eslint/naming-convention */
+  };
+  if (Array.isArray(cookie)) {
+    const os = cookie.find((c) => c.key === "os")?.value;
+    if (!os) cookie.push(new Cookie({ key: "os", value: "ios" }));
+    const appver = cookie.find((c) => c.key === "appver")?.value;
+    if (!appver) cookie.push(new Cookie({ key: "appver", value: "9.0.95" }));
+    header["Cookie"] = cookie
+      .sort(cookieCompare)
+      .map((c) => c.cookieString())
+      .join("; ");
+    header["os"] = os ?? "ios";
+    header["appver"] = appver ?? "9.0.95";
+  } else {
+    cookie.os ??= "ios";
+    cookie.appver ??= "9.0.95";
+    header["Cookie"] = jsonToCookie(cookie);
+    header["os"] = cookie.os;
+    header["appver"] = cookie.appver;
+  }
+
+  return header;
+};
 
 const responseHandler = async <T>(
   url: string,
@@ -62,8 +83,7 @@ const responseHandler = async <T>(
 
 export const loginRequest = async (url: string, data: QueryInput): Promise<NeteaseTypings.Profile | void> => {
   url = `${API_CONFIG.protocol}://${url}`;
-  const headers = generateHeader();
-  headers["Cookie"] = jsonToCookie({ os: "ios", appver: "8.9.70" });
+  const headers = generateHeader({ os: "ios", appver: "9.0.95" });
   const res = await client<{ readonly code?: number; profile?: NeteaseTypings.Profile }>(url, {
     form: weapi(data),
     headers,
@@ -91,7 +111,7 @@ type QRCheckRes =
   | { readonly code: 802; readonly message: string; readonly nickname: string; readonly avatarUrl: string };
 export const qrloginRequest = async (url: string, data: QueryInput): Promise<QRCheckRes> => {
   url = `${API_CONFIG.protocol}://${url}`;
-  const headers = generateHeader();
+  const headers = generateHeader({});
   const res = await client<{ readonly code: number; readonly message: string }>(url, { form: weapi(data), headers });
   if (!res) throw Error("QR Code login error!");
   const status = res.body.code || res.statusCode;
@@ -114,8 +134,7 @@ export const weapiRequest = <T = QueryInput>(
 ): Promise<(T & { readonly cookie?: string[] }) | void> => {
   url = `${API_CONFIG.protocol}://${url}`;
   // if (!cookie.MUSIC_U) cookie.MUSIC_A = anonymousToken;
-  const headers = generateHeader();
-  headers["Cookie"] = cookie.getCookieStringSync(url);
+  const headers = generateHeader(cookie.getCookiesSync(url));
   const csrfToken = csrfTokenReg.exec(headers["Cookie"]);
   data.csrf_token = csrfToken?.[1] ?? "";
   return responseHandler<T>(url, headers, weapi(data));
@@ -136,16 +155,16 @@ export const eapiRequest = async <T = QueryInput>(
 
   const now = Date.now();
   const header: Headers = {
-    osver: cookieJSON["osver"] || "",
+    osver: cookieJSON["osver"] || "17.4.1",
     deviceId: cookieJSON["deviceId"] || "",
-    appver: cookieJSON["appver"] || "8.9.70",
+    appver: cookieJSON["appver"] || "9.0.95",
     versioncode: cookieJSON["versioncode"] || "140",
     mobilename: cookieJSON["mobilename"] || "",
     buildver: cookieJSON["buildver"] || now.toString().slice(0, 10),
     resolution: cookieJSON["resolution"] || "1920x1080",
     // eslint-disable-next-line @typescript-eslint/naming-convention
     __csrf: cookieJSON["__csrf"] || "",
-    os: cookieJSON["os"] || <const>"android",
+    os: cookieJSON["os"] || <const>"ios",
     channel: cookieJSON["channel"] || "",
     requestId: `${now}_${Math.floor(Math.random() * 1000)
       .toString()
@@ -158,8 +177,7 @@ export const eapiRequest = async <T = QueryInput>(
   //   cookie.MUSIC_A = anonymousToken;
   //   header["MUSIC_A"] = anonymousToken;
   // }
-  const headers = generateHeader();
-  headers["Cookie"] = jsonToCookie(header);
+  const headers = generateHeader(header);
   data.header = header;
   return responseHandler<T>(url, headers, eapi(encryptUrl, data));
 };
@@ -171,7 +189,6 @@ export const apiRequest = async <T = QueryInput>(
 ): Promise<(T & { readonly cookie?: string[] }) | void> => {
   url = `${API_CONFIG.protocol}://${url}`;
   // if (!cookie.MUSIC_U) cookie.MUSIC_A = anonymousToken;
-  const headers = generateHeader();
-  headers["Cookie"] = cookie.getCookieStringSync(url);
+  const headers = generateHeader(cookie.getCookiesSync(url));
   return responseHandler<T>(url, headers, data);
 };
