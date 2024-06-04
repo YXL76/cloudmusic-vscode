@@ -6,6 +6,13 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [Unreleased]
 
+## [9.22.0] - 2024-06-04
+
+### Fixed
+
+- API
+- Windows playback device
+
 ## [9.21.1] - 2024-05-28
 
 ### Fixed
