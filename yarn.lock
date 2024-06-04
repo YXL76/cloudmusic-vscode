@@ -23,7 +23,7 @@ __metadata:
     "@types/node": "npm:*"
     "@types/vscode": "npm:1.74.0"
     lodash: "npm:4.17.21"
-    music-metadata: "npm:8.2.0"
+    music-metadata: "npm:8.3.0"
   languageName: unknown
   linkType: soft
 
@@ -2829,9 +2829,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"music-metadata@npm:8.2.0":
-  version: 8.2.0
-  resolution: "music-metadata@npm:8.2.0"
+"music-metadata@npm:8.3.0":
+  version: 8.3.0
+  resolution: "music-metadata@npm:8.3.0"
   dependencies:
     "@tokenizer/token": "npm:^0.3.0"
     content-type: "npm:^1.0.5"
@@ -2840,7 +2840,7 @@ __metadata:
     media-typer: "npm:^1.1.0"
     strtok3: "npm:^7.0.0"
     token-types: "npm:^5.0.1"
-  checksum: 10c0/79f9541cf3a4c09a0f815f60088da5345235d625f328320fb5d70e753db463b35b9a9beb0fe67f9156b955cbf2c8859776c6986207af978f43ff28aee31fd061
+  checksum: 10c0/a90fcff4083d8fbd07d1e709772053340ccb4af800bfb25a6be9e3f37d2ed7c052d01b54dafe77f26d3cd14325b04feb8562bb9c55131e9047317f288ffcafe9
   languageName: node
   linkType: hard
 
