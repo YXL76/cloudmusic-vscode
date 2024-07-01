@@ -26,7 +26,7 @@ souvlaki = "0.7.3"
 
 [target.'cfg(all(target_os = "windows", any(target_arch = "x86_64", target_arch = "x86")))'.dependencies]
 raw-window-handle = "0.6.2"
-winit = "0.30.0"
+winit = "0.30.3"
 
 [target.'cfg(target_os = "windows")'.dependencies.windows]
 version = "0.56.0"
