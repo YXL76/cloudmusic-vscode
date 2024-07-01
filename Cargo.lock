@@ -714,7 +714,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0c2a198fb6b0eada2a8df47933734e6d35d350665a33a3593d7164fa52c75c19"
 dependencies = [
  "cfg-if",
- "windows-targets 0.52.5",
+ "windows-targets 0.48.5",
 ]
 
 [[package]]
@@ -855,7 +855,7 @@ dependencies = [
 [[package]]
 name = "neon"
 version = "1.0.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#9edc005170aa3cbd2d81ceebe8122fb162a0251d"
+source = "git+https://github.com/neon-bindings/neon?branch=main#5d16c4d0c040c7d81565673ba4b42929922e03e1"
 dependencies = [
  "libloading",
  "linkme",
@@ -869,7 +869,7 @@ dependencies = [
 [[package]]
 name = "neon-macros"
 version = "1.0.0"
-source = "git+https://github.com/neon-bindings/neon?branch=main#9edc005170aa3cbd2d81ceebe8122fb162a0251d"
+source = "git+https://github.com/neon-bindings/neon?branch=main#5d16c4d0c040c7d81565673ba4b42929922e03e1"
 dependencies = [
  "proc-macro2",
  "quote",
