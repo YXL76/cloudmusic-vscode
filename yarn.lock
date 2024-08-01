@@ -974,7 +974,7 @@ __metadata:
     "@types/http-cache-semantics": "npm:4.0.4"
     "@typescript-eslint/eslint-plugin": "npm:7.11.0"
     "@typescript-eslint/parser": "npm:7.11.0"
-    debug: "npm:4.3.4"
+    debug: "npm:4.3.6"
     eslint: "npm:8.57.0"
     eslint-config-prettier: "npm:8.10.0"
     eslint-plugin-prettier: "npm:5.1.3"
