@@ -714,7 +714,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0c2a198fb6b0eada2a8df47933734e6d35d350665a33a3593d7164fa52c75c19"
 dependencies = [
  "cfg-if",
- "windows-targets 0.52.5",
+ "windows-targets 0.48.5",
 ]
 
 [[package]]
@@ -1218,8 +1218,8 @@ checksum = "adad44e29e4c806119491a7f06f03de4d1af22c3a680dd47f1e6e179439d1f56"
 
 [[package]]
 name = "rodio"
-version = "0.18.1"
-source = "git+https://github.com/RustAudio/rodio?branch=master#ee73f6d97d9ffca450f497f5ac0eff266dfb9fc7"
+version = "0.19.0"
+source = "git+https://github.com/RustAudio/rodio?branch=master#e3d561298d93b960e5eadafb1740fd746e049d63"
 dependencies = [
  "cpal",
  "symphonia",
