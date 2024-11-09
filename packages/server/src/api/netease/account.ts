@@ -14,8 +14,9 @@ import { CookieJar } from "tough-cookie";
 import type { NeteaseTypings } from "api";
 import { logError } from "../../utils.js";
 
-export function captchaSent(ctcode: string, cellphone: string): Promise<void> {
-  return weapiRequest("music.163.com/weapi/sms/captcha/sent", { cellphone, ctcode });
+export async function captchaSent(ctcode: string, cellphone: string): Promise<void> {
+  await delay(Math.random() * 2000 + 1000); // Random delay between 1-3 seconds
+  return weapiRequest('music.163.com/weapi/sms/captcha/sent', { cellphone, ctcode });
 }
 
 type CountryList = readonly { code: string; en: string; locale: string; zh: string }[];
@@ -104,23 +105,24 @@ export async function likelist(uid: number): Promise<readonly number[]> {
   return res.ids;
 }
 
-export function login(username: string, password: string): Promise<NeteaseTypings.Profile | void> {
-  return loginRequest("music.163.com/weapi/login", { username, password, rememberLogin: true });
+export async function login(username: string, password: string): Promise<NeteaseTypings.Profile | void> {
+  await delay(Math.random() * 3000 + 2000); // Random delay between 2-5 seconds
+  return loginRequest('music.163.com/weapi/login', { username, password, rememberLogin: true });
 }
 
-export function loginCellphone(
+export async function loginCellphone(
   phone: string,
   countrycode: string,
   password: string,
   captcha: string,
 ): Promise<NeteaseTypings.Profile | void> {
-  return loginRequest("music.163.com/weapi/login/cellphone", {
+  await delay(Math.random() * 3000 + 2000); // Random delay between 2-5 seconds
+  return loginRequest('music.163.com/weapi/login/cellphone', {
     phone,
     countrycode,
     rememberLogin: true,
     ...(captcha ? { captcha } : { password }),
   });
-}
 
 export function loginQrCheck(key: string) {
   return qrloginRequest("music.163.com/weapi/login/qrcode/client/login", { key, type: 1 });
