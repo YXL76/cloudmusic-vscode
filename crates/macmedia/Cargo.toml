@@ -7,4 +7,4 @@ edition = "2021"
 
 [dependencies]
 souvlaki = "0.7.3"
-winit = "0.30.0"
+winit = "0.30.5"
