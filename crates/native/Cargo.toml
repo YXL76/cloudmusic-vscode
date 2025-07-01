@@ -22,7 +22,7 @@ default-features = false
 features = ["symphonia-flac", "symphonia-mp3", "symphonia-wav"]
 
 [target.'cfg(not(target_os = "macos"))'.dependencies]
-souvlaki = "0.7.3"
+souvlaki = "0.8.3"
 
 [target.'cfg(all(target_os = "windows", any(target_arch = "x86_64", target_arch = "x86")))'.dependencies]
 raw-window-handle = "0.6.2"
