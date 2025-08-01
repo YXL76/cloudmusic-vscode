@@ -33,7 +33,7 @@ __metadata:
   dependencies:
     "@cloudmusic/shared": "workspace:*"
     "@types/api": "workspace:*"
-    "@types/global-agent": "npm:2.1.3"
+    "@types/global-agent": "npm:3.0.0"
     "@types/node": "npm:*"
     "@types/tough-cookie": "npm:4.0.5"
     "@types/yallist": "npm:4.0.4"
@@ -312,10 +312,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/global-agent@npm:2.1.3":
-  version: 2.1.3
-  resolution: "@types/global-agent@npm:2.1.3"
-  checksum: 10c0/1e440532035101593e6567723d53d77d6160a35f0440aec2a9134344fc6e811c34487d4002921f3a2fdf0725d3ab6c153b5e6397c7decca8b80223dccc8904e5
+"@types/global-agent@npm:3.0.0":
+  version: 3.0.0
+  resolution: "@types/global-agent@npm:3.0.0"
+  checksum: 10c0/b2fdcb13b8b7079e1ae9fbab52ca1fe7551d7fbff6be40a30a2f3c9d2b2d1841829e62249464ecf5e7240bfece8bce143a3331449af714f8c97a08b581bbc18a
   languageName: node
   linkType: hard
 
