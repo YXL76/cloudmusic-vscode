@@ -9,7 +9,7 @@
   "type": "module",
   "devDependencies": {
     "@types/api": "workspace:*",
-    "@types/lodash": "4.17.4",
+    "@types/lodash": "4.17.20",
     "@types/node": "*",
     "@types/vscode": "1.74.0"
   },
