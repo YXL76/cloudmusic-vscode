@@ -21,7 +21,7 @@
     "got": "14.3.0",
     "md5-file": "5.0.0",
     "node-cache": "5.1.2",
-    "tough-cookie": "4.1.4",
+    "tough-cookie": "5.1.2",
     "yallist": "5.0.0"
   }
 }
