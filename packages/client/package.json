@@ -16,7 +16,7 @@
   "dependencies": {
     "@cloudmusic/server": "workspace:*",
     "@cloudmusic/shared": "workspace:*",
-    "lodash": "4.17.21",
+    "lodash": "4.18.1",
     "music-metadata": "8.2.0"
   }
 }
